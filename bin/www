@@ -1,0 +1,67 @@
+#!/usr/bin/env node
+var app = require('../app');
+var debug = require('debug')('demo:server');
+var http = require('http');
+
+var logger = require('../app/logger')
+const webConf = require('../config/webConf').webConf;
+
+//获取端口
+var port = normalizePort(process.env.PORT || webConf.port || '3000');
+
+//创建服务
+try{
+  var server = http.createServer(app.callback());
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+  logger.info('Server has been started successfully');
+}catch(e){
+  logger.info(e.toString())
+}
+
+//标准化端口值
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+  if (isNaN(port)) {
+    return val;
+  }
+  if (port >= 0) {
+    return port;
+  }
+  return false;
+}
+
+
+// 服务错误回调
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  switch (error.code) {
+    case 'EACCES':
+      logger.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      logger.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+//服务监听事件
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}

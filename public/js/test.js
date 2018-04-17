@@ -1,0 +1,1 @@
+var a = '#common.text1#'
