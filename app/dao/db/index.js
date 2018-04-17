@@ -13,9 +13,9 @@ const {
     password,
     charset,
     pool,
-} = require('../../config/webConf').dbConf;
+} = require('../../../config/webConf').dbConf;
 
-const logger = require('../logger');
+const logger = require('../../logger');
 
 //初始化sequelize
 const sequelize = new Sequelize(database, user, password, {

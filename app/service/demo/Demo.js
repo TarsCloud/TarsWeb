@@ -2,10 +2,8 @@
  * Created by denisfan on 2018/4/8.
  */
 
-const {
-    tAdapterConf,
-    sequelize
-} = require('../../db');
+const DemoDao = require('../../dao/DemoDao');
+
 
 const logger = require('../../logger');
 
@@ -18,12 +16,7 @@ function Demo(){
 
 /*查看数据库数据*/
 Demo.getSqlData = async () => {
-    let count = await tAdapterConf.count();
-    let result = await tAdapterConf.findAll({
-        limit: 2,
-        offset: 4,
-        raw: true
-    });
+    let result = await DemoDao.getAdapterConfById('24');
     logger.info(result);
     return result;
 }

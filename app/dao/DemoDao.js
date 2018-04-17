@@ -1,7 +1,7 @@
 const {
     tAdapterConf
 } = require('./db');
-const logger = require('logger');
+const logger = require('../logger');
 
 var DemoDao = function(){}
 
@@ -25,3 +25,5 @@ DemoDao.insertAdapterConf = async(adapterConf)=>{
 DemoDao.updateAdapterConf = async(id, adapterConf)=>{
 
 }
+
+module.exports = DemoDao;
