@@ -6,6 +6,7 @@ const views = require('koa-views')
 // const static = require('koa-static')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
+const bodyparser = require('koa-bodyparser')
 const {pageRouter, apiRouter, staticRouter} = require('./app/router');
 const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
@@ -38,6 +39,7 @@ preMidware.forEach((midware)=>{app.use(midware)});
 app.use(pageRouter.routes(), pageRouter.allowedMethods())
 app.use(apiRouter.routes(), apiRouter.allowedMethods())
 app.use(staticRouter.routes(), staticRouter.allowedMethods())
+
 
 //后置中间件
 postMidware.forEach((midware)=>{app.use(midware)});

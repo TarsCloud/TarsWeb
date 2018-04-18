@@ -7,7 +7,7 @@ const _ = require('lodash');
 const noCacheMidware = require('../midware/noCacheMidware');
 const staticMidware = require('../midware/staticMidware');
 const {paramsDealMidware, paramsCheckMidware} = require('../midware/paramsMidware');
-const bodyParser = require('koa-bodyparser');
+
 
 
 
@@ -17,7 +17,6 @@ const getRouter = (router, routerConf) =>{
         var [method, url, controller, checkRule] = conf;
 
         //前置参数合并校验相关中间件
-        router[method](url, bodyParser());
         router[method](url, paramsDealMidware);    //上下文入参出参处理中间件
         router[method](url, async (ctx, next) => {return paramsCheckMidware(ctx, next, checkRule);});   //参数校验中间件
         router[method](url, noCacheMidware);       //禁用缓存中间件
