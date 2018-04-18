@@ -6,7 +6,6 @@ const views = require('koa-views')
 // const static = require('koa-static')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')
 const {pageRouter, apiRouter, staticRouter} = require('./app/router');
 const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
@@ -24,7 +23,7 @@ app.use(views(__dirname + '/views', {
     extension: 'ejs'
 }));
 
-// app.use(compress())
+
 
 //前置中间件
 preMidware.forEach((midware)=>{app.use(midware)});

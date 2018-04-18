@@ -12,5 +12,14 @@ this is Index Page
     <div>
         #common.text1#
     </div>
+
+
+<script>
+    var ajax = new XMLHttpRequest();
+
+    ajax.open('POST','/api/add_config_file',true);
+    ajax.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    ajax.send('id=3333');
+</script>
 </body>
 </html>
