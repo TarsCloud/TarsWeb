@@ -21,7 +21,7 @@ const paramsCheckMidware = async (ctx, next, checkRule) => {
     var hasError = false;
     _.each(checkRule, (rules, paramName) => {
         if(rules){
-            var value = params[paramName] || '';
+            var value = params[paramName] != undefined ? params[paramName].toString() : '';
             _.each(rules.split(';'), (rule) =>{
                 if(rule === 'notEmpty' && validator.isEmpty(value)){
                     hasError = true;

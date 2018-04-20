@@ -1,5 +1,5 @@
 var SequelizeAuto = require('sequelize-auto')
-var auto = new SequelizeAuto('db_tars_web', 'root', '',{
+var auto = new SequelizeAuto('db_tars_web', 'root', 'admin',{
     host: 'localhost',
     dialect: 'mysql',
     directory: './models', // prevents the program from writing to disk

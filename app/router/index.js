@@ -30,6 +30,7 @@ const getRouter = (router, routerConf) =>{
     });
 };
 
+
 //页面类型路由
 const pageRouter = new Router();
 getRouter(pageRouter, pageConf);

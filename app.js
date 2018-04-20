@@ -24,6 +24,7 @@ app.use(views(__dirname + '/views', {
     extension: 'ejs'
 }));
 
+app.use(bodyparser());
 
 
 //前置中间件
