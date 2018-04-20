@@ -6,6 +6,8 @@ const Sequelize = require('sequelize');
 
 const Mysql = require('mysql');
 
+const fs = require('fs-extra');
+
 const {
     database,
     host,
@@ -46,14 +48,17 @@ const sequelize = new Sequelize(database, user, password, {
     }
 })();
 
+var dbModels = fs.readdirSync(__dirname + "/models");
+var dbObj = {};
+dbModels.forEach(function(dbModel){
+    var tableName = dbModel.replace(/\.js$/g, '');
+    dbObj[tableName.replace(/_(\w)/g, function(a, b){return b.toUpperCase();})] = sequelize.import(__dirname + "/models/" + tableName);
+});
 
-const tAdapterConf = sequelize.import(__dirname + "/models/t_adapter_conf");
-
-const Db = {
-    tAdapterConf,
+const Db = Object.assign({
     sequelize,
     Op: Sequelize.Op,
     escape: Mysql.escape,
-};
+}, dbObj);
 
 module.exports = Db;
