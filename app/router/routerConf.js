@@ -1,23 +1,29 @@
 /**
  * Created by denisfan on 2018/4/6.
  */
+const CasServerController = require('../controller/auth/CasServer');
 const DemoController = require('../controller/demo/DemoController');
-const ConfigController = require('../controller/config/ConfigController');
 
 const pageConf = [
+    //登录注册相关
+    ['get', '/auth/register.html', CasServerController.registerPage],
+    ['get', '/auth/login.html', CasServerController.loginPage],
+
     ['get', '/', DemoController.index],
-    ['get', '/service_config.html', ConfigController.index]
 ]
 
 
 const apiConf = [
+    //登录注册相关
+    ['post', '/auth/register', CasServerController.register],
+    ['post', '/auth/login', CasServerController.login],
+    ['get', '/auth/logout', CasServerController.logout],
+    ['get', '/auth/getUserInfoByTicket', CasServerController.getUserInfoByTicket],
+    ['get', '/auth/validate', CasServerController.validate],
+
     ['get', '/getJson', DemoController.getJson, {id: 'notEmpty;object'}],
     ['get', '/getSqlData', DemoController.getSqlData, {id: 'notEmpty;number'}],
-    ['get', '/getRpcData', DemoController.getRpcData, {id: 'notEmpty;number'}],
-
-    // 服务配置接口
-    ['get', '/config_file_list', ConfigController.configFileList, {id: 'notEmpty;number'}],
-    ['post', '/add_config_file', ConfigController.addConfigFile],
+    ['get', '/getRpcData', DemoController.getRpcData, {id: 'notEmpty;number'}]
 ]
 
 module.exports = {pageConf, apiConf};

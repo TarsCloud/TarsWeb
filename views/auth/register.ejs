@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Koa ejs test</title>
+    <link rel="stylesheet" href="/css/auth/sign.css" />
+    <script src="/js/jquery.min.js"></script>
+</head>
+<body>
+<div class="sign-wrap">
+    <h2 class="sign-head">注册</h2>
+    <table class="sign-table">
+        <tr><td class="tr">用户名</td><td class="tl"><input type="text" name="userName" id="userName" /></td></tr>
+        <tr><td class="tr">密码</td><td  class="tl"><input type="password" name="password" id="password" /></td></tr>
+        <tr><td class="tr">确认密码</td><td  class="tl"><input type="password" name="repeatPassword" id="repeatPassword" /></td></tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="注册" id="registerBtn" />
+                <p><a href="/auth/login.html" class="sign-switch">已有账号，前往登录</a></p>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(function(){
+        $('#userName,#password,#repeatPassword').on('keydown',function(e){
+            if(e.keyCode == 13){
+                $('#registerBtn').click();
+            }
+        });
+        $('#registerBtn').on('click', function(){
+            var userName = $('#userName').val();
+            var password = $('#password').val();
+            var repeatPassword = $('#repeatPassword').val();
+            if(!userName || !password || !repeatPassword){
+                alert('请填写完整登录信息');
+                return;
+            }
+            if(password != repeatPassword){
+                alert('原密码和二次确认密码不一致');
+                return;
+            }
+            $.ajax({
+                url: '/api/auth/register',
+                data: {userName: userName, password: password, repeatPassword: repeatPassword},
+                type: 'post',
+                success: function(data){
+                    if(data.ret_code == 200){
+                        alert('注册成功');
+                        location.href = '/';
+                    }else{
+                        alert(data.err_msg || '注册失败');
+                    }
+                },
+                error: function(){
+                    alert('登录失败');
+                }
+            })
+        });
+    });
+</script>
+</body>
+</html>

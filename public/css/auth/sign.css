@@ -1,0 +1,36 @@
+.sign-wrap{
+    border: 1px solid #D2D2D2;
+    padding: 20px;
+    width: 400px;
+    margin: 100px auto;
+    background: #efefef;
+    border-radius: 3px;
+}
+.sign-head{
+    text-align: center;
+}
+.sign-table{
+    margin: 0px auto;
+}
+.sign-table td{
+    padding: 10px;
+    text-align: center;
+}
+.sign-table td.tr{
+    text-align: right;
+}
+.sign-table td.tl{
+    text-align: left;
+}
+.sign-table input[type="text"],
+.sign-table input[type="password"]{
+    padding: 5px;
+    border: 1px solid #DDD;
+    border-radius: 2px;
+}
+
+.sign-table a.sign-switch{
+    font-size: 12px;
+    color: #1560cb;
+    text-decoration: none;
+}
