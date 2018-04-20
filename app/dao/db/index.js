@@ -31,8 +31,8 @@ const sequelize = new Sequelize(database, user, password, {
         logger.sql(sqlText);
     },
     pool: {
-        max: pool.max || 10, 
-        min: pool.min || 0,     
+        max: pool.max || 10,
+        min: pool.min || 0,
         idle: pool.idle || 10000
     }
 });

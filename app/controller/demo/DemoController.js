@@ -8,7 +8,6 @@ const DemoController = {
 }
 
 DemoController.index = async (ctx) => {
-    // console.log(ctx.csrf);
     await ctx.render('index', {
         title: 'tars title#common.servername#',
         a: ctx.paramsObj.a || '',
