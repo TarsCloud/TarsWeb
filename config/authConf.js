@@ -1,8 +1,8 @@
 var path = require('path');
 
-module.exports = {
+//用户体系配置
 
-    //用户体系配置
+module.exports = {
     authConf: {
         loginUrlPrefix: 'http://localhost:3000', //登录检验服务前缀host
         loginUrl: '/auth/login.html',           //登录跳转url
