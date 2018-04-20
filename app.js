@@ -12,6 +12,7 @@ const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
 const helmet = require("koa-helmet");
 // const compress = require('koa-compress')
+const loginMidware = require('./app/midware/loginMidware');
 
 // error handler
 onerror(app)
@@ -24,7 +25,7 @@ app.use(views(__dirname + '/views', {
     extension: 'ejs'
 }));
 
-
+app.use(bodyparser());
 
 //前置中间件
 preMidware.forEach((midware)=>{app.use(midware)});
@@ -34,6 +35,9 @@ preMidware.forEach((midware)=>{app.use(midware)});
 //     maxAge: 7 * 24 * 60 * 60
 // }));
 // app.use(static(path.join(__dirname, 'public')));
+
+//权限校验
+app.use(loginMidware);
 
 //激活router
 app.use(pageRouter.routes(), pageRouter.allowedMethods())

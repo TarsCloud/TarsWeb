@@ -8,7 +8,7 @@ module.exports = {
         database: 'db_tars_web', // 数据库实例
         host: 'localhost',       // 数据库地址
         user: 'root',            // 用户名
-        password: 'admin',       // 密码
+        password: '',            // 密码
         charset: 'utf8_bin',     // 数据库编码
         pool: {
             max: 10,             // 连接池中最大连接数量

@@ -1,6 +1,6 @@
 //第三方登录相关
 
-var authConf = require('../../config/webConf').authConf;
+var authConf = require('../../config/authConf').authConf;
 var request = require('request-promise-any');
 var _ = require('lodash');
 var logger = require('../logger');
