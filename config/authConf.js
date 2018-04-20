@@ -9,10 +9,10 @@ module.exports = {
         redirectUrlParamName: 'service',        //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
         logoutUrl: '/auth/logout',              //登出url
         ticketParamName: 'ticket',              //第三方登录服务回调时候，url中表示st的参数名
-        getUserInfoByTicket: '/api/auth/getUserInfoByTicket',           //通过ticket从cas服务端校验和获取用户基本信息的url
+        getUserInfoByTicket: '',           //通过ticket从cas服务端校验和获取用户基本信息的url
         getUserInfoTicketParamName: 'ticket',   //调用获取用户信息接口时候st的参数名
         userInfoKey: 'data.user_name',          //结果JSON里面取出用户名的位置，取到该用户名才认为成功,可以多层
-        validateUrl: '/api/auth/validate',      //通过token和用户名到cas服务端校验key和用户名是否匹配url
+        validateUrl: '',                        //通过token和用户名到cas服务端校验key和用户名是否匹配url
         validateTicketParamName: 'ticket',      //校验接口传入st参数名
         validateUserParamName: 'user',          //校验接口传入用户参数名
         validateMatch: [
