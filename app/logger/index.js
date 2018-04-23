@@ -72,7 +72,7 @@ var sqlLogger = new winston.Logger({
 
 
 var logger = {
-    _formatInfo: (str) => {
+    _formatInfo: (infos) => {
         var stackList = stack() || [];
         var caller = stackList[2];
         var formatStr = '';
@@ -81,23 +81,27 @@ var logger = {
             formatStr += fileName.substring(fileName.lastIndexOf('/') + 1) + ':';
             formatStr += caller.getLineNumber() + '|'
         }
-        if(Object.prototype.toString.call(str) === '[object Object]' || Object.prototype.toString.call(str) === '[object Array]'){
-            formatStr += JSON.stringify(str);
-        }else{
-            formatStr += str;
-        }
+        infos.forEach((str) =>{
+            if(Object.prototype.toString.call(str) === '[object Object]' || Object.prototype.toString.call(str) === '[object Array]'){
+                formatStr += JSON.stringify(str);
+            }else{
+                formatStr += str;
+            }
+            formatStr += ' '
+        })
         return formatStr;
+
     },
-    info: (str) => {
+    info: (...str) => {
         normalLogger.info(logger._formatInfo(str));
     },
-    warn: (str) => {
+    warn: (...str) => {
         normalLogger.warn(logger._formatInfo(str));
     },
-    error: (str) => {
+    error: (...str) => {
         normalLogger.error(logger._formatInfo(str));
     },
-    sql: (str) => {
+    sql: (...str) => {
         sqlLogger.info(logger._formatInfo(str));
     }
 };
