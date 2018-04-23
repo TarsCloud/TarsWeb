@@ -82,7 +82,9 @@ var logger = {
             formatStr += caller.getLineNumber() + '|'
         }
         infos.forEach((str) =>{
-            if(Object.prototype.toString.call(str) === '[object Object]' || Object.prototype.toString.call(str) === '[object Array]'){
+            if(str instanceof Error){    //error类，打出相应的错误信息和堆栈信息
+                formatStr += str.stack;
+            }else if(Object.prototype.toString.call(str) === '[object Object]' || Object.prototype.toString.call(str) === '[object Array]'){   //对象或数组，则转为string输出
                 formatStr += JSON.stringify(str);
             }else{
                 formatStr += str;

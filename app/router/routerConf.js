@@ -1,7 +1,7 @@
 /**
  * Created by denisfan on 2018/4/6.
  */
-const CasServerController = require('../controller/auth/CasServer');
+const CasServerController = require('../controller/auth/CasServerController');
 const DemoController = require('../controller/demo/DemoController');
 const ConfigController = require('../controller/config/ConfigController');
 
@@ -10,7 +10,10 @@ const pageConf = [
     ['get', '/auth/register.html', CasServerController.registerPage],
     ['get', '/auth/login.html', CasServerController.loginPage],
 
+    //首页
     ['get', '/', DemoController.index],
+
+    
 ]
 
 
@@ -22,6 +25,7 @@ const apiConf = [
     ['get', '/auth/getUserInfoByTicket', CasServerController.getUserInfoByTicket],
     ['get', '/auth/validate', CasServerController.validate],
 
+    //Demo
     ['get', '/getJson', DemoController.getJson, {id: 'notEmpty;object'}],
     ['get', '/getSqlData', DemoController.getSqlData, {id: 'notEmpty;number'}],
     ['get', '/getRpcData', DemoController.getRpcData, {id: 'notEmpty;number'}],

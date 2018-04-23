@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Koa ejs test</title>
+    <title>Tars登录</title>
     <link rel="stylesheet" href="/css/auth/sign.css" />
     <script src="/js/jquery.min.js"></script>
 </head>
@@ -42,7 +42,7 @@
                     if(data.ret_code == 200){
                         location.reload();
                     }else{
-                        alert('输入的用户名密码不正确');
+                        alert(data.err_msg);
                     }
                 },
                 error: function(){
