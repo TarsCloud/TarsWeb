@@ -3,7 +3,7 @@ const app = new Koa()
 const path = require('path');
 const views = require('koa-views')
 // const staticCache = require('koa-static-cache')
-// const static = require('koa-static')
+const static = require('koa-static')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
@@ -34,7 +34,7 @@ preMidware.forEach((midware)=>{app.use(midware)});
 // app.use(staticCache(path.join(__dirname, 'public'), {
 //     maxAge: 7 * 24 * 60 * 60
 // }));
-// app.use(static(path.join(__dirname, 'public')));
+app.use(static(path.join(__dirname, 'public')));
 
 //权限校验
 app.use(loginMidware);
