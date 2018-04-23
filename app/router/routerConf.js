@@ -34,7 +34,7 @@ const apiConf = [
     ['get', '/config_file_list', ConfigController.configFileList, {level:'number', application:'notEmpty'}],
     ['post', '/add_config_file', ConfigController.addConfigFile, {level:'number', application:'notEmpty', server_name:'notEmpty', filename:'notEmpty',config:'notEmpty'}],
     ['get', '/delete_config_file', ConfigController.deleteConfigFile,  {id: 'number'}],
-    ['post', '/update_config_file', ConfigController.updateConfigFile,{id:'number',config:'notEmpty'}],
+    ['post', '/update_config_file', ConfigController.updateConfigFile,{id:'number',config:'notEmpty',reason:'notEmpty'}],
     ['get', '/config_file', ConfigController.configFile,  {id: 'number'}],
     ['post', '/node_config_file_list', ConfigController.nodeConfigFileList,  {application:'notEmpty', server_name:'notEmpty'}],
     ['get', '/config_file_history', ConfigController.loadConfigFileHistory,  {id: 'number'}],
