@@ -6,24 +6,24 @@ const DemoController = require('../controller/demo/DemoController');
 const ConfigController = require('../controller/config/ConfigController');
 
 const pageConf = [
-    //登录注册相关
+    //登录注册页面
     ['get', '/auth/register.html', CasServerController.registerPage],
     ['get', '/auth/login.html', CasServerController.loginPage],
 
     //首页
     ['get', '/', DemoController.index],
 
-    
+
 ]
 
 
 const apiConf = [
-    //登录注册相关
+    //登录注册接口
     ['post', '/auth/register', CasServerController.register],
     ['post', '/auth/login', CasServerController.login],
     ['get', '/auth/logout', CasServerController.logout],
-    ['get', '/auth/getUserInfoByTicket', CasServerController.getUserInfoByTicket],
-    ['get', '/auth/validate', CasServerController.validate],
+    // ['get', '/auth/getUserInfoByTicket', CasServerController.getUserInfoByTicket],
+    // ['get', '/auth/validate', CasServerController.validate],
 
     //Demo
     ['get', '/getJson', DemoController.getJson, {id: 'notEmpty;object'}],

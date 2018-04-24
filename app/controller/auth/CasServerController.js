@@ -3,7 +3,7 @@ var logger = require('../../logger');
 
 function CasServerServer(){
 
-};
+}
 
 //登录页面控制，若已经有登录信息，则直接带票据跳转
 CasServerServer.loginPage = async function(ctx){
@@ -13,12 +13,12 @@ CasServerServer.loginPage = async function(ctx){
     }else{
         await ctx.render('auth/login');
     }
-}
+};
 
 //注册页面控制
 CasServerServer.registerPage = async function(ctx){
     await ctx.render('auth/register');
-}
+};
 
 
 //登出操作，清理session并跳转
@@ -32,6 +32,8 @@ CasServerServer.logout = function(ctx){
     ctx.redirect('/');
 };
 
+
+//登录接口
 CasServerServer.login = async function(ctx){
     try{
         var userInfo = await AuthDao.getUserInfo(ctx.paramsObj.userName, ctx.paramsObj.password);
@@ -40,7 +42,7 @@ CasServerServer.login = async function(ctx){
             ctx.cookies.set('ticket', (new Date()).getTime(), {maxAge: 10 * 24 * 60 * 60 * 1000});
             ctx.makeResObj(200, '', {});
         }else{
-            ctx.makeResObj(500, '#login.error#', {});
+            ctx.makeResObj(500, '#login.userNoExist#', {});
         }
     }catch(e){
         logger.error('[login]' , e);
@@ -49,14 +51,15 @@ CasServerServer.login = async function(ctx){
 
 };
 
-CasServerServer.getUserInfoByTicket = async function(ctx){
-    ctx.makeResObj(200, '', {user_name: 'denisfan'});
-};
+// CasServerServer.getUserInfoByTicket = async function(ctx){
+//     ctx.makeResObj(200, '', {user_name: 'denisfan'});
+// };
+//
+// CasServerServer.validate = async function(ctx){
+//     ctx.makeResObj(200, '', {correct: true});
+// }
 
-CasServerServer.validate = async function(ctx){
-    ctx.makeResObj(200, '', {correct: true});
-}
-
+//注册接口
 CasServerServer.register = async function(ctx){
     var userName = ctx.paramsObj.userName;
     var password = ctx.paramsObj.password;
@@ -68,7 +71,7 @@ CasServerServer.register = async function(ctx){
     try{
         var userInfo = await AuthDao.getUserInfoByUserName(userName, password);
         if(userInfo.length){
-            ctx.makeResObj(500, '#register.existError#', {});
+            ctx.makeResObj(500, '#register.hasExist#', {});
         }else{
             await AuthDao.insertUserInfo(userName, password);
             ctx.makeResObj(200, '', {});
@@ -77,7 +80,6 @@ CasServerServer.register = async function(ctx){
         logger.error('[register]', e);
         ctx.makeErrResObj();
     }
-
-}
+};
 
 module.exports = CasServerServer;
