@@ -10,6 +10,12 @@ ServerService.getServerConfById = async(id) => {
     return await ServerDao.getServerConfById(id);
 };
 
+//通过应用，服务，节点获取获取服务信息
+ServerService.getServerConf = async(application, serverName, nodeName) => {
+    return await ServerDao.getServerConf(application, serverName, nodeName);
+};
+
+
 //通过treeNodeId查询服务列表
 ServerService.getServerConfList4Tree = async(treeNodeId, curPage, pageSize) => {
     var where = ServerService.formatTreeNodeId(treeNodeId);

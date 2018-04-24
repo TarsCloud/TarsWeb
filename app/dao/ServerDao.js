@@ -22,12 +22,15 @@ ServerDao.getServerConf = async(application, serverName, enableSet, setName, set
     } else {
         where.enable_set = 'N';
     }
-    return await tServerConf.findAll({
+    var options = {
         where: where,
         order: [ ['application'], ['server_name']],
-        limit: pageSize,
-        offset: pageSize * (curPage - 1)
-    });
+    }
+    if(curPage && pageSize){
+        options.limit = pageSize;
+        options.offset = pageSize * (curPage - 1);
+    }
+    return await tServerConf.findAll(options);
 };
 
 ServerDao.getInactiveServerConfList = async(application, serverName, nodeName, curPage, pageSize) => {
@@ -36,12 +39,15 @@ ServerDao.getInactiveServerConfList = async(application, serverName, nodeName, c
     serverName && (where.server_name = serverName);
     nodeName && (where.node_name = nodeName);
     where.setting_state = 'inactive';
-    return await tServerConf.findAll({
+    var options = {
         where: where,
-        order: [ ['application'], ['server_name'], ['node_name']],
-        limit: pageSize,
-        offset: pageSize * (curPage - 1),
-    });
+        order: [ ['application'], ['server_name']],
+    };
+    if(curPage && pageSize){
+        options.limit = pageSize;
+        options.offset = pageSize * (curPage - 1);
+    }
+    return await tServerConf.findAll(options);
 };
 
 

@@ -14,6 +14,17 @@ ServerController.getServerConfById = async(ctx) => {
     }
 };
 
+ServerController.serverExist = async(ctx) => {
+    var id = ctx.paramsObj.id;
+    try {
+        await ServerService.getServerConfById(id);
+        ctx.makeResObj(200, '', rst);
+    } catch (e) {
+        logger.error('[getServerConfById]', e);
+        ctx.makeErrResObj();
+    }
+};
+
 ServerController.getServerConfList4Tree = async(ctx) => {
     var treeNodeId = ctx.paramsObj.tree_node_id;
     var curPage = parseInt(ctx.paramsObj.cur_page) || 0;
