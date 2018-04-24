@@ -38,8 +38,8 @@ ConfigDao.insertConfigFileHistory = async (params) => {
     return await tConfigHistoryFiles.create(params);
 };
 
-ConfigDao.loadConfigFile = async (id) => {
-    return await tConfigFiles.findAll({
+ConfigDao.getConfigFile = async (id) => {
+    return await tConfigFiles.findOne({
         where : {id : id}
     });
 };
@@ -47,6 +47,9 @@ ConfigDao.loadConfigFile = async (id) => {
 ConfigDao.getNodeConfigFile = async (params) => {
     let whereObj = Object.assign({level:3},filterParams(params));
     return await tConfigFiles.findAll({
+        order : [
+            ['id','desc']
+        ],
         where : whereObj
     });
 };
@@ -64,6 +67,61 @@ ConfigDao.updateConfigFile = async (params) => {
         params,
         {where : {id : params.id}}
     );
+};
+
+ConfigDao.getConfigFileHistory = async (id) => {
+    return await tConfigHistoryFiles.findOne({
+        where : {
+            id  :   id
+        }
+    });
+};
+
+ConfigDao.getConfigFileHistoryList = async (id) => {
+    return await tConfigHistoryFiles.findAll({
+        order : [
+            ['id','desc']
+        ],
+        where : {
+            configId  :   id
+        }
+    });
+};
+
+ConfigDao.insertConfigRef = async (configId, refId) => {
+    return await tConfigReferences.create({
+        config_id   :   configId,
+        reference_id:   refId
+    });
+};
+
+ConfigDao.getConfigRef = async (refId) => {
+    return await tConfigReferences.findOne({
+        where : {id:   refId}
+    });
+};
+
+ConfigDao.deleteConfigRef = async (refId) => {
+    return await tConfigReferences.destroy({
+        where : {id:   refId}
+    });
+};
+
+ConfigDao.getConfigRefByConfigId = async (configId) => {
+    tConfigFiles.hasOne(tConfigReferences,{foreignKey:'reference_id'});
+    tConfigReferences.belongsTo(tConfigFiles,{foreignKey:'reference_id'});
+
+    return await tConfigReferences.findAll({
+        order : [
+            ['id','desc']
+        ],
+        where : {
+            config_id       :   configId
+        },
+        include : {
+            model : tConfigFiles
+        }
+    });
 };
 
 

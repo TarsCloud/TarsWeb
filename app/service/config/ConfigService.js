@@ -7,7 +7,19 @@ const logger = require('../../logger');
 
 const ConfigService = {};
 
-
+/**
+ * 新增配置文件
+ * @param params
+ * # level 服务层级
+ * # application
+ * # server_name
+ * # set_name
+ * # set_area
+ * # set_group
+ * # filename  文件名
+ * # config    配置内容
+ * @return {Promise.<*>}
+ */
 ConfigService.addConfigFile = async(params) => {
     const APP_LEVEL = 1;        // 应用配置，set配置
     const SERVER_LEVEL = 2;     // 服务配置
@@ -45,13 +57,18 @@ ConfigService.addConfigFile = async(params) => {
     return Promise.resolve(configFile);
 };
 
+/**
+ * 删除配置文件
+ * @param id
+ * @return {Promise.<*>}
+ */
 ConfigService.deleteConfigFile = async(id) => {
     let list = await ConfigDao.getConfigRefByRefId(id);
     if(list.length > 0) {
         return Promise.reject('#config.notDelete#');
     }
-    let configFile = await ConfigDao.loadConfigFile(id);
-    configFile = configFile[0].dataValues;
+    let configFile = await ConfigDao.getConfigFile(id);
+    configFile = configFile.dataValues;
     if(configFile.level==2) {
         let nodeConfigFiles = await ConfigDao.getNodeConfigFile({
             server_name:configFile.server_name,
@@ -72,9 +89,17 @@ ConfigService.deleteConfigFile = async(id) => {
     return Promise.resolve(id);
 };
 
+/**
+ * 更新配置文件
+ * @param params
+ * # id
+ * # config
+ * # reason
+ * @return {*}
+ */
 ConfigService.updateConfigFile = async(params) => {
-    let configFile = await ConfigDao.loadConfigFile(params.id);
-    configFile = configFile[0].dataValues;
+    let configFile = await ConfigDao.getConfigFile(params.id);
+    configFile = configFile.dataValues;
     Object.assign(configFile,{
         config  :   params.config,
         reason  :   params.reason,
@@ -93,52 +118,88 @@ ConfigService.updateConfigFile = async(params) => {
 
     ConfigDao.insertConfigFileHistory(history).catch(e => logger.error('[insertConfigFileHistory]:',e));
 
-    return await ConfigDao.loadConfigFile(params.id);
+    return await ConfigDao.getConfigFile(params.id);
 };
 
-ConfigService.loadConfigFile = async(id) => {
-    return await ConfigDao.loadConfigFile(id);
+/**
+ * 获取配置文件
+ * @param id
+ * @return {*}
+ */
+ConfigService.getConfigFile = async(id) => {
+    return await ConfigDao.getConfigFile(id);
 };
 
+/**
+ * 获取服务配置
+ * # application
+ * # server_name
+ * # set_name
+ * # set_area
+ * # set_group
+ * @return {*}
+ */
 ConfigService.getServerConfigFile = async(params) => {
     return await ConfigDao.getServerConfigFile(params);
 };
 
+/**
+ * 获取应用配置
+ * @param application
+ * @return {*}
+ */
 ConfigService.getApplicationConfigFile = async(application) => {
     return await ConfigDao.getApplicationConfigFile(application);
 };
 
+/**
+ * 获取SET配置
+ * @param params
+ * # application
+ * # set_name
+ * # set_area
+ * # set_group
+ * @return {*}
+ */
 ConfigService.getSetConfigFile = async(params)=> {
     return await ConfigDao.getSetConfigFile(params);
 };
 
+/**
+ * 获取节点配置
+ * @param params
+ * # application
+ * # server_name
+ * # set_name
+ * # set_area
+ * # set_group
+ * @return {*}
+ */
 ConfigService.getNodeConfigFile = async(params) => {
     return await ConfigDao.getNodeConfigFile({
         server_name:`${params.application}.${params.server_name}`,
         set_name:params.set_name,
-        set_area:params.set_name,
+        set_area:params.set_area,
         set_group:params.set_group
     });
 };
 
-ConfigService.loadConfigFileHistory = async(id) => {
-    return {
-        "id": "",        // 变更记录ID
-        "config_id": "", // 配置文件ID
-        "reason": "",    // 备注
-        "content": "",   // 变更内容
-        "posttime": "",  // 更新时间
-    }
+/**
+ * 获取配置文件修改记录
+ * @param id
+ * @return {*}
+ */
+ConfigService.getConfigFileHistory = async(id) => {
+    return  await ConfigDao.getConfigFileHistory(id);
 };
 
-ConfigService.getConfigFileHistory = async(config_id) => {
-    return [{
-        "id": "",        // 变更记录ID
-        "config_id": "", // 配置文件ID
-        "reason": "",    // 备注
-        "content": "",   // 变更内容
-        "posttime": "",  // 更新时间
-    }]
+/**
+ * 获取配置文件修改记录列表
+ * @param config_id
+ * @return {*}
+ */
+ConfigService.getConfigFileHistoryList = async(config_id) => {
+    return await ConfigDao.getConfigFileHistoryList(config_id);
 };
 
 /**
@@ -148,15 +209,20 @@ ConfigService.getConfigFileHistory = async(config_id) => {
  * @return {{id: string, config_id: string, reference_id: string}}
  */
 ConfigService.addConfigRef = async(config_id, reference_id) => {
-    return {
-        "id": "",           // 引用ID
-        "config_id": "",    // 配置文件ID
-        "reference_id": ""  // 引用配置文件ID
-    }
+    return await ConfigDao.insertConfigRef(config_id,reference_id);
 };
 
-ConfigService.deleteConfigRef = async(id) => {
-    return [0];
+/**
+ * 删除引用文件
+ * @param reference_id
+ * @return {reference_id}
+ */
+ConfigService.deleteConfigRef = async(reference_id) => {
+    await ConfigDao.deleteConfigRef(reference_id).catch(e => {
+        logger.error('[deleteConfigRef]:',e);
+        return Promise.reject(e)
+    });
+    return Promise.resolve(reference_id);
 };
 
 /**
@@ -165,22 +231,7 @@ ConfigService.deleteConfigRef = async(id) => {
  * @return {*[]}
  */
 ConfigService.getConfigRefByConfigId = async(config_id) => {
-    return [{
-        "id": 0,                // 引用ID
-        "config_id": 0,         // 配置文件ID
-        "reference": {
-            "id": 0,            // 配置文件ID
-            "server_name": "",  // 服务
-            "node_name": "",    // 节点
-            "set_name": "",     // Set名
-            "set_area": "",     // Set取
-            "set_group": "",    // Set组
-            "filename": "",     // 文件名
-            "config": "",       // 文件内容
-            "level": 1,         // 层级，1：应用或Set，2：服务，3：节点
-            "posttime": "",     // 更新时间
-        }
-    }]
+    return await ConfigDao.getConfigRefByConfigId(config_id);
 };
 
 /**
@@ -217,7 +268,8 @@ function addDefaultNodeConfigFile(params) {
                 level       :   3,
                 host        :   params.nodeName
             });
-            const configFile = await ConfigDao.insertConfigFile(newRow);
+            let configFile = await ConfigDao.insertConfigFile(newRow);
+            configFile = configFile.dataValues;
             const history = {
                 configid    :   configFile.id,
                 reason      :   'add config',

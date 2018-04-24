@@ -87,7 +87,7 @@ ConfigController.updateConfigFile = async(ctx) => {
 ConfigController.configFile = async(ctx) => {
     let id = ctx.paramsObj.id;
     try{
-        ctx.makeResObj(200, '', await ConfigService.loadConfigFile(id));
+        ctx.makeResObj(200, '', await ConfigService.getConfigFile(id));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -104,10 +104,10 @@ ConfigController.nodeConfigFileList = async(ctx) => {
     }
 };
 
-ConfigController.loadConfigFileHistory = async(ctx) => {
+ConfigController.getConfigFileHistory = async(ctx) => {
     let id = ctx.paramsObj.id;
     try{
-        ctx.makeResObj(200, '', await ConfigService.loadConfigFileHistory(id));
+        ctx.makeResObj(200, '', await ConfigService.getConfigFileHistory(id));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -117,7 +117,7 @@ ConfigController.loadConfigFileHistory = async(ctx) => {
 ConfigController.configFileHistoryList = async(ctx) => {
     let config_id = ctx.paramsObj.config_id;
     try{
-        ctx.makeResObj(200, '', await ConfigService.getConfigFileHistory(config_id));
+        ctx.makeResObj(200, '', await ConfigService.getConfigFileHistoryList(config_id));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
