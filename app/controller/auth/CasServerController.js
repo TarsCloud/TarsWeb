@@ -3,7 +3,7 @@ var logger = require('../../logger');
 
 function CasServerServer(){
 
-};
+}
 
 //登录页面控制，若已经有登录信息，则直接带票据跳转
 CasServerServer.loginPage = async function(ctx){
@@ -13,12 +13,12 @@ CasServerServer.loginPage = async function(ctx){
     }else{
         await ctx.render('auth/login');
     }
-}
+};
 
 //注册页面控制
 CasServerServer.registerPage = async function(ctx){
     await ctx.render('auth/register');
-}
+};
 
 
 //登出操作，清理session并跳转
@@ -80,6 +80,6 @@ CasServerServer.register = async function(ctx){
         logger.error('[register]', e);
         ctx.makeErrResObj();
     }
-}
+};
 
 module.exports = CasServerServer;
