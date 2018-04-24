@@ -3,6 +3,7 @@
  */
 const CasServerController = require('../controller/auth/CasServerController');
 const DemoController = require('../controller/demo/DemoController');
+const ServerController = require('../controller/server/ServerController');
 const ConfigController = require('../controller/config/ConfigController');
 
 const pageConf = [
@@ -29,6 +30,13 @@ const apiConf = [
     ['get', '/getJson', DemoController.getJson, {id: 'notEmpty;object'}],
     ['get', '/getSqlData', DemoController.getSqlData, {id: 'notEmpty;number'}],
     ['get', '/getRpcData', DemoController.getRpcData, {id: 'notEmpty;number'}],
+
+    // 服务管理接口
+    ['get', '/server', ServerController.getServerConfById, {id: 'notEmpty'}],
+    ['get', '/server_list', ServerController.getServerConfList4Tree, {tree_node_id: 'notEmpty'}],
+    ['get', '/inactive_server_list', ServerController.getInactiveServerConfList],
+    ['get', '/get_realtime_state', ServerController.getRealtimeState, {id: 'notEmpty'}],
+
 
     // 服务配置接口
     ['get', '/config_file_list', ConfigController.configFileList, {level:'number', application:'notEmpty'}],
