@@ -173,9 +173,11 @@ ConfigService.getSetConfigFile = async(params)=> {
  * # set_name
  * # set_area
  * # set_group
+ * # configId
  * @return {*}
  */
 ConfigService.getNodeConfigFile = async(params) => {
+    let
     return await ConfigDao.getNodeConfigFile({
         server_name:`${params.application}.${params.server_name}`,
         set_name:params.set_name,
