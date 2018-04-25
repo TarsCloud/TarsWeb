@@ -17,15 +17,21 @@ module.exports = async(ctx, next) => {
     if (checkInIgnoreList(ctx)) {  //跳过用户配置的不需要验证的url
         await next();
     } else {
-        var ticket;
+        var ticket, user;
         if (ticket = ctx.query[authConf.ticketParamName || 'ticket']) {
-            var user = await getUserInfo(ticket);
+            user = await getUserInfo(ticket);
             if (user) {
-                ctx.cookies.set('ticket', ticket, cookieConfig);
-                ctx.cookies.set('user', user, cookieConfig);
+                await ctx.cookies.set('ticket', ticket, cookieConfig);
+                await ctx.cookies.set('user', user, cookieConfig);
             }
         }
-        if (await checkIsLogin(ctx)) {
+        if(!user){
+            user = ctx.cookies.get('user');
+        }
+        if(!ticket){
+            ticket = ctx.cookies.get('ticket');
+        }
+        if (await checkIsLogin(user, ticket)) {
             ctx.userName = user;
             await next();
         } else {
@@ -50,9 +56,10 @@ function checkInIgnoreList(ctx) {
 }
 
 //检测是否登录
-async function checkIsLogin(ctx) {
-    var user = ctx.cookies && ctx.cookies.get('user');
-    var ticket = ctx.cookies && ctx.cookies.get('ticket');
+async function checkIsLogin(user, ticket) {
+    console.log(user, ticket);
+    // var user = ctx.cookies && ctx.cookies.get('user');
+    // var ticket = ctx.cookies && ctx.cookies.get('ticket');
     if (user !== undefined && ticket !== undefined) {
         if (await validate(user, ticket)) {
             return true;
@@ -83,7 +90,7 @@ async function getUserInfo(ticket) {
                 userInfo = false;
             }
             if(!userInfo)return false;
-            return _.at(userInfo, [authConf.userInfoKey])[0] || false;
+            return _.result(userInfo, authConf.userInfoKey) || false;
         } else {
             return false;
         }
@@ -138,7 +145,7 @@ async function casServerValidate(ticket, user) {
             if(!validateRet)return false;
             var validateMatch = authConf.validateMatch;
             for (var i = 0; i < validateMatch.length; i++) {
-                if (_.at(validateRet, [validateMatch[i][0]])[0] != validateMatch[i][1]) {
+                if (_.result(validateRet, validateMatch[i][0]) != validateMatch[i][1]) {
                     return false;
                 }
             }
