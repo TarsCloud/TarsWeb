@@ -95,9 +95,16 @@ ConfigController.configFile = async(ctx) => {
 };
 
 ConfigController.nodeConfigFileList = async(ctx) => {
-    let params = ctx.paramsObj;
+    let {application, set_name, set_area, set_group, server_name, config_id} = ctx.paramsObj;
     try{
-        ctx.makeResObj(200, '', await ConfigService.getNodeConfigFile(params));
+        ctx.makeResObj(200, '', await ConfigService.getNodeConfigFile({
+            application:application,
+            server_name:server_name,
+            set_name:set_name,
+            set_area:set_area,
+            set_group:set_group,
+            config_id:config_id
+        }));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -105,9 +112,9 @@ ConfigController.nodeConfigFileList = async(ctx) => {
 };
 
 ConfigController.getConfigFileHistory = async(ctx) => {
-    let id = ctx.paramsObj.id;
+    let {id, currPage = 0, pageSize = 0} = ctx.paramsObj;
     try{
-        ctx.makeResObj(200, '', await ConfigService.getConfigFileHistory(id));
+        ctx.makeResObj(200, '', await ConfigService.getConfigFileHistory(id, currPage, pageSize));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());

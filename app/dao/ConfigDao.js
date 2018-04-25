@@ -40,6 +40,7 @@ ConfigDao.insertConfigFileHistory = async (params) => {
 
 ConfigDao.getConfigFile = async (id) => {
     return await tConfigFiles.findOne({
+        raw : true,
         where : {id : id}
     });
 };
@@ -77,15 +78,22 @@ ConfigDao.getConfigFileHistory = async (id) => {
     });
 };
 
-ConfigDao.getConfigFileHistoryList = async (id) => {
-    return await tConfigHistoryFiles.findAll({
+ConfigDao.getConfigFileHistoryList = async (id, curPage, pageSize) => {
+    var opts = {
         order : [
             ['id','desc']
         ],
         where : {
             configId  :   id
         }
-    });
+    };
+    if(curPage && pageSize){
+        Object.assign(opts,{
+            limit: pageSize,
+            offset: pageSize * (curPage - 1)
+        })
+    }
+    return await tConfigHistoryFiles.findAll(opts);
 };
 
 ConfigDao.insertConfigRef = async (configId, refId) => {

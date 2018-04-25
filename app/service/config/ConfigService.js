@@ -3,6 +3,7 @@
  */
 
 const ConfigDao = require('../../dao/ConfigDao');
+const ServerDao = require('../../dao/ServerDao');
 const logger = require('../../logger');
 
 const ConfigService = {};
@@ -68,7 +69,6 @@ ConfigService.deleteConfigFile = async(id) => {
         return Promise.reject('#config.notDelete#');
     }
     let configFile = await ConfigDao.getConfigFile(id);
-    configFile = configFile.dataValues;
     if(configFile.level==2) {
         let nodeConfigFiles = await ConfigDao.getNodeConfigFile({
             server_name:configFile.server_name,
@@ -76,9 +76,9 @@ ConfigService.deleteConfigFile = async(id) => {
             set_area:configFile.set_name,
             set_group:configFile.set_group
         });
-        nodeConfigFiles.filter(function (config) {
+        nodeConfigFiles.filter(config => {
             return config.filename = configFile.filename;
-        }).forEach(function (config) {
+        }).forEach(config => {
             ConfigDao.deleteConfigFile(config.id).catch(e => logger.error('[deleteConfigFile]:',e));
         });
     }
@@ -99,7 +99,6 @@ ConfigService.deleteConfigFile = async(id) => {
  */
 ConfigService.updateConfigFile = async(params) => {
     let configFile = await ConfigDao.getConfigFile(params.id);
-    configFile = configFile.dataValues;
     Object.assign(configFile,{
         config  :   params.config,
         reason  :   params.reason,
@@ -177,13 +176,49 @@ ConfigService.getSetConfigFile = async(params)=> {
  * @return {*}
  */
 ConfigService.getNodeConfigFile = async(params) => {
-    let
-    return await ConfigDao.getNodeConfigFile({
+    const enableSet = params.set_name && params.set_area && params.set_group;
+    const configFile = await ConfigDao.getConfigFile(params.config_id);
+    const nodeConfigFile = await ConfigDao.getNodeConfigFile({
         server_name:`${params.application}.${params.server_name}`,
         set_name:params.set_name,
         set_area:params.set_area,
         set_group:params.set_group
     });
+    let servers = await ServerDao.getServerConf(params.application, params.server_name, enableSet, params.set_name, params.set_area, params.set_group);
+    let list = [];
+    nodeConfigFile.filter( config => {
+        return config.filename = configFile.filename;
+    }).forEach(config => {
+        list.push(`${config.server_name}.${config.set_name || ''}.${config.set_area || ''}.${config.set_group || ''}_${config.host}`);
+    });
+    servers = servers.filter(server => {
+        let key = `${params.application}.${params.server_name}.${params.set_name || ''}.${params.set_area || ''}.${params.set_group || ''}_${server.node_name}`;
+        return !list.includes(key);
+    });
+    for(let i=0,len=servers.length;i<len;i++) {
+        let server = servers[i];
+        let newRow = {
+            server_name     :   `${params.application}.${params.server_name}`,
+            set_name        :   params.set_name,
+            set_area        :   params.set_area,
+            set_group       :   params.set_group,
+            filename        :   configFile.filename,
+            host            :   server.node_name,
+            config          :   '',
+            level           :   3,
+            posttime        :   formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss')
+        };
+        let config = await ConfigDao.insertConfigFile(newRow).catch(e => logger.error('[insertConfigFile]:',e));
+        config = config.get({'plain': true});
+        let history = {
+            configid    :   config.id,
+            reason      :   'add config',
+            content     :   config.config,
+            posttime    :   config.posttime
+        };
+        await ConfigDao.insertConfigFileHistory(history).catch(e => logger.error('[insertConfigFileHistory]:',e));
+    }
+    return await nodeConfigFile;
 };
 
 /**
@@ -198,10 +233,12 @@ ConfigService.getConfigFileHistory = async(id) => {
 /**
  * 获取配置文件修改记录列表
  * @param config_id
+ * @param curPage
+ * @param pageSize
  * @return {*}
  */
-ConfigService.getConfigFileHistoryList = async(config_id) => {
-    return await ConfigDao.getConfigFileHistoryList(config_id);
+ConfigService.getConfigFileHistoryList = async(config_id, curPage, pageSize) => {
+    return await ConfigDao.getConfigFileHistoryList(config_id, curPage, pageSize);
 };
 
 /**
@@ -284,9 +321,35 @@ function addDefaultNodeConfigFile(params) {
     };
 
     // 传了文件名时
-    function addConfigFileByFileName() {
-
-    }
+    const addConfigFileByFileName = async function () {
+        const [application, serverName] = params.server_name.split('.');
+        const enableSet = params.set_name && params.set_area && params.set_group;
+        const servers = await ServerDao.getServerConf(application, serverName, enableSet, params.set_name, params.set_area, params.set_group);
+        for(let i=0,len=servers.length;i<len;i++) {
+            let server = servers[i];
+            let newRow = Object.assign({},{
+                server_name :   params.server_name,
+                set_name    :   params.set_name,
+                set_area    :   params.set_area,
+                set_group   :   params.set_group,
+                filename    :   params.filename,
+                config      :   '',
+                host        :   server.node_name,
+                posttime    :   formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss'),
+                lastuser    :   config.lastuser,
+                level       :   3,
+            });
+            let configFile = await ConfigDao.insertConfigFile(newRow);
+            configFile = configFile.dataValues;
+            const history = {
+                configid    :   configFile.id,
+                reason      :   'add config',
+                content     :   configFile.config,
+                posttime    :   configFile.posttime
+            };
+            ConfigDao.insertConfigFileHistory(history).catch(e => logger.error('[insertConfigFileHistory]:',e));
+        }
+    };
 
 
 
