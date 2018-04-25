@@ -27,15 +27,19 @@ const apiConf = [
     // ['get', '/auth/validate', CasServerController.validate],
 
     //Demo
-    ['get', '/getJson', DemoController.getJson, {id: 'notEmpty;object'}],
+    ['get', '/getJson', DemoController.getJson, {id: 'notEmpty;object'}, ['id']],
     ['get', '/getSqlData', DemoController.getSqlData, {id: 'notEmpty;number'}],
     ['get', '/getRpcData', DemoController.getRpcData, {id: 'notEmpty;number'}],
 
     // 服务管理接口
     ['get', '/server', ServerController.getServerConfById, {id: 'notEmpty'}],
+    ['get', '/server_exist', ServerController.serverExist, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty'}],
     ['get', '/server_list', ServerController.getServerConfList4Tree, {tree_node_id: 'notEmpty'}],
     ['get', '/inactive_server_list', ServerController.getInactiveServerConfList],
     ['get', '/get_realtime_state', ServerController.getRealtimeState, {id: 'notEmpty'}],
+    ['post', '/update_server', ServerController.updateServerConf, {id: 'notEmpty'},
+        ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path', 'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile']],
+
 
 
     // 服务配置接口

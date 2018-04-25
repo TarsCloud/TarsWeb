@@ -34,25 +34,31 @@ const sequelize = new Sequelize(database, user, password, {
         max: pool.max || 10,
         min: pool.min || 0,
         idle: pool.idle || 10000
-    }
+    },
+    timezone: (()=> {
+        let timezone = String(0 - new Date().getTimezoneOffset() / 60);
+        return '+' + (timezone.length < 2 ? ('0' + timezone) : timezone) + ':00';
+    })()  //获取当前时区并做转换
 });
 
 // 测试是否连接成功
-(async function(){
+(async function () {
     try {
         var connect = await sequelize.authenticate();
         console.log('Mysql connection has been established successfully.');
 
-    } catch(err) {
+    } catch (err) {
         console.error('Mysql connection err', err)
     }
 })();
 
 var dbModels = fs.readdirSync(__dirname + "/models");
 var dbObj = {};
-dbModels.forEach(function(dbModel){
+dbModels.forEach(function (dbModel) {
     var tableName = dbModel.replace(/\.js$/g, '');
-    dbObj[tableName.replace(/_(\w)/g, function(a, b){return b.toUpperCase();})] = sequelize.import(__dirname + "/models/" + tableName);
+    dbObj[tableName.replace(/_(\w)/g, function (a, b) {
+        return b.toUpperCase();
+    })] = sequelize.import(__dirname + "/models/" + tableName);
 });
 
 const Db = Object.assign({
