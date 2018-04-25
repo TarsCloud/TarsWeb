@@ -10,7 +10,8 @@ const languageMidware = require('./languageMidware');
 const paramsDealMidware = async (ctx, next) =>{
     ctx.paramsObj = _.extend(ctx.query || {}, ctx.request.body || {});
     ctx.makeResObj = (retCode, errMsg, result) => {
-        ctx.body = {data: result || {}, ret_code: retCode, err_msg:errMsg};
+        result = result == undefined ? {} : result;
+        ctx.body = {data: result, ret_code: retCode, err_msg:errMsg};
     };
     ctx.makeErrResObj = () => {
         ctx.body = {data: {}, ret_code:500, err_msg: '系统内部错误'};

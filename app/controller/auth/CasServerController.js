@@ -56,7 +56,7 @@ CasServerServer.login = async function(ctx){
 // };
 //
 // CasServerServer.validate = async function(ctx){
-//     ctx.makeResObj(200, '', {correct: true});
+//     ctx.makeResObj(200, '', {isLogin: true});
 // }
 
 //注册接口

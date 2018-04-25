@@ -83,7 +83,7 @@ async function getUserInfo(ticket) {
                 userInfo = false;
             }
             if(!userInfo)return false;
-            return getObjectValue(userInfo, authConf.userInfoKey) || false;
+            return _.at(userInfo, [authConf.userInfoKey])[0] || false;
         } else {
             return false;
         }
@@ -138,7 +138,7 @@ async function casServerValidate(ticket, user) {
             if(!validateRet)return false;
             var validateMatch = authConf.validateMatch;
             for (var i = 0; i < validateMatch.length; i++) {
-                if (getObjectValue(validateRet, validateMatch[i][0]) != validateMatch[i][1]) {
+                if (_.at(validateRet, [validateMatch[i][0]])[0] != validateMatch[i][1]) {
                     return false;
                 }
             }
@@ -148,19 +148,4 @@ async function casServerValidate(ticket, user) {
         logger.error(e);
         return false;
     }
-}
-
-//依据字符串表示的字段深度，从obj中取出相应的值
-function getObjectValue(obj, keyStr) {
-    if (!_.isObject(obj)) {
-        return undefined;
-    }
-    var keys = keyStr.split('.');
-    _.each(keys, (key) => {
-        obj = obj[key];
-        if (!_.isObject(obj)) {
-            return false;
-        }
-    });
-    return obj;
 }
