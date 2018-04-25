@@ -57,7 +57,6 @@ function checkInIgnoreList(ctx) {
 
 //检测是否登录
 async function checkIsLogin(user, ticket) {
-    console.log(user, ticket);
     // var user = ctx.cookies && ctx.cookies.get('user');
     // var ticket = ctx.cookies && ctx.cookies.get('ticket');
     if (user !== undefined && ticket !== undefined) {

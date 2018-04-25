@@ -14,11 +14,11 @@ const {paramsDealMidware, paramsCheckMidware} = require('../midware/paramsMidwar
 //获取路由
 const getRouter = (router, routerConf) =>{
     routerConf.forEach(function(conf){
-        var [method, url, controller, checkRule] = conf;
+        var [method, url, controller, checkRule, validParams] = conf;
 
         //前置参数合并校验相关中间件
-        router[method](url, paramsDealMidware);    //上下文入参出参处理中间件
-        router[method](url, async (ctx, next) => {return paramsCheckMidware(ctx, next, checkRule);});   //参数校验中间件
+        router[method](url, paramsDealMidware(validParams));    //上下文入参出参处理中间件
+        router[method](url, paramsCheckMidware(checkRule));   //参数校验中间件
         router[method](url, noCacheMidware);       //禁用缓存中间件
 
         //业务逻辑控制器
