@@ -6,8 +6,11 @@ const {tConfigFiles,tConfigHistoryFiles,tConfigReferences} = require('./db');
 
 let ConfigDao = {};
 
+const configFileAttr = ['id','server_name','node_name','set_name','set_area','set_group','filename','config','level','posttime','lastuser'];
+
 ConfigDao.getApplicationConfigFile = async (application) => {
     return await tConfigFiles.findAll({
+        attributes : configFileAttr,
         where : {
             level       :   1,
             server_name :   application
@@ -19,6 +22,7 @@ ConfigDao.getSetConfigFile = async (params) => {
     let whereObj = Object.assign({level:1},params);
 
     return await tConfigFiles.findAll({
+        attributes : configFileAttr,
         where : whereObj
     });
 };
@@ -26,6 +30,7 @@ ConfigDao.getSetConfigFile = async (params) => {
 ConfigDao.getServerConfigFile = async (params) => {
     let whereObj = Object.assign({level:2},filterParams(params));
     return await tConfigFiles.findAll({
+        attributes : configFileAttr,
         where : whereObj
     });
 };
@@ -40,6 +45,7 @@ ConfigDao.insertConfigFileHistory = async (params) => {
 
 ConfigDao.getConfigFile = async (id) => {
     return await tConfigFiles.findOne({
+        attributes : configFileAttr,
         raw : true,
         where : {id : id}
     });
@@ -48,6 +54,7 @@ ConfigDao.getConfigFile = async (id) => {
 ConfigDao.getNodeConfigFile = async (params) => {
     let whereObj = Object.assign({level:3},filterParams(params));
     return await tConfigFiles.findAll({
+        attributes : configFileAttr,
         order : [
             ['id','desc']
         ],
@@ -59,7 +66,7 @@ ConfigDao.deleteConfigFile = async (id) => {
     return await tConfigFiles.destroy({where: {id:id}});
 };
 
-ConfigDao.getConfigRefByRefId = async (id) => {
+ConfigDao.getConfigRefList = async (id) => {
     return await tConfigReferences.findAll({where: {reference_id:id}});
 };
 
@@ -72,6 +79,8 @@ ConfigDao.updateConfigFile = async (params) => {
 
 ConfigDao.getConfigFileHistory = async (id) => {
     return await tConfigHistoryFiles.findOne({
+        attributes : ['id','config_id','reason','content','posttime'],
+        raw : true,
         where : {
             id  :   id
         }
@@ -83,6 +92,7 @@ ConfigDao.getConfigFileHistoryList = async (id, curPage, pageSize) => {
         order : [
             ['id','desc']
         ],
+        attributes : ['id','config_id','reason','content','posttime'],
         where : {
             configId  :   id
         }
@@ -105,6 +115,7 @@ ConfigDao.insertConfigRef = async (configId, refId) => {
 
 ConfigDao.getConfigRef = async (refId) => {
     return await tConfigReferences.findOne({
+        raw : true,
         where : {id:   refId}
     });
 };
@@ -128,7 +139,7 @@ ConfigDao.getConfigRefByConfigId = async (configId) => {
         },
         include : {
             model : tConfigFiles
-        }
+        },
     });
 };
 

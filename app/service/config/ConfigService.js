@@ -64,7 +64,7 @@ ConfigService.addConfigFile = async(params) => {
  * @return {Promise.<*>}
  */
 ConfigService.deleteConfigFile = async(id) => {
-    let list = await ConfigDao.getConfigRefByRefId(id);
+    let list = await ConfigDao.getConfigRefList(id);
     if(list.length > 0) {
         return Promise.reject('#config.notDelete#');
     }
