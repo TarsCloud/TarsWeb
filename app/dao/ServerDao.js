@@ -1,4 +1,4 @@
-const {tServerConf} = require('./db');
+const {tServerConf} = require('./db').db_tars;
 
 const ServerDao = {};
 

@@ -8,63 +8,67 @@ const Mysql = require('mysql');
 
 const fs = require('fs-extra');
 
-const {
-    database,
-    host,
-    user,
-    password,
-    charset,
-    pool,
-} = require('../../../config/webConf').dbConf;
+const _ = require('lodash');
+
+const dbConfs = require('../../../config/webConf').dbConfs;
 
 const logger = require('../../logger');
 
-//初始化sequelize
-const sequelize = new Sequelize(database, user, password, {
-    host,
-    dialect: 'mysql',
-    dialectOptions: {
-        charset: charset
-    },
-    logging(sqlText){
-        console.log(sqlText);
-        logger.sql(sqlText);
-    },
-    pool: {
-        max: pool.max || 10,
-        min: pool.min || 0,
-        idle: pool.idle || 10000
-    },
-    timezone: (()=> {
-        let timezone = String(0 - new Date().getTimezoneOffset() / 60);
-        return '+' + (timezone.length < 2 ? ('0' + timezone) : timezone) + ':00';
-    })()  //获取当前时区并做转换
+let Db = {};
+
+dbConfs.forEach((dbConf)=>{
+    let {
+        database,
+        host,
+        user,
+        password,
+        charset,
+        pool,
+    } = dbConf;
+
+    //初始化sequelize
+    const sequelize = new Sequelize(database, user, password, {
+        host,
+        dialect: 'mysql',
+        dialectOptions: {
+            charset: charset
+        },
+        logging(sqlText){
+            console.log(sqlText);
+            logger.sql(sqlText);
+        },
+        pool: {
+            max: pool.max || 10,
+            min: pool.min || 0,
+            idle: pool.idle || 10000
+        },
+        timezone: (()=> {
+            let timezone = String(0 - new Date().getTimezoneOffset() / 60);
+            return '+' + (timezone.length < 2 ? ('0' + timezone) : timezone) + ':00';
+        })()  //获取当前时区并做转换
+    });
+
+
+    // 测试是否连接成功
+    (async function () {
+        try {
+            let connect = await sequelize.authenticate();
+            console.log('Mysql connection has been established successfully.');
+
+        } catch (err) {
+            console.error('Mysql connection err', err)
+        }
+    })();
+
+    let tableObj = {};
+    let dbModelsPath = __dirname + '/' + database  + '_models';
+    let dbModels = fs.readdirSync(dbModelsPath);
+    dbModels.forEach(function (dbModel) {
+        let tableName = dbModel.replace(/\.js$/g, '');
+        tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
+    });
+    Db[database] = tableObj;
+
 });
-
-// 测试是否连接成功
-(async function () {
-    try {
-        var connect = await sequelize.authenticate();
-        console.log('Mysql connection has been established successfully.');
-
-    } catch (err) {
-        console.error('Mysql connection err', err)
-    }
-})();
-
-var dbModels = fs.readdirSync(__dirname + "/models");
-var dbObj = {};
-dbModels.forEach(function (dbModel) {
-    var tableName = dbModel.replace(/\.js$/g, '');
-    dbObj[tableName.replace(/_(\w)/g, function (a, b) {
-        return b.toUpperCase();
-    })] = sequelize.import(__dirname + "/models/" + tableName);
-});
-
-const Db = Object.assign({
-    sequelize,
-    Op: Sequelize.Op,
-    escape: Mysql.escape,
-}, dbObj);
 
 module.exports = Db;

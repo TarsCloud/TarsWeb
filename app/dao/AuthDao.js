@@ -1,6 +1,6 @@
 const {
     tUserInfo
-} = require('./db');
+} = require('./db').db_tars_web;
 const logger = require('../logger');
 
 var AuthDao = function(){}

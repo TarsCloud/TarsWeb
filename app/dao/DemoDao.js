@@ -1,6 +1,6 @@
 const {
     tAdapterConf
-} = require('./db');
+} = require('./db').db_tars;
 const logger = require('../logger');
 
 var DemoDao = function(){}

@@ -9,7 +9,7 @@ const serverNotifyStruct = {
     thread_id: '',
     command: '',
     result: ''
-}
+};
 
 NotifyController.getServerNotifyList = async(ctx) => {
     let treeNodeId = ctx.paramsObj.tree_node_id;

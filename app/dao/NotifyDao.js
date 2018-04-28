@@ -1,4 +1,4 @@
-const {tServerNotifys} = require('./db');
+const {tServerNotifys} = require('./db').db_tars;
 
 const NotifyDao = {};
 

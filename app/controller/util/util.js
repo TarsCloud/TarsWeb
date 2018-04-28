@@ -4,17 +4,17 @@ const util = {};
 
 //根据相应格式和方法过滤单一对象
 util._viewFilterObj = (obj, filterSturct) => {
-    if(obj.hasOwnProperty('dataValues')){
+    if (obj.hasOwnProperty('dataValues')) {
         obj = obj.dataValues;
     }
-    if(!_.isPlainObject(obj)){
+    if (!_.isPlainObject(obj)) {
         return obj;
     }
     var newObj = {};
-    _.each(filterSturct, function(v, key){
-        if(v && _.isFunction(v)){
+    _.each(filterSturct, (v, key)=> {
+        if (v && _.isFunction(v)) {
             newObj[key] = v(obj[key]);
-        }else{
+        } else {
             newObj[key] = obj[key];
         }
     });
@@ -23,16 +23,16 @@ util._viewFilterObj = (obj, filterSturct) => {
 
 //根据相应格式和方法过滤结果集，可过滤对象数组，或单一对象
 util.viewFilter = (data, filterSturct) => {
-    if(!data || !filterSturct){
+    if (!data || !filterSturct) {
         return data;
     }
     var newData;
-    if(_.isArray(data)){
+    if (_.isArray(data)) {
         newData = []
-        data.forEach(function(obj){
+        data.forEach((obj)=> {
             newData.push(util._viewFilterObj(obj, filterSturct));
         });
-    }else if(data.hasOwnProperty('dataValues') || _.isPlainObject(data)){
+    } else if (data.hasOwnProperty('dataValues') || _.isPlainObject(data)) {
         newData = util._viewFilterObj(data, filterSturct);
     }
     return newData;
