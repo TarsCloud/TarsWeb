@@ -4,11 +4,13 @@ const stack = require('callsite');
 const moment = require('moment');
 const webConf = require('../../config/webConf').webConf;
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 
 var loggerPath = webConf.loggerPath || path.join(__dirname, '../../log');
 
-var timeStamp = () => moment().format('YYYY-MM-DD HH:mm:ss.SSS')
+fs.ensureDirSync(loggerPath);
+
+var timeStamp = () => moment().format('YYYY-MM-DD HH:mm:ss.SSS');
 
 var normalLogger = new winston.Logger({
     level: 'info',

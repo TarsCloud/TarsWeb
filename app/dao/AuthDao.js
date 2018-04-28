@@ -1,7 +1,7 @@
 const {
     tUserInfo
-} = require('../db');
-const logger = require('../../logger');
+} = require('./db');
+const logger = require('../logger');
 
 var AuthDao = function(){}
 

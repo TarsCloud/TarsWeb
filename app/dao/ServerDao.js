@@ -2,12 +2,8 @@ const {tServerConf} = require('./db');
 
 const ServerDao = {};
 
-ServerDao.serverConfAttributes = ['id','application','server_name','node_name','server_type','enable_set','set_name','set_area','set_group','setting_state','present_state','bak_flag','template_name','profile','async_thread_num','base_path','exe_path','start_script_path','stop_script_path','monitor_script_path','patch_time','patch_version','process_id','posttime'];
-
-
 ServerDao.getServerConfById = async(id) => {
     return await tServerConf.findAll({
-        attributes: ServerDao.serverConfAttributes,
         where: {
             id: id
         }
@@ -28,7 +24,6 @@ ServerDao.getServerConf = async(params) => {
         }
     }
     let options = {
-        attributes: ServerDao.serverConfAttributes,
         where: where,
         order: [['application'], ['server_name']]
     };
@@ -46,7 +41,6 @@ ServerDao.getInactiveServerConfList = async(application, serverName, nodeName, c
     nodeName && (where.node_name = nodeName);
     where.setting_state = 'inactive';
     let options = {
-        attributes: ServerDao.serverConfAttributes,
         where: where,
         order: [['application'], ['server_name']]
     };
@@ -58,7 +52,7 @@ ServerDao.getInactiveServerConfList = async(application, serverName, nodeName, c
 };
 
 ServerDao.updateServerConf = async(params) => {
-    var updateOptions = {
+    let updateOptions = {
         bak_flag: params.bak_flag,
         template_name: params.template_name,
         server_type: params.server_type,
@@ -76,6 +70,6 @@ ServerDao.updateServerConf = async(params) => {
         posttime: params.posttime
     };
     return await tServerConf.update(updateOptions, {where: {id: params.id}});
-}
+};
 
 module.exports = ServerDao;

@@ -1,4 +1,4 @@
-var AuthDao = require('../../dao/auth/AuthDao');
+var AuthDao = require('../../dao/AuthDao');
 var logger = require('../../logger');
 
 function CasServerServer(){

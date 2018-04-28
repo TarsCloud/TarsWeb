@@ -7,6 +7,7 @@ NotifyDao.getServerNotifyList = async(serverIds, curPage, pageSize) => {
     let where = {};
     where.server_id = serverIds || [];
     let options = {
+        raw: true,
         where: where,
         order: [['notifytime', 'DESC']]
     };
