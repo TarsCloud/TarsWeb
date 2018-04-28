@@ -4,6 +4,7 @@
 const CasServerController = require('../controller/auth/CasServerController');
 const DemoController = require('../controller/demo/DemoController');
 const ServerController = require('../controller/server/ServerController');
+const NotifyController = require('../controller/notify/NotifyController');
 const ConfigController = require('../controller/config/ConfigController');
 
 const pageConf = [
@@ -39,6 +40,9 @@ const apiConf = [
     ['get', '/get_realtime_state', ServerController.getRealtimeState, {id: 'notEmpty'}],
     ['post', '/update_server', ServerController.updateServerConf, {id: 'notEmpty'},
         ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path', 'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile']],
+
+    //notify日志接口
+    ['get', '/server_notify_list', NotifyController.getServerNotifyList, {tree_node_id: 'notEmpty'}],
 
 
 

@@ -3,11 +3,19 @@ const ServerService = require('../../service/server/ServerService');
 
 const ServerController = {};
 
+ServerController.serverListKey = ['id','application','server_name','node_name','server_type','enable_set','set_name','set_area','set_group','setting_state','present_state','bak_flag','template_name','profile','async_thread_num','base_path','exe_path','start_script_path','stop_script_path','monitor_script_path','patch_time','patch_version','process_id','posttime'];
+
+
 ServerController.getServerConfById = async(ctx) => {
-    var id = ctx.paramsObj.id;
+    let id = ctx.paramsObj.id;
     try {
-        var rst = await ServerService.getServerConfById(id);
-        ctx.makeResObj(200, '', rst);
+        let rst = await ServerService.getServerConfById(id);
+        if(rst.length > 0){
+            ctx.makeResObj(200, '', rst[0]);
+        }else{
+            logger.error('[getServerConfById]', '未查询id相应的服务');
+            ctx.makeErrResObj();
+        }
     } catch (e) {
         logger.error('[getServerConfById]', e);
         ctx.makeErrResObj();
@@ -15,22 +23,24 @@ ServerController.getServerConfById = async(ctx) => {
 };
 
 ServerController.serverExist = async(ctx) => {
-    var id = ctx.paramsObj.id;
+    let application = ctx.paramsObj.application;
+    let serverName = ctx.paramsObj.server_name;
+    let nodeName = ctx.paramsObj.node_name;
     try {
-        await ServerService.getServerConfById(id);
-        ctx.makeResObj(200, '', rst);
+        // ctx.makeResObj(200, '', {isExist: (await ServerService.getServerConf(application, serverName, nodeName)).length > 0});
+        ctx.makeResObj(200, '', (await ServerService.getServerConf(application, serverName, nodeName)).length > 0);
     } catch (e) {
-        logger.error('[getServerConfById]', e);
+        logger.error('[serverExist]', e);
         ctx.makeErrResObj();
     }
 };
 
 ServerController.getServerConfList4Tree = async(ctx) => {
-    var treeNodeId = ctx.paramsObj.tree_node_id;
-    var curPage = parseInt(ctx.paramsObj.cur_page) || 0;
-    var pageSize = parseInt(ctx.paramsObj.page_size) || 0;
+    let treeNodeId = ctx.paramsObj.tree_node_id;
+    let curPage = parseInt(ctx.paramsObj.cur_page) || 0;
+    let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
     try {
-        var rst = await ServerService.getServerConfList4Tree(treeNodeId, curPage, pageSize);
+        let rst = await ServerService.getServerConfList4Tree(treeNodeId, curPage, pageSize);
         ctx.makeResObj(200, '', rst);
     } catch (e) {
         logger.error('[getServerConfList4Tree]', e);
@@ -39,35 +49,55 @@ ServerController.getServerConfList4Tree = async(ctx) => {
 };
 
 ServerController.getInactiveServerConfList = async(ctx) => {
-    var application = ctx.paramsObj.application || '';
-    var serverName = ctx.paramsObj.server_name || '';
-    var nodeName = ctx.paramsObj.node_name || '';
-    var curPage = parseInt(ctx.paramsObj.cur_page) || 0;
-    var pageSize = parseInt(ctx.paramsObj.page_size) || 0;
+    let application = ctx.paramsObj.application || '';
+    let serverName = ctx.paramsObj.server_name || '';
+    let nodeName = ctx.paramsObj.node_name || '';
+    let curPage = parseInt(ctx.paramsObj.cur_page) || 0;
+    let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
     try {
-        var rst = await ServerService.getInactiveServerConfList(application, serverName, nodeName, curPage, pageSize);
+        let rst = await ServerService.getInactiveServerConfList(application, serverName, nodeName, curPage, pageSize);
         ctx.makeResObj(200, '', rst);
     } catch (e) {
-        logger.error('[getServerConfList4Tree]', e);
+        logger.error('[getInactiveServerConfList]', e);
         ctx.makeErrResObj();
     }
 };
 
 ServerController.getRealtimeState = async(ctx)=> {
-    var id = ctx.paramsObj.id;
+    let id = ctx.paramsObj.id;
     try {
-        var rst = await ServerService.getServerConfById(id);
-        if(rst.length){
+        let rst = await ServerService.getServerConfById(id);
+        if (rst.length) {
             ctx.makeResObj(200, '', {realtime_state: rst[0].getDataValue('present_state')});
-        }else{
+        } else {
             logger.warn('[getRealtimeState]', '未查询id相应的服务');
             ctx.makeErrResObj();
         }
     } catch (e) {
-        logger.error('[getServerConfById]', e);
+        logger.error('[getRealtimeState]', e);
+        ctx.makeErrResObj();
+    }
+};
+
+ServerController.updateServerConf = async(ctx) =>{
+    let updateServer = ctx.paramsObj;
+    let server = await ServerService.getServerConfById(updateServer.id);
+    if (server.length) {
+        server = server[0].dataValues;
+        Object.assign(server, updateServer);
+        server.bak_flag = server.isBak? 1 : 0;
+        server.enable_set = server.enable_set? 'Y' : 'N';
+        server.posttime = new Date();
+        try{
+            ctx.makeResObj(200, '', (await ServerService.updateServerConf(server)));
+        }catch(e){
+            logger.error('[updateServerConf]', e);
+            ctx.makeErrResObj();
+        }
+    } else {
+        logger.warn('[updateServerConf]', '未查询id相应的服务');
         ctx.makeErrResObj();
     }
 }
-
 
 module.exports = ServerController

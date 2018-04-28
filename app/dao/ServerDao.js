@@ -1,54 +1,81 @@
 const {tServerConf} = require('./db');
 
-let ServerDao = {};
+const ServerDao = {};
+
+ServerDao.serverConfAttributes = ['id','application','server_name','node_name','server_type','enable_set','set_name','set_area','set_group','setting_state','present_state','bak_flag','template_name','profile','async_thread_num','base_path','exe_path','start_script_path','stop_script_path','monitor_script_path','patch_time','patch_version','process_id','posttime'];
+
 
 ServerDao.getServerConfById = async(id) => {
     return await tServerConf.findAll({
+        attributes: ServerDao.serverConfAttributes,
         where: {
             id: id
         }
     });
 };
 
-ServerDao.getServerConf = async(application, serverName, enableSet, setName, setArea, setGroup, curPage, pageSize) => {
-    var where = {};
-    application && (where.application = application);
-    serverName && (where.server_name = serverName);
-    if (enableSet && enableSet === 'Y') {
-        where.enable_set = 'Y';
-        setName && (where.set_name = setName);
-        setArea && (where.set_area = setArea);
-        setGroup && (where.set_group = setGroup);
-    } else {
-        where.enable_set = 'N';
+ServerDao.getServerConf = async(params) => {
+    let where = {};
+    params.application && (where.application = params.application);
+    params.serverName && (where.server_name = params.serverName);
+    params.nodeName && (where.node_name = params.nodeName);
+    if (params.enableSet) {
+        where.enable_set = params.enableSet;
+        if (params.enableSet == 'Y') {
+            params.setName && (where.set_name = params.setName);
+            params.setArea && (where.set_area = params.setArea);
+            params.setGroup && (where.set_group = params.setGroup);
+        }
     }
-    var options = {
+    let options = {
+        attributes: ServerDao.serverConfAttributes,
         where: where,
-        order: [ ['application'], ['server_name']],
-    }
-    if(curPage && pageSize){
-        options.limit = pageSize;
-        options.offset = pageSize * (curPage - 1);
+        order: [['application'], ['server_name']]
+    };
+    if (params.curPage && params.pageSize) {
+        options.limit = params.pageSize;
+        options.offset = params.pageSize * (params.curPage - 1);
     }
     return await tServerConf.findAll(options);
 };
 
 ServerDao.getInactiveServerConfList = async(application, serverName, nodeName, curPage, pageSize) => {
-    var where = {};
+    let where = {};
     application && (where.application = application);
     serverName && (where.server_name = serverName);
     nodeName && (where.node_name = nodeName);
     where.setting_state = 'inactive';
-    var options = {
+    let options = {
+        attributes: ServerDao.serverConfAttributes,
         where: where,
-        order: [ ['application'], ['server_name']],
+        order: [['application'], ['server_name']]
     };
-    if(curPage && pageSize){
+    if (curPage && pageSize) {
         options.limit = pageSize;
         options.offset = pageSize * (curPage - 1);
     }
     return await tServerConf.findAll(options);
 };
 
+ServerDao.updateServerConf = async(params) => {
+    var updateOptions = {
+        bak_flag: params.bak_flag,
+        template_name: params.template_name,
+        server_type: params.server_type,
+        enable_set: params.enable_set,
+        set_name: params.set_name,
+        set_area: params.set_area,
+        set_group: params.set_group,
+        async_thread_num: params.async_thread_num,
+        base_path: params.base_path,
+        exe_path: params.exe_path,
+        start_script_path: params.start_script_path,
+        stop_script_path: params.stop_script_path,
+        monitor_script_path: params.monitor_script_path,
+        profile: params.profile,
+        posttime: params.posttime
+    };
+    return await tServerConf.update(updateOptions, {where: {id: params.id}});
+}
 
 module.exports = ServerDao;
