@@ -184,7 +184,14 @@ ConfigService.getNodeConfigFile = async(params) => {
         set_area:params.set_area,
         set_group:params.set_group
     });
-    let servers = await ServerDao.getServerConf(params.application, params.server_name, enableSet, params.set_name, params.set_area, params.set_group);
+    let servers = await ServerDao.getServerConf({
+        params:params.application,
+        serverName:params.server_name,
+        enableSet:enableSet,
+        setName:params.set_name,
+        setArea:params.set_area,
+        setGroup:params.set_group
+    });
     let list = [];
     nodeConfigFile.filter( config => {
         return config.filename = configFile.filename;
@@ -270,7 +277,28 @@ ConfigService.deleteConfigRef = async(reference_id) => {
  * @return {*[]}
  */
 ConfigService.getConfigRefByConfigId = async(config_id) => {
-    return await ConfigDao.getConfigRefByConfigId(config_id);
+    let list = await ConfigDao.getConfigRefByConfigId(config_id);
+    let refList = [];
+    list.forEach(configFile => {
+        let obj = {
+            id :    configFile.reference_id,
+            config_id : configFile.config_id,
+            reference : {
+                id : configFile.t_config_file.id,
+                server_name : configFile.t_config_file.server_name,
+                node_name   : configFile.t_config_file.host,
+                set_name    : configFile.t_config_file.set_name,
+                set_area    : configFile.t_config_file.set_area,
+                set_group   : configFile.t_config_file.set_group,
+                filename    : configFile.t_config_file.filename,
+                config      : configFile.t_config_file.config,
+                level       : configFile.t_config_file.level,
+                posttime    : formatToStr(new Date(configFile.t_config_file.posttime), 'yyyy-mm-dd hh:mm:ss')
+            }
+        };
+        refList.push(obj);
+    });
+    return refList;
 };
 
 /**
@@ -324,7 +352,14 @@ function addDefaultNodeConfigFile(params) {
     const addConfigFileByFileName = async function () {
         const [application, serverName] = params.server_name.split('.');
         const enableSet = params.set_name && params.set_area && params.set_group;
-        const servers = await ServerDao.getServerConf(application, serverName, enableSet, params.set_name, params.set_area, params.set_group);
+        const servers = await ServerDao.getServerConf({
+            application :   application,
+            serverName  :   serverName,
+            enableSet   :   enableSet,
+            setName     :   params.set_name,
+            setArea     :   params.set_area,
+            setGroup    :   params.set_group
+        });
         for(let i=0,len=servers.length;i<len;i++) {
             let server = servers[i];
             let newRow = Object.assign({},{

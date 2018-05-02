@@ -5,13 +5,21 @@
 const logger = require('../../logger');
 const ConfigService = require('../../service/config/ConfigService');
 
+const util = require('../util/util');
+
 const ConfigController = {};
+
+const configListStruct = {id:'',server_name:'',set_name:'',set_area:'',host:{key:'node_name'},set_group:'',filename:'',config:'',level:'',posttime:{formatter:util.formatTimeStamp},lastuser:''};
+
+
 
 ConfigController.index = async(ctx) => {
     await ctx.render('index', {
         title: 'tars title#common.servername#'
     });
 };
+
+
 
 
 ConfigController.configFileList = async(ctx) => {
@@ -47,7 +55,7 @@ ConfigController.configFileList = async(ctx) => {
                 list = await ConfigService.getServerConfigFile({server_name:`${application}.${server_name}`, set_name:set_name, set_area:set_area, set_group:set_group});
                 break;
         }
-        ctx.makeResObj(200, '', list);
+        ctx.makeResObj(200, '', util.viewFilter(list,configListStruct));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -57,7 +65,8 @@ ConfigController.configFileList = async(ctx) => {
 ConfigController.addConfigFile = async(ctx) => {
     let params = ctx.paramsObj;
     try{
-        ctx.makeResObj(200, '', await ConfigService.addConfigFile(params));
+        let ret = await ConfigService.addConfigFile(params);
+        ctx.makeResObj(200, '', util.viewFilter(ret,configListStruct));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -77,7 +86,8 @@ ConfigController.deleteConfigFile = async(ctx) => {
 ConfigController.updateConfigFile = async(ctx) => {
     let params = ctx.paramsObj;
     try{
-        ctx.makeResObj(200, '', await ConfigService.updateConfigFile(params));
+        let ret = await ConfigService.updateConfigFile(params);
+        ctx.makeResObj(200, '', util.viewFilter(ret,configListStruct));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -87,7 +97,8 @@ ConfigController.updateConfigFile = async(ctx) => {
 ConfigController.configFile = async(ctx) => {
     let id = ctx.paramsObj.id;
     try{
-        ctx.makeResObj(200, '', await ConfigService.getConfigFile(id));
+        let ret = await ConfigService.getConfigFile(id);
+        ctx.makeResObj(200, '', util.viewFilter(ret,configListStruct));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -97,14 +108,15 @@ ConfigController.configFile = async(ctx) => {
 ConfigController.nodeConfigFileList = async(ctx) => {
     let {application, set_name, set_area, set_group, server_name, config_id} = ctx.paramsObj;
     try{
-        ctx.makeResObj(200, '', await ConfigService.getNodeConfigFile({
+        let list = await ConfigService.getNodeConfigFile({
             application:application,
             server_name:server_name,
             set_name:set_name,
             set_area:set_area,
             set_group:set_group,
             config_id:config_id
-        }));
+        });
+        ctx.makeResObj(200, '', util.viewFilter(list,configListStruct));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -114,7 +126,8 @@ ConfigController.nodeConfigFileList = async(ctx) => {
 ConfigController.getConfigFileHistory = async(ctx) => {
     let {id, currPage = 0, pageSize = 0} = ctx.paramsObj;
     try{
-        ctx.makeResObj(200, '', await ConfigService.getConfigFileHistory(id, currPage, pageSize));
+        let ret = await ConfigService.getConfigFileHistory(id, currPage, pageSize);
+        ctx.makeResObj(200, '', util.viewFilter(ret,{id:'',config_id:'',reason:'',content:'',posttime:{formatter:util.formatTimeStamp}}));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -124,7 +137,8 @@ ConfigController.getConfigFileHistory = async(ctx) => {
 ConfigController.configFileHistoryList = async(ctx) => {
     let config_id = ctx.paramsObj.config_id;
     try{
-        ctx.makeResObj(200, '', await ConfigService.getConfigFileHistoryList(config_id));
+        let list = await ConfigService.getConfigFileHistoryList(config_id);
+        ctx.makeResObj(200, '', util.viewFilter(list,{id:'',config_id:'',reason:'',content:'',posttime:{formatter:util.formatTimeStamp}}));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -134,7 +148,8 @@ ConfigController.configFileHistoryList = async(ctx) => {
 ConfigController.addConfigRef = async(ctx) => {
     let {config_id, reference_id} = ctx.paramsObj;
     try{
-        ctx.makeResObj(200, '', await ConfigService.addConfigRef(config_id, reference_id));
+        let ret = await ConfigService.addConfigRef(config_id, reference_id);
+        ctx.makeResObj(200, '', util.viewFilter(ret,{id:'',config_id:'',reference_id:''}));
     }catch(e){
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
