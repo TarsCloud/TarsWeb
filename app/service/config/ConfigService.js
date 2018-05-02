@@ -8,6 +8,10 @@ const logger = require('../../logger');
 
 const ConfigService = {};
 
+ConfigService.getUnusedApplicationConfigFile = async(application, configId) => {
+    return await ConfigDao.getUnusedApplicationConfigFile(application, configId);
+};
+
 /**
  * 新增配置文件
  * @param params

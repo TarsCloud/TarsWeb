@@ -19,7 +19,15 @@ ConfigController.index = async(ctx) => {
     });
 };
 
-
+ConfigController.getUnusedApplicationConfigFile = async(ctx) => {
+    let {config_id, application} = ctx.paramsObj;
+    try{
+        ctx.makeResObj(200, '', await ConfigService.getUnusedApplicationConfigFile(application, config_id));
+    }catch(e){
+        logger.error(e);
+        ctx.makeErrResObj(500, e);
+    }
+};
 
 
 ConfigController.configFileList = async(ctx) => {
@@ -58,7 +66,7 @@ ConfigController.configFileList = async(ctx) => {
         ctx.makeResObj(200, '', util.viewFilter(list,configListStruct));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -69,7 +77,7 @@ ConfigController.addConfigFile = async(ctx) => {
         ctx.makeResObj(200, '', util.viewFilter(ret,configListStruct));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -79,7 +87,7 @@ ConfigController.deleteConfigFile = async(ctx) => {
         ctx.makeResObj(200, '', await ConfigService.deleteConfigFile(id));
     }catch(e) {
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -90,7 +98,7 @@ ConfigController.updateConfigFile = async(ctx) => {
         ctx.makeResObj(200, '', util.viewFilter(ret,configListStruct));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -101,7 +109,7 @@ ConfigController.configFile = async(ctx) => {
         ctx.makeResObj(200, '', util.viewFilter(ret,configListStruct));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -119,7 +127,7 @@ ConfigController.nodeConfigFileList = async(ctx) => {
         ctx.makeResObj(200, '', util.viewFilter(list,configListStruct));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -130,7 +138,7 @@ ConfigController.getConfigFileHistory = async(ctx) => {
         ctx.makeResObj(200, '', util.viewFilter(ret,{id:'',config_id:'',reason:'',content:'',posttime:{formatter:util.formatTimeStamp}}));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -141,7 +149,7 @@ ConfigController.configFileHistoryList = async(ctx) => {
         ctx.makeResObj(200, '', util.viewFilter(list,{id:'',config_id:'',reason:'',content:'',posttime:{formatter:util.formatTimeStamp}}));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -152,7 +160,7 @@ ConfigController.addConfigRef = async(ctx) => {
         ctx.makeResObj(200, '', util.viewFilter(ret,{id:'',config_id:'',reference_id:''}));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -162,7 +170,7 @@ ConfigController.deleteConfigRef = async(ctx) => {
         ctx.makeResObj(200, '', await ConfigService.deleteConfigRef(id));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -172,7 +180,7 @@ ConfigController.configRefList = async(ctx) => {
         ctx.makeResObj(200, '', await ConfigService.getConfigRefByConfigId(config_id));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -182,7 +190,7 @@ ConfigController.mergedNodeConfig = async(ctx) => {
         //ctx.makeResObj(200, '', await ConfigService.getConfigRefByConfigId(id));
     }catch(e){
         logger.error(e);
-        ctx.makeErrResObj(500, e.toString());
+        ctx.makeErrResObj(500, e);
     }
 };
 
@@ -193,7 +201,7 @@ ConfigController.pushConfigFile = async(ctx) => {
         //ctx.makeResObj(200, '', await ConfigService.getConfigRefByConfigId(id));
     }catch(e){
         logger.error(e);
-        ctx.makeResObj(500, e.toString());
+        ctx.makeResObj(500, e);
     }
 };
 

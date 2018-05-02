@@ -6,7 +6,26 @@ const {tConfigFiles,tConfigHistoryFiles,tConfigReferences} = require('./db').db_
 
 let ConfigDao = {};
 
-const configFileAttr = [];
+ConfigDao.getUnusedApplicationConfigFile = async(application, configId) => {
+    let referenceIds = await tConfigReferences.findAll({
+        raw : true,
+        attributes : ['reference_id'],
+        where : {config_id : configId}
+    });
+    let arr = [];
+    referenceIds.forEach(function (ref) {
+        arr.push(ref.reference_id);
+    });
+    return await tConfigFiles.findAll({
+        where : {
+            level : 1,
+            server_name : application,
+            id : {
+                '$notIn' : arr
+            }
+        }
+    });
+};
 
 ConfigDao.getApplicationConfigFile = async (application) => {
     return await tConfigFiles.findAll({
@@ -18,7 +37,7 @@ ConfigDao.getApplicationConfigFile = async (application) => {
 };
 
 ConfigDao.getSetConfigFile = async (params) => {
-    let whereObj = Object.assign({level:1},params);
+    let whereObj = Object.assign({level:1},filterParams(params));
 
     return await tConfigFiles.findAll({
         where : whereObj
