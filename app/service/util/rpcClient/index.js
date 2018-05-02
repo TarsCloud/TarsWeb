@@ -1,7 +1,9 @@
 var client  = require("@tars/rpc/protal.js").client;
-var TarsProxy = require("./NodeTarsProxy");
+var TarsProxy = require("./rpcProxy/NodeTarsProxy");
+var AdminRegProxy = require("./rpcProxy/AdminRegProxy");
+var ConfigFProxy = require("./rpcProxy/ConfigFProxy");
 
-//…˙≥…RPC¥˙¿Ì∑Ω∑®
+//ÁîüÊàêRPC‰ª£ÁêÜÊñπÊ≥ï
 var RPCClientPrx = (tafClient, proxy, moduleName, interfaceName, servantName, setInfo) => {
     if(tafClient && tafClient.constructor!=client.constructor){
         setInfo = servantName;
@@ -36,6 +38,7 @@ var RPCClientPrx = (tafClient, proxy, moduleName, interfaceName, servantName, se
                         })();
                         return rst;
                     }catch(e){
+                        console.log(e);
                         if(e.response){
                             throw new Error(e.response && e.response.error && e.response.error.message);
                         }else{
@@ -50,7 +53,7 @@ var RPCClientPrx = (tafClient, proxy, moduleName, interfaceName, servantName, se
     return rpcClient;
 };
 
-//…˙≥…rpcΩ·ππÃÂ
+//ÁîüÊàêrpcÁªìÊûÑ‰Ωì
 var RPCStruct = function(proxy, moduleName){
     var module = proxy[moduleName];
     var rpcStruct = {};
@@ -68,11 +71,20 @@ var RPCStruct = function(proxy, moduleName){
     return rpcStruct;
 };
 
-// ‰≥ˆTARS¥˙¿Ì
+//ËæìÂá∫TARS RPC‰ª£ÁêÜÂíåÁªÑ‰ª∂
 module.exports = {
-    tarsPrx : RPCClientPrx(TarsProxy, 'tars', 'NodeTars', 'TARS.NodeTarsServer.NodeTarsObj@tcp -h 127.0.0.1 -p 14002 -t 10000'),
-    tarsStruct : RPCStruct(TarsProxy, 'tars')
+    // tarsPrx : RPCClientPrx(TarsProxy, 'tars', 'NodeTars', 'TARS.NodeTarsServer.NodeTarsObj@tcp -h 127.0.0.1 -p 14002 -t 10000'),
+    // tarsStruct : RPCStruct(TarsProxy, 'tars'),
+
+    // adminRegPrx : RPCClientPrx(AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj@tcp -h 127.0.0.1 -p 14002 -t 10000'),
+    // adminRegStruct : RPCStruct(AdminRegProxy, 'tars'),
+
+    adminRegPrx : RPCClientPrx(AdminRegProxy, 'tars', 'AdminReg', 'TARS.NodeTarsServer.AdminReg@tcp -h 127.0.0.1 -p 14004 -t 10000'),
+    adminRegStruct : RPCStruct(AdminRegProxy, 'tars'),
+
+    // configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj@tcp -h 127.0.0.1 -p 14002 -t 10000'),
+    // configFStruct : RPCStruct(ConfigFProxy, 'tars'),
+
+    configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'TARS.NodeTarsServer.Config@tcp -h 127.0.0.1 -p 14003 -t 10000'),
+    configFStruct : RPCStruct(ConfigFProxy, 'tars'),
 };
-
-
-

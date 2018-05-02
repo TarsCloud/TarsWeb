@@ -7,7 +7,7 @@ const DemoDao = require('../../dao/DemoDao');
 
 const logger = require('../../logger');
 
-const {tarsPrx, tarsStruct} = require('../util/rpcClient/index');
+const {configFPrx, configFStruct, adminRegPrx, adminRegStruct} = require('../util/rpcClient');
 const tarsStream = require('@tars/stream');
 
 function Demo(){
@@ -44,9 +44,17 @@ Demo.getRpcData = async () => {
     // var result = await tarsPrx.getUsrName('denisfan');
     // console.log(result);
     try{
-        var userT = new tarsStruct.User_t();
-        userT.name = 'helloworld';
-        var result = await tarsPrx.getall(userT);
+        // var userT = new tarsStruct.User_t();
+        // userT.name = 'helloworld';
+        // var result = await tarsPrx.getall(userT);
+        // console.log(result);
+
+        var result = await configFPrx.loadConfig('a', 'b', 'c');
+        console.log(result);
+
+        var result = await adminRegPrx.pingNode('1.1.1.1');
+        console.log(result);
+
         return result;
     }catch(e){
         logger.error(e);
