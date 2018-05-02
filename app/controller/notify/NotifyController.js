@@ -4,7 +4,7 @@ const NotifyController = {};
 const util = require('../util/util');
 
 const serverNotifyStruct = {
-    notifytime: util.formatTimeStamp,
+    notifytime: {formatter: util.formatTimeStamp},
     server_id: '',
     thread_id: '',
     command: '',

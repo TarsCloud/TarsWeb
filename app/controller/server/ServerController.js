@@ -26,7 +26,7 @@ const serverConfStruct = {
     patch_time: util.formatTimeStamp,
     patch_version: "",
     process_id: '',
-    posttime: util.formatTimeStamp
+    posttime: {formatter: util.formatTimeStamp}
 };
 
 const ServerController = {};

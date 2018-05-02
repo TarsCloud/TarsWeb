@@ -12,10 +12,12 @@ util._viewFilterObj = (obj, filterSturct) => {
     }
     var newObj = {};
     _.each(filterSturct, (v, key)=> {
-        if (v && _.isFunction(v)) {
-            newObj[key] = v(obj[key]);
+        let newKey = v.key || key;
+        let formatter = v.formatter || '';
+        if (formatter && _.isFunction(formatter)) {
+            newObj[newKey] = formatter(obj[key]);
         } else {
-            newObj[key] = obj[key];
+            newObj[newKey] = obj[key];
         }
     });
     return newObj;
