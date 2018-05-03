@@ -1,12 +1,11 @@
-const Koa = require('koa')
-const app = new Koa()
+const Koa = require('koa');
+const app = new Koa();
 const path = require('path');
-const views = require('koa-views')
+const views = require('koa-views');
 // const staticCache = require('koa-static-cache')
-const static = require('koa-static')
-const json = require('koa-json')
-const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')
+const json = require('koa-json');
+const onerror = require('koa-onerror');
+const bodyparser = require('koa-bodyparser');
 const {pageRouter, apiRouter, staticRouter} = require('./app/router');
 const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
@@ -15,7 +14,7 @@ const helmet = require("koa-helmet");
 const loginMidware = require('./app/midware/loginMidware');
 
 // error handler
-onerror(app)
+onerror(app);
 
 //安全防护
 app.use(helmet());
@@ -30,20 +29,13 @@ app.use(bodyparser());
 //前置中间件
 preMidware.forEach((midware)=>{app.use(midware)});
 
-//资源文件设置7天缓存
-// app.use(staticCache(path.join(__dirname, 'public'), {
-//     maxAge: 7 * 24 * 60 * 60
-// }));
-
-// app.use(static(path.join(__dirname, 'public')));
-
 //权限校验
 app.use(loginMidware);
 
 //激活router
-app.use(pageRouter.routes(), pageRouter.allowedMethods())
-app.use(apiRouter.routes(), apiRouter.allowedMethods())
-app.use(staticRouter.routes(), staticRouter.allowedMethods())
+app.use(pageRouter.routes(), pageRouter.allowedMethods());
+app.use(apiRouter.routes(), apiRouter.allowedMethods());
+app.use(staticRouter.routes(), staticRouter.allowedMethods());
 
 
 //后置中间件
