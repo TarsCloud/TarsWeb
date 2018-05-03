@@ -7,13 +7,12 @@ const _ = require('lodash');
 const noCacheMidware = require('../midware/noCacheMidware');
 const staticMidware = require('../midware/staticMidware');
 const {paramsDealMidware, paramsCheckMidware} = require('../midware/paramsMidware');
-
-
+const path = require('path');
 
 
 //获取路由
-const getRouter = (router, routerConf) =>{
-    routerConf.forEach(function(conf){
+const getRouter = (router, routerConf) => {
+    routerConf.forEach(function (conf) {
         var [method, url, controller, checkRule, validParams] = conf;
 
         //前置参数合并校验相关中间件
@@ -42,8 +41,8 @@ getRouter(apiRouter, apiConf);
 
 //静态资源类型路由
 const staticRouter = new Router();
-staticRouter.get('/css/*', staticMidware('../public', true, {maxage: 7 * 24 * 60 * 60 * 1000}));
-staticRouter.get('/js/*', staticMidware('../public', true, {maxage: 7 * 24 * 60 * 60 * 1000}));
-staticRouter.get('/img/*', staticMidware('../public',false, {maxage: 7 * 24 * 60 * 60 * 1000}));
+staticRouter.get('/css/*', staticMidware(path.join(__dirname, '../../public'), true, {maxage: 7 * 24 * 60 * 60 * 1000}));
+staticRouter.get('/js/*', staticMidware(path.join(__dirname, '../../public'), true, {maxage: 7 * 24 * 60 * 60 * 1000}));
+staticRouter.get('/img/*', staticMidware(path.join(__dirname, '../../public'), false, {maxage: 7 * 24 * 60 * 60 * 1000}));
 
 module.exports = {pageRouter, apiRouter, staticRouter};
