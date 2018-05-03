@@ -43,7 +43,7 @@ const paramsCheckMidware = (checkRule) =>{
                 _.each(rules.split(';'), (rule) =>{
                     if(rule === 'notEmpty' && validator.isEmpty(value)){
                         hasError = true;
-                        ctx.makeResObj(500, paramName + '#common.notempty#');
+                        ctx.makeResObj(500, paramName + '#common.notEmpty#');
                         return false;
                     }else if(rule === 'number' && !validator.isFloat(value)){
                         hasError = true;

@@ -6,6 +6,7 @@ const DemoController = require('../controller/demo/DemoController');
 const ServerController = require('../controller/server/ServerController');
 const NotifyController = require('../controller/notify/NotifyController');
 const ConfigController = require('../controller/config/ConfigController');
+const AdapterController = require('../controller/adapter/AdapterController');
 
 const pageConf = [
     //登录注册页面
@@ -38,12 +39,19 @@ const apiConf = [
     ['get', '/server_list', ServerController.getServerConfList4Tree, {tree_node_id: 'notEmpty'}],
     ['get', '/inactive_server_list', ServerController.getInactiveServerConfList],
     ['get', '/get_realtime_state', ServerController.getRealtimeState, {id: 'notEmpty'}],
+    ['get', '/load_server', ServerController.loadServer, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty'}],
     ['post', '/update_server', ServerController.updateServerConf, {id: 'notEmpty'},
         ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path', 'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile']],
 
     //notify日志接口
     ['get', '/server_notify_list', NotifyController.getServerNotifyList, {tree_node_id: 'notEmpty'}],
 
+    //Adapter接口
+    ['get', '/adapter_conf', AdapterController.getAdapterConfById, {id: 'notEmpty'}],
+    ['get', '/adapter_conf_list', AdapterController.getAdapterConfListByServerConfId, {id: 'notEmpty'}],
+    ['post', '/update_adapter_conf', AdapterController.updateAdapterConf, {id: 'notEmpty', servant: 'notEmpty'},
+     ['id', 'thread_num', 'endpoint', 'max_connections', 'allow_ip', 'servant', 'queuecap', 'queuetimeout', 'protocol', 'handlegroup']
+    ],
 
 
     // 服务配置接口

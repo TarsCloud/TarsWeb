@@ -3,7 +3,7 @@ const {tServerConf} = require('./db').db_tars;
 const ServerDao = {};
 
 ServerDao.getServerConfById = async(id) => {
-    return await tServerConf.findAll({
+    return await tServerConf.findOne({
         where: {
             id: id
         }

@@ -34,7 +34,8 @@ preMidware.forEach((midware)=>{app.use(midware)});
 // app.use(staticCache(path.join(__dirname, 'public'), {
 //     maxAge: 7 * 24 * 60 * 60
 // }));
-app.use(static(path.join(__dirname, 'public')));
+
+// app.use(static(path.join(__dirname, 'public')));
 
 //权限校验
 app.use(loginMidware);

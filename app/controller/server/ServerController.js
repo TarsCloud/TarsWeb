@@ -1,6 +1,7 @@
 const logger = require('../../logger');
 const ServerService = require('../../service/server/ServerService');
-
+const AdminService = require('../../service/admin/AdminService');
+const _ = require('lodash');
 const util = require('../util/util');
 const serverConfStruct = {
     id: '',
@@ -33,11 +34,11 @@ const ServerController = {};
 ServerController.getServerConfById = async(ctx) => {
     let id = ctx.paramsObj.id;
     try {
-        let rst = await ServerService.getServerConfById(id);
-        if(rst.length > 0){
-            ctx.makeResObj(200, '', util.viewFilter(rst[0], serverConfStruct));
-        }else{
-            logger.error('[getServerConfById]', '未查询id相应的服务');
+        var rst = await ServerService.getServerConfById(id);
+        if (!_.isEmpty(rst)) {
+            ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
+        } else {
+            logger.error('[getServerConfById]', '未查询到id=' + id + '相应的服务');
             ctx.makeErrResObj();
         }
     } catch (e) {
@@ -90,10 +91,10 @@ ServerController.getRealtimeState = async(ctx)=> {
     let id = ctx.paramsObj.id;
     try {
         let rst = await ServerService.getServerConfById(id);
-        if (rst.length) {
-            ctx.makeResObj(200, '', {realtime_state: rst[0]['present_state']});
+        if (!_.isEmpty(rst)) {
+            ctx.makeResObj(200, '', {realtime_state: rst['present_state']});
         } else {
-            logger.warn('[getRealtimeState]', '未查询id相应的服务');
+            logger.error('[getRealtimeState]', '未查询到id=' + id + '相应的服务');
             ctx.makeErrResObj();
         }
     } catch (e) {
@@ -102,26 +103,40 @@ ServerController.getRealtimeState = async(ctx)=> {
     }
 };
 
-ServerController.updateServerConf = async(ctx) =>{
+ServerController.updateServerConf = async(ctx) => {
     let updateServer = ctx.paramsObj;
     let server = await ServerService.getServerConfById(updateServer.id);
-    if (server.length) {
-        server = server[0];
+    if (!_.isEmpty(server)) {
         Object.assign(server, updateServer);
-        server.bak_flag = server.isBak? 1 : 0;
-        server.enable_set = server.enable_set? 'Y' : 'N';
+        server.bak_flag = server.isBak ? 1 : 0;
+        server.enable_set = server.enable_set ? 'Y' : 'N';
         server.posttime = new Date();
-        try{
+        try {
             let rst = await ServerService.updateServerConf(server);
-            ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
-        }catch(e){
+            ctx.makeResObj(200, '', util.viewFilter(await ServerService.getServerConfById(updateServer.id), serverConfStruct));
+        } catch (e) {
             logger.error('[updateServerConf]', e);
             ctx.makeErrResObj();
         }
     } else {
-        logger.warn('[updateServerConf]', '未查询id相应的服务');
+        logger.error('[updateServerConf]', '未查询到id=' + updateServer.id + '相应的服务');
         ctx.makeErrResObj();
     }
+};
+
+ServerController.loadServer = async(ctx) => {
+    let application = ctx.paramsObj.application;
+    let serverName = ctx.paramsObj.server_name;
+    let nodeName = ctx.paramsObj.node_name;
+    try {
+        let ret = await AdminService.loadServer(application, serverName, nodeName);
+        ctx.makeResObj(200, '', ret);
+    } catch (e) {
+        logger.error('[loadServer]', e);
+        ctx.makeErrResObj();
+    }
+
+
 }
 
 module.exports = ServerController

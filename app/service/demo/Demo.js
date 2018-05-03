@@ -55,6 +55,9 @@ Demo.getRpcData = async () => {
         var result = await adminRegPrx.pingNode('1.1.1.1');
         console.log(result);
 
+        var result = await configFPrx.ListConfig('app1', 'server1');
+        console.log(result);
+        
         return result;
     }catch(e){
         logger.error(e);

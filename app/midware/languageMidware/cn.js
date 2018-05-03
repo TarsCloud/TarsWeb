@@ -1,5 +1,5 @@
 module.exports = {
-    'common.notempty': '不能为空',
+    'common.notEmpty': '不能为空',
     'common.needNumber': '必须为数字',
     'common.needArray': '必须为数组',
     'common.needObject': '必须为对象',
