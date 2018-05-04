@@ -5,7 +5,6 @@ const tarsStream = require('@tars/stream');
 const AdminService = {};
 
 AdminService.loadServer = async (application, server, nodeName) => {
-    console.log(application);
     let ret = await adminRegPrx.loadServer(application, server, nodeName);
     if(ret.__return === 0){
         return ret.result;
