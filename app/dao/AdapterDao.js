@@ -20,6 +20,16 @@ AdapterDao.getAdapterConf = async(application, serverName, nodeName) => {
     });
 };
 
+AdapterDao.insertAdapterConf = async(params) => {
+    return await tAdapterConf.create(params);
+};
+
+AdapterDao.deleteAdapterConf = async(id) => {
+    return await tAdapterConf.destroy({
+        where: {id: id}
+    });
+};
+
 AdapterDao.updateAdapterConf = async(params) => {
     return await tAdapterConf.update(params, {where: {id: params.id}});
 };

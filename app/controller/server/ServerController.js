@@ -31,6 +31,8 @@ const serverConfStruct = {
 };
 
 const ServerController = {};
+
+
 ServerController.getServerConfById = async(ctx) => {
     let id = ctx.paramsObj.id;
     try {
