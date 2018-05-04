@@ -133,6 +133,11 @@ ConfigService.getConfigFile = async(id) => {
     return await ConfigDao.getConfigFile(id);
 };
 
+
+ConfigService.getConfigFileList = async(ids) => {
+    return await ConfigDao.getConfigFileList(ids);
+};
+
 /**
  * 获取服务配置
  * # application

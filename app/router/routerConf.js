@@ -66,9 +66,9 @@ const apiConf = [
     ['get', '/config_file_history_list', ConfigController.configFileHistoryList,  {config_id: 'number'}],
     ['get', '/add_config_ref', ConfigController.addConfigRef,  {config_id: 'number',reference_id:'number'}],
     ['get', '/delete_config_ref', ConfigController.deleteConfigRef,  {id: 'number'}],
-    ['get', '/config_ref_list', ConfigController.configRefList,  {config_id: 'number'}]
-    //['get', '/merged_node_config', ConfigController.configRefList,  {id: 'notEmpty;number'}],
-    //['get', '/push_config_file', ConfigController.configRefList,  {ids: 'notEmpty;string'}],
+    ['get', '/config_ref_list', ConfigController.configRefList,  {config_id: 'number'}],
+    ['get', '/merged_node_config', ConfigController.mergedNodeConfig,  {id: 'notEmpty;number'}],
+    ['get', '/push_config_file', ConfigController.pushConfigFile,  {ids: 'notEmpty;string'}],
 ]
 
 module.exports = {pageConf, apiConf};

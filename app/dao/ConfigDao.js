@@ -17,6 +17,7 @@ ConfigDao.getUnusedApplicationConfigFile = async(application, configId) => {
         arr.push(ref.reference_id);
     });
     return await tConfigFiles.findAll({
+        raw : true,
         where : {
             level : 1,
             server_name : application,
@@ -63,6 +64,16 @@ ConfigDao.getConfigFile = async (id) => {
     return await tConfigFiles.findOne({
         raw : true,
         where : {id : id}
+    });
+};
+
+ConfigDao.getConfigFileList = async (ids) => {
+    return await tConfigFiles.findAll({
+        where : {
+            id : {
+                '$in' : ids
+            }
+        }
     });
 };
 
