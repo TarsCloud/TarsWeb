@@ -12,13 +12,15 @@ util._viewFilterObj = (obj, filterSturct) => {
     }
     var newObj = {};
     _.each(filterSturct, (v, key)=> {
-        v = v || {};
-        let newKey = v.key || key;
-        let formatter = v.formatter || '';
-        if (formatter && _.isFunction(formatter)) {
-            newObj[newKey] = formatter(obj[key]);
-        } else {
-            newObj[newKey] = obj[key];
+        if(obj[key] !== undefined){
+            v = v || {};
+            let newKey = v.key || key;
+            let formatter = v.formatter || '';
+            if (formatter && _.isFunction(formatter)) {
+                newObj[newKey] = formatter(obj[key]);
+            } else {
+                newObj[newKey] = obj[key];
+            }
         }
     });
     return newObj;

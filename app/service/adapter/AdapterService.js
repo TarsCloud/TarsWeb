@@ -20,9 +20,19 @@ AdapterService.getAdapterConfList = async(serverConfId) => {
     }
 };
 
+// 新增adapter
+AdapterService.addAdapterConf = async(params) => {
+    return await AdapterDao.insertAdapterConf(params);
+};
+
+//删除adapter
+AdapterService.deleteAdapterConf = async(id) =>{
+    return await AdapterDao.deleteAdapterConf(id);
+};
+
 // 更新adapter
 AdapterService.updateAdapterConf = async(params) => {
-    return AdapterDao.updateAdapterConf(params);
+    return await AdapterDao.updateAdapterConf(params);
 };
 
 

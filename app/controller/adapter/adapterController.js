@@ -24,12 +24,6 @@ const adapterConfStruct = {
 const AdapterController = {};
 
 AdapterController.getAdapterConfById = async(ctx) => {
-    var req = ctx.request;
-    console.log(req.headers['x-forwarded-for'] ||
-            req.ip ||
-            req.connection.remoteAddress ||
-            req.socket.remoteAddress ||
-            req.connection.socket.remoteAddress);
     let id = ctx.paramsObj.id;
     try {
         var rst = await AdapterService.getAdapterConfById(id);
@@ -56,6 +50,31 @@ AdapterController.getAdapterConfListByServerConfId = async(ctx) => {
     }
 };
 
+AdapterController.addAdapterConf = async(ctx) => {
+    let addAdapter = ctx.paramsObj;
+    try {
+        addAdapter.adapter_name = addAdapter.servant + 'Adapter';
+        addAdapter.posttime = new Date();
+        let rst = await AdapterService.addAdapterConf(addAdapter);
+        ctx.makeResObj(200, '', util.viewFilter(rst, adapterConfStruct));
+    } catch (e) {
+        logger.error('[addAdapterConf]', e);
+        ctx.makeErrResObj();
+    }
+};
+
+AdapterController.deleteAdapterConf = async(ctx) => {
+    let id = ctx.paramsObj.id;
+    try {
+        await AdapterService.deleteAdapterConf(id);
+        ctx.makeResObj(200, '', id);
+    } catch (e) {
+        logger.error('[addAdapterConf]', e);
+        ctx.makeErrResObj();
+    }
+};
+
+
 AdapterController.updateAdapterConf = async(ctx) => {
     let updateAdapter = ctx.paramsObj;
     try {
@@ -74,5 +93,6 @@ AdapterController.updateAdapterConf = async(ctx) => {
         ctx.makeErrResObj();
     }
 };
+
 
 module.exports = AdapterController;

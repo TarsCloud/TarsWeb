@@ -27,7 +27,9 @@ app.use(views(__dirname + '/views', {
 app.use(bodyparser());
 
 //前置中间件
-preMidware.forEach((midware)=>{app.use(midware)});
+preMidware.forEach((midware)=>{
+    app.use(midware);
+});
 
 //权限校验
 app.use(loginMidware);
@@ -39,6 +41,8 @@ app.use(staticRouter.routes(), staticRouter.allowedMethods());
 
 
 //后置中间件
-postMidware.forEach((midware)=>{app.use(midware)});
+postMidware.forEach((midware)=>{
+    app.use(midware);
+});
 
 module.exports = app;
