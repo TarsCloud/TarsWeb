@@ -7,6 +7,8 @@ const ServerController = require('../controller/server/ServerController');
 const NotifyController = require('../controller/notify/NotifyController');
 const ConfigController = require('../controller/config/ConfigController');
 const AdapterController = require('../controller/adapter/AdapterController');
+const ExpandServerController = require('../controller/expand/ExpandServerController');
+const DeployServerController = require('../controller/deploy/DeployServerController');
 
 const pageConf = [
     //登录注册页面
@@ -55,6 +57,12 @@ const apiConf = [
     ['get', '/delete_adapter_conf', AdapterController.deleteAdapterConf, {id: 'notEmpty'}],
     ['post', '/update_adapter_conf', AdapterController.updateAdapterConf, {id: 'notEmpty', servant: 'notEmpty'},
      ['id', 'thread_num', 'endpoint', 'max_connections', 'allow_ip', 'servant', 'queuecap', 'queuetimeout', 'protocol', 'handlegroup']
+    ],
+
+    //上线和扩容接口
+    ['post', '/deploy_server', DeployServerController.deployServer],
+    ['post', '/expand_server_preview', ExpandServerController.expandServerPreview, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', expand_nodes: 'notEmpty'},
+        ['application', 'server_name', 'set', 'node_name', 'expand_nodes', 'enable_set', 'set_name', 'set_area', 'set_group', 'copy_node_config']
     ],
 
 
