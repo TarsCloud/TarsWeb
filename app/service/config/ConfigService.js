@@ -56,7 +56,7 @@ ConfigService.addConfigFile = async(params) => {
 
     // insert default node config
     if(paramsObj.level == 2) {
-        addDefaultNodeConfigFile(configFile);
+        ConfigService.addDefaultNodeConfigFile(configFile);
     }
 
     return Promise.resolve(configFile);
@@ -131,6 +131,11 @@ ConfigService.updateConfigFile = async(params) => {
  */
 ConfigService.getConfigFile = async(id) => {
     return await ConfigDao.getConfigFile(id);
+};
+
+
+ConfigService.getConfigFileList = async(ids) => {
+    return await ConfigDao.getConfigFileList(ids);
 };
 
 /**
@@ -325,10 +330,10 @@ function formatToStr (date, format){
     }
 }
 
-function addDefaultNodeConfigFile(params) {
+ConfigService.addDefaultNodeConfigFile = (params) => {
 
     // 传了节点时
-    const addConfigFileByNodeName = async function() {
+    const addConfigFileByNodeName = async ()=> {
         const configs = await ConfigDao.getServerConfigFile({server_name:params.server_name, set_name:params.set_name, set_area:params.set_area, set_group:params.set_group});
         for(let i = 0,len=configs.length;i<len;i++) {
             let config = configs[i];
@@ -353,7 +358,7 @@ function addDefaultNodeConfigFile(params) {
     };
 
     // 传了文件名时
-    const addConfigFileByFileName = async function () {
+    const addConfigFileByFileName = async () =>{
         const [application, serverName] = params.server_name.split('.');
         const enableSet = params.set_name && params.set_area && params.set_group;
         const servers = await ServerDao.getServerConf({
