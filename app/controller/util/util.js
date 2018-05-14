@@ -48,7 +48,38 @@ util.formatTimeStamp = (timeStamp) => {
     return moment(timeStamp).format('YYYY-MM-DD HH:mm:ss');
 };
 
+util.getUUID = () => {
+
+    var o, random = Math.random(), date = new Date(), ms, fmt = 'yyyyMMddHHmmss', k;
+    random = ('00000' + random).replace(/\./g, '');
+    random = random.substr(random.length - 5);
+
+    o = {
+        "M+": date.getMonth() + 1,
+        "d+": date.getDate(),
+        "H+": date.getHours(),
+        "m+": date.getMinutes(),
+        "s+": date.getSeconds(),
+        "q+": Math.floor((date.getMonth() + 3) / 3),
+        "S": date.getMilliseconds()
+    };
+
+    if (/(y+)/.test(fmt)){
+        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+    for (k in o){
+        if (new RegExp("(" + k + ")").test(fmt)){
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+    }
+
+    ms = "00" + date.getMilliseconds();
+    ms = ms.substr(ms.length - 3);
+    return fmt + ms + random;
+};
+
 module.exports = {
     viewFilter: util.viewFilter,
-    formatTimeStamp: util.formatTimeStamp
+    formatTimeStamp: util.formatTimeStamp,
+    getUUID: util.getUUID
 };

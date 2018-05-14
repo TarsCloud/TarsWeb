@@ -47,4 +47,22 @@ AdminService.doCommand = async (targets, command) => {
     return rets;
 };
 
+AdminService.getTaskRsp = async (taskNo) => {
+    let ret = await adminRegPrx.getTaskRsp(taskNo);
+    if(ret.__return == 0 ){
+        return ret.result;
+    }else {
+        throw new Error(ret.__return);
+    }
+};
+
+AdminService.addTask = async (req) => {
+    let ret = await adminRegPrx.addTaskReq(req);
+    if(ret.__return == 0 ){
+        return ret.result;
+    }else {
+        throw new Error(ret.__return);
+    }
+};
+
 module.exports = AdminService;

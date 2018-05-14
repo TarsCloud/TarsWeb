@@ -9,9 +9,10 @@ module.exports = {
 
 
     // 服务配置
-    'config.notDelete' : '被其它配置文件引用，不能删除'
+    'config.notDelete' : '被其它配置文件引用，不能删除',
 
-
+    // 任务管理
+    'task.params' : '参数items不能为空'
 
 
 

@@ -7,6 +7,7 @@ const ServerController = require('../controller/server/ServerController');
 const NotifyController = require('../controller/notify/NotifyController');
 const ConfigController = require('../controller/config/ConfigController');
 const AdapterController = require('../controller/adapter/AdapterController');
+const TaskController = require('../controller/task/TaskController');
 
 const pageConf = [
     //登录注册页面
@@ -71,8 +72,13 @@ const apiConf = [
     ['get', '/add_config_ref', ConfigController.addConfigRef,  {config_id: 'number',reference_id:'number'}],
     ['get', '/delete_config_ref', ConfigController.deleteConfigRef,  {id: 'number'}],
     ['get', '/config_ref_list', ConfigController.configRefList,  {config_id: 'number'}],
-    ['get', '/merged_node_config', ConfigController.mergedNodeConfig,  {id: 'notEmpty;number'}],
-    ['get', '/push_config_file', ConfigController.pushConfigFile,  {ids: 'notEmpty;string'}],
+    ['get', '/merged_node_config', ConfigController.mergedNodeConfig,  {id: 'number'}],
+    ['get', '/push_config_file', ConfigController.pushConfigFile,  {ids: 'notEmpty'}],
+
+    // 任务管理
+    ['get', '/task_list', TaskController.getTasks],
+    ['get', '/task', TaskController.getTask, {task_no: 'notEmpty'}],
+    ['post', '/add_task', TaskController.addTask]
 ]
 
 module.exports = {pageConf, apiConf};
