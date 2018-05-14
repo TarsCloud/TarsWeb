@@ -398,7 +398,7 @@ ConfigService.addDefaultNodeConfigFile = (params) => {
 
 
     let keys = Array.from(Object.keys(params));
-    if(keys.includes('nodeName')){
+    if(keys.includes('node_name')){
         addConfigFileByNodeName();
     }else{
         addConfigFileByFileName();
