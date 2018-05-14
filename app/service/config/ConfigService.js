@@ -342,7 +342,7 @@ ConfigService.addDefaultNodeConfigFile = (params) => {
                 posttime    :   formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss'),
                 lastuser    :   config.lastuser,
                 level       :   3,
-                host        :   params.nodeName
+                host        :   params.node_name
             });
             let configFile = await ConfigDao.insertConfigFile(newRow);
             configFile = configFile.dataValues;
