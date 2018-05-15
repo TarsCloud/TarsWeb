@@ -5,9 +5,9 @@ const util = require('../../tools/util');
 const ConfigService = require('../config/ConfigService');
 const AdapterService = require('../adapter/AdapterService');
 
-const ServerService = {}
+const ServerService = {};
 
-ServerService.serverConfFields = ()=>{
+ServerService.serverConfFields = ()=> {
     return {
         application: '',
         server_name: '',
@@ -66,12 +66,12 @@ ServerService.getServerConf = async(application, serverName, nodeName) => {
 ServerService.getServerConfList4Tree = async(treeNodeId, curPage, pageSize) => {
     let where = ServerService.formatTreeNodeId(treeNodeId);
     return await ServerDao.getServerConf({
-            application: where.application || '',
-            serverName: where.serverName || '',
-            enableSet: where.enableSet || '',
-            setName: where.setName || '',
-            setArea: where.setArea || '',
-            setGroup: where.setGroup || '',
+            application: where.application,
+            serverName: where.serverName,
+            enableSet: where.enableSet,
+            setName: where.setName,
+            setArea: where.setArea,
+            setGroup: where.setGroup,
             curPage: curPage || 0,
             pageSize: pageSize || 0
         }
@@ -124,7 +124,7 @@ ServerService.getInactiveServerConfList = async(application, serverName, nodeNam
 
 ServerService.updateServerConf = async(params)=> {
     return await ServerDao.updateServerConf(params);
-}
+};
 
 
 ServerService.addServerConf = async(params)=> {
@@ -135,7 +135,8 @@ ServerService.addServerConf = async(params)=> {
     await ServerDao.insertServerConf(serverConf);
     let adapterConf = AdapterService.adpaterConfFields();
     let adapters = params.adapters;
-    adapters.forEach(async (servant) => {
+    for (var i = 0; i < adapters.length; i++) {
+        var servant = adapters[i];
         let newAdapterConf = Object.assign({}, adapterConf);
         newAdapterConf = util.leftAssign(newAdapterConf, servant);
         newAdapterConf.application = serverConf.application;
@@ -146,8 +147,7 @@ ServerService.addServerConf = async(params)=> {
         newAdapterConf.adapter_name = newAdapterConf.servant + 'Adapter';
         newAdapterConf.posttime = new Date();
         await AdapterDao.insertAdapterConf(newAdapterConf);
-    });
-
+    }
     return await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
 };
 

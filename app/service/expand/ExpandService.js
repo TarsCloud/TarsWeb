@@ -4,6 +4,7 @@ const logger = require('../../logger');
 const ServerService = require('../server/ServerService');
 const ConfigService = require('../config/ConfigService');
 const _ = require('lodash');
+const util = require('../../tools/util')
 
 const ExpandService = {}
 
@@ -43,11 +44,13 @@ ExpandService.expand = async(params) => {
     let application = params.application;
     let serverName = params.server_name;
     let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
-    let sourceAdapter = await AdapterDao.getAdapterConf(application, serverName, params.node_name);
+    let sourceAdapters = await AdapterDao.getAdapterConf(application, serverName, params.node_name) || [];
     sourceServer = sourceServer && sourceServer.dataValues || {};
-    params.expand_preview_servers.forEach(async(preServer)=> {
-        let serverConf = await ServerService.getServerConf(application, serverName, preServer.node_nmame || '');
-        if (!serverConf || !serverConf.dataValues || !serverConf.dataValues.length) {
+    let addServers = [];
+    for(var i  = 0; i< params.expand_preview_servers.length; i++){
+        let preServer = params.expand_preview_servers[i];
+        let serverConf = await ServerDao.getServerConfByName(application, serverName, preServer.node_name);
+        if (!serverConf) {
             let server = {
                 application: application,
                 server_name: serverName,
@@ -55,7 +58,7 @@ ExpandService.expand = async(params) => {
             };
             let enableSet = _.isEmpty(preServer.set);
             server.enable_set = enableSet ? 'Y' : 'N';
-            if(enableSet){
+            if (enableSet) {
                 server = _.extend(server, _.zipObject(['set_name', 'set_area', 'set_group'], preServer.set.split('.')));
             }
             server = _.extend(server, {
@@ -66,10 +69,53 @@ ExpandService.expand = async(params) => {
                 exe_path: sourceServer.exe_path,
                 start_script_path: sourceServer.start_script_path
             });
-            
-        }
-    })
 
+            server = util.leftAssign(ServerService.serverConfFields(), server);
+            let rst = await ServerDao.insertServerConf(server);
+            addServers.push(rst.dataValues);
+        }
+        let targetAdapter = await AdapterDao.getAdapterConfByObj({
+            application: application,
+            serverName: serverName,
+            nodeName: preServer.node_name,
+            objName: preServer.obj_name
+        });
+        if (!targetAdapter) {
+            let sourceAdapter = ((application, serverName, nodeName, objName) => {
+                let sourceAdapter = {};
+                _.each(sourceAdapters, (adapter)=> {
+                    adapter = adapter.dataValues;
+                    if (adapter.application == application && adapter.server_name == serverName && adapter.node_name == nodeName && adapter.servant.substring(adapter.servant.lastIndexOf('.') + 1) == objName) {
+                        sourceAdapter = adapter;
+                        return false;
+                    }
+                });
+                return sourceAdapter;
+            })(application, serverName, params.node_name, preServer.obj_name);
+            if(_.isEmpty(sourceAdapter)){
+                return;
+            }
+            let adapter = {
+                application: application,
+                server_name: serverName,
+                node_name: preServer.node_name,
+                servant: sourceAdapter.servant,
+                adapter_name: sourceAdapter.adapter_name,
+                thread_num: sourceAdapter.thread_num,
+                max_connections: sourceAdapter.max_connections,
+                queuecap: sourceAdapter.queuecap,
+                queuetimeout: sourceAdapter.queuetimeout,
+                allow_ip: sourceAdapter.allow_ip,
+                protocol: sourceAdapter.protocol,
+                handlegroup: sourceAdapter.handlegroup,
+            };
+            let portType = sourceAdapter.endpoint.substring(0, sourceAdapter.endpoint.indexOf(' '));
+            portType = _.indexOf(['tcp', 'udp'], portType) > -1 ? portType : 'tcp';
+            adapter.endpoint = portType + ' -h ' + preServer.bind_ip + ' -t ' + sourceAdapter.queuetimeout + ' -p ' + preServer.port + ' -e ' + (preServer.auth ? preServer.auth : 0);
+            await AdapterDao.insertAdapterConf(adapter);
+        }
+    }
+    return addServers;
 };
 
 module.exports = ExpandService;
