@@ -1,7 +1,7 @@
 const logger = require('../../logger');
 const AdapterService = require('../../service/adapter/AdapterService');
 const _ = require('lodash');
-const util = require('../util/util');
+const util = require('../../tools/util');
 
 const adapterConfStruct = {
     id: '',

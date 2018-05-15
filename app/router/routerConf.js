@@ -65,7 +65,7 @@ const apiConf = [
     ['post', '/expand_server_preview', ExpandServerController.expandServerPreview, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', expand_nodes: 'notEmpty'},
         ['application', 'server_name', 'set', 'node_name', 'expand_nodes', 'enable_set', 'set_name', 'set_area', 'set_group', 'copy_node_config']
     ],
-
+    ['post', '/expand_server', ExpandServerController.expandServer],
 
     // 服务配置接口
     ['get', '/unused_config_file_list', ConfigController.getUnusedApplicationConfigFile],

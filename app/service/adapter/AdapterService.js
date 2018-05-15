@@ -4,6 +4,27 @@ const logger = require('../../logger');
 
 const AdapterService = {}
 
+AdapterService.adpaterConfFields = () => {
+    return {
+        application: '',
+        server_name: '',
+        node_name: '',
+        adapter_name: '',
+        registry_timestamp: '',
+        thread_num: 1,
+        endpoint: '',
+        max_connections: 1000,
+        allow_ip: '',
+        servant: '',
+        queuecap: '',
+        queuetimeout: '',
+        posttime: "0000:00:00 00:00:00",
+        lastuser: '',
+        protocol: "tars",
+        handlegroup: ''
+    };
+};
+
 //通过ID获取adapter信息
 AdapterService.getAdapterConfById = async(id) => {
     return await AdapterDao.getAdapterConfById(id);

@@ -1,7 +1,7 @@
 const logger = require('../../logger');
 const NotifyService = require('../../service/notify/NotifyService');
 const NotifyController = {};
-const util = require('../util/util');
+const util = require('../../tools/util');
 
 const serverNotifyStruct = {
     notifytime: {formatter: util.formatTimeStamp},
@@ -25,4 +25,4 @@ NotifyController.getServerNotifyList = async(ctx) => {
 };
 
 
-module.exports = NotifyController
+module.exports = NotifyController;

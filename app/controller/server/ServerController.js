@@ -2,7 +2,7 @@ const logger = require('../../logger');
 const ServerService = require('../../service/server/ServerService');
 const AdminService = require('../../service/admin/AdminService');
 const _ = require('lodash');
-const util = require('../util/util');
+const util = require('../../tools/util');
 const serverConfStruct = {
     id: '',
     application: '',
@@ -137,8 +137,6 @@ ServerController.loadServer = async(ctx) => {
         logger.error('[loadServer]', e);
         ctx.makeErrResObj();
     }
-
-
 }
 
 module.exports = ServerController
