@@ -4,7 +4,7 @@
 
 const logger = require('../../logger');
 const TaskService = require('../../service/task/TaskService');
-const util = require('../util/util');
+const util = require('../../tools/util');
 const kafkaConf = require('../../../config/webConf').kafkaConf;
 
 let taskQueue;

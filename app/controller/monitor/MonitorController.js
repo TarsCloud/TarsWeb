@@ -2,7 +2,7 @@
  * Created by clauseliu on 2018/5/21.
  */
 const logger = require('../../logger');
-const util = require('../util/util');
+const util = require('../../tools/util');
 const MonitorService = require('../../service/monitor/MonitorService');
 
 const MonitorController = {};

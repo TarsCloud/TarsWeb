@@ -4,7 +4,7 @@
 const logger = require('../../logger');
 const PatchService = require('../../service/patch/PatchService');
 const WebConf = require('../../../config/webConf');
-const util = require('../util/util');
+const util = require('../../tools/util');
 const fs = require('fs-extra');
 const md5 = require('md5-file').sync;
 
