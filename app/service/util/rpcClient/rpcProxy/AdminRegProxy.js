@@ -430,7 +430,7 @@ tars.TaskRsp.create = function (is) {
 }
 
 tars.AdminRegProxy.prototype.addTaskReq = function (taskReq) {
-    var _encode = function () { 
+    var _encode = function () {
         var os = new TarsStream.OutputStream();
         os.writeStruct(1, taskReq);
         return os.getBinBuffer();
@@ -463,7 +463,6 @@ tars.AdminRegProxy.prototype.addTaskReq = function (taskReq) {
 
         throw {request:data.request, response:response};
     }
-
     return this._worker.tars_invoke('addTaskReq', _encode(), arguments.length != 0?arguments[arguments.length - 1]:undefined).then(_decode, _error);
 }
 
@@ -945,7 +944,7 @@ tars.AdminRegProxy.prototype.getTaskHistory = function (application, serverName,
 }
 
 tars.AdminRegProxy.prototype.getTaskRsp = function (taskNo) {
-    var _encode = function () { 
+    var _encode = function () {
         var os = new TarsStream.OutputStream();
         os.writeString(1, taskNo);
         return os.getBinBuffer();
@@ -955,11 +954,9 @@ tars.AdminRegProxy.prototype.getTaskRsp = function (taskNo) {
         try {
             var response = {arguments:{}};
             var is = new TarsStream.InputStream(data.response.sBuffer);
-
             response.costtime = data.request.costtime;
             response.return   = is.readInt32(0, true, TarsStream.Int32);
             response.arguments.taskRsp = is.readStruct(2, true, tars.TaskRsp);
-
             return {request:data.request, response:response};
         } catch (e) {
             var response = { };
@@ -967,7 +964,6 @@ tars.AdminRegProxy.prototype.getTaskRsp = function (taskNo) {
             response.error         = {};
             response.error.code    = TarsError.CLIENT.DECODE_ERROR;
             response.error.message = e.message;
-
             throw { request : data.request, response : response};
         }
     }
@@ -976,7 +972,6 @@ tars.AdminRegProxy.prototype.getTaskRsp = function (taskNo) {
         var response = {};
         response.costtime = data.request.costtime;
         response.error    = data.error;
-
         throw {request:data.request, response:response};
     }
 

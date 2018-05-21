@@ -38,7 +38,7 @@ var RPCClientPrx = (tafClient, proxy, moduleName, interfaceName, servantName, se
                         })();
                         return rst;
                     }catch(e){
-                        console.log(e);
+                        //console.log(e);
                         if(e.response){
                             throw new Error(e.response && e.response.error && e.response.error.message);
                         }else{

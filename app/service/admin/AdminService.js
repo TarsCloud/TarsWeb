@@ -1,6 +1,6 @@
 const {configFPrx, configFStruct, adminRegPrx, adminRegStruct} = require('../util/rpcClient');
 const logger = require('../../logger');
-const tarsStream = require('@tars/stream');
+const TarsStream = require('@tars/stream');
 
 const AdminService = {};
 
@@ -52,17 +52,20 @@ AdminService.getTaskRsp = async (taskNo) => {
     if(ret.__return == 0 ){
         return ret.result;
     }else {
-        throw new Error(ret.__return);
+        return ret.__return;
     }
 };
 
 AdminService.addTask = async (req) => {
-    let ret = await adminRegPrx.addTaskReq(req);
+    let taskReq = new adminRegStruct.TaskReq();
+    taskReq.readFromObject(req);
+    let ret = await adminRegPrx.addTaskReq(taskReq);
     if(ret.__return == 0 ){
         return ret.result;
     }else {
-        throw new Error(ret.__return);
+        return ret.__return;
     }
+
 };
 
 module.exports = AdminService;

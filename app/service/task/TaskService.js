@@ -5,17 +5,29 @@
 const logger = require('../../logger');
 const AdminService = require('../../service/admin/AdminService');
 const ServerService = require('../../service/server/ServerService');
-const util = require('../../controller/util/util');
 const TaskDao = require('../../dao/TaskDao');
-
-
+const util = require('../../controller/util/util');
+const kafkaConf = require('../../../config/webConf').kafkaConf;
 
 const TaskService = {};
 
-TaskService.getTaskRsp = async (taskNo) => {
-    let rsp = await AdminService.getTaskRsp(taskNo).catch(function (e) {
-        logger.error('[adminService.getTaskRsp]:',e);
+if(kafkaConf.enable) {
+    const TaskQueue = require('../../service/task/taskQueue');
+    const taskQueue = new TaskQueue();
+
+
+    taskQueue.getTaskMessage( message => {
+        let params = JSON.parse(message.value);
+        TaskService.addTask(params);
+    }, err => {
+        logger.error('[kafka error]:',err);
+        return err;
     });
+}
+
+
+TaskService.getTaskRsp = async (taskNo) => {
+    let rsp = await AdminService.getTaskRsp(taskNo).catch(e => logger.error('[adminService.getTaskRsp]:',e));
     return {
         task_no : rsp.task_no,
         serial : rsp.serial,
@@ -45,7 +57,6 @@ TaskService.getTasks = async (params) => {
 };
 
 TaskService.addTask = async (params) => {
-    let uuid = util.getUUID();
     let items = [];
     for(let i=0,len=params.items.length;i<len;i++) {
         let item = params.items[i];
@@ -54,7 +65,7 @@ TaskService.addTask = async (params) => {
             parameters.bak_flag = 1 & parameters.bak_flag;
         }
         let obj = {
-            task_no : uuid,
+            task_no : params.task_no,
             item_no : util.getUUID(),
             command : item.command,
             parameters : parameters
@@ -67,19 +78,18 @@ TaskService.addTask = async (params) => {
         Object.assign(obj,{
             application : serverConf.application,
             server_name : serverConf.server_name,
-            node_name : serverConf.host
+            node_name : serverConf.node_name
         });
         items.push(obj);
+        logger.info('[TaskService.addTask items]:',obj);
     }
     let req = {
-        task_no : uuid,
-        items : items
+        taskNo : params.task_no,
+        taskItemReq : items,
+        serial : params.serial,
+        userName : params.user_name || ''
     };
-    await AdminService.addTask(req).catch(e => {
-        console.error('[AdminService.addTask]:',e.toString());
-        return Promise.reject(e.toString());
-    });
-    return uuid
+    AdminService.addTask(req).catch(e => {console.error('[AdminService.addTask]:',e.toString())});
 };
 
 module.exports = TaskService;

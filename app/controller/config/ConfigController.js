@@ -209,7 +209,7 @@ ConfigController.pushConfigFile = async(ctx) => {
         ctx.makeResObj(200, '', await AdminService.doCommand(targets, `tars.loadconfig ${filename}`));
     }catch(e){
         logger.error(e);
-        ctx.makeResObj(500, e.toString());
+        ctx.makeErrResObj(500, e.toString());
     }
 };
 

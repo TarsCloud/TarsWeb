@@ -6,12 +6,17 @@ const views = require('koa-views');
 const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
+const multer = require('koa-multer');
+
 const {pageRouter, apiRouter, staticRouter} = require('./app/router');
 const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
 const helmet = require("koa-helmet");
 // const compress = require('koa-compress')
 const loginMidware = require('./app/midware/loginMidware');
+
+
+const upload = multer({dest: './uploads/'});
 
 // error handler
 onerror(app);
@@ -25,6 +30,10 @@ app.use(views(__dirname + '/views', {
 }));
 
 app.use(bodyparser());
+
+app.use(upload.single('suse'));
+
+
 
 //前置中间件
 preMidware.forEach((midware)=>{
