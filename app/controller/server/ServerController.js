@@ -2,20 +2,20 @@ const logger = require('../../logger');
 const ServerService = require('../../service/server/ServerService');
 const AdminService = require('../../service/admin/AdminService');
 const _ = require('lodash');
-const util = require('../util/util');
+const util = require('../../tools/util');
 const serverConfStruct = {
     id: '',
     application: '',
     server_name: '',
     node_name: '',
     server_type: '',
-    enable_set: '',
+    enable_set: {formatter: (value)=>{return value == 'Y' ? true : false;}},
     set_name: '',
     set_area: '',
     set_group: '',
     setting_state: '',
     present_state: '',
-    bak_flag: '',
+    bak_flag: {formatter: (value)=>{return value == 0 ? false : true;}},
     template_name: '',
     profile: '',
     async_thread_num: '',
@@ -137,8 +137,6 @@ ServerController.loadServer = async(ctx) => {
         logger.error('[loadServer]', e);
         ctx.makeErrResObj();
     }
-
-
 }
 
 module.exports = ServerController

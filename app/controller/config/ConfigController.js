@@ -6,7 +6,7 @@ const logger = require('../../logger');
 const ConfigService = require('../../service/config/ConfigService');
 const AdminService = require('../../service/admin/AdminService');
 
-const util = require('../util/util');
+const util = require('../../tools/util');
 
 const ConfigController = {};
 

@@ -5,16 +5,26 @@ const ServerDao = {};
 ServerDao.getServerConfById = async(id) => {
     return await tServerConf.findOne({
         where: {
-            id: id
+            id
+        }
+    });
+};
+
+ServerDao.getServerConfByName = async(application, serverName, nodeName)=> {
+    return await tServerConf.findOne({
+        where: {
+            application: application,
+            server_name: serverName,
+            node_name: nodeName
         }
     });
 };
 
 ServerDao.getServerConf = async(params) => {
     let where = {};
-    params.application && (where.application = params.application);
-    params.serverName && (where.server_name = params.serverName);
-    params.nodeName && (where.node_name = params.nodeName);
+    params.application != undefined && (where.application = params.application);
+    params.serverName != undefined && (where.server_name = params.serverName);
+    params.nodeName != undefined && (where.node_name = params.nodeName);
     if (params.enableSet) {
         where.enable_set = params.enableSet;
         if (params.enableSet == 'Y') {
@@ -70,6 +80,10 @@ ServerDao.updateServerConf = async(params) => {
         posttime: params.posttime
     };
     return await tServerConf.update(updateOptions, {where: {id: params.id}});
+};
+
+ServerDao.insertServerConf = async (params)=> {
+    return await tServerConf.create(params);
 };
 
 module.exports = ServerDao;

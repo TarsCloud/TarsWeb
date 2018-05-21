@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const moment = require('moment');
+const request = require('request-promise-any');
 const util = {};
 
 //根据相应格式和方法过滤单一对象
@@ -12,7 +13,7 @@ util._viewFilterObj = (obj, filterSturct) => {
     }
     var newObj = {};
     _.each(filterSturct, (v, key)=> {
-        if(obj[key] !== undefined){
+        if (obj[key] !== undefined) {
             v = v || {};
             let newKey = v.key || key;
             let formatter = v.formatter || '';
@@ -64,11 +65,11 @@ util.getUUID = () => {
         "S": date.getMilliseconds()
     };
 
-    if (/(y+)/.test(fmt)){
+    if (/(y+)/.test(fmt)) {
         fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
     }
-    for (k in o){
-        if (new RegExp("(" + k + ")").test(fmt)){
+    for (k in o) {
+        if (new RegExp("(" + k + ")").test(fmt)) {
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
         }
     }
@@ -78,8 +79,42 @@ util.getUUID = () => {
     return fmt + ms + random;
 };
 
+util.leftAssign = (obj1, obj2)=> {
+    _.each(obj1, (value, key) => {
+        if (obj2[key]) {
+            obj1[key] = obj2[key];
+        }
+    });
+    return obj1;
+};
+
+util._jsonRequest = async(type, url, data) =>{
+    var rst = await request[type]({
+        uri: url,
+        qs: data
+    });
+    try{
+        rst = JSON.parse(rst);
+    }catch(e){
+        rst = {};
+    }
+    return rst;
+};
+
+util.jsonRequest = {
+    get: async(url, data)=> {
+        return await util._jsonRequest('get', url, data);
+    },
+    post: async (url, data) => {
+        return await util._jsonRequest('post', url, data);
+    }
+};
+
+
 module.exports = {
     viewFilter: util.viewFilter,
     formatTimeStamp: util.formatTimeStamp,
-    getUUID: util.getUUID
+    getUUID: util.getUUID,
+    leftAssign: util.leftAssign,
+    jsonRequest: util.jsonRequest
 };

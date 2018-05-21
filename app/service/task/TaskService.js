@@ -5,8 +5,8 @@
 const logger = require('../../logger');
 const AdminService = require('../../service/admin/AdminService');
 const ServerService = require('../../service/server/ServerService');
+const util = require('../../tools/util');
 const TaskDao = require('../../dao/TaskDao');
-const util = require('../../controller/util/util');
 const kafkaConf = require('../../../config/webConf').kafkaConf;
 
 const TaskService = {};
