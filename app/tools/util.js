@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const moment = require('moment');
+const request = require('request-promise-any');
 const util = {};
 
 //根据相应格式和方法过滤单一对象
@@ -87,9 +88,33 @@ util.leftAssign = (obj1, obj2)=> {
     return obj1;
 };
 
+util._jsonRequest = async(type, url, data) =>{
+    var rst = await request[type]({
+        uri: url,
+        qs: data
+    });
+    try{
+        rst = JSON.parse(rst);
+    }catch(e){
+        rst = {};
+    }
+    return rst;
+};
+
+util.jsonRequest = {
+    get: async(url, data)=> {
+        return await util._jsonRequest('get', url, data);
+    },
+    post: async (url, data) => {
+        return await util._jsonRequest('post', url, data);
+    }
+};
+
+
 module.exports = {
     viewFilter: util.viewFilter,
     formatTimeStamp: util.formatTimeStamp,
     getUUID: util.getUUID,
-    leftAssign: util.leftAssign
+    leftAssign: util.leftAssign,
+    jsonRequest: util.jsonRequest
 };
