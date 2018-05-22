@@ -4,6 +4,16 @@
 
 const logger = require('../../logger');
 const TaskService = require('../../service/task/TaskService');
+const util = require('../../tools/util');
+const kafkaConf = require('../../../config/webConf').kafkaConf;
+
+let taskQueue;
+if(kafkaConf.enable) {
+    const TaskQueue = require('../../service/task/taskQueue');
+    taskQueue = new TaskQueue();
+}
+
+
 
 const TaskController = {};
 
@@ -35,7 +45,7 @@ TaskController.getTask = async (ctx) => {
         return await TaskService.getTaskRsp(ctx.paramsObj.task_no);
     }catch(e) {
         logger.error(e);
-        ctx.makeResObj(500, e.toString());
+        ctx.makeErrResObj(500, e.toString());
     }
 };
 
@@ -45,10 +55,17 @@ TaskController.addTask = async (ctx) => {
         return ctx.makeResObj(500, '#task.params#');
     }
     try {
-        return await TaskService.getTaskRsp(await TaskService.addTask({serial, items}));
+        let task_no = util.getUUID().toString();
+        if(kafkaConf.enable) {
+            await taskQueue.addTask([{messages:JSON.stringify({serial, items, task_no})}]);
+        } else {
+            await TaskService.addTask({serial, items, task_no});
+        }
+        let ret = await TaskService.getTaskRsp(task_no);
+        ctx.makeResObj(200, '', ret);
     }catch(e) {
         logger.error(e);
-        ctx.makeResObj(500, e.toString());
+        ctx.makeErrResObj(500, e.toString());
     }
 };
 

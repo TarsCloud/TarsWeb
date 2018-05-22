@@ -7,6 +7,8 @@ const AdapterController = require('../controller/adapter/AdapterController');
 const ExpandServerController = require('../controller/expand/ExpandServerController');
 const DeployServerController = require('../controller/deploy/DeployServerController');
 const TaskController = require('../controller/task/TaskController');
+const PatchController = require('../controller/patch/PatchController');
+const MonitorController = require('../controller/monitor/MonitorController');
 
 const AuthService = require('../service/auth/AuthService');
 
@@ -76,7 +78,15 @@ const apiConf = [
     // 任务管理
     ['get', '/task_list', TaskController.getTasks],
     ['get', '/task', TaskController.getTask, {task_no: 'notEmpty'}],
-    ['post', '/add_task', TaskController.addTask]
+    ['post', '/add_task', TaskController.addTask],
+
+    // 发布包
+    ['post', '/upload_patch_package', PatchController.uploadPatchPackage, {application: 'notEmpty', server_name: 'notEmpty'}],
+    ['get', '/server_patch_list', PatchController.serverPatchList, {application: 'notEmpty', server_name: 'notEmpty'}],
+
+    // 监控
+    ['get', '/tarsstat_monitor_data', MonitorController.tarsstat],
+    ['get', '/tarsproperty_monitor_data', MonitorController.tarsproperty],
 ]
 
 module.exports = {pageConf, apiConf};

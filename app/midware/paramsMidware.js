@@ -9,7 +9,7 @@ const languageMidware = require('./languageMidware');
 //api入参出参中间件
 const paramsDealMidware = (validParams) =>{
     return async (ctx, next) => {
-        var params  = _.extend(ctx.query || {}, ctx.request.body || {});
+        var params  = _.extend(ctx.query || {}, ctx.request.body || {}, ctx.req.body || {});
         if(validParams && _.isArray(validParams)){
             ctx.paramsObj = {};
             validParams.forEach(function(v){
@@ -37,7 +37,7 @@ const paramsDealMidware = (validParams) =>{
 
 const paramsCheckMidware = (checkRule) =>{
     return async(ctx, next) =>{
-        var params = ctx.paramsObj === undefined ? ctx.paramsObj : _.extend(ctx.query || {}, ctx.request.body || {});
+        var params = ctx.paramsObj === undefined ? ctx.paramsObj : _.extend(ctx.query || {}, ctx.request.body || {}, ctx.req.body || {});
         checkRule = checkRule ||{};
         var hasError = false;
         _.each(checkRule, (rules, paramName) => {

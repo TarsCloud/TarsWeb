@@ -12,8 +12,10 @@ module.exports = {
     'config.notDelete' : '被其它配置文件引用，不能删除',
 
     // 任务管理
-    'task.params' : '参数items不能为空'
+    'task.params' : '参数items不能为空',
 
+    // 发布包
+    'patch.md5' : 'MD5不相同'
 
 
 
