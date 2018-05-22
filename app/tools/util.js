@@ -89,10 +89,16 @@ util.leftAssign = (obj1, obj2)=> {
 };
 
 util._jsonRequest = async(type, url, data) =>{
-    var rst = await request[type]({
-        uri: url,
-        qs: data
-    });
+    let options = {
+        uri: url
+    };
+    if(type === 'get'){
+        options.qs = data;
+    }else{
+        options.formData = {auth: 1}
+    }
+    console.log(options);
+    var rst = await request[type](options);
     try{
         rst = JSON.parse(rst);
     }catch(e){

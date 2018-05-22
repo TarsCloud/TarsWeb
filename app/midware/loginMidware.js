@@ -20,6 +20,7 @@ module.exports = async(ctx, next) => {
         let ticket, user;
         if (ticket = ctx.query[loginConf.ticketParamName || 'ticket']) {
             user = await getUserInfo(ticket);
+            console.log(user);
             if (user) {
                 await ctx.cookies.set(loginConf.ticketCookieName || 'ticket', ticket, cookieConfig);
                 await ctx.cookies.set(loginConf.userInfoCookieName || 'user', user, cookieConfig);
@@ -72,9 +73,7 @@ async function checkIsLogin(user, ticket) {
 
 //控制跳转到登录页面
 async function toLoginPage(ctx) {
-    let loginUrl = loginConf.loginUrl;
-    let redirectUrlParamName = loginConf.redirectUrlParamName;
-    ctx.redirect(loginUrl + '?' + redirectUrlParamName + '=' + encodeURIComponent(ctx.protocol + '://' + ctx.host + ctx.request.url));
+    ctx.redirect(loginConf.loginUrlPrefix + loginConf.loginUrl + '?' + loginConf.redirectUrlParamName + '=' + encodeURIComponent(ctx.protocol + '://' + ctx.host + ctx.request.url));
 }
 
 // 通过ticket获取用户信息
@@ -106,7 +105,7 @@ async function validate(user, ticket) {
         if (loginConf.enableLocalCache && userSessionMap[user] && userSessionMap[user].ticket === ticket) {
             if (userSessionMap[user].updateTime && (new Date()).getTime() - userSessionMap[user].updateTime < loginConf.maxAge) {
                 rst = true;
-            } else {          //如果本地缓存过期，则检测第三方缓存
+            } else {    //如果本地缓存过期，则检测第三方缓存
                 rst = await casServerValidate(ticket, user);
             }
         } else {

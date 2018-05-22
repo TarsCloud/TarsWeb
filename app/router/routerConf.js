@@ -1,9 +1,6 @@
-/**
- * Created by denisfan on 2018/4/6.
- */
-const CasServerController = require('../controller/auth/CasServerController');
 const DemoController = require('../controller/demo/DemoController');
 const ServerController = require('../controller/server/ServerController');
+const TreeController = require('../controller/server/TreeController');
 const NotifyController = require('../controller/notify/NotifyController');
 const ConfigController = require('../controller/config/ConfigController');
 const AdapterController = require('../controller/adapter/AdapterController');
@@ -11,30 +8,21 @@ const ExpandServerController = require('../controller/expand/ExpandServerControl
 const DeployServerController = require('../controller/deploy/DeployServerController');
 const TaskController = require('../controller/task/TaskController');
 
-const pageConf = [
-    //登录注册页面
-    ['get', '/auth/register.html', CasServerController.registerPage],
-    ['get', '/auth/login.html', CasServerController.loginPage],
+const AuthService = require('../service/auth/AuthService');
 
+const pageConf = [
     //首页
     ['get', '/', DemoController.index],
-
-
-]
+];
 
 
 const apiConf = [
-    //登录注册接口
-    ['post', '/auth/register', CasServerController.register],
-    ['post', '/auth/login', CasServerController.login],
-    ['get', '/auth/logout', CasServerController.logout],
-    // ['get', '/auth/getUserInfoByTicket', CasServerController.getUserInfoByTicket],
-    // ['get', '/auth/validate', CasServerController.validate],
-
     //Demo
     ['get', '/getJson', DemoController.getJson, {id: 'notEmpty;object'}, ['id']],
     ['get', '/getSqlData', DemoController.getSqlData, {id: 'notEmpty;number'}],
     ['get', '/getRpcData', DemoController.getRpcData, {id: 'notEmpty;number'}],
+    ['get', '/checkAuth', AuthService.checkHasAuth],
+
 
     // 服务管理接口
     ['get', '/server', ServerController.getServerConfById, {id: 'notEmpty'}],
@@ -45,6 +33,8 @@ const apiConf = [
     ['get', '/load_server', ServerController.loadServer, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty'}],
     ['post', '/update_server', ServerController.updateServerConf, {id: 'notEmpty'},
         ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path', 'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile']],
+
+    ['get', '/tree', TreeController.listTree],
 
     //notify日志接口
     ['get', '/server_notify_list', NotifyController.getServerNotifyList, {tree_node_id: 'notEmpty'}],

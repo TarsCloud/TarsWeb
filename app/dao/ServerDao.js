@@ -1,4 +1,5 @@
 const {tServerConf} = require('./db').db_tars;
+const Sequelize = require('sequelize');
 
 const ServerDao = {};
 
@@ -44,6 +45,26 @@ ServerDao.getServerConf = async(params) => {
     return await tServerConf.findAll(options);
 };
 
+ServerDao.getServerConf4Tree = async(applicationList, serverNameList) => {
+    let where = {$or: []};
+    if (!!applicationList) {
+        where.$or.push({application: applicationList});
+    }
+    if (!!serverNameList) {
+        where.$or.push(Sequelize.where(Sequelize.fn('concat', Sequelize.col('application'), '.', Sequelize.col('server_name')), {in: serverNameList}));
+    }
+    if(!applicationList && !serverNameList){
+        where = {};
+    }
+    return await tServerConf.findAll({
+        attributes: [[Sequelize.literal('distinct `application`'), 'application'],
+            'server_name', 'enable_set', 'set_name', 'set_area', 'set_group'
+        ],
+        where: where
+    });
+};
+
+
 ServerDao.getInactiveServerConfList = async(application, serverName, nodeName, curPage, pageSize) => {
     let where = {};
     application && (where.application = application);
@@ -82,7 +103,7 @@ ServerDao.updateServerConf = async(params) => {
     return await tServerConf.update(updateOptions, {where: {id: params.id}});
 };
 
-ServerDao.insertServerConf = async (params)=> {
+ServerDao.insertServerConf = async(params)=> {
     return await tServerConf.create(params);
 };
 

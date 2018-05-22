@@ -28,6 +28,9 @@ const paramsDealMidware = (validParams) =>{
         ctx.makeErrResObj = () => {
             ctx.body = {data: {}, ret_code:500, err_msg: '系统内部错误'};
         };
+        ctx.makeNotAuthResObj = () => {
+            ctx.body = {data: {}, ret_code:500, err_msg: '没有操作权限'};
+        };
         await next();
     }
 };
