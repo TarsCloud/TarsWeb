@@ -1,4 +1,5 @@
 const {configFPrx, configFStruct, adminRegPrx, adminRegStruct} = require('../util/rpcClient');
+var client  = require("@tars/registry");
 const logger = require('../../logger');
 const TarsStream = require('@tars/stream');
 
@@ -66,6 +67,14 @@ AdminService.addTask = async (req) => {
         return ret.__return;
     }
 
+};
+
+
+AdminService.getEndpoints = async (objName) => {
+    let ret = await client.findObjectById(objName).catch(function (err) {
+        console.error('[AdminService.getEndpoints]:',err);
+    });
+    return ret;
 };
 
 module.exports = AdminService;
