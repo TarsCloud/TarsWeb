@@ -1,30 +1,29 @@
 const ServerDao = require('../../dao/ServerDao');
 const logger = require('../../logger/index');
 const util = require('../../tools/util');
+const AuthService = require('../auth/AuthService');
 
 const TreeService = {};
 
-TreeService.getTreeNodes = async(authList) => {
-    let appCond = [];
-    let serverCond = [];
-    let isAdmin = false;
-    authList.forEach((auth)=>{
-        if(auth.role === 'admin'){
-            isAdmin = true;
-        }
-        let appServer = auth.flag;
-        if(appServer.indexOf('.') > -1){
-            serverCond.push(appServer);
-        }else{
-            appCond.push(appServer);
-        }
-    });
+TreeService.getTreeNodes = async(uid) => {
     let serverList;
-    if(isAdmin){
+    if(await AuthService.hasAdminAuth(uid)){
         serverList = await ServerDao.getServerConf4Tree();
     }else{
+        let appCond = [];
+        let serverCond = [];
+        let authList = await AuthService.getAuthListByUid(uid);
+        authList.forEach((auth)=>{
+            let appServer = auth.flag;
+            if(appServer.indexOf('.') > -1){
+                serverCond.push(appServer);
+            }else{
+                appCond.push(appServer);
+            }
+        });
         serverList = await ServerDao.getServerConf4Tree(appCond, serverCond);
     }
+
     let treeNodeList = [];
     let treeNodeMap = {};
     let rootNode = [];
@@ -78,7 +77,7 @@ TreeService.parents = (treeNodeMap, treeNode, rootNodes)=> {
     }
     let newTreeNode = {};
     newTreeNode.id = id;
-    newTreeNode.name = name;
+    newTreeNode.name = name.substring(1);
     newTreeNode.pid = pid;
     newTreeNode.parent = true;
     newTreeNode.open = true;

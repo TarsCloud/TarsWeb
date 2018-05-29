@@ -20,7 +20,7 @@ AdapterDao.getAdapterConf = async(application, serverName, nodeName) => {
     });
 };
 
-AdapterDao.getAdapterConfByObj = async(params) =>{
+AdapterDao.getAdapterConfByObj = async(params) => {
     return await tAdapterConf.findOne({
         where: {
             application: params.application,
@@ -29,7 +29,15 @@ AdapterDao.getAdapterConfByObj = async(params) =>{
             adapter_name: params.application + '.' + params.serverName + '.' + params.objName + 'Adapter'
         }
     });
-}
+};
+
+AdapterDao.getAdapterConfByNodeName = async(nodeNames) => {
+    return await tAdapterConf.findAll({
+        where: {
+            node_name: nodeNames
+        }
+    });
+};
 
 AdapterDao.insertAdapterConf = async(params) => {
     return await tAdapterConf.create(params);

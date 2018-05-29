@@ -1,4 +1,5 @@
 const DemoController = require('../controller/demo/DemoController');
+const PageController = require('../controller/page/PageController');
 const ServerController = require('../controller/server/ServerController');
 const TreeController = require('../controller/server/TreeController');
 const NotifyController = require('../controller/notify/NotifyController');
@@ -9,21 +10,24 @@ const DeployServerController = require('../controller/deploy/DeployServerControl
 const TaskController = require('../controller/task/TaskController');
 const PatchController = require('../controller/patch/PatchController');
 const MonitorController = require('../controller/monitor/MonitorController');
+const TemplateController = require('../controller/template/TemplateController');
+const ResourceController = require('../controller/resource/ResourceController');
 
-const AuthService = require('../service/auth/AuthService');
+const AuthController = require('../controller/auth/AuthController');
 
 const pageConf = [
     //首页
-    ['get', '/', DemoController.index],
+    ['get', '/', PageController.index],
+    ['get', '/pages/op_manage.htm', PageController.opManage],
+    ['get', '/pages/tree', TreeController.listTree],
+    ['get', '/tarsnode_install.sh', ResourceController.downloadTarsNode],
 ];
-
 
 const apiConf = [
     //Demo
     ['get', '/getJson', DemoController.getJson, {id: 'notEmpty;object'}, ['id']],
     ['get', '/getSqlData', DemoController.getSqlData, {id: 'notEmpty;number'}],
     ['get', '/getRpcData', DemoController.getRpcData, {id: 'notEmpty;number'}],
-    ['get', '/checkAuth', AuthService.checkHasAuth],
 
 
     // 服务管理接口
@@ -51,6 +55,7 @@ const apiConf = [
     ['post', '/update_adapter_conf', AdapterController.updateAdapterConf, {id: 'notEmpty', servant: 'notEmpty'},
      ['id', 'thread_num', 'endpoint', 'max_connections', 'allow_ip', 'servant', 'queuecap', 'queuetimeout', 'protocol', 'handlegroup']
     ],
+    ['get', '/auto_port', AdapterController.getAvaliablePort, {node_name: ''}],
 
     //上线和扩容接口
     ['post', '/deploy_server', DeployServerController.deployServer],
@@ -58,6 +63,7 @@ const apiConf = [
         ['application', 'server_name', 'set', 'node_name', 'expand_nodes', 'enable_set', 'set_name', 'set_area', 'set_group', 'copy_node_config']
     ],
     ['post', '/expand_server', ExpandServerController.expandServer],
+    ['get', '/cascade_select_server', ExpandServerController.selectAppServer],
 
     // 服务配置接口
     ['get', '/unused_config_file_list', ConfigController.getUnusedApplicationConfigFile],
@@ -87,6 +93,22 @@ const apiConf = [
     // 监控
     ['get', '/tarsstat_monitor_data', MonitorController.tarsstat],
     ['get', '/tarsproperty_monitor_data', MonitorController.tarsproperty],
-]
+
+    //模板管理
+    ['get', '/profile_template', TemplateController.getTemplate, {profile_template: 'notEmpty'}],
+    ['get', '/query_profile_template', TemplateController.getTemplateList],
+    ['get', '/template_name_list', TemplateController.getTemplateNameList],
+    ['post', '/add_profile_template', TemplateController.addTemplate, {template_name: 'notEmpty', parents_name: 'notEmpty', profile: 'notEmpty'}],
+    ['get', '/delete_profile_template', TemplateController.deleteTemplate, {id: 'notEmpty'}],
+    ['post', '/update_profile_template', TemplateController.updateTemplate, {id: 'notEmpty', template_name: 'notEmpty', parents_name: 'notEmpty', profile: 'notEmpty'}],
+
+    //资源管理
+    ['get', '/install_tars_node', ResourceController.installTarsNode, {ips: 'notEmpty'}],
+
+    //权限管理
+    ['get', '/get_auth_list', AuthController.getAuthList],
+    ['get', '/update_auth', AuthController.updateAuth, {application: 'notEmpty', server_name: 'notEmpty', operator: 'notEmpty', developer: 'notEmpty'}],
+
+];
 
 module.exports = {pageConf, apiConf};

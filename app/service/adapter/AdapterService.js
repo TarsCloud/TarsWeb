@@ -1,8 +1,10 @@
-const ServerService = require('../server/ServerService');
 const AdapterDao = require('../../dao/AdapterDao');
 const logger = require('../../logger');
+const _ = require('lodash');
+const ServerDao = require('../../dao/ServerDao');
 
-const AdapterService = {}
+
+const AdapterService = {};
 
 AdapterService.adpaterConfFields = () => {
     return {
@@ -32,10 +34,10 @@ AdapterService.getAdapterConfById = async(id) => {
 
 //通过服务ID获取adapter信息
 AdapterService.getAdapterConfList = async(serverConfId) => {
-    let adapter = await ServerService.getServerConfById(serverConfId);
-    if (adapter.length && adapter[0] && adapter[0].dataValues) {
-        adapter = adapter[0].dataValues;
-        return await AdapterDao.getAdapterConf(adapter.application, adapter.server_name, adapter.node_name);
+    let serverConf = await ServerDao.getServerConfById(serverConfId);
+    if (serverConf) {
+        serverConf = serverConf.dataValues;
+        return await AdapterDao.getAdapterConf(serverConf.application, serverConf.server_name, serverConf.node_name);
     } else {
         return [];
     }
@@ -47,7 +49,7 @@ AdapterService.addAdapterConf = async(params) => {
 };
 
 //删除adapter
-AdapterService.deleteAdapterConf = async(id) =>{
+AdapterService.deleteAdapterConf = async(id) => {
     return await AdapterDao.deleteAdapterConf(id);
 };
 
@@ -56,7 +58,46 @@ AdapterService.updateAdapterConf = async(params) => {
     return await AdapterDao.updateAdapterConf(params);
 };
 
-
+AdapterService.getAvaliablePort = async(nodeNames) => {
+    if (_.isEmpty(nodeNames)) {
+        return [];
+    }
+    let adapters = await AdapterDao.getAdapterConfByNodeName(nodeNames);
+    let portMap = {};
+    nodeNames.forEach((nodeName)=>{
+        if(!nodeName)return;
+        if(!portMap[nodeName]){
+            portMap[nodeName] = [];
+        }
+    });
+    adapters.forEach((adapter)=> {
+        adapter = adapter.dataValues;
+        let port = adapter.endpoint.match(/-p *(\d+)( |$)/)[1] || null;
+        if(port){
+            portMap[adapter.node_name] && portMap[adapter.node_name].push(parseInt(port));
+        }
+    });
+    let portRst = [];
+    nodeNames.forEach(function(nodeName){
+        if(!nodeName)return;
+        let portList = portMap[nodeName];
+        //默认port从10000开始分配
+        let port = 10000;
+        while(port <= 65536){
+            if(_.indexOf(portList, port) > -1){
+                port++;
+            }else{
+                portList.push(port);
+                portRst.push({node_name: nodeName, port: port});
+                break;
+            }
+        }
+        if(port>65536){
+            portRst.push({node_name: nodeName, port: ''});
+        }
+    });
+    return portRst;
+};
 
 
 module.exports = AdapterService;

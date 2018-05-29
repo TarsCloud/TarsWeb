@@ -20,7 +20,7 @@ NotifyController.getServerNotifyList = async(ctx) => {
     let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
     try {
         let params = ServerController.formatTreeNodeId(treeNodeId);
-        if (!await AuthService.hasDevAuth(params.application, params.serverName, ctx.userName)) {
+        if (!await AuthService.hasDevAuth(params.application, params.serverName, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
             let rst = await NotifyService.getServerNotifyList(params, curPage, pageSize);

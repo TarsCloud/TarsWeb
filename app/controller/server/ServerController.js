@@ -49,7 +49,7 @@ ServerController.getServerConfById = async(ctx) => {
         var rst = await ServerService.getServerConfById(id);
         if (!_.isEmpty(rst)) {
             rst = rst.dataValues;
-            if (!await AuthService.hasDevAuth(rst.application, rst.server_name, ctx.userName)) {
+            if (!await AuthService.hasDevAuth(rst.application, rst.server_name, ctx.uid)) {
                 ctx.makeNotAuthResObj();
             } else {
                 ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
@@ -69,7 +69,7 @@ ServerController.serverExist = async(ctx) => {
     let serverName = ctx.paramsObj.server_name;
     let nodeName = ctx.paramsObj.node_name;
     try {
-        if (!await AuthService.hasDevAuth(application, serverName, ctx.userName)) {
+        if (!await AuthService.hasDevAuth(application, serverName, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
             ctx.makeResObj(200, '', (await ServerService.getServerConf(application, serverName, nodeName)).length > 0);
@@ -86,7 +86,7 @@ ServerController.getServerConfList4Tree = async(ctx) => {
     let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
     try {
         let params = ServerController.formatTreeNodeId(treeNodeId);
-        if (!await AuthService.hasDevAuth(params.application, params.serverName, ctx.userName)) {
+        if (!await AuthService.hasDevAuth(params.application, params.serverName, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
             let rst = await ServerService.getServerConfList4Tree({
@@ -146,7 +146,7 @@ ServerController.getInactiveServerConfList = async(ctx) => {
     let curPage = parseInt(ctx.paramsObj.cur_page) || 0;
     let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
     try {
-        if (!await AuthService.hasDevAuth(application, serverName, ctx.userName)) {
+        if (!await AuthService.hasDevAuth(application, serverName, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
             let rst = await ServerService.getInactiveServerConfList(application, serverName, nodeName, curPage, pageSize);
@@ -164,7 +164,7 @@ ServerController.getRealtimeState = async(ctx)=> {
         let rst = await ServerService.getServerConfById(id);
         if (!_.isEmpty(rst)) {
             rst = rst.dataValues;
-            if (!await AuthService.hasDevAuth(rst.application, rst.server_name, ctx.userName)) {
+            if (!await AuthService.hasDevAuth(rst.application, rst.server_name, ctx.uid)) {
                 ctx.makeNotAuthResObj();
             } else {
                 ctx.makeResObj(200, '', {realtime_state: rst['present_state']});
@@ -180,29 +180,36 @@ ServerController.getRealtimeState = async(ctx)=> {
 };
 
 ServerController.updateServerConf = async(ctx) => {
-    let updateServer = ctx.paramsObj;
-    let server = await ServerService.getServerConfById(updateServer.id);
-    if (!_.isEmpty(server)) {
-        if (!await AuthService.hasDevAuth(server.application, server.server_name, ctx.userName)) {
-            ctx.makeNotAuthResObj();
-            return;
-        }
-        ;
-        Object.assign(server, updateServer);
-        server.bak_flag = server.isBak ? 1 : 0;
-        server.enable_set = server.enable_set ? 'Y' : 'N';
-        server.posttime = new Date();
-        try {
+    try{
+        let updateServer = ctx.paramsObj;
+        let server = await ServerService.getServerConfById(updateServer.id);
+        if (!_.isEmpty(server)) {
+            if (!await AuthService.hasDevAuth(server.application, server.server_name, ctx.uid)) {
+                ctx.makeNotAuthResObj();
+                return;
+            }
+
+            // let operator = updateServer.operator;
+            // let developer = updateServer.developer;
+            // delete(updateServer.operator);
+            // delete(updateServer.developer);
+            // await AuthService.modifyAuth(server.application, server.server_name, operator, developer);
+
+            Object.assign(server, updateServer);
+            server.bak_flag = server.isBak ? 1 : 0;
+            server.enable_set = server.enable_set ? 'Y' : 'N';
+            server.posttime = new Date();
             await ServerService.updateServerConf(server);
             ctx.makeResObj(200, '', util.viewFilter(await ServerService.getServerConfById(updateServer.id), serverConfStruct));
-        } catch (e) {
-            logger.error('[updateServerConf]', e);
+        } else {
+            logger.error('[updateServerConf]', '未查询到id=' + updateServer.id + '相应的服务');
             ctx.makeErrResObj();
         }
-    } else {
-        logger.error('[updateServerConf]', '未查询到id=' + updateServer.id + '相应的服务');
+    }catch(e){
+        logger.error('[updateServerConf]', e);
         ctx.makeErrResObj();
     }
+
 };
 
 ServerController.loadServer = async(ctx) => {
@@ -210,7 +217,7 @@ ServerController.loadServer = async(ctx) => {
     let serverName = ctx.paramsObj.server_name;
     let nodeName = ctx.paramsObj.node_name;
     try {
-        if (!await AuthService.hasDevAuth(application, serverName, ctx.userName)) {
+        if (!await AuthService.hasDevAuth(application, serverName, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
             let ret = await AdminService.loadServer(application, serverName, nodeName);

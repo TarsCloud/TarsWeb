@@ -4,6 +4,7 @@ const logger = require('../../logger');
 const util = require('../../tools/util');
 const ConfigService = require('../config/ConfigService');
 const AdapterService = require('../adapter/AdapterService');
+const AuthService = require('../auth/AuthService');
 
 const ServerService = {};
 
@@ -62,6 +63,12 @@ ServerService.getServerConf = async(application, serverName, nodeName) => {
     });
 };
 
+//通过模板名获取获取服务信息
+ServerService.getServerConfByTemplate = async(templateName) => {
+    return await ServerDao.getServerConfByTemplate(templateName);
+};
+
+
 //通过treeNodeId查询服务列表
 ServerService.getServerConfList4Tree = async(params) => {
     return await ServerDao.getServerConf(params);
@@ -83,11 +90,22 @@ ServerService.updateServerConf = async(params)=> {
 
 
 ServerService.addServerConf = async(params)=> {
+
+    let operator = params.operator;
+    let developer = params.developer;
+    delete(params.operator);
+    delete(params.developer);
+
     let serverConf = ServerService.serverConfFields();
     serverConf = util.leftAssign(serverConf, params);
     serverConf.enable_set = serverConf.enable_set ? 'Y' : 'N';
     serverConf.posttime = new Date();
     await ServerDao.insertServerConf(serverConf);
+
+    if (operator || developer) {
+        await AuthService.addAuth(serverConf.application, serverConf.server_name, operator, developer);
+    }
+
     let adapterConf = AdapterService.adpaterConfFields();
     let adapters = params.adapters;
     for (var i = 0; i < adapters.length; i++) {
@@ -105,6 +123,5 @@ ServerService.addServerConf = async(params)=> {
     }
     return await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
 };
-
 
 module.exports = ServerService;

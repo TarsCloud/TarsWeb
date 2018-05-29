@@ -45,6 +45,14 @@ ServerDao.getServerConf = async(params) => {
     return await tServerConf.findAll(options);
 };
 
+ServerDao.getServerConfByTemplate = async(templateName) => {
+    return await tServerConf.findAll({
+        where: {
+            template_name: templateName
+        }
+    })
+};
+
 ServerDao.getServerConf4Tree = async(applicationList, serverNameList) => {
     let where = {$or: []};
     if (!!applicationList) {
@@ -53,7 +61,7 @@ ServerDao.getServerConf4Tree = async(applicationList, serverNameList) => {
     if (!!serverNameList) {
         where.$or.push(Sequelize.where(Sequelize.fn('concat', Sequelize.col('application'), '.', Sequelize.col('server_name')), {in: serverNameList}));
     }
-    if(!applicationList && !serverNameList){
+    if (!applicationList && !serverNameList) {
         where = {};
     }
     return await tServerConf.findAll({
@@ -106,5 +114,46 @@ ServerDao.updateServerConf = async(params) => {
 ServerDao.insertServerConf = async(params)=> {
     return await tServerConf.create(params);
 };
+
+ServerDao.getApplication = async() => {
+    return await tServerConf.findAll({
+        attributes: [[Sequelize.literal('distinct `application`'), 'application']]
+    });
+};
+
+ServerDao.getServerName = async(application) => {
+    return await tServerConf.findAll({
+        attributes: [[Sequelize.literal('distinct `server_name`'), 'server_name']],
+        where: {
+            application: application
+        }
+    });
+};
+
+ServerDao.getSet = async(application, serverName) => {
+    let rst = await tServerConf.sequelize.query('select distinct if(enable_set = \'Y\', CONCAT(set_name, \'.\', set_area, \'.\', set_group), \'\') as \'set\' from db_tars.t_server_conf where application = \'' + application + '\' and server_name = \'' + serverName + '\'');
+    return rst[0] || '';
+};
+
+ServerDao.getNodeName = async(params) => {
+    let where = {
+        application: params.application,
+        server_name: params.serverName,
+    }
+    if(params.enableSet){
+        where = Object.assign(where, {
+            enable_set: 'Y',
+            set_name: params.setName,
+            set_area: params.setArea,
+            set_group: params.setGroup
+        });
+    }else{
+        where.enable_set = 'N'
+    }
+    return await tServerConf.findAll({
+        attributes: [[Sequelize.literal('distinct `node_name`'), 'node_name']],
+        where: where
+    })
+}
 
 module.exports = ServerDao;

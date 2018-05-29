@@ -94,5 +94,16 @@ AdapterController.updateAdapterConf = async(ctx) => {
     }
 };
 
+AdapterController.getAvaliablePort = async(ctx) => {
+    try {
+        let nodeNames = ctx.paramsObj.node_name;
+        nodeNames = nodeNames ? nodeNames.split(/;|,/) : [];
+        let rst = await AdapterService.getAvaliablePort(nodeNames);
+        ctx.makeResObj(200, '', rst);
+    } catch (e) {
+        logger.error('[updateAdapterConf]', e);
+        ctx.makeErrResObj();
+    }
+};
 
 module.exports = AdapterController;
