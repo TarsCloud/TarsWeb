@@ -15,7 +15,10 @@ let cookieConfig = {
 
 //登录校验中间件
 module.exports = async(ctx, next) => {
-    if (isInPath(ctx, ignoreList)) {  //跳过用户配置的不需要验证的url
+    if(!loginConf.enableLogin){
+        ctx.uid = loginConf.defaultLoginUid;
+        await next();
+    }else if (isInPath(ctx, ignoreList)) {  //跳过用户配置的不需要验证的url
         await next();
     } else if (isInIgnoreIps(ctx, loginConf.ignoreIps || [])) {
         ctx.uid = ctx.query['uid'];

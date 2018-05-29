@@ -1,6 +1,7 @@
 var send = require('koa-send');
 var resolve = require('path').resolve;
-module.exports = (root, needNext, opt) => {
+
+module.exports = (root, opt) => {
     opt = Object.assign({}, opt);
     opt.root = resolve(root);
     return async(ctx, next) => {
@@ -11,8 +12,6 @@ module.exports = (root, needNext, opt) => {
                 throw err;
             }
         }
-        if (needNext) {
-            await next();
-        }
+        await next();
     };
-}
+};
