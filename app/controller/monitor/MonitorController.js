@@ -8,9 +8,9 @@ const MonitorService = require('../../service/monitor/MonitorService');
 const MonitorController = {};
 
 MonitorController.tarsstat = async (ctx) => {
-    let {thedate, predate, startshowtime, endshowtime, master_name, slave_name, interface_name, master_ip, slave_ip, group_by} = ctx.paramsObj;
+    let {thedate, predate, startshowtime, endshowtime, master_name, slave_name, interface_name, master_ip, slave_ip} = ctx.paramsObj;
     try {
-        let list = await MonitorService.getTARSStatMonitorData();
+        let list = await MonitorService.getTARSStatMonitorData({thedate, predate, startshowtime, endshowtime, master_name, slave_name, interface_name, master_ip, slave_ip});
         ctx.makeResObj(200,'',util.viewFilter(list,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
     }catch(e) {
         logger.error(e);
