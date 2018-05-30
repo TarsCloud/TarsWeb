@@ -6,7 +6,7 @@ module.exports = {
     'common.needBoolean': '必须为布尔值',
     'common.servername': '服务名',
     'common.text1': '第一个文本',
-
+    '#common.notLogin#': '您还没有登录',
 
     // 服务配置
     'config.notDelete' : '被其它配置文件引用，不能删除',

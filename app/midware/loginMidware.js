@@ -5,8 +5,9 @@ let request = require('request-promise-any');
 let _ = require('lodash');
 let logger = require('../logger');
 let ignoreList = _.concat([], loginConf.ignore || [], ['/api/auth', '/auth', '/favicon.ico']);  //讲登入登出校验接口放到忽略登录校验列表中，兼容本地登录情况
+let url = require('url');
 
-let userSessionMap = {}; //内存中保存用户的登录信息
+let loginCookieMap = {}; //内存中保存用户的登录信息
 let cookieConfig = {
     maxAge: 365 * 24 * 60 * 60 * 1000  //用户cookie过期时间为1年
 };
@@ -14,36 +15,55 @@ let cookieConfig = {
 
 //登录校验中间件
 module.exports = async(ctx, next) => {
-    if (checkInIgnoreList(ctx)) {  //跳过用户配置的不需要验证的url
+    if(!loginConf.enableLogin){
+        ctx.uid = loginConf.defaultLoginUid;
+        await next();
+    }else if (isInPath(ctx, ignoreList)) {  //跳过用户配置的不需要验证的url
+        await next();
+    } else if (isInIgnoreIps(ctx, loginConf.ignoreIps || [])) {
+        ctx.uid = ctx.query['uid'];
         await next();
     } else {
-        let ticket, user;
-        if (ticket = ctx.query[loginConf.ticketParamName || 'ticket']) {
-            user = await getUserInfo(ticket);
-            if (user) {
+        let ticket, uid;
+        let ticketFromQuery = ctx.query[loginConf.ticketParamName || 'ticket'];
+        if (ticket = ticketFromQuery) {
+            uid = await getUid(ticket);
+            if (uid) {
                 await ctx.cookies.set(loginConf.ticketCookieName || 'ticket', ticket, cookieConfig);
-                await ctx.cookies.set(loginConf.userInfoCookieName || 'user', user, cookieConfig);
+                await ctx.cookies.set(loginConf.uidCookieName || 'uid', uid, cookieConfig);
             }
         }
-        if(!user){
-            user = ctx.cookies.get(loginConf.userInfoCookieName || 'user');
+        if (!uid) {
+            uid = ctx.cookies.get(loginConf.uidCookieName || 'uid');
         }
-        if(!ticket){
+        if (!ticket) {
             ticket = ctx.cookies.get(loginConf.ticketCookieName || 'ticket');
         }
-        if (await checkIsLogin(user, ticket)) {
-            ctx.userName = user;
-            await next();
+        if (await checkIsLogin(uid, ticket)) {
+            ctx.uid = uid;
+            if (ticketFromQuery) {
+                let urlObj = url.parse(ctx.request.url, true);
+                delete(urlObj.query[loginConf.ticketParamName || 'ticket']);
+                delete(urlObj.search);
+                let redirectUrl = url.format(urlObj);
+                ctx.redirect(redirectUrl);
+            } else {
+                await next();
+            }
         } else {
-            toLoginPage(ctx);
+            if (isInPath(ctx, loginConf.apiPrefix)) {
+                ctx.body = {ret_code: 500, err_msg: loginConf.apiNotLoginMes, data: {}}
+            } else {
+                toLoginPage(ctx);
+            }
         }
     }
 };
 
-//检测是否在ignore列表中
-function checkInIgnoreList(ctx) {
+//检测是否在path列表中
+function isInPath(ctx, pathList) {
     let pathname = ctx.request.path;
-    let index = _.findIndex(ignoreList, function (rule) {
+    let index = _.findIndex(pathList, function (rule) {
         if (!rule) {
             return false;
         } else if (typeof rule === 'string') {
@@ -55,12 +75,16 @@ function checkInIgnoreList(ctx) {
     return index > -1;
 }
 
+//检测是否在IP白名单之中
+function isInIgnoreIps(ctx, ignoreIps){
+    var ip = ctx.request.ip;
+    return _.indexOf(ignoreIps||[], ip) > -1;
+}
+
 //检测是否登录
-async function checkIsLogin(user, ticket) {
-    // let user = ctx.cookies && ctx.cookies.get('user');
-    // let ticket = ctx.cookies && ctx.cookies.get('ticket');
-    if (user !== undefined && ticket !== undefined) {
-        if (await validate(user, ticket)) {
+async function checkIsLogin(uid, ticket) {
+    if (uid !== undefined && ticket !== undefined) {
+        if (await validate(uid, ticket)) {
             return true;
         } else {
             return false;
@@ -72,24 +96,22 @@ async function checkIsLogin(user, ticket) {
 
 //控制跳转到登录页面
 async function toLoginPage(ctx) {
-    let loginUrl = loginConf.loginUrl;
-    let redirectUrlParamName = loginConf.redirectUrlParamName;
-    ctx.redirect(loginUrl + '?' + redirectUrlParamName + '=' + encodeURIComponent(ctx.protocol + '://' + ctx.host + ctx.request.url));
+    ctx.redirect(loginConf.loginUrlPrefix + loginConf.loginUrl + '?' + loginConf.redirectUrlParamName + '=' + encodeURIComponent(ctx.protocol + '://' + ctx.host + ctx.request.url));
 }
 
 // 通过ticket获取用户信息
-async function getUserInfo(ticket) {
+async function getUid(ticket) {
     try {
-        if (!!loginConf.getUserInfoByTicket) {
-            let userInfo = await request.get(loginConf.loginUrlPrefix + loginConf.getUserInfoByTicket + '?' + loginConf.getUserInfoTicketParamName + '=' + ticket);
-            try{
-                userInfo = JSON.parse(userInfo);
-            }catch(e){
+        if (!!loginConf.getUidByTicket) {
+            let uidInfo = await request.get(loginConf.loginUrlPrefix + loginConf.getUidByTicket + '?' + loginConf.getUidByTicketParamName + '=' + ticket);
+            try {
+                uidInfo = JSON.parse(uidInfo);
+            } catch (e) {
                 logger.error(e);
-                userInfo = false;
+                uidInfo = false;
             }
-            if(!userInfo)return false;
-            return _.result(userInfo, loginConf.userInfoKey) || false;
+            if (!uidInfo)return false;
+            return _.result(uidInfo, loginConf.uidKey) || false;
         } else {
             return false;
         }
@@ -99,27 +121,27 @@ async function getUserInfo(ticket) {
     }
 }
 
-//判断是否ticket和user是否有效
-async function validate(user, ticket) {
+//判断是否ticket和uid是否有效
+async function validate(uid, ticket) {
     try {
         let rst = false;
-        if (loginConf.enableLocalCache && userSessionMap[user] && userSessionMap[user].ticket === ticket) {
-            if (userSessionMap[user].updateTime && (new Date()).getTime() - userSessionMap[user].updateTime < loginConf.maxAge) {
+        if (loginConf.enableLocalCache && loginCookieMap[uid] && loginCookieMap[uid].ticket === ticket) {
+            if (loginCookieMap[uid].updateTime && (new Date()).getTime() - loginCookieMap[uid].updateTime < loginConf.maxAge) {
                 rst = true;
-            } else {          //如果本地缓存过期，则检测第三方缓存
-                rst = await casServerValidate(ticket, user);
+            } else {    //如果本地缓存过期，则检测第三方缓存
+                rst = await casServerValidate(ticket, uid);
             }
         } else {
-            rst = await casServerValidate(ticket, user);
+            rst = await casServerValidate(ticket, uid);
         }
         if (rst) {
-            if (!userSessionMap[user]) {
-                userSessionMap[user] = {}
+            if (!loginCookieMap[uid]) {
+                loginCookieMap[uid] = {}
             }
-            if (!userSessionMap[user].ticket) {
-                userSessionMap[user].ticket = ticket;
+            if (!loginCookieMap[uid].ticket) {
+                loginCookieMap[uid].ticket = ticket;
             }
-            userSessionMap[user].updateTime = (new Date()).getTime();
+            loginCookieMap[uid].updateTime = (new Date()).getTime();
         }
         return rst;
     } catch (e) {
@@ -131,17 +153,17 @@ async function validate(user, ticket) {
 
 
 //通过ticket和用户名调用CAS服务，确认是否登录
-async function casServerValidate(ticket, user) {
+async function casServerValidate(ticket, uid) {
     try {
         if (loginConf.validateUrl) {   //如果没有配置校验接口，则表示此用户名直接有效直到过期
-            let validateRet = await request.get(loginConf.loginUrlPrefix + loginConf.validateUrl + '?' + loginConf.validateTicketParamName + '=' + ticket + '&' + loginConf.validateUserParamName + '=' + user);
-            try{
+            let validateRet = await request.get(loginConf.loginUrlPrefix + loginConf.validateUrl + '?' + loginConf.validateTicketParamName + '=' + ticket + '&' + loginConf.validateUidParamName + '=' + uid);
+            try {
                 validateRet = JSON.parse(validateRet);
-            }catch(e){
+            } catch (e) {
                 logger.error(e);
                 validateRet = false;
             }
-            if(!validateRet)return false;
+            if (!validateRet)return false;
             let validateMatch = loginConf.validateMatch;
             for (let i = 0; i < validateMatch.length; i++) {
                 if (_.result(validateRet, validateMatch[i][0]) != validateMatch[i][1]) {

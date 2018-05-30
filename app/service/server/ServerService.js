@@ -4,6 +4,7 @@ const logger = require('../../logger');
 const util = require('../../tools/util');
 const ConfigService = require('../config/ConfigService');
 const AdapterService = require('../adapter/AdapterService');
+const AuthService = require('../auth/AuthService');
 
 const ServerService = {};
 
@@ -62,55 +63,16 @@ ServerService.getServerConf = async(application, serverName, nodeName) => {
     });
 };
 
+//通过模板名获取获取服务信息
+ServerService.getServerConfByTemplate = async(templateName) => {
+    return await ServerDao.getServerConfByTemplate(templateName);
+};
+
+
 //通过treeNodeId查询服务列表
-ServerService.getServerConfList4Tree = async(treeNodeId, curPage, pageSize) => {
-    let where = ServerService.formatTreeNodeId(treeNodeId);
-    return await ServerDao.getServerConf({
-            application: where.application,
-            serverName: where.serverName,
-            enableSet: where.enableSet,
-            setName: where.setName,
-            setArea: where.setArea,
-            setGroup: where.setGroup,
-            curPage: curPage || 0,
-            pageSize: pageSize || 0
-        }
-    );
+ServerService.getServerConfList4Tree = async(params) => {
+    return await ServerDao.getServerConf(params);
 };
-
-//树ID转换
-ServerService.formatTreeNodeId = (treeNodeId) => {
-    let serverConf = {enableSet: 'N'};
-    treeNodeId = treeNodeId.split('.');
-    treeNodeId.forEach((s)=> {
-        let i = parseInt(s.substring(0, 1));
-        let v = s.substring(1);
-        switch (i) {
-            case 1:
-                serverConf.application = v;
-                break;
-            case 2:
-                serverConf.setName = v;
-                serverConf.enableSet = 'Y';
-                break;
-            case 3:
-                serverConf.setArea = v;
-                serverConf.enableSet = 'Y';
-                break;
-            case 4:
-                serverConf.setGroup = v;
-                serverConf.enableSet = 'Y';
-                break;
-            case 5:
-                serverConf.serverName = v;
-                break;
-            default:
-                break;
-        }
-    });
-    return serverConf;
-};
-
 
 ServerService.getInactiveServerConfList = async(application, serverName, nodeName, curPage, pageSize) => {
     return await ServerDao.getInactiveServerConfList(
@@ -128,11 +90,22 @@ ServerService.updateServerConf = async(params)=> {
 
 
 ServerService.addServerConf = async(params)=> {
+
+    let operator = params.operator;
+    let developer = params.developer;
+    delete(params.operator);
+    delete(params.developer);
+
     let serverConf = ServerService.serverConfFields();
     serverConf = util.leftAssign(serverConf, params);
     serverConf.enable_set = serverConf.enable_set ? 'Y' : 'N';
     serverConf.posttime = new Date();
     await ServerDao.insertServerConf(serverConf);
+
+    if (operator || developer) {
+        await AuthService.addAuth(serverConf.application, serverConf.server_name, operator, developer);
+    }
+
     let adapterConf = AdapterService.adpaterConfFields();
     let adapters = params.adapters;
     for (var i = 0; i < adapters.length; i++) {
@@ -150,6 +123,5 @@ ServerService.addServerConf = async(params)=> {
     }
     return await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
 };
-
 
 module.exports = ServerService;

@@ -6,7 +6,8 @@ const webConf = require('../../config/webConf').webConf;
 const path = require('path');
 const fs = require('fs-extra');
 
-var loggerPath = webConf.loggerPath || path.join(__dirname, '../../log');
+const loggerPath = webConf.loggerPath || path.join(__dirname, '../../log');
+const logFileKeepDays = webConf.logFileKeepDays || '7';
 
 fs.ensureDirSync(loggerPath);
 
@@ -23,7 +24,8 @@ var normalLogger = new winston.Logger({
             prepend: true,
             localTime: true,
             timestamp: timeStamp,
-            level: 'info'
+            level: 'info',
+            maxFiles: logFileKeepDays + 'd',
         }),
         new winston.transports.DailyRotateFile({
             name: 'warn-file',
@@ -32,7 +34,8 @@ var normalLogger = new winston.Logger({
             prepend: true,
             localTime: true,
             timestamp: timeStamp,
-            level: 'warn'
+            level: 'warn',
+            maxFiles: logFileKeepDays + 'd',
         }),
         new winston.transports.DailyRotateFile({
             name: 'error-file',
@@ -41,7 +44,8 @@ var normalLogger = new winston.Logger({
             prepend: true,
             localTime: true,
             timestamp: timeStamp,
-            level: 'error'
+            level: 'error',
+            maxFiles: logFileKeepDays + 'd',
         })
     ],
     exceptionHandlers: [
@@ -52,6 +56,7 @@ var normalLogger = new winston.Logger({
             localTime: true,
             timestamp: timeStamp,
             prepend: true,
+            maxFiles: logFileKeepDays + 'd',
         })
     ]
 });
@@ -66,7 +71,8 @@ var sqlLogger = new winston.Logger({
             prepend: true,
             localTime: true,
             timestamp: timeStamp,
-            level: 'info'
+            level: 'info',
+            maxFiles: logFileKeepDays + 'd',
         }),
     ]
 });

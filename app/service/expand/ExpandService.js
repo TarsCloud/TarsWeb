@@ -3,6 +3,7 @@ const AdapterDao = require('../../dao/AdapterDao');
 const logger = require('../../logger');
 const ServerService = require('../server/ServerService');
 const ConfigService = require('../config/ConfigService');
+const AuthService = require('../auth/AuthService');
 const _ = require('lodash');
 const util = require('../../tools/util')
 
@@ -47,7 +48,7 @@ ExpandService.expand = async(params) => {
     let sourceAdapters = await AdapterDao.getAdapterConf(application, serverName, params.node_name) || [];
     sourceServer = sourceServer && sourceServer.dataValues || {};
     let addServers = [];
-    for(var i  = 0; i< params.expand_preview_servers.length; i++){
+    for (var i = 0; i < params.expand_preview_servers.length; i++) {
         let preServer = params.expand_preview_servers[i];
         let serverConf = await ServerDao.getServerConfByName(application, serverName, preServer.node_name);
         if (!serverConf) {
@@ -92,7 +93,7 @@ ExpandService.expand = async(params) => {
                 });
                 return sourceAdapter;
             })(application, serverName, params.node_name, preServer.obj_name);
-            if(_.isEmpty(sourceAdapter)){
+            if (_.isEmpty(sourceAdapter)) {
                 return;
             }
             let adapter = {
@@ -116,6 +117,82 @@ ExpandService.expand = async(params) => {
         }
     }
     return addServers;
+};
+
+ExpandService.formatToArray = (list, key)=> {
+    let rst = [];
+    list.forEach((item) => {
+        rst.push(item[key]);
+    });
+    return rst;
+};
+
+ExpandService.getApplication = async(uid) => {
+    if (await AuthService.hasAdminAuth(uid)) {
+        return ExpandService.formatToArray(await ServerDao.getApplication(), 'application');
+    } else {
+        let authList = await AuthService.getAuthListByUid(uid);
+        let appList = [];
+        authList.forEach((auth)=> {
+            let flag = auth.flag;
+            let idx = flag.indexOf('.');
+            if (idx > -1) {
+                appList.push(flag.substring(0, idx));
+            } else {
+                appList.push(flag);
+            }
+        });
+        return _.uniq(appList);
+    }
+};
+
+ExpandService.getServerName = async(application, uid) => {
+    if (await AuthService.hasAdminAuth(uid)) {
+        return ExpandService.formatToArray(await ServerDao.getServerName(application), 'server_name');
+    } else {
+        let authList = await AuthService.getAuthListByUid(uid);
+        let serverList = [];
+        for (var i = 0; i < authList.length; i++) {
+            let auth = authList[i];
+            let flag = auth.flag;
+            let idx = flag.indexOf('.');
+            if (idx > -1) {
+                if (flag.substring(0, idx) == application) {
+                    serverList.push(flag.substring(idx + 1));
+                }
+            } else if (flag == application) {
+                let serverConfs = await ServerDao.getServerConf({
+                    application: application
+                });
+                serverConfs.forEach((serverConf)=> {
+                    serverConf = serverConf.dataValues;
+                    serverList.push(serverConf.server_name);
+                })
+            }
+        }
+        return _.uniq(serverList);
+    }
+};
+
+ExpandService.getSet = async(application, serverName) => {
+    return ExpandService.formatToArray(await ServerDao.getSet(application, serverName), 'set');
+};
+
+ExpandService.getNodeName = async(application, serverName, set)=> {
+    let params = {
+        application: application,
+        serverName: serverName
+    };
+    if (!_.isEmpty(set)) {
+        params.enableSet = true;
+        let setObj = set.split('.');
+        params.setName = setObj[0] || '';
+        params.setArea = setObj[1] || '';
+        params.setGroup = setObj[2] || ''
+    } else {
+        params.enableSet = false;
+    }
+    return ExpandService.formatToArray(await ServerDao.getNodeName(params), 'node_name');
 };
 
 module.exports = ExpandService;
