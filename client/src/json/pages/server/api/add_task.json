@@ -1,0 +1,25 @@
+{
+  "ret_code": 200,
+  "data":
+  {
+    "task_no": "1738f1f020604e2286ee04580ed2c56c",
+    "serial": false,
+    "status": 1,
+    "items": [
+    {
+      "task_no": "1738f1f020604e2286ee04580ed2c56c",
+      "item_no": "40b523dfd2214129ac555b5627aeb5da",
+      "application": "testzhifei",
+      "server_name": "testzhifei",
+      "node_name": "172.16.0.161",
+      "command": "restart",
+      "parameters":
+      {},
+      "start_time": "2018-03-29 15:16:13",
+      "end_time": null,
+      "status": 1,
+      "status_info": "EM_I_RUNNING",
+      "execute_log": null
+    }]
+  }
+}

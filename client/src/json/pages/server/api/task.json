@@ -1,0 +1,25 @@
+{
+  "ret_code": 200,
+  "data":
+  {
+    "task_no": "0f8ee45527f24ca2916bcbb09e00c159",
+    "serial": false,
+    "status": 2,
+    "items": [
+    {
+      "task_no": "0f8ee45527f24ca2916bcbb09e00c159",
+      "item_no": "4425862f6dc641edb00edf5b61ca6c20",
+      "application": "tars",
+      "server_name": "tarslog",
+      "node_name": "172.16.0.161",
+      "command": "restart",
+      "parameters":
+      {},
+      "start_time": "2018-03-29 15:36:38",
+      "end_time": "2018-03-29 15:36:39",
+      "status": 2,
+      "status_info": "EM_I_SUCCESS",
+      "execute_log": "startServer [tars.tarslog] from 172.16.0.161 :server is activating, please wait ...|"
+    }]
+  }
+}

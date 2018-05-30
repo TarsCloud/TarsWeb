@@ -1,0 +1,157 @@
+{
+  "ret_code": 200,
+  "err_msg": "oooo",
+  "data": [
+  {
+    "id": "1TestApp",
+    "name": "TestApp",
+    "pid": "root",
+    "is_parent": true,
+    "open": true,
+    "children": [
+    {
+      "id": "1TestApp.5HelloServer",
+      "name": "HelloServer",
+      "pid": "1TestApp",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    },
+    {
+      "id": "1TestApp.5HttpServer",
+      "name": "HttpServer",
+      "pid": "1TestApp",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    }]
+  },
+  {
+    "id": "1readx",
+    "name": "readx",
+    "pid": "root",
+    "is_parent": true,
+    "open": true,
+    "children": [
+    {
+      "id": "1readx.2set",
+      "name": "set",
+      "pid": "1readx",
+      "is_parent": true,
+      "open": true,
+      "children": [
+      {
+        "id": "1readx.2set.3set",
+        "name": "set",
+        "pid": "1readx.2set",
+        "is_parent": true,
+        "open": true,
+        "children": [
+        {
+          "id": "1readx.2set.3set.41",
+          "name": "1",
+          "pid": "1readx.2set.3set",
+          "is_parent": true,
+          "open": true,
+          "children": [
+          {
+            "id": "1readx.2set.3set.41.5pc",
+            "name": "pc",
+            "pid": "1readx.2set.3set.41",
+            "is_parent": false,
+            "open": false,
+            "children": []
+          }]
+        }]
+      }]
+    }]
+  },
+  {
+    "id": "1tars",
+    "name": "tars",
+    "pid": "root",
+    "is_parent": true,
+    "open": true,
+    "children": [
+    {
+      "id": "1tars.5tarsconfig",
+      "name": "tarsconfig",
+      "pid": "1tars",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    },
+    {
+      "id": "1tars.5tarslog",
+      "name": "tarslog",
+      "pid": "1tars",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    },
+    {
+      "id": "1tars.5tarsnotify",
+      "name": "tarsnotify",
+      "pid": "1tars",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    },
+    {
+      "id": "1tars.5tarspatch",
+      "name": "tarspatch",
+      "pid": "1tars",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    },
+    {
+      "id": "1tars.5tarsproperty",
+      "name": "tarsproperty",
+      "pid": "1tars",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    },
+    {
+      "id": "1tars.5tarsqueryproperty",
+      "name": "tarsqueryproperty",
+      "pid": "1tars",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    },
+    {
+      "id": "1tars.5tarsquerystat",
+      "name": "tarsquerystat",
+      "pid": "1tars",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    },
+    {
+      "id": "1tars.5tarsstat",
+      "name": "tarsstat",
+      "pid": "1tars",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    }]
+  },
+  {
+    "id": "1testzhifei",
+    "name": "testzhifei",
+    "pid": "root",
+    "is_parent": true,
+    "open": true,
+    "children": [
+    {
+      "id": "1testzhifei.5testzhifei",
+      "name": "testzhifei",
+      "pid": "1testzhifei",
+      "is_parent": false,
+      "open": false,
+      "children": []
+    }]
+  }]
+}

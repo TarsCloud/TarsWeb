@@ -1,0 +1,10 @@
+{
+    "ret_code": 200,
+    "data": {
+        "id": 353,
+        "template_name": "tars.default",
+        "parents_name": "tars.default",
+        "profile": "<tars>\n    <application>\n    #是否启用SET分组\n    enableset=${enableset}\n    #SET分组的全名.(mtt.s.1)\n    setdivision=${setdivision}\n    <client>\n        #地址\n        locator =${locator}\n        #同步调用超时时间,缺省3s(毫秒)\n        sync-invoke-timeout = 3000\n        #异步超时时间,缺省5s(毫秒)\n        async-invoke-timeout =5000\n        #重新获取服务列表时间间隔(毫秒)\n        refresh-endpoint-interval = 60000\n        #模块间调用服务[可选]\n        stat            = tars.tarsstat.StatObj\n        #属性上报服务[可选]\n        property                    = tars.tarsproperty.PropertyObj\n        #上报间隔时间,默认60s(毫秒)\n        report-interval            = 60000\n        #stat采样比1:n 例如sample-rate为1000时 采样比为千分之一\n         sample-rate = 100000\n        #1分钟内stat最大采样条数\n         max-sample-count = 50\n\n        #网络异步回调线程个数\n        asyncthread      = ${asyncthread}\n        #模块名称\n        modulename      = ${modulename}\n    </client>\n        \n    #定义所有绑定的IP\n    <server>\n        #应用名称\n        app      = ${app}\n        #服务名称\n        server  = ${server}\n        #本地ip\n       localip  = ${localip}\n\n        #本地管理套接字[可选]\n        local  = ${local}\n        #服务的数据目录,可执行文件,配置文件等\n        basepath = ${basepath}\n        #\n        datapath = ${datapath}\n        #日志路径\n        logpath  = ${logpath}\n        #日志大小\n        logsize = 10M\n        #日志数量\n        #   lognum = 10\n        #配置中心的地址[可选]\n        config  = tars.tarsconfig.ConfigObj\n        #信息中心的地址[可选]\n        notify  = tars.tarsnotify.NotifyObj\n        #远程LogServer[可选]\n        log = tars.tarslog.LogObj\n        #关闭服务时等待时间\n         deactivating-timeout = 3000\n        #滚动日志等级默认值\n   logLevel=DEBUG\n    </server>          \n    </application>\n    </tars>",
+        "posttime": "2018-03-26 21:34:47"
+    }
+}
