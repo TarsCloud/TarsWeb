@@ -51,7 +51,7 @@ async function call(params, the) {
         indexs : ['succ_count', 'timeout_count', 'exce_count', 'total_time']
     };
     let addrs = await AdminService.getEndpoints("tars.tarsquerystat.NoTarsObj");
-    addrs = [['localhost','80']]; // 测试的,假定真实环境传给我这样的数据结构
+    //addrs = [['localhost','80']]; // 测试的,假定真实环境传给我这样的数据结构
     if(!addrs || !addrs.length) {
         logger.error('[AdminService.getEndpoints]:','tars.tarsquerystat.NoTarsObj not found');
         console.error('[AdminService.getEndpoints]:','tars.tarsquerystat.NoTarsObj not found');

@@ -6,7 +6,7 @@ const PatchService = require('../../service/patch/PatchService');
 const WebConf = require('../../../config/webConf');
 const util = require('../../tools/util');
 const fs = require('fs-extra');
-const md5 = require('md5-file').sync;
+const md5Sum = require('md5-file').sync;
 
 
 const PatchController = {};
@@ -23,7 +23,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
         // 发布包上传目录
         let updateTgzPath = `${baseUploadPath}/${application}/${server_name}`;
         await fs.ensureDirSync(updateTgzPath);
-        let hash = md5(`${baseUploadPath}/${file.filename}`);
+        let hash = md5Sum(`${baseUploadPath}/${file.filename}`);
         if(md5 && md5!=hash) {
             return ctx.makeErrResObj(500,'#patch.md5#');
         }
