@@ -86,10 +86,8 @@ ServerController.getServerConfList4Tree = async(ctx) => {
     let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
     try {
         let params = ServerController.formatTreeNodeId(treeNodeId);
-        if (!await AuthService.hasDevAuth(params.application, params.serverName, ctx.uid)) {
-            ctx.makeNotAuthResObj();
-        } else {
-            let rst = await ServerService.getServerConfList4Tree({
+        if(await AuthService.hasAdminAuth(ctx.uid)){
+            ctx.makeResObj(200, '', util.viewFilter(await ServerService.getServerConfList4Tree({
                 application: params.application,
                 serverName: params.serverName,
                 enableSet: params.enableSet,
@@ -98,6 +96,45 @@ ServerController.getServerConfList4Tree = async(ctx) => {
                 setGroup: params.setGroup,
                 curPage: curPage || 0,
                 pageSize: pageSize || 0
+            }), serverConfStruct));
+        }else if (params.application && params.serverName) {   //若在服务页面，则直接检测是否有权限
+            if (!await AuthService.hasDevAuth(params.application, params.serverName, ctx.uid)) {
+                ctx.makeNotAuthResObj();
+            } else {
+                ctx.makeResObj(200, '', util.viewFilter(await ServerService.getServerConfList4Tree({
+                    application: params.application,
+                    serverName: params.serverName,
+                    enableSet: params.enableSet,
+                    setName: params.setName,
+                    setArea: params.setArea,
+                    setGroup: params.setGroup,
+                    curPage: curPage || 0,
+                    pageSize: pageSize || 0
+                }), serverConfStruct));
+            }
+        } else {   //若非服务页面，比如应用页面，set页面，需先获取用户相关权限进行合并
+            let serverList = await ServerService.getServerConfList4Tree({
+                application: params.application,
+                setName: params.setName,
+                setArea: params.setArea,
+                setGroup: params.setGroup,
+                curPage: curPage || 0,
+                pageSize: pageSize || 0
+            });
+            let authList = await AuthService.getAuthListByUid(ctx.uid);
+            let rst = [];
+            _.each(authList, (auth)=> {
+                let application = auth.application;
+                let serverName = auth.serverName;
+                if (!serverName && application == params.application) {
+                    rst = serverList;
+                    return false;
+                }
+                serverList.forEach((server)=>{
+                    if(server.application == application && server.server_name == serverName){
+                        rst.push(server);
+                    }
+                });
             });
             ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
         }
@@ -108,7 +145,7 @@ ServerController.getServerConfList4Tree = async(ctx) => {
 };
 
 ServerController.formatTreeNodeId = (treeNodeId) => {
-    let serverConf = {enableSet: 'N'};
+    let serverConf = {};
     treeNodeId = treeNodeId.split('.');
     treeNodeId.forEach((s)=> {
         let i = parseInt(s.substring(0, 1));
@@ -180,7 +217,7 @@ ServerController.getRealtimeState = async(ctx)=> {
 };
 
 ServerController.updateServerConf = async(ctx) => {
-    try{
+    try {
         let updateServer = ctx.paramsObj;
         let server = await ServerService.getServerConfById(updateServer.id);
         if (!_.isEmpty(server)) {
@@ -205,7 +242,7 @@ ServerController.updateServerConf = async(ctx) => {
             logger.error('[updateServerConf]', '未查询到id=' + updateServer.id + '相应的服务');
             ctx.makeErrResObj();
         }
-    }catch(e){
+    } catch (e) {
         logger.error('[updateServerConf]', e);
         ctx.makeErrResObj();
     }
