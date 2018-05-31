@@ -70,7 +70,7 @@ const apiConf = [
     // 服务配置接口
     ['get', '/unused_config_file_list', ConfigController.getUnusedApplicationConfigFile],
     ['get', '/config_file_list', ConfigController.configFileList, {level:'number', application:'notEmpty'}],
-    ['post', '/add_config_file', ConfigController.addConfigFile, {level:'number', application:'notEmpty', server_name:'notEmpty', filename:'notEmpty',config:'notEmpty'}],
+    ['post', '/add_config_file', ConfigController.addConfigFile, {level:'number', application:'notEmpty', filename:'notEmpty',config:'notEmpty'}],
     ['get', '/delete_config_file', ConfigController.deleteConfigFile,  {id: 'number'}],
     ['post', '/update_config_file', ConfigController.updateConfigFile,{id:'number',config:'notEmpty',reason:'notEmpty'}],
     ['get', '/config_file', ConfigController.configFile,  {id: 'number'}],
