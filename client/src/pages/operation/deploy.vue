@@ -301,15 +301,15 @@ export default {
         const loading = this.$Loading.show();
         var adapters = this.model.adapters;
         var bindIps = [];
-        adapters.forEach((adapter)=>{
+        adapters.forEach((adapter) => {
           bindIps.push(adapter.bind_ip);
         });
         this.$ajax.getJSON('/server/api/auto_port', {node_name: bindIps.join(';')}).then((data) => {
             loading.hide();
-            for(var i = 0; i< data.length; i++){
-              this.$set(adapters[i], 'port', String(data[i].port || ''))
-            }
-        }).catch(function(err){
+            data.forEach((node, index) => {
+              this.$set(adapters[index], 'port', String(node.port || ''));
+            });
+        }).catch((err) => {
           loading.hide();
           this.$tip.error(`自动获取端口失败: ${err.message || err.err_msg}`);
         });

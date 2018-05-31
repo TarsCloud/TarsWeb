@@ -13,6 +13,12 @@
         <let-tab-pane tab="运维管理" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
       </let-tabs>
 
+      <div class="language-wrap">
+        <let-select v-model="locale" @change="changeLocale">
+          <let-option value="cn">中文</let-option>
+          <let-option value="en">英文</let-option>
+        </let-select>
+      </div>
       <div class="user-wrap">
         <p class="user-info" @click="userOptOpen = !userOptOpen">
           <!--<img class="avatar" src="http://e.hiphotos.baidu.com/baike/w%3D268/sign=de2ee49318d5ad6eaaf963ecb9ca39a3/79f0f736afc379310660597ee8c4b74543a91158.jpg">-->
@@ -35,6 +41,7 @@ export default {
       // 图标
       serverIcon,
       opaIcon,
+      locale: 'cn',
       uid: '--',
       userOptOpen: false,
     };
@@ -54,7 +61,10 @@ export default {
       }).catch((err) => {
           this.$tip.error(`获取用户登录信息: ${err.err_msg || err.message}`);
       });
-    }
+    },
+    changeLocale(){
+      console.log(this.locale);
+    },
   },
   mounted() {
     this.getLoginUid();
@@ -76,7 +86,7 @@ export default {
   .tabs .let-tabs__header {
     border-bottom: none;
   }
-  .logo-wrap, .user-wrap {
+  .logo-wrap, .user-wrap ,.language-wrap {
     position: absolute;
     top: 0;
     height: 80px;
@@ -90,8 +100,14 @@ export default {
       height: 100%;
     }
   }
+  .language-wrap{
+    right: 150px;
+    width: 150px;
+    padding-top: 20px;
+  }
   .user-wrap {
     right: 0;
+    width: 150px;
     text-align: right;
 
     .user-info {
