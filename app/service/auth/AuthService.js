@@ -74,11 +74,37 @@ AuthService.getAuthListByUid = async(uid)=> {
         uid: uid
     });
     if (rst && rst.ret_code == 200) {
-        return rst.data || [];
+        let list = rst.data;
+        let authList = [];
+        list.forEach((auth)=>{
+            let flag = auth.flag;
+            let idx = flag.indexOf('.');
+            if(idx > 1){
+                authList.push({application: flag.substring(0, idx), serverName: flag.substring(idx + 1)})
+            }else{
+                authList.push({application: flag})
+            }
+        });
+        return authList || [];
     } else {
         throw (new Error(rst.err_msg));
     }
 };
+
+//
+// AuthService.getAuthListByUid = async(uid)=> {
+//     if (!enableAuth) {
+//         return [];
+//     }
+//     var rst = await util.jsonRequest.get(authUrlPrefix + getAuthListByUidUrl, {
+//         uid: uid
+//     });
+//     if (rst && rst.ret_code == 200) {
+//         return rst.data || [];
+//     } else {
+//         throw (new Error(rst.err_msg));
+//     }
+// };
 
 AuthService.formatUidToArray = (uids)=> {
     let uidArr = [];

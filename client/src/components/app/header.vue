@@ -14,7 +14,7 @@
       </let-tabs>
 
       <div class="language-wrap">
-        <let-select v-model="locale" @change="changeLocale">
+        <let-select v-model="locale" @change="changeLocale" :clearable="false">
           <let-option value="cn">中文</let-option>
           <let-option value="en">英文</let-option>
         </let-select>

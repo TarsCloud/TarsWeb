@@ -13,12 +13,15 @@ TreeService.getTreeNodes = async(uid) => {
         let appCond = [];
         let serverCond = [];
         let authList = await AuthService.getAuthListByUid(uid);
+
+        console.log(authList);
         authList.forEach((auth)=>{
-            let appServer = auth.flag;
-            if(appServer.indexOf('.') > -1){
-                serverCond.push(appServer);
+            let application = auth.application;
+            let serverName = auth.serverName;
+            if(serverName){
+                serverCond.push(application + '.' + serverName);
             }else{
-                appCond.push(appServer);
+                appCond.push(application);
             }
         });
         serverList = await ServerDao.getServerConf4Tree(appCond, serverCond);

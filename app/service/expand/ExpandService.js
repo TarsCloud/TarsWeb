@@ -134,13 +134,8 @@ ExpandService.getApplication = async(uid) => {
         let authList = await AuthService.getAuthListByUid(uid);
         let appList = [];
         authList.forEach((auth)=> {
-            let flag = auth.flag;
-            let idx = flag.indexOf('.');
-            if (idx > -1) {
-                appList.push(flag.substring(0, idx));
-            } else {
-                appList.push(flag);
-            }
+            let application = auth.application;
+            appList.push(application);
         });
         return _.uniq(appList);
     }
@@ -154,13 +149,13 @@ ExpandService.getServerName = async(application, uid) => {
         let serverList = [];
         for (var i = 0; i < authList.length; i++) {
             let auth = authList[i];
-            let flag = auth.flag;
-            let idx = flag.indexOf('.');
-            if (idx > -1) {
-                if (flag.substring(0, idx) == application) {
-                    serverList.push(flag.substring(idx + 1));
+            let authApplication = auth.application;
+            let authServerName = auth.serverName;
+            if(authServerName){
+                if(authApplication == application){
+                    serverList.push(authServerName);
                 }
-            } else if (flag == application) {
+            }else if(authApplication == application){
                 let serverConfs = await ServerDao.getServerConf({
                     application: application
                 });
