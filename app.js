@@ -30,7 +30,7 @@ app.use(views(__dirname + '/views', {
 
 app.use(bodyparser());
 
-app.use(upload.single('suse'));
+app.use(upload.single('suse')); //这里决定了上传包的name只能叫suse。
 
 //前置中间件
 preMidware.forEach((midware)=>{
