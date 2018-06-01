@@ -15,7 +15,12 @@ let cookieConfig = {
 
 //登录校验中间件
 module.exports = async(ctx, next) => {
-    if(!loginConf.enableLogin){
+    if(ctx.request.path === '/logout'){
+        ctx.cookies.set(loginConf.ticketCookieName || 'ticket', null);
+        ctx.cookies.set(loginConf.uidCookieName || 'uid', null);
+        ctx.redirect('/');
+        return;
+    } else if(!loginConf.enableLogin){
         ctx.uid = loginConf.defaultLoginUid;
         await next();
     }else if (isInPath(ctx, ignoreList)) {  //跳过用户配置的不需要验证的url
