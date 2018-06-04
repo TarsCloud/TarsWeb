@@ -8,6 +8,8 @@ import ServerPublish from '@/pages/server/publish';
 import ServerConfig from '@/pages/server/config';
 import ServerServerMonitor from '@/pages/server/monitor-server';
 import ServerPropertyMonitor from '@/pages/server/monitor-property';
+import userManage from '@/pages/server/user-manage';
+
 // 运维管理
 import Operation from '@/pages/operation/index';
 import OperationDeploy from '@/pages/operation/deploy';
@@ -42,6 +44,10 @@ export default new Router({
         {
           path: ':treeid/property-monitor',
           component: ServerPropertyMonitor,
+        },
+        {
+          path: ':treeid/user-manage',
+          component: userManage,
         },
       ],
     },

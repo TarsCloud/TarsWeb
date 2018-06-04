@@ -69,6 +69,23 @@
         ></SetInputer>
       </let-form-item>
 
+      <let-form-item label="运维人员" v-show="enableAuth">
+        <let-input
+          size="small"
+          v-model="model.operator"
+          placeholder="运维人员，多个人员用分号隔开"
+        ></let-input>
+      </let-form-item>
+
+      <let-form-item label="开发人员" v-show="enableAuth">
+        <let-input
+          size="small"
+          v-model="model.developer"
+          placeholder="开发人员，多个人员用分号隔开"
+        ></let-input>
+
+      </let-form-item>
+
       <let-table :data="model.adapters">
         <let-table-column title="OBJ名称">
           <template slot="head" slot-scope="props">
@@ -232,6 +249,8 @@ const getInitialModel = () => ({
   set_name: '',
   set_area: '',
   set_group: '',
+  operator: '',
+  developer: '',
   adapters: [{
     obj_name: '',
     bind_ip: '',
@@ -257,10 +276,17 @@ export default {
       types,
       templates: [],
       model: getInitialModel(),
+      enableAuth: false,
     };
   },
 
   mounted() {
+    this.$ajax.getJSON('/server/api/is_enable_auth').then((data) => {
+      this.enableAuth = data.enableAuth || false;
+    }).catch((err)=>{
+
+    });
+
     this.$ajax.getJSON('/server/api/template_name_list').then((data) => {
       this.templates = data;
       this.model.template_name = data[0];

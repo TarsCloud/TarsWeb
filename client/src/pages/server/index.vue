@@ -38,6 +38,8 @@
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/property-monitor'" tab="特性监控"
           v-if="serverData.level === 5"></let-tab-pane>
+        <let-tab-pane :tabkey="base + '/user-manage'" tab="用户权限管理"
+                      v-if="serverData.level === 5"></let-tab-pane>
       </let-tabs>
 
       <router-view ref="childView" class="page_server_child" :key="$route.params.treeid"></router-view>
@@ -178,7 +180,7 @@ export default {
       let shouldRedirect = false;
       // publish、server-monitor、property-monitor 只有 level 5 可访问
       if (this.serverData.level !== 5 &&
-        (route === 'publish' || route === 'server-monitor' || route === 'property-monitor')) {
+        (route === 'publish' || route === 'server-monitor' || route === 'property-monitor' || route === 'user-manage')) {
         shouldRedirect = true;
       }
       // config 有 level 5、4、1 可访问

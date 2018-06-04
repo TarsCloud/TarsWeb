@@ -108,11 +108,13 @@ const apiConf = [
     ['get', '/install_tars_node', ResourceController.installTarsNode, {ips: 'notEmpty'}],
 
     //权限管理
+    ['get', '/is_enable_auth', AuthController.isEnableAuth],
     ['get', '/get_auth_list', AuthController.getAuthList],
     ['get', '/update_auth', AuthController.updateAuth, {application: 'notEmpty', server_name: 'notEmpty', operator: 'notEmpty', developer: 'notEmpty'}],
+    ['get', '/has_auth', AuthController.hasAuth, {application: 'notEmpty', role: 'notEmpty'}],
 
     //登录管理
-    ['get', '/get_login_uid', LoginController.getLoginUid],
+    ['get', '/get_login_uid', LoginController.getLoginUid]
 ];
 
 module.exports = {pageConf, apiConf};

@@ -24,6 +24,11 @@
           <!--<img class="avatar" src="http://e.hiphotos.baidu.com/baike/w%3D268/sign=de2ee49318d5ad6eaaf963ecb9ca39a3/79f0f736afc379310660597ee8c4b74543a91158.jpg">-->
           <span class="name toe">{{uid}}</span>
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}"></i>
+          <transition name="fade">
+            <div class="user-pop-wrap" v-show="userOptOpen">
+              <a href="/logout">退出登录</a>
+            </div>
+          </transition>
         </p>
       </div>
 
@@ -133,6 +138,23 @@ export default {
         margin-top: 0;
       }
     }
+  }
+
+  .user-pop-wrap{
+    position: absolute;
+    right: 20px;
+    top: 55px;
+    border: 1px solid #d7dae0;
+    border-radius: 4px;
+    padding: 10px;
+    background:#FFF;
+    font-size: 12px;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .4s;
+  }
+  .fade-enter, .fade-leave-to{
+    opacity: 0;
   }
 }
 </style>
