@@ -9,7 +9,7 @@
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
-        <let-tab-pane tab="服务管理" tabkey="/server" :icon="serverIcon"></let-tab-pane>
+        <let-tab-pane :tab="服务管理" tabkey="/server" :icon="serverIcon"></let-tab-pane>
         <let-tab-pane tab="运维管理" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
       </let-tabs>
 
@@ -22,7 +22,7 @@
       <div class="user-wrap">
         <p class="user-info" @click="userOptOpen = !userOptOpen">
           <!--<img class="avatar" src="http://e.hiphotos.baidu.com/baike/w%3D268/sign=de2ee49318d5ad6eaaf963ecb9ca39a3/79f0f736afc379310660597ee8c4b74543a91158.jpg">-->
-          <span class="name toe">{{uid}}</span>
+          <span class="name toe">{{uid}} </span>
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}"></i>
           <transition name="fade">
             <div class="user-pop-wrap" v-show="userOptOpen">
