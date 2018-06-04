@@ -9,14 +9,14 @@
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
-        <let-tab-pane :tab="服务管理" tabkey="/server" :icon="serverIcon"></let-tab-pane>
-        <let-tab-pane tab="运维管理" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
       </let-tabs>
 
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
-          <let-option value="cn">中文</let-option>
-          <let-option value="en">英文</let-option>
+          <let-option value="cn">{{$t('header.select.cn')}}</let-option>
+          <let-option value="en">{{$t('header.select.en')}}</let-option>
         </let-select>
       </div>
       <div class="user-wrap">
@@ -46,7 +46,7 @@ export default {
       // 图标
       serverIcon,
       opaIcon,
-      locale: 'cn',
+      locale: this.$cookie.get('locale'),
       uid: '--',
       userOptOpen: false,
     };
@@ -68,7 +68,8 @@ export default {
       });
     },
     changeLocale(){
-      console.log(this.locale);
+      this.$cookie.set('locale', this.locale, {expires: '1Y'});
+      this.$i18n.locale = this.locale;
     },
   },
   mounted() {
