@@ -3,7 +3,7 @@ const {
     authUrlPrefix,
     addAuthUrl,
     deleteAuthUrl,
-    modifyAuthUrl,
+    updateAuthUrl,
     getAuthListByUidUrl,
     getAuthUrl,
     getAuthListByFlagUrl,
@@ -146,7 +146,7 @@ AuthService.addAuth = async(application, serverName, operator, developer) => {
     }
 };
 
-AuthService.modifyAuth = async(application, serverName, operator, developer)=> {
+AuthService.updateAuth = async(application, serverName, operator, developer)=> {
     if (!enableAuth) {
         return true;
     }
@@ -154,8 +154,8 @@ AuthService.modifyAuth = async(application, serverName, operator, developer)=> {
     operator = AuthService.formatUidToArray(operator);
     developer = AuthService.formatUidToArray(developer);
     let rst = await Promise.all([
-        util.jsonRequest.post(authUrlPrefix + modifyAuthUrl, {flag: flag, role: 'operator', uid: operator}),
-        util.jsonRequest.post(authUrlPrefix + modifyAuthUrl, {flag: flag, role: 'developer', uid: developer})
+        util.jsonRequest.post(authUrlPrefix + updateAuthUrl, {flag: flag, role: 'operator', uid: operator}),
+        util.jsonRequest.post(authUrlPrefix + updateAuthUrl, {flag: flag, role: 'developer', uid: developer})
     ]);
     for (var i = 0; i < rst.length; i++) {
         if (!rst[i] || rst[i].ret_code != 200) {

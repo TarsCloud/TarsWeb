@@ -57,7 +57,7 @@ AuthController.updateAuth = async(ctx) => {
         let serverName = ctx.paramsObj.server_name;
         let operator = ctx.paramsObj.operator || '';
         let developer = ctx.paramsObj.developer || '';
-        await AuthService.modifyAuth(application, serverName, operator, developer);
+        await AuthService.updateAuth(application, serverName, operator, developer);
         ctx.makeResObj(200, '', {});
     }catch(e){
         logger.error('[getUidList]', e);

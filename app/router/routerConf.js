@@ -110,7 +110,7 @@ const apiConf = [
     //权限管理
     ['get', '/is_enable_auth', AuthController.isEnableAuth],
     ['get', '/get_auth_list', AuthController.getAuthList],
-    ['get', '/update_auth', AuthController.updateAuth, {application: 'notEmpty', server_name: 'notEmpty', operator: 'notEmpty', developer: 'notEmpty'}],
+    ['post', '/update_auth', AuthController.updateAuth, {application: 'notEmpty', server_name: 'notEmpty', operator: 'notEmpty', developer: 'notEmpty'}],
     ['get', '/has_auth', AuthController.hasAuth, {application: 'notEmpty', role: 'notEmpty'}],
 
     //登录管理
