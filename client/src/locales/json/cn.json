@@ -1,0 +1,441 @@
+{
+  "tab": {
+    "main": {
+      "server": {
+        "manage": "服务管理"
+      },
+      "ops": {
+        "manage": "运维管理"
+      }
+    }
+  },
+  "java": {
+    "blank": {
+      "error": {
+        "message": "错误码详细说明为空"
+      },
+      "template": {
+        "id": "模板ID为空",
+        "name": "模板名称为空"
+      },
+      "parent": {
+        "template": {
+          "name": "父模板名称为空"
+        }
+      }
+    },
+    "create": {
+      "config": {
+        "file": "创建配置文件"
+      }
+    },
+    "config": {
+      "file": {
+        "being": {
+          "referred": "配置文件被引用"
+        }
+      }
+    },
+    "cant": {
+      "delete": {
+        "or": {
+          "update": "不能更新/删除"
+        }
+      },
+      "update": "不能更新"
+    },
+    "nonexistent": {
+      "template": "模板不存在",
+      "parent": {
+        "template": "父模板不存在"
+      },
+      "multipart": "请求中没有上传数据"
+    },
+    "template": {
+      "being": {
+        "referred": "模板被引用"
+      }
+    },
+    "expand": {
+      "node": {
+        "status": {
+          "existent": "已存在",
+          "nonexistent": "未扩容"
+        }
+      }
+    },
+    "parameter": {
+      "blank": "参数{0}为空",
+      "invalid": "参数{0}格式错误"
+    },
+    "execute": {
+      "package": {
+        "script": {
+          "error": "执行安装包打包命令报错"
+        }
+      }
+    }
+  },
+  "common": {
+    "config": "设置",
+    "patch": "发布",
+    "service": "服务",
+    "time": "时间",
+    "name": "名",
+    "true": "是",
+    "false": "否",
+    "template": "模板",
+    "type": "类型",
+    "cancel": "取消",
+    "submit": "确定",
+    "status": "状态",
+    "result": "结果",
+    "error": "错误",
+    "ip": "节点",
+    "nodata": "没有数据"
+  },
+  "operate": {
+    "update": "编辑",
+    "undeploy": "下线",
+    "restart": "重启",
+    "stop": "停止",
+    "add": "添加",
+    "manage": "管理",
+    "delete": "删除",
+    "more": "更多命令",
+    "operates": "操作",
+    "view": "查看",
+    "search": "查询"
+  },
+  "index": {
+    "tab": {
+      "manage": "服务管理",
+      "patch": "发布管理",
+      "config": "服务配置",
+      "setConfig": "SET配置",
+      "appConfig": "应用配置",
+      "serviceMonitor": "服务监控",
+      "propertyMonitor": "特性监控"
+    }
+  },
+  "serverList": {
+    "title": {
+      "serverList": "服务列表",
+      "serverStatus": "服务实时状态"
+    },
+    "table": {
+      "th": {
+        "service": "服务",
+        "ip": "节点",
+        "enableSet": "启用Set",
+        "setName": "Set名",
+        "setArea": "Set区域",
+        "setGroup": "Set组",
+        "configStatus": "设置状态",
+        "currStatus": "当前状态",
+        "processID": "进程ID",
+        "version": "版本",
+        "time": "发布时间",
+        "threadID": "线程ID",
+        "result": "结果"
+      },
+      "servant": {
+        "adress": "绑定地址",
+        "thread": "线程数",
+        "maxConnecttions": "最大<br>连接数",
+        "maxQueue": "队列<br>最大长度",
+        "timeout": "队列超时<br>时间"
+      }
+    },
+    "dlg": {
+      "service": {
+        "deployIP": "部署节点"
+      },
+      "standby": "是否备机",
+      "placeholder": {
+        "english": "全英文，全小写",
+        "num": "数字或者*号",
+        "thread": "NodeJS的>=1，其他>=3"
+      },
+      "asyncThread": "异步线程数",
+      "defaultPath": "缺省路径",
+      "exePath": "EXE路径",
+      "startScript": "启动脚本",
+      "stopScript": "停止脚本",
+      "monitorScript": "监控脚本",
+      "privateTemplate": "私有模板",
+      "errMsg": {
+        "required": "所有打星号的必须填写",
+        "setName": "Set名只能为英文字母，且必须小写",
+        "setArea": "Set区域只能为英文字母，且必须小写",
+        "setGroup": "Set组必须为数字或*号",
+        "defaultPath": "缺省路径格式错误，必须为绝对路径",
+        "exePath": "EXE路径格式错误，必须为绝对路径",
+        "startScript": "启动脚本格式错误，必须为绝对路径",
+        "stopScript": "停止脚本格式错误，必须为绝对路径",
+        "monitorScript": "监控脚本格式错误，必须为绝对路径",
+        "updateSuccess": "服务更新成功",
+        "updateFailed": "服务更新失败"
+      },
+      "msg": {
+        "undeploy": "您确定要下线此服务",
+        "undeployFailed": "下线失败"
+      },
+      "title": {
+        "undeploy": "服务下线",
+        "taskStatus": "任务状态"
+      }
+    },
+    "tips": {
+      "treeid": "请先从左侧业务树选择一个业务",
+      "loadingError": "加载失败",
+      "paramsError": "参数错误",
+      "systemError": "系统错误",
+      "undeploy": "运行中的服务无法下线"
+    },
+    "restart": {
+      "notStart": "未开始",
+      "running": "运行中",
+      "success": "成功",
+      "failed": "失败",
+      "cancel": "取消",
+      "parial": "部分成功",
+      "restartFailed": "重启失败",
+      "restartResult": "重启结果"
+    },
+    "stopService": {
+      "msg": {
+        "stopService": "您确定要停止此服务"
+      }
+    },
+    "servant": {
+      "obj": "OBJ名和绑定地址为必填项",
+      "objen": "OBJ名称必须为全英文",
+      "thread": "线程数必须为数字,且大于0",
+      "error": "绑定地址填写错误!!!  <br>绑定地址格式：以tcp 或者 udp开头，有 -h -t -p 三个参数， -p 0-65535  -t 大于 0  -h ip格式",
+      "ip": "IP格式错误，请重新填写。",
+      "servantAddFailed": "Servant添加失败",
+      "servantUpdateFailed": "Servant更新失败",
+      "a": "您确定要删除这个Servant吗",
+      "deployService": "发布服务",
+      "upload": "上传",
+      "appService": "应用·服务名",
+      "objName": "OBJ名称",
+      "c": "全英文，前面不用加应用·服务名",
+      "numOfThread": "线程数",
+      "BindingAddress": "绑定地址",
+      "sample": "范例",
+      "maxConnecttions": "最大连接数",
+      "lengthOfQueue": "队列长度",
+      "queueTimeout": "队列超时",
+      "allowIP": "允许IP",
+      "protocol": "协议",
+      "notTARS": "非TARS",
+      "treatmentGroup": "处理组",
+      "releasePackage": "发布包",
+      "comment": "备注",
+      "logLevel": "设置日志等级",
+      "pushFile": "PUSH配置文件",
+      "sendCommand": "发送自定义命令",
+      "serviceLink": "查看服务链接",
+      "taskID": "任务ID",
+      "statusCode": "返回的状态码错误，状态码"
+    }
+  },
+  "pub": {
+    "btn": {
+      "pub": "发布选中节点",
+      "history": "历史记录"
+    },
+    "dlg": {
+      "ip": "待发布节点",
+      "defaultValue": "请选择",
+      "a": "请至少选择一个服务节点",
+      "ab": "请选择发布版本"
+    },
+    "tips": {
+      "default": "发布管理只管理服务层级，请您先在左侧业务树选择服务。"
+    }
+  },
+  "cfg": {
+    "title": {
+      "a": "配置列表",
+      "b": "引用文件列表",
+      "c": "节点配置列表"
+    },
+    "btn": {
+      "add": "添加配置",
+      "addRef": "添加引用文件",
+      "pushFile": "PUSH配置文件",
+      "fileName": "文件名称",
+      "content": "文件内容",
+      "resean": "原因",
+      "lastUpdate": "最后修改时间",
+      "mod": "变更内容"
+    },
+    "table": {
+      "modCfg": "修改配置",
+      "delCfg": "删除配置",
+      "delRef": "删除引用",
+      "serviceName": "服务名称",
+      "viewMerge": "查看合并后配置",
+      "viewIpContent": "查看节点内容",
+      "mangeRefFile": "管理引用文件"
+    },
+    "msg": {
+      "chooseCfg": "请先选择服务配置",
+      "refFile": "引用文件",
+      "addError": "添加失败",
+      "delError": "删除失败",
+      "confirm": "您确定要删除这个引用文件吗",
+      "viewContent": "查看内容",
+      "confirmCfg": "您确定要删除这条配置吗",
+      "nofile": "没有文件",
+      "selectNode": "请选择节点"
+    },
+    "dlg": {
+      "fileName": "文件名不能为空",
+      "fileNameReg": "文件名只能包含英文字母或数字、点、下划线、短横线",
+      "contentReg": "文件内容不能为空",
+      "addSucccess": "添加成功"
+    }
+  },
+  "monitor": {
+    "search": {
+      "a": "显示日期",
+      "b": "对比日期",
+      "start": "开始时间",
+      "end": "结束时间",
+      "master": "主调",
+      "slave": "被调",
+      "interfaceName": "接口名",
+      "masterIP": "主调IP",
+      "slaveIP": "被调IP"
+    },
+    "btn": {
+      "submit": "监控曲线"
+    },
+    "msg": {
+      "info": "系统初次搭建时，对比日无数据请将对比日期改成显示日期"
+    },
+    "table": {
+      "curr": "当日总流量",
+      "contrast": "对比日平均耗时",
+      "fluctuating": "同比波动",
+      "average": "当日平均耗时",
+      "abnormal": "当日异常率",
+      "abnormalC": "对比日异常率",
+      "timeout": "当日超时率",
+      "timeoutC": "对比日超时率",
+      "errTips": "监控需要具体到服务，请您先在左侧业务树选择服务。",
+      "a": "平均耗时",
+      "b": "异常率",
+      "c": "超时率"
+    },
+    "select": {
+      "all": "全部",
+      "property": "特性",
+      "strategy": "策略"
+    },
+    "property": {
+      "property": "当日特征值",
+      "propertyC": "对比日特征值"
+    }
+  },
+  "deployService": {
+    "title": {
+      "deploy": "服务部署",
+      "expand": "扩容",
+      "template": "模板管理",
+      "apply": "部署申请"
+    },
+    "form": {
+      "app": "应用",
+      "tips": "无需加应用和服务，如MTT.HttpProxyServer.HttpProxyObj，这里只填HttpProxyObj",
+      "serviceType": "服务类型",
+      "template": "模板",
+      "set": "Set分组",
+      "obj": "OBJ绑定IP",
+      "port": "端口",
+      "portType": "端口类型",
+      "placeholder": "全英文",
+      "portTips": "端口范围0~65535，您的输入超出了范围",
+      "appTips": "应用名不能为空",
+      "serviceTips": "服务名不能为空",
+      "nodeTips": "节点不能为空",
+      "nodeFormatTips": "节点格式不正确，请输入正确的IP地址",
+      "setNameTips": "Set名不能为空",
+      "setAreaTips": "Set区域不能为空",
+      "setNameFormatTips": "Set名只能为英文字母，且必须小写",
+      "setAreaFormatTips": "Set区域只能为英文字母，且必须小写",
+      "setGroupTips": "Set组名不能为空",
+      "setGroupFormatTips": "Set组名只能是数字或*号",
+      "inputTips": "所有*号项都必须填写",
+      "ret": {
+        "success": "布署申请提交成功",
+        "failed": "布署申请提交失败！请联系管理员"
+      },
+      "nameTips": "系统中已存在此服务，请更换应用名，服务名或节点后重试"
+    }
+  },
+  "template": {
+    "search": {
+      "parentTemplate": "父模板名"
+    },
+    "btn": {
+      "addTempate": "新增模板"
+    },
+    "form": {
+      "content": "模板内容"
+    },
+    "add": {
+      "templateNameTips": "模板名不能为空",
+      "templateFormatTips": "模板名只能包含英文字母，数字，并以字母开头",
+      "parentTemplate": "请选择父模板",
+      "content": "请填写模板内容"
+    },
+    "update": {
+      "title": "编辑模板",
+      "errTips": "编辑失败"
+    },
+    "delete": {
+      "confirmTips": "您确定要删除这个模板吗",
+      "title": "删除模板"
+    }
+  },
+  "serviceExpand": {
+    "title": "服务扩容",
+    "form": {
+      "tarIP": "目标IP",
+      "placeholder": "可输入多个IP，以逗号（,）、分号（;）或换行（\\n）分隔",
+      "nodeConfig": "节点配置",
+      "copyNodeConfig": "复制节点配置",
+      "preExpand": "预扩容",
+      "noExpand": "未扩容",
+      "disableSet": "不启用Set",
+      "errTips": {
+        "tarIP": "目标IP不能为空",
+        "preExpand": "扩容失败！请联系管理员",
+        "noneNodes": "请先勾选要扩容的对象",
+        "ipFormat": "请正确填写IP地址",
+        "success": "扩容成功"
+      }
+    }
+  },
+  "historyList": {
+    "title": "发布历史",
+    "table": {
+      "th": {
+        "c2": "是否串行",
+        "c4": "子任务详情"
+      }
+    },
+    "dlg": {
+      "th": {
+        "c1": "子任务ID",
+        "c5": "命令",
+        "c7": "执行信息"
+      }
+    }
+  }
+}
