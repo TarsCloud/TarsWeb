@@ -7,8 +7,8 @@ Vue.use(VueCookie);
 const i18n = new VueI18n({
   locale: VueCookie.get('locale') || 'cn',
   messages: {
-    en : require('./json/en.json'),
-    cn : require('./json/cn.json')
+    en : require('../../../locale/en.json'),
+    cn : require('../../../locale/cn.json')
   }
 });
 
