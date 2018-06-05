@@ -46,7 +46,7 @@ export default {
       // 图标
       serverIcon,
       opaIcon,
-      locale: this.$cookie.get('locale'),
+      locale: this.$cookie.get('locale') || 'cn',
       uid: '--',
       userOptOpen: false,
     };
