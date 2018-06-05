@@ -26,7 +26,7 @@
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}"></i>
           <transition name="fade">
             <div class="user-pop-wrap" v-show="userOptOpen">
-              <a href="/logout">退出登录</a>
+              <a href="/logout">{{$t('header.logout')}}</a>
             </div>
           </transition>
         </p>

@@ -2,54 +2,54 @@
   <div class="page_server_manage">
 
     <!-- 服务列表 -->
-    <let-table v-if="serverList" :data="serverList" title="服务列表" empty-msg="暂无数据" ref="serverListLoading">
-      <let-table-column title="服务" prop="server_name"></let-table-column>
-      <let-table-column title="节点" prop="node_name" width="140px"></let-table-column>
-      <let-table-column title="Set">
+    <let-table v-if="serverList" :data="serverList" :title="$t('manage.services.serviceList.title')" :empty-msg="$t('common.nodata')" ref="serverListLoading">
+      <let-table-column :title="$t('manage.services.serviceList.tableTitle.service')" prop="server_name"></let-table-column>
+      <let-table-column :title="$t('manage.services.serviceList.tableTitle.node')" prop="node_name" width="140px"></let-table-column>
+      <let-table-column :title="$t('manage.services.serviceList.tableTitle.set')">
         <template slot-scope="scope">
-          <span v-if="!scope.row.enable_set">未启用</span>
+          <span v-if="!scope.row.enable_set">{{$t('manage.services.serviceList.tableBody.disableSet')}}</span>
           <p v-else style="max-width: 200px">
-            Set 名：{{scope.row.set_name}}<br>
-            Set 区：{{scope.row.set_area}}<br>
-            Set 组：{{scope.row.set_group}}
+            {{$t('common.set.setName')}}：{{scope.row.set_name}}<br>
+            {{$t('common.set.setArea')}}：{{scope.row.set_area}}<br>
+            {{$t('common.set.setGroup')}}：{{scope.row.set_group}}
           </p>
         </template>
       </let-table-column>
-      <let-table-column title="设置状态" width="72px">
+      <let-table-column :title="$t('manage.services.serviceList.tableTitle.configStat')" width="90px">
         <template slot-scope="scope">
           <span :class="scope.row.setting_state === 'active' ? 'status-active' : 'status-off'"></span>
         </template>
       </let-table-column>
-      <let-table-column title="当前状态" width="72px">
+      <let-table-column :title="$t('manage.services.serviceList.tableTitle.currStat')" width="90px">
         <template slot-scope="scope">
           <span :class="scope.row.present_state === 'active' ? 'status-active' : 'status-off'"></span>
         </template>
       </let-table-column>
-      <let-table-column title="进程 ID" prop="process_id" width="68px"></let-table-column>
-      <let-table-column title="版本" prop="patch_version" width="68px"></let-table-column>
-      <let-table-column title="发布时间">
+      <let-table-column :title="$t('manage.services.serviceList.tableTitle.procId')" prop="process_id" width="80px"></let-table-column>
+      <let-table-column :title="$t('manage.services.serviceList.tableTitle.version')" prop="patch_version" width="68px"></let-table-column>
+      <let-table-column :title="$t('manage.services.serviceList.tableTitle.patchTime')">
         <template slot-scope="scope">
           <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.posttime)}}</span>
         </template>
       </let-table-column>
-      <let-table-column title="操作" width="260px">
+      <let-table-column :title="$t('manage.services.serviceList.tableTitle.operator')" width="260px">
         <template slot-scope="scope">
-          <let-table-operation @click="configServer(scope.row.id)">编辑</let-table-operation>
-          <let-table-operation @click="restartServer(scope.row.id)">重启</let-table-operation>
-          <let-table-operation class="danger" @click="stopServer(scope.row.id)">停止</let-table-operation>
-          <let-table-operation @click="manageServant(scope.row)">管理Servant</let-table-operation>
-          <let-table-operation @click="showMoreCmd(scope.row)">更多命令</let-table-operation>
+          <let-table-operation @click="configServer(scope.row.id)">{{$t('common.opt.edit')}}</let-table-operation>
+          <let-table-operation @click="restartServer(scope.row.id)">{{$t('common.opt.reStart')}}</let-table-operation>
+          <let-table-operation class="danger" @click="stopServer(scope.row.id)">{{$t('common.opt.stop')}}</let-table-operation>
+          <let-table-operation @click="manageServant(scope.row)">{{$t('common.opt.servant')}}</let-table-operation>
+          <let-table-operation @click="showMoreCmd(scope.row)">{{$t('common.opt.more')}}</let-table-operation>
         </template>
       </let-table-column>
     </let-table>
 
     <!-- 服务实时状态 -->
     <let-table v-if="showingList && showOthers"
-      :data="showingList" title="服务实时状态" empty-msg="暂无数据" ref="serverNotifyListLoading">
-      <let-table-column title="时间" prop="notifytime"></let-table-column>
-      <let-table-column title="服务ID" prop="server_id"></let-table-column>
-      <let-table-column title="线程ID" prop="thread_id"></let-table-column>
-      <let-table-column title="结果" prop="result"></let-table-column>
+      :data="showingList" :title="$t('manage.services.realTime.title')" :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
+      <let-table-column :title="$t('manage.services.realTime.tableTitle.time')" prop="notifytime"></let-table-column>
+      <let-table-column :title="$t('manage.services.realTime.tableTitle.serviceID')" prop="server_id"></let-table-column>
+      <let-table-column :title="$t('manage.services.realTime.tableTitle.threadID')" prop="thread_id"></let-table-column>
+      <let-table-column :title="$t('manage.services.realTime.tableTitle.result')" prop="result"></let-table-column>
     </let-table>
     <let-pagination v-if="serverNotifyList && serverNotifyList.length && serverNotifyList.length > 20"
       :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
@@ -60,7 +60,7 @@
     <!-- 编辑服务弹窗 -->
     <let-modal
       v-model="configModal.show"
-      title="编辑服务"
+      :title="$t('manage.services.dlgEditService.title')"
       width="800px"
       :footShow="!!(configModal.model && configModal.model.server_name)"
       @on-confirm="saveConfig"
@@ -69,16 +69,16 @@
       <let-form
         v-if="!!(configModal.model && configModal.model.server_name)"
         ref="configForm" itemWidth="360px" :columns="2" class="two-columns">
-        <let-form-item label="服务名">{{configModal.model.server_name}}</let-form-item>
-        <let-form-item label="部署节点">{{configModal.model.node_name}}</let-form-item>
-        <let-form-item label="是否备机" required>
+        <let-form-item :label="$t('manage.services.serviceList.tableTitle.service')">{{configModal.model.server_name}}</let-form-item>
+        <let-form-item :label="$t('manage.services.serviceList.tableTitle.node')">{{configModal.model.node_name}}</let-form-item>
+        <let-form-item :label="$t('manage.services.dlgEditService.isBackup')" required>
           <let-radio-group
             size="small"
             v-model="configModal.model.bak_flag"
-            :data="[{ value: true, text: '是' }, { value: false, text: '否' }]">
+            :data="[{ value: true, text: $t('common.yes') }, { value: false, text: $t('common.no') }]">
           </let-radio-group>
         </let-form-item>
-        <let-form-item label="模板名称" required>
+        <let-form-item :label="$t('manage.services.dlgEditService.template')" required>
           <let-select
             size="small"
             v-model="configModal.model.template_name"
@@ -88,7 +88,7 @@
           </let-select>
           <span v-else>{{configModal.model.template_name}}</span>
         </let-form-item>
-        <let-form-item label="服务类型" required>
+        <let-form-item :label="$t('manage.services.dlgEditService.type')" required>
           <let-select
             size="small"
             v-model="configModal.model.server_type"
@@ -96,14 +96,14 @@
             <let-option v-for="t in serverTypes" :key="t" :value="t">{{t}}</let-option>
           </let-select>
         </let-form-item>
-        <let-form-item label="启用 Set" required>
+        <let-form-item :label="$t('manage.services.serviceList.tableTitle.set')" required>
           <let-radio-group
             size="small"
             v-model="configModal.model.enable_set"
-            :data="[{ value: true, text: '是' }, { value: false, text: '否' }]">
+            :data="[{ value: true, text: $t('common.enable') }, { value: false, text: $t('common.disable') }]">
           </let-radio-group>
         </let-form-item>
-        <let-form-item label="Set 名" required v-if="configModal.model.enable_set">
+        <let-form-item :label="$t('common.set.setName')" required v-if="configModal.model.enable_set">
           <let-input
             size="small"
             v-model="configModal.model.set_name"
@@ -113,7 +113,7 @@
             pattern-tip="Set 名只能包含英文小写字母"
           ></let-input>
         </let-form-item>
-        <let-form-item label="Set 区" required v-if="configModal.model.enable_set">
+        <let-form-item :label="$t('common.set.setArea')" required v-if="configModal.model.enable_set">
           <let-input
             size="small"
             v-model="configModal.model.set_area"
@@ -123,7 +123,7 @@
             pattern-tip="Set 区只能包含英文小写字母"
           ></let-input>
         </let-form-item>
-        <let-form-item label="Set 组" required v-if="configModal.model.enable_set">
+        <let-form-item :label="$t('common.set.setGroup')" required v-if="configModal.model.enable_set">
           <let-input
             size="small"
             v-model="configModal.model.set_group"

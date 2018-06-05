@@ -7,38 +7,38 @@
       :activeKey="$route.params.treeid"
       @on-select="selectTree"/>
     <div class="left-tree" v-if="treeData && !treeData.length">
-      <p class="loading">暂无服务</p>
+      <p class="loading">{{$t('index.leftTree.noService')}}</p>
     </div>
     <div class="left-tree" v-if="!treeData" ref="treeLoading">
       <div class="loading" v-if="treeData === false">
         <p>{{treeErrMsg}}</p>
-        <a href="javascript:;" @click="getTreeData">点击重试</a>
+        <a href="javascript:;" @click="getTreeData">{{$t('index.leftTree.reTry')}}</a>
       </div>
     </div>
 
     <div class="right-view" v-if="!this.$route.params.treeid">
       <div class="empty">
         <img class="package" src="@/assets/img/package.png">
-        <p class="title">选择服务</p>
-        <p class="notice">如需查看服务列表或服务实时状态<br>请先从左边菜单选择一个服务</p>
+        <p class="title">{{$t('index.rightView.title')}}</p>
+        <p class="notice" v-html="$t('index.rightView.tips')"></p>
       </div>
     </div>
 
     <div class="right-view" v-else>
       <let-tabs @click="clickTab" :activekey="$route.path">
-        <let-tab-pane :tabkey="base + '/manage'" tab="服务管理"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/publish'" tab="发布管理"
+        <let-tab-pane :tabkey="base + '/manage'" :tab="$t('header.tab.tab1')"></let-tab-pane>
+        <let-tab-pane :tabkey="base + '/publish'" :tab="$t('index.rightView.tab.patch')"
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/config'"
-          :tab="serverData.level === 5 ? '服务配置' :
-                serverData.level === 4 ? 'Set 配置' :
-                serverData.level === 1 ? '应用配置' : ''"
+          :tab="serverData.level === 5 ? $t('index.rightView.tab.serviceConfig') :
+                serverData.level === 4 ? $t('index.rightView.tab.setConfig') :
+                serverData.level === 1 ? $t('index.rightView.tab.appConfig') : ''"
           v-if="serverData.level === 5 || serverData.level === 4 || serverData.level === 1"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/server-monitor'" tab="服务监控"
+        <let-tab-pane :tabkey="base + '/server-monitor'" :tab="$t('index.rightView.tab.statMonitor')"
           v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/property-monitor'" tab="特性监控"
+        <let-tab-pane :tabkey="base + '/property-monitor'" :tab="$t('index.rightView.tab.propertyMonitor')"
           v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/user-manage'" tab="用户权限管理"
+        <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')"
                       v-if="serverData.level === 5"></let-tab-pane>
       </let-tabs>
 
