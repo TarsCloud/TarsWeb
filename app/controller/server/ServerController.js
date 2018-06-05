@@ -225,13 +225,6 @@ ServerController.updateServerConf = async(ctx) => {
                 ctx.makeNotAuthResObj();
                 return;
             }
-
-            // let operator = updateServer.operator;
-            // let developer = updateServer.developer;
-            // delete(updateServer.operator);
-            // delete(updateServer.developer);
-            // await AuthService.modifyAuth(server.application, server.server_name, operator, developer);
-
             Object.assign(server, updateServer);
             server.bak_flag = server.isBak ? 1 : 0;
             server.enable_set = server.enable_set ? 'Y' : 'N';

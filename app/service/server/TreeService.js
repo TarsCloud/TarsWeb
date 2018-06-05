@@ -13,8 +13,6 @@ TreeService.getTreeNodes = async(uid) => {
         let appCond = [];
         let serverCond = [];
         let authList = await AuthService.getAuthListByUid(uid);
-
-        console.log(authList);
         authList.forEach((auth)=>{
             let application = auth.application;
             let serverName = auth.serverName;

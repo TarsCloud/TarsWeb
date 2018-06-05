@@ -2,10 +2,10 @@ var path = require('path');
 
 //用户体系配置 auth.js
 module.exports = {
-    enableLogin: true,                     //是否启用登录验证
+    enableLogin: true,                      //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
     loginUrlPrefix: 'http://localhost:3001', //登录检验服务前缀host
-    loginUrl: '/login.html',                 //登录跳转url
+    loginUrl: '/index.html#/login',          //登录跳转url
     redirectUrlParamName: 'redirect_url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
     logoutUrl: '/logout',                   //登出url
     ticketCookieName: 'ticket',             //cookie中保存ticket信息的cookie名

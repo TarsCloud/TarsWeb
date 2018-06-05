@@ -52,7 +52,7 @@ export default {
     },
     save(){
       const loading = this.$Loading.show();
-      this.$ajax.getJSON('/server/api/update_auth', {application: this.serverData.application, server_name: this.serverData.server_name, operator: this.operator, developer: this.developer}).then((data)=>{
+      this.$ajax.postJSON('/server/api/update_auth', {application: this.serverData.application, server_name: this.serverData.server_name, operator: this.operator, developer: this.developer}).then((data)=>{
         loading.hide();
         this.$tip.success(`更新权限成功`);
       }).catch((err)=>{
