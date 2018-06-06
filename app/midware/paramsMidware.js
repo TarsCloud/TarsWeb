@@ -4,7 +4,7 @@
 
 const _ = require('lodash');
 const validator = require('validator');
-const languageMidware = require('./languageMidware');
+const localeMidware = require('./localeMidware');
 
 //api入参出参中间件
 const paramsDealMidware = (validParams) =>{
@@ -75,7 +75,7 @@ const paramsCheckMidware = (checkRule) =>{
             await next();
         }
         else{
-            languageMidware(ctx, async()=>{});
+            localeMidware(ctx, async()=>{});
         }
     }
 };

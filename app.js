@@ -6,14 +6,13 @@ const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
 const multer = require('koa-multer');
-
+const static = require('koa-static');
 const {pageRouter, apiRouter} = require('./app/router');
 const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
 const helmet = require("koa-helmet");
 // const compress = require('koa-compress')
 const loginMidware = require('./app/midware/loginMidware');
-const staticMidware = require('./app/midware/staticMidware');
 
 const upload = multer({dest: './uploads/'});
 
@@ -45,8 +44,8 @@ app.use(pageRouter.routes(), pageRouter.allowedMethods());
 app.use(apiRouter.routes(), apiRouter.allowedMethods());
 
 //激活静态资源中间件
-app.use(staticMidware(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
-app.use(staticMidware(path.join(__dirname, './public'), {maxage: 7 * 24 * 60 * 60 * 1000}));
+app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
+app.use(static(path.join(__dirname, './public'), {maxage: 7 * 24 * 60 * 60 * 1000}));
 
 //后置中间件
 postMidware.forEach((midware)=>{
