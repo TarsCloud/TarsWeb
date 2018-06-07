@@ -1,13 +1,14 @@
 {
-  "tab": {
-    "main": {
-      "server": {
-        "manage": "Server management"
-      },
-      "ops": {
-        "manage": "Operations"
-      }
-    }
+  "header": {
+    "tab": {
+      "tab1": "Services",
+      "tab2": "operation"
+    },
+    "select": {
+      "cn": "Simplified Chinese",
+      "en": "English"
+    },
+    "logout": "logout"
   },
   "java": {
     "blank": {
@@ -78,21 +79,35 @@
   },
   "common": {
     "config": "configuration",
-    "patch": "patch",
+    "patch": "publish",
     "service": "service",
     "time": "time",
     "name": "name",
     "true": "true",
     "false": "false",
+    "yes": "yes",
+    "no": "no",
     "template": "template",
     "type": "Type",
     "cancel": "cancel",
     "submit": "ok",
     "status": "status",
     "result": "result",
-    "error": "Error",
+    "error": "Error!!!",
+    "success": "Success!!!",
     "ip": "node",
-    "nodata": "no data"
+    "nodata": "No Data",
+    "noService": "No Services",
+    "retry": "Click to try again",
+    "enable": "enable",
+    "disable": "disable",
+    "alert": "Alert",
+    "networkErr": "Network Error",
+    "set": {
+      "setName": "SET Name",
+      "setArea": "SET Area",
+      "setGroup": "SET Group"
+    }
   },
   "operate": {
     "update": "update",
@@ -103,71 +118,82 @@
     "manage": "management",
     "delete": "delete",
     "more": "more",
-    "operates": "operates",
+    "operates": "Operates",
     "view": "view",
-    "search": "search"
+    "search": "search",
+    "servant": "servant",
+    "goback": "go back",
+    "title": {
+      "update": "Update",
+      "add": "Add",
+      "more": "More"
+    }
   },
   "index": {
-    "tab": {
-      "manage": "Service management",
-      "patch": "Patch management",
-      "config": "Service configuration",
-      "setConfig": "Set configuration",
-      "appConfig": "App configuration",
-      "serviceMonitor": "Service monitoring",
-      "propertyMonitor": "Property monitoring"
+    "rightView": {
+      "title": "choose a service",
+      "tips": "if you want to check the service list or the Real-time service status ,<br>please choose a service on the left menu.",
+      "tab": {
+        "patch": "Publish",
+        "serviceConfig": "Service Configuration",
+        "setConfig": "SET Configuration",
+        "appConfig": "APP Configuration",
+        "statMonitor": "Status Monitor",
+        "propertyMonitor": "Property Monitor",
+        "privileage": "Privileage"
+      }
     }
   },
   "serverList": {
     "title": {
-      "serverList": "Service List",
-      "serverStatus": "Service Status"
+      "serverList": "Services",
+      "serverStatus": "Real Time Service Status"
     },
     "table": {
       "th": {
-        "service": "service",
-        "ip": "IP",
-        "enableSet": "enable set",
-        "setName": "set name",
-        "setArea": "set area",
-        "setGroup": "set group",
-        "configStatus": "configuration status",
-        "currStatus": "current status",
-        "processID": "processID",
-        "version": "version",
-        "time": "release time",
-        "threadID": "threadID",
-        "result": "result"
+        "service": "Service",
+        "ip": "Node",
+        "enableSet": "SET",
+        "configStatus": "Configuration Status",
+        "currStatus": "Current Status",
+        "processID": "Process ID",
+        "version": "Version",
+        "time": "Publish Time",
+        "threadID": "Thread ID",
+        "serviceID": "Service ID",
+        "result": "Result"
       },
       "servant": {
-        "adress": "adress",
-        "thread": "num of thread",
+        "title": "Servants",
+        "adress": "endpoint",
+        "thread": "threads count",
         "maxConnecttions": "max connections",
         "maxQueue": "max queue",
-        "timeout": "queue timeout"
+        "timeout": "queue timeout(ms)"
+      },
+      "msg": {
+        "fail": "Failed to load the service list and retry?"
       }
     },
     "dlg": {
-      "service": {
-        "deployIP": "deployIP"
-      },
-      "standby": "standby",
+      "isBackup": "is backup",
       "placeholder": {
         "english": "all lower-case",
         "num": "number or *",
         "thread": "Nodejs >=1,other >=3"
       },
-      "asyncThread": "async thread",
+      "serviceType": "service type",
+      "asyncThread": "async threads",
       "defaultPath": "default path",
       "exePath": "exe path",
       "startScript": "start script",
       "stopScript": "stop script",
-      "monitorScript": "monitoring script",
+      "monitorScript": "monitor script",
       "privateTemplate": "private template",
       "errMsg": {
         "required": "All starred must be filled in",
-        "setName": "Set name can only be English letters, and must be lowercase",
-        "setArea": "Set area can only be English letters, and must be lowercase",
+        "setName": "Set name can only contain english lowercase letters",
+        "setArea": "Set area can only contain english lowercase letters",
         "setGroup": "Set group must be a number or *",
         "defaultPath": "default path error,must be an absolute path",
         "exePath": "EXE path error,must be an absolute path",
@@ -182,6 +208,7 @@
         "undeployFailed": "undeploy failed"
       },
       "title": {
+        "editService": "Edit Service",
         "undeploy": "undeploy",
         "taskStatus": "task status"
       }
@@ -199,7 +226,7 @@
       "success": "success",
       "failed": "failed",
       "cancel": "cancel",
-      "parial": "parial success",
+      "parial": "partial success",
       "restartFailed": "restart failed",
       "restartResult": "restart result"
     },
@@ -209,8 +236,7 @@
       }
     },
     "servant": {
-      "obj": "OBJ and adress is required",
-      "objen": "OBJ name must be in English",
+      "obj": "OBJ name can only contains english letters",
       "thread": "threads must be numeric and greater than 0",
       "error": "Error!!!  <br>address：To tcp or udp at the beginning, there-h-t-p three parameters, -p 0-65535-t greater than 0 -h ip",
       "ip": "IP format is wrong, please re-fill.",
@@ -219,15 +245,15 @@
       "a": "Are you sure to delete the Servant",
       "deployService": "deploy service",
       "upload": "upload",
-      "appService": "APP·serviceName",
+      "appService": "app·service",
       "objName": "OBJ name",
-      "c": "All English, don't need to add in front of the application, the service name",
-      "numOfThread": "num of thread",
+      "c": "English letters, don't need to add in front of the app name and the service name",
+      "numOfThread": "threads count",
       "BindingAddress": "Binding address",
       "sample": "sample",
       "maxConnecttions": "max connecttions",
-      "lengthOfQueue": "length of queue",
-      "queueTimeout": "queue timeout",
+      "lengthOfQueue": "max queue length",
+      "queueTimeout": "queue timeout(ms)",
       "allowIP": "allow ip",
       "protocol": "protocol",
       "notTARS": "not TARS",
@@ -235,7 +261,7 @@
       "releasePackage": "release package",
       "comment": "comment",
       "logLevel": "log level",
-      "pushFile": "push file",
+      "pushFile": "push config file",
       "sendCommand": "send customer cmd",
       "serviceLink": "view service Link",
       "taskID": "taskID",
@@ -244,18 +270,24 @@
   },
   "pub": {
     "btn": {
-      "pub": "Release node",
+      "pub": "publish node",
       "history": "history"
     },
     "dlg": {
-      "ip": "IP",
-      "defaultValue": "choose",
+      "ip": "Node",
+      "releaseVersion": "release version",
+      "upload": "upload release package",
+      "releasePkg": "release package",
+      "defaultValue": "choose ...",
+      "noConfFile": "no configuration files",
       "a": "please choose an ip",
-      "ab": "please choose a patch version"
+      "ab": "please choose a release version",
+      "unpublished": "Unpublished"
     },
     "tips": {
       "default": "Release management management service level, please first in the left tree selection service business."
-    }
+    },
+    "date": "Date"
   },
   "cfg": {
     "title": {
@@ -423,7 +455,7 @@
     }
   },
   "historyList": {
-    "title": "history list",
+    "title": "Release History",
     "table": {
       "th": {
         "c2": "serial",
@@ -432,9 +464,12 @@
     },
     "dlg": {
       "th": {
-        "c1": "subtasks ID",
-        "c5": "command",
-        "c7": "execute info"
+        "c1": "ID",
+        "c2": "Application",
+        "c3": "Service",
+        "c4": "Node",
+        "c5": "Command",
+        "c7": "Execute info"
       }
     }
   }

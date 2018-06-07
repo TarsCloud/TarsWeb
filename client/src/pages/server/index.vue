@@ -7,12 +7,12 @@
       :activeKey="$route.params.treeid"
       @on-select="selectTree"/>
     <div class="left-tree" v-if="treeData && !treeData.length">
-      <p class="loading">{{$t('index.leftTree.noService')}}</p>
+      <p class="loading">{{$t('common.noService')}}</p>
     </div>
     <div class="left-tree" v-if="!treeData" ref="treeLoading">
       <div class="loading" v-if="treeData === false">
         <p>{{treeErrMsg}}</p>
-        <a href="javascript:;" @click="getTreeData">{{$t('index.leftTree.reTry')}}</a>
+        <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
       </div>
     </div>
 
