@@ -92,7 +92,9 @@
     "result": "result",
     "error": "Error",
     "ip": "node",
-    "nodata": "no data"
+    "nodata": "no data",
+    "systemError": "system error",
+    "noPrivilage": "no privilage"
   },
   "operate": {
     "update": "update",

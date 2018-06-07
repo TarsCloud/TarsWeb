@@ -92,7 +92,9 @@
     "result": "结果",
     "error": "错误",
     "ip": "节点",
-    "nodata": "没有数据"
+    "nodata": "没有数据",
+    "systemError": "系统内部错误",
+    "noPrivilage": "没有操作权限"
   },
   "operate": {
     "update": "编辑",

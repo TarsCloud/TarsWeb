@@ -26,10 +26,10 @@ const paramsDealMidware = (validParams) =>{
             ctx.body = {data: result, ret_code: retCode, err_msg:errMsg};
         };
         ctx.makeErrResObj = () => {
-            ctx.body = {data: {}, ret_code:500, err_msg: '系统内部错误'};
+            ctx.body = {data: {}, ret_code:500, err_msg: '#common.systemError#'};
         };
         ctx.makeNotAuthResObj = () => {
-            ctx.body = {data: {}, ret_code:500, err_msg: '没有操作权限'};
+            ctx.body = {data: {}, ret_code:500, err_msg: '#common.noPrivilage#'};
         };
         await next();
     }
