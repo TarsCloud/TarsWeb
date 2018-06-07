@@ -34,8 +34,12 @@ module.exports = async(ctx, next)=> {
             content = JSON.stringify(ctx.body);
             contentType = 'object';
         }
-        _.each(localeMap[lan] || cn, (value, key)=> {
-            content = content.replace(key, value);
+        let matchList = content.match( /#[a-zA-Z0-9\._]+#/g);
+        _.each(matchList, (matchStr) => {
+            let str = localeMap[lan][matchStr]
+            if(str){
+                content = content.replace(matchStr, str);
+            }
         });
         if (contentType == 'object') {
             ctx.body = JSON.parse(content);
