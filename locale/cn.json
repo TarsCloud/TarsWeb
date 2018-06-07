@@ -9,7 +9,7 @@
       }
     }
   },
-  "java": {
+  "web": {
     "blank": {
       "error": {
         "message": "错误码详细说明为空"

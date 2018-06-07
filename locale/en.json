@@ -9,7 +9,7 @@
       }
     }
   },
-  "java": {
+  "web": {
     "blank": {
       "error": {
         "message": "blank error message"
