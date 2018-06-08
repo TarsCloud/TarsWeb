@@ -133,6 +133,37 @@ ConfigService.getConfigFile = async(id) => {
     return await ConfigDao.getConfigFile(id);
 };
 
+/**
+ * 通过配置文件id或引用记录Id获取应用服务set信息
+ * @param id
+ * @param type
+ * @returns {{application: string, setName: (*|string), setArea: (*|string), setGroup: (*|string), serverName: string}}
+ */
+ConfigService.getServerInfoByConfigId = async(id, type) => {
+    let config = {};
+    if(type == 'refId'){
+        config =  await ConfigDao.getConfigFileByRefTableId(id) || {};
+    }else{
+        config = await ConfigDao.getConfigFile(id) || {};
+    }
+    let server = config.server_name || '';
+    let idx = server.indexOf('.');
+    let application = '', serverName = '';
+    if(idx > -1){
+        application = server.substring(0, idx);
+        serverName = server.substring(idx + 1);
+    }else{
+        application = server;
+    }
+    return {
+        application: application,
+        setName: config.set_name || '',
+        setArea: config.set_area || '',
+        setGroup: config.set_group || '',
+        serverName: serverName
+    };
+};
+
 
 ConfigService.getConfigFileList = async(ids) => {
     return await ConfigDao.getConfigFileList(ids);

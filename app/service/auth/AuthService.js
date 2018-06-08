@@ -11,6 +11,7 @@ const {
 const util = require('../../tools/util');
 const logger = require('../../logger');
 const _ = require('lodash');
+const ServerDao = require('../../dao/ServerDao');
 
 const AuthService = {};
 
@@ -76,12 +77,12 @@ AuthService.getAuthListByUid = async(uid)=> {
     if (rst && rst.ret_code == 200) {
         let list = rst.data;
         let authList = [];
-        list.forEach((auth)=>{
+        list.forEach((auth)=> {
             let flag = auth.flag;
             let idx = flag.indexOf('.');
-            if(idx > 1){
+            if (idx > 1) {
                 authList.push({application: flag.substring(0, idx), serverName: flag.substring(idx + 1)})
-            }else{
+            } else {
                 authList.push({application: flag})
             }
         });
@@ -90,21 +91,6 @@ AuthService.getAuthListByUid = async(uid)=> {
         throw (new Error(rst.err_msg));
     }
 };
-
-//
-// AuthService.getAuthListByUid = async(uid)=> {
-//     if (!enableAuth) {
-//         return [];
-//     }
-//     var rst = await util.jsonRequest.get(authUrlPrefix + getAuthListByUidUrl, {
-//         uid: uid
-//     });
-//     if (rst && rst.ret_code == 200) {
-//         return rst.data || [];
-//     } else {
-//         throw (new Error(rst.err_msg));
-//     }
-// };
 
 AuthService.formatUidToArray = (uids)=> {
     let uidArr = [];
@@ -187,6 +173,39 @@ AuthService.getAuthList = async(application, serverName) => {
         throw new Error(rst.err_msg);
     }
     return authList;
+};
+
+//检测是否有顶层目录的权限，主要用于获取配置列表等
+AuthService.checkHasParentAuth = async(params)=> {
+    if(!enableAuth || await AuthService.hasAdminAuth(params.uid)){
+        return true;
+    }
+    let authList = await AuthService.getAuthListByUid(params.uid);
+    let serverCond = [], appCond = [];
+    authList.forEach((auth)=>{
+        let application = auth.application;
+        let serverName = auth.serverName;
+        if(serverName){
+            serverCond.push(application + '.' + serverName);
+        }else{
+            appCond.push(application);
+        }
+    });
+    let serverList = await ServerDao.getServerConf4Tree(appCond, serverCond);
+    let {application, setName, setArea, setGroup, serverName} = params;
+    let hasAuth = false;
+    _.each(serverList, (server)=>{
+        server = server.dataValues;
+        if((!application || application == server.application) &&
+            (!setName || setName == server.set_name) &&
+            (!setArea || setArea == server.set_area) &&
+            (!setGroup || setGroup == server.set_group) &&
+            (!serverName || serverName == server.server_name)){
+            hasAuth = true;
+            return false;
+        }
+    });
+    return hasAuth;
 };
 
 module.exports = AuthService;

@@ -68,12 +68,12 @@ ConfigDao.getConfigFile = async (id) => {
 };
 
 ConfigDao.getConfigFileByRefTableId = async (id) => {
-    tConfigReferences.belongsTo(tConfigFiles, {foreignKey: 'config_id'});
-    return await tConfigReferences.findOne({
+    tConfigFiles.belongsTo(tConfigReferences, {foreignKey: 'id', targetKey: 'config_id'});
+    return await tConfigFiles.findOne({
         raw : true,
-        where : {id : id},
         include: [{
-            model : tConfigFiles
+            model : tConfigReferences,
+            where: {id: id}
         }]
     });
 };
