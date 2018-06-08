@@ -2,54 +2,54 @@
   <div class="page_server_manage">
 
     <!-- 服务列表 -->
-    <let-table v-if="serverList" :data="serverList" title="服务列表" empty-msg="暂无数据" ref="serverListLoading">
-      <let-table-column title="服务" prop="server_name"></let-table-column>
-      <let-table-column title="节点" prop="node_name" width="140px"></let-table-column>
-      <let-table-column title="Set">
+    <let-table v-if="serverList" :data="serverList" :title="$t('serverList.title.serverList')" :empty-msg="$t('common.nodata')" ref="serverListLoading">
+      <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.enableSet')">
         <template slot-scope="scope">
-          <span v-if="!scope.row.enable_set">未启用</span>
+          <span v-if="!scope.row.enable_set">{{$t('common.disable')}}</span>
           <p v-else style="max-width: 200px">
-            Set 名：{{scope.row.set_name}}<br>
-            Set 区：{{scope.row.set_area}}<br>
-            Set 组：{{scope.row.set_group}}
+            {{$t('common.set.setName')}}：{{scope.row.set_name}}<br>
+            {{$t('common.set.setArea')}}：{{scope.row.set_area}}<br>
+            {{$t('common.set.setGroup')}}：{{scope.row.set_group}}
           </p>
         </template>
       </let-table-column>
-      <let-table-column title="设置状态" width="72px">
+      <let-table-column :title="$t('serverList.table.th.configStatus')" width="90px">
         <template slot-scope="scope">
           <span :class="scope.row.setting_state === 'active' ? 'status-active' : 'status-off'"></span>
         </template>
       </let-table-column>
-      <let-table-column title="当前状态" width="72px">
+      <let-table-column :title="$t('serverList.table.th.currStatus')" width="65px">
         <template slot-scope="scope">
           <span :class="scope.row.present_state === 'active' ? 'status-active' : 'status-off'"></span>
         </template>
       </let-table-column>
-      <let-table-column title="进程 ID" prop="process_id" width="68px"></let-table-column>
-      <let-table-column title="版本" prop="patch_version" width="68px"></let-table-column>
-      <let-table-column title="发布时间">
+      <let-table-column :title="$t('serverList.table.th.processID')" prop="process_id" width="80px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.version')" prop="patch_version" width="68px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.time')">
         <template slot-scope="scope">
           <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.posttime)}}</span>
         </template>
       </let-table-column>
-      <let-table-column title="操作" width="260px">
+      <let-table-column :title="$t('operate.operates')" width="260px">
         <template slot-scope="scope">
-          <let-table-operation @click="configServer(scope.row.id)">编辑</let-table-operation>
-          <let-table-operation @click="restartServer(scope.row.id)">重启</let-table-operation>
-          <let-table-operation class="danger" @click="stopServer(scope.row.id)">停止</let-table-operation>
-          <let-table-operation @click="manageServant(scope.row)">管理Servant</let-table-operation>
-          <let-table-operation @click="showMoreCmd(scope.row)">更多命令</let-table-operation>
+          <let-table-operation @click="configServer(scope.row.id)">{{$t('operate.update')}}</let-table-operation>
+          <let-table-operation @click="restartServer(scope.row.id)">{{$t('operate.restart')}}</let-table-operation>
+          <let-table-operation class="danger" @click="stopServer(scope.row.id)">{{$t('operate.stop')}}</let-table-operation>
+          <let-table-operation @click="manageServant(scope.row)">{{$t('operate.servant')}}</let-table-operation>
+          <let-table-operation @click="showMoreCmd(scope.row)">{{$t('operate.more')}}</let-table-operation>
         </template>
       </let-table-column>
     </let-table>
 
     <!-- 服务实时状态 -->
     <let-table v-if="showingList && showOthers"
-      :data="showingList" title="服务实时状态" empty-msg="暂无数据" ref="serverNotifyListLoading">
-      <let-table-column title="时间" prop="notifytime"></let-table-column>
-      <let-table-column title="服务ID" prop="server_id"></let-table-column>
-      <let-table-column title="线程ID" prop="thread_id"></let-table-column>
-      <let-table-column title="结果" prop="result"></let-table-column>
+      :data="showingList" :title="$t('serverList.title.serverStatus')" :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
+      <let-table-column :title="$t('common.time')" prop="notifytime"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.result')" prop="result"></let-table-column>
     </let-table>
     <let-pagination v-if="serverNotifyList && serverNotifyList.length && serverNotifyList.length > 20"
       :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
@@ -60,7 +60,7 @@
     <!-- 编辑服务弹窗 -->
     <let-modal
       v-model="configModal.show"
-      title="编辑服务"
+      :title="$t('serverList.dlg.title.editService')"
       width="800px"
       :footShow="!!(configModal.model && configModal.model.server_name)"
       @on-confirm="saveConfig"
@@ -69,16 +69,16 @@
       <let-form
         v-if="!!(configModal.model && configModal.model.server_name)"
         ref="configForm" itemWidth="360px" :columns="2" class="two-columns">
-        <let-form-item label="服务名">{{configModal.model.server_name}}</let-form-item>
-        <let-form-item label="部署节点">{{configModal.model.node_name}}</let-form-item>
-        <let-form-item label="是否备机" required>
+        <let-form-item :label="$t('common.service')">{{configModal.model.server_name}}</let-form-item>
+        <let-form-item :label="$t('common.ip')">{{configModal.model.node_name}}</let-form-item>
+        <let-form-item :label="$t('serverList.dlg.isBackup')" required>
           <let-radio-group
             size="small"
             v-model="configModal.model.bak_flag"
-            :data="[{ value: true, text: '是' }, { value: false, text: '否' }]">
+            :data="[{ value: true, text: $t('common.yes') }, { value: false, text: $t('common.no') }]">
           </let-radio-group>
         </let-form-item>
-        <let-form-item label="模板名称" required>
+        <let-form-item :label="$t('common.template')" required>
           <let-select
             size="small"
             v-model="configModal.model.template_name"
@@ -88,7 +88,7 @@
           </let-select>
           <span v-else>{{configModal.model.template_name}}</span>
         </let-form-item>
-        <let-form-item label="服务类型" required>
+        <let-form-item :label="$t('serverList.dlg.serviceType')" required>
           <let-select
             size="small"
             v-model="configModal.model.server_type"
@@ -96,85 +96,85 @@
             <let-option v-for="t in serverTypes" :key="t" :value="t">{{t}}</let-option>
           </let-select>
         </let-form-item>
-        <let-form-item label="启用 Set" required>
+        <let-form-item :label="$t('serverList.table.th.enableSet')" required>
           <let-radio-group
             size="small"
             v-model="configModal.model.enable_set"
-            :data="[{ value: true, text: '是' }, { value: false, text: '否' }]">
+            :data="[{ value: true, text: $t('common.enable') }, { value: false, text: $t('common.disable') }]">
           </let-radio-group>
         </let-form-item>
-        <let-form-item label="Set 名" required v-if="configModal.model.enable_set">
+        <let-form-item :label="$t('common.set.setName')" required v-if="configModal.model.enable_set">
           <let-input
             size="small"
             v-model="configModal.model.set_name"
-            placeholder="Set 名只能包含英文小写字母"
+            :placeholder="$t('serverList.dlg.errMsg.setName')"
             required
             pattern="^[a-z]+$"
-            pattern-tip="Set 名只能包含英文小写字母"
+            :pattern-tip="$t('serverList.dlg.errMsg.setName')"
           ></let-input>
         </let-form-item>
-        <let-form-item label="Set 区" required v-if="configModal.model.enable_set">
+        <let-form-item :label="$t('common.set.setArea')" required v-if="configModal.model.enable_set">
           <let-input
             size="small"
             v-model="configModal.model.set_area"
-            placeholder="Set 区只能包含英文小写字母"
+            :placeholder="$t('serverList.dlg.errMsg.setArea')"
             required
             pattern="^[a-z]+$"
-            pattern-tip="Set 区只能包含英文小写字母"
+            :pattern-tip="$t('serverList.dlg.errMsg.setArea')"
           ></let-input>
         </let-form-item>
-        <let-form-item label="Set 组" required v-if="configModal.model.enable_set">
+        <let-form-item :label="$t('common.set.setGroup')" required v-if="configModal.model.enable_set">
           <let-input
             size="small"
             v-model="configModal.model.set_group"
-            placeholder="Set 组只能包含数字或者 * 号"
+            :placeholder="$t('serverList.dlg.errMsg.setGroup')"
             required
             pattern="^[0-9\*]+$"
-            pattern-tip="Set 组只能包含数字或者 * 号"
+            :pattern-tip="$t('serverList.dlg.errMsg.setGroup')"
           ></let-input>
         </let-form-item>
 
-        <let-form-item label="异步线程数" required>
+        <let-form-item :label="$t('serverList.dlg.asyncThread')" required>
           <let-input
             size="small"
             v-model="configModal.model.async_thread_num"
-            placeholder="nodejs >=1，其他 >= 3"
+            :placeholder="$t('serverList.dlg.placeholder.thread')"
             required
             :pattern="configModal.model.server_type === 'tars_nodejs' ? '^[1-9][0-9]*$' : '^([3-9]|[1-9][0-9]+)$'"
-            pattern-tip="nodejs >=1，其他 >= 3"
+            pattern-tip="$t('serverList.dlg.placeholder.thread')"
           ></let-input>
         </let-form-item>
-        <let-form-item label="缺省路径">
+        <let-form-item :label="$t('serverList.dlg.defaultPath')">
           <let-input
             size="small"
             v-model="configModal.model.base_path"
           ></let-input>
         </let-form-item>
-        <let-form-item label="EXE 路径">
+        <let-form-item :label="$t('serverList.dlg.exePath')">
           <let-input
             size="small"
             v-model="configModal.model.exe_path"
           ></let-input>
         </let-form-item>
-        <let-form-item label="启动脚本">
+        <let-form-item :label="$t('serverList.dlg.startScript')">
           <let-input
             size="small"
             v-model="configModal.model.start_script_path"
           ></let-input>
         </let-form-item>
-        <let-form-item label="停止脚本">
+        <let-form-item :label="$t('serverList.dlg.stopScript')">
           <let-input
             size="small"
             v-model="configModal.model.stop_script_path"
           ></let-input>
         </let-form-item>
-        <let-form-item label="监控脚本" itemWidth="724px">
+        <let-form-item :label="$t('serverList.dlg.monitorScript')" itemWidth="724px">
           <let-input
             size="small"
             v-model="configModal.model.monitor_script_path"
           ></let-input>
         </let-form-item>
-        <let-form-item label="私有模板" itemWidth="724px">
+        <let-form-item :label="$t('serverList.dlg.privateTemplate')" labelWidth="150px" itemWidth="724px">
           <let-input
             size="large"
             type="textarea"
@@ -189,22 +189,22 @@
     <!-- Servant管理弹窗 -->
     <let-modal
       v-model="servantModal.show"
-      title="Servant 管理"
+      :title="$t('serverList.table.servant.title')"
       width="1200px"
       :footShow="false"
       @close="closeServantModal">
-      <let-button size="small" theme="primary" class="tbm16" @click="configServant()">添加 Servant</let-button>
-      <let-table v-if="servantModal.model" :data="servantModal.model" empty-msg="暂无数据">
-        <let-table-column title="Servant 名" prop="servant"></let-table-column>
-        <let-table-column title="绑定地址" prop="endpoint"></let-table-column>
-        <let-table-column title="线程数" prop="thread_num"></let-table-column>
-        <let-table-column title="最大连接数" prop="max_connections"></let-table-column>
-        <let-table-column title="队列最大长度" prop="queuecap"></let-table-column>
-        <let-table-column title="队列超时时间(ms)" prop="queuetimeout"></let-table-column>
-        <let-table-column title="操作" width="90px">
+      <let-button size="small" theme="primary" class="tbm16" @click="configServant()">{{$t('operate.add')}} Servant</let-button>
+      <let-table v-if="servantModal.model" :data="servantModal.model" :empty-msg="$t('common.nodata')">
+        <let-table-column :title="$t('operate.servant')" prop="servant"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.adress')" prop="endpoint"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.thread')" prop="thread_num"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" prop="max_connections"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.maxQueue')" prop="queuecap"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.timeout')" prop="queuetimeout"></let-table-column>
+        <let-table-column :title="$t('operate.operates')" width="90px">
           <template slot-scope="scope">
-            <let-table-operation @click="configServant(scope.row.id)">编辑</let-table-operation>
-            <let-table-operation class="danger" @click="deleteServant(scope.row.id)">删除</let-table-operation>
+            <let-table-operation @click="configServant(scope.row.id)">{{$t('operate.update')}}</let-table-operation>
+            <let-table-operation class="danger" @click="deleteServant(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
           </template>
         </let-table-column>
       </let-table>
@@ -214,7 +214,7 @@
     <!-- Servant新增、编辑弹窗 -->
     <let-modal
       v-model="servantDetailModal.show"
-      :title="servantDetailModal.isNew ? '添加 Servant' : '编辑 Servant'"
+      :title="servantDetailModal.isNew ? `${$t('operate.title.add')} Servant` : `${$t('operate.title.update')} Servant`"
       width="800px"
       :footShow="!!servantDetailModal.model"
       @on-confirm="saveServantDetail"
@@ -223,72 +223,72 @@
       <let-form
         v-if="servantDetailModal.model"
         ref="servantDetailForm" itemWidth="360px" :columns="2" class="two-columns">
-        <let-form-item label="应用·服务名" itemWidth="724px">
+        <let-form-item :label="$t('serverList.servant.appService')" itemWidth="724px">
           <span>{{servantDetailModal.model.application}}·{{servantDetailModal.model.server_name}}</span>
         </let-form-item>
-        <let-form-item label="OBJ 名称" required>
+        <let-form-item :label="$t('serverList.servant.objName')" required>
           <let-input
             size="small"
             v-model="servantDetailModal.model.obj_name"
-            placeholder="全英文，前面不加应用·服务名"
+            :placeholder="$t('serverList.servant.c')"
             required
             pattern="^[A-Za-z]+$"
-            pattern-tip="OBJ 名称只能包含英文字母"
+            :pattern-tip="$t('serverList.servant.obj')"
           ></let-input>
         </let-form-item>
-        <let-form-item label="线程数" required>
+        <let-form-item :label="$t('serverList.servant.numOfThread')" required>
           <let-input
             size="small"
             v-model="servantDetailModal.model.thread_num"
-            placeholder="必须为数字且大于 0"
+            :placeholder="$t('serverList.servant.obj')"
             required
             pattern="^[1-9][0-9]*$"
-            pattern-tip="线程数必须为数字且大于 0"
+            :pattern-tip="$t('serverList.servant.thread')"
           ></let-input>
         </let-form-item>
-        <let-form-item label="绑定地址" required itemWidth="724px">
+        <let-form-item :label="$t('serverList.table.servant.adress')" required itemWidth="724px">
           <let-input
             ref="endpoint"
             size="small"
             v-model="servantDetailModal.model.endpoint"
-            placeholder="范例：tcp -h 172.27.205.40 -t 60000 -p 12000"
+            placeholder="tcp -h 172.27.205.40 -t 60000 -p 12000"
             required
             :extraTip="isEndpointValid ? '' :
-              '绑定地址必须以 tcp 或者 udp 开头，有 -h -t -p 三个参数，-p 0-65535 -t 大于 0 -h ip格式'"
+              $t('serverList.servant.error')"
           ></let-input>
         </let-form-item>
-        <let-form-item label="最大连接数">
+        <let-form-item :label="$t('serverList.servant.maxConnecttions')" labelWidth="150px">
           <let-input
             size="small"
             v-model="servantDetailModal.model.max_connections"
           ></let-input>
         </let-form-item>
-        <let-form-item label="队列长度">
+        <let-form-item :label="$t('serverList.servant.lengthOfQueue')" labelWidth="150px">
           <let-input
             size="small"
             v-model="servantDetailModal.model.queuecap"
           ></let-input>
         </let-form-item>
-        <let-form-item label="队列超时(ms)">
+        <let-form-item :label="$t('serverList.servant.queueTimeout')" labelWidth="150px">
           <let-input
             size="small"
             v-model="servantDetailModal.model.queuetimeout"
           ></let-input>
         </let-form-item>
-        <let-form-item label="允许 IP">
+        <let-form-item :label="$t('serverList.servant.allowIP')">
           <let-input
             size="small"
             v-model="servantDetailModal.model.allow_ip"
           ></let-input>
         </let-form-item>
-        <let-form-item label="协议" required>
+        <let-form-item :label="$t('serverList.servant.protocol')" required>
           <let-radio-group
             size="small"
             v-model="servantDetailModal.model.protocol"
-            :data="[{ value: 'tars', text: 'TARS' }, { value: 'not_tars', text: ' 非 TARS' }]">
+            :data="[{ value: 'tars', text: 'TARS' }, { value: 'not_tars', text: $t('serverList.servant.notTARS') }]">
           </let-radio-group>
         </let-form-item>
-        <let-form-item label="处理组">
+        <let-form-item :label="$t('serverList.servant.treatmentGroup')" labelWidth="150px">
           <let-input
             size="small"
             v-model="servantDetailModal.model.handlegroup"
@@ -300,7 +300,7 @@
     <!-- 更多命令弹窗 -->
     <let-modal
       v-model="moreCmdModal.show"
-      title="更多命令"
+      :title="$t('operate.title.more')"
       width="700px"
       class="more-cmd"
       @on-confirm="invokeMoreCmd"
@@ -308,7 +308,7 @@
       @on-cancel="closeMoreCmdModal">
       <let-form v-if="moreCmdModal.model" ref="moreCmdForm">
         <let-form-item itemWidth="100%">
-          <let-radio v-model="moreCmdModal.model.selected" label="setloglevel">设置日志等级</let-radio>
+          <let-radio v-model="moreCmdModal.model.selected" label="setloglevel">{{$t('serverList.servant.logLevel')}}</let-radio>
           <let-select
             size="small"
             :disabled="moreCmdModal.model.selected !== 'setloglevel'"
@@ -317,10 +317,10 @@
           </let-select>
         </let-form-item>
         <let-form-item itemWidth="100%">
-          <let-radio v-model="moreCmdModal.model.selected" label="loadconfig">PUSH 配置文件</let-radio>
+          <let-radio v-model="moreCmdModal.model.selected" label="loadconfig">{{$t('serverList.servant.pushFile')}}</let-radio>
           <let-select
             size="small"
-            :placeholder="moreCmdModal.model.configs && moreCmdModal.model.configs.length ? '请选择' : '暂无配置文件'"
+            :placeholder="moreCmdModal.model.configs && moreCmdModal.model.configs.length ? $t('pub.dlg.defaultValue') : $t('pub.dlg.noConfFile')"
             :disabled="!(moreCmdModal.model.configs && moreCmdModal.model.configs.length)
               || moreCmdModal.model.selected !== 'loadconfig'"
             v-model="moreCmdModal.model.loadconfig"
@@ -329,7 +329,7 @@
           </let-select>
         </let-form-item>
         <let-form-item itemWidth="100%">
-          <let-radio v-model="moreCmdModal.model.selected" label="command">发送自定义命令</let-radio>
+          <let-radio v-model="moreCmdModal.model.selected" label="command">{{$t('serverList.servant.sendCommand')}}</let-radio>
           <let-input
             size="small"
             :disabled="moreCmdModal.model.selected !== 'command'"
@@ -338,10 +338,10 @@
           ></let-input>
         </let-form-item>
         <let-form-item itemWidth="100%">
-          <let-radio v-model="moreCmdModal.model.selected" label="connection">查看服务链接</let-radio>
+          <let-radio v-model="moreCmdModal.model.selected" label="connection">{{$t('serverList.servant.serviceLink')}}</let-radio>
         </let-form-item>
         <let-form-item itemWidth="100%">
-          <let-radio v-model="moreCmdModal.model.selected" label="undeploy_tars" class="danger">下线服务</let-radio>
+          <let-radio v-model="moreCmdModal.model.selected" label="undeploy_tars" class="danger">{{$t('operate.undeploy')}} {{$t('common.service')}}</let-radio>
         </let-form-item>
       </let-form>
     </let-modal>
@@ -434,7 +434,7 @@ export default {
         this.serverList = data;
       }).catch((err) => {
         loading.hide();
-        this.$confirm(err.err_msg || err.message || '加载服务列表失败', '是否重试？', '提示').then(() => {
+        this.$confirm(err.err_msg || err.message || this.$t('serverList.msg.fail'), this.$t('common.alert')).then(() => {
           this.getServerList();
         });
       });
@@ -455,7 +455,7 @@ export default {
         this.showingList = data.concat([]).splice(0, 20);
       }).catch((err) => {
         loading.hide();
-        this.$tip.error(`服务实时状态加载失败: ${err.err_msg || err.message}`);
+        this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
     },
     // 切换服务实时状态页码
@@ -473,7 +473,7 @@ export default {
           this.configModal.model = { templates: data };
         }
       }).catch((err) => {
-        this.$tip.error(`获取模版列表失败: ${err.err_msg || err.message}`);
+        this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
     },
     // 获取服务数据
@@ -495,7 +495,7 @@ export default {
       }).catch((err) => {
         loading.hide();
         this.closeConfigModal();
-        this.$tip.error(`获取服务信息失败: ${err.err_msg || err.message}`);
+        this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
     },
     // 编辑服务
@@ -519,10 +519,10 @@ export default {
             return item;
           });
           this.closeConfigModal();
-          this.$tip.success('服务更新成功');
+          this.$tip.success(this.$t('serverList.restart.success'));
         }).catch((err) => {
           loading.hide();
-          this.$tip.error(`服务更新失败: ${err.message || err.err_msg}`);
+          this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.message || err.err_msg}`);
         });
       }
     },
@@ -553,7 +553,7 @@ export default {
         }).catch((err) => {
           // 网络问题重试1次
           if (isRetry) {
-            reject(new Error(err.err_msg || err.message || '网络错误'));
+            reject(new Error(err.err_msg || err.message || this.$t('common.networkErr')));
           } else {
             setTimeout(() => {
               resolve(this.checkTaskStatus(taskid, true));
@@ -589,32 +589,32 @@ export default {
         this.getServerList();
         this.$tip.error({
           title: tipObj.error,
-          message: err.err_msg || err.message || '网络错误',
+          message: err.err_msg || err.message || this.$t('common.networkErr'),
         });
       });
     },
     // 重启服务
     restartServer(id) {
       this.addTask(id, 'restart', {
-        success: '服务重启成功',
-        error: '服务重启失败',
+        success: this.$t('serverList.restart.success'),
+        error: this.$t('serverList.restart.failed'),
       });
     },
     // 停止服务
     stopServer(id) {
-      this.$confirm('您确定要停止此服务？', '提示').then(() => {
+      this.$confirm(this.$t('serverList.stopService.msg.stopService'), this.$t('common.alert')).then(() => {
         this.addTask(id, 'stop', {
-          success: '停止服务成功',
-          error: '停止服务失败',
+          success: this.$t('serverList.restart.success'),
+          error: this.$t('serverList.restart.failed'),
         });
       });
     },
     // 下线服务
     undeployServer(id) {
-      this.$confirm('您确定要下线此服务？', '提示').then(() => {
+      this.$confirm(this.$t('serverList.dlg.msg.undeploy'), this.$t('common.alert')).then(() => {
         this.addTask(id, 'undeploy_tars', {
-          success: '下线服务成功',
-          error: '下线服务失败',
+          success: this.$t('serverList.restart.success'),
+          error: this.$t('serverList.restart.failed'),
         });
         this.closeMoreCmdModal();
       });
@@ -636,7 +636,7 @@ export default {
         this.servantModal.currentServer = server;
       }).catch((err) => {
         loading.hide();
-        this.$tip.error(`获取 Servant 列表失败: ${err.err_msg || err.message}`);
+        this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
     },
     closeServantModal() {
@@ -727,11 +727,11 @@ export default {
           this.$ajax.postJSON('/server/api/add_adapter_conf', query).then((res) => {
             loading.hide();
             this.servantModal.model.unshift(res);
-            this.$tip.success('新建 Servant 成功');
+            this.$tip.success(this.$t('common.success'));
             this.closeServantDetailModal();
           }).catch((err) => {
             loading.hide();
-            this.$tip.error(`新建 Servant 失败: ${err.err_msg || err.message}`);
+            this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
           });
         // 修改
         } else {
@@ -743,18 +743,18 @@ export default {
               }
               return item;
             });
-            this.$tip.success('修改 Servant 成功');
+            this.$tip.success(this.$t('common.success'));
             this.closeServantDetailModal();
           }).catch((err) => {
             loading.hide();
-            this.$tip.error(`修改 Servant 失败: ${err.err_msg || err.message}`);
+            this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
           });
         }
       }
     },
     // 删除 servant
     deleteServant(id) {
-      this.$confirm('您确定要删除这个 Servant?', '提示').then(() => {
+      this.$confirm(this.$t('serverList.servant.a'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
         this.$ajax.getJSON('/server/api/delete_adapter_conf', {
           id,
@@ -763,10 +763,10 @@ export default {
           this.servantModal.model = this.servantModal.model.map((item) => {  // eslint-disable-line
             if (item.id !== res) return item;
           }).filter(item => item);
-          this.$tip.success('删除 Servant 成功');
+          this.$tip.success(this.$t('common.success'));
         }).catch((err) => {
           loading.hide();
-          this.$tip.error(`删除 Servant 失败: ${err.err_msg || err.message}`);
+          this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
         });
       });
     },
@@ -793,7 +793,7 @@ export default {
       }).then((data) => {
         if (this.moreCmdModal.model) this.moreCmdModal.model.configs = data;
       }).catch((err) => {
-        this.$tip.error(`获取配置文件列表失败: ${err.err_msg || err.message}`);
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       });
     },
     sendCommand(id, command, hold) {
@@ -806,7 +806,7 @@ export default {
         const msg = res[0].err_msg.replace(/\n/g, '<br>');
         if (res[0].ret_code === 0) {
           const opt = {
-            title: '执行命令成功',
+            title: this.$t('common.success'),
             message: msg,
           };
           if (hold) opt.duration = 0;
@@ -817,7 +817,7 @@ export default {
       }).catch((err) => {
         loading.hide();
         this.$tip.error({
-          title: '执行命令失败',
+          title: this.$t('common.error'),
           message: err.err_msg || err.message,
         });
       });
@@ -850,7 +850,7 @@ export default {
     },
 
     // 处理未发布时间显示
-    handleNoPublishedTime(timeStr, noPubTip = '未发布') {
+    handleNoPublishedTime(timeStr, noPubTip = this.$t('pub.dlg.unpublished')) {
       if (timeStr === '0000:00:00 00:00:00') {
         return noPubTip;
       }

@@ -1,13 +1,10 @@
 {
-  "tab": {
-    "main": {
-      "server": {
-        "manage": "服务管理"
-      },
-      "ops": {
-        "manage": "运维管理"
-      }
-    }
+  "header": {
+    "tab": {
+      "tab1": "服务管理",
+      "tab2": "运维管理"
+    },
+    "logout": "退出登录"
   },
   "api": {
     "blank": {
@@ -90,6 +87,8 @@
     "name": "名",
     "true": "是",
     "false": "否",
+    "yes": "是",
+    "no": "否",
     "template": "模板",
     "type": "类型",
     "cancel": "取消",
@@ -97,11 +96,23 @@
     "status": "状态",
     "result": "结果",
     "error": "错误",
+    "success": "成功!!!",
     "ip": "节点",
-    "nodata": "没有数据",
     "systemError": "系统内部错误",
     "noPrivilage": "没有操作权限",
-    "noLogin": "您还没有登录"
+    "noLogin": "您还没有登录",
+    "nodata": "没有数据",
+    "noService": "没有服务",
+    "retry": "点击重试",
+    "enable": "启用",
+    "disable": "不启用",
+    "alert": "提示",
+    "networkErr": "网络错误",
+    "set": {
+      "setName": "SET名",
+      "setArea": "SET区域",
+      "setGroup": "SET组"
+    }
   },
   "operate": {
     "update": "编辑",
@@ -114,17 +125,28 @@
     "more": "更多命令",
     "operates": "操作",
     "view": "查看",
-    "search": "查询"
+    "search": "查询",
+    "servant": "管理Servant",
+    "goback": "返回",
+    "title": {
+      "update": "编辑",
+      "add": "添加",
+      "more": "更多命令"
+    }
   },
   "index": {
-    "tab": {
-      "manage": "服务管理",
-      "patch": "发布管理",
-      "config": "服务配置",
-      "setConfig": "SET配置",
-      "appConfig": "应用配置",
-      "serviceMonitor": "服务监控",
-      "propertyMonitor": "特性监控"
+    "rightView": {
+      "title": "选择服务",
+      "tips": "如需查看服务列表或服务实时状态<br>请先从左边菜单选择一个服务",
+      "tab": {
+        "patch": "发布管理",
+        "serviceConfig": "服务配置",
+        "setConfig": "SET配置",
+        "appConfig": "应用配置",
+        "statMonitor": "服务监控",
+        "propertyMonitor": "特性监控",
+        "privileage": "权限管理"
+      }
     }
   },
   "serverList": {
@@ -137,35 +159,35 @@
         "service": "服务",
         "ip": "节点",
         "enableSet": "启用Set",
-        "setName": "Set名",
-        "setArea": "Set区域",
-        "setGroup": "Set组",
         "configStatus": "设置状态",
         "currStatus": "当前状态",
         "processID": "进程ID",
         "version": "版本",
         "time": "发布时间",
         "threadID": "线程ID",
+        "serviceID": "服务ID",
         "result": "结果"
       },
       "servant": {
+        "title": "Servants管理",
         "adress": "绑定地址",
         "thread": "线程数",
         "maxConnecttions": "最大<br>连接数",
         "maxQueue": "队列<br>最大长度",
-        "timeout": "队列超时<br>时间"
+        "timeout": "队列超时<br>时间(ms)"
+      },
+      "msg": {
+        "fail": "加载服务列表失败，是否重试?"
       }
     },
     "dlg": {
-      "service": {
-        "deployIP": "部署节点"
-      },
       "standby": "是否备机",
       "placeholder": {
         "english": "全英文，全小写",
         "num": "数字或者*号",
         "thread": "NodeJS的>=1，其他>=3"
       },
+      "serviceType": "服务类型",
       "asyncThread": "异步线程数",
       "defaultPath": "缺省路径",
       "exePath": "EXE路径",
@@ -191,6 +213,7 @@
         "undeployFailed": "下线失败"
       },
       "title": {
+        "editService": "编辑服务",
         "undeploy": "服务下线",
         "taskStatus": "任务状态"
       }
@@ -219,7 +242,6 @@
     },
     "servant": {
       "obj": "OBJ名和绑定地址为必填项",
-      "objen": "OBJ名称必须为全英文",
       "thread": "线程数必须为数字,且大于0",
       "error": "绑定地址填写错误!!!  <br>绑定地址格式：以tcp 或者 udp开头，有 -h -t -p 三个参数， -p 0-65535  -t 大于 0  -h ip格式",
       "ip": "IP格式错误，请重新填写。",
@@ -236,7 +258,7 @@
       "sample": "范例",
       "maxConnecttions": "最大连接数",
       "lengthOfQueue": "队列长度",
-      "queueTimeout": "队列超时",
+      "queueTimeout": "队列超时(ms)",
       "allowIP": "允许IP",
       "protocol": "协议",
       "notTARS": "非TARS",
@@ -258,19 +280,28 @@
     },
     "dlg": {
       "ip": "待发布节点",
+      "releaseVersion": "发布版本",
+      "upload": "上传发布包",
+      "releasePkg": "发布包",
       "defaultValue": "请选择",
+      "noConfFile": "暂无配置文件",
       "a": "请至少选择一个服务节点",
-      "ab": "请选择发布版本"
+      "ab": "请选择发布版本",
+      "unpublished": "未发布"
     },
     "tips": {
       "default": "发布管理只管理服务层级，请您先在左侧业务树选择服务。"
-    }
+    },
+    "date": "日期"
   },
   "cfg": {
     "title": {
       "a": "配置列表",
       "b": "引用文件列表",
-      "c": "节点配置列表"
+      "c": "节点配置列表",
+      "viewConf": "查看配置文件内容",
+      "viewMerged": "查看合并后内容",
+      "viewHistory": "查看配置文件变更记录"
     },
     "btn": {
       "add": "添加配置",
@@ -278,7 +309,7 @@
       "pushFile": "PUSH配置文件",
       "fileName": "文件名称",
       "content": "文件内容",
-      "resean": "原因",
+      "reason": "原因",
       "lastUpdate": "最后修改时间",
       "mod": "变更内容"
     },
@@ -300,7 +331,8 @@
       "viewContent": "查看内容",
       "confirmCfg": "您确定要删除这条配置吗",
       "nofile": "没有文件",
-      "selectNode": "请选择节点"
+      "selectNode": "请选择节点",
+      "empty": "空"
     },
     "dlg": {
       "fileName": "文件名不能为空",
@@ -328,8 +360,9 @@
       "info": "系统初次搭建时，对比日无数据请将对比日期改成显示日期"
     },
     "table": {
-      "curr": "当日总流量",
-      "contrast": "对比日平均耗时",
+      "total": "总流量",
+      "curr": "当日",
+      "contrast": "对比日",
       "fluctuating": "同比波动",
       "average": "当日平均耗时",
       "abnormal": "当日异常率",
@@ -339,7 +372,8 @@
       "errTips": "监控需要具体到服务，请您先在左侧业务树选择服务。",
       "a": "平均耗时",
       "b": "异常率",
-      "c": "超时率"
+      "c": "超时率",
+      "d": "监控时间"
     },
     "select": {
       "all": "全部",
@@ -442,9 +476,16 @@
     "dlg": {
       "th": {
         "c1": "子任务ID",
+        "c2": "应用",
+        "c3": "服务",
+        "c4": "节点",
         "c5": "命令",
         "c7": "执行信息"
       }
     }
+  },
+  "user": {
+    "op": "运维",
+    "dev": "开发"
   }
 }

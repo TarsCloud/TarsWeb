@@ -1,14 +1,14 @@
 <template>
   <div>
     <let-form inline itemWidth="600px" @submit.native.prevent="save">
-      <let-form-item label="运维人员">
+      <let-form-item :label="$t('user.op')">
         <let-input type="textarea" v-model="operator" :disabled="!hasAuth"></let-input>
       </let-form-item>
-      <let-form-item label="开发人员">
+      <let-form-item :label="$t('user.dev')">
         <let-input type="textarea" v-model="developer" :disabled="!hasAuth"></let-input>
       </let-form-item>
       <let-form-item>
-      <let-button type="submit" theme="primary" v-if="hasAuth">提交修改</let-button>
+      <let-button type="submit" theme="primary" v-if="hasAuth">{{$t('common.submit')}}</let-button>
       </let-form-item>
     </let-form>
   </div>
@@ -39,7 +39,7 @@ export default {
         this.$ajax.getJSON('/server/api/has_auth', {application: this.serverData.application, server_name: this.serverData.server_name, role: 'developer'}).then((data)=>{
           this.hasAuth = data.has_auth || false;
         }).catch((err)=>{
-          this.$tip.error(`判断权限失败: ${err.message || err.err_msg}`);
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         })
     },
     getAuthList(){
@@ -47,17 +47,17 @@ export default {
         this.operator = (data.operator||[]).join(';')
         this.developer = (data.developer||[]).join(';')
       }).catch((err)=>{
-          this.$tip.error(`获取权限数据失败: ${err.message || err.err_msg}`);
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       })
     },
     save(){
       const loading = this.$Loading.show();
       this.$ajax.postJSON('/server/api/update_auth', {application: this.serverData.application, server_name: this.serverData.server_name, operator: this.operator, developer: this.developer}).then((data)=>{
         loading.hide();
-        this.$tip.success(`更新权限成功`);
+        this.$tip.success(`${this.$t('common.error')}`);
       }).catch((err)=>{
         loading.hide();
-        this.$tip.error(`更新权限失败: ${err.message || err.err_msg}`);
+        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       })
     }
   },

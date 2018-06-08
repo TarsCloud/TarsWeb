@@ -9,8 +9,8 @@
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
-        <let-tab-pane :tab="$t('tab.main.server.manage')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
-        <let-tab-pane :tab="$t('tab.main.ops.manage')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
       </let-tabs>
 
       <div class="language-wrap">
@@ -26,7 +26,7 @@
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}"></i>
           <transition name="fade">
             <div class="user-pop-wrap" v-show="userOptOpen">
-              <a href="/logout">退出登录</a>
+              <a href="/logout">{{$t('header.logout')}}</a>
             </div>
           </transition>
         </p>

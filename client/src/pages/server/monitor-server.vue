@@ -1,35 +1,35 @@
 <template>
   <div class="page_server_server_monitor">
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
-      <let-form-item label="显示日期">
+      <let-form-item :label="$t('monitor.search.a')">
         <let-date-picker size="small" v-model="query.thedate" :formatter="formatter"></let-date-picker>
       </let-form-item>
-      <let-form-item label="对比日期">
+      <let-form-item :label="$t('monitor.search.b')">
         <let-date-picker size="small" v-model="query.predate" :formatter="formatter"></let-date-picker>
       </let-form-item>
-      <let-form-item label="开始时间">
+      <let-form-item :label="$t('monitor.search.start')">
         <let-input size="small" v-model="query.startshowtime"></let-input>
       </let-form-item>
-      <let-form-item label="结束时间">
+      <let-form-item :label="$t('monitor.search.end')">
         <let-input size="small" v-model="query.endshowtime"></let-input>
       </let-form-item>
-      <tars-form-item label="接口名" @onLabelClick="groupBy('interface_name')">
+      <tars-form-item :label="$t('monitor.search.interfaceName')" @onLabelClick="groupBy('interface_name')">
         <let-input size="small" v-model="query.interface_name"></let-input>
       </tars-form-item>
-      <tars-form-item label="主调" @onLabelClick="groupBy('master_name')">
+      <tars-form-item :label="$t('monitor.search.master')" @onLabelClick="groupBy('master_name')">
         <let-input size="small" v-model="query.master_name"></let-input>
       </tars-form-item>
-      <tars-form-item label="被调" @onLabelClick="groupBy('slave_name')">
+      <tars-form-item :label="$t('monitor.search.slave')" @onLabelClick="groupBy('slave_name')">
         <let-input size="small" v-model="query.slave_name"></let-input>
       </tars-form-item>
-      <tars-form-item label="主调IP" @onLabelClick="groupBy('master_ip')">
+      <tars-form-item :label="$t('monitor.search.masterIP')" @onLabelClick="groupBy('master_ip')">
         <let-input size="small" v-model="query.master_ip"></let-input>
       </tars-form-item>
-      <tars-form-item label="被调IP" @onLabelClick="groupBy('slave_ip')">
+      <tars-form-item :label="$t('monitor.search.slaveIP')" @onLabelClick="groupBy('slave_ip')">
         <let-input size="small" v-model="query.slave_ip"></let-input>
       </tars-form-item>
       <let-form-item>
-        <let-button size="small" type="submit" theme="primary">查询</let-button>
+        <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
       </let-form-item>
     </let-form>
 
@@ -41,41 +41,41 @@
 
     <hours-filter v-model="hour"></hours-filter>
 
-    <let-table ref="table" :data="pagedItems" empty-msg="暂无数据">
-      <let-table-column title="时间点" prop="show_time" width="80px"></let-table-column>
-      <let-table-column title="主调" prop="master_name" width=""></let-table-column>
-      <let-table-column title="被调" prop="slave_name" width=""></let-table-column>
-      <let-table-column title="接口名" prop="interface_name" width=""></let-table-column>
-      <let-table-column title="主调IP" prop="master_ip" width=""></let-table-column>
-      <let-table-column title="被调IP" prop="slave_ip" width=""></let-table-column>
+    <let-table ref="table" :data="pagedItems" :empty-msg="$t('common.nodata')">
+      <let-table-column :title="$t('common.time')" prop="show_time" width="80px"></let-table-column>
+      <let-table-column :title="$t('monitor.search.master')" prop="master_name" width=""></let-table-column>
+      <let-table-column :title="$t('monitor.search.slave')" prop="slave_name" width=""></let-table-column>
+      <let-table-column :title="$t('monitor.search.interfaceName')" prop="interface_name" width=""></let-table-column>
+      <let-table-column :title="$t('monitor.search.masterIP')" prop="master_ip" width=""></let-table-column>
+      <let-table-column :title="$t('monitor.search.slaveIP')" prop="slave_ip" width=""></let-table-column>
       <let-table-column prop="the_total_count" align="right">
-        <span slot="head" slot-scope="props">当日<br>总流量</span>
+        <span slot="head" slot-scope="props">{{$t('monitor.table.curr')}}<br>{{$t('monitor.table.total')}}</span>
       </let-table-column>
       <let-table-column prop="pre_total_count" align="right">
-        <span slot="head" slot-scope="props">对比日<br>总流量</span>
+        <span slot="head" slot-scope="props">{{$t('monitor.table.contrast')}}<br>{{$t('monitor.table.total')}}</span>
       </let-table-column>
       <let-table-column prop="total_count_wave" align="right">
-        <span slot="head" slot-scope="props">流量同<br>比波动</span>
+        <span slot="head" slot-scope="props">{{$t('monitor.table.fluctuating')}}</span>
       </let-table-column>
       <let-table-column align="right">
-        <span slot="head" slot-scope="props">当日<br>平均耗时</span>
+        <span slot="head" slot-scope="props">{{$t('monitor.table.curr')}}<br>{{$t('monitor.table.a')}}</span>
         <template slot-scope="props">{{props.row.the_avg_time}}ms</template>
       </let-table-column>
       <let-table-column align="right">
-        <span slot="head" slot-scope="props">对比日<br>平均耗时</span>
+        <span slot="head" slot-scope="props">{{$t('monitor.table.contrast')}}<br>{{$t('monitor.table.a')}}</span>
         <template slot-scope="props">{{props.row.pre_avg_time}}ms</template>
       </let-table-column>
       <let-table-column prop="the_fail_rate" align="right">
-        <span slot="head" slot-scope="props">当日<br>异常率</span>
+        <span slot="head" slot-scope="props">{{$t('monitor.table.curr')}}<br>{{$t('monitor.table.b')}}</span>
       </let-table-column>
       <let-table-column prop="pre_fail_rate" align="right">
-        <span slot="head" slot-scope="props">对比日<br>异常率</span>
+        <span slot="head" slot-scope="props">{{$t('monitor.table.contrast')}}<br>{{$t('monitor.table.b')}}</span>
       </let-table-column>
       <let-table-column prop="the_timeout_rate" align="right">
-        <span slot="head" slot-scope="props">当日<br>超时率</span>
+        <span slot="head" slot-scope="props">{{$t('monitor.table.curr')}}<br>{{$t('monitor.table.c')}}</span>
       </let-table-column>
       <let-table-column prop="pre_timeout_rate" align="right">
-        <span slot="head" slot-scope="props">对比日<br>超时率</span>
+        <span slot="head" slot-scope="props">{{$t('monitor.table.contrast')}}<br>{{$t('monitor.table.c')}}</span>
       </let-table-column>
 
       <let-pagination
@@ -150,38 +150,38 @@ export default {
     charts() {
       return [
         {
-          title: '总流量',
+          title: this.$t('monitor.table.total'),
           timeColumn: 'show_time',
           dataColumns: [
-            { name: 'the_total_count', label: '当日总流量' },
-            { name: 'pre_total_count', label: '对比日总流量' },
+            { name: 'the_total_count', label: this.$t('monitor.table.curr') },
+            { name: 'pre_total_count', label: this.$t('monitor.table.contrast') },
           ],
           data: this.allItems,
         },
         {
-          title: '平均耗时',
+          title: this.$t('monitor.table.a'),
           timeColumn: 'show_time',
           dataColumns: [
-            { name: 'the_avg_time', label: '当日平均耗时' },
-            { name: 'pre_avg_time', label: '对比日平均耗时' },
+            { name: 'the_avg_time', label: this.$t('monitor.table.curr') },
+            { name: 'pre_avg_time', label: this.$t('monitor.table.contrast') },
           ],
           data: this.allItems,
         },
         {
-          title: '异常率',
+          title: this.$t('monitor.table.b'),
           timeColumn: 'show_time',
           dataColumns: [
-            { name: 'the_fail_rate', label: '当日异常率' },
-            { name: 'pre_fail_rate', label: '对比日异常率' },
+            { name: 'the_fail_rate', label: this.$t('monitor.table.curr') },
+            { name: 'pre_fail_rate', label: this.$t('monitor.table.contrast') },
           ],
           data: this.allItems,
         },
         {
-          title: '超时率',
+          title: this.$t('monitor.table.c'),
           timeColumn: 'show_time',
           dataColumns: [
-            { name: 'the_timeout_rate', label: '当日超时率' },
-            { name: 'pre_timeout_rate', label: '对比日超时率' },
+            { name: 'the_timeout_rate', label: this.$t('monitor.table.curr') },
+            { name: 'pre_timeout_rate', label: this.$t('monitor.table.contrast') },
           ],
           data: this.allItems,
         },
@@ -191,7 +191,7 @@ export default {
       return {
         title: {
           show: true,
-          text: '当日总流量',
+          text: `${this.$t('monitor.table.curr')} ${this.$t('monitor.table.total')}`,
         },
         grid: {
           bottom: 40,
@@ -202,8 +202,8 @@ export default {
         },
         settings: {
           labelMap: {
-            the_value: '当日特征值',
-            pre_value: '对比日特征值',
+            the_value: this.$t('monitor.property.property'),
+            pre_value: this.$t('monitor.property.propertyC'),
           },
           scale: [true, false],
         },
@@ -230,7 +230,7 @@ export default {
       }).catch((err) => {
         chartLoading.hide();
         tableLoading.hide();
-        this.$tip.error(`获取数据失败: ${err.message || err.err_msg}`);
+        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       });
     },
 
