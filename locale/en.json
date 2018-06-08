@@ -83,7 +83,7 @@
     "config": "configuration",
     "patch": "publish",
     "service": "service",
-    "time": "time",
+    "time": "Time",
     "name": "name",
     "true": "true",
     "false": "false",
