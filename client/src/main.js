@@ -6,7 +6,7 @@ import './plugins/ajax';
 
 import App from './App';
 import router from './router';
-import i18n from './locales'
+import i18n from './locale'
 
 
 Vue.config.productionTip = false;

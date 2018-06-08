@@ -4,7 +4,7 @@
 
 const _ = require('lodash');
 const validator = require('validator');
-const languageMidware = require('./languageMidware');
+const localeMidware = require('./localeMidware');
 
 //api入参出参中间件
 const paramsDealMidware = (validParams) =>{
@@ -26,10 +26,10 @@ const paramsDealMidware = (validParams) =>{
             ctx.body = {data: result, ret_code: retCode, err_msg:errMsg};
         };
         ctx.makeErrResObj = () => {
-            ctx.body = {data: {}, ret_code:500, err_msg: '系统内部错误'};
+            ctx.body = {data: {}, ret_code:500, err_msg: '#common.systemError#'};
         };
         ctx.makeNotAuthResObj = () => {
-            ctx.body = {data: {}, ret_code:500, err_msg: '没有操作权限'};
+            ctx.body = {data: {}, ret_code:500, err_msg: '#common.noPrivilage#'};
         };
         await next();
     }
@@ -75,7 +75,7 @@ const paramsCheckMidware = (checkRule) =>{
             await next();
         }
         else{
-            languageMidware(ctx, async()=>{});
+            localeMidware(ctx, async()=>{});
         }
     }
 };

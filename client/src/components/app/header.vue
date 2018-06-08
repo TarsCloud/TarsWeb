@@ -15,8 +15,8 @@
 
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
-          <let-option value="cn">{{$t('header.select.cn')}}</let-option>
-          <let-option value="en">{{$t('header.select.en')}}</let-option>
+          <let-option value="cn">中文</let-option>
+          <let-option value="en">English</let-option>
         </let-select>
       </div>
       <div class="user-wrap">

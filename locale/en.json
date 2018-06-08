@@ -4,13 +4,9 @@
       "tab1": "Services",
       "tab2": "operation"
     },
-    "select": {
-      "cn": "Simplified Chinese",
-      "en": "English"
-    },
     "logout": "logout"
   },
-  "java": {
+  "api": {
     "blank": {
       "error": {
         "message": "blank error message"
@@ -75,6 +71,12 @@
           "error": "execute package command error"
         }
       }
+    },
+    "resource":{
+      "tarsNodeExist": "Tars Node is already exist",
+      "installFailed": "Install Tars Node failed",
+      "uninstallFailed": "Uninstall Tars Node failed",
+      "notConfig": "No machine configuration was found"
     }
   },
   "common": {
@@ -96,6 +98,9 @@
     "error": "Error!!!",
     "success": "Success!!!",
     "ip": "node",
+    "systemError": "system error",
+    "noPrivilage": "no privilage",
+    "noLogin": "You have not been login",
     "nodata": "No Data",
     "noService": "No Services",
     "retry": "Click to try again",
@@ -291,9 +296,12 @@
   },
   "cfg": {
     "title": {
-      "a": "configuration list",
-      "b": "Reference file list",
-      "c": "Node configuration list"
+      "a": "Configuration",
+      "b": "Reference files",
+      "c": "Node configuration",
+      "viewConf": "View configuration content",
+      "viewMerged": "View merged configuration",
+      "viewHistory": "View update history"
     },
     "btn": {
       "add": "add configuration",
@@ -301,17 +309,17 @@
       "pushFile": "push file",
       "fileName": "fileName",
       "content": "content",
-      "resean": "resean",
+      "reason": "reason",
       "lastUpdate": "lastupdate time",
       "mod": "the modification"
     },
     "table": {
-      "modCfg": "update configuration",
-      "delCfg": "delete configuration",
-      "delRef": "delete reference file",
+      "modCfg": "edit",
+      "delCfg": "delete",
+      "delRef": "delete",
       "serviceName": "service name",
-      "viewMerge": "view merged content",
-      "viewIpContent": "view ip content",
+      "viewMerge": "view",
+      "viewIpContent": "nodeConf",
       "mangeRefFile": "manage reference file"
     },
     "msg": {
@@ -323,7 +331,8 @@
       "viewContent": "view content",
       "confirmCfg": "Are you sure to delete this configuration",
       "nofile": "no file",
-      "selectNode": "Please select at least one node"
+      "selectNode": "Please select at least one node",
+      "empty": "Empty"
     },
     "dlg": {
       "fileName": "fileName is required",
@@ -338,8 +347,8 @@
       "b": "compare date",
       "start": "start time",
       "end": "end time",
-      "master": "master scheduler",
-      "slave": "slave scheduler",
+      "master": "master name",
+      "slave": "slave name",
       "interfaceName": "interface name",
       "masterIP": "master IP",
       "slaveIP": "slave IP"
@@ -351,9 +360,10 @@
       "info": "system is set up for the first time, contrast, countless according to please compare the date to date"
     },
     "table": {
-      "curr": "total throughput in Day1",
-      "contrast": "average response time in Day2",
-      "fluctuating": "comparison between Day1 and Day2",
+      "total": "total flow",
+      "curr": "the same day",
+      "contrast": "contrast day",
+      "fluctuating": "swings",
       "average": "average response time in Day1",
       "abnormal": "ratio of exceptional request in Day1",
       "abnormalC": "ratio of exceptional request in Day2",
@@ -362,16 +372,17 @@
       "errTips": "Service monitoring need specific to the service, please select a service in the left tree first.",
       "a": "average time",
       "b": "abnormal rate",
-      "c": "timeout rate"
+      "c": "timeout rate",
+      "d": "Monitor time"
     },
     "select": {
       "all": "all",
       "property": "property",
-      "strategy": "strategy"
+      "strategy": "policy"
     },
     "property": {
-      "property": "characteristic value of<br> curr day",
-      "propertyC": "characteristic value of<br> contrast day"
+      "property": "characteristic value of curr day",
+      "propertyC": "characteristic value of contrast day"
     }
   },
   "deployService": {
@@ -472,5 +483,9 @@
         "c7": "Execute info"
       }
     }
+  },
+  "user": {
+    "op": "Operation",
+    "dev": "Developer"
   }
 }

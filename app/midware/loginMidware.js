@@ -9,7 +9,8 @@ let url = require('url');
 
 let loginCookieMap = {}; //内存中保存用户的登录信息
 let cookieConfig = {
-    maxAge: 365 * 24 * 60 * 60 * 1000  //用户cookie过期时间为1年
+    maxAge: 365 * 24 * 60 * 60 * 1000,  //用户cookie过期时间为1年，
+    domain: loginConf.cookieDomain || '/',
 };
 
 

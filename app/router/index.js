@@ -5,7 +5,6 @@ const {pageConf, apiConf} = require('./routerConf');
 const Router = require('koa-router');
 const _ = require('lodash');
 const noCacheMidware = require('../midware/noCacheMidware');
-const staticMidware = require('../midware/staticMidware');
 const {paramsDealMidware, paramsCheckMidware} = require('../midware/paramsMidware');
 const path = require('path');
 
@@ -38,12 +37,5 @@ getRouter(pageRouter, pageConf);
 const apiRouter = new Router();
 apiRouter.prefix('/pages/server/api');
 getRouter(apiRouter, apiConf);
-
-//静态资源类型路由
-// const staticRouter = new Router();
-// staticRouter.get('/css/*', staticMidware(path.join(__dirname, '../../public'), true, {maxage: 7 * 24 * 60 * 60 * 1000}));
-// staticRouter.get('/js/*', staticMidware(path.join(__dirname, '../../public'), true, {maxage: 7 * 24 * 60 * 60 * 1000}));
-// staticRouter.get('/html/*', staticMidware(path.join(__dirname, '../../public'), true, {maxage: 7 * 24 * 60 * 60 * 1000}));
-// staticRouter.get('/img/*', staticMidware(path.join(__dirname, '../../public'), false, {maxage: 7 * 24 * 60 * 60 * 1000}));
 
 module.exports = {pageRouter, apiRouter};

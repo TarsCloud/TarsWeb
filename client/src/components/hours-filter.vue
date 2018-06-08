@@ -16,14 +16,14 @@
 // eslint-disable-next-line prefer-spread
 const hours = Array.apply(null, { length: 24 }).map((d, i) => i);
 const formattedHours = hours.map(d => ({ val: d, txt: `0${d}`.slice(-2) }));
-const formattedHoursWithAll = [{ val: -1, txt: '全部' }].concat(formattedHours);
+const formattedHoursWithAll = [{ val: -1, txt: 'all' }].concat(formattedHours);
 
 export default {
   name: 'HoursFilter',
   props: {
     title: {
       type: String,
-      default: '监控时间',
+      default: '',
     },
     value: Number,
   },

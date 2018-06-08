@@ -4,13 +4,9 @@
       "tab1": "服务管理",
       "tab2": "运维管理"
     },
-    "select": {
-      "cn": "简体中文",
-      "en": "英文"
-    },
     "logout": "退出登录"
   },
-  "java": {
+  "api": {
     "blank": {
       "error": {
         "message": "错误码详细说明为空"
@@ -75,6 +71,12 @@
           "error": "执行安装包打包命令报错"
         }
       }
+    },
+    "resource":{
+      "tarsNodeExist": "Tars Node 已存在",
+      "installFailed": "安装Tars Node失败",
+      "uninstallFailed": "卸载Tars Node失败",
+      "notConfig": "未找到机器配置"
     }
   },
   "common": {
@@ -85,6 +87,8 @@
     "name": "名",
     "true": "是",
     "false": "否",
+    "yes": "是",
+    "no": "否",
     "template": "模板",
     "type": "类型",
     "cancel": "取消",
@@ -92,7 +96,11 @@
     "status": "状态",
     "result": "结果",
     "error": "错误",
+    "success": "成功!!!",
     "ip": "节点",
+    "systemError": "系统内部错误",
+    "noPrivilage": "没有操作权限",
+    "noLogin": "您还没有登录",
     "nodata": "没有数据",
     "noService": "没有服务",
     "retry": "点击重试",
@@ -151,9 +159,6 @@
         "service": "服务",
         "ip": "节点",
         "enableSet": "启用Set",
-        "setName": "Set名",
-        "setArea": "Set区域",
-        "setGroup": "Set组",
         "configStatus": "设置状态",
         "currStatus": "当前状态",
         "processID": "进程ID",
@@ -237,7 +242,6 @@
     },
     "servant": {
       "obj": "OBJ名和绑定地址为必填项",
-      "objen": "OBJ名称必须为全英文",
       "thread": "线程数必须为数字,且大于0",
       "error": "绑定地址填写错误!!!  <br>绑定地址格式：以tcp 或者 udp开头，有 -h -t -p 三个参数， -p 0-65535  -t 大于 0  -h ip格式",
       "ip": "IP格式错误，请重新填写。",
@@ -294,7 +298,10 @@
     "title": {
       "a": "配置列表",
       "b": "引用文件列表",
-      "c": "节点配置列表"
+      "c": "节点配置列表",
+      "viewConf": "查看配置文件内容",
+      "viewMerged": "查看合并后内容",
+      "viewHistory": "查看配置文件变更记录"
     },
     "btn": {
       "add": "添加配置",
@@ -302,7 +309,7 @@
       "pushFile": "PUSH配置文件",
       "fileName": "文件名称",
       "content": "文件内容",
-      "resean": "原因",
+      "reason": "原因",
       "lastUpdate": "最后修改时间",
       "mod": "变更内容"
     },
@@ -324,7 +331,8 @@
       "viewContent": "查看内容",
       "confirmCfg": "您确定要删除这条配置吗",
       "nofile": "没有文件",
-      "selectNode": "请选择节点"
+      "selectNode": "请选择节点",
+      "empty": "空"
     },
     "dlg": {
       "fileName": "文件名不能为空",
@@ -352,8 +360,9 @@
       "info": "系统初次搭建时，对比日无数据请将对比日期改成显示日期"
     },
     "table": {
-      "curr": "当日总流量",
-      "contrast": "对比日平均耗时",
+      "total": "总流量",
+      "curr": "当日",
+      "contrast": "对比日",
       "fluctuating": "同比波动",
       "average": "当日平均耗时",
       "abnormal": "当日异常率",
@@ -363,7 +372,8 @@
       "errTips": "监控需要具体到服务，请您先在左侧业务树选择服务。",
       "a": "平均耗时",
       "b": "异常率",
-      "c": "超时率"
+      "c": "超时率",
+      "d": "监控时间"
     },
     "select": {
       "all": "全部",
@@ -473,5 +483,9 @@
         "c7": "执行信息"
       }
     }
+  },
+  "user": {
+    "op": "运维",
+    "dev": "开发"
   }
 }
