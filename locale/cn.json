@@ -9,7 +9,7 @@
       }
     }
   },
-  "web": {
+  "api": {
     "blank": {
       "error": {
         "message": "错误码详细说明为空"
@@ -74,6 +74,12 @@
           "error": "执行安装包打包命令报错"
         }
       }
+    },
+    "resource":{
+      "tarsNodeExist": "Tars Node 已存在",
+      "installFailed": "安装Tars Node失败",
+      "uninstallFailed": "卸载Tars Node失败",
+      "notConfig": "未找到机器配置"
     }
   },
   "common": {
@@ -94,7 +100,8 @@
     "ip": "节点",
     "nodata": "没有数据",
     "systemError": "系统内部错误",
-    "noPrivilage": "没有操作权限"
+    "noPrivilage": "没有操作权限",
+    "noLogin": "您还没有登录"
   },
   "operate": {
     "update": "编辑",

@@ -9,7 +9,7 @@
       }
     }
   },
-  "web": {
+  "api": {
     "blank": {
       "error": {
         "message": "blank error message"
@@ -74,6 +74,12 @@
           "error": "execute package command error"
         }
       }
+    },
+    "resource":{
+      "tarsNodeExist": "Tars Node is already exist",
+      "installFailed": "Install Tars Node failed",
+      "uninstallFailed": "Uninstall Tars Node failed",
+      "notConfig": "No machine configuration was found"
     }
   },
   "common": {
@@ -94,7 +100,8 @@
     "ip": "node",
     "nodata": "no data",
     "systemError": "system error",
-    "noPrivilage": "no privilage"
+    "noPrivilage": "no privilage",
+    "noLogin": "You have not been login"
   },
   "operate": {
     "update": "update",
