@@ -6,8 +6,6 @@ const {tConfigFiles,tConfigHistoryFiles,tConfigReferences} = require('./db').db_
 
 let ConfigDao = {};
 
-tConfigReferences.belongsTo(tConfigFiles,{foreignKey:'reference_id'});
-
 ConfigDao.getUnusedApplicationConfigFile = async(application, configId) => {
     let referenceIds = await tConfigReferences.findAll({
         raw : true,
@@ -68,6 +66,18 @@ ConfigDao.getConfigFile = async (id) => {
         where : {id : id}
     });
 };
+
+ConfigDao.getConfigFileByRefTableId = async (id) => {
+    tConfigReferences.belongsTo(tConfigFiles, {foreignKey: 'config_id'});
+    return await tConfigReferences.findOne({
+        raw : true,
+        where : {id : id},
+        include: [{
+            model : tConfigFiles
+        }]
+    });
+};
+
 
 ConfigDao.getConfigFileList = async (ids) => {
     return await tConfigFiles.findAll({
@@ -152,8 +162,7 @@ ConfigDao.deleteConfigRef = async (refId) => {
 };
 
 ConfigDao.getConfigRefByConfigId = async (configId) => {
-
-
+    tConfigReferences.belongsTo(tConfigFiles,{foreignKey:'reference_id'});
     return await tConfigReferences.findAll({
         order : [
             ['id','desc']
