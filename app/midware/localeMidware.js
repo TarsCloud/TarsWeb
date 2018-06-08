@@ -23,6 +23,7 @@ function formatJson(localeJson){
 }
 
 module.exports = async(ctx, next)=> {
+    await next();
     if (!!ctx.body) {
         var lan = ctx.paramsObj && ctx.paramsObj.__locale || ctx.cookies.get('locale') || 'cn';
         var content = '';
@@ -30,12 +31,18 @@ module.exports = async(ctx, next)=> {
         if (_.isString(ctx.body)) {
             content = ctx.body;
             contentType = 'string';
-        } else if (_.isObject(ctx.body)) {
+        } else if (_.isObject(ctx.body) && !(ctx.body instanceof stream)) {
             content = JSON.stringify(ctx.body);
             contentType = 'object';
+        }else{
+            return;
         }
-        _.each(localeMap[lan] || cn, (value, key)=> {
-            content = content.replace(key, value);
+        let matchList = content.match( /#[a-zA-Z0-9\._]+#/g);
+        _.each(matchList, (matchStr) => {
+            let str = localeMap[lan][matchStr]
+            if(str){
+                content = content.replace(matchStr, str);
+            }
         });
         if (contentType == 'object') {
             ctx.body = JSON.parse(content);
@@ -43,6 +50,5 @@ module.exports = async(ctx, next)=> {
             ctx.body = content;
         }
     }
-    await next()
 };
 

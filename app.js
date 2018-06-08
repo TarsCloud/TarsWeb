@@ -10,6 +10,7 @@ const static = require('koa-static');
 const {pageRouter, apiRouter} = require('./app/router');
 const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
+const localeMidware = require('./app/midware/localeMidware');
 const helmet = require("koa-helmet");
 // const compress = require('koa-compress')
 const loginMidware = require('./app/midware/loginMidware');
@@ -31,12 +32,15 @@ app.use(bodyparser());
 
 app.use(upload.single('suse')); //这里决定了上传包的name只能叫suse。
 
+//国际化多语言中间件
+app.use(localeMidware);
+
 //前置中间件
 preMidware.forEach((midware)=>{
     app.use(midware);
 });
 
-//权限校验
+//登录校验
 app.use(loginMidware);
 
 //激活router

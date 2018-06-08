@@ -26,7 +26,7 @@ module.exports = {
     ignore: ['/static', '/tarsnode_install.sh'], //不需要登录校验的路径
     ignoreIps: [],                           //访问ip白名单
     apiPrefix: ['/pages/server/api'],       //接口相应的路径前缀
-    apiNotLoginMes: '您还没有登录',         //接口无登录权限的提示语
+    apiNotLoginMes: '#common.noPrivilage#', //接口无登录权限的提示语
 
     enableLocalCache: false,               //是否开启本地登录缓存
     maxAge: 7 * 24 * 60 * 60 * 1000        //本地登录缓存时间，默认7天

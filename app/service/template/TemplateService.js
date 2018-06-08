@@ -18,12 +18,12 @@ TemplateService.addTemplate = async(templateName, parentsName, profile) => {
 TemplateService.deleteTemplate = async(id) => {
     let template = await TemplateService.getTemplateById(id);
     if (!template) {
-        throw new Error('没有匹配到要删除的模板');
+        throw new Error('#api.nonexistent.template#');
         return;
     }
     let ref = await ServerService.getServerConfByTemplate(template.dataValues.template_name);
     if (ref.length) {
-        throw new Error('模板被服务引用，不能删除');
+        throw new Error('#api.template.being.referred#');
         return;
     }
     return await TemplateDao.deleteTemplate(id);
@@ -32,23 +32,23 @@ TemplateService.deleteTemplate = async(id) => {
 TemplateService.updateTemplate = async(params)=> {
     let template = await TemplateService.getTemplateById(params.id);
     if (!template) {
-        throw new Error('没有匹配到要删除的模板');
+        throw new Error('#api.nonexistent.template#');
         return;
     }
     template = template.dataValues;
     if(params.template_name.toLowerCase() !== template.template_name.toLowerCase()){
         let ref = await ServerService.getServerConfByTemplate(template.template_name);
         if (ref.length) {
-            throw new Error('模板被服务引用，不能更新模板名称');
+            throw new Error('#api.template.being.referred#');
             return;
         }
     }
     let parent = await TemplateService.getTemplateByName(params.parents_name);
     if(!parent){
-        throw new Error('指定的父模板不存在');
+        throw new Error('#api.nonexistent.parent.template#');
         return;
     }
-    params.posttime = new Date()
+    params.posttime = new Date();
     return await TemplateDao.updateTemplate(params);
 };
 

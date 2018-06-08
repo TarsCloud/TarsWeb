@@ -34,7 +34,7 @@ ExpandService.preview = async(params)=> {
             let servant = adapter.servant;
             preServer.obj_name = servant.substring(servant.lastIndexOf('.') + 1);
             preServer.bind_ip = expandNode;
-            preServer.status = expandNode == sourceServer.node_name ? "#java.expand.node.status.existent#" : "java.expand.node.status.nonexistent";
+            preServer.status = expandNode == sourceServer.node_name ? "#api.expand.node.status.existent#" : "#api.expand.node.status.nonexistent#";
             result.push(preServer);
         });
     });
