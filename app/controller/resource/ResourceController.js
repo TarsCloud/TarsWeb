@@ -29,5 +29,9 @@ ResourceController.downloadTarsNode = async(ctx) => {
     }
 };
 
+ResourceController.removeTarsNode = async(ctx) => {
+
+};
+
 
 module.exports = ResourceController;
