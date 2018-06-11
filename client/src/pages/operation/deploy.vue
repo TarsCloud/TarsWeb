@@ -7,60 +7,60 @@
       itemWidth="480px"
       @submit.native.prevent="save"
     >
-      <let-form-item label="应用" required>
+      <let-form-item :label="$t('deployService.form.app')" required>
         <let-input
           size="small"
           v-model="model.application"
-          placeholder="应用名只能包含英文字母"
+          :placeholder="$t('deployService.form.placeholder')"
           required
-          required-tip="应用名不能为空"
+          :required-tip="$t('deployService.form.appTips')"
           pattern="^[a-zA-Z]+$"
-          pattern-tip="应用名只能包含英文字母"
+          :pattern-tip="$t('deployService.form.placeholder')"
         ></let-input>
       </let-form-item>
-      <let-form-item label="服务名称" required>
+      <let-form-item :label="$t('deployService.form.serviceName')" required>
         <let-input
           size="small"
           v-model="model.server_name"
-          placeholder="服务名只能包含英文字母、数字，并以字母开头"
+          :placeholder="$t('deployService.form.serviceFormatTips')"
           required
-          required-tip="服务名不能为空"
+          :required-tip="$t('deployService.form.serviceTips')"
           pattern="^[a-zA-Z]([a-zA-Z0-9]+)?$"
-          pattern-tip="服务名只能包含英文字母、数字，并以字母开头"
+          :pattern-tip="$t('deployService.form.serviceFormatTips')"
         ></let-input>
       </let-form-item>
-      <let-form-item label="服务类型" required>
+      <let-form-item :label="$t('deployService.form.serviceType')" required>
         <let-select
           size="small"
           v-model="model.server_type"
           required
-          required-tip="服务类型不能为空"
+          :required-tip="$t('deployService.form.serviceTypeTips')"
         >
           <let-option v-for="d in types" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
-      <let-form-item label="模板" required>
+      <let-form-item :label="$t('deployService.form.template')" required>
         <let-select
           size="small"
           v-model="model.template_name"
           required
-          required-tip="模板不能为空"
+          :required-tip="$t('deployService.form.templateTips')"
         >
           <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
-      <let-form-item label="节点" required>
+      <let-form-item :label="$t('serverList.table.th.ip')" required>
         <let-input
           size="small"
           v-model="model.node_name"
-          placeholder="节点"
+          :placeholder="$t('serverList.table.th.ip')"
           required
-          required-tip="节点不能为空"
+          :required-tip="$t('deployService.form.nodeTips')"
           pattern="^[0-9]{1,3}(?:\.[0-9]{1,3}){3}$"
-          pattern-tip="请输入正确的IP地址"
+          :pattern-tip="$t('deployService.form.nodeFormatTips')"
         ></let-input>
       </let-form-item>
-      <let-form-item label="Set 分组">
+      <let-form-item label="SET">
         <SetInputer
           :enabled.sync="model.enable_set"
           :name.sync="model.set_name"
@@ -69,25 +69,25 @@
         ></SetInputer>
       </let-form-item>
 
-      <let-form-item label="运维人员" v-show="enableAuth">
+      <let-form-item :label="$t('user.op')" v-show="enableAuth">
         <let-input
           size="small"
           v-model="model.operator"
-          placeholder="运维人员，多个人员用分号隔开"
+          :placeholder="$t('user.tips.sep')"
         ></let-input>
       </let-form-item>
 
-      <let-form-item label="开发人员" v-show="enableAuth">
+      <let-form-item :label="$t('user.dev')" v-show="enableAuth">
         <let-input
           size="small"
           v-model="model.developer"
-          placeholder="开发人员，多个人员用分号隔开"
+          :placeholder="$t('user.tips.sep')"
         ></let-input>
 
       </let-form-item>
 
       <let-table :data="model.adapters">
-        <let-table-column title="OBJ名称">
+        <let-table-column title="OBJ">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -95,15 +95,15 @@
             <let-input
               size="small"
               v-model="props.row.obj_name"
-              placeholder="英文字母"
+              :placeholder="$t('deployService.form.placeholder')"
               required
-              required-tip="OBJ名称不能为空"
+              :required-tip="$t('deployService.form.objTips')"
               pattern="^[a-zA-Z0-9]+$"
-              pattern-tip="OBJ名称只能包含英文字母"
+              :pattern-tip="$t('deployService.form.placeholder')"
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column title="OBJ绑定IP">
+        <let-table-column :title="$t('deployService.table.th.endpoint')">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -111,15 +111,15 @@
             <let-input
               size="small"
               v-model="props.row.bind_ip"
-              placeholder="IP地址"
+              placeholder="IP"
               required
-              required-tip="绑定IP不能为空"
+              :required-tip="$t('deployService.table.tips.ip')"
               pattern="^[0-9]{1,3}(?:\.[0-9]{1,3}){3}$"
-              pattern-tip="请输入正确的IP地址"
+              :pattern-tip="$t('deployService.table.tips.ipFormat')"
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column title="端口" width="100px">
+        <let-table-column :title="$t('deployService.table.th.port')" width="100px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -132,11 +132,11 @@
               v-model="props.row.port"
               placeholder="0-65535"
               required
-              required-tip="端口不能为空"
+              :required-tip="$t('deployService.table.tips.empty')"
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column title="端口类型" width="150px">
+        <let-table-column :title="$t('deployService.form.portType')" width="150px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -145,16 +145,16 @@
             <let-radio v-model="props.row.port_type" label="udp">UDP</let-radio>
           </template>
         </let-table-column>
-        <let-table-column title="协议" width="180px">
+        <let-table-column :title="$t('deployService.table.th.protocol')" width="180px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
           <template slot-scope="props">
             <let-radio v-model="props.row.protocol" label="tars">TARS</let-radio>
-            <let-radio v-model="props.row.protocol" label="not_tars">非TARS</let-radio>
+            <let-radio v-model="props.row.protocol" label="not_tars">{{$t('serverList.servant.notTARS')}}</let-radio>
           </template>
         </let-table-column>
-        <let-table-column title="线程数" width="80px">
+        <let-table-column :title="$t('deployService.table.th.threads')" width="80px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -165,11 +165,11 @@
               :min="0"
               v-model="props.row.thread_num"
               required
-              required-tip="线程数不能为空"
+              :required-tip="$t('deployService.table.tips.empty')"
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column title="最大链接数" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" width="140px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -180,11 +180,11 @@
               :min="0"
               v-model="props.row.max_connections"
               required
-              required-tip="最大链接数不能为空"
+              :required-tip="$t('deployService.table.tips.empty')"
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column title="队列最大程度" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.maxQueue')" width="140px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -195,11 +195,11 @@
               :min="0"
               v-model="props.row.queuecap"
               required
-              required-tip="队列最大程度不能为空"
+              :required-tip="$t('deployService.table.tips.empty')"
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column title="队列超时时间(ms)" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.timeout')" width="140px">
           <template slot-scope="props">
             <let-input
               size="small"
@@ -209,20 +209,20 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column title="操作" width="120px">
+        <let-table-column :title="$t('operate.operates')" width="120px">
           <template slot-scope="props">
-            <let-table-operation @click="addAdapter(props.row)">添加</let-table-operation>
+            <let-table-operation @click="addAdapter(props.row)">{{$t('operate.add')}}</let-table-operation>
             <let-table-operation
               v-if="props.$index"
                class="danger"
               @click="model.adapters.splice(props.$index, 1)"
-            >删除</let-table-operation>
+            >{{$t('operate.delete')}}</let-table-operation>
           </template>
         </let-table-column>
       </let-table>
 
-      <let-button type="button" theme="sub-primary" @click="getAutoPort()">自动获取端口</let-button>
-      <let-button type="submit" theme="primary">提交</let-button>
+      <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}</let-button>
+      <let-button type="submit" theme="primary">{{$t('common.submit')}}</let-button>
 
     </let-form>
   </div>
@@ -291,7 +291,7 @@ export default {
       this.templates = data;
       this.model.template_name = data[0];
     }).catch((err) => {
-      this.$tip.error(`获取数据失败: ${err.message || err.err_msg}`);
+      this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
     });
 
     this.$watch('model.node_name', (val, oldVal) => {
@@ -310,16 +310,16 @@ export default {
       this.model.adapters.push(Object.assign({}, template));
     },
     deploy() {
-      this.$confirm('确定部署？', '提示').then(() => {
+      this.$confirm(this.$t('delpoyService.form.deployServiceTip'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
         this.$ajax.postJSON('/server/api/deploy_server', this.model).then(() => {
           loading.hide();
-          this.$tip.success('部署成功');
+          this.$tip.success(this.$t('deployService.form.ret.success'));
           this.model = getInitialModel();
           this.model.template_name = this.templates[0];
         }).catch((err) => {
           loading.hide();
-          this.$tip.error(`部署失败: ${err.message || err.err_msg}`);
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       });
     },
@@ -337,7 +337,7 @@ export default {
             });
         }).catch((err) => {
           loading.hide();
-          this.$tip.error(`自动获取端口失败: ${err.message || err.err_msg}`);
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
     },
     save() {
@@ -352,13 +352,13 @@ export default {
         }).then((isExists) => {
           loading.hide();
           if (isExists) {
-            this.$tip.error('系统中已存在此服务，请更换应用名，服务名或节点后重试');
+            this.$tip.error(this.$t('deployService.form.nameTips'));
           } else {
             this.deploy();
           }
         }).catch((err) => {
           loading.hide();
-          this.$tip.error(`部署失败: ${err.message || err.err_msg}`);
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       }
     },

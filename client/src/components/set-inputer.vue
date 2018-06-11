@@ -6,12 +6,12 @@
         size="small"
         :value="name"
         @input="updaters.name"
-        placeholder="Set名,全英文小写"
+        :placeholder="$t('common.set.setName')"
         :disabled="!enabled"
         :required="enabled"
-        required-tip="Set名必须为全英文小写"
+        :required-tip="$t('deployService.form.setNameFormatTips')"
         :pattern="enabled ? '^[a-z]+$' : null"
-        pattern-tip="Set名必须为全英文小写"
+        :pattern-tip="$t('deployService.form.setNameFormatTips')"
       ></let-input>
     </div>
     <div class="set_inputer_item">
@@ -20,12 +20,12 @@
         size="small"
         :value="area"
         @input="updaters.area"
-        placeholder="Set地区,全英文小写"
+        :placeholder="$t('common.set.setArea')"
         :disabled="!enabled"
         :required="enabled"
-        required-tip="Set地区不能为空"
+        :required-tip="$t('deployService.form.setAreaTips')"
         :pattern="enabled ? '^[a-z]+$' : null"
-        pattern-tip="Set地区必须为全英文小写"
+        :pattern-tip="$t('deployService.form.setAreaFormatTips')"
       ></let-input>
     </div>
     <div class="set_inputer_item">
@@ -34,12 +34,12 @@
         size="small"
         :value="group"
         @input="updaters.group"
-        placeholder="Set组名,数字或*号"
+        :placeholder="$t('common.set.setGroup')"
         :disabled="!enabled"
         :required="enabled"
-        required-tip="Set组名不能为空"
+        :required-tip="$t('deployService.form.setGroupTips')"
         :pattern="enabled ? '^\d+|*$' : null"
-        pattern-tip="Set组名必须为数字或*号"
+        :pattern-tip="$t('deployService.form.setGroupFormatTips')"
       ></let-input>
     </div>
     <let-checkbox
@@ -47,7 +47,7 @@
       :value="enabled"
       @input="updaters.enabled"
       @change="onEnabledChange"
-    >启用Set</let-checkbox>
+    >{{$t('serverList.table.th.enableSet')}}</let-checkbox>
   </div>
 </template>
 

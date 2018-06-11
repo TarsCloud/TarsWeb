@@ -8,12 +8,12 @@
       itemWidth="480px"
       @submit.native.prevent="previewExpand"
     >
-      <let-form-item label="应用" itemWidth="240px" required>
+      <let-form-item :label="$t('deployService.form.app')" itemWidth="240px" required>
         <let-select
           size="small"
           v-model="model.application"
           required
-          required-tip="应用名不能为空"
+          :required-tip="$t('deployService.table.tips.empty')"
           @change="changeSelect('application')"
         >
           <let-option v-for="d in applications" :key="d" :value="d">
@@ -21,12 +21,12 @@
           </let-option>
         </let-select>
       </let-form-item>
-      <let-form-item label="服务" itemWidth="240px" required>
+      <let-form-item :label="$t('serverList.table.th.service')" itemWidth="240px" required>
         <let-select
           size="small"
           v-model="model.server_name"
           required
-          required-tip="服务名不能为空"
+          :required-tip="$t('deployService.table.tips.empty')"
           @change="changeSelect('server_name')"
           >
           <let-option v-for="d in serverNames" :key="d" :value="d">{{d}}</let-option>
@@ -38,39 +38,39 @@
           size="small"
           v-model="model.set"
           required
-          required-tip="set不能为空"
+          :required-tip="$t('deployService.table.tips.empty')"
           @change="changeSelect('set')"
           >
           <let-option v-for="d in sets" :key="d" :value="d ? d : -1">
-            {{d ? d : '不启用Set'}}
+            {{d ? d : $t('serviceExpand.form.disableSet')}}
           </let-option>
         </let-select>
       </let-form-item>
 
-      <let-form-item label="节点" itemWidth="240px" required>
+      <let-form-item :label="$t('serverList.table.th.ip')" itemWidth="240px" required>
         <let-select
           size="small"
           v-model="model.node_name"
           required
-          required-tip="节点不能为空"
+          :required-tip="$t('deployService.table.tips.empty')"
           >
           <let-option v-for="d in nodeNames" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
 
-      <let-form-item label="目标IP" itemWidth="100%" required>
+      <let-form-item :label="$t('serviceExpand.form.tarIP')" itemWidth="100%" required>
         <let-input
           type="textarea"
           :rows="3"
           v-model="expandIpStr"
-          placeholder="可输入多个IP，以以逗号（,）、分号（;）或换行（\n）分隔"
+          :placeholder="$t('serviceExpand.form.placeholder')"
           required
-          required-tip="目标IP不能为空"
+          :required-tip="$t('deployService.table.tips.empty')"
           >
         </let-input>
       </let-form-item>
 
-      <let-form-item label="Set分组">
+      <let-form-item :label="$t('serverList.table.th.enableSet')">
         <SetInputer
           :enabled.sync="model.enable_set"
           :name.sync="model.set_name"
@@ -79,14 +79,14 @@
         ></SetInputer>
       </let-form-item>
 
-      <let-form-item label="节点配置" itemWidth="100%">
+      <let-form-item :label="$t('serviceExpand.form.nodeConfig')" itemWidth="100%">
           <let-checkbox
             v-model="model.enable_node_copy">
-            复制节点配置
+            {{$t('serviceExpand.form.copyNodeConfig')}}
           </let-checkbox>
       </let-form-item>
 
-      <let-button type="sumbit" theme="primary">预扩容</let-button>
+      <let-button type="sumbit" theme="primary">{{$t('serviceExpand.form.preExpand')}}</let-button>
     </let-form>
     <!-- 预扩容列表 -->
     <let-form
@@ -96,40 +96,40 @@
       class="mt40"
       v-show="previewItems.length > 0"
     >
-      <let-table ref="table" :data="previewItems"  empty-msg="暂无扩容数据">
+      <let-table ref="table" :data="previewItems"  :empty-msg="$t('common.nodata')">
         <let-table-column>
           <template slot="head" slot-scope="props">
             <let-checkbox v-model="isCheckedAll"></let-checkbox>
           </template>
           <template slot-scope="scope">
-            <let-checkbox v-model="scope.row.isChecked" v-if="scope.row.status == '未扩容'"></let-checkbox>
+            <let-checkbox v-model="scope.row.isChecked" v-if="scope.row.status == $t('serviceExpand.form.noExpand')"></let-checkbox>
           </template>
         </let-table-column>
-        <let-table-column title="应用" prop="application"></let-table-column>
-        <let-table-column title="服务" prop="server_name"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c2')" prop="application"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c3')" prop="server_name"></let-table-column>
         <let-table-column title="Set" prop="set"></let-table-column>
-        <let-table-column title="OBJ名称" prop="obj_name"></let-table-column>
-        <let-table-column title="节点" prop="node_name"></let-table-column>
-        <let-table-column title="绑定IP">
+        <let-table-column :title="$t('serverList.servant.objName')" prop="obj_name"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c4')" prop="node_name"></let-table-column>
+        <let-table-column :title="$t('deployService.table.th.endpoint')">
           <template slot-scope="scope">
             <let-input
               v-model="scope.row.bind_ip"
               :pattern="scope.row.isChecked ? ipReg : null"
-              pattern-tip="请填写正确的IP地址"
+              :pattern-tip="$t('serviceExpand.form.preExpand')"
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column title="端口">
+        <let-table-column :title="$t('deployService.table.th.port')">
           <template slot-scope="scope">
             <let-input v-model="scope.row.port"></let-input>
           </template>
         </let-table-column>
-        <let-table-column title="模板名" prop="template_name"></let-table-column>
-        <let-table-column title="状态" prop="status"></let-table-column>
+        <let-table-column :title="$t('deployService.form.template')" prop="template_name"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c8')" prop="status"></let-table-column>
        </let-table>
 
-       <let-button type="button" theme="sub-primary" @click="getAutoPort()">自动获取端口</let-button>
-       <let-button type="sumbit" theme="primary">扩容</let-button>
+       <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}</let-button>
+       <let-button type="sumbit" theme="primary">{{$t('deployService.title.expand')}}</let-button>
     </let-form>
   </div>
 </template>
@@ -175,7 +175,7 @@ export default {
   mounted() {
     this.getCascadeSelectServer({
       level: 1,
-    }, '获取应用失败').then((data) => {
+    }, this.$t('common.error')).then((data) => {
       this.applications = data;
     });
   },
@@ -191,7 +191,7 @@ export default {
             this.getCascadeSelectServer({
               level: 2,
               application: this.model.application,
-            }, '获取服务失败').then((data) => {
+            }, this.$t('common.error')).then((data) => {
               this.serverNames = data;
             });
           }
@@ -205,7 +205,7 @@ export default {
               level: 3,
               application: this.model.application,
               server_name: this.model.server_name,
-            }, '获取set失败').then((data) => {
+            }, this.$t('common.error')).then((data) => {
               this.sets = data;
             });
           }
@@ -220,7 +220,7 @@ export default {
               application: this.model.application,
               server_name: this.model.server_name,
               set: modelSet,
-            }, '获取节点失败').then((data) => {
+            }, this.$t('common.error')).then((data) => {
               this.nodeNames = data;
             });
           }
@@ -229,7 +229,7 @@ export default {
           break;
       }
     },
-    getCascadeSelectServer(params, prefix = '获取数据失败') {
+    getCascadeSelectServer(params, prefix = this.$t('common.error')) {
       return this.$ajax.getJSON('/server/api/cascade_select_server', params).then(data => data).catch((err) => {
         this.$tip.error(`${prefix}: ${err.message || err.err_msg}`);
       });
@@ -253,13 +253,13 @@ export default {
           this.previewItems = items;
         }).catch((err) => {
           loading.hide();
-          this.$tip.error(`预扩容失败: ${err.message || err.err_msg}`);
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       }
     },
     getAutoPort(){
       const loading = this.$Loading.show();
-      var adapters = this.previewItems.filter(item => item.status === '未扩容' && item.isChecked);
+      var adapters = this.previewItems.filter(item => item.status === this.$t('serviceExpand.form.noExpand') && item.isChecked);
       var bindIps = [];
       adapters.forEach((adapter) => {
         bindIps.push(adapter.bind_ip);
@@ -271,13 +271,13 @@ export default {
         });
       }).catch((err) => {
           loading.hide();
-          this.$tip.error(`自动获取端口失败: ${err.message || err.err_msg}`);
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
     },
     expand() {
       // 扩容
       if (this.$refs.expandForm.validate()) {
-        const previewItems = this.previewItems.filter(item => item.status === '未扩容' && item.isChecked);
+        const previewItems = this.previewItems.filter(item => item.status === this.$t('serviceExpand.form.noExpand') && item.isChecked);
         if (previewItems.length > 0) {
           const previewServers = [];
           previewItems.forEach((item) => {
@@ -308,13 +308,13 @@ export default {
               }
             }); */
             loading.hide();
-            this.$tip.success('扩容成功');
+            this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
           }).catch((err) => {
             loading.hide();
-            this.$tip.error(`扩容失败: ${err.message || err.err_msg}`);
+            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           });
         } else {
-          this.$tip.error('请先勾选要扩容的对象');
+          this.$tip.error(this.$t('serviceExpand.form.errTips.noneNodes'));
         }
       }
     },

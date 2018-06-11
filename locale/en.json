@@ -172,9 +172,9 @@
         "title": "Servants",
         "adress": "endpoint",
         "thread": "threads count",
-        "maxConnecttions": "max connections",
-        "maxQueue": "max queue",
-        "timeout": "queue timeout(ms)"
+        "maxConnecttions": "Max connections",
+        "maxQueue": "Max queue",
+        "timeout": "Queue timeout(ms)"
       },
       "msg": {
         "fail": "Failed to load the service list and retry?"
@@ -395,35 +395,55 @@
     "form": {
       "app": "APP",
       "tips": "No need to add applications and services, such as MTT.HttpProxyServer.HttpProxyObj, where only fill HttpProxyObj",
-      "serviceType": "serviceType",
-      "template": "template",
+      "serviceType": "Service type",
+      "serviceName": "Service name",
+      "template": "Template",
       "set": "Set grouping",
       "obj": "OBJ binds IP",
       "port": "port",
-      "portType": "portType",
-      "placeholder": "all in english",
+      "portType": "PortType",
+      "placeholder": "Only supports English letters",
       "portTips": "port range 0 ~ 65535, your input is beyond the scope",
       "appTips": "application name cannot be empty",
       "serviceTips": "the service name cannot be empty",
+      "serviceTypeTips": "the service type cannot be empty",
+      "templateTips": "the template cannot be empty",
+      "serviceFormatTips": "The service name can only contain letters, Numbers, and begin with a letter",
       "nodeTips": "the node cannot be empty",
       "nodeFormatTips": "Node format is not correct, please enter the IP address",
       "setNameTips": "the Set name cannot be empty",
       "setAreaTips": "the Set area cannot be empty",
-      "setNameFormatTips": "The Set name only for English letters, and must be lowercase",
-      "setAreaFormatTips": "The Set area only for English letters, and must be lowercase",
+      "setNameFormatTips": "The Set name can only English lowercase letters",
+      "setAreaFormatTips": "The Set area can only English lowercase letters",
       "setGroupTips": "Set group name cannot be empty",
-      "setGroupFormatTips": "Set group name only Numbers or *",
+      "setGroupFormatTips": "Set group name can only numbers or *",
       "inputTips": "all * must be filled",
+      "objTips": "OBJ name cannot be empty",
+      "deployServiceTip":"Are you sure to deploy this service?",
+      "getPort": "get port",
       "ret": {
         "success": "Deployed application submitted successfully",
         "failed": "Deployed application submission failed!Please contact your administrator"
       },
       "nameTips": "This service is existing in the system, please change the application name, service name or nodes and retry"
+    },
+    "table": {
+      "th": {
+        "endpoint": "OBJ Endpoint",
+        "port": "Port",
+        "protocol": "Protocol",
+        "threads": "Threads"
+      },
+      "tips": {
+        "ip": "OBJ Endpoint cannot be empty",
+        "ipFormat": "IP format error",
+        "empty": "cannot be empty"
+      }
     }
   },
   "template": {
     "search": {
-      "parentTemplate": "parent template"
+      "parentTemplate": "Parent template"
     },
     "btn": {
       "addTempate": "add tempate"
@@ -431,29 +451,32 @@
     "form": {
       "content": "content"
     },
+    "view": {
+      "title": "View template"
+    },
     "add": {
       "templateNameTips": "The template name cannot be empty",
       "templateFormatTips": "The template name can only contain letters, Numbers, and begin with a letter",
       "parentTemplate": "Please select the parent template",
-      "content": "Template content cannot be empty"
+      "title": "Add template"
     },
     "update": {
-      "title": "update tempate",
+      "title": "Update tempate",
       "errTips": "update failed"
     },
     "delete": {
       "confirmTips": "Are you sure to delete this template",
-      "title": "delete template"
+      "title": "Delete template"
     }
   },
   "serviceExpand": {
     "title": "service expand",
     "form": {
-      "tarIP": "target IP",
-      "placeholder": "if multiple IP, with a comma (,), a semicolon (;)Or a newline (\\ n) space",
-      "nodeConfig": "node configuration",
+      "tarIP": "Target IP",
+      "placeholder": "Multiple IP separated by comma (,), semicolon (;) newline (\\ n)",
+      "nodeConfig": "Node configuration",
       "copyNodeConfig": "copy node configuration",
-      "preExpand": "pre expand",
+      "preExpand": "Pre expand",
       "noExpand": "no expand",
       "disableSet": "disable Set",
       "errTips": {
@@ -480,12 +503,16 @@
         "c3": "Service",
         "c4": "Node",
         "c5": "Command",
-        "c7": "Execute info"
+        "c7": "Execute info",
+        "c8": "Status"
       }
     }
   },
   "user": {
     "op": "Operation",
-    "dev": "Developer"
+    "dev": "Developer",
+    "tips": {
+      "sep": "Multiple people separated by semicolon"
+    }
   }
 }

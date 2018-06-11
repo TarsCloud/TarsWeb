@@ -1,9 +1,9 @@
 <template>
   <div class="page_operation">
     <let-tabs @click="onTabClick" :activekey="$route.path">
-      <let-tab-pane tab="部署服务" tabkey="/operation/deploy"></let-tab-pane>
-      <let-tab-pane tab="扩容" tabkey="/operation/expand"></let-tab-pane>
-      <let-tab-pane tab="模板管理" tabkey="/operation/templates"></let-tab-pane>
+      <let-tab-pane :tab="$t('deployService.title.deploy')" tabkey="/operation/deploy"></let-tab-pane>
+      <let-tab-pane :tab="$t('deployService.title.expand')" tabkey="/operation/expand"></let-tab-pane>
+      <let-tab-pane :tab="$t('deployService.title.template')" tabkey="/operation/templates"></let-tab-pane>
     </let-tabs>
 
     <router-view class="page_operation_children"></router-view>
