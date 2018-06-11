@@ -80,7 +80,7 @@
     }
   },
   "common": {
-    "config": "设置",
+    "config": "配置",
     "patch": "发布",
     "service": "服务",
     "time": "时间",
