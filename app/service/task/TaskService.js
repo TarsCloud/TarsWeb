@@ -89,7 +89,7 @@ TaskService.addTask = async (params) => {
         serial : params.serial,
         userName : params.user_name || ''
     };
-    await AdminService.addTask(req).catch(e => {console.error('[AdminService.addTask]:',e.toString())});
+    await AdminService.addTask(req).catch(e => {console.error('[AdminService.addTask]:',e)});
 };
 
 module.exports = TaskService;

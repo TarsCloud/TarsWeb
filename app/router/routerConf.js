@@ -89,8 +89,8 @@ const apiConf = [
     ['post', '/add_task', TaskController.addTask],
 
     // 发布包
-    ['post', '/upload_patch_package', PatchController.uploadPatchPackage, {application: 'notEmpty', server_name: 'notEmpty'}],
-    ['get', '/server_patch_list', PatchController.serverPatchList, {application: 'notEmpty', server_name: 'notEmpty'}],
+    ['post', '/upload_patch_package', PatchController.uploadPatchPackage, {application: 'notEmpty'}],
+    ['get', '/server_patch_list', PatchController.serverPatchList, {application: 'notEmpty'}],
 
     // 监控
     ['get', '/tarsstat_monitor_data', MonitorController.tarsstat],
