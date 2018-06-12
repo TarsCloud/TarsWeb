@@ -51,7 +51,8 @@ TaskController.getTasks = async (ctx) => {
 
 TaskController.getTask = async (ctx) => {
     try{
-        return await TaskService.getTaskRsp(ctx.paramsObj.task_no);
+        let ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
+        ctx.makeResObj(200, '', ret);
     }catch(e) {
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());

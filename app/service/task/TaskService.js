@@ -77,8 +77,8 @@ TaskService.addTask = async (params) => {
 
         Object.assign(obj,{
             application : serverConf.application,
-            server_name : serverConf.server_name,
-            node_name : serverConf.node_name
+            serverName : serverConf.server_name,
+            nodeName : serverConf.node_name
         });
         items.push(obj);
         logger.info('[TaskService.addTask items]:',obj);
@@ -89,7 +89,7 @@ TaskService.addTask = async (params) => {
         serial : params.serial,
         userName : params.user_name || ''
     };
-    AdminService.addTask(req).catch(e => {console.error('[AdminService.addTask]:',e.toString())});
+    await AdminService.addTask(req).catch(e => {console.error('[AdminService.addTask]:',e.toString())});
 };
 
 module.exports = TaskService;

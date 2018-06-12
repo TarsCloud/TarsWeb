@@ -68,7 +68,7 @@
             <let-table-operation @click="showMergedDetail(scope.row.id)">{{$t('cfg.table.viewMerge')}}</let-table-operation>
             <let-table-operation @click="showDetail(scope.row)">{{$t('cfg.table.viewIpContent')}}</let-table-operation>
             <let-table-operation @click="showHistory(scope.row.id)">{{$t('pub.btn.history')}}</let-table-operation>
-            <let-table-operation @click="handleRefFiles(scope.row)">{{$t('cfg.table.mangeRefFile')}}</let-table-operation>
+            <let-table-operation @click="handleRefFiles(scope.row.id)">{{$t('cfg.table.mangeRefFile')}}</let-table-operation>
           </template>
         </let-table-column>
       </let-table>
@@ -166,10 +166,10 @@
       width="700px"
       :footShow="false"
       @close="closeDetailModal">
-      <wrapper v-if="refFileList">
-        <let-button size="small" theme="primary" class="add-btn" @click="openRefFileModal">{{$t('cfg.btn.addRef')}}</let-button>
+      <wrapper v-if="nodeRefFileListModal.model">
+        <let-button size="small" theme="primary" class="add-btn" @click="openNodeRefFileModal">{{$t('cfg.btn.addRef')}}</let-button>
 
-        <let-table :data="refFileList" :title="$t('cfg.title.b')" :empty-msg="$t('common.nodata')">
+        <let-table :data="nodeRefFileListModal.model.refFileList" :title="$t('cfg.title.b')" :empty-msg="$t('common.nodata')">
           <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
           <let-table-column :title="$t('cfg.btn.fileName')" prop="filename"></let-table-column>
           <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"></let-table-column>
@@ -415,10 +415,10 @@ export default {
     },
 
     // 引用文件列表
-    getUnusedFileList() {
+    getUnusedFileList(id) {
       if (!this.showOthers) return;
       this.$ajax.getJSON('/server/api/unused_config_file_list', {
-        config_id: this.checkedConfigId,
+        config_id: id,
         application: this.serverData.application
       }).then((data) => {
         this.refFileModal.model.fileList = data;
@@ -433,7 +433,6 @@ export default {
     getRefFileList() {
       if (!this.showOthers) return;
       const loading = this.$refs.refFileListLoading.$loading.show();
-
       this.$ajax.getJSON('/server/api/config_ref_list', {
         config_id: this.checkedConfigId,
       }).then((data) => {
@@ -451,18 +450,24 @@ export default {
     },
     openRefFileModal() {
       this.refFileModal.show = true;
-      this.getUnusedFileList();
+      this.refFileModal.isNodeRef = false;
+      this.getUnusedFileList(this.checkedConfigId);
+    },
+    openNodeRefFileModal() {
+      this.refFileModal.show = true;
+      this.refFileModal.isNodeRef = true;
+      this.getUnusedFileList(this.refFileModal.id);
     },
     addRefFile() {
       if (this.$refs.refForm.validate()) {
         const loading = this.$Loading.show();
         this.$ajax.getJSON('/server/api/add_config_ref', {
-          config_id: this.checkedConfigId,
+          config_id: this.refFileModal.isNodeRef ? this.refFileModal.id : this.checkedConfigId,
           reference_id: this.refFileModal.model.filename
         }).then((data)=> {
           loading.hide();
           this.refFileModal.show = false;
-          this.getRefFileList();
+          this.refFileModal.isNodeRef ? this.getNodeRefFileList(this.refFileModal.id) : this.getRefFileList()
         })
       }
     },
@@ -477,6 +482,7 @@ export default {
         }).then((res)=> {
           loading.hide();
           this.getRefFileList();
+          this.getNodeRefFileList(this.refFileModal.id);
           this.$tip.success(this.$t('common.success'));
         })
       })
@@ -578,12 +584,27 @@ export default {
       this.detailModal.show = false;
       this.detailModal.model = null;
     },
-
+    getNodeRefFileList(id) {
+      this.$ajax.getJSON('/server/api/config_ref_list', {
+        config_id: id,
+      }).then((data) => {
+        data.map(item => Object.assign(item, item.reference));
+        this.nodeRefFileListModal.model = {refFileList : data}
+      }).catch((err) => {
+        this.nodeRefFileListModal.model = {refFileList : []}
+        this.$tip.error({
+          title: this.$t('common.error'),
+          message: err.err_msg || err.message || this.$t('common.networkErr'),
+        });
+      });
+    },
     // 节点管理配置文件
-    handleRefFiles() {
+    handleRefFiles(id) {
       this.nodeRefFileListModal.show = true;
       this.nodeRefFileListModal.model = null;
-    },
+      this.refFileModal.id = id;
+      this.getNodeRefFileList(id);
+    }
   },
   created() {
     this.serverData = this.$parent.getServerData();
