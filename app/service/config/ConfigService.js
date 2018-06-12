@@ -304,11 +304,12 @@ ConfigService.addConfigRef = async(config_id, reference_id) => {
  * @return {reference_id}
  */
 ConfigService.deleteConfigRef = async(reference_id) => {
-    await ConfigDao.deleteConfigRef(reference_id).catch(e => {
+    await ConfigDao.deleteConfigRef(reference_id).then(()=> {
+        return Promise.resolve(reference_id);
+    }).catch(e => {
         logger.error('[deleteConfigRef]:',e);
         return Promise.reject(e)
     });
-    return Promise.resolve(reference_id);
 };
 
 /**

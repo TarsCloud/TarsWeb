@@ -16,8 +16,8 @@
         <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="posttime"></let-table-column>
         <let-table-column :title="$t('operate.operates')" width="260px">
           <template slot-scope="scope">
-            <let-table-operation @click="changeConfig(scope.row, 'configList')">{{$t('cfg.table.modCfg')}}</let-table-operation>
-            <let-table-operation @click="deleteConfig(scope.row.id)">{{$t('cfg.table.delCfg')}}</let-table-operation>
+            <let-table-operation @click="changeConfig(scope.row, 'configList')">{{$t('operate.update')}}</let-table-operation>
+            <let-table-operation @click="deleteConfig(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
             <let-table-operation @click="showDetail(scope.row)">{{$t('cfg.table.viewMerge')}}</let-table-operation>
             <let-table-operation @click="showHistory(scope.row.id)">{{$t('pub.btn.history')}}</let-table-operation>
           </template>
@@ -27,7 +27,7 @@
 
     <!-- 引用文件列表 -->
     <wrapper v-if="refFileList && showOthers" ref="refFileListLoading">
-      <let-button size="small" theme="primary" class="add-btn" @click="addRefFile">{{$t('cfg.btn.addRef')}}</let-button>
+      <let-button size="small" theme="primary" class="add-btn" @click="openRefFileModal">{{$t('cfg.btn.addRef')}}</let-button>
 
       <let-table :data="refFileList" :title="$t('cfg.title.b')" :empty-msg="$t('common.nodata')">
         <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
@@ -36,10 +36,9 @@
         <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="posttime"></let-table-column>
         <let-table-column :title="$t('operate.operates')" width="260px">
           <template slot-scope="scope">
-            <!-- <let-table-operation @click="configServer(scope.row.id)">修改配置</let-table-operation>
-            <let-table-operation @click="restartServer(scope.row.id)">删除配置</let-table-operation>
-            <let-table-operation @click="manageServant(scope.row)">查看内容</let-table-operation>
-            <let-table-operation @click="showMoreCmd(scope.row)">查看历史</let-table-operation> -->
+            <let-table-operation @click="deleteRef(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
+            <let-table-operation @click="showDetail(scope.row)">{{$t('operate.view')}}</let-table-operation>
+            <let-table-operation @click="showHistory(scope.row.id)">{{$t('pub.btn.history')}}</let-table-operation>
           </template>
         </let-table-column>
       </let-table>
@@ -138,15 +137,37 @@
       <div class="detail-loading" ref="detailModalLoading"></div>
     </let-modal>
 
+    <!-- 添加引用文件弹窗 -->
+    <let-modal
+      v-if="refFileModal.model"
+      v-model="refFileModal.show"
+      :title="this.$t('operate.title.add')"
+      width="700px"
+      @on-confirm="addRefFile"
+      @close="closeRefFileModal">
+      <let-form itemWidth="100%" ref="refForm">
+        <let-form-item :label="$t('cfg.msg.refFile')" required>
+          <let-select 
+            size="small"
+            :placeholder="$t('pub.dlg.defaultValue')"
+            v-model="refFileModal.model.filename" 
+            v-if="refFileModal.model.fileList && refFileModal.model.fileList.length"
+            required>
+            <let-option v-for="item in refFileModal.model.fileList" :key="item.id" :value="item.id">{{item.filename}}</let-option>
+          </let-select>
+        </let-form-item>
+      </let-form>
+    </let-modal>
+
     <!-- 节点配置列表的管理引用文件弹窗 -->
     <let-modal
       v-model="nodeRefFileListModal.show"
-      :title="detailModal.title"
+      :title="$t('cfg.table.mangeRefFile')"
       width="700px"
       :footShow="false"
       @close="closeDetailModal">
       <wrapper v-if="refFileList">
-        <let-button size="small" theme="primary" class="add-btn" @click="addRefFile">{{$t('cfg.btn.addRef')}}</let-button>
+        <let-button size="small" theme="primary" class="add-btn" @click="openRefFileModal">{{$t('cfg.btn.addRef')}}</let-button>
 
         <let-table :data="refFileList" :title="$t('cfg.title.b')" :empty-msg="$t('common.nodata')">
           <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
@@ -155,10 +176,9 @@
           <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="posttime"></let-table-column>
           <let-table-column :title="$t('operate.operates')" width="260px">
             <template slot-scope="scope">
-              <!-- <let-table-operation @click="configServer(scope.row.id)">修改配置</let-table-operation>
-              <let-table-operation @click="restartServer(scope.row.id)">删除配置</let-table-operation>
-              <let-table-operation @click="manageServant(scope.row)">查看内容</let-table-operation>
-              <let-table-operation @click="showMoreCmd(scope.row)">查看历史</let-table-operation> -->
+              <let-table-operation @click="deleteRef(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
+              <let-table-operation @click="showDetail(scope.row)">{{$t('operate.view')}}</let-table-operation>
+              <let-table-operation @click="showHistory(scope.row.id)">{{$t('pub.btn.history')}}</let-table-operation>
             </template>
           </let-table-column>
         </let-table>
@@ -231,6 +251,12 @@ export default {
         show: false,
         title: '',
         model: null,
+      },
+
+      // 引用文件弹窗
+      refFileModal: {
+        show: false,
+        model: {fileList:[]}
       },
 
       // 节点配置列表的管理引用文件弹窗
@@ -358,7 +384,6 @@ export default {
     },
     closeConfigModal() {
       if (this.$refs.configForm) this.$refs.configForm.resetValid();
-      this.configModal.model = null;
       this.configModal.show = false;
     },
     deleteConfig(id) {
@@ -390,6 +415,21 @@ export default {
     },
 
     // 引用文件列表
+    getUnusedFileList() {
+      if (!this.showOthers) return;
+      this.$ajax.getJSON('/server/api/unused_config_file_list', {
+        config_id: this.checkedConfigId,
+        application: this.serverData.application
+      }).then((data) => {
+        this.refFileModal.model.fileList = data;
+      }).catch((err) => {
+        this.refFileModal.model.fileList = [];
+        this.$tip.error({
+          title: this.$t('common.error'),
+          message: err.err_msg || err.message ||this.$t('common.networkErr')
+        })
+      })
+    },
     getRefFileList() {
       if (!this.showOthers) return;
       const loading = this.$refs.refFileListLoading.$loading.show();
@@ -398,18 +438,48 @@ export default {
         config_id: this.checkedConfigId,
       }).then((data) => {
         loading.hide();
+        data.map(item => Object.assign(item, item.reference));
         this.refFileList = data;
       }).catch((err) => {
         loading.hide();
         this.refFileList = [];
         this.$tip.error({
           title: this.$t('common.error'),
-          message: err.err_msg || err.message || this.$t('common.newworkErr'),
+          message: err.err_msg || err.message || this.$t('common.networkErr'),
         });
       });
     },
+    openRefFileModal() {
+      this.refFileModal.show = true;
+      this.getUnusedFileList();
+    },
     addRefFile() {
-      // todo
+      if (this.$refs.refForm.validate()) {
+        const loading = this.$Loading.show();
+        this.$ajax.getJSON('/server/api/add_config_ref', {
+          config_id: this.checkedConfigId,
+          reference_id: this.refFileModal.model.filename
+        }).then((data)=> {
+          loading.hide();
+          this.refFileModal.show = false;
+          this.getRefFileList();
+        })
+      }
+    },
+    closeRefFileModal() {
+      this.refFileModal.show = false;
+    },
+    deleteRef(id) {
+      this.$confirm(this.$t('cfg.msg.confirm'), this.$t('common.alert')).then(() => {
+        const loading = this.$Loading.show();
+        this.$ajax.getJSON('/server/api/delete_config_ref', {
+          id
+        }).then((res)=> {
+          loading.hide();
+          this.getRefFileList();
+          this.$tip.success(this.$t('common.success'));
+        })
+      })
     },
 
     // 节点配置列表
@@ -428,7 +498,7 @@ export default {
         this.nodeConfigList = [];
         this.$tip.error({
           title: this.$t('common.error'),
-          message: err.err_msg || err.message || this.$t('common.newworkErr'),
+          message: err.err_msg || err.message || this.$t('common.networkErr'),
         });
       });
     },
@@ -511,7 +581,8 @@ export default {
 
     // 节点管理配置文件
     handleRefFiles() {
-      // todo
+      this.nodeRefFileListModal.show = true;
+      this.nodeRefFileListModal.model = null;
     },
   },
   created() {

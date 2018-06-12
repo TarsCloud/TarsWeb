@@ -51,7 +51,7 @@ AdminService.doCommand = async (targets, command) => {
 AdminService.getTaskRsp = async (taskNo) => {
     let ret = await adminRegPrx.getTaskRsp(taskNo);
     if(ret.__return == 0 ){
-        return ret.result;
+        return ret.taskRsp;
     }else {
         return ret.__return;
     }
@@ -61,12 +61,7 @@ AdminService.addTask = async (req) => {
     let taskReq = new adminRegStruct.TaskReq();
     taskReq.readFromObject(req);
     let ret = await adminRegPrx.addTaskReq(taskReq);
-    if(ret.__return == 0 ){
-        return ret.result;
-    }else {
-        return ret.__return;
-    }
-
+    return ret.__return;
 };
 
 

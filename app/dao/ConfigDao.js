@@ -157,7 +157,7 @@ ConfigDao.getConfigRef = async (refId) => {
 
 ConfigDao.deleteConfigRef = async (refId) => {
     return await tConfigReferences.destroy({
-        where : {id:   refId}
+        where : {reference_id :   refId}
     });
 };
 

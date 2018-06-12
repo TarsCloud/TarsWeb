@@ -305,7 +305,7 @@
     },
     "btn": {
       "add": "add configuration",
-      "addRef": "Add reference file",
+      "addRef": "add reference file",
       "pushFile": "push file",
       "fileName": "fileName",
       "content": "content",
