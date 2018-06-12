@@ -29,23 +29,23 @@ if(kafkaConf.enable) {
 TaskService.getTaskRsp = async (taskNo) => {
     let rsp = await AdminService.getTaskRsp(taskNo).catch(e => logger.error('[adminService.getTaskRsp]:',e));
     return {
-        task_no : rsp.task_no,
+        task_no : rsp.taskNo,
         serial : rsp.serial,
         status : rsp.status,
-        items : rsp.taskItem.map(item => {
+        items : rsp.taskItemRsp.map(item => {
             return {
-                task_no : item.task_no,
-                item_no : item.item_no,
-                application : item.application,
-                server_name : item.server_name,
-                node_name : item.node_name,
-                command : item.command,
+                task_no : item.req.taskNo,
+                item_no : item.req.itemNo,
+                application : item.req.application,
+                server_name : item.req.serverName,
+                node_name : item.req.nodeName,
+                command : item.req.command,
                 parameters : item.parameters,
-                start_time : item.start_time,
-                end_time : item.end_time,
+                start_time : item.startTime,
+                end_time : item.endTime,
                 status : item.status,
-                status_info : item.status_info,
-                execute_info : item.execute_info
+                status_info : item.statusInfo,
+                execute_info : item.executeLog
             }
         })
     };
