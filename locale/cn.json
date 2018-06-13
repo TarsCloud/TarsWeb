@@ -279,9 +279,12 @@
       "history": "历史记录"
     },
     "dlg": {
+      "patchType": "发布方式",
       "ip": "待发布节点",
       "releaseVersion": "发布版本",
       "upload": "上传发布包",
+      "compileAndPublish": "编译并发布",
+      "updateTagAdr": "修改SVN/GIT版本接口",
       "releasePkg": "发布包",
       "defaultValue": "请选择",
       "noConfFile": "暂无配置文件",
@@ -290,7 +293,8 @@
       "unpublished": "未发布"
     },
     "tips": {
-      "default": "发布管理只管理服务层级，请您先在左侧业务树选择服务。"
+      "default": "发布管理只管理服务层级，请您先在左侧业务树选择服务。",
+      "tagListUrl": "请先配置SVN/GIT版本获取接口"
     },
     "date": "日期"
   },

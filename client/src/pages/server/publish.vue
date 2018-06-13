@@ -49,6 +49,7 @@
         v-model="publishModal.show"
         :title="$t('index.rightView.tab.patch')"
         width="880px"
+        @close="closePublishModal"
         @on-cancel="closePublishModal"
         @on-confirm="savePublishServer">
           <let-form
@@ -61,7 +62,11 @@
               <let-form-item :label="$t('pub.dlg.ip')">
                 <div v-for="server in publishModal.model.serverList" :key="server.id">{{server.node_name}}</div>
               </let-form-item>
-              <let-form-item :label="$t('pub.dlg.releaseVersion')">
+              <let-form-item :label="$t('pub.dlg.patchType')">
+                <let-radio-group type="button" size="small" @change="patchChange" v-model="patchType" :data="patchRadioData">
+                </let-radio-group>
+              </let-form-item>
+              <let-form-item :label="$t('pub.dlg.releaseVersion')" v-if="publishModal.model.show">
                 <let-select
                   size="small"
                   v-model="publishModal.model.patch_id"
@@ -73,6 +78,13 @@
                   </let-option>
                 </let-select>
                 <let-button theme="primary" size="small" class="mt10" @click="showUploadModal">{{$t('pub.dlg.upload')}}</let-button>
+              </let-form-item>
+              <let-form-item :label="$t('serverList.table.th.version')" v-else>
+                <let-select size="small" required :required-tip="$t('deployService.table.tips.empty')">
+                  <let-option value="">请选择</let-option>
+                </let-select>
+                <let-button theme="primary" size="small" class="mt10">{{$t('pub.dlg.compileAndPublish')}}</let-button>
+                <let-button size="small" class="mt10">{{$t('pub.dlg.updateTagAdr')}}</let-button>
               </let-form-item>
               <let-form-item :label="$t('serverList.servant.comment')">
                 <let-input
@@ -254,6 +266,12 @@ export default {
         show: false,
         model: null,
       },
+      patchType: 'patch',
+      patchRadioData: [
+        {value:'patch', text:this.$t('pub.dlg.upload')},
+        {value:'compile', text:this.$t('pub.dlg.compileAndPublish')}
+      ],
+      tagListUrl: 'http://notice.wsd.com/interface?interface_name=queryNoticeList'
     };
   },
   methods: {
@@ -296,6 +314,7 @@ export default {
         patchList: [],
         patch_id: '',
         update_text: '',
+        show: true
       };
       this.getPatchList(first.application, first.server_name).then((data) => {
         this.publishModal.model.patchList = data;
@@ -312,6 +331,7 @@ export default {
       // 关闭发布弹出框
       this.publishModal.show = false;
       this.publishModal.modal = null;
+      this.patchType = 'patch';
       this.$refs.publishForm.resetValid();
     },
     savePublishServer() {
@@ -474,6 +494,25 @@ export default {
       }
       return timeStr;
     },
+    // 选择上传方式或编译发布方式
+    patchChange() {
+      if(this.patchType=='patch'){
+        this.publishModal.model.show = true;
+      }else {
+        this.publishModal.model.show = false;
+        this.getCodeVersion();
+      }
+    },
+    getCodeVersion() {
+      if(!this.tagListUrl) {
+        this.$tip.error(`${this.$t('common.error')}: ${this.$t('pub.tips.tagListUrl')}`);
+        return;
+      }
+      this.$ajax.get(this.tagListUrl,{
+        application: this.publishModal.model.application,
+        server_name: this.publishModal.model.server_name
+      })
+    }
   },
   mounted() {
     this.getServerList();

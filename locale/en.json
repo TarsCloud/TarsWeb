@@ -279,9 +279,12 @@
       "history": "history"
     },
     "dlg": {
+      "patchType": "PatchType",
       "ip": "Node",
       "releaseVersion": "release version",
       "upload": "upload release package",
+      "compileAndPublish": "compile and publish",
+      "updateTagAdr": "update SVN/GIT tags address",
       "releasePkg": "release package",
       "defaultValue": "choose ...",
       "noConfFile": "no configuration files",
@@ -290,7 +293,8 @@
       "unpublished": "Unpublished"
     },
     "tips": {
-      "default": "Release management management service level, please first in the left tree selection service business."
+      "default": "Release management management service level, please first in the left tree selection service business.",
+      "tagListUrl": "Please configure SVN / GIT version acquisition interface first"
     },
     "date": "Date"
   },
