@@ -114,7 +114,8 @@ const apiConf = [
     ['get', '/has_auth', AuthController.hasAuth, {application: 'notEmpty', role: 'notEmpty'}],
 
     //登录管理
-    ['get', '/get_login_uid', LoginController.getLoginUid]
+    ['get', '/get_login_uid', LoginController.getLoginUid],
+    ['get', '/is_enable_login', LoginController.isEnableLogin]
 ];
 
 module.exports = {pageConf, apiConf};

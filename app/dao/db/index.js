@@ -10,16 +10,18 @@ const fs = require('fs-extra');
 
 const _ = require('lodash');
 
-const dbConfs = require('../../../config/webConf').dbConfs;
+const dbConf = require('../../../config/webConf').dbConf;
 
 const logger = require('../../logger');
 
 let Db = {};
 
-dbConfs.forEach((dbConf)=>{
+let databases = ['db_tars'];
+
+databases.forEach((database)=>{
     let {
-        database,
         host,
+        port,
         user,
         password,
         charset,
@@ -29,6 +31,7 @@ dbConfs.forEach((dbConf)=>{
     //初始化sequelize
     const sequelize = new Sequelize(database, user, password, {
         host,
+        port,
         dialect: 'mysql',
         dialectOptions: {
             charset: charset

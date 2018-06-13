@@ -4,27 +4,29 @@ let loginConf = require('../../config/loginConf');
 let request = require('request-promise-any');
 let _ = require('lodash');
 let logger = require('../logger');
-let ignoreList = _.concat([], loginConf.ignore || [], ['/api/auth', '/auth', '/favicon.ico']);  //讲登入登出校验接口放到忽略登录校验列表中，兼容本地登录情况
+let ignoreList = _.concat([], loginConf.ignore || [], ['/favicon.ico']);  //讲登入登出校验接口放到忽略登录校验列表中，兼容本地登录情况
 let url = require('url');
 
 let loginCookieMap = {}; //内存中保存用户的登录信息
-let cookieConfig = {
-    maxAge: 365 * 24 * 60 * 60 * 1000,  //用户cookie过期时间为1年，
-    domain: loginConf.cookieDomain || '/',
-};
 
+let cookieDomainConfig = {
+    domain: loginConf.cookieDomain || '/'  //用户cookie域
+};
+let cookieConfig = Object.assign({
+    maxAge: 365 * 24 * 60 * 60 * 1000,  //用户cookie过期时间为1年，
+}, cookieDomainConfig);
 
 //登录校验中间件
 module.exports = async(ctx, next) => {
-    if(ctx.request.path === '/logout'){
-        ctx.cookies.set(loginConf.ticketCookieName || 'ticket', null);
-        ctx.cookies.set(loginConf.uidCookieName || 'uid', null);
+    if (ctx.request.path === '/logout') {
+        ctx.cookies.set(loginConf.ticketCookieName || 'ticket', null, cookieDomainConfig);
+        ctx.cookies.set(loginConf.uidCookieName || 'uid', null, cookieDomainConfig);
         ctx.redirect('/');
         return;
-    } else if(!loginConf.enableLogin){
+    } else if (!loginConf.enableLogin) {
         ctx.uid = loginConf.defaultLoginUid;
         await next();
-    }else if (isInPath(ctx, ignoreList)) {  //跳过用户配置的不需要验证的url
+    } else if (isInPath(ctx, ignoreList)) {  //跳过用户配置的不需要验证的url
         await next();
     } else if (isInIgnoreIps(ctx, loginConf.ignoreIps || [])) {
         ctx.uid = ctx.query['uid'];
@@ -82,9 +84,9 @@ function isInPath(ctx, pathList) {
 }
 
 //检测是否在IP白名单之中
-function isInIgnoreIps(ctx, ignoreIps){
-    var ip = ctx.request.ip;
-    return _.indexOf(ignoreIps||[], ip) > -1;
+function isInIgnoreIps(ctx, ignoreIps) {
+    var ip = getClientIp(ctx);
+    return _.indexOf(ignoreIps || [], ip) > -1;
 }
 
 //检测是否登录
@@ -182,4 +184,17 @@ async function casServerValidate(ticket, uid) {
         logger.error(e);
         return false;
     }
+}
+
+function getClientIp(ctx) {
+    let req = ctx.request;
+    var ip = req.headers['x-forwarded-for'] ||
+        req.ip ||
+        (req.connection && req.connection.remoteAddress) ||
+        (req.socket && req.socket.remoteAddress) ||
+        (req.connection && req.connection.socket && req.connection.socket.remoteAddress) || '';
+    if (ip.split(',').length > 0) {
+        ip = ip.split(',')[0]
+    }
+    return ip;
 }

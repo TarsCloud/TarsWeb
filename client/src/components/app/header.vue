@@ -23,9 +23,9 @@
         <p class="user-info" @click="userOptOpen = !userOptOpen">
           <!--<img class="avatar" src="http://e.hiphotos.baidu.com/baike/w%3D268/sign=de2ee49318d5ad6eaaf963ecb9ca39a3/79f0f736afc379310660597ee8c4b74543a91158.jpg">-->
           <span class="name toe">{{uid}} </span>
-          <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}"></i>
+          <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}" v-show="enableLogin"></i>
           <transition name="fade">
-            <div class="user-pop-wrap" v-show="userOptOpen">
+            <div class="user-pop-wrap" v-show="enableLogin && userOptOpen">
               <a href="/logout">{{$t('header.logout')}}</a>
             </div>
           </transition>
@@ -49,6 +49,7 @@ export default {
       locale: this.$cookie.get('locale') || 'cn',
       uid: '--',
       userOptOpen: false,
+      enableLogin: false,
     };
   },
 
@@ -71,9 +72,17 @@ export default {
       this.$cookie.set('locale', this.locale, {expires: '1Y'});
       this.$i18n.locale = this.locale;
     },
+    checkEnableLogin(){
+      this.$ajax.getJSON('/server/api/is_enable_login').then((data) => {
+          this.enableLogin = data.enableLogin || false;
+      }).catch((err)=>{
+
+      });
+    },
   },
   mounted() {
     this.getLoginUid();
+    this.checkEnableLogin();
   }
 };
 </script>
