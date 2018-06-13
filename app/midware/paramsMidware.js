@@ -1,10 +1,5 @@
-/**
- * Created by denisfan on 2018/4/11.
- */
-
 const _ = require('lodash');
 const validator = require('validator');
-const localeMidware = require('./localeMidware');
 
 //api入参出参中间件
 const paramsDealMidware = (validParams) =>{
@@ -73,9 +68,6 @@ const paramsCheckMidware = (checkRule) =>{
         })
         if(!hasError){
             await next();
-        }
-        else{
-            localeMidware(ctx, async()=>{});
         }
     }
 };
