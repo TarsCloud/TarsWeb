@@ -47,11 +47,12 @@ async function call(params, the) {
         filter : conditions,
         indexs : ['value']
     };
-    let addrs = await AdminService.getEndpoints("tars.tarsqueryproperty.NoTarsObj");
+    let addrs = await AdminService.getEndpoints("tars.tarsqueryproperty.NoTarsObj").catch(err => {
+        logger.error('[AdminService.getEndpoints]:',err.toString());
+    });
     //addrs = [['localhost','80']]; // 测试的,假定真实环境传给我这样的数据结构
     if(!addrs || !addrs.length) {
         logger.error('[AdminService.getEndpoints]:','tars.tarsqueryproperty.NoTarsObj not found');
-        console.error('[AdminService.getEndpoints]:','tars.tarsqueryproperty.NoTarsObj not found');
         return;
     }
     let addr0 = addrs[0];

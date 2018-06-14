@@ -50,11 +50,13 @@ async function call(params, the) {
         filter : conditions,
         indexs : ['succ_count', 'timeout_count', 'exce_count', 'total_time']
     };
-    let addrs = await AdminService.getEndpoints("tars.tarsquerystat.NoTarsObj");
+    let addrs = await AdminService.getEndpoints("tars.tarsquerystat.NoTarsObj").catch(err => {
+        logger.error('[AdminService.getEndpoints]:',err.toString());
+        console.error(err);
+    });
     //addrs = [['localhost','80']]; // 测试的,假定真实环境传给我这样的数据结构
     if(!addrs || !addrs.length) {
         logger.error('[AdminService.getEndpoints]:','tars.tarsquerystat.NoTarsObj not found');
-        console.error('[AdminService.getEndpoints]:','tars.tarsquerystat.NoTarsObj not found');
         return;
     }
     let addr0 = addrs[0];
@@ -82,7 +84,7 @@ function merge(params, theData, preData) {
                 }
             } else {
                 let wave = (thevalue[0] - prevalue[0]) / prevalue[0];
-                totalCountWave = (wave * 100).toFixed(2) + '%';
+                totalCountWave = (wave * 100).toFixed(2);
             }
         }
 

@@ -66,10 +66,7 @@ AdminService.addTask = async (req) => {
 
 
 AdminService.getEndpoints = async (objName) => {
-    let ret = await client.findObjectById(objName).catch(function (err) {
-        logger.error('[AdminService.getEndpoints]:',err);
-    });
-    return ret;
+    return await client.findObjectById(objName);
 };
 
 module.exports = AdminService;
