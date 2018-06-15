@@ -3,6 +3,7 @@
  */
 
 const WebSocket = require('ws');
+const logger = require('../../logger');
 
 let TCPClient = function (ip, port, requestObj) {
     let wsClient = new WebSocket(`ws://${ip}:${port}`);

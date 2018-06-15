@@ -3,8 +3,7 @@ const TarsProxy = require("./rpcProxy/NodeTarsProxy");
 const AdminRegProxy = require("./rpcProxy/AdminRegProxy");
 const ConfigFProxy = require("./rpcProxy/ConfigFProxy");
 const path = require('path');
-
-client.initialize(path.join(__dirname, './tars.conf'));
+client.initialize(path.join(__dirname, '../../../../config/tars.conf'));
 const RPCClientPrx = (proxy, moduleName, interfaceName, servantName, setInfo) => {
     var module = proxy[moduleName];
     var rpcClient = client.stringToProxy(module[interfaceName+'Proxy'], servantName, setInfo);
@@ -74,6 +73,7 @@ module.exports = {
     configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
     configFStruct : RPCStruct(ConfigFProxy, 'tars'),
 
+    client: client
     // configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'TARS.NodeTarsServer.Config@tcp -h 127.0.0.1 -p 14003 -t 10000'),
     // configFStruct : RPCStruct(ConfigFProxy, 'tars'),
 };

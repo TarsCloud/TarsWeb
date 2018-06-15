@@ -21,7 +21,6 @@
       </div>
       <div class="user-wrap">
         <p class="user-info" @click="userOptOpen = !userOptOpen">
-          <!--<img class="avatar" src="http://e.hiphotos.baidu.com/baike/w%3D268/sign=de2ee49318d5ad6eaaf963ecb9ca39a3/79f0f736afc379310660597ee8c4b74543a91158.jpg">-->
           <span class="name toe">{{uid}} </span>
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}" v-show="enableLogin"></i>
           <transition name="fade">
@@ -70,7 +69,8 @@ export default {
     },
     changeLocale(){
       this.$cookie.set('locale', this.locale, {expires: '1Y'});
-      this.$i18n.locale = this.locale;
+//      this.$i18n.locale = this.locale;
+      location.reload();
     },
     checkEnableLogin(){
       this.$ajax.getJSON('/server/api/is_enable_login').then((data) => {

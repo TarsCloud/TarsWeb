@@ -5,6 +5,7 @@ const util = require('../../tools/util');
 const ConfigService = require('../config/ConfigService');
 const AdapterService = require('../adapter/AdapterService');
 const AuthService = require('../auth/AuthService');
+const ResourceService = require('../resource/ResourceService');
 
 const ServerService = {};
 
@@ -97,8 +98,9 @@ ServerService.addServerConf = async(params)=> {
     delete(params.developer);
 
     let serverConf = ServerService.serverConfFields();
+
     serverConf = util.leftAssign(serverConf, params);
-    serverConf.enable_set = serverConf.enable_set ? 'Y' : 'N';
+    serverConf.enable_set = params.enable_set ? 'Y' : 'N';
     serverConf.posttime = new Date();
     await ServerDao.insertServerConf(serverConf);
 
@@ -121,7 +123,15 @@ ServerService.addServerConf = async(params)=> {
         newAdapterConf.posttime = new Date();
         await AdapterDao.insertAdapterConf(newAdapterConf);
     }
-    return await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
+
+    //安装节点
+    let installRst = await ResourceService.installTarsNodes([params.node_name]);
+    let newServerConf = await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
+    return {
+        tasNodeRst: installRst,
+        serverConf: newServerConf
+    };
+    // return await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
 };
 
 module.exports = ServerService;

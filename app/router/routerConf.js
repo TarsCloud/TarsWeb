@@ -21,8 +21,7 @@ const pageConf = [
     ['get', '/', PageController.index],
     ['get', '/old', PageController.indexOld],
     ['get', '/pages/op_manage.htm', PageController.opManage],
-    ['get', '/pages/tree', TreeController.listTree],
-    ['get', '/tarsnode_install.sh', ResourceController.downloadTarsNode],
+    ['get', '/pages/tree', TreeController.listTree]
 ];
 
 const apiConf = [

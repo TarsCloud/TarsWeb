@@ -32,30 +32,6 @@ ResourceService.installTarsNodes = async(ips) => {
     return rst;
 };
 
-ResourceService.installTarsNodes = async(ips) => {
-    //若该ip已经存在表中，则不安装tars node。
-    let rst = [];
-    let nodeInfos = await ResourceDao.getNodeInfo(ips);
-    let installedIps = [];
-    nodeInfos.forEach((nodeInfo)=> {
-        nodeInfo = nodeInfo.dataValues;
-        installedIps.push(nodeInfo.endpoint_ip);
-        rst.push({
-            ip: nodeInfo.endpoint_ip,
-            rst: true,
-            msg: '#api.resource.tarsNodeExist#'
-        });
-    });
-    let needInstallIps = _.difference(ips, installedIps);
-    let installTask = [];
-    needInstallIps.forEach((ip)=>{
-        installTask.push(ResourceService.doInstallTarsNode(ip));
-    });
-    let installRst = await Promise.all(installTask);
-    rst = rst.concat(installRst);
-    return rst;
-};
-
 
 ResourceService.doInstallTarsNode = async(ip) => {
     try {
@@ -88,6 +64,8 @@ ResourceService.doUninstallTarsNode = async(ip) => {
 
 
 ResourceService.doSSHTask = async(ip, shell)=>{
+    console.log(ip)
+    console.log(shell);
     try{
         let index = _.findIndex(sshConfs || [], (o) => {
             return o.ip === ip

@@ -2,7 +2,7 @@ var path = require('path');
 
 //用户体系配置 auth.js
 module.exports = {
-    enableLogin: false,                     //是否启用登录验证
+    enableLogin: true,                     //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
     loginUrlPrefix: 'http://localhost:3001', //登录检验服务前缀host
     loginUrl: '/login.html',                 //登录跳转url
@@ -20,11 +20,8 @@ module.exports = {
     validateMatch: [
         ['data.result', true]
     ],                                      //校验通过匹配条件，可以从多层结果，多个情况
-    ignore: ['/static', '/tarsnode_install.sh'], //不需要登录校验的路径
+    ignore: ['/static', '/tarsnode.tar.gz'], //不需要登录校验的路径
     ignoreIps: [],                           //访问ip白名单
     apiPrefix: ['/pages/server/api'],       //接口相应的路径前缀
     apiNotLoginMes: '#common.noLogin#', //接口无登录权限的提示语
-
-    enableLocalCache: false,               //是否开启本地登录缓存
-    maxAge: 7 * 24 * 60 * 60 * 1000        //本地登录缓存时间，默认7天
 };

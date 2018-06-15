@@ -1,12 +1,6 @@
-if [ ! -d "/usr/local/app/tars" ]; then
-    mkdir -p /usr/local/app/tars
-    cd /usr/local/app/tars/
-    wget http://{{ip}}:{{port}}/tarsnode_install.sh
-    tar -zxvf tarsnode.tgz
-    cd ./tarsnode/scripts
-
-    chmod u+x tarsnode_install.sh
-    ./tarsnode_install.sh
+$ref =
+if [ps -ef | grep tarsnode ~= './tarsnode --config=../config/tarsnode.conf']; then
+    echo 'Tars node installed success'
 else
-    echo "Tars node has installed"
+    echo 'Tars node installed failed'
 fi
