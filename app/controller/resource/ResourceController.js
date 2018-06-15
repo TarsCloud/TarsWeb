@@ -20,15 +20,6 @@ ResourceController.installTarsNode = async(ctx) => {
     }
 };
 
-ResourceController.downloadTarsNode = async(ctx) => {
-    try{
-        await send(ctx, 'tarsnode_install.sh', { root: __dirname + '../../../service/resource' });
-    } catch (e) {
-        logger.error('[downloadTarsNode]', e);
-        ctx.makeErrResObj();
-    }
-};
-
 ResourceController.removeTarsNode = async(ctx) => {
 
 };
