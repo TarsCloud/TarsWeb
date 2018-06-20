@@ -62,6 +62,9 @@
               <let-form-item :label="$t('pub.dlg.ip')">
                 <div v-for="server in publishModal.model.serverList" :key="server.id">{{server.node_name}}</div>
               </let-form-item>
+              <let-form-item :label="$t('serverList.servant.comment')">
+                <let-input v-model="publishModal.model.update_text"></let-input>
+              </let-form-item>
               <let-form-item :label="$t('pub.dlg.patchType')">
                 <let-radio-group type="button" size="small" @change="patchChange" v-model="patchType" :data="patchRadioData">
                 </let-radio-group>
@@ -80,20 +83,15 @@
                 <let-button theme="primary" size="small" class="mt10" @click="showUploadModal">{{$t('pub.dlg.upload')}}</let-button>
               </let-form-item>
               <let-form-item :label="$t('serverList.table.th.version')" v-else>
-                <let-select size="small" required :required-tip="$t('deployService.table.tips.empty')">
-                  <let-option value="">请选择</let-option>
+                <let-select size="small" required :required-tip="$t('deployService.table.tips.empty')"
+                  v-model="tagVersion"
+                  requred>
+                  <let-option v-for="it in tagList" :key="`${it.version}`" :value="it.path +'--'+ it.version">{{it.version}}</let-option>
                 </let-select>
-                <let-button theme="primary" size="small" class="mt10">{{$t('pub.dlg.compileAndPublish')}}</let-button>
-                <let-button size="small" class="mt10">{{$t('pub.dlg.updateTagAdr')}}</let-button>
+                <let-button theme="primary" size="small" class="mt10" @click="addCompileTask">{{$t('pub.dlg.compileAndPublish')}}</let-button>
+                <let-button size="small" class="mt10" @click="openPubConfModal">{{$t('pub.dlg.conf')}}</let-button>
               </let-form-item>
-              <let-form-item :label="$t('serverList.servant.comment')">
-                <let-input
-                  type="textarea"
-                  :rows="3"
-                  v-model="publishModal.model.update_text"
-                >
-                </let-input>
-              </let-form-item>
+              
             </let-form>
       </let-modal>
 
@@ -208,7 +206,67 @@
           <let-table-column :title="$t('historyList.dlg.th.c7')" prop="execute_info"></let-table-column>
         </let-table>
       </let-modal>
-    </div>
+   </div>
+
+  <!-- 配置编译接口 -->
+   <let-modal
+        v-model="publishUrlConfModal.show"
+        :title="$t('pub.dlg.conf')"
+        width="800px"
+        :footShow="true"
+        @on-confirm="saveCompilerUrl"
+        @on-cancel="publishUrlConfModal.show = false">
+        <let-form ref="compilerForm"
+          itemWidth="100%"
+          v-if="publishUrlConfModal.model"
+          required>
+          <let-form-item :label="$t('pub.dlg.tag')">
+            <let-input size="small" 
+              v-model="publishUrlConfModal.model.tag" 
+              :placeholder="$t('pub.tips.tag')"
+              :required-tip="$t('deployService.table.tips.empty')" 
+              required ></let-input>
+          </let-form-item>
+          <let-form-item :label="$t('pub.dlg.compiler')">
+            <let-input size="small" 
+              v-model="publishUrlConfModal.model.compiler" 
+              :placeholder="$t('pub.tips.tag')"
+              :required-tip="$t('deployService.table.tips.empty')" 
+              required ></let-input>
+          </let-form-item>
+          <let-form-item :label="$t('pub.dlg.task')">
+            <let-input size="small" 
+              v-model="publishUrlConfModal.model.task" 
+              :placeholder="$t('pub.tips.tag')"
+              :required-tip="$t('deployService.table.tips.empty')" 
+              required ></let-input>
+          </let-form-item>
+        </let-form>
+    </let-modal>
+
+    <!-- 编译进度 -->
+    <let-modal
+        v-model="compilerModal.show"
+        :title="$t('pub.dlg.compileProgress')"
+        width="880px"
+        :footShow="false">
+        <let-table
+          v-if="compilerModal.model"
+          :data="compilerModal.model.progress">
+            <let-table-column :title="$t('historyList.dlg.th.c2')" prop="application"></let-table-column>
+            <let-table-column :title="$t('historyList.dlg.th.c3')" prop="server_name"></let-table-column>
+            <let-table-column :title="$t('historyList.dlg.th.c4')" prop="node"></let-table-column>
+            <let-table-column :title="$t('historyList.dlg.th.c8')" prop="status">
+              <template slot-scope="scope">
+                <span v-if="scope.row.state=='1'" class="running">{{scope.row.status}}</span>
+                <span v-else-if="scope.row.state=='2'" class="success">{{scope.row.status}}</span>
+                <span v-else class="stop">{{scope.row.status}}</span>
+              </template>
+            </let-table-column>
+            <let-table-column :title="$t('monitor.search.start')" prop="start_time"></let-table-column>
+            <let-table-column :title="$t('monitor.search.end')" prop="end_time"></let-table-column>
+        </let-table>
+    </let-modal>
   </div>
 </template>
 
@@ -271,7 +329,16 @@ export default {
         {value:'patch', text:this.$t('pub.dlg.upload')},
         {value:'compile', text:this.$t('pub.dlg.compileAndPublish')}
       ],
-      tagListUrl: 'http://notice.wsd.com/interface?interface_name=queryNoticeList'
+      tagList: [],
+      tagVersion: '',
+      publishUrlConfModal: {
+        show: false,
+        model: {tag:'',compiler:'',task:''},
+      },
+      compilerModal: {
+        show: false,
+        model: null
+      }
     };
   },
   methods: {
@@ -504,14 +571,108 @@ export default {
       }
     },
     getCodeVersion() {
-      if(!this.tagListUrl) {
-        this.$tip.error(`${this.$t('common.error')}: ${this.$t('pub.tips.tagListUrl')}`);
-        return;
-      }
-      this.$ajax.get(this.tagListUrl,{
+      this.$ajax.get('/server/api/get_tag_list',{
         application: this.publishModal.model.application,
-        server_name: this.publishModal.model.server_name
+        module_name: this.publishModal.model.server_name
+      }).then(data => {
+        if(data.data=='') {
+          this.openPubConfModal();
+        }else {
+          this.tagList = data.data;
+          // TODO 测试数据
+          this.tagList = [
+            {path:'http://git.code.oa.com/wod_csc_jcfw/Proj_ITIL_migNotice.git',version:'/master/',commitMessage:''},
+            {path:'http://git.code.oa.com/wod_csc_jcfw/Proj_ITIL_migNotice.git',version:'/develop/',commitMessage:''},
+            {path:'http://git.code.oa.com/wod_csc_jcfw/Proj_ITIL_migNotice.git',version:'/tag-2018042801/',commitMessage:''},
+          ];
+        }
+      }).catch(e=> {
+        this.tagList = [];
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       })
+    },
+    openPubConfModal() {
+      this.publishUrlConfModal.show = true;
+      this.$ajax.getJSON('/server/api/get_compiler_url').then(data => {
+          this.publishUrlConfModal.model.tag = data.f_taglist_uri;
+          this.publishUrlConfModal.model.compiler = data.f_compile_uri;
+          this.publishUrlConfModal.model.task = data.f_compile_task_uri;
+      }).catch(err => {
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+      })
+    },
+    saveCompilerUrl() {
+      if(this.$refs.compilerForm.validate()) {
+        const loading = this.$Loading.show();
+        this.$ajax.getJSON('/server/api/set_compiler_url', {
+          tagList: this.publishUrlConfModal.model.tag, 
+          compiler: this.publishUrlConfModal.model.compiler,
+          task: this.publishUrlConfModal.model.task
+          }).then(data => {
+          loading.hide();
+          this.$tip.success(this.$t('common.success'));
+          this.publishUrlConfModal.show = false;
+          this.getCodeVersion();
+        }).catch(err => {
+          loading.hide();
+          this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+        })
+      }
+    },
+    addCompileTask() {
+      this.$ajax.getJSON('/server/api/get_compiler_url').then(data => {
+          const compileUrl = data.f_compile_uri;
+          if(!compileUrl) {
+            this.openPubConfModal();
+            return;
+          }else {
+            let nodes = this.publishModal.model.serverList.map(item => item.node_name);
+            let opts = {
+              application : this.publishModal.model.application,
+              server_name : this.publishModal.model.server_name,
+              node : nodes.join(';'),
+              path : this.tagVersion.split('--')[0],
+              version : this.tagVersion.split('--')[1],
+              comment : this.publishModal.model.update_text || '',
+              compileUrl : compileUrl
+            };
+            const loading = this.$Loading.show();
+            this.$ajax.postJSON('/server/api/do_compile', opts).then(data => {
+                loading.hide();
+                this.compilerModal.show = true;
+                const taskNo = typeof data === 'string' ? data : data.data;
+                //this.getStatus(taskNo);
+                this.taskStatus(taskNo);
+            }).catch(err => {
+                loading.hide();
+                this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+            })
+          }
+      }).catch(err => {
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+      })
+    },
+    taskStatus(taskNo) {
+        let t = setInterval(() =>{
+          this.getStatus(taskNo, t);
+        }, 2000);
+    },
+    getStatus(taskNo, t) {
+        this.$ajax.getJSON('/server/api/compiler_task', {taskNo}).then(data =>{
+            const ret = typeof data === 'array' ? data : data.data;
+            ret[0].status = this.statusConfig[ret[0].state];
+            if(ret[0].state==2 || ret[0].state==3 || ret[0].state==4){
+                t && clearInterval(t);
+              }
+            if(this.compilerModal.model) {
+              Object.assign(this.compilerModal.model, {progress : ret})
+            }else {
+              this.compilerModal.model = {progress : ret};
+            }
+          }).catch(err =>{
+            t && clearInterval(t);
+            this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+          })
     }
   },
   mounted() {
@@ -542,5 +703,10 @@ export default {
   .mt10 {
     margin-top: 10px;
   }
+  .running {
+    color:#3f5ae0
+  }
+  .success {color:#6accab}
+  .stop {color: #f56c77}
 }
 </style>

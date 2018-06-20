@@ -91,6 +91,11 @@ const apiConf = [
     // 发布包
     ['post', '/upload_patch_package', PatchController.uploadPatchPackage, {application: 'notEmpty'}],
     ['get', '/server_patch_list', PatchController.serverPatchList, {application: 'notEmpty'}],
+    ['get', '/get_tag_list', PatchController.getTagList, {application: 'notEmpty', module_name: 'notEmpty'}],
+    ['get', '/get_compiler_url', PatchController.getCompilerUrl],
+    ['get', '/set_compiler_url', PatchController.setCompilerUrl, {tagList: 'notEmpty', compiler: 'notEmpty', task: 'notEmpty'}],
+    ['post', '/do_compile', PatchController.doCompile],
+    ['get', '/compiler_task', PatchController.compilerTask],
 
     // 监控
     ['get', '/tarsstat_monitor_data', MonitorController.tarsstat],

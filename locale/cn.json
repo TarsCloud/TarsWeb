@@ -289,17 +289,22 @@
       "releaseVersion": "发布版本",
       "upload": "上传发布包",
       "compileAndPublish": "编译并发布",
-      "updateTagAdr": "修改SVN/GIT版本接口",
       "releasePkg": "发布包",
       "defaultValue": "请选择",
       "noConfFile": "暂无配置文件",
       "a": "请至少选择一个服务节点",
       "ab": "请选择发布版本",
-      "unpublished": "未发布"
+      "unpublished": "未发布",
+      "conf": "配置编译接口",
+      "tag": "版本接口",
+      "compiler": "编译接口",
+      "task": "查询编译进度接口",
+      "compileProgress": "编译进度"
     },
     "tips": {
       "default": "发布管理只管理服务层级，请您先在左侧业务树选择服务。",
-      "tagListUrl": "请先配置SVN/GIT版本获取接口"
+      "tagListUrl": "请先配置SVN/GIT版本获取接口",
+      "tag": "请输入接口地址"
     },
     "date": "日期"
   },

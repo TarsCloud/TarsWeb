@@ -66,7 +66,7 @@ AdminService.addTask = async (req) => {
 
 
 AdminService.getEndpoints = async (objName) => {
-    return await client.findObjectById(objName);
+    return await client.findObjectById4All(objName);
 };
 
 module.exports = AdminService;

@@ -289,17 +289,22 @@
       "releaseVersion": "release version",
       "upload": "upload release package",
       "compileAndPublish": "compile and publish",
-      "updateTagAdr": "update SVN/GIT tags address",
       "releasePkg": "release package",
       "defaultValue": "choose ...",
       "noConfFile": "no configuration files",
       "a": "please choose an ip",
       "ab": "please choose a release version",
-      "unpublished": "Unpublished"
+      "unpublished": "Unpublished",
+      "conf": "Configure compiler interface",
+      "tag": "version interface",
+      "compiler": "compiler interface",
+      "task": "compilation progress interface",
+      "compileProgress": "Compilation progress"
     },
     "tips": {
       "default": "Release management management service level, please first in the left tree selection service business.",
-      "tagListUrl": "Please configure SVN / GIT version acquisition interface first"
+      "tagListUrl": "Please configure SVN / GIT version acquisition interface first",
+      "tag": "Please enter the interface address to get the version list"
     },
     "date": "Date"
   },

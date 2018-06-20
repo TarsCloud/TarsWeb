@@ -3,6 +3,7 @@
  */
 
 const {tServerPatchs} = require('./db').db_tars;
+const {tThirdcompileConf} = require('./db').db_tars_web;
 
 module.exports = {
     insertServerPatch : async(params) => {
@@ -25,5 +26,30 @@ module.exports = {
             })
         }
         return await tServerPatchs.findAll(opts);
+    },
+
+    getCompilerUrl : async() => {
+        return await tThirdcompileConf.findOne({
+            raw: true
+        });
+    },
+
+    setCompilerUrl : async(tagList, compiler, task) => {
+        let ret = await tThirdcompileConf.findOne({raw:true});
+        if(!ret) {
+            return await tThirdcompileConf.create({
+                f_taglist_uri : tagList,
+                f_compile_uri : compiler,
+                f_compile_task_uri : task
+            });
+        }else {
+            return await tThirdcompileConf.update({
+                f_taglist_uri : tagList,
+                f_compile_uri : compiler,
+                f_compile_task_uri : task
+            },{
+                where : {f_id : 1}
+            });
+        }
     }
 };

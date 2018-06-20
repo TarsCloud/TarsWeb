@@ -69,5 +69,66 @@ PatchController.serverPatchList = async (ctx) => {
     }
 };
 
+PatchController.getTagList = async (ctx) => {
+    let {application, module_name} = ctx.paramsObj;
+    try{
+        if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
+            ctx.makeNotAuthResObj();
+        } else {
+            let list = await PatchService.getTagList(application, module_name);
+            ctx.makeResObj(200,'',util.viewFilter(list,{path:'',version:'',commitMessage:''}));
+        }
+    }catch(e) {
+        logger.error(e);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+PatchController.getCompilerUrl = async (ctx) => {
+    try{
+        let ret = await PatchService.getCompilerUrl();
+        ctx.makeResObj(200,'',ret);
+    }catch(e) {
+        logger.error(e);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+PatchController.setCompilerUrl = async (ctx) => {
+    let {tagList, compiler, task} = ctx.paramsObj;
+    try{
+        let ret = await PatchService.setCompilerUrl(tagList, compiler, task);
+        ctx.makeResObj(200,'',ret);
+    }catch(e) {
+        logger.error(e);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+PatchController.doCompile = async (ctx) => {
+    let {application, server_name, node, path, version, comment, compileUrl} = ctx.paramsObj;
+    try{
+        if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+            ctx.makeNotAuthResObj();
+        } else {
+            let ret = await PatchService.doCompile({application, server_name, node, path, version, comment, compileUrl});
+            ctx.makeResObj(200,'',ret);
+        }
+    }catch(e) {
+        logger.error(e);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+PatchController.compilerTask = async (ctx) => {
+    let {taskNo} = ctx.paramsObj;
+    try {
+        let ret = await PatchService.compilerTask(taskNo);
+        ctx.makeResObj(200, '', ret);
+    }catch(e) {
+        logger.error(e);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
 
 module.exports = PatchController;
