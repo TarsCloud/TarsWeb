@@ -2,19 +2,25 @@
  * Created by clauseliu on 2018/5/29.
  */
 
-const WebSocket = require('ws');
+const net = require('net');
 const logger = require('../../logger');
-
 let TCPClient = function (ip, port, requestObj) {
-    let wsClient = new WebSocket(`ws://${ip}:${port}`);
-    wsClient.on('open', function () {
-        wsClient.send(JSON.stringify(requestObj));
-    });
-
     return new Promise((resolve, reject) =>{
-        wsClient.on('message', function(e) {
-            wsClient.close();
+        var client = new net.Socket();
+        client.connect(port, ip, function() {
+            client.write(JSON.stringify(requestObj));
+        });
+        let data = '';
+        client.on('data', function(e) {
             try {
+                e = e.toString();
+                if(e.indexOf('endline') == -1){
+                    data += e;
+                    return;
+                }else{
+                    data += e.substring(0, e.indexOf('endline') + 7);
+                }
+                e = data;
                 let response = e.split(/\n/);
                 response = response.map((n) => {
                     return n.replace(/^\s*|\s*$/g,'').replace(/,$/,'');
@@ -50,19 +56,13 @@ let TCPClient = function (ip, port, requestObj) {
                 reject(e);
                 logger.error('[TCPClient try]:',e);
             }
-
+            client.destroy();
         });
-
-        wsClient.on('error', (err) => {
+        client.on('error', (err) => {
             logger.error('[TCPClient]:',err);
             reject(err);
         });
     });
 };
-
-
-
-
-
 
 module.exports = TCPClient;
