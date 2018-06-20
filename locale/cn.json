@@ -76,7 +76,11 @@
       "tarsNodeExist": "Tars Node 已存在",
       "installFailed": "安装Tars Node失败",
       "uninstallFailed": "卸载Tars Node失败",
-      "notConfig": "未找到机器配置"
+      "notConfig": "未找到机器配置",
+      "serverExist": "该机器上还存在服务，不允许删除Tars node",
+      "sshFailed": "ssh链接失败",
+      "installSuccess": "安装TarsNode成功",
+      "uninstallSuccess": "卸载TarsNode成功"
     }
   },
   "common": {

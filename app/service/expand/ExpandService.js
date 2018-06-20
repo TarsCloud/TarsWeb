@@ -57,10 +57,12 @@ ExpandService.expand = async(params) => {
                 server_name: serverName,
                 node_name: preServer.node_name
             };
-            let enableSet = _.isEmpty(preServer.set);
+            let enableSet = !_.isEmpty(preServer.set);
             server.enable_set = enableSet ? 'Y' : 'N';
             if (enableSet) {
                 server = _.extend(server, _.zipObject(['set_name', 'set_area', 'set_group'], preServer.set.split('.')));
+            }else{
+                server = _.extend(server, _.zipObject(['set_name', 'set_area', 'set_group'], [null, null, null]));
             }
             server = _.extend(server, {
                 server_type: sourceServer.server_type,
@@ -70,7 +72,6 @@ ExpandService.expand = async(params) => {
                 exe_path: sourceServer.exe_path,
                 start_script_path: sourceServer.start_script_path
             });
-
             server = util.leftAssign(ServerService.serverConfFields(), server);
             let rst = await ServerDao.insertServerConf(server);
             addServers.push(rst.dataValues);
@@ -109,6 +110,7 @@ ExpandService.expand = async(params) => {
                 allow_ip: sourceAdapter.allow_ip,
                 protocol: sourceAdapter.protocol,
                 handlegroup: sourceAdapter.handlegroup,
+                posttime: new Date('1970-01-01 00:00:00')
             };
             let portType = sourceAdapter.endpoint.substring(0, sourceAdapter.endpoint.indexOf(' '));
             portType = _.indexOf(['tcp', 'udp'], portType) > -1 ? portType : 'tcp';

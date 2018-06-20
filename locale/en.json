@@ -76,7 +76,11 @@
       "tarsNodeExist": "Tars Node is already exist",
       "installFailed": "Install Tars Node failed",
       "uninstallFailed": "Uninstall Tars Node failed",
-      "notConfig": "No machine configuration was found"
+      "notConfig": "No machine configuration was found",
+      "serverExist": "There is a service on the machine that does not allow uninstall the tars node",
+      "sshFailed": "SSH link failed",
+      "installSuccess": "Install Tars Node successfully",
+      "uninstallSuccess": "Uninstall Tars Node successfully"
     }
   },
   "common": {

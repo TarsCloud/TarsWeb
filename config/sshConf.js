@@ -10,7 +10,7 @@ module.exports = {
         {
             ip: '1.1.1.2',
             port: '22',
-            username: '',
+            username: 'root',
             password: '',
             privateKeyPath: ''
         }

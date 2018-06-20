@@ -21,6 +21,14 @@ ServerDao.getServerConfByName = async(application, serverName, nodeName)=> {
     });
 };
 
+ServerDao.getServerConfByNodeName = async(nodeName)=> {
+    return await tServerConf.findAll({
+        where: {
+            node_name: nodeName
+        }
+    });
+};
+
 ServerDao.getServerConf = async(params) => {
     let where = {};
     params.application != undefined && (where.application = params.application);

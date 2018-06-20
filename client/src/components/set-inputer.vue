@@ -38,7 +38,7 @@
         :disabled="!enabled"
         :required="enabled"
         :required-tip="$t('deployService.form.setGroupTips')"
-        :pattern="enabled ? '^\d+|*$' : null"
+        :pattern="enabled ? '^(\\d+|\\*)$' : null"
         :pattern-tip="$t('deployService.form.setGroupFormatTips')"
       ></let-input>
     </div>

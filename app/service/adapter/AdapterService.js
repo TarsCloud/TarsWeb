@@ -12,7 +12,6 @@ AdapterService.adpaterConfFields = () => {
         server_name: '',
         node_name: '',
         adapter_name: '',
-        registry_timestamp: '',
         thread_num: 1,
         endpoint: '',
         max_connections: 1000,
