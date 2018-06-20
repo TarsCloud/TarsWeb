@@ -83,7 +83,7 @@ function merge(params, theData, preData) {
                 }
             } else {
                 let wave = (thevalue[0] - prevalue[0]) / prevalue[0];
-                totalCountWave = (wave * 100).toFixed(2);
+                totalCountWave = (wave * 100).toFixed(2) + '%';
             }
         }
 
@@ -165,15 +165,15 @@ function translate(data) {
     let ret = [];
     let total = parseInt(data[0]) + parseInt(data[1]) + parseInt(data[2]);
     ret[0] = total;
-    ret[1] = total == 0 ? -1 : data[3] / total;
-    ret[2] = total == 0 ? -1 : data[2] / total;
-    ret[3] = total == 0 ? -1 : data[1] / total;
+    ret[1] = total == 0 ? -1 : data[3] / ret[0];
+    ret[2] = total == 0 ? -1 : data[2] / ret[0];
+    ret[3] = total == 0 ? -1 : data[1] / ret[0];
     return ret;
 }
 
 function formatValue(data) {
     let ret = [];
-    ret[0] = data[0] < 0 ? '--' : data[0].toFixed(2);
+    ret[0] = data[0] < 0 ? '--' : data[0].toFixed(0);
     ret[1] = data[1] < 0 ? '--' : data[1].toFixed(2);
     ret[2] = data[2] < 0 ? '--' : (data[2]*100).toFixed(2) + '%';
     ret[3] = data[3] < 0 ? '--' : (data[3]*100).toFixed(2) + '%';
