@@ -19,7 +19,7 @@ module.exports = async(ctx, next) => {
     if (ctx.request.path === '/logout') {
         ctx.cookies.set(loginConf.ticketCookieName || 'ticket', null, cookieDomainConfig);
         ctx.cookies.set(loginConf.uidCookieName || 'uid', null, cookieDomainConfig);
-        ctx.redirect('/');
+        toLogoutPage(ctx);
         return;
     } else if (!loginConf.enableLogin) {
         ctx.uid = loginConf.defaultLoginUid;
@@ -31,7 +31,7 @@ module.exports = async(ctx, next) => {
         let ticket, uid;
         let ticketFromQuery = ctx.query[loginConf.ticketParamName || 'ticket'];
         if (ticket = ticketFromQuery) {
-            uid = await getUid(ticket);
+            uid = await getUid(ctx, ticket);
             if (uid) {
                 await ctx.cookies.set(loginConf.ticketCookieName || 'ticket', ticket, cookieConfig);
                 await ctx.cookies.set(loginConf.uidCookieName || 'uid', uid, cookieConfig);
@@ -43,7 +43,7 @@ module.exports = async(ctx, next) => {
         if (!ticket) {
             ticket = ctx.cookies.get(loginConf.ticketCookieName || 'ticket');
         }
-        if (await checkIsLogin(uid, ticket)) {
+        if (await checkIsLogin(ctx, uid, ticket)) {
             ctx.uid = uid;
             if (ticketFromQuery) {
                 let urlObj = url.parse(ctx.request.url, true);
@@ -86,9 +86,9 @@ function isInIgnoreIps(ctx, ignoreIps) {
 }
 
 //检测是否登录
-async function checkIsLogin(uid, ticket) {
+async function checkIsLogin(ctx, uid, ticket) {
     if (uid !== undefined && ticket !== undefined) {
-        if (await validate(uid, ticket)) {
+        if (await validate(ctx, uid, ticket)) {
             return true;
         } else {
             return false;
@@ -100,22 +100,31 @@ async function checkIsLogin(uid, ticket) {
 
 //控制跳转到登录页面
 async function toLoginPage(ctx) {
-    ctx.redirect(loginConf.loginUrlPrefix + loginConf.loginUrl + '?' + loginConf.redirectUrlParamName + '=' + encodeURIComponent(ctx.protocol + '://' + ctx.host + ctx.request.url));
+    ctx.redirect(loginConf.loginUrl + '?' + loginConf.redirectUrlParamName + '=' + encodeURIComponent(ctx.protocol + '://' + ctx.host + ctx.request.url));
+}
+
+//控制跳转到登出页面
+async function toLogoutPage(ctx) {
+    ctx.redirect(loginConf.logoutUrl + '?' + loginConf.logoutredirectUrlParamName + '=' + encodeURIComponent(ctx.protocol + '://' + ctx.host));
 }
 
 // 通过ticket获取用户信息
-async function getUid(ticket) {
+async function getUid(ctx, ticket) {
     try {
         if (!!loginConf.getUidByTicket) {
-            let uidInfo = await request.get(loginConf.loginUrlPrefix + loginConf.getUidByTicket + '?' + loginConf.getUidByTicketParamName + '=' + ticket);
-            try {
-                uidInfo = JSON.parse(uidInfo);
-            } catch (e) {
-                logger.error(e);
-                uidInfo = false;
+            if(_.isFunction(loginConf.getUidByTicket)){
+                return await loginConf.getUidByTicket(ctx, ticket);
+            }else{
+                let uidInfo = await request.get(loginConf.getUidByTicket + '?' + loginConf.getUidByTicketParamName + '=' + ticket);
+                try {
+                    uidInfo = JSON.parse(uidInfo);
+                } catch (e) {
+                    logger.error(e);
+                    uidInfo = false;
+                }
+                if (!uidInfo)return false;
+                return _.result(uidInfo, loginConf.uidKey) || false;
             }
-            if (!uidInfo)return false;
-            return _.result(uidInfo, loginConf.uidKey) || false;
         } else {
             return false;
         }
@@ -126,40 +135,33 @@ async function getUid(ticket) {
 }
 
 //判断是否ticket和uid是否有效
-async function validate(uid, ticket) {
+async function validate(ctx, uid, ticket) {
     try {
-        let rst = await casServerValidate(ticket, uid) || false;
-        return rst;
+        if (loginConf.validate) {   //如果没有配置校验接口，则表示此用户名直接有效直到过期
+            if(_.isFunction(loginConf.validate)){
+                return await loginConf.validate(ctx, uid, ticket);
+            }else{
+                let validateRet = await request.get(loginConf.validate + '?' + loginConf.validateTicketParamName + '=' + ticket + '&' + loginConf.validateUidParamName + '=' + uid);
+                try {
+                    validateRet = JSON.parse(validateRet);
+                } catch (e) {
+                    logger.error(e);
+                    validateRet = false;
+                }
+                if (!validateRet)return false;
+                let validateMatch = loginConf.validateMatch;
+                for (let i = 0; i < validateMatch.length; i++) {
+                    if (_.result(validateRet, validateMatch[i][0]) != validateMatch[i][1]) {
+                        return false;
+                    }
+                }
+            }
+        }else{
+            return true;
+        }
     } catch (e) {
         logger.error(e);
         throw(e);
-        return false;
-    }
-}
-
-
-//通过ticket和用户名调用CAS服务，确认是否登录
-async function casServerValidate(ticket, uid) {
-    try {
-        if (loginConf.validateUrl) {   //如果没有配置校验接口，则表示此用户名直接有效直到过期
-            let validateRet = await request.get(loginConf.loginUrlPrefix + loginConf.validateUrl + '?' + loginConf.validateTicketParamName + '=' + ticket + '&' + loginConf.validateUidParamName + '=' + uid);
-            try {
-                validateRet = JSON.parse(validateRet);
-            } catch (e) {
-                logger.error(e);
-                validateRet = false;
-            }
-            if (!validateRet)return false;
-            let validateMatch = loginConf.validateMatch;
-            for (let i = 0; i < validateMatch.length; i++) {
-                if (_.result(validateRet, validateMatch[i][0]) != validateMatch[i][1]) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    } catch (e) {
-        logger.error(e);
         return false;
     }
 }
