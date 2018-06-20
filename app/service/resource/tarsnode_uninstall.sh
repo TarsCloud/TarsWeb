@@ -1,12 +1,10 @@
-if [ ! -d "/usr/local/app/tars" ]; then
-    mkdir -p /usr/local/app/tars
-    cd /usr/local/app/tars/
-    wget http://{{ip}}:{{port}}/tarsnode_install.sh
-    tar -zxvf tarsnode.tgz
-    cd ./tarsnode/scripts
-
-    chmod u+x tarsnode_install.sh
-    ./tarsnode_install.sh
+#!/bin/bash
+PID=$(ps -e|grep tarsnode|awk '{printf $1}')
+if [ $? -eq 0 -a "$PID" != "" ]; then
+    kill -9 $PID
+    rm -rf /usr/local/app/tars/tarsnode
+    echo "Tars node uninstall success"
 else
-    echo "Tars node has installed"
+    echo "Tars node not exit"
+    exit
 fi

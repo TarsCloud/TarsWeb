@@ -20,17 +20,28 @@ ResourceController.installTarsNode = async(ctx) => {
     }
 };
 
-ResourceController.downloadTarsNode = async(ctx) => {
-    try{
-        await send(ctx, 'tarsnode_install.sh', { root: __dirname + '../../../service/resource' });
+ResourceController.uninstallTarsNode = async(ctx) => {
+    try {
+        let ips = ctx.paramsObj.ips;
+        ips = _.trim(ips, /;|,/).split(';');
+        let rst = await ResourceService.uninstallTarsNode(ips);
+        ctx.makeResObj(200, '', rst);
     } catch (e) {
-        logger.error('[downloadTarsNode]', e);
+        logger.error('[installTarsNode]', e);
         ctx.makeErrResObj();
     }
 };
 
-ResourceController.removeTarsNode = async(ctx) => {
-
+ResourceController.testSSH = async(ctx) => {
+    try {
+        // let ips = ctx.paramsObj.ips;
+        // ips = _.trim(ips, /;|,/).split(';');
+        let rst = await ResourceService.testSSH(ctx.paramsObj.ip);
+        ctx.makeResObj(200, '', rst);
+    } catch (e) {
+        logger.error('[installTarsNode]', e);
+        ctx.makeErrResObj();
+    }
 };
 
 

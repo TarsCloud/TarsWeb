@@ -54,14 +54,13 @@ async function call(params, the) {
         logger.error('[AdminService.getEndpoints]:',err.toString());
         console.error(err);
     });
-    //addrs = [['localhost','80']]; // 测试的,假定真实环境传给我这样的数据结构
     if(!addrs || !addrs.length) {
         logger.error('[AdminService.getEndpoints]:','tars.tarsquerystat.NoTarsObj not found');
         return;
     }
     let addr0 = addrs[0];
-    logger.info(`tars.tarsquerystat.NoTarsObj, use ${addr0[0]}:${addr0[1]}`);
-    return await TCPClient(addr0[0], addr0[1], requestObj);
+    logger.info(`tars.tarsquerystat.NoTarsObj, use ${addr0.host}:${addr0.port}`);
+    return await TCPClient(addr0.host, addr0.port, requestObj);
 }
 
 function merge(params, theData, preData) {

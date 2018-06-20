@@ -1,9 +1,0 @@
-if [ ! -d "/usr/local/app/tars" ]; then
-    mkdir -p /usr/local/app/tars
-    cd /usr/local/app/tars/
-    wget http://10.242.132.234:19005/tarsNode?os=CentOs-6.5-64 -O tarsnode.tgz
-    tar -zxvf tarsnode.tgz && cd ./tarsnode/scripts/
-
-else
-    echo "Tars node has installed"
-fi

@@ -20,11 +20,8 @@ module.exports = {
     validateMatch: [
         ['data.result', true]
     ],                                      //校验通过匹配条件，可以从多层结果，多个情况
-    ignore: ['/static', '/tarsnode_install.sh'], //不需要登录校验的路径
+    ignore: ['/static', '/tarsnode.tar.gz'], //不需要登录校验的路径
     ignoreIps: [],                           //访问ip白名单
     apiPrefix: ['/pages/server/api'],       //接口相应的路径前缀
     apiNotLoginMes: '#common.noLogin#', //接口无登录权限的提示语
-
-    enableLocalCache: false,               //是否开启本地登录缓存
-    maxAge: 7 * 24 * 60 * 60 * 1000        //本地登录缓存时间，默认7天
 };

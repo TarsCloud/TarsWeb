@@ -81,7 +81,7 @@ util.getUUID = () => {
 
 util.leftAssign = (obj1, obj2)=> {
     _.each(obj1, (value, key) => {
-        if (obj2[key]) {
+        if (obj2[key] !== undefined) {
             obj1[key] = obj2[key];
         }
     });

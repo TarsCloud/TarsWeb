@@ -5,7 +5,8 @@ const util = require('../../tools/util');
 const ConfigService = require('../config/ConfigService');
 const AdapterService = require('../adapter/AdapterService');
 const AuthService = require('../auth/AuthService');
-
+const ResourceService = require('../resource/ResourceService');
+const _  = require('lodash');
 const ServerService = {};
 
 ServerService.serverConfFields = ()=> {
@@ -14,19 +15,18 @@ ServerService.serverConfFields = ()=> {
         server_name: '',
         node_group: '',
         node_name: '',
-        registry_timestamp: '',
         base_path: '',
         exe_path: '',
         template_name: '',
-        bak_flag: '',
-        setting_state: '',
-        present_state: '',
+        bak_flag: 0,
+        setting_state: 'inactive',
+        present_state: 'inactive',
         process_id: 0,
         patch_version: '',
-        patch_time: '0000:00:00 00:00:00',
+        patch_time: new Date('1970-01-01 00:00:00'),
         patch_user: '',
         tars_version: '',
-        posttime: '0000:00:00 00:00:00',
+        posttime: new Date('1970-01-01 00:00:00'),
         lastuser: '',
         server_type: 'tars_cpp',
         start_script_path: '',
@@ -97,8 +97,12 @@ ServerService.addServerConf = async(params)=> {
     delete(params.developer);
 
     let serverConf = ServerService.serverConfFields();
+
     serverConf = util.leftAssign(serverConf, params);
-    serverConf.enable_set = serverConf.enable_set ? 'Y' : 'N';
+    serverConf.enable_set = params.enable_set ? 'Y' : 'N';
+    if(!serverConf.enable_set){
+        _.extend(serverConf, _.zipObject(['set_name', 'set_area', 'set_group'], [null, null, null]));
+    }
     serverConf.posttime = new Date();
     await ServerDao.insertServerConf(serverConf);
 
@@ -121,7 +125,15 @@ ServerService.addServerConf = async(params)=> {
         newAdapterConf.posttime = new Date();
         await AdapterDao.insertAdapterConf(newAdapterConf);
     }
-    return await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
+
+    //安装节点
+    let installRst = await ResourceService.installTarsNodes([params.node_name]);
+    let newServerConf = await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
+    return {
+        tasNodeRst: installRst,
+        serverConf: newServerConf
+    };
+    // return await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
 };
 
 module.exports = ServerService;

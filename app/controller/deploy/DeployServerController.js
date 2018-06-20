@@ -34,7 +34,8 @@ DeployServerController.deployServer = async(ctx) => {
     var params = ctx.paramsObj;
     try {
         let rst = await ServerService.addServerConf(params);
-        ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
+        // ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
+        ctx.makeResObj(200, '', rst);
     } catch (e) {
         logger.error('[getServerNotifyList]', e);
         ctx.makeErrResObj();

@@ -1,13 +1,10 @@
 //第三方登录相关
-
 let loginConf = require('../../config/loginConf');
 let request = require('request-promise-any');
 let _ = require('lodash');
 let logger = require('../logger');
 let ignoreList = _.concat([], loginConf.ignore || [], ['/favicon.ico']);  //讲登入登出校验接口放到忽略登录校验列表中，兼容本地登录情况
 let url = require('url');
-
-let loginCookieMap = {}; //内存中保存用户的登录信息
 
 let cookieDomainConfig = {
     domain: loginConf.cookieDomain || '/'  //用户cookie域
@@ -18,6 +15,7 @@ let cookieConfig = Object.assign({
 
 //登录校验中间件
 module.exports = async(ctx, next) => {
+    ctx.sourceIp = getSourceIp(ctx);
     if (ctx.request.path === '/logout') {
         ctx.cookies.set(loginConf.ticketCookieName || 'ticket', null, cookieDomainConfig);
         ctx.cookies.set(loginConf.uidCookieName || 'uid', null, cookieDomainConfig);
@@ -26,10 +24,8 @@ module.exports = async(ctx, next) => {
     } else if (!loginConf.enableLogin) {
         ctx.uid = loginConf.defaultLoginUid;
         await next();
-    } else if (isInPath(ctx, ignoreList)) {  //跳过用户配置的不需要验证的url
-        await next();
-    } else if (isInIgnoreIps(ctx, loginConf.ignoreIps || [])) {
-        ctx.uid = ctx.query['uid'];
+    } else if (isInPath(ctx, ignoreList) || isInIgnoreIps(ctx, loginConf.ignoreIps || [])) {  //跳过用户配置的不需要验证的url或白名单IP
+        ctx.uid = ctx.query['uid'] || loginConf.defaultLoginUid;
         await next();
     } else {
         let ticket, uid;
@@ -85,7 +81,7 @@ function isInPath(ctx, pathList) {
 
 //检测是否在IP白名单之中
 function isInIgnoreIps(ctx, ignoreIps) {
-    var ip = getClientIp(ctx);
+    var ip = ctx.sourceIp;
     return _.indexOf(ignoreIps || [], ip) > -1;
 }
 
@@ -132,25 +128,7 @@ async function getUid(ticket) {
 //判断是否ticket和uid是否有效
 async function validate(uid, ticket) {
     try {
-        let rst = false;
-        if (loginConf.enableLocalCache && loginCookieMap[uid] && loginCookieMap[uid].ticket === ticket) {
-            if (loginCookieMap[uid].updateTime && (new Date()).getTime() - loginCookieMap[uid].updateTime < loginConf.maxAge) {
-                rst = true;
-            } else {    //如果本地缓存过期，则检测第三方缓存
-                rst = await casServerValidate(ticket, uid);
-            }
-        } else {
-            rst = await casServerValidate(ticket, uid);
-        }
-        if (rst) {
-            if (!loginCookieMap[uid]) {
-                loginCookieMap[uid] = {}
-            }
-            if (!loginCookieMap[uid].ticket) {
-                loginCookieMap[uid].ticket = ticket;
-            }
-            loginCookieMap[uid].updateTime = (new Date()).getTime();
-        }
+        let rst = await casServerValidate(ticket, uid) || false;
         return rst;
     } catch (e) {
         logger.error(e);
@@ -186,7 +164,7 @@ async function casServerValidate(ticket, uid) {
     }
 }
 
-function getClientIp(ctx) {
+function getSourceIp(ctx) {
     let req = ctx.request;
     var ip = req.headers['x-forwarded-for'] ||
         req.ip ||

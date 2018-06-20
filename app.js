@@ -50,6 +50,7 @@ app.use(apiRouter.routes(), apiRouter.allowedMethods());
 //激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
 app.use(static(path.join(__dirname, './public'), {maxage: 7 * 24 * 60 * 60 * 1000}));
+app.use(static(path.join(__dirname, './files'), {maxage: 7 * 24 * 60 * 60 * 1000}));
 
 //后置中间件
 postMidware.forEach((midware)=>{

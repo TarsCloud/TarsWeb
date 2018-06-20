@@ -310,7 +310,7 @@ export default {
       this.model.adapters.push(Object.assign({}, template));
     },
     deploy() {
-      this.$confirm(this.$t('delpoyService.form.deployServiceTip'), this.$t('common.alert')).then(() => {
+      this.$confirm(this.$t('deployService.form.deployServiceTip'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
         this.$ajax.postJSON('/server/api/deploy_server', this.model).then(() => {
           loading.hide();
