@@ -82,7 +82,6 @@ async function validate(ctx, uid, ticket){
                     throw err;
                 }
                 if (data) {
-                    console.log(data.LoginName === uid);
                     resolve(data.LoginName === uid);
                 } else {
                     resolve(false)
