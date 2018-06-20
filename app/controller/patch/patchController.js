@@ -14,7 +14,7 @@ const PatchController = {};
 
 PatchController.uploadPatchPackage = async (ctx) => {
     try{
-        let {application, module_name, md5, comment} = ctx.req.body;
+        let {application, module_name, md5, task_id, comment} = ctx.req.body;
         if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
@@ -40,6 +40,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
                 tgz : uploadTgzName,
                 md5 : hash,
                 update_text : comment || '',
+                task_id : task_id,
                 posttime : new Date()
             };
             logger.info('[addServerPatch:]',paramsObj);
@@ -63,6 +64,17 @@ PatchController.serverPatchList = async (ctx) => {
             let list = await PatchService.getServerPatch(application, module_name, currPage, pageSize);
             ctx.makeResObj(200,'',util.viewFilter(list,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
         }
+    }catch(e) {
+        logger.error(e);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+PatchController.getServerPatchByTaskId = async (ctx) => {
+    let {task_id} = ctx.paramsObj;
+    try{
+        let ret = await PatchService.getServerPatchByTaskId(task_id);
+        ctx.makeResObj(200,'',util.viewFilter(ret,{id:'',server:'',tgz:'',task_id:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
     }catch(e) {
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());

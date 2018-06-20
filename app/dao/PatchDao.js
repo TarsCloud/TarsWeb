@@ -28,6 +28,15 @@ module.exports = {
         return await tServerPatchs.findAll(opts);
     },
 
+    getServerPatchByTaskId : async(taskId) => {
+        return await tServerPatchs.findOne({
+            where : {
+                task_id : taskId
+            },
+            raw : true
+        });
+    },
+
     getCompilerUrl : async() => {
         return await tThirdcompileConf.findOne({
             raw: true

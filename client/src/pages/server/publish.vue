@@ -49,8 +49,8 @@
         v-model="publishModal.show"
         :title="$t('index.rightView.tab.patch')"
         width="880px"
+        :footShow="false"
         @close="closePublishModal"
-        @on-cancel="closePublishModal"
         @on-confirm="savePublishServer">
           <let-form
             v-if="publishModal.model"
@@ -81,6 +81,8 @@
                   </let-option>
                 </let-select>
                 <let-button theme="primary" size="small" class="mt10" @click="showUploadModal">{{$t('pub.dlg.upload')}}</let-button>
+                <br>
+                <let-button theme="primary" size="small" class="mt10" @click="savePublishServer">{{$t('common.patch')}}</let-button>
               </let-form-item>
               <let-form-item :label="$t('serverList.table.th.version')" v-else>
                 <let-select size="small" required :required-tip="$t('deployService.table.tips.empty')"
@@ -541,6 +543,7 @@ export default {
         formdata.append('module_name', this.uploadModal.model.server_name);
         formdata.append('suse', this.uploadModal.model.file);
         formdata.append('comment', this.uploadModal.model.comment);
+        formdata.append('task_id', new Date().getTime());
         this.$ajax.postForm('/server/api/upload_patch_package', formdata).then(() => {
           this.getPatchList(this.uploadModal.model.application, this.uploadModal.model.server_name).then((data) => {
             loading.hide();
@@ -641,8 +644,8 @@ export default {
                 loading.hide();
                 this.compilerModal.show = true;
                 const taskNo = typeof data === 'string' ? data : data.data;
-                //this.getStatus(taskNo);
-                this.taskStatus(taskNo);
+                this.getStatus(taskNo);
+                //this.taskStatus(taskNo);
             }).catch(err => {
                 loading.hide();
                 this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
@@ -653,26 +656,49 @@ export default {
       })
     },
     taskStatus(taskNo) {
-        let t = setInterval(() =>{
-          this.getStatus(taskNo, t);
-        }, 2000);
+        this.getStatus(taskNo);
     },
-    getStatus(taskNo, t) {
-        this.$ajax.getJSON('/server/api/compiler_task', {taskNo}).then(data =>{
+    getStatus(taskNo) {
+        let t;
+        t && clearTimeout(t);
+        const f = () => {
+          this.$ajax.getJSON('/server/api/compiler_task', {taskNo}).then(data =>{
             const ret = typeof data === 'array' ? data : data.data;
             ret[0].status = this.statusConfig[ret[0].state];
             if(ret[0].state==2 || ret[0].state==3 || ret[0].state==4){
-                t && clearInterval(t);
-              }
+                t && clearTimeout(t);
+            }
             if(this.compilerModal.model) {
               Object.assign(this.compilerModal.model, {progress : ret})
             }else {
               this.compilerModal.model = {progress : ret};
             }
+            // 编译成功后轮询发布包回传情况
+            if(ret[0].state==2){
+                const loading = this.$Loading.show();
+                let timer = setInterval(()=>{
+                  this.$ajax.getJSON('/server/api/get_server_patch', {task_id : ret[0].task_id}).then(data => {
+                    if(data && data.task_id == ret[0].task_id) {
+                      loading.hide();
+                      clearInterval(timer);
+                      this.publishModal.model.patch_id = data.id;
+                      this.publishModal.show = false;
+                      this.savePublishServer();
+                    }
+                  }).catch(err => {
+                    loading.hide();
+                    clearInterval(timer);
+                    this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+                  }); 
+                },3000)
+            }
           }).catch(err =>{
-            t && clearInterval(t);
+            t && clearTimeout(t);
             this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
           })
+          t = setTimeout(f, 2000);
+        }
+        f();
     }
   },
   mounted() {

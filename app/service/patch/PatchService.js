@@ -14,6 +14,10 @@ PatchService.getServerPatch = async (application, server_name, curPage, pageSize
     return await PatchDao.getServerPatch(`${application}.${server_name}`, curPage, pageSize);
 };
 
+PatchService.getServerPatchByTaskId = async (taskId) => {
+    return await PatchDao.getServerPatchByTaskId(taskId);
+};
+
 PatchService.getTagList = async (application, server_name) => {
     let ret = await PatchDao.getCompilerUrl();
     let tagListUrl;
