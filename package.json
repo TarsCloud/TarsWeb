@@ -11,6 +11,7 @@
   "dependencies": {
     "@tars/rpc": "*",
     "@tars/stream": "*",
+    "@tencent/tof": "*",
     "callsite": "^1.0.0",
     "cluster": "^0.7.7",
     "debug": "^2.6.3",
