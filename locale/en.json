@@ -303,7 +303,8 @@
       "tag": "version interface",
       "compiler": "compiler interface",
       "task": "compilation progress interface",
-      "compileProgress": "Compilation progress"
+      "compileProgress": "Compilation progress",
+      "uploadPkg": "Uploading package, please wait"
     },
     "tips": {
       "default": "Release management management service level, please first in the left tree selection service business.",

@@ -2,7 +2,7 @@ var path = require('path');
 
 //用户体系配置 auth.js
 module.exports = {
-    enableLogin: true,                     //是否启用登录验证
+    enableLogin: false,                     //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
     loginUrl: 'http://passport.oa.com/modules/passport/signin.ashx',                 //登录跳转url
     redirectUrlParamName: 'url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service

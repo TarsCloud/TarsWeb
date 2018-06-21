@@ -3,11 +3,15 @@
  */
 
 const {tServerPatchs} = require('./db').db_tars;
-const {tThirdcompileConf} = require('./db').db_tars_web;
+const {tCodeInterfaceConf, tPatchTask} = require('./db').db_tars_web;
 
 module.exports = {
     insertServerPatch : async(params) => {
         return await tServerPatchs.create(params);
+    },
+
+    insertPatchTask : async(params) => {
+        return await tPatchTask.create(params);
     },
 
     getServerPatch : async(server, curPage, pageSize) => {
@@ -28,8 +32,17 @@ module.exports = {
         return await tServerPatchs.findAll(opts);
     },
 
-    getServerPatchByTaskId : async(taskId) => {
+    getServerPatchByPkgName : async(name) => {
         return await tServerPatchs.findOne({
+            where : {
+                tgz : name
+            },
+            raw : true
+        });
+    },
+
+    getPackageByTaskId : async (taskId) => {
+        return await tPatchTask.findOne({
             where : {
                 task_id : taskId
             },
@@ -37,22 +50,25 @@ module.exports = {
         });
     },
 
-    getCompilerUrl : async() => {
-        return await tThirdcompileConf.findOne({
+    getCompilerUrl : async(app, module_name) => {
+        return await tCodeInterfaceConf.findOne({
+            where : {
+                server : `${app}.${module_name}`
+            },
             raw: true
         });
     },
 
     setCompilerUrl : async(tagList, compiler, task) => {
-        let ret = await tThirdcompileConf.findOne({raw:true});
+        let ret = await tCodeInterfaceConf.findOne({raw:true});
         if(!ret) {
-            return await tThirdcompileConf.create({
+            return await tCodeInterfaceConf.create({
                 f_taglist_uri : tagList,
                 f_compile_uri : compiler,
                 f_compile_task_uri : task
             });
         }else {
-            return await tThirdcompileConf.update({
+            return await tCodeInterfaceConf.update({
                 f_taglist_uri : tagList,
                 f_compile_uri : compiler,
                 f_compile_task_uri : task

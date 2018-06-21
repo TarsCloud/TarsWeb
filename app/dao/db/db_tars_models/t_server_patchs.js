@@ -93,10 +93,6 @@ module.exports = function(sequelize, DataTypes) {
 		svn_version: {
 			type: DataTypes.STRING(50),
 			allowNull: true
-		},
-		task_id: {
-			type: DataTypes.STRING(64),
-			allowNull: true
 		}
 	}, {
 		tableName: 't_server_patchs',

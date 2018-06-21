@@ -3,6 +3,7 @@
  */
 const logger = require('../../logger');
 const PatchService = require('../../service/patch/PatchService');
+const CompileService = require('../../service/patch/CompileService');
 const AuthService = require('../../service/auth/AuthService');
 const WebConf = require('../../../config/webConf');
 const util = require('../../tools/util');
@@ -31,7 +32,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
             if(md5 && md5!=hash) {
                 return ctx.makeErrResObj(500,'#patch.md5#');
             }
-            let uploadTgzName = `${application}.${module_name}_${file.fieldname}_${hash}.tgz`;
+            let uploadTgzName = `${application}.${module_name}_${file.fieldname}_${new Date().getTime()}.tgz`;
             logger.info('[newTgzName]:',`${updateTgzPath}/${uploadTgzName}`);
             logger.info('[orgTgzName]:',`${baseUploadPath}/${file.filename}`);
             await fs.rename(`${baseUploadPath}/${file.filename}`, `${updateTgzPath}/${uploadTgzName}`);
@@ -45,6 +46,9 @@ PatchController.uploadPatchPackage = async (ctx) => {
             };
             logger.info('[addServerPatch:]',paramsObj);
             let ret = await PatchService.addServerPatch(paramsObj);
+            await CompileService.addPatchTask(paramsObj).catch((err) => {
+                logger.error('[CompileService.addPatchTask]:',err);
+            });
 
             ctx.makeResObj(200,'',util.viewFilter(ret,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
         }
@@ -73,8 +77,8 @@ PatchController.serverPatchList = async (ctx) => {
 PatchController.getServerPatchByTaskId = async (ctx) => {
     let {task_id} = ctx.paramsObj;
     try{
-        let ret = await PatchService.getServerPatchByTaskId(task_id);
-        ctx.makeResObj(200,'',util.viewFilter(ret,{id:'',server:'',tgz:'',task_id:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
+        let ret = await CompileService.getServerPatchByTaskId(task_id);
+        ctx.makeResObj(200,'',util.viewFilter(ret,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
     }catch(e) {
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -87,7 +91,7 @@ PatchController.getTagList = async (ctx) => {
         if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            let list = await PatchService.getTagList(application, module_name);
+            let list = await CompileService.getTagList(application, module_name);
             ctx.makeResObj(200,'',util.viewFilter(list,{path:'',version:'',commitMessage:''}));
         }
     }catch(e) {
@@ -96,10 +100,24 @@ PatchController.getTagList = async (ctx) => {
     }
 };
 
-PatchController.getCompilerUrl = async (ctx) => {
+PatchController.getCompilerConf = (ctx) => {
+    try {
+        ctx.makeResObj(200,'',CompileService.getCompilerConf());
+    }catch(e) {
+        logger.error(e);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+PatchController.getCodeInfConf = async (ctx) => {
+    let {application, module_name} = ctx.paramsObj;
     try{
-        let ret = await PatchService.getCompilerUrl();
-        ctx.makeResObj(200,'',ret);
+        if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
+            ctx.makeNotAuthResObj();
+        } else {
+            let ret = await CompileService.getCodeInfConf({application, module_name});
+            ctx.makeResObj(200,'',ret);
+        }
     }catch(e) {
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());
@@ -109,7 +127,7 @@ PatchController.getCompilerUrl = async (ctx) => {
 PatchController.setCompilerUrl = async (ctx) => {
     let {tagList, compiler, task} = ctx.paramsObj;
     try{
-        let ret = await PatchService.setCompilerUrl(tagList, compiler, task);
+        let ret = await CompileService.setCompilerUrl(tagList, compiler, task);
         ctx.makeResObj(200,'',ret);
     }catch(e) {
         logger.error(e);
@@ -123,7 +141,7 @@ PatchController.doCompile = async (ctx) => {
         if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            let ret = await PatchService.doCompile({application, server_name, node, path, version, comment, compileUrl});
+            let ret = await CompileService.doCompile({application, server_name, node, path, version, comment, compileUrl});
             ctx.makeResObj(200,'',ret);
         }
     }catch(e) {
@@ -135,7 +153,7 @@ PatchController.doCompile = async (ctx) => {
 PatchController.compilerTask = async (ctx) => {
     let {taskNo} = ctx.paramsObj;
     try {
-        let ret = await PatchService.compilerTask(taskNo);
+        let ret = await CompileService.compilerTask(taskNo);
         ctx.makeResObj(200, '', ret);
     }catch(e) {
         logger.error(e);

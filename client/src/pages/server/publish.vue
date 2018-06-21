@@ -93,7 +93,6 @@
                 <let-button theme="primary" size="small" class="mt10" @click="addCompileTask">{{$t('pub.dlg.compileAndPublish')}}</let-button>
                 <let-button size="small" class="mt10" @click="openPubConfModal">{{$t('pub.dlg.conf')}}</let-button>
               </let-form-item>
-              
             </let-form>
       </let-modal>
 
@@ -229,20 +228,6 @@
               :required-tip="$t('deployService.table.tips.empty')" 
               required ></let-input>
           </let-form-item>
-          <let-form-item :label="$t('pub.dlg.compiler')">
-            <let-input size="small" 
-              v-model="publishUrlConfModal.model.compiler" 
-              :placeholder="$t('pub.tips.tag')"
-              :required-tip="$t('deployService.table.tips.empty')" 
-              required ></let-input>
-          </let-form-item>
-          <let-form-item :label="$t('pub.dlg.task')">
-            <let-input size="small" 
-              v-model="publishUrlConfModal.model.task" 
-              :placeholder="$t('pub.tips.tag')"
-              :required-tip="$t('deployService.table.tips.empty')" 
-              required ></let-input>
-          </let-form-item>
         </let-form>
     </let-modal>
 
@@ -269,6 +254,8 @@
             <let-table-column :title="$t('monitor.search.end')" prop="end_time"></let-table-column>
         </let-table>
     </let-modal>
+
+    <let-modal v-model="pkgUpload.show" width="200px" :footShow="false"></let-modal>
   </div>
 </template>
 
@@ -328,8 +315,8 @@ export default {
       },
       patchType: 'patch',
       patchRadioData: [
-        {value:'patch', text:this.$t('pub.dlg.upload')},
-        {value:'compile', text:this.$t('pub.dlg.compileAndPublish')}
+        {value:'patch', text:this.$t('pub.dlg.upload')}
+        
       ],
       tagList: [],
       tagVersion: '',
@@ -340,10 +327,23 @@ export default {
       compilerModal: {
         show: false,
         model: null
+      },
+      pkgUpload: {
+        show : false,
+        model: null
       }
     };
   },
   methods: {
+    getCompileConf(){
+      this.$ajax.getJSON('/server/api/get_compile_conf').then((data) =>{
+        if(data.enable) {
+          this.patchRadioData.push({value:'compile', text:this.$t('pub.dlg.compileAndPublish')});
+        }
+      }).catch((err) =>{
+        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+      })
+    },
     getServerList() {
       // 获取服务列表
       const loading = this.$Loading.show();
@@ -596,10 +596,11 @@ export default {
     },
     openPubConfModal() {
       this.publishUrlConfModal.show = true;
-      this.$ajax.getJSON('/server/api/get_compiler_url').then(data => {
+      this.$ajax.getJSON('/server/api/get_tag_conf', {
+        application : this.publishModal.model.application,
+        module_name : this.publishModal.model.server_name,
+      }).then(data => {
           this.publishUrlConfModal.model.tag = data.f_taglist_uri;
-          this.publishUrlConfModal.model.compiler = data.f_compile_uri;
-          this.publishUrlConfModal.model.task = data.f_compile_task_uri;
       }).catch(err => {
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       })
@@ -609,8 +610,6 @@ export default {
         const loading = this.$Loading.show();
         this.$ajax.getJSON('/server/api/set_compiler_url', {
           tagList: this.publishUrlConfModal.model.tag, 
-          compiler: this.publishUrlConfModal.model.compiler,
-          task: this.publishUrlConfModal.model.task
           }).then(data => {
           loading.hide();
           this.$tip.success(this.$t('common.success'));
@@ -676,9 +675,10 @@ export default {
             // 编译成功后轮询发布包回传情况
             if(ret[0].state==2){
                 const loading = this.$Loading.show();
+                this.compilerModal.show = false;
                 let timer = setInterval(()=>{
-                  this.$ajax.getJSON('/server/api/get_server_patch', {task_id : ret[0].task_id}).then(data => {
-                    if(data && data.task_id == ret[0].task_id) {
+                  this.$ajax.getJSON('/server/api/get_server_patch', {task_id : taskNo}).then(data => {
+                    if(Object.keys(data).length !== 0) {
                       loading.hide();
                       clearInterval(timer);
                       this.publishModal.model.patch_id = data.id;
@@ -703,6 +703,7 @@ export default {
   },
   mounted() {
     this.getServerList();
+    this.getCompileConf();
   },
   watch: {
     isCheckedAll() {
