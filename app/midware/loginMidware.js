@@ -105,7 +105,11 @@ async function toLoginPage(ctx) {
 
 //控制跳转到登出页面
 async function toLogoutPage(ctx) {
-    ctx.redirect(loginConf.logoutUrl + '?' + loginConf.logoutredirectUrlParamName + '=' + encodeURIComponent(ctx.protocol + '://' + ctx.host));
+    if(loginConf.logoutUrl){
+        ctx.redirect(loginConf.logoutUrl + '?' + loginConf.logoutredirectUrlParamName + '=' + encodeURIComponent(ctx.protocol + '://' + ctx.host));
+    }else{
+        ctx.redirect(ctx.protocol + '://' + ctx.host);
+    }
 }
 
 // 通过ticket获取用户信息

@@ -4,14 +4,14 @@
 
 const net = require('net');
 const logger = require('../../logger');
-let TCPClient = function (ip, port, requestObj) {
+let TCPClient = (ip, port, requestObj) => {
     return new Promise((resolve, reject) =>{
         var client = new net.Socket();
-        client.connect(port, ip, function() {
+        client.connect(port, ip, () => {
             client.write(JSON.stringify(requestObj));
         });
         let data = '';
-        client.on('data', function(e) {
+        client.on('data', (e) => {
             try {
                 e = e.toString();
                 if(e.indexOf('endline') == -1){
