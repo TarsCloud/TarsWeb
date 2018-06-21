@@ -11,6 +11,7 @@
   "dependencies": {
     "@tars/rpc": "*",
     "@tars/stream": "*",
+    "@tencent/tof": "*",
     "callsite": "^1.0.0",
     "cluster": "^0.7.7",
     "debug": "^2.6.3",
@@ -50,8 +51,7 @@
     "webpack": "^4.0.1",
     "winston": "^2.4.2",
     "winston-daily-rotate-file": "^1.7.2",
-    "ws": "^5.2.0",
-    "@tencent/tof": "*"
+    "ws": "^5.2.0"
   },
   "devDependencies": {
     "nodemon": "^1.17.5"

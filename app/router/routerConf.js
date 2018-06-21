@@ -92,10 +92,11 @@ const apiConf = [
     ['get', '/server_patch_list', PatchController.serverPatchList, {application: 'notEmpty'}],
     ['get', '/get_server_patch', PatchController.getServerPatchByTaskId, {task_id: 'notEmpty'}],
     ['get', '/get_tag_list', PatchController.getTagList, {application: 'notEmpty', module_name: 'notEmpty'}],
-    ['get', '/get_compiler_url', PatchController.getCompilerUrl],
-    ['get', '/set_compiler_url', PatchController.setCompilerUrl, {tagList: 'notEmpty', compiler: 'notEmpty', task: 'notEmpty'}],
+    ['get', '/get_tag_conf', PatchController.getCodeInfConf, {application: 'notEmpty', module_name: 'notEmpty'}],
+    ['get', '/set_tag_conf', PatchController.setCodeInfConf, {tagList: 'notEmpty', compiler: 'notEmpty', task: 'notEmpty'}],
     ['post', '/do_compile', PatchController.doCompile],
     ['get', '/compiler_task', PatchController.compilerTask],
+    ['get', '/get_compile_conf', PatchController.getCompilerConf],
 
     // 监控
     ['get', '/tarsstat_monitor_data', MonitorController.tarsstat],
