@@ -4,7 +4,7 @@
 const logger = require('../../logger');
 const AdminService = require('../../service/admin/AdminService');
 const TCPClient = require('./TCPClient');
-
+const Mysql = require('mysql');
 
 const MonitorPropertyService = {};
 
@@ -25,20 +25,20 @@ async function call(params, the) {
         conditions = [],
         startshowtime = params.startshowtime || '0000',
         endshowtime = params.endshowtime || '2360';
-    conditions.push(`f_date='${date}'`);
-    conditions.push(`f_tflag>='${startshowtime}'`);
-    conditions.push(`f_tflag<='${endshowtime}'`);
+    conditions.push(`f_date=${Mysql.escape(date)}`);
+    conditions.push(`f_tflag>=${Mysql.escape(startshowtime)}`);
+    conditions.push(`f_tflag<=${Mysql.escape(endshowtime)}`);
     if(params.master_name) {
-        conditions.push(`master_name like '${params.master_name}'`);
+        conditions.push(`master_name like ${Mysql.escape(params.master_name)}`);
     }
     if(params.property_name) {
-        conditions.push(`property_name like '${params.property_name}'`);
+        conditions.push(`property_name like ${Mysql.escape(params.property_name)}`);
     }
     if(params.policy) {
-        conditions.push(`policy like '${params.policy}'`);
+        conditions.push(`policy like ${Mysql.escape(params.policy)}`);
     }
     if(params.master_ip) {
-        conditions.push(`master_ip like '${params.master_ip}'`);
+        conditions.push(`master_ip like ${Mysql.escape(params.master_ip)}`);
     }
     let requestObj = {
         groupby : params.group_by ? ['f_date', params.group_by] : ['f_tflag'],

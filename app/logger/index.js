@@ -5,9 +5,9 @@ const moment = require('moment');
 const webConf = require('../../config/webConf').webConf;
 const path = require('path');
 const fs = require('fs-extra');
+const schedule = require('node-schedule');
 
 const loggerPath = webConf.loggerPath || path.join(__dirname, '../../log');
-const logFileKeepDays = webConf.logFileKeepDays || '7';
 
 fs.ensureDirSync(loggerPath);
 
@@ -24,8 +24,7 @@ var normalLogger = new winston.Logger({
             prepend: true,
             localTime: true,
             timestamp: timeStamp,
-            level: 'info',
-            maxFiles: logFileKeepDays + 'd',
+            level: 'info'
         }),
         new winston.transports.DailyRotateFile({
             name: 'warn-file',
@@ -34,8 +33,7 @@ var normalLogger = new winston.Logger({
             prepend: true,
             localTime: true,
             timestamp: timeStamp,
-            level: 'warn',
-            maxFiles: logFileKeepDays + 'd',
+            level: 'warn'
         }),
         new winston.transports.DailyRotateFile({
             name: 'error-file',
@@ -44,8 +42,7 @@ var normalLogger = new winston.Logger({
             prepend: true,
             localTime: true,
             timestamp: timeStamp,
-            level: 'error',
-            maxFiles: logFileKeepDays + 'd',
+            level: 'error'
         })
     ],
     exceptionHandlers: [
@@ -55,8 +52,7 @@ var normalLogger = new winston.Logger({
             datePattern: 'yyyyMMdd.',
             localTime: true,
             timestamp: timeStamp,
-            prepend: true,
-            maxFiles: logFileKeepDays + 'd',
+            prepend: true
         })
     ]
 });
@@ -71,12 +67,40 @@ var sqlLogger = new winston.Logger({
             prepend: true,
             localTime: true,
             timestamp: timeStamp,
-            level: 'info',
-            maxFiles: logFileKeepDays + 'd',
+            level: 'info'
         }),
     ]
 });
 
+/**
+ * 按照用户配置的日志保留时间自动清理过期日志文件
+ */
+let logFileKeepDays = webConf.logFileKeepDays || '7';  //默认保留7天日志
+let autoClearTime = webConf.autoClearTime || '2';   //默认两点自动清理过期日志
+const clearFile = async(logFileKeepDays) => {
+    let fileList = await fs.readdir(loggerPath);
+    let expireTime = moment(moment().format('YYYYMMDD'), 'YYYYMMDD').valueOf() - parseInt(logFileKeepDays) * 24 * 60 * 60 * 1000;
+    fileList.forEach((fileName)=> {
+        if (/^\d{8}\.\S+\.log$/g.test(fileName)) {
+            let dateStr = fileName.slice(0, 8);
+            let date = moment(dateStr, 'YYYYMMDD').valueOf();
+            if (!isNaN(date) && date < expireTime) {
+                fs.remove(path.join(loggerPath, fileName));
+            }
+        }
+    });
+};
+if (logFileKeepDays && parseInt(logFileKeepDays) > 0) {
+    logFileKeepDays = parseInt(logFileKeepDays);
+    clearFile(logFileKeepDays);
+    autoClearTime = parseInt(autoClearTime);
+    if (isNaN(autoClearTime) || autoClearTime < 0 || autoClearTime > 23) {
+        autoClearTime = 2;
+    }
+    schedule.scheduleJob(autoClearTime + ' * * *', ()=> {
+        clearFile(logFileKeepDays);
+    })
+}
 
 
 var logger = {
@@ -84,17 +108,17 @@ var logger = {
         var stackList = stack() || [];
         var caller = stackList[2];
         var formatStr = '';
-        if(caller.getFileName){
+        if (caller.getFileName) {
             var fileName = caller.getFileName();
             formatStr += fileName.substring(fileName.lastIndexOf('/') + 1) + ':';
             formatStr += caller.getLineNumber() + '|'
         }
-        infos.forEach((str) =>{
-            if(str instanceof Error){    //error类，打出相应的错误信息和堆栈信息
+        infos.forEach((str) => {
+            if (str instanceof Error) {    //error类，打出相应的错误信息和堆栈信息
                 formatStr += str.stack;
-            }else if(Object.prototype.toString.call(str) === '[object Object]' || Object.prototype.toString.call(str) === '[object Array]'){   //对象或数组，则转为string输出
+            } else if (Object.prototype.toString.call(str) === '[object Object]' || Object.prototype.toString.call(str) === '[object Array]') {   //对象或数组，则转为string输出
                 formatStr += JSON.stringify(str);
-            }else{
+            } else {
                 formatStr += str;
             }
             formatStr += ' '
