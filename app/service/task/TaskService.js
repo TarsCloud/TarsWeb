@@ -8,7 +8,7 @@ const ServerService = require('../../service/server/ServerService');
 const util = require('../../tools/util');
 const TaskDao = require('../../dao/TaskDao');
 const kafkaConf = require('../../../config/webConf').kafkaConf;
-const TarsStream = require('@tars/stream');
+
 
 const TaskService = {};
 
@@ -85,7 +85,8 @@ TaskService.addTask = async (params) => {
         Object.assign(obj,{
             application : serverConf.application,
             serverName : serverConf.server_name,
-            nodeName : serverConf.node_name
+            nodeName : serverConf.node_name,
+            setName : ''
         });
         items.push(obj);
         logger.info('[TaskService.addTask items]:',obj);

@@ -1,6 +1,6 @@
 const {configFPrx, configFStruct, adminRegPrx, adminRegStruct, client} = require('../util/rpcClient');
 var registry  = require("@tars/registry");
-
+const TarsStream = require('@tars/stream');
 registry.setLocator(client.getProperty('locator'));
 
 const logger = require('../../logger');
@@ -61,10 +61,8 @@ AdminService.getTaskRsp = async (taskNo) => {
 };
 
 AdminService.addTask = async (req) => {
-    console.log(req);
     let taskReq = new adminRegStruct.TaskReq();
     taskReq.readFromObject(req);
-    console.info(taskReq);
     let ret = await adminRegPrx.addTaskReq(taskReq);
     return ret.__return;
 };
