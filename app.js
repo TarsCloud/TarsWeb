@@ -14,8 +14,9 @@ const localeMidware = require('./app/midware/localeMidware');
 const helmet = require("koa-helmet");
 // const compress = require('koa-compress')
 const loginMidware = require('./app/midware/loginMidware');
+const WebConf = require('./config/webConf');
 
-const upload = multer({dest: './uploads/'});
+const upload = multer({dest: WebConf.pkgUploadPath.path+'/'});
 
 // error handler
 onerror(app);

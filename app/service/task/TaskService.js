@@ -8,6 +8,7 @@ const ServerService = require('../../service/server/ServerService');
 const util = require('../../tools/util');
 const TaskDao = require('../../dao/TaskDao');
 const kafkaConf = require('../../../config/webConf').kafkaConf;
+const TarsStream = require('@tars/stream');
 
 const TaskService = {};
 
@@ -62,15 +63,21 @@ TaskService.addTask = async (params) => {
         let item = params.items[i];
         let parameters = item.parameters;
         if(Object.prototype.toString.call(parameters)=='[object Object]' && parameters.bak_flag!=undefined){
-            parameters.bak_flag = 1 & parameters.bak_flag;
+            parameters.bak_flag = (1 & parameters.bak_flag).toString();
         }
+        //console.info(parameters);
+        // let map = new TarsStream.Map(TarsStream.String, TarsStream.String);
+        // for(key in parameters) {
+        //     map.put(key, parameters[key]);
+        // }
+        //console.info(map);
         let obj = {
             taskNo : params.task_no,
             itemNo : util.getUUID(),
             command : item.command,
-            parameters : JSON.stringify(parameters)
+            parameters : parameters
         };
-        let serverConf = await ServerService.getServerConfById(item.server_id).catch(e => {
+        let serverConf = await ServerService.getServerConfById(item.server_id.toString()).catch(e => {
             console.error('[ServerService.getServerConfById]:',e.toString());
             return Promise.reject(e.toString());
         });

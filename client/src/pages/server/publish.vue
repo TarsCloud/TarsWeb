@@ -408,10 +408,10 @@ export default {
         const items = [];
         this.publishModal.model.serverList.forEach((item) => {
           items.push({
-            server_id: item.id,
+            server_id: item.id.toString(),
             command: 'patch_tars',
             parameters: {
-              patch_id: this.publishModal.model.patch_id,
+              patch_id: this.publishModal.model.patch_id.toString(),
               bak_flag: item.bak_flag,
               update_text: this.publishModal.model.update_text,
             },

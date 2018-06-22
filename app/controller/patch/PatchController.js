@@ -27,6 +27,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
             let baseUploadPath = WebConf.pkgUploadPath.path;
             // 发布包上传目录
             let updateTgzPath = `${baseUploadPath}/${application}/${module_name}`;
+            console.info('updateTgzPath:',updateTgzPath);
             await fs.ensureDirSync(updateTgzPath);
             let hash = md5Sum(`${baseUploadPath}/${file.filename}`);
             if(md5 && md5!=hash) {

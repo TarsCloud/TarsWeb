@@ -4,7 +4,7 @@ var registry  = require("@tars/registry");
 registry.setLocator(client.getProperty('locator'));
 
 const logger = require('../../logger');
-const TarsStream = require('@tars/stream');
+
 
 const AdminService = {};
 
@@ -61,8 +61,10 @@ AdminService.getTaskRsp = async (taskNo) => {
 };
 
 AdminService.addTask = async (req) => {
+    console.log(req);
     let taskReq = new adminRegStruct.TaskReq();
     taskReq.readFromObject(req);
+    console.info(taskReq);
     let ret = await adminRegPrx.addTaskReq(taskReq);
     return ret.__return;
 };

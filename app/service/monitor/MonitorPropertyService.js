@@ -55,7 +55,7 @@ async function call(params, the) {
         return;
     }
     let addr0 = addrs[0];
-    logger.info(`tars.tarsqueryproperty.NoTarsObj, use ${addr0[0]}:${addr0[1]}`);
+    logger.info(`tars.tarsqueryproperty.NoTarsObj, use ${addr0.host}:${addr0.port}`);
     return await TCPClient(addr0.host, addr0.port, requestObj);
 }
 
