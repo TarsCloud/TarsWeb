@@ -39,7 +39,7 @@
         <let-tab-pane :tabkey="base + '/property-monitor'" :tab="$t('index.rightView.tab.propertyMonitor')"
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')"
-                      v-if="serverData.level === 5"></let-tab-pane>
+                      v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
       </let-tabs>
 
       <router-view ref="childView" class="page_server_child" :key="$route.params.treeid"></router-view>
@@ -55,7 +55,7 @@ export default {
     return {
       treeErrMsg: '加载失败',
       treeData: null,
-
+      enableAuth: false,
       // 当前页面信息
       serverData: {
         level: 5,
@@ -199,6 +199,11 @@ export default {
   },
   mounted() {
     this.getTreeData();
+    this.$ajax.getJSON('/server/api/is_enable_auth').then((data) => {
+      this.enableAuth = data.enableAuth || false;
+     }).catch((err)=>{
+
+      });
   },
 };
 </script>
