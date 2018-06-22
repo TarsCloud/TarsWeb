@@ -65,10 +65,10 @@ TaskService.addTask = async (params) => {
             parameters.bak_flag = 1 & parameters.bak_flag;
         }
         let obj = {
-            task_no : params.task_no,
-            item_no : util.getUUID(),
+            taskNo : params.task_no,
+            itemNo : util.getUUID(),
             command : item.command,
-            parameters : parameters
+            parameters : JSON.stringify(parameters)
         };
         let serverConf = await ServerService.getServerConfById(item.server_id).catch(e => {
             console.error('[ServerService.getServerConfById]:',e.toString());
@@ -90,6 +90,7 @@ TaskService.addTask = async (params) => {
         userName : params.user_name || ''
     };
     await AdminService.addTask(req).catch(e => {console.error('[AdminService.addTask]:',e)});
+    return params.task_no;
 };
 
 module.exports = TaskService;
