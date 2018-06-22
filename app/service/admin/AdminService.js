@@ -1,6 +1,8 @@
 const {configFPrx, configFStruct, adminRegPrx, adminRegStruct, client} = require('../util/rpcClient');
 var registry  = require("@tars/registry");
 const TarsStream = require('@tars/stream');
+const _ = require('lodash')
+
 registry.setLocator(client.getProperty('locator'));
 
 const logger = require('../../logger');
@@ -62,8 +64,27 @@ AdminService.getTaskRsp = async (taskNo) => {
 
 AdminService.addTask = async (req) => {
     let taskReq = new adminRegStruct.TaskReq();
-    taskReq.readFromObject(req);
+    taskReq.taskNo = req.taskNo;
+    taskReq.serial = req.serial;
+    taskReq.userName = req.userName;
+    req.taskItemReq.forEach((obj)=>{
+        let taskItemReq = new adminRegStruct.TaskItemReq();
+        taskItemReq.taskNo = obj.taskNo || '';
+        taskItemReq.itemNo = obj.itemNo || '';
+        taskItemReq.application = obj.application || '';
+        taskItemReq.serverName = obj.serverName || '';
+        taskItemReq.nodeName = obj.nodeName || '';
+        taskItemReq.setName = obj.setName || '';
+        taskItemReq.command = obj.command || '';
+        taskItemReq.userName = obj.userName || '';
+        taskItemReq.parameters = new TarsStream.Map(TarsStream.String, TarsStream.String);
+        _.each(obj.parameters, (value, key)=>{
+            taskItemReq.parameters.put(String(key), String(value))
+        });
+        taskReq.taskItemReq.push(taskItemReq)
+    });
     let ret = await adminRegPrx.addTaskReq(taskReq);
+
     return ret.__return;
 };
 
