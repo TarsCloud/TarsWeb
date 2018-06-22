@@ -228,6 +228,10 @@ ServerController.updateServerConf = async(ctx) => {
             Object.assign(server, updateServer);
             server.bak_flag = server.isBak ? 1 : 0;
             server.enable_set = server.enable_set ? 'Y' : 'N';
+            if(server.enable_set == 'Y' && parseInt(server.set_group) != server.set_group){
+                ctx.makeResObj(500, '#serverList.dlg.errMsg.setGroup#');
+                return;
+            }
             server.posttime = new Date();
             await ServerService.updateServerConf(server);
             ctx.makeResObj(200, '', util.viewFilter(await ServerService.getServerConfById(updateServer.id), serverConfStruct));
