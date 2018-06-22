@@ -17,16 +17,16 @@ CompileService.getServerPatchByTaskId = async (taskId) => {
 };
 
 CompileService.getTagList = async (application, server_name) => {
-    let ret = await PatchDao.getCompilerUrl();
+    /*let ret = await PatchDao.getCodeInfConf(application, server_name);
     let tagListUrl;
     if(ret) {
-        tagListUrl = ret.f_taglist_uri;
+        tagListUrl = ret.path;
     }
     if(!tagListUrl) {
         return Promise.resolve('');
-    }
+    }*/
     return await request({
-        uri: tagListUrl,
+        uri: compileConf.getVersionList,
         qs: {
             application,
             server_name,
@@ -46,8 +46,8 @@ CompileService.getCodeInfConf = async (application, server_name) => {
     return await PatchDao.getCodeInfConf(application, server_name);
 };
 
-CompileService.setCompilerUrl = async (tagList, compiler, task) => {
-    return await PatchDao.setCompilerUrl(tagList, compiler, task);
+CompileService.setCodeInfConf = async (params) => {
+    return await PatchDao.setCodeInfConf(params);
 };
 
 CompileService.doCompile = async (params) => {

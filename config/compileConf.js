@@ -8,6 +8,20 @@ module.exports = {
      */
     enable : true,
 
+    /**
+     * getVersionList           获取代码版本列表的接口
+     * TARS平台会提供的参数
+     * @param   {String}    application         应用名
+     * @param   {String}    server_name         服务名
+     */
+    /**
+     * 接口需要返回的参数
+     * @param   {String}    path                SVN/GIT路径
+     * @param   {String}    version             SVN/GIT版本
+     * @param   {String}    commitMessage       提交的消息
+     */
+    getVersionList : 'http://147.taf.wsd.com/pages/operate_manage/compile_patch/compile/do_list_compile.jsp?action=get_tag_list',
+
 
     /**
      * compileUrl     自定义的编译接口

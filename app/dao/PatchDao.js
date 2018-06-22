@@ -50,7 +50,7 @@ module.exports = {
         });
     },
 
-    getCompilerUrl : async(app, module_name) => {
+    getCodeInfConf : async(app, module_name) => {
         return await tCodeInterfaceConf.findOne({
             where : {
                 server : `${app}.${module_name}`
@@ -59,22 +59,12 @@ module.exports = {
         });
     },
 
-    setCompilerUrl : async(tagList, compiler, task) => {
-        let ret = await tCodeInterfaceConf.findOne({raw:true});
-        if(!ret) {
-            return await tCodeInterfaceConf.create({
-                f_taglist_uri : tagList,
-                f_compile_uri : compiler,
-                f_compile_task_uri : task
-            });
-        }else {
-            return await tCodeInterfaceConf.update({
-                f_taglist_uri : tagList,
-                f_compile_uri : compiler,
-                f_compile_task_uri : task
-            },{
-                where : {f_id : 1}
-            });
-        }
+    setCodeInfConf : async(params) => {
+        return await tCodeInterfaceConf.upsert({
+            server : `${params.application}.${params.module_name}`,
+            path : params.path
+        },{
+            server : `${params.application}.${params.module_name}`
+        });
     }
 };

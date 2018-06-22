@@ -91,7 +91,7 @@
                   <let-option v-for="it in tagList" :key="`${it.version}`" :value="it.path +'--'+ it.version">{{it.version}}</let-option>
                 </let-select>
                 <let-button theme="primary" size="small" class="mt10" @click="addCompileTask">{{$t('pub.dlg.compileAndPublish')}}</let-button>
-                <let-button size="small" class="mt10" @click="openPubConfModal">{{$t('pub.dlg.conf')}}</let-button>
+                <let-button size="small" class="mt10" @click="openPubConfModal" v-if="false">{{$t('pub.dlg.conf')}}</let-button>
               </let-form-item>
             </let-form>
       </let-modal>
@@ -255,7 +255,6 @@
         </let-table>
     </let-modal>
 
-    <let-modal v-model="pkgUpload.show" width="200px" :footShow="false"></let-modal>
   </div>
 </template>
 
@@ -576,7 +575,7 @@ export default {
     getCodeVersion() {
       this.$ajax.get('/server/api/get_tag_list',{
         application: this.publishModal.model.application,
-        module_name: this.publishModal.model.server_name
+        server_name: this.publishModal.model.server_name
       }).then(data => {
         if(data.data=='') {
           this.openPubConfModal();
@@ -598,9 +597,9 @@ export default {
       this.publishUrlConfModal.show = true;
       this.$ajax.getJSON('/server/api/get_tag_conf', {
         application : this.publishModal.model.application,
-        module_name : this.publishModal.model.server_name,
+        server_name : this.publishModal.model.server_name,
       }).then(data => {
-          this.publishUrlConfModal.model.tag = data.f_taglist_uri;
+          this.publishUrlConfModal.model.tag = data.path;
       }).catch(err => {
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       })
@@ -608,8 +607,10 @@ export default {
     saveCompilerUrl() {
       if(this.$refs.compilerForm.validate()) {
         const loading = this.$Loading.show();
-        this.$ajax.getJSON('/server/api/set_compiler_url', {
-          tagList: this.publishUrlConfModal.model.tag, 
+        this.$ajax.getJSON('/server/api/set_tag_conf', {
+          path: this.publishUrlConfModal.model.tag,
+          application : this.publishModal.model.application,
+          server_name : this.publishModal.model.server_name, 
           }).then(data => {
           loading.hide();
           this.$tip.success(this.$t('common.success'));
@@ -622,8 +623,8 @@ export default {
       }
     },
     addCompileTask() {
-      this.$ajax.getJSON('/server/api/get_compiler_url').then(data => {
-          const compileUrl = data.f_compile_uri;
+      this.$ajax.getJSON('/server/api/get_compile_conf').then(data => {
+          const compileUrl = data.getVersionList;
           if(!compileUrl) {
             this.openPubConfModal();
             return;
@@ -658,14 +659,14 @@ export default {
         this.getStatus(taskNo);
     },
     getStatus(taskNo) {
-        let t;
-        t && clearTimeout(t);
         const f = () => {
+          let t = null;
+          t && clearTimeout(t);
           this.$ajax.getJSON('/server/api/compiler_task', {taskNo}).then(data =>{
             const ret = typeof data === 'array' ? data : data.data;
             ret[0].status = this.statusConfig[ret[0].state];
-            if(ret[0].state==2 || ret[0].state==3 || ret[0].state==4){
-                t && clearTimeout(t);
+            if(ret[0].state==1){
+                t = setTimeout(f, 2000);
             }
             if(this.compilerModal.model) {
               Object.assign(this.compilerModal.model, {progress : ret})
@@ -674,29 +675,29 @@ export default {
             }
             // 编译成功后轮询发布包回传情况
             if(ret[0].state==2){
-                const loading = this.$Loading.show();
+                const loading = this.$Loading({text:'回传发布包'});
+                loading.show();
                 this.compilerModal.show = false;
-                let timer = setInterval(()=>{
+                let timer = ()=>{
                   this.$ajax.getJSON('/server/api/get_server_patch', {task_id : taskNo}).then(data => {
                     if(Object.keys(data).length !== 0) {
                       loading.hide();
-                      clearInterval(timer);
                       this.publishModal.model.patch_id = data.id;
                       this.publishModal.show = false;
                       this.savePublishServer();
+                    }else {
+                      setTimeout(timer, 2000);
                     }
                   }).catch(err => {
                     loading.hide();
-                    clearInterval(timer);
                     this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
                   }); 
-                },3000)
+                }
+                setTimeout(timer, 2000);
             }
           }).catch(err =>{
-            t && clearTimeout(t);
             this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
           })
-          t = setTimeout(f, 2000);
         }
         f();
     }

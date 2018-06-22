@@ -86,12 +86,12 @@ PatchController.getServerPatchByTaskId = async (ctx) => {
 };
 
 PatchController.getTagList = async (ctx) => {
-    let {application, module_name} = ctx.paramsObj;
+    let {application, server_name} = ctx.paramsObj;
     try{
-        if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
+        if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            let list = await CompileService.getTagList(application, module_name);
+            let list = await CompileService.getTagList(application, server_name);
             ctx.makeResObj(200,'',util.viewFilter(list,{path:'',version:'',commitMessage:''}));
         }
     }catch(e) {
@@ -110,12 +110,12 @@ PatchController.getCompilerConf = (ctx) => {
 };
 
 PatchController.getCodeInfConf = async (ctx) => {
-    let {application, module_name} = ctx.paramsObj;
+    let {application, server_name} = ctx.paramsObj;
     try{
-        if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
+        if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            let ret = await CompileService.getCodeInfConf({application, module_name});
+            let ret = await CompileService.getCodeInfConf(application, server_name);
             ctx.makeResObj(200,'',ret);
         }
     }catch(e) {
@@ -124,10 +124,10 @@ PatchController.getCodeInfConf = async (ctx) => {
     }
 };
 
-PatchController.setCompilerUrl = async (ctx) => {
-    let {tagList, compiler, task} = ctx.paramsObj;
+PatchController.setCodeInfConf = async (ctx) => {
+    let {application, server_name, path} = ctx.paramsObj;
     try{
-        let ret = await CompileService.setCompilerUrl(tagList, compiler, task);
+        let ret = await CompileService.setCodeInfConf({application, server_name, path});
         ctx.makeResObj(200,'',ret);
     }catch(e) {
         logger.error(e);

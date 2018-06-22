@@ -10,7 +10,8 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		server: {
 			type: DataTypes.STRING(50),
-			allowNull: false
+			allowNull: false,
+			primaryKey: true
 		},
 		path: {
 			type: DataTypes.STRING(256),
