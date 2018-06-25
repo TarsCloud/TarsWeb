@@ -14,6 +14,7 @@ const localeMidware = require('./app/midware/localeMidware');
 const helmet = require("koa-helmet");
 // const compress = require('koa-compress')
 const loginMidware = require('./app/midware/loginMidware');
+const limitMidware = require('./app/midware/limitMidware');
 const WebConf = require('./config/webConf');
 
 const upload = multer({dest: WebConf.pkgUploadPath.path+'/'});
@@ -24,13 +25,16 @@ app.proxy = true;
 // error handler
 onerror(app);
 
+//防洪水攻击
+app.use(limitMidware());
+
 //安全防护
 app.use(helmet());
 
 //设置ejs模板
-app.use(views(__dirname + '/views', {
-    extension: 'ejs'
-}));
+// app.use(views(__dirname + '/views', {
+//     extension: 'ejs'
+// }));
 
 app.use(bodyparser());
 

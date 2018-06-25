@@ -24,7 +24,6 @@
     "koa-bodyparser": "^3.2.0",
     "koa-compress": "^2.0.0",
     "koa-convert": "^1.2.0",
-    "koa-ejs": "4.1.1",
     "koa-helmet": "^4.0.0",
     "koa-json": "^2.0.2",
     "koa-logger": "^2.0.1",
@@ -32,10 +31,8 @@
     "koa-onerror": "^1.2.1",
     "koa-router": "^7.1.1",
     "koa-send": "^4.1.0",
-    "koa-session2": "^2.2.6",
     "koa-static": "^4.0.3",
     "koa-views": "^5.2.1",
-    "koa-webpack-middleware": "^1.0.7",
     "lodash": "^4.17.10",
     "md5-file": "^4.0.0",
     "moment": "^2.22.0",
@@ -46,13 +43,12 @@
     "request": "^2.87.0",
     "request-promise-any": "^1.0.5",
     "sequelize": "^4.37.10",
-    "sequelize-auto": "^0.4.29",
     "url": "^0.11.0",
     "validator": "^9.4.1",
     "webpack": "^4.0.1",
     "winston": "^2.4.2",
     "winston-daily-rotate-file": "^1.7.2",
-    "ws": "^5.2.0"
+    "koa-limit": "^1.0.2"
   },
   "devDependencies": {
     "nodemon": "^1.17.5"

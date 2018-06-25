@@ -1,4 +1,3 @@
-const DemoController = require('../controller/demo/DemoController');
 const PageController = require('../controller/page/PageController');
 const ServerController = require('../controller/server/ServerController');
 const TreeController = require('../controller/server/TreeController');
@@ -25,12 +24,6 @@ const pageConf = [
 ];
 
 const apiConf = [
-    //Demo
-    ['get', '/getJson', DemoController.getJson, {id: 'notEmpty;object'}, ['id']],
-    ['get', '/getSqlData', DemoController.getSqlData, {id: 'notEmpty;number'}],
-    ['get', '/getRpcData', DemoController.getRpcData, {id: 'notEmpty;number'}],
-
-
     // 服务管理接口
     ['get', '/server', ServerController.getServerConfById, {id: 'notEmpty'}],
     ['get', '/server_exist', ServerController.serverExist, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty'}],
