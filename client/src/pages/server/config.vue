@@ -481,7 +481,6 @@ export default {
         }).then((res)=> {
           loading.hide();
           this.getRefFileList();
-          this.getNodeRefFileList(this.refFileModal.id);
           this.$tip.success(this.$t('common.success'));
         })
       })
