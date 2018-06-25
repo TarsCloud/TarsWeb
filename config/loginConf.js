@@ -45,7 +45,7 @@ async function getUidByTicket(ctx, ticket){
             tof3.passport.decryptTicketWithClientIP({ // 验证ticket的合法性
                 appkey: _appKey,
                 encryptedTicket: ticket,
-                browseIP: ctx.sourceIp
+                browseIP: ctx.ip
             }, function (err, data) {
                 if (err) {
                     resolve(false)
@@ -73,7 +73,7 @@ async function validate(ctx, uid, ticket){
             tof3.passport.decryptTicketWithClientIP({ // 验证ticket的合法性
                 appkey: _appKey,
                 encryptedTicket: ticket,
-                browseIP: ctx.sourceIp
+                browseIP: ctx.ip
             }, function (err, data) {
                 if (err) {
                     throw err;

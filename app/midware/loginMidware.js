@@ -15,7 +15,6 @@ let cookieConfig = Object.assign({
 
 //登录校验中间件
 module.exports = async(ctx, next) => {
-    ctx.sourceIp = getSourceIp(ctx);
     if (ctx.request.path === '/logout') {
         ctx.cookies.set(loginConf.ticketCookieName || 'ticket', null, cookieDomainConfig);
         ctx.cookies.set(loginConf.uidCookieName || 'uid', null, cookieDomainConfig);
@@ -81,7 +80,7 @@ function isInPath(ctx, pathList) {
 
 //检测是否在IP白名单之中
 function isInIgnoreIps(ctx, ignoreIps) {
-    var ip = ctx.sourceIp;
+    var ip = ctx.ip;
     return _.indexOf(ignoreIps || [], ip) > -1;
 }
 
@@ -168,17 +167,4 @@ async function validate(ctx, uid, ticket) {
         throw(e);
         return false;
     }
-}
-
-function getSourceIp(ctx) {
-    let req = ctx.request;
-    var ip = req.headers['x-forwarded-for'] ||
-        req.ip ||
-        (req.connection && req.connection.remoteAddress) ||
-        (req.socket && req.socket.remoteAddress) ||
-        (req.connection && req.connection.socket && req.connection.socket.remoteAddress) || '';
-    if (ip.split(',').length > 0) {
-        ip = ip.split(',')[0]
-    }
-    return ip;
 }
