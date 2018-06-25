@@ -32,17 +32,4 @@ ResourceController.uninstallTarsNode = async(ctx) => {
     }
 };
 
-ResourceController.testSSH = async(ctx) => {
-    try {
-        // let ips = ctx.paramsObj.ips;
-        // ips = _.trim(ips, /;|,/).split(';');
-        let rst = await ResourceService.testSSH(ctx.paramsObj.ip);
-        ctx.makeResObj(200, '', rst);
-    } catch (e) {
-        logger.error('[installTarsNode]', e);
-        ctx.makeErrResObj();
-    }
-};
-
-
 module.exports = ResourceController;

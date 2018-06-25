@@ -113,7 +113,6 @@ const apiConf = [
     //资源管理
     ['get', '/install_tars_node', ResourceController.installTarsNode, {ips: 'notEmpty'}],
     ['get', '/uninstall_tars_node', ResourceController.uninstallTarsNode, {ips: 'notEmpty'}],
-    ['get', '/test_ssh', ResourceController.testSSH],
 
     //权限管理
     ['get', '/is_enable_auth', AuthController.isEnableAuth],

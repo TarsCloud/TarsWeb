@@ -8,6 +8,9 @@ const os = require('os');
 const internalIp = require('internal-ip')
 const webConf = require('../../../config/webConf').webConf;
 const path = require('path');
+const resourceConf = require('../../../config/resourceConf');
+const Util = require('../../tools/util');
+const logger = require('../../logger');
 
 /**
  * 批量检测并安装Tars node
@@ -50,13 +53,13 @@ ResourceService.doInstallTarsNode = async(ip) => {
         let port = process.env.PORT || webConf.port || '3000';
         shell = shell.replace('${ip}', thisIp).replace('${port}', port).replace('${machine_ip}', ip);
         let rst = await ResourceService.doSSHTask(ip, shell);
-        if(rst.rst){
-            if(rst.msg.indexOf('Tars node has installed') > -1){
+        if (rst.rst) {
+            if (rst.msg.indexOf('Tars node has installed') > -1) {
                 rst.rst = false;
                 rst.msg = '#api.resource.tarsNodeExist#';
-            }else if(rst.msg.indexOf('Tars node installed success') > -1){
+            } else if (rst.msg.indexOf('Tars node installed success') > -1) {
                 rst.msg = '#api.resource.installSuccess#';
-            }else{
+            } else {
                 rst.rst = false;
                 rst.msg = '#api.resource.installFailed#';
             }
@@ -100,7 +103,7 @@ ResourceService.uninstallTarsNode = async(ips) => {
     let uninstallRst = await Promise.all(promiseList);
     let deleteIps = [];
     uninstallRst.forEach((uninstallRstItem)=> {
-        if(uninstallRstItem.rst === true){
+        if (uninstallRstItem.rst === true) {
             deleteIps.push(uninstallRstItem.ip);
         }
     });
@@ -117,10 +120,10 @@ ResourceService.doUninstallTarsNode = async(ip) => {
     try {
         let shell = await fs.readFile(__dirname + '/tarsnode_uninstall.sh', 'utf8');
         let rst = await ResourceService.doSSHTask(ip, shell);
-        if(rst.rst){
-            if(String(rst.msg).indexOf('Tars node uninstall success') > -1){
+        if (rst.rst) {
+            if (String(rst.msg).indexOf('Tars node uninstall success') > -1) {
                 rst.msg = '#api.resource.uninstallSuccess#'
-            }else{
+            } else {
                 rst.rst = false;
                 rst.msg = '#api.resource.uninstallFailed#'
             }
@@ -141,16 +144,16 @@ ResourceService.doUninstallTarsNode = async(ip) => {
  * @param shell
  * @returns {*}
  */
-ResourceService.doSSHTask = async(ip, shell)=>{
+ResourceService.doSSHTask = async(ip, shell)=> {
     try {
         let sshConf = await ResourceService.getSSHConfig(ip);
-        if(!sshConf){
+        if (!sshConf) {
             return {
                 ip: ip,
                 rst: false,
                 msg: '#api.resource.notConfig#'
             }
-        }else{
+        } else {
             return await ResourceService.execSSH(ip, shell, sshConf);
         }
     } catch (e) {
@@ -167,18 +170,37 @@ ResourceService.doSSHTask = async(ip, shell)=>{
  * @param ip
  * @returns {*}
  */
-ResourceService.getSSHConfig = async(ip) =>{
-    try{
-        let sshConfs = await fs.readJson(path.join(__dirname, '../../../config/sshConf.json'));
-        let index = _.findIndex(sshConfs || [], (o) => {
-            return o.ip === ip
-        });
-        if (index > -1) {
-            return sshConfs[index];
-        }else{
-            return false;
+ResourceService.getSSHConfig = async(ip) => {
+    try {
+        let sshConf = false;
+        if (resourceConf.getMachineConf) {
+            let conf = false;
+            try{
+                conf = await Util.jsonRequest.get(resourceConf.getMachineConf, {ip: ip});
+            }catch(e){
+                logger.error('getSSHConfig', e);
+                conf = false;
+            }
+            if(_.isPlainObject(conf) && conf.port != undefined && conf.username != undefined && conf.password != undefined){
+                conf.ip = ip;
+                sshConf = conf;
+            }else{
+                sshConf = false;
+            }
         }
-    }catch(e){
+        if(!sshConf){
+            let sshConfs = await fs.readJson(path.join(__dirname, '../../../config/sshConf.json'));
+            let index = _.findIndex(sshConfs || [], (o) => {
+                return o.ip === ip
+            });
+            if (index > -1) {
+                sshConf = sshConfs[index];
+            } else {
+                sshConf = false;
+            }
+        }
+        return sshConf;
+    } catch (e) {
         return false;
     }
 };
@@ -203,7 +225,7 @@ ResourceService.execSSH = async(ip, shell, sshConf)=> {
         return {
             ip: ip,
             rst: result.code == 0,
-            msg: result.code == 0 ? result.stdout: result.stderr
+            msg: result.code == 0 ? result.stdout : result.stderr
         };
     } catch (e) {
         return {
