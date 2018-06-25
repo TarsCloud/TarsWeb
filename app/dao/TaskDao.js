@@ -1,7 +1,3 @@
-/**
- * Created by clauseliu on 2018/5/7.
- */
-
 const {tTask,tTaskItem} = require('./db').db_tars;
 tTask.belongsTo(tTaskItem,{foreignKey:'task_no',as:'taskItem',targetKey:'task_no'});
 

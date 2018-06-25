@@ -1,6 +1,3 @@
-/**
- * Created by clauseliu on 2018/5/17.
- */
 const logger = require('../../logger');
 const PatchService = require('../../service/patch/PatchService');
 const CompileService = require('../../service/patch/CompileService');

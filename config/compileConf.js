@@ -1,7 +1,3 @@
-/**
- * Created by clauseliu on 2018/6/21.
- */
-
 module.exports = {
     /**
      * 是否启用自定义编译发布模块

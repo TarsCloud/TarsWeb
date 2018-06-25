@@ -1,6 +1,3 @@
-/**
- * Created by denisfan on 2018/4/6.
- */
 const {pageConf, apiConf} = require('./routerConf');
 const Router = require('koa-router');
 const _ = require('lodash');

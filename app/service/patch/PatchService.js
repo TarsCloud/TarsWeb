@@ -1,6 +1,3 @@
-/**
- * Created by clauseliu on 2018/5/17.
- */
 const PatchDao = require('../../dao/PatchDao');
 
 const PatchService = {};

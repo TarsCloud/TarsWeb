@@ -1,7 +1,3 @@
-/**
- * Created by clauseliu on 2018/4/20.
- */
-
 const {tConfigFiles,tConfigHistoryFiles,tConfigReferences} = require('./db').db_tars;
 
 let ConfigDao = {};

@@ -1,7 +1,3 @@
-/**
- * Created by clauseliu on 2018/4/18.
- */
-
 const ConfigDao = require('../../dao/ConfigDao');
 const ServerDao = require('../../dao/ServerDao');
 const logger = require('../../logger');

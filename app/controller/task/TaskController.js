@@ -1,7 +1,3 @@
-/**
- * Created by clauseliu on 2018/5/7.
- */
-
 const logger = require('../../logger');
 const TaskService = require('../../service/task/TaskService');
 const util = require('../../tools/util');

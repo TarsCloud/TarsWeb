@@ -1,7 +1,3 @@
-/**
- * Created by clauseliu on 2018/5/29.
- */
-
 const net = require('net');
 const logger = require('../../logger');
 let TCPClient = (ip, port, requestObj) => {

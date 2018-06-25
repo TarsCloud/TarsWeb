@@ -1,7 +1,3 @@
-/**
- * Created by clauseliu on 2018/5/7.
- */
-
 const {tServerPatchs} = require('./db').db_tars;
 const {tCodeInterfaceConf, tPatchTask} = require('./db').db_tars_web;
 

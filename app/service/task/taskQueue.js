@@ -1,6 +1,3 @@
-/**
- * Created by clauseliu on 2018/5/15.
- */
 const kafka = require('kafka-node');
 const kafkaConf = require('../../../config/webConf').kafkaConf;
 

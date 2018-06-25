@@ -1,7 +1,3 @@
-/**
- * Created by denisfan on 2018/4/8.
- */
-
 const Sequelize = require('sequelize');
 
 const Mysql = require('mysql');

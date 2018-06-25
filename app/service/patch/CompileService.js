@@ -1,7 +1,3 @@
-/**
- * Created by clauseliu on 2018/6/21.
- */
-
 const PatchDao = require('../../dao/PatchDao');
 const request = require('request-promise-any');
 const compileConf = require('../../../config/compileConf');

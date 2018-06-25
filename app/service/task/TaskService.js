@@ -1,7 +1,3 @@
-/**
- * Created by clauseliu on 2018/5/7.
- */
-
 const logger = require('../../logger');
 const AdminService = require('../../service/admin/AdminService');
 const ServerService = require('../../service/server/ServerService');
