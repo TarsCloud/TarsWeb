@@ -447,6 +447,7 @@ export default {
     },
     getTaskRepeat(taskId) {
       let timerId;
+      timerId && clearTimeout(timerId);
       const getTask = () => {
         this.$ajax.getJSON('/server/api/task', {
           task_no: taskId,
@@ -455,6 +456,8 @@ export default {
           data.items.forEach((item) => {
             if (parseInt(item.status, 10) === 2 || parseInt(item.status, 10) === 3) {
               clearTimeout(timerId);
+            }else {
+              timerId = setTimeout(getTask, 3000);
             }
           });
         }).catch((err) => {
@@ -462,7 +465,7 @@ export default {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       };
-      timerId = setTimeout(getTask, 3000);
+      getTask();
     },
     updateServerList() {
       // 更新服务列表
@@ -581,12 +584,6 @@ export default {
           this.openPubConfModal();
         }else {
           this.tagList = data.data;
-          // TODO 测试数据
-          this.tagList = [
-            {path:'http://git.code.oa.com/wod_csc_jcfw/Proj_ITIL_migNotice.git',version:'/master/',commitMessage:''},
-            {path:'http://git.code.oa.com/wod_csc_jcfw/Proj_ITIL_migNotice.git',version:'/develop/',commitMessage:''},
-            {path:'http://git.code.oa.com/wod_csc_jcfw/Proj_ITIL_migNotice.git',version:'/tag-2018042801/',commitMessage:''},
-          ];
         }
       }).catch(e=> {
         this.tagList = [];

@@ -20,7 +20,7 @@ module.exports = {
      * @param   {String}    version             SVN/GIT版本
      * @param   {String}    commitMessage       提交的消息
      */
-    getVersionList : 'http://147.taf.wsd.com/pages/operate_manage/compile_patch/compile/do_list_compile.jsp?action=get_tag_list',
+    getVersionList : 'http://localhost:3002/interface?interface_name=get_tag_list',
 
 
     /**
