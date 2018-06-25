@@ -151,7 +151,6 @@
             size="small"
             :placeholder="$t('pub.dlg.defaultValue')"
             v-model="refFileModal.model.filename" 
-            v-if="refFileModal.model.fileList && refFileModal.model.fileList.length"
             required>
             <let-option v-for="item in refFileModal.model.fileList" :key="item.id" :value="item.id">{{item.filename}}</let-option>
           </let-select>
