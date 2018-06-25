@@ -65,12 +65,6 @@ TaskService.addTask = async (params) => {
         if(Object.prototype.toString.call(parameters)=='[object Object]' && parameters.bak_flag!=undefined){
             parameters.bak_flag = (1 & parameters.bak_flag).toString();
         }
-        //console.info(parameters);
-        // let map = new TarsStream.Map(TarsStream.String, TarsStream.String);
-        // for(key in parameters) {
-        //     map.put(key, parameters[key]);
-        // }
-        //console.info(map);
         let obj = {
             taskNo : params.task_no,
             itemNo : util.getUUID(),
@@ -85,8 +79,7 @@ TaskService.addTask = async (params) => {
         Object.assign(obj,{
             application : serverConf.application,
             serverName : serverConf.server_name,
-            nodeName : serverConf.node_name,
-            setName : ''
+            nodeName : serverConf.node_name
         });
         items.push(obj);
         logger.info('[TaskService.addTask items]:',obj);

@@ -25,7 +25,7 @@ CompileService.getTagList = async (application, server_name) => {
     if(!tagListUrl) {
         return Promise.resolve('');
     }*/
-    return await request({
+    let ret = await request({
         uri: compileConf.getVersionList,
         qs: {
             application,
@@ -36,6 +36,11 @@ CompileService.getTagList = async (application, server_name) => {
         },
         json :true
     });
+    if(Object.prototype.toString.call(ret) === 'Array') {
+        return ret;
+    }else {
+        return ret.data;    // 假设编译系统返回的是 {data:[],ret_code:200,err_msg:''}的结构
+    }
 };
 
 CompileService.getCompilerConf = () => {
