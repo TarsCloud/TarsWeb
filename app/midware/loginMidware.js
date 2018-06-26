@@ -174,6 +174,7 @@ async function validate(ctx, uid, ticket) {
                         return false;
                     }
                 }
+                return true;
             }
         }else{
             return true;

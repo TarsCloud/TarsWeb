@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
  
-const {tAdapterConf} = require('./db').db_tars;
+const {tAdapterConf, sequelize} = require('./db').db_tars;
 
 const AdapterDao = {};
 
@@ -55,8 +55,12 @@ AdapterDao.getAdapterConfByNodeName = async(nodeNames) => {
     });
 };
 
-AdapterDao.insertAdapterConf = async(params) => {
-    return await tAdapterConf.create(params);
+AdapterDao.insertAdapterConf = async(params, transaction) => {
+    if(transaction){
+        return await tAdapterConf.create(params, {transaction: transaction});
+    }else{
+        return await tAdapterConf.create(params);
+    }
 };
 
 AdapterDao.deleteAdapterConf = async(id) => {

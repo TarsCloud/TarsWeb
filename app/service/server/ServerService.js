@@ -106,50 +106,57 @@ ServerService.updateServerConf = async(params)=> {
 
 
 ServerService.addServerConf = async(params)=> {
+    let transaction = await ServerDao.sequelize.transaction();
+    try{
+        let operator = params.operator;
+        let developer = params.developer;
+        delete(params.operator);
+        delete(params.developer);
 
-    let operator = params.operator;
-    let developer = params.developer;
-    delete(params.operator);
-    delete(params.developer);
+        let serverConf = ServerService.serverConfFields();
 
-    let serverConf = ServerService.serverConfFields();
+        serverConf = util.leftAssign(serverConf, params);
+        serverConf.enable_set = params.enable_set ? 'Y' : 'N';
+        if(!serverConf.enable_set){
+            _.extend(serverConf, _.zipObject(['set_name', 'set_area', 'set_group'], [null, null, null]));
+        }
+        serverConf.posttime = new Date();
 
-    serverConf = util.leftAssign(serverConf, params);
-    serverConf.enable_set = params.enable_set ? 'Y' : 'N';
-    if(!serverConf.enable_set){
-        _.extend(serverConf, _.zipObject(['set_name', 'set_area', 'set_group'], [null, null, null]));
+        await ServerDao.insertServerConf(serverConf, transaction);
+
+        if (operator || developer) {
+            await AuthService.addAuth(serverConf.application, serverConf.server_name, operator, developer);
+        }
+
+        let adapterConf = AdapterService.adpaterConfFields();
+        let adapters = params.adapters;
+        for (var i = 0; i < adapters.length; i++) {
+            var servant = adapters[i];
+            let newAdapterConf = Object.assign({}, adapterConf);
+            newAdapterConf = util.leftAssign(newAdapterConf, servant);
+            newAdapterConf.application = serverConf.application;
+            newAdapterConf.server_name = serverConf.server_name;
+            newAdapterConf.node_name = serverConf.node_name;
+            newAdapterConf.endpoint = servant.port_type + ' -h ' + servant.bind_ip + ' -t 60000 -p ' + servant.port + ' -e ' + (servant.auth ? servant.auth : 0);
+            newAdapterConf.servant = serverConf.application + '.' + serverConf.server_name + '.' + servant.obj_name;
+            newAdapterConf.adapter_name = newAdapterConf.servant + 'Adapter';
+            newAdapterConf.posttime = new Date();
+            await AdapterDao.insertAdapterConf(newAdapterConf, transaction);
+        }
+        await transaction.commit();
+        //安装节点
+        let installRst = await ResourceService.installTarsNodes([params.node_name]);
+        let newServerConf = await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
+        return {
+            tasNodeRst: installRst,
+            serverConf: newServerConf
+        };
+    }catch(e){
+        await transaction.rollback();
+        throw e;
     }
-    serverConf.posttime = new Date();
-    await ServerDao.insertServerConf(serverConf);
 
-    if (operator || developer) {
-        await AuthService.addAuth(serverConf.application, serverConf.server_name, operator, developer);
-    }
 
-    let adapterConf = AdapterService.adpaterConfFields();
-    let adapters = params.adapters;
-    for (var i = 0; i < adapters.length; i++) {
-        var servant = adapters[i];
-        let newAdapterConf = Object.assign({}, adapterConf);
-        newAdapterConf = util.leftAssign(newAdapterConf, servant);
-        newAdapterConf.application = serverConf.application;
-        newAdapterConf.server_name = serverConf.server_name;
-        newAdapterConf.node_name = serverConf.node_name;
-        newAdapterConf.endpoint = servant.port_type + ' -h ' + servant.bind_ip + ' -t 60000 -p ' + servant.port + ' -e ' + (servant.auth ? servant.auth : 0);
-        newAdapterConf.servant = serverConf.application + '.' + serverConf.server_name + '.' + servant.obj_name;
-        newAdapterConf.adapter_name = newAdapterConf.servant + 'Adapter';
-        newAdapterConf.posttime = new Date();
-        await AdapterDao.insertAdapterConf(newAdapterConf);
-    }
-
-    //安装节点
-    let installRst = await ResourceService.installTarsNodes([params.node_name]);
-    let newServerConf = await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
-    return {
-        tasNodeRst: installRst,
-        serverConf: newServerConf
-    };
-    // return await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
 };
 
 module.exports = ServerService;

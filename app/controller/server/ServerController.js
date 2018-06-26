@@ -85,11 +85,7 @@ ServerController.serverExist = async(ctx) => {
     let serverName = ctx.paramsObj.server_name;
     let nodeName = ctx.paramsObj.node_name;
     try {
-        if (!await AuthService.hasDevAuth(application, serverName, ctx.uid)) {
-            ctx.makeNotAuthResObj();
-        } else {
-            ctx.makeResObj(200, '', (await ServerService.getServerConf(application, serverName, nodeName)).length > 0);
-        }
+        ctx.makeResObj(200, '', (await ServerService.getServerConf(application, serverName, nodeName)).length > 0);
     } catch (e) {
         logger.error('[serverExist]', e);
         ctx.makeErrResObj();

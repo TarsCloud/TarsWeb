@@ -63,7 +63,6 @@ databases.forEach((database)=>{
         })()  //获取当前时区并做转换
     });
 
-
     // 测试是否连接成功
     (async function () {
         try {
@@ -83,7 +82,8 @@ databases.forEach((database)=>{
         tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
     });
     Db[database] = tableObj;
-
+    Db[database].sequelize = sequelize;
 });
+
 
 module.exports = Db;

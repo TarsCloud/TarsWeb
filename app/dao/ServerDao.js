@@ -14,10 +14,12 @@
  * specific language governing permissions and limitations under the License.
  */
  
-const {tServerConf} = require('./db').db_tars;
+const {tServerConf, sequelize} = require('./db').db_tars;
 const Sequelize = require('sequelize');
 
 const ServerDao = {};
+
+ServerDao.sequelize = sequelize;
 
 ServerDao.getServerConfById = async(id) => {
     return await tServerConf.findOne({
@@ -134,8 +136,12 @@ ServerDao.updateServerConf = async(params) => {
     return await tServerConf.update(updateOptions, {where: {id: params.id}});
 };
 
-ServerDao.insertServerConf = async(params)=> {
-    return await tServerConf.create(params);
+ServerDao.insertServerConf = async(params, transaction)=> {
+    if(transaction){
+        return await tServerConf.create(params, {transaction: transaction});
+    }else{
+        return await tServerConf.create(params);
+    }
 };
 
 ServerDao.getApplication = async() => {
