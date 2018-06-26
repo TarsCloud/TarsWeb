@@ -17,6 +17,7 @@
 const PatchDao = require('../../dao/PatchDao');
 const request = require('request-promise-any');
 const compileConf = require('../../../config/compileConf');
+const logger = require('../../logger');
 const CompileService = {};
 
 CompileService.addPatchTask = async (params) => {
@@ -24,19 +25,12 @@ CompileService.addPatchTask = async (params) => {
 };
 
 CompileService.getServerPatchByTaskId = async (taskId) => {
-    let {tgz} = await PatchDao.getPackageByTaskId(taskId);
+    let ret = await PatchDao.getPackageByTaskId(taskId);
+    let tgz = ret.tgz;
     return await PatchDao.getServerPatchByPkgName(tgz);
 };
 
 CompileService.getTagList = async (application, server_name) => {
-    /*let ret = await PatchDao.getCodeInfConf(application, server_name);
-    let tagListUrl;
-    if(ret) {
-        tagListUrl = ret.path;
-    }
-    if(!tagListUrl) {
-        return Promise.resolve('');
-    }*/
     let ret = await request({
         uri: compileConf.getVersionList,
         qs: {
