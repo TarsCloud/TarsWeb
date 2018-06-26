@@ -14,28 +14,20 @@
  * specific language governing permissions and limitations under the License.
  */
  
-/* jshint indent: 1 */
+const limit = require('koa-limit');
+const limitConf = require('../../config/webConf').limitConf || {};
 
-module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('t_code_interface_conf', {
-		id: {
-			type: DataTypes.INTEGER(11),
-			allowNull: false,
-			primaryKey: true,
-			autoIncrement: true
-		},
-		server: {
-			type: DataTypes.STRING(50),
-			allowNull: false,
-			primaryKey: true
-		},
-		path: {
-			type: DataTypes.STRING(256),
-			allowNull: false,
-			defaultValue: ''
-		}
-	}, {
-		tableName: 't_code_interface_conf',
-		timestamps: false
-	});
+module.exports = () => {
+    if(limitConf.enableLimit){
+        return limit({
+            limit: limitConf.limit || 5000,
+            interval: limitConf.interval || 1000 * 60 * 60,
+            whiteList: limitConf.whilteList || [],
+            blackList: limitConf.blackList || [],
+        });
+    }else{
+        return async (ctx, next)=>{
+            await next();
+        };
+    }
 };

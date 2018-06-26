@@ -1,3 +1,19 @@
+/**
+ * Tencent is pleased to support the open source community by making Tars available.
+ *
+ * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except 
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/BSD-3-Clause
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed 
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+ * specific language governing permissions and limitations under the License.
+ */
+ 
 //第三方登录相关
 let loginConf = require('../../config/loginConf');
 let request = require('request-promise-any');
@@ -15,7 +31,6 @@ let cookieConfig = Object.assign({
 
 //登录校验中间件
 module.exports = async(ctx, next) => {
-    ctx.sourceIp = getSourceIp(ctx);
     if (ctx.request.path === '/logout') {
         ctx.cookies.set(loginConf.ticketCookieName || 'ticket', null, cookieDomainConfig);
         ctx.cookies.set(loginConf.uidCookieName || 'uid', null, cookieDomainConfig);
@@ -81,7 +96,7 @@ function isInPath(ctx, pathList) {
 
 //检测是否在IP白名单之中
 function isInIgnoreIps(ctx, ignoreIps) {
-    var ip = ctx.sourceIp;
+    var ip = ctx.ip;
     return _.indexOf(ignoreIps || [], ip) > -1;
 }
 
@@ -168,17 +183,4 @@ async function validate(ctx, uid, ticket) {
         throw(e);
         return false;
     }
-}
-
-function getSourceIp(ctx) {
-    let req = ctx.request;
-    var ip = req.headers['x-forwarded-for'] ||
-        req.ip ||
-        (req.connection && req.connection.remoteAddress) ||
-        (req.socket && req.socket.remoteAddress) ||
-        (req.connection && req.connection.socket && req.connection.socket.remoteAddress) || '';
-    if (ip.split(',').length > 0) {
-        ip = ip.split(',')[0]
-    }
-    return ip;
 }

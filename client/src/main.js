@@ -1,5 +1,5 @@
 import Vue from 'vue';
-
+import './plugins/aq_common';
 import './plugins/ui';
 import './plugins/ajax';
 // import './plugins/charts';
