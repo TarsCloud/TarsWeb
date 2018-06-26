@@ -230,7 +230,7 @@ ConfigService.getSetConfigFile = async(params)=> {
 ConfigService.getNodeConfigFile = async(params) => {
     const enableSet = params.set_name && params.set_area && params.set_group;
     const configFile = await ConfigDao.getConfigFile(params.config_id);
-    const nodeConfigFile = await ConfigDao.getNodeConfigFile({
+    let nodeConfigFile = await ConfigDao.getNodeConfigFile({
         server_name:`${params.application}.${params.server_name}`,
         set_name:params.set_name,
         set_area:params.set_area,
@@ -245,7 +245,8 @@ ConfigService.getNodeConfigFile = async(params) => {
         setGroup:params.set_group
     });
     let list = [];
-    nodeConfigFile.filter( config => config.filename = configFile.filename).forEach(config => {
+    nodeConfigFile = nodeConfigFile.filter( config => config.filename == configFile.filename);
+    nodeConfigFile.forEach(config => {
         list.push(`${config.server_name}.${config.set_name || ''}.${config.set_area || ''}.${config.set_group || ''}_${config.host}`);
     });
     logger.info('configFile.filename:',configFile.filename);
