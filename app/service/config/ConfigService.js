@@ -239,7 +239,7 @@ ConfigService.getNodeConfigFile = async(params) => {
     let servers = await ServerDao.getServerConf({
         params:params.application,
         serverName:params.server_name,
-        enableSet:enableSet,
+        enableSet:enableSet?'Y':'N',
         setName:params.set_name,
         setArea:params.set_area,
         setGroup:params.set_group
@@ -408,7 +408,7 @@ ConfigService.addDefaultNodeConfigFile = (params) => {
         const servers = await ServerDao.getServerConf({
             application :   application,
             serverName  :   serverName,
-            enableSet   :   enableSet,
+            enableSet   :   enableSet?'Y':'N',
             setName     :   params.set_name,
             setArea     :   params.set_area,
             setGroup    :   params.set_group
@@ -424,7 +424,7 @@ ConfigService.addDefaultNodeConfigFile = (params) => {
                 config      :   '',
                 host        :   server.node_name,
                 posttime    :   formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss'),
-                lastuser    :   config.lastuser,
+                lastuser    :   '',
                 level       :   3,
             });
             let configFile = await ConfigDao.insertConfigFile(newRow);
