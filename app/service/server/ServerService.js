@@ -117,7 +117,7 @@ ServerService.addServerConf = async(params)=> {
 
         serverConf = util.leftAssign(serverConf, params);
         serverConf.enable_set = params.enable_set ? 'Y' : 'N';
-        if(!serverConf.enable_set){
+        if(serverConf.enable_set == 'N'){
             _.extend(serverConf, _.zipObject(['set_name', 'set_area', 'set_group'], [null, null, null]));
         }
         serverConf.posttime = new Date();
