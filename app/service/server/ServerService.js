@@ -144,13 +144,14 @@ ServerService.addServerConf = async(params)=> {
             await AdapterDao.insertAdapterConf(newAdapterConf, transaction);
         }
         await transaction.commit();
+        return true;
         //安装节点
-        let installRst = await ResourceService.installTarsNodes([params.node_name]);
-        let newServerConf = await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
-        return {
-            tasNodeRst: installRst,
-            serverConf: newServerConf
-        };
+        // let installRst = await ResourceService.installTarsNodes([params.node_name]);
+        // let newServerConf = await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
+        // return {
+        //     tasNodeRst: installRst,
+        //     serverConf: newServerConf
+        // };
     }catch(e){
         await transaction.rollback();
         throw e;

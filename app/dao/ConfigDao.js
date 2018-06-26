@@ -64,8 +64,12 @@ ConfigDao.getServerConfigFile = async (params) => {
     });
 };
 
-ConfigDao.insertConfigFile = async (params) => {
-    return await tConfigFiles.create(params);
+ConfigDao.insertConfigFile = async (params, transaction) => {
+    if(transaction){
+        return await tConfigFiles.create(params, {transaction: transaction});
+    }else{
+        return await tConfigFiles.create(params);
+    }
 };
 
 ConfigDao.insertConfigFileHistory = async (params) => {

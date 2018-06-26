@@ -16,12 +16,13 @@
  
 const ServerDao = require('../../dao/ServerDao');
 const AdapterDao = require('../../dao/AdapterDao');
+const ConfigDao = require('../../dao/ConfigDao');
 const logger = require('../../logger');
 const ServerService = require('../server/ServerService');
-const ConfigService = require('../config/ConfigService');
 const AuthService = require('../auth/AuthService');
 const _ = require('lodash');
-const util = require('../../tools/util')
+const util = require('../../tools/util');
+const Sequelize = require('sequelize');
 
 const ExpandService = {}
 
@@ -58,83 +59,127 @@ ExpandService.preview = async(params)=> {
 };
 
 ExpandService.expand = async(params) => {
-    let application = params.application;
-    let serverName = params.server_name;
-    let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
-    let sourceAdapters = await AdapterDao.getAdapterConf(application, serverName, params.node_name) || [];
-    sourceServer = sourceServer && sourceServer.dataValues || {};
-    let addServers = [];
-    for (var i = 0; i < params.expand_preview_servers.length; i++) {
-        let preServer = params.expand_preview_servers[i];
-        let serverConf = await ServerDao.getServerConfByName(application, serverName, preServer.node_name);
-        if (!serverConf) {
-            let server = {
-                application: application,
-                server_name: serverName,
-                node_name: preServer.node_name
-            };
-            let enableSet = !_.isEmpty(preServer.set);
-            server.enable_set = enableSet ? 'Y' : 'N';
-            if (enableSet) {
-                server = _.extend(server, _.zipObject(['set_name', 'set_area', 'set_group'], preServer.set.split('.')));
-            }else{
-                server = _.extend(server, _.zipObject(['set_name', 'set_area', 'set_group'], [null, null, null]));
-            }
-            server = _.extend(server, {
-                server_type: sourceServer.server_type,
-                template_name: sourceServer.template_name,
-                bak_flag: sourceServer.bak_flag,
-                base_path: sourceServer.base_path,
-                exe_path: sourceServer.exe_path,
-                start_script_path: sourceServer.start_script_path
-            });
-            server = util.leftAssign(ServerService.serverConfFields(), server);
-            let rst = await ServerDao.insertServerConf(server);
-            addServers.push(rst.dataValues);
-        }
-        let targetAdapter = await AdapterDao.getAdapterConfByObj({
-            application: application,
-            serverName: serverName,
-            nodeName: preServer.node_name,
-            objName: preServer.obj_name
-        });
-        if (!targetAdapter) {
-            let sourceAdapter = ((application, serverName, nodeName, objName) => {
-                let sourceAdapter = {};
-                _.each(sourceAdapters, (adapter)=> {
-                    adapter = adapter.dataValues;
-                    if (adapter.application == application && adapter.server_name == serverName && adapter.node_name == nodeName && adapter.servant.substring(adapter.servant.lastIndexOf('.') + 1) == objName) {
-                        sourceAdapter = adapter;
-                        return false;
+    let transaction = await ServerDao.sequelize.transaction(); //开启事务
+    try{
+        let application = params.application;
+        let serverName = params.server_name;
+        let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
+        let sourceAdapters = await AdapterDao.getAdapterConf(application, serverName, params.node_name) || [];
+        sourceServer = sourceServer && sourceServer.dataValues || {};
+        let addServers = [];
+        let addServersMap = {};
+        for (var i = 0; i < params.expand_preview_servers.length; i++) {
+            let preServer = params.expand_preview_servers[i];
+            if(!addServersMap[`${application}-${serverName}-${preServer.node_name}`]){
+                let serverConf = await ServerDao.getServerConfByName(application, serverName, preServer.node_name);
+                if (!serverConf) {
+                    let server = {
+                        application: application,
+                        server_name: serverName,
+                        node_name: preServer.node_name
+                    };
+                    let enableSet = !_.isEmpty(preServer.set);
+                    server.enable_set = enableSet ? 'Y' : 'N';
+                    if (enableSet) {
+                        server = _.extend(server, _.zipObject(['set_name', 'set_area', 'set_group'], preServer.set.split('.')));
+                    }else{
+                        server = _.extend(server, _.zipObject(['set_name', 'set_area', 'set_group'], [null, null, null]));
                     }
-                });
-                return sourceAdapter;
-            })(application, serverName, params.node_name, preServer.obj_name);
-            if (_.isEmpty(sourceAdapter)) {
-                return;
+                    server = _.extend(server, {
+                        server_type: sourceServer.server_type,
+                        template_name: sourceServer.template_name,
+                        bak_flag: sourceServer.bak_flag,
+                        base_path: sourceServer.base_path,
+                        exe_path: sourceServer.exe_path,
+                        start_script_path: sourceServer.start_script_path
+                    });
+                    server = util.leftAssign(ServerService.serverConfFields(), server);
+                    let rst = await ServerDao.insertServerConf(server, transaction);
+                    addServers.push(rst.dataValues);
+                    addServersMap[`${server.application}-${server.server_name}-${server.node_name}`] = true;
+                    if(params.enable_node_copy){
+                        let configParams = {
+                            server_name: `${sourceServer.application}.${sourceServer.server_name}`
+                        };
+                        sourceServer.set_name && (configParams.set_name = sourceServer.set_name);
+                        sourceServer.set_area && (configParams.set_area = sourceServer.set_area);
+                        sourceServer.set_group && (configParams.set_group = sourceServer.set_group);
+                        let configs = await ConfigDao.getNodeConfigFile(configParams);
+                        configs = configs.filter((config)=>{
+                            config = config.dataValues;
+                            return config.host == sourceServer.node_name
+                        });
+                        for(let i = 0; i < configs.length; i++){
+                            let config = configs[i].dataValues;
+                            let newConfig = {
+                                server_name: '',
+                                set_name: '',
+                                set_area: '',
+                                set_group: '',
+                                host: '',
+                                filename: '',
+                                config: '',
+                                posttime: '',
+                                level: 2,
+                                configFlag: 0
+                            };
+                            newConfig = util.leftAssign(newConfig, config);
+                            newConfig.posttime = new Date();
+                            newConfig.host = server.node_name;
+                            await ConfigDao.insertConfigFile(newConfig, transaction);
+                        }
+                    }
+                }
             }
-            let adapter = {
+
+            let targetAdapter = await AdapterDao.getAdapterConfByObj({
                 application: application,
-                server_name: serverName,
-                node_name: preServer.node_name,
-                servant: sourceAdapter.servant,
-                adapter_name: sourceAdapter.adapter_name,
-                thread_num: sourceAdapter.thread_num,
-                max_connections: sourceAdapter.max_connections,
-                queuecap: sourceAdapter.queuecap,
-                queuetimeout: sourceAdapter.queuetimeout,
-                allow_ip: sourceAdapter.allow_ip,
-                protocol: sourceAdapter.protocol,
-                handlegroup: sourceAdapter.handlegroup,
-                posttime: new Date('1970-01-01 00:00:00')
-            };
-            let portType = sourceAdapter.endpoint.substring(0, sourceAdapter.endpoint.indexOf(' '));
-            portType = _.indexOf(['tcp', 'udp'], portType) > -1 ? portType : 'tcp';
-            adapter.endpoint = portType + ' -h ' + preServer.bind_ip + ' -t ' + sourceAdapter.queuetimeout + ' -p ' + preServer.port + ' -e ' + (preServer.auth ? preServer.auth : 0);
-            await AdapterDao.insertAdapterConf(adapter);
+                serverName: serverName,
+                nodeName: preServer.node_name,
+                objName: preServer.obj_name
+            });
+            if (!targetAdapter) {
+                let sourceAdapter = ((application, serverName, nodeName, objName) => {
+                    let sourceAdapter = {};
+                    _.each(sourceAdapters, (adapter)=> {
+                        adapter = adapter.dataValues;
+                        if (adapter.application == application && adapter.server_name == serverName && adapter.node_name == nodeName && adapter.servant.substring(adapter.servant.lastIndexOf('.') + 1) == objName) {
+                            sourceAdapter = adapter;
+                            return false;
+                        }
+                    });
+                    return sourceAdapter;
+                })(application, serverName, params.node_name, preServer.obj_name);
+                if (_.isEmpty(sourceAdapter)) {
+                    return;
+                }
+                let adapter = {
+                    application: application,
+                    server_name: serverName,
+                    node_name: preServer.node_name,
+                    servant: sourceAdapter.servant,
+                    adapter_name: sourceAdapter.adapter_name,
+                    thread_num: sourceAdapter.thread_num,
+                    max_connections: sourceAdapter.max_connections,
+                    queuecap: sourceAdapter.queuecap,
+                    queuetimeout: sourceAdapter.queuetimeout,
+                    allow_ip: sourceAdapter.allow_ip,
+                    protocol: sourceAdapter.protocol,
+                    handlegroup: sourceAdapter.handlegroup,
+                    posttime: new Date('1970-01-01 00:00:00')
+                };
+                let portType = sourceAdapter.endpoint.substring(0, sourceAdapter.endpoint.indexOf(' '));
+                portType = _.indexOf(['tcp', 'udp'], portType) > -1 ? portType : 'tcp';
+                adapter.endpoint = portType + ' -h ' + preServer.bind_ip + ' -t ' + sourceAdapter.queuetimeout + ' -p ' + preServer.port + ' -e ' + (preServer.auth ? preServer.auth : 0);
+                await AdapterDao.insertAdapterConf(adapter, transaction);
+            }
         }
+        await transaction.commit();
+        return addServers;
+    }catch(e){
+        await transaction.rollback();
+        throw e;
     }
-    return addServers;
 };
 
 ExpandService.formatToArray = (list, key)=> {
