@@ -16,37 +16,56 @@
  
 const kafka = require('kafka-node');
 const kafkaConf = require('../../../config/webConf').kafkaConf;
+const logger = require('../../logger');
 
 class MessageQueue {
     constructor (host) {
-        this.client = new kafka.Client(host || kafkaConf.host);
-        this.topic = kafkaConf.topic;
-        this.producer = new kafka.HighLevelProducer(this.client);
-        this.consumer = new kafka.Consumer(this.client,[{topic:this.topic, partition: 0}]);
+        this.client = new kafka.Client(host || kafkaConf.host, 'tars-client-id', {
+            sessionTimeout : 300,
+            spinDelay : 100,
+            retries : 2
+        });
 
-        this.producer.on('ready', ()=> console.info('Producer is ready'));
+        /*this.client.once('connect', ()=> {
+            this.client.loadMetadataForTopics([], function (err) {
+                if (err) {
+                    console.error(err);
+                }
+            });
+        });*/
+
+        this.Producer();
+        this.Consumer();
+    }
+
+    Producer() {
+        this.producer = new kafka.HighLevelProducer(this.client);
+        this.producer.on('ready', ()=> {
+            logger.info('Producer is ready');
+            this.producer.createTopics(kafkaConf.topic, false, (err) => {
+                err && console.info(err);
+            });
+        });
 
         this.producer.on('error', err => {
-            console.log('Producer is in error state');
-            console.log(err);
-        })
+            logger.log('Producer is in error state');
+            logger.log(err);
+        });
     }
 
-    setTopic(topic) {
-        this.topic = topic;
-    }
-
-    getTopic() {
-        return this.topic;
-    }
-
-    Consumer(opts) {
-        return new kafka.ConsumerGroup(opts, this.client);
+    Consumer() {
+        let options = {
+            host : kafkaConf.host,
+            groupId : 'tars-consumer',
+            sessionTimeout : 15000,
+            autoCommit : true
+        };
+        this.consumer = new kafka.ConsumerGroup(options, kafkaConf.topic);
     }
 
     addTask(payloads) {
         payloads.map(payload => {
-            payload.topic = payload.topic || this.topic;
+            payload.topic = payload.topic || kafkaConf.topic[0];
         });
         return new Promise( (resolve, reject)=> {
             this.producer.send(payloads, (err, data)=> {

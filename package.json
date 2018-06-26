@@ -26,6 +26,7 @@
     "koa-convert": "^1.2.0",
     "koa-helmet": "^4.0.0",
     "koa-json": "^2.0.2",
+    "koa-limit": "^1.0.2",
     "koa-logger": "^2.0.1",
     "koa-multer": "^1.0.2",
     "koa-onerror": "^1.2.1",
@@ -46,8 +47,7 @@
     "url": "^0.11.0",
     "validator": "^9.4.1",
     "winston": "^2.4.2",
-    "winston-daily-rotate-file": "^1.7.2",
-    "koa-limit": "^1.0.2"
+    "winston-daily-rotate-file": "^1.7.2"
   },
   "devDependencies": {
     "nodemon": "^1.17.5"

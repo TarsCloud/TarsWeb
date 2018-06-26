@@ -245,11 +245,11 @@ ConfigService.getNodeConfigFile = async(params) => {
         setGroup:params.set_group
     });
     let list = [];
-    nodeConfigFile.filter( config => {
-        return config.filename = configFile.filename;
-    }).forEach(config => {
+    nodeConfigFile.filter( config => config.filename = configFile.filename).forEach(config => {
         list.push(`${config.server_name}.${config.set_name || ''}.${config.set_area || ''}.${config.set_group || ''}_${config.host}`);
     });
+    logger.info('configFile.filename:',configFile.filename);
+    logger.info('nodeConfigFile:',nodeConfigFile);
     servers = servers.filter(server => {
         let key = `${params.application}.${params.server_name}.${params.set_name || ''}.${params.set_area || ''}.${params.set_group || ''}_${server.node_name}`;
         return !list.includes(key);
@@ -424,10 +424,10 @@ ConfigService.addDefaultNodeConfigFile = (params) => {
                 config      :   '',
                 host        :   server.node_name,
                 posttime    :   formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss'),
-                lastuser    :   config.lastuser,
+                lastuser    :   '',
                 level       :   3,
             });
-            let configFile = await ConfigDao.insertConfigFile(newRow);
+            let configFile = await ConfigDao.insertConfigFile(newRow).catch(e => logger.error('[addConfigFileByFileName.insertConfigFile]:',e));
             configFile = configFile.dataValues;
             const history = {
                 configid    :   configFile.id,

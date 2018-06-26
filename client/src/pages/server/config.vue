@@ -392,19 +392,8 @@ export default {
           id,
         }).then((res) => {
           loading.hide();
-          this.configList = this.configList.map((item) => {  // eslint-disable-line
-            if (item.id !== res[0]) return item;
-          }).filter(item => item);
-
-          if (this.configList && this.configList.length) {
-            if (this.checkedConfigId === res[0]) {
-              this.checkedConfigId = this.configList[0].id;
-            }
-          } else {
-            this.refFileList = [];
-            this.nodeConfigList = [];
-          }
-
+          this.getConfigList(this.serverData);
+          this.getNodeConfigList();
           this.$tip.success(this.$t('common.success'));
         }).catch((err) => {
           loading.hide();

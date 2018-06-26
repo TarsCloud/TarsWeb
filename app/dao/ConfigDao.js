@@ -106,7 +106,7 @@ ConfigDao.getConfigFileList = async (ids) => {
 };
 
 ConfigDao.getNodeConfigFile = async (params) => {
-    let whereObj = Object.assign({level:3},filterParams(params));
+    let whereObj = Object.assign({},{level:3},filterParams(params));
     return await tConfigFiles.findAll({
         order : [
             ['id','desc']

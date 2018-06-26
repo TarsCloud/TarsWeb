@@ -18,7 +18,7 @@ module.exports = {
     /**
      * 是否启用自定义编译发布模块
      */
-    enable : true,
+    enable : false,
 
     /**
      * getVersionList           获取代码版本列表的接口
@@ -32,7 +32,7 @@ module.exports = {
      * @param   {String}    version             SVN/GIT版本
      * @param   {String}    commitMessage       提交的消息
      */
-    getVersionList : 'http://localhost:3002/interface?interface_name=get_tag_list',
+    getVersionList : '',
 
 
     /**
@@ -49,7 +49,7 @@ module.exports = {
      * 接口需要返回的参数
      * @param   {String}    data         编译任务ID      {data : 1529570349924}
      */
-    compileUrl : 'http://localhost:3002/interface?interface_name=do_compile',
+    compileUrl : '',
 
 
     /**
@@ -68,5 +68,5 @@ module.exports = {
      * @param   {String}    end_time            结束时间
      * @param   {String}    task_id             任务ID
      */
-    compileTaskUrl : 'http://localhost:3002/interface?interface_name=compile_task'
+    compileTaskUrl : ''
 };
