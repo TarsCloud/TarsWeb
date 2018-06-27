@@ -168,7 +168,7 @@ export default {
     removeItem(d) {
       this.$confirm(this.$t('template.delete.confirmTips'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
-        this.$ajax.remove('/server/api/delete_profile_template', { id: d.id }).then(() => {
+        this.$ajax.getJSON('/server/api/delete_profile_template', { id: d.id }).then(() => {
           loading.hide();
           this.fetchData().then(() => {
             this.$tip.success(this.$t('common.success'));

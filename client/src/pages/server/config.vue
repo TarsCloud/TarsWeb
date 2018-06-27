@@ -578,7 +578,13 @@ export default {
       this.$ajax.getJSON('/server/api/config_ref_list', {
         config_id: id,
       }).then((data) => {
-        data.map(item => Object.assign(item, item.reference));
+        data.map((item) =>{
+            let id = item.id;
+            item = Object.assign(item, item.reference);
+            item.refrence_id = item.id;
+            item.id = id;
+            return item;
+        });
         this.nodeRefFileListModal.model = {refFileList : data}
       }).catch((err) => {
         this.nodeRefFileListModal.model = {refFileList : []}

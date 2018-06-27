@@ -334,7 +334,7 @@ ConfigService.getConfigRefByConfigId = async(config_id) => {
     let refList = [];
     list.forEach(configFile => {
         let obj = {
-            id :    configFile.reference_id,
+            id :    configFile.id,
             config_id : configFile.config_id,
             reference : {
                 id : configFile.t_config_file.id,
