@@ -37,8 +37,9 @@ AdminService.loadServer = async (application, server, nodeName) => {
 
 AdminService.loadConfigByHost = async (server, filename, host) => {
     let ret = await configFPrx.loadConfigByHost(server, filename, host);
+    logger.info(ret);
     if(ret.__return === 0) {
-        return ret.result;
+        return ret.config;
     }else{
         throw new Error(ret.__return);
     }

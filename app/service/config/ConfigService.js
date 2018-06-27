@@ -92,9 +92,8 @@ ConfigService.deleteConfigFile = async(id) => {
             set_area:configFile.set_name,
             set_group:configFile.set_group
         });
-        nodeConfigFiles.filter(config => {
-            return config.filename = configFile.filename;
-        }).forEach(config => {
+        nodeConfigFiles = nodeConfigFiles.filter(config => config.filename == configFile.filename);
+        nodeConfigFiles.forEach(config => {
             ConfigDao.deleteConfigFile(config.id).catch(e => logger.error('[deleteConfigFile]:',e));
         });
     }
@@ -249,8 +248,6 @@ ConfigService.getNodeConfigFile = async(params) => {
     nodeConfigFile.forEach(config => {
         list.push(`${config.server_name}.${config.set_name || ''}.${config.set_area || ''}.${config.set_group || ''}_${config.host}`);
     });
-    logger.info('configFile.filename:',configFile.filename);
-    logger.info('nodeConfigFile:',nodeConfigFile);
     servers = servers.filter(server => {
         let key = `${params.application}.${params.server_name}.${params.set_name || ''}.${params.set_area || ''}.${params.set_group || ''}_${server.node_name}`;
         return !list.includes(key);
