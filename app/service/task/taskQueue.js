@@ -33,15 +33,17 @@ class MessageQueue {
                 }
             });
         });*/
+        this.consumerId = 'consumer1';
 
         this.Producer();
-        this.Consumer();
+
     }
 
     Producer() {
         this.producer = new kafka.HighLevelProducer(this.client);
         this.producer.on('ready', ()=> {
             logger.info('Producer is ready');
+            logger.info('kafkaHost:',kafkaConf.host);
             this.producer.createTopics(kafkaConf.topic, false, (err) => {
                 err && console.info(err);
             });
@@ -53,38 +55,49 @@ class MessageQueue {
         });
     }
 
-    Consumer() {
+    Consumer(consumerId) {
         let options = {
             host : kafkaConf.host,
             groupId : 'tars-consumer',
             sessionTimeout : 15000,
+            protocol : ['roundrobin'],
+            fromOffset : 'earliest',
             autoCommit : true
         };
-        this.consumer = new kafka.ConsumerGroup(options, kafkaConf.topic);
+        this.consumer = new kafka.ConsumerGroup(Object.assign({id: consumerId}, options), kafkaConf.topic);
+
+
+        process.once('SIGINT', ()=>{
+            logger.info('consumer closed');
+            this.consumer.close(true, function(){});
+        });
+
+
+        return this.consumer;
     }
 
     addTask(payloads) {
         payloads.map(payload => {
             payload.topic = payload.topic || kafkaConf.topic[0];
         });
-        return new Promise( (resolve, reject)=> {
+        return new Promise((resolve, reject) => {
             this.producer.send(payloads, (err, data)=> {
                 if(err) {
+                    logger.info('producer send err:',err);
                     reject(err);
                 }else {
                     resolve(data);
                 }
-            })
+            });
         });
     }
 
-    getTaskMessage(succ, fail, consumer) {
-        consumer = consumer || this.consumer;
+    getTaskMessage(succ) {
+        let consumer = this.Consumer(this.consumerId);
         consumer.on('message', (message)=> {
             succ(message);
         });
-
-        consumer.on('error', (err)=> fail(err));
+        consumer.on('error', (err)=> logger.error(err));
     }
 }
 

@@ -312,12 +312,12 @@ ConfigService.addConfigRef = async(config_id, reference_id) => {
 
 /**
  * 删除引用文件
- * @param reference_id
- * @return {reference_id}
+ * @param id
+ * @return {id}
  */
-ConfigService.deleteConfigRef = async(reference_id) => {
-    await ConfigDao.deleteConfigRef(reference_id).then(()=> {
-        return Promise.resolve(reference_id);
+ConfigService.deleteConfigRef = async(id) => {
+    await ConfigDao.deleteConfigRef(id).then(()=> {
+        return Promise.resolve(id);
     }).catch(e => {
         logger.error('[deleteConfigRef]:',e);
         return Promise.reject(e)

@@ -572,7 +572,7 @@ export default {
           command,
         }],
       }).then((res) => {  // eslint-disable-line
-        return this.checkTaskStatus(res.task_no).then((info) => {
+        return this.checkTaskStatus(res).then((info) => {
           loading.hide();
           // 任务成功重新拉取列表
           this.getServerList();

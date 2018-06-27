@@ -20,12 +20,22 @@ const util = require('../../tools/util');
 const kafkaConf = require('../../../config/webConf').kafkaConf;
 const AuthService = require('../../service/auth/AuthService');
 let taskQueue;
+let tempQueue = new Map();
 if(kafkaConf.enable) {
     const TaskQueue = require('../../service/task/taskQueue');
     taskQueue = new TaskQueue();
+
+    taskQueue.getTaskMessage( message => {
+        try{
+            logger.info('getTaskMessage:',message);
+            let params = JSON.parse(message.value);
+            TaskService.addTask(params);
+            tempQueue.set(message.value.task_no, 'queue');
+        }catch(e){
+            logger.error('[kafka message]:',message.value);
+        }
+    });
 }
-
-
 
 const TaskController = {};
 
@@ -63,6 +73,8 @@ TaskController.getTasks = async (ctx) => {
 
 TaskController.getTask = async (ctx) => {
     try{
+        logger.info('taskNo:',ctx.paramsObj.task_no);
+
         let ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
         ctx.makeResObj(200, '', ret);
     }catch(e) {
@@ -80,11 +92,11 @@ TaskController.addTask = async (ctx) => {
         let task_no = util.getUUID().toString();
         if(kafkaConf.enable) {
             await taskQueue.addTask([{messages:JSON.stringify({serial, items, task_no})}]);
+            tempQueue.set(task_no, 'waiting');
         } else {
             await TaskService.addTask({serial, items, task_no});
         }
-        let ret = await TaskService.getTaskRsp(task_no);
-        ctx.makeResObj(200, '', ret);
+        ctx.makeResObj(200, '', task_no);
     }catch(e) {
         logger.error(e);
         ctx.makeErrResObj(500, e.toString());

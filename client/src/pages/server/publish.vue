@@ -424,15 +424,11 @@ export default {
         }).then((data) => {
           loading.hide();
           this.closePublishModal();
-          this.finishModal.model = data;
+          this.finishModal.model = {task_no : data};
           this.finishModal.show = true;
+          console.info(data);
           // 实时更新状态
-          data.items.forEach((item) => {
-            const status = parseInt(item.status, 10);
-            if (status !== 2 && status !== 3) {
-              this.getTaskRepeat(item.task_no);
-            }
-          });
+          this.getTaskRepeat(data);
         }).catch((err) => {
           loading.hide();
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -452,12 +448,12 @@ export default {
         this.$ajax.getJSON('/server/api/task', {
           task_no: taskId,
         }).then((data) => {
-          this.finishModal.model = data;
+          this.finishModal.model = {task_no : data};
           data.items.forEach((item) => {
             if (parseInt(item.status, 10) === 2 || parseInt(item.status, 10) === 3) {
               clearTimeout(timerId);
             }else {
-              timerId = setTimeout(getTask, 3000);
+              timerId = setTimeout(getTask, 1000);
             }
           });
         }).catch((err) => {
