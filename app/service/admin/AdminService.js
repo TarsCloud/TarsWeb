@@ -37,7 +37,6 @@ AdminService.loadServer = async (application, server, nodeName) => {
 
 AdminService.loadConfigByHost = async (server, filename, host) => {
     let ret = await configFPrx.loadConfigByHost(server, filename, host);
-    logger.info(ret);
     if(ret.__return === 0) {
         return ret.config;
     }else{
@@ -80,6 +79,7 @@ AdminService.getTaskRsp = async (taskNo) => {
 };
 
 AdminService.addTask = async (req) => {
+    logger.info('addTask req:',req);
     let taskReq = new adminRegStruct.TaskReq();
     taskReq.taskNo = req.taskNo;
     taskReq.serial = req.serial;

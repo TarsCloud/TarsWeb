@@ -19,28 +19,20 @@ const AdminService = require('../../service/admin/AdminService');
 const ServerService = require('../../service/server/ServerService');
 const util = require('../../tools/util');
 const TaskDao = require('../../dao/TaskDao');
-const kafkaConf = require('../../../config/webConf').kafkaConf;
 
 
 const TaskService = {};
 
-if(kafkaConf.enable) {
-    const TaskQueue = require('../../service/task/taskQueue');
-    const taskQueue = new TaskQueue();
 
-
-    taskQueue.getTaskMessage( message => {
-        let params = JSON.parse(message.value);
-        TaskService.addTask(params);
-    }, err => {
-        logger.error('[kafka error]:',err);
-        return err;
-    });
-}
 
 
 TaskService.getTaskRsp = async (taskNo) => {
+    logger.info('taskNo:',taskNo);
     let rsp = await AdminService.getTaskRsp(taskNo).catch(e => logger.error('[adminService.getTaskRsp]:',e));
+    logger.info('getTaskRsp:',rsp);
+    if(rsp == -1) {
+        return {task_no: taskNo};
+    }
     return {
         task_no : rsp.taskNo,
         serial : rsp.serial,
