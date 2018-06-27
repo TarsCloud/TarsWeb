@@ -212,6 +212,8 @@ ConfigService.getApplicationConfigFile = async(application) => {
  * @return {*}
  */
 ConfigService.getSetConfigFile = async(params)=> {
+    params.set_area = params.set_area || '';
+    params.set_group = params.set_group || '';
     return await ConfigDao.getSetConfigFile(params);
 };
 

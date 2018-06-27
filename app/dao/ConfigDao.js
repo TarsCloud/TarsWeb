@@ -33,6 +33,9 @@ ConfigDao.getUnusedApplicationConfigFile = async(application, configId) => {
         where : {
             level : 1,
             server_name : application,
+            set_name : '',
+            set_area : '',
+            set_group : '',
             id : {
                 '$notIn' : arr
             }
@@ -44,7 +47,10 @@ ConfigDao.getApplicationConfigFile = async (application) => {
     return await tConfigFiles.findAll({
         where : {
             level       :   1,
-            server_name :   application
+            server_name :   application,
+            set_name : '',
+            set_area : '',
+            set_group : '',
         }
     });
 };
@@ -196,7 +202,7 @@ ConfigDao.getConfigRefByConfigId = async (configId) => {
 
 function filterParams(obj) {
     for(var item in obj) {
-        if(!obj[item]){
+        if(!obj[item] && obj[item]!== ''){
             delete obj[item];
         }
     }
