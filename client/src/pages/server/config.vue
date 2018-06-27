@@ -341,6 +341,9 @@ export default {
             application: this.serverData.application,
             level: this.serverData.level,
             server_name: this.serverData.server_name,
+            set_name: this.serverData.set_name,
+            set_area: this.serverData.set_area,
+            set_group: this.serverData.set_group
           }, model);
           this.$ajax.postJSON('/server/api/add_config_file', query).then((res) => {
             loading.hide();
