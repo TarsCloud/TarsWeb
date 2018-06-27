@@ -18,7 +18,7 @@
           <template slot-scope="scope">
             <let-table-operation @click="changeConfig(scope.row, 'configList')">{{$t('operate.update')}}</let-table-operation>
             <let-table-operation @click="deleteConfig(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
-            <let-table-operation @click="showDetail(scope.row)">{{$t('cfg.table.viewMerge')}}</let-table-operation>
+            <let-table-operation @click="showDetail(scope.row)">{{$t('cfg.table.viewConf')}}</let-table-operation>
             <let-table-operation @click="showHistory(scope.row.id)">{{$t('pub.btn.history')}}</let-table-operation>
           </template>
         </let-table-column>
@@ -147,10 +147,10 @@
       @close="closeRefFileModal">
       <let-form itemWidth="100%" ref="refForm">
         <let-form-item :label="$t('cfg.msg.refFile')" required>
-          <let-select 
+          <let-select
             size="small"
             :placeholder="$t('pub.dlg.defaultValue')"
-            v-model="refFileModal.model.filename" 
+            v-model="refFileModal.model.filename"
             required>
             <let-option v-for="item in refFileModal.model.fileList" :key="item.id" :value="item.id">{{item.filename}}</let-option>
           </let-select>
