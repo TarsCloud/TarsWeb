@@ -80,11 +80,16 @@ class MessageQueue {
         payloads.map(payload => {
             payload.topic = payload.topic || kafkaConf.topic[0];
         });
-        this.producer.send(payloads, (err)=> {
-            if(err) {
-                logger.info('producer send err:',err);
-            }
-        })
+        return new Promise((resolve, reject) => {
+            this.producer.send(payloads, (err, data)=> {
+                if(err) {
+                    logger.info('producer send err:',err);
+                    reject(err);
+                }else {
+                    resolve(data);
+                }
+            });
+        });
     }
 
     getTaskMessage(succ) {
