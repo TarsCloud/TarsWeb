@@ -31,7 +31,7 @@ ResourceController.installTarsNode = async(ctx) => {
         let rst = await ResourceService.installTarsNodes(ips);
         ctx.makeResObj(200, '', rst);
     } catch (e) {
-        logger.error('[installTarsNode]', e);
+        logger.error('[installTarsNode]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -43,7 +43,7 @@ ResourceController.uninstallTarsNode = async(ctx) => {
         let rst = await ResourceService.uninstallTarsNode(ips);
         ctx.makeResObj(200, '', rst);
     } catch (e) {
-        logger.error('[installTarsNode]', e);
+        logger.error('[installTarsNode]', e, ctx);
         ctx.makeErrResObj();
     }
 };

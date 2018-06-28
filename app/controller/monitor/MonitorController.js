@@ -44,7 +44,7 @@ MonitorController.tarsstat = async (ctx) => {
             pre_timeout_rate: '',
         }));
     }catch(e) {
-        logger.error(e);
+        logger.error(e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -55,7 +55,7 @@ MonitorController.tarsproperty = async (ctx) => {
         let list = await MonitorPropertyService.getTARSPropertyMonitorData({thedate, predate, startshowtime, endshowtime, master_name, master_ip, property_name, policy});
         ctx.makeResObj(200,'',util.viewFilter(list,{show_date:'',show_time:'',master_name:'',master_ip:'',property_name:'',policy:'',the_value:'',pre_value:''}));
     }catch(e) {
-        logger.error(e);
+        logger.error(e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };

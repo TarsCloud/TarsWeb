@@ -37,7 +37,7 @@ TemplateController.addTemplate = async(ctx) => {
         let profile = ctx.paramsObj.profile;
         ctx.makeResObj(200, '', util.viewFilter(await TemplateService.addTemplate(templateName, parentsName, profile), templateStruct));
     } catch (e) {
-        logger.error('[addTemplate]', e);
+        logger.error('[addTemplate]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -48,7 +48,7 @@ TemplateController.deleteTemplate = async(ctx) => {
         await TemplateService.deleteTemplate(id);
         ctx.makeResObj(200, '', [id]);
     } catch (e) {
-        logger.error('[addTemplate]', e);
+        logger.error('[addTemplate]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -59,7 +59,7 @@ TemplateController.updateTemplate = async(ctx) => {
         await TemplateService.updateTemplate(params);
         ctx.makeResObj(200, '', util.viewFilter(await TemplateService.getTemplateById(params.id), templateStruct));
     } catch (e) {
-        logger.error('[addTemplate]', e);
+        logger.error('[addTemplate]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -69,7 +69,7 @@ TemplateController.getTemplate = async(ctx) => {
         let templateName = ctx.paramsObj.profile_template;
         ctx.makeResObj(200, '', util.viewFilter(await TemplateService.getTemplateByName(templateName), templateStruct));
     } catch (e) {
-        logger.error('[getTemplate]', e);
+        logger.error('[getTemplate]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -80,7 +80,7 @@ TemplateController.getTemplateList = async(ctx) => {
         let parentsName = ctx.paramsObj.parents_name || '';
         ctx.makeResObj(200, '', util.viewFilter(await TemplateService.getTemplateList(templateName, parentsName), templateStruct));
     } catch (e) {
-        logger.error('[getTemplateList]', e);
+        logger.error('[getTemplateList]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -93,7 +93,7 @@ TemplateController.getTemplateNameList = async(ctx)=> {
         });
         ctx.makeResObj(200, '', templateNameList);
     } catch (e) {
-        logger.error('[getTemplateNameList]', e);
+        logger.error('[getTemplateNameList]', e, ctx);
         ctx.makeErrResObj();
     }
 };

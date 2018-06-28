@@ -97,7 +97,7 @@ ExpandServerController.selectAppServer = async(ctx) => {
         }
         ctx.makeResObj(200, '', rst);
     }catch(e){
-        logger.error(e);
+        logger.error('[selectAppServer]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -112,7 +112,7 @@ ExpandServerController.expandServerPreview = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(rst, expandStruct));
         }
     } catch (e) {
-        logger.error('[expandServerPreview]', e);
+        logger.error('[expandServerPreview]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -127,7 +127,7 @@ ExpandServerController.expandServer = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
         }
     } catch (e) {
-        logger.error('[expandServerPreview]', e);
+        logger.error('[expandServerPreview]', e, ctx);
         ctx.makeErrResObj();
     }
 };

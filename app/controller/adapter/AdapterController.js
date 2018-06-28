@@ -51,11 +51,11 @@ AdapterController.getAdapterConfById = async(ctx) => {
                 ctx.makeResObj(200, '', util.viewFilter(rst, adapterConfStruct));
             }
         } else {
-            logger.error('[getAdapterConfById]', '未查询到id=' + id + '相应的Adapter');
+            logger.error('[getAdapterConfById]', '未查询到id=' + id + '相应的Adapter', ctx);
             ctx.makeErrResObj();
         }
     } catch (e) {
-        logger.error('[getAdapterConfById]', e);
+        logger.error('[getAdapterConfById]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -73,7 +73,7 @@ AdapterController.getAdapterConfListByServerConfId = async(ctx) => {
         }
         ctx.makeResObj(200, '', util.viewFilter(rst, adapterConfStruct));
     } catch (e) {
-        logger.error('[getAdapterConfListByServerConfId]', e);
+        logger.error('[getAdapterConfListByServerConfId]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -90,7 +90,7 @@ AdapterController.addAdapterConf = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(rst, adapterConfStruct));
         }
     } catch (e) {
-        logger.error('[addAdapterConf]', e);
+        logger.error('[addAdapterConf]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -106,7 +106,7 @@ AdapterController.deleteAdapterConf = async(ctx) => {
             ctx.makeResObj(200, '', id);
         }
     } catch (e) {
-        logger.error('[addAdapterConf]', e);
+        logger.error('[addAdapterConf]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -126,12 +126,12 @@ AdapterController.updateAdapterConf = async(ctx) => {
             if (!_.isEmpty(rst)) {
                 ctx.makeResObj(200, '', util.viewFilter(rst, adapterConfStruct));
             } else {
-                logger.error('[getAdapterConfById]', '未查询到id=' + updateAdapter.id + '相应的Adapter');
+                logger.error('[getAdapterConfById]', '未查询到id=' + updateAdapter.id + '相应的Adapter', ctx);
                 ctx.makeErrResObj();
             }
         }
     } catch (e) {
-        logger.error('[updateAdapterConf]', e);
+        logger.error('[updateAdapterConf]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -143,7 +143,7 @@ AdapterController.getAvaliablePort = async(ctx) => {
         let rst = await AdapterService.getAvaliablePort(nodeNames);
         ctx.makeResObj(200, '', rst);
     } catch (e) {
-        logger.error('[updateAdapterConf]', e);
+        logger.error('[updateAdapterConf]', e, ctx);
         ctx.makeErrResObj();
     }
 };

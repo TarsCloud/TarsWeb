@@ -53,7 +53,7 @@ DeployServerController.deployServer = async(ctx) => {
         // ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
         ctx.makeResObj(200, '', rst);
     } catch (e) {
-        logger.error('[getServerNotifyList]', e);
+        logger.error('[getServerNotifyList]', e, ctx);
         ctx.makeErrResObj();
     }
 };

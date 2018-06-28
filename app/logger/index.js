@@ -123,23 +123,28 @@ var logger = {
     _formatInfo: (infos) => {
         var stackList = stack() || [];
         var caller = stackList[2];
-        var formatStr = '';
+        var preStr = '';
         if (caller.getFileName) {
             var fileName = caller.getFileName();
-            formatStr += fileName.substring(fileName.lastIndexOf('/') + 1) + ':';
-            formatStr += caller.getLineNumber() + '|'
+            preStr += fileName.substring(fileName.lastIndexOf('/') + 1) + ':';
+            preStr += caller.getLineNumber() + '|'
         }
+        var content = '';
         infos.forEach((str) => {
             if (str instanceof Error) {    //error类，打出相应的错误信息和堆栈信息
-                formatStr += str.stack;
+                content += str.stack;
             } else if (Object.prototype.toString.call(str) === '[object Object]' || Object.prototype.toString.call(str) === '[object Array]') {   //对象或数组，则转为string输出
-                formatStr += JSON.stringify(str);
+                if(str.request && str.response){
+                    preStr = (str.ip || '') + '|' + (str.uid || '') + '|' + preStr;
+                }else{
+                    content += JSON.stringify(str);
+                }
             } else {
-                formatStr += str;
+                content += str;
             }
-            formatStr += ' '
-        })
-        return formatStr;
+            content += ' '
+        });
+        return preStr + content;
 
     },
     info: (...str) => {

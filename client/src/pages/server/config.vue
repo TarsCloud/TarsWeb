@@ -18,7 +18,7 @@
           <template slot-scope="scope">
             <let-table-operation @click="changeConfig(scope.row, 'configList')">{{$t('operate.update')}}</let-table-operation>
             <let-table-operation @click="deleteConfig(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
-            <let-table-operation @click="showDetail(scope.row)">{{$t('cfg.table.viewConf')}}</let-table-operation>
+            <let-table-operation @click="showDetail(scope.row)">{{$t('cfg.title.viewConf')}}</let-table-operation>
             <let-table-operation @click="showHistory(scope.row.id)">{{$t('pub.btn.history')}}</let-table-operation>
           </template>
         </let-table-column>
@@ -175,9 +175,9 @@
           <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="posttime"></let-table-column>
           <let-table-column :title="$t('operate.operates')" width="260px">
             <template slot-scope="scope">
-              <let-table-operation @click="deleteRef(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
+              <let-table-operation @click="deleteRef(scope.row.id, 'nodeRef', scope.row.config_id)">{{$t('operate.delete')}}</let-table-operation>
               <let-table-operation @click="showDetail(scope.row)">{{$t('operate.view')}}</let-table-operation>
-              <let-table-operation @click="showHistory(scope.row.id)">{{$t('pub.btn.history')}}</let-table-operation>
+              <let-table-operation @click="showHistory(scope.row.config_id)">{{$t('pub.btn.history')}}</let-table-operation>
             </template>
           </let-table-column>
         </let-table>
@@ -428,7 +428,13 @@ export default {
         config_id: this.checkedConfigId,
       }).then((data) => {
         loading.hide();
-        data.map(item => Object.assign(item, item.reference));
+        data.map((item) => {
+          let id = item.id;
+          item = Object.assign(item, item.reference);
+          item.refrence_id = item.id;
+          item.id = id;
+          return item;
+        });
         this.refFileList = data;
       }).catch((err) => {
         loading.hide();
@@ -465,14 +471,18 @@ export default {
     closeRefFileModal() {
       this.refFileModal.show = false;
     },
-    deleteRef(id) {
+    deleteRef(id, type, configId) {
       this.$confirm(this.$t('cfg.msg.confirm'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
         this.$ajax.getJSON('/server/api/delete_config_ref', {
           id
         }).then((res)=> {
           loading.hide();
-          this.getRefFileList();
+          if(type == 'nodeRef'){
+            this.getNodeRefFileList(configId);
+          }else{
+            this.getRefFileList();
+          }
           this.$tip.success(this.$t('common.success'));
         })
       })

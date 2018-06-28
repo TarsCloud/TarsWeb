@@ -44,7 +44,7 @@ NotifyController.getServerNotifyList = async(ctx) => {
         }
 
     } catch (e) {
-        logger.error('[getServerNotifyList]', e);
+        logger.error('[getServerNotifyList]', e, ctx);
         ctx.makeErrResObj();
     }
 };

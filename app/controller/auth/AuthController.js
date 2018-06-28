@@ -26,7 +26,7 @@ AuthController.isEnableAuth = async(ctx) =>{
     try{
         ctx.makeResObj(200, '', {enableAuth: authConf.enableAuth});
     }catch(e){
-        logger.error('[isEnableAuth]', e);
+        logger.error('[isEnableAuth]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -50,7 +50,7 @@ AuthController.hasAuth = async(ctx) => {
         }
         ctx.makeResObj(200, '', {has_auth: await func(application, serverName, ctx.uid)});
     }catch(e){
-        logger.error('[isEnableAuth]', e);
+        logger.error('[isEnableAuth]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -62,7 +62,7 @@ AuthController.getAuthList = async(ctx) => {
         let rst = await AuthService.getAuthList(application, serverName);
         ctx.makeResObj(200, '', rst);
     }catch(e){
-        logger.error('[getUidList]', e);
+        logger.error('[getUidList]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -76,7 +76,7 @@ AuthController.updateAuth = async(ctx) => {
         await AuthService.updateAuth(application, serverName, operator, developer);
         ctx.makeResObj(200, '', {});
     }catch(e){
-        logger.error('[getUidList]', e);
+        logger.error('[getUidList]', e, ctx);
         ctx.makeErrResObj();
     }
 };

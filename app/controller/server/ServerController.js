@@ -71,11 +71,11 @@ ServerController.getServerConfById = async(ctx) => {
                 ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
             }
         } else {
-            logger.error('[getServerConfById]', '未查询到id=' + id + '相应的服务');
+            logger.error('[getServerConfById]', '未查询到id=' + id + '相应的服务', ctx);
             ctx.makeErrResObj();
         }
     } catch (e) {
-        logger.error('[getServerConfById]', e);
+        logger.error('[getServerConfById]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -87,7 +87,7 @@ ServerController.serverExist = async(ctx) => {
     try {
         ctx.makeResObj(200, '', (await ServerService.getServerConf(application, serverName, nodeName)).length > 0);
     } catch (e) {
-        logger.error('[serverExist]', e);
+        logger.error('[serverExist]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -151,7 +151,7 @@ ServerController.getServerConfList4Tree = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
         }
     } catch (e) {
-        logger.error('[getServerConfList4Tree]', e);
+        logger.error('[getServerConfList4Tree]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -202,7 +202,7 @@ ServerController.getInactiveServerConfList = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
         }
     } catch (e) {
-        logger.error('[getInactiveServerConfList]', e);
+        logger.error('[getInactiveServerConfList]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -219,11 +219,11 @@ ServerController.getRealtimeState = async(ctx)=> {
                 ctx.makeResObj(200, '', {realtime_state: rst['present_state']});
             }
         } else {
-            logger.error('[getRealtimeState]', '未查询到id=' + id + '相应的服务');
+            logger.error('[getRealtimeState]', '未查询到id=' + id + '相应的服务', ctx);
             ctx.makeErrResObj();
         }
     } catch (e) {
-        logger.error('[getRealtimeState]', e);
+        logger.error('[getRealtimeState]', e, ctx);
         ctx.makeErrResObj();
     }
 };
@@ -248,11 +248,11 @@ ServerController.updateServerConf = async(ctx) => {
             await ServerService.updateServerConf(server);
             ctx.makeResObj(200, '', util.viewFilter(await ServerService.getServerConfById(updateServer.id), serverConfStruct));
         } else {
-            logger.error('[updateServerConf]', '未查询到id=' + updateServer.id + '相应的服务');
+            logger.error('[updateServerConf]', '未查询到id=' + updateServer.id + '相应的服务', ctx);
             ctx.makeErrResObj();
         }
     } catch (e) {
-        logger.error('[updateServerConf]', e);
+        logger.error('[updateServerConf]', e, ctx);
         ctx.makeErrResObj();
     }
 
@@ -270,7 +270,7 @@ ServerController.loadServer = async(ctx) => {
             ctx.makeResObj(200, '', ret);
         }
     } catch (e) {
-        logger.error('[loadServer]', e);
+        logger.error('[loadServer]', e, ctx);
         ctx.makeErrResObj();
     }
 };

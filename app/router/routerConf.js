@@ -33,10 +33,7 @@ const LoginController = require('../controller/login/LoginController');
 
 const pageConf = [
     //首页
-    ['get', '/', PageController.index],
-    ['get', '/old', PageController.indexOld],
-    ['get', '/pages/op_manage.htm', PageController.opManage],
-    ['get', '/pages/tree', TreeController.listTree]
+    ['get', '/', PageController.index]
 ];
 
 const apiConf = [
