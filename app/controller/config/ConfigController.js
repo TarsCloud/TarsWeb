@@ -31,7 +31,7 @@ ConfigController.getUnusedApplicationConfigFile = async(ctx) => {
     try{
         ctx.makeResObj(200, '', await ConfigService.getUnusedApplicationConfigFile(application, config_id));
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[getUnusedApplicationConfigFile]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -76,7 +76,7 @@ ConfigController.configFileList = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(list,configListStruct));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[configFileList]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -91,7 +91,7 @@ ConfigController.addConfigFile = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(ret,configListStruct));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[addConfigFile]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -106,7 +106,7 @@ ConfigController.deleteConfigFile = async(ctx) => {
             ctx.makeResObj(200, '', await ConfigService.deleteConfigFile(id));
         }
     }catch(e) {
-        logger.error(e, ctx);
+        logger.error('[deleteConfigFile]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -122,7 +122,7 @@ ConfigController.updateConfigFile = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(ret,configListStruct));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[updateConfigFile]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -138,7 +138,7 @@ ConfigController.configFile = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(ret,configListStruct));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[configFile]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -160,7 +160,7 @@ ConfigController.nodeConfigFileList = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(list,configListStruct));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[nodeConfigFileList]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -178,7 +178,7 @@ ConfigController.getConfigFileHistory = async(ctx) => {
         }
         ctx.makeResObj(200, '', util.viewFilter(ret,{id:'',configid:{key: 'config_id'},reason:'',content:'',posttime:{formatter:util.formatTimeStamp}}));
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[getConfigFileHistory]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -194,7 +194,7 @@ ConfigController.configFileHistoryList = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(list,{id:'',config_id:'',reason:'',content:'',posttime:{formatter:util.formatTimeStamp}}));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[configFileHistoryList]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -210,7 +210,7 @@ ConfigController.addConfigRef = async(ctx) => {
             ctx.makeResObj(200, '', util.viewFilter(ret,{id:'',config_id:'',reference_id:''}));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[addConfigRef]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -225,7 +225,7 @@ ConfigController.deleteConfigRef = async(ctx) => {
             ctx.makeResObj(200, '', await ConfigService.deleteConfigRef(id));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[deleteConfigRef]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -240,7 +240,7 @@ ConfigController.configRefList = async(ctx) => {
             ctx.makeResObj(200, '', await ConfigService.getConfigRefByConfigId(config_id));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[configRefList]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -256,7 +256,7 @@ ConfigController.mergedNodeConfig = async(ctx) => {
             ctx.makeResObj(200, '', await AdminService.loadConfigByHost(configFile.server_name, configFile.filename, configFile.host));
         }
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[mergedNodeConfig]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -280,7 +280,7 @@ ConfigController.pushConfigFile = async(ctx) => {
 
         ctx.makeResObj(200, '', await AdminService.doCommand(targets, `tars.loadconfig ${filename}`));
     }catch(e){
-        logger.error(e, ctx);
+        logger.error('[pushConfigFile]', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
