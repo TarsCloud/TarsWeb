@@ -453,7 +453,7 @@ export default {
             if (parseInt(item.status, 10) === 2 || parseInt(item.status, 10) === 3) {
               clearTimeout(timerId);
             }else {
-              timerId = setTimeout(getTask, 1000);
+              timerId = setTimeout(getTask, 3000);
             }
           });
         }).catch((err) => {

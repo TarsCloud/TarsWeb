@@ -67,7 +67,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
             ctx.makeResObj(200,'',util.viewFilter(ret,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
         }
     }catch (e) {
-        logger.error(e);
+        logger.error('[PatchController.uploadPatchPackage]:', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 
@@ -83,7 +83,7 @@ PatchController.serverPatchList = async (ctx) => {
             ctx.makeResObj(200,'',util.viewFilter(list,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
         }
     }catch(e) {
-        logger.error(e);
+        logger.error('[PatchController.serverPatchList]:', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -94,7 +94,7 @@ PatchController.getServerPatchByTaskId = async (ctx) => {
         let ret = await CompileService.getServerPatchByTaskId(task_id);
         ctx.makeResObj(200,'',util.viewFilter(ret,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
     }catch(e) {
-        logger.error(e);
+        logger.error('[PatchController.getServerPatchByTaskId]:', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -109,7 +109,7 @@ PatchController.getTagList = async (ctx) => {
             ctx.makeResObj(200,'',util.viewFilter(list,{path:'',version:'',commitMessage:''}));
         }
     }catch(e) {
-        logger.error(e);
+        logger.error('[PatchController.getTagList]:', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -118,7 +118,7 @@ PatchController.getCompilerConf = (ctx) => {
     try {
         ctx.makeResObj(200,'',CompileService.getCompilerConf());
     }catch(e) {
-        logger.error(e);
+        logger.error('[PatchController.getCompilerConf]:', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -133,7 +133,7 @@ PatchController.getCodeInfConf = async (ctx) => {
             ctx.makeResObj(200,'',ret);
         }
     }catch(e) {
-        logger.error(e);
+        logger.error('[PatchController.getCodeInfConf]:', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -144,7 +144,7 @@ PatchController.setCodeInfConf = async (ctx) => {
         let ret = await CompileService.setCodeInfConf({application, server_name, path});
         ctx.makeResObj(200,'',ret);
     }catch(e) {
-        logger.error(e);
+        logger.error('[PatchController.setCodeInfConf]:', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -159,7 +159,7 @@ PatchController.doCompile = async (ctx) => {
             ctx.makeResObj(200,'',ret);
         }
     }catch(e) {
-        logger.error(e);
+        logger.error('[PatchController.doCompile]:', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };
@@ -170,7 +170,7 @@ PatchController.compilerTask = async (ctx) => {
         let ret = await CompileService.compilerTask(taskNo);
         ctx.makeResObj(200, '', ret);
     }catch(e) {
-        logger.error(e);
+        logger.error('[PatchController.compilerTask]:', e, ctx);
         ctx.makeErrResObj(500, e.toString());
     }
 };

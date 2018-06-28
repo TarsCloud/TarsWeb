@@ -36,7 +36,7 @@ class MessageQueue {
         this.consumerId = 'consumer1';
 
         this.Producer();
-
+        this.consumer = this.Consumer(this.consumerId);
     }
 
     Producer() {
@@ -66,13 +66,6 @@ class MessageQueue {
         };
         this.consumer = new kafka.ConsumerGroup(Object.assign({id: consumerId}, options), kafkaConf.topic);
 
-
-        process.once('SIGINT', ()=>{
-            logger.info('consumer closed');
-            this.consumer.close(true, function(){});
-        });
-
-
         return this.consumer;
     }
 
@@ -93,7 +86,7 @@ class MessageQueue {
     }
 
     getTaskMessage(succ) {
-        let consumer = this.Consumer(this.consumerId);
+        let consumer = this.consumer;
         consumer.on('message', (message)=> {
             succ(message);
         });
