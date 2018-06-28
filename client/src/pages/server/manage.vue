@@ -542,7 +542,7 @@ export default {
           if (data.status === 1) {
             setTimeout(() => {
               resolve(this.checkTaskStatus(taskid));
-            }, 1000);
+            }, 2000);
           // 成功
           } else if (data.status === 2) {
             resolve(`taskid: ${data.task_no}`);
@@ -557,7 +557,7 @@ export default {
           } else {
             setTimeout(() => {
               resolve(this.checkTaskStatus(taskid, true));
-            }, 1000);
+            }, 2000);
           }
         });
       });

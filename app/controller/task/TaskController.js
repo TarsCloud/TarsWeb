@@ -97,7 +97,7 @@ TaskController.getTask = async (ctx) => {
                     "parameters": {},        // 参数
                     "start_time": "",        // 开始时间
                     "end_time": "",          // 结束时间
-                    "status": "",            // 子任务状态
+                    "status": 1,            // 子任务状态
                     "status_info": "",       // 状态信息
                     "execute_info": ""       // 执行信息
                 }]
