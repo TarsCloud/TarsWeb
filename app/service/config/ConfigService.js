@@ -233,9 +233,9 @@ ConfigService.getNodeConfigFile = async(params) => {
     const configFile = await ConfigDao.getConfigFile(params.config_id);
     let nodeConfigFile = await ConfigDao.getNodeConfigFile({
         server_name:`${params.application}.${params.server_name}`,
-        set_name:params.set_name,
-        set_area:params.set_area,
-        set_group:params.set_group
+        set_name:params.set_name || undefined,
+        set_area:params.set_area || undefined,
+        set_group:params.set_group || undefined
     });
     let servers = await ServerDao.getServerConf({
         params:params.application,

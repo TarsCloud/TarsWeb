@@ -33,10 +33,10 @@ if(kafkaConf.enable) {
         try{
             logger.info('getTaskMessage:',message);
             let params = JSON.parse(message.value);
-            TaskService.addTask(params);
-
-            TaskController.tempQueue[params.task_no] = 'queue';
-            logger.info('getTaskMessage:',TaskController.tempQueue[params.task_no]);
+            TaskService.addTask(params).then(()=>{
+                TaskController.tempQueue[params.task_no] = 'queue';
+                logger.info('getTaskMessage:',TaskController.tempQueue[params.task_no]);
+            });
         }catch(e){
             logger.error('[kafka message]:',message.value);
         }
@@ -103,7 +103,7 @@ TaskController.getTask = async (ctx) => {
                 }]
             };
         }else {
-            ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no)
+            ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no).catch(e=> logger.error('[TaskService.getTaskRsp]:',e));
         }
         ctx.makeResObj(200, '', ret);
     }catch(e) {

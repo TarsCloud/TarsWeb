@@ -22,7 +22,7 @@
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.currStatus')" width="65px">
         <template slot-scope="scope">
-          <span :class="scope.row.present_state === 'active' ? 'status-active' : 'status-off'"></span>
+          <span :class="scope.row.present_state === 'active' ? 'status-active' : scope.row.present_state === 'activating' ? 'status-activating' : 'status-off'"></span>
         </template>
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.processID')" prop="process_id" width="80px"></let-table-column>
