@@ -16,7 +16,9 @@
  
 var path = require('path');
 
-//用户体系配置 auth.js
+/**
+ * 登录配置
+ */
 module.exports = {
     enableLogin: false,                     //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
