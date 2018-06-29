@@ -29,7 +29,7 @@
       <let-table-column :title="$t('serverList.table.th.version')" prop="patch_version" width="68px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.time')">
         <template slot-scope="scope">
-          <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.posttime)}}</span>
+          <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.patch_time)}}</span>
         </template>
       </let-table-column>
       <let-table-column :title="$t('operate.operates')" width="260px">
