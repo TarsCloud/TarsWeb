@@ -44,8 +44,14 @@ class MessageQueue {
         this.producer.on('ready', ()=> {
             logger.info('Producer is ready');
             logger.info('kafkaHost:',kafkaConf.host);
-            this.producer.createTopics(kafkaConf.topic, false, (err) => {
-                err && console.info(err);
+            this.client.topicExists(kafkaConf.topic, ret =>{
+                if(ret!==undefined) {
+                    this.producer.createTopics(kafkaConf.topic, false, (err) => {
+                        err && console.info(err);
+                    });
+                }else {
+                    logger.info('kafka topics:',kafkaConf.host);
+                }
             });
         });
 
