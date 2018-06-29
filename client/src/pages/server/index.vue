@@ -344,7 +344,7 @@ export default {
   }
 
   /*服务状态*/
-  .status-active, .status-off {
+  .status-active, .status-off, .status-activating {
     display: flex;
     align-items: center;
 
@@ -371,6 +371,13 @@ export default {
     color: var(--off-color);
     &:after {
       content: "Off";
+    }
+  }
+
+  .status-activating {
+    color: var(--off-color);
+    &:after {
+      content: "Activating";
     }
   }
   /*服务状态 end*/

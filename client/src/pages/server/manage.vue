@@ -22,14 +22,14 @@
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.currStatus')" width="65px">
         <template slot-scope="scope">
-          <span :class="scope.row.present_state === 'active' ? 'status-active' : 'status-off'"></span>
+          <span :class="scope.row.present_state === 'active' ? 'status-active' : scope.row.present_state === 'activating' ? 'status-activating' : 'status-off'"></span>
         </template>
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.processID')" prop="process_id" width="80px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.version')" prop="patch_version" width="68px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.time')">
         <template slot-scope="scope">
-          <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.posttime)}}</span>
+          <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.patch_time)}}</span>
         </template>
       </let-table-column>
       <let-table-column :title="$t('operate.operates')" width="260px">
@@ -542,7 +542,7 @@ export default {
           if (data.status === 1) {
             setTimeout(() => {
               resolve(this.checkTaskStatus(taskid));
-            }, 1000);
+            }, 2000);
           // 成功
           } else if (data.status === 2) {
             resolve(`taskid: ${data.task_no}`);
@@ -557,7 +557,7 @@ export default {
           } else {
             setTimeout(() => {
               resolve(this.checkTaskStatus(taskid, true));
-            }, 1000);
+            }, 2000);
           }
         });
       });

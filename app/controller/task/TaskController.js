@@ -33,10 +33,10 @@ if(kafkaConf.enable) {
         try{
             logger.info('getTaskMessage:',message);
             let params = JSON.parse(message.value);
-            TaskService.addTask(params);
-
-            TaskController.tempQueue[params.task_no] = 'queue';
-            logger.info('getTaskMessage:',TaskController.tempQueue[params.task_no]);
+            TaskService.addTask(params).then(()=>{
+                TaskController.tempQueue[params.task_no] = 'queue';
+                logger.info('getTaskMessage:',TaskController.tempQueue[params.task_no]);
+            });
         }catch(e){
             logger.error('[kafka message]:',message.value);
         }
@@ -97,13 +97,13 @@ TaskController.getTask = async (ctx) => {
                     "parameters": {},        // 参数
                     "start_time": "",        // 开始时间
                     "end_time": "",          // 结束时间
-                    "status": "",            // 子任务状态
+                    "status": 1,            // 子任务状态
                     "status_info": "",       // 状态信息
                     "execute_info": ""       // 执行信息
                 }]
             };
         }else {
-            ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no)
+            ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no).catch(e=> logger.error('[TaskService.getTaskRsp]:',e));
         }
         ctx.makeResObj(200, '', ret);
     }catch(e) {

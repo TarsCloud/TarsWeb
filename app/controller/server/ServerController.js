@@ -50,7 +50,7 @@ const serverConfStruct = {
     start_script_path: '',
     stop_script_path: '',
     monitor_script_path: '',
-    patch_time: util.formatTimeStamp,
+    patch_time: {formatter: util.formatTimeStamp},
     patch_version: "",
     process_id: '',
     posttime: {formatter: util.formatTimeStamp}

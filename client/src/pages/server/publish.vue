@@ -278,7 +278,10 @@ export default {
       },
       finishModal: {
         show: false,
-        model: true,
+        model: {
+          task_no : '',
+          items : []
+        },
       },
       statusConfig: {
         0: this.$t('serverList.restart.notStart'),
@@ -424,9 +427,8 @@ export default {
         }).then((data) => {
           loading.hide();
           this.closePublishModal();
-          this.finishModal.model = {task_no : data};
+          this.finishModal.model.task_no = data;
           this.finishModal.show = true;
-          console.info(data);
           // 实时更新状态
           this.getTaskRepeat(data);
         }).catch((err) => {
@@ -448,7 +450,6 @@ export default {
         this.$ajax.getJSON('/server/api/task', {
           task_no: taskId,
         }).then((data) => {
-          this.finishModal.model = {task_no : data};
           data.items.forEach((item) => {
             if (parseInt(item.status, 10) === 2 || parseInt(item.status, 10) === 3) {
               clearTimeout(timerId);
@@ -456,6 +457,8 @@ export default {
               timerId = setTimeout(getTask, 3000);
             }
           });
+          this.finishModal.model.items = data.items;       
+          console.info(this.finishModal.model.items); 
         }).catch((err) => {
           clearTimeout(timerId);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
