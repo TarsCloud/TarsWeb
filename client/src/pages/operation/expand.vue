@@ -196,7 +196,7 @@ export default {
         show: false,
         resultList: [],
         rowClassName: (rowData)=>{
-          if(!rowData.rst){
+          if(rowData && rowData.row && !rowData.row.rst){
             return 'err-row'
           }
           return ''

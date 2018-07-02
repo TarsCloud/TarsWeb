@@ -304,7 +304,7 @@ export default {
         show: false,
         resultList: [],
         rowClassName: (rowData)=>{
-           if(!rowData.rst){
+           if(rowData && rowData.row && !rowData.row.rst){
               return 'err-row'
            }
            return ''
@@ -378,6 +378,9 @@ export default {
         });
     },
     save() {
+      this.showResultModal([{ip: "10.219.147.78", rst: true, msg: "安装TarsNode成功"}]);
+      return;
+
       if (this.$refs.form.validate()) {
         const model = this.model;
 
