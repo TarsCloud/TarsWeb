@@ -26,7 +26,7 @@ const TaskController = {
 };
 
 if(kafkaConf.enable) {
-    const TaskQueue = require('../../service/task/taskQueue');
+    const TaskQueue = require('../../service/task/TaskQueue');
     taskQueue = new TaskQueue();
 
     taskQueue.getTaskMessage( message => {
