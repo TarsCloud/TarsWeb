@@ -20,39 +20,33 @@ const logger = require('../../logger');
 
 class MessageQueue {
     constructor (host) {
-        this.client = new kafka.Client(host || kafkaConf.host, 'tars-client-id', {
+        this.client = new kafka.Client(host || kafkaConf.zkHost, 'tars-client-id', {
             sessionTimeout : 300,
             spinDelay : 100,
             retries : 2
         });
 
-        /*this.client.once('connect', ()=> {
-            this.client.loadMetadataForTopics([], function (err) {
-                if (err) {
-                    console.error(err);
-                }
-            });
-        });*/
-        this.consumerId = 'consumer1';
-
         this.Producer();
-        this.consumer = this.Consumer(this.consumerId);
+        this.consumer = this.Consumer();
     }
 
     Producer() {
         this.producer = new kafka.HighLevelProducer(this.client);
         this.producer.on('ready', ()=> {
             logger.info('Producer is ready');
-            logger.info('kafkaHost:',kafkaConf.host);
+            logger.info('kafkaHost:',kafkaConf.kafkaHost);
+            logger.info('zkHost:',kafkaConf.zkHost);
             this.client.topicExists(kafkaConf.topic, ret =>{
                 if(ret!==undefined) {
                     this.producer.createTopics(kafkaConf.topic, false, (err) => {
                         err && console.info(err);
                     });
+                    //logger.error('kafka topics are not exists!! please create topics');
                 }else {
-                    logger.info('kafka topics:',kafkaConf.host);
+                    logger.info('kafka topics:',kafkaConf.topic);
                 }
             });
+
         });
 
         this.producer.on('error', err => {
@@ -61,16 +55,17 @@ class MessageQueue {
         });
     }
 
-    Consumer(consumerId) {
+    Consumer() {
         let options = {
-            host : kafkaConf.host,
+            host : kafkaConf.zkHost,
             groupId : 'tars-consumer',
             sessionTimeout : 15000,
             protocol : ['roundrobin'],
             fromOffset : 'earliest',
-            autoCommit : true
+            autoCommit : true,
+            id : 'consumer1'
         };
-        this.consumer = new kafka.ConsumerGroup(Object.assign({id: consumerId}, options), kafkaConf.topic);
+        this.consumer = new kafka.ConsumerGroup(options, kafkaConf.topic);
 
         return this.consumer;
     }

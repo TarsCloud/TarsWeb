@@ -22,7 +22,7 @@ const AuthService = require('../../service/auth/AuthService');
 let taskQueue;
 
 const TaskController = {
-    tempQueue : {}
+    tempQueue : []
 };
 
 if(kafkaConf.enable) {
@@ -34,7 +34,7 @@ if(kafkaConf.enable) {
             logger.info('getTaskMessage:',message);
             let params = JSON.parse(message.value);
             TaskService.addTask(params).then(()=>{
-                TaskController.tempQueue[params.task_no] = 'queue';
+                TaskController.tempQueue.shift();
                 logger.info('getTaskMessage:',TaskController.tempQueue[params.task_no]);
             });
         }catch(e){
@@ -82,7 +82,7 @@ TaskController.getTask = async (ctx) => {
         logger.info('taskNo:',ctx.paramsObj.task_no);
         logger.info('TaskController.tempQueue:',TaskController.tempQueue);
         let ret = {};
-        if(TaskController.tempQueue[ctx.paramsObj.task_no]=='waiting') {
+        if(TaskController.tempQueue.includes(ctx.paramsObj.task_no)) {
             ret = {
                 "task_no": ctx.paramsObj.task_no,               // 任务ID
                 "serial": false,              // 是否串行
@@ -120,7 +120,7 @@ TaskController.addTask = async (ctx) => {
     try {
         let task_no = util.getUUID().toString();
         if(kafkaConf.enable) {
-            TaskController.tempQueue[task_no] = 'waiting';
+            TaskController.tempQueue.push(task_no);
             logger.info(TaskController.tempQueue);
             await taskQueue.addTask([{messages:JSON.stringify({serial, items, task_no})}]);
         } else {

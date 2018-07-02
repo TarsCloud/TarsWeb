@@ -19,7 +19,7 @@ const AdminService = require('../../service/admin/AdminService');
 const ServerService = require('../../service/server/ServerService');
 const util = require('../../tools/util');
 const TaskDao = require('../../dao/TaskDao');
-
+const AuthService = require('../../service/auth/AuthService');
 
 const TaskService = {};
 
@@ -72,7 +72,7 @@ TaskService.addTask = async (params) => {
             parameters : parameters
         };
         let serverConf = await ServerService.getServerConfById(item.server_id.toString()).catch(e => {
-            console.error('[ServerService.getServerConfById]:',e.toString());
+            logger.error('[ServerService.getServerConfById]:',e.toString());
             return Promise.reject(e.toString());
         });
 
@@ -83,6 +83,10 @@ TaskService.addTask = async (params) => {
         });
         items.push(obj);
         logger.info('[TaskService.addTask items]:',obj);
+
+        if(item.command==='undeploy_tars'){
+            TaskService.autoDeletePermission(serverConf.application, serverConf.server_name, params.task_no);
+        }
     }
     let req = {
         taskNo : params.task_no,
@@ -92,6 +96,30 @@ TaskService.addTask = async (params) => {
     };
     await AdminService.addTask(req).catch(e => {console.error('[AdminService.addTask]:',e)});
     return params.task_no;
+};
+
+TaskService.autoDeletePermission = function (application, server_name, taskNo) {
+    let t = null,
+        timeout = 30 * 1000,   // 30S 超时
+        start = new Date().getTime();
+    let f = function () {
+        if(new Date().getTime() - start >= timeout) {
+            clearTimeout(t);
+            t = null;
+            logger.error('unDeployPermission err: timeout');
+            return;
+        }
+        TaskService.getTaskRsp(taskNo).then(function (data) {
+            if(data.status==2) {
+                AuthService.deleteAuth(application, server_name);
+                clearTimeout(t);
+                t = null;
+            }
+        }).catch(function (err) {
+            //console.info('autoDeletePermission err:',err);
+        });
+    };
+    t = setTimeout(f, 3000);
 };
 
 module.exports = TaskService;
