@@ -23,7 +23,7 @@ module.exports = {
     /**
      * 是否允许管理平台在服务上线和服务扩容时自动到机器上安装Tars node
      */
-    enableAutoInstall: true,
+    enableAutoInstall: false,
 
     /**
      * getMachineConf               获取机器配置，管理平台优先从此接口获取，若未配置此接口，则从sshConf.json中获取。
