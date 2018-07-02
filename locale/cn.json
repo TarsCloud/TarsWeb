@@ -121,7 +121,8 @@
       "setName": "SET名",
       "setArea": "SET区域",
       "setGroup": "SET组"
-    }
+    },
+    "errMsg": "错误信息"
   },
   "operate": {
     "update": "编辑",
@@ -533,5 +534,9 @@
     "tips": {
       "sep": "多个人用分号隔开"
     }
+  },
+  "resource": {
+    "installRstMsg": "，TarsNode安装结果如下：",
+    "installResult": "安装结果"
   }
 }

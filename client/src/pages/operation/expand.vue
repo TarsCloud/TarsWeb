@@ -131,6 +131,29 @@
        <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}</let-button>
        <let-button type="sumbit" theme="primary">{{$t('deployService.title.expand')}}</let-button>
     </let-form>
+
+
+    <let-modal
+      v-model="resultModal.show"
+      width="700px"
+      class="more-cmd"
+      :footShow="false"
+      @close="closeResultModal"
+      @on-cancel="closeResultModal">
+      <p class="result-text">{{$t('serviceExpand.form.errTips.success')}}{{$t('resource.installRstMsg')}}</p>
+      <let-table :data="resultModal.resultList" :empty-msg="$t('common.nodata')" :row-class-name="resultModal.rowClassName">
+        <let-table-column title="ip" prop="ip">
+        </let-table-column>
+        <let-table-column :title="$t('resource.installResult')" prop="rst">
+          <template slot-scope="scope">
+            <p v-text="scope.row.rst?$t('common.success'):$t('common.error')"></p>
+          </template>
+        </let-table-column>
+        <let-table-column :title="$t('common.errMsg')" prop="msg"></let-table-column>
+      </let-table>
+    </let-modal>
+
+
   </div>
 </template>
 
@@ -169,6 +192,16 @@ export default {
       previewItems: [],
       ipReg: `^${ipReg}$`,
       isCheckedAll: false,
+      resultModal: {
+        show: false,
+        resultList: [],
+        rowClassName: (rowData)=>{
+          if(!rowData.rst){
+            return 'err-row'
+          }
+          return ''
+        }
+      }
     };
   },
 
@@ -299,7 +332,7 @@ export default {
           };
 
           const loading = this.$Loading.show();
-          this.$ajax.postJSON('/server/api/expand_server', params).then(() => {
+          this.$ajax.postJSON('/server/api/expand_server', params).then((data) => {
             // hw-todo: 是否需要更新状态待定
             /*
             this.previewItems.forEach((item) => {
@@ -308,7 +341,11 @@ export default {
               }
             }); */
             loading.hide();
-            this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
+            if(data.tars_node_rst && data.tars_node_rst.length){
+              this.showResultModal(data.tars_node_rst);
+            }else{
+              this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
+            }
           }).catch((err) => {
             loading.hide();
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -318,6 +355,16 @@ export default {
         }
       }
     },
+
+    showResultModal(data){
+      this.resultModal.resultList = data;
+      this.resultModal.show = true;
+    },
+
+    closeResultModal(){
+      this.resultModal.show = false;
+      this.resultModal.resultList = [];
+    }
   },
   watch: {
     isCheckedAll() {
@@ -333,5 +380,13 @@ export default {
 <style>
 .mt40 {
   margin-top: 40px;
+}
+tr.err-row td{
+  background:#f56c77!important;
+  color:#FFF;
+}
+.result-text{
+  margin-top: 20px;
+  margin-bottom:10px;
 }
 </style>

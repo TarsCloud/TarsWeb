@@ -124,7 +124,10 @@ ExpandServerController.expandServer = async(ctx) => {
             ctx.makeNotAuthResObj();
         } else {
             let rst = await ExpandService.expand(params);
-            ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
+            ctx.makeResObj(200, '', {
+                server_conf: util.viewFilter(rst.server_conf, serverConfStruct),
+                tars_node_rst: rst.tars_node_rst
+            });
         }
     } catch (e) {
         logger.error('[expandServerPreview]', e, ctx);

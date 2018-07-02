@@ -3,20 +3,19 @@
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
  *
- * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except 
+ * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  *
  * https://opensource.org/licenses/BSD-3-Clause
  *
- * Unless required by applicable law or agreed to in writing, software distributed 
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
- 
+
 const {
     enableAuth,
-    authUrlPrefix,
     addAuthUrl,
     deleteAuthUrl,
     updateAuthUrl,
@@ -71,7 +70,7 @@ AuthService.checkHasAuth = async(application, serverName, role, uid) => {
 };
 
 AuthService.httpCallCheckAuth = async(flag, roles, uid) => {
-    var rst = await util.jsonRequest.get(authUrlPrefix + getAuthUrl, {
+    var rst = await util.jsonRequest.get(getAuthUrl, {
         flag: flag,
         role: roles,
         uid: uid
@@ -87,7 +86,7 @@ AuthService.getAuthListByUid = async(uid)=> {
     if (!enableAuth) {
         return [];
     }
-    var rst = await util.jsonRequest.get(authUrlPrefix + getAuthListByUidUrl, {
+    var rst = await util.jsonRequest.get(getAuthListByUidUrl, {
         uid: uid
     });
     if (rst && rst.ret_code == 200) {
@@ -140,7 +139,7 @@ AuthService.addAuth = async(application, serverName, operator, developer) => {
     }
     let flag = application + (serverName ? ('.' + serverName) : '');
     let authList = _.concat(AuthService.formatAddAuthParams(flag, 'operator', operator), AuthService.formatAddAuthParams(flag, 'developer', developer))
-    let rst = await util.jsonRequest.post(authUrlPrefix + addAuthUrl, {auth: authList});
+    let rst = await util.jsonRequest.post(addAuthUrl, {auth: authList});
     if (rst && rst.ret_code == 200) {
         return true;
     } else {
@@ -156,8 +155,8 @@ AuthService.updateAuth = async(application, serverName, operator, developer)=> {
     operator = AuthService.formatUidToArray(operator);
     developer = AuthService.formatUidToArray(developer);
     let rst = await Promise.all([
-        util.jsonRequest.post(authUrlPrefix + updateAuthUrl, {flag: flag, role: 'operator', uid: operator}),
-        util.jsonRequest.post(authUrlPrefix + updateAuthUrl, {flag: flag, role: 'developer', uid: developer})
+        util.jsonRequest.post(updateAuthUrl, {flag: flag, role: 'operator', uid: operator}),
+        util.jsonRequest.post(updateAuthUrl, {flag: flag, role: 'developer', uid: developer})
     ]);
     for (var i = 0; i < rst.length; i++) {
         if (!rst[i] || rst[i].ret_code != 200) {
@@ -172,7 +171,7 @@ AuthService.getAuthList = async(application, serverName) => {
     if (!enableAuth) {
         return [];
     }
-    let rst = await util.jsonRequest.get(authUrlPrefix + getAuthListByFlagUrl, {flag: application + '.' + serverName});
+    let rst = await util.jsonRequest.get(getAuthListByFlagUrl, {flag: application + '.' + serverName});
     let authList = {
         operator: [],
         developer: []
@@ -193,35 +192,49 @@ AuthService.getAuthList = async(application, serverName) => {
 
 //检测是否有顶层目录的权限，主要用于获取配置列表等
 AuthService.checkHasParentAuth = async(params)=> {
-    if(!enableAuth || await AuthService.hasAdminAuth(params.uid)){
+    if (!enableAuth || await AuthService.hasAdminAuth(params.uid)) {
         return true;
     }
     let authList = await AuthService.getAuthListByUid(params.uid);
     let serverCond = [], appCond = [];
-    authList.forEach((auth)=>{
+    authList.forEach((auth)=> {
         let application = auth.application;
         let serverName = auth.serverName;
-        if(serverName){
+        if (serverName) {
             serverCond.push(application + '.' + serverName);
-        }else{
+        } else {
             appCond.push(application);
         }
     });
     let serverList = await ServerDao.getServerConf4Tree(appCond, serverCond);
     let {application, setName, setArea, setGroup, serverName} = params;
     let hasAuth = false;
-    _.each(serverList, (server)=>{
+    _.each(serverList, (server)=> {
         server = server.dataValues;
-        if((!application || application == server.application) &&
+        if ((!application || application == server.application) &&
             (!setName || setName == server.set_name) &&
             (!setArea || setArea == server.set_area) &&
             (!setGroup || setGroup == server.set_group) &&
-            (!serverName || serverName == server.server_name)){
+            (!serverName || serverName == server.server_name)) {
             hasAuth = true;
             return false;
         }
     });
     return hasAuth;
+};
+
+//删除权限
+AuthService.deleteAuth = async(application, serverName) => {
+    if (!enableAuth) {
+        return true;
+    }
+    let rst = await util.jsonRequest.post(deleteAuthUrl, {flag: application + '.' + serverName});
+    if (rst.ret_code == 200) {
+        return true;
+    } else {
+        throw new Error(rst.err_msg);
+        return false;
+    }
 };
 
 module.exports = AuthService;
