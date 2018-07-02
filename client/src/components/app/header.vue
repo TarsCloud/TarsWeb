@@ -12,11 +12,12 @@
         <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
       </let-tabs>
-
+      <span v-for="locale in locales">{{locale.name}}</span>
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
-          <let-option value="cn">中文</let-option>
-          <let-option value="en">English</let-option>
+          <template v-for="locale in locales">
+            <let-option :value="locale.localeCode">{{locale.name}}</let-option>
+          </template>
         </let-select>
       </div>
       <div class="user-wrap">
@@ -38,6 +39,7 @@
 <script>
 import serverIcon from '@/assets/img/server-icon.png';
 import opaIcon from '@/assets/img/opa-icon.png';
+import locales from '@/locale/index';
 
 export default {
   data() {
@@ -49,6 +51,7 @@ export default {
       uid: '--',
       userOptOpen: false,
       enableLogin: false,
+      locales: locales
     };
   },
 

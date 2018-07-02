@@ -197,9 +197,9 @@ ResourceService.getSSHConfig = async(ip) => {
                 logger.error('getSSHConfig', e);
                 conf = false;
             }
-            if(_.isPlainObject(conf) && conf.port != undefined && conf.username != undefined && conf.password != undefined){
-                conf.ip = ip;
-                sshConf = conf;
+            if(_.isPlainObject(conf) && conf.ret_code == 200 && conf.data && conf.data.port != undefined && conf.data.username != undefined && conf.data.password != undefined){
+                sshConf = conf.data
+                sshConf.ip = ip;
             }else{
                 sshConf = false;
             }
