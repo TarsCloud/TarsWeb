@@ -225,6 +225,29 @@
       <let-button type="submit" theme="primary">{{$t('common.submit')}}</let-button>
 
     </let-form>
+
+
+    <let-modal
+      v-model="resultModal.show"
+      width="700px"
+      class="more-cmd"
+      :footShow="false"
+      @close="closeResultModal"
+      @on-cancel="closeResultModal">
+      <p class="result-text">{{$t('deployService.form.ret.success')}}{{$t('resource.installRstMsg')}}</p>
+      <let-table :data="resultModal.resultList" :empty-msg="$t('common.nodata')" :row-class-name="resultModal.rowClassName">
+          <let-table-column title="ip" prop="ip">
+          </let-table-column>
+          <let-table-column :title="$t('resource.installResult')" prop="rst">
+            <template slot-scope="scope">
+              <p v-text="scope.row.rst?$t('common.success'):$t('common.error')"></p>
+            </template>
+          </let-table-column>
+          <let-table-column :title="$t('common.errMsg')" prop="msg"></let-table-column>
+      </let-table>
+    </let-modal>
+
+
   </div>
 </template>
 
@@ -277,6 +300,16 @@ export default {
       templates: [],
       model: getInitialModel(),
       enableAuth: false,
+      resultModal: {
+        show: false,
+        resultList: [],
+        rowClassName: (rowData)=>{
+           if(!rowData.rst){
+              return 'err-row'
+           }
+           return ''
+        }
+      }
     };
   },
 
@@ -312,9 +345,13 @@ export default {
     deploy() {
       this.$confirm(this.$t('deployService.form.deployServiceTip'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/deploy_server', this.model).then(() => {
+        this.$ajax.postJSON('/server/api/deploy_server', this.model).then((data) => {
           loading.hide();
-          this.$tip.success(this.$t('deployService.form.ret.success'));
+          if(data.tars_node_rst && data.tars_node_rst.length){
+            this.showResultModal(data.tars_node_rst);
+          }else{
+            this.$tip.success(this.$t('deployService.form.ret.success'));
+          }
           this.model = getInitialModel();
           this.model.template_name = this.templates[0];
         }).catch((err) => {
@@ -362,6 +399,16 @@ export default {
         });
       }
     },
+
+    showResultModal(data){
+      this.resultModal.resultList = data;
+      this.resultModal.show = true;
+    },
+
+    closeResultModal(){
+      this.resultModal.show = false;
+      this.resultModal.resultList = [];
+    }
   },
 };
 </script>
@@ -380,6 +427,14 @@ export default {
         margin-left: 4px;
       }
     }
+    tr.err-row td{
+      background:#f56c77!important;
+      color:#FFF;
+    }
+  }
+  .result-text{
+    margin-top: 20px;
+    margin-bottom:10px;
   }
 }
 </style>

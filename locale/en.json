@@ -121,7 +121,8 @@
       "setName": "SET Name",
       "setArea": "SET Area",
       "setGroup": "SET Group"
-    }
+    },
+    "errMsg": "Error message"
   },
   "operate": {
     "update": "update",
@@ -533,5 +534,9 @@
     "tips": {
       "sep": "Multiple people separated by semicolon"
     }
+  },
+  "resource":{
+    "installRstMsg": ",The results of installment of Tarsnode are as follows:",
+    "installResult": "Install result"
   }
 }

@@ -22,6 +22,7 @@ const ConfigService = require('../config/ConfigService');
 const AdapterService = require('../adapter/AdapterService');
 const AuthService = require('../auth/AuthService');
 const ResourceService = require('../resource/ResourceService');
+const resourceConf = require('../../../config/resourceConf');
 const _  = require('lodash');
 const ServerService = {};
 
@@ -144,20 +145,15 @@ ServerService.addServerConf = async(params)=> {
             await AdapterDao.insertAdapterConf(newAdapterConf, transaction);
         }
         await transaction.commit();
-        return true;
-        //安装节点
-        // let installRst = await ResourceService.installTarsNodes([params.node_name]);
-        // let newServerConf = await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name);
-        // return {
-        //     tasNodeRst: installRst,
-        //     serverConf: newServerConf
-        // };
+        let rst = {server_conf: await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name), tars_node_rst: []};
+        if(resourceConf.enableAutoInstall){
+            rst.tars_node_rst = await ResourceService.installTarsNodes([params.node_name]);
+        }
+        return rst;
     }catch(e){
         await transaction.rollback();
         throw e;
     }
-
-
 };
 
 module.exports = ServerService;

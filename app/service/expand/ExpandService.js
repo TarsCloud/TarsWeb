@@ -23,6 +23,8 @@ const AuthService = require('../auth/AuthService');
 const _ = require('lodash');
 const util = require('../../tools/util');
 const Sequelize = require('sequelize');
+const resourceConf = require('../../../config/resourceConf');
+const ResourceService = require('../resource/ResourceService');
 
 const ExpandService = {}
 
@@ -68,6 +70,7 @@ ExpandService.expand = async(params) => {
         sourceServer = sourceServer && sourceServer.dataValues || {};
         let addServers = [];
         let addServersMap = {};
+        let addNodeNameMap = {};
         for (var i = 0; i < params.expand_preview_servers.length; i++) {
             let preServer = params.expand_preview_servers[i];
             if(!addServersMap[`${application}-${serverName}-${preServer.node_name}`]){
@@ -97,6 +100,7 @@ ExpandService.expand = async(params) => {
                     let rst = await ServerDao.insertServerConf(server, transaction);
                     addServers.push(rst.dataValues);
                     addServersMap[`${server.application}-${server.server_name}-${server.node_name}`] = true;
+                    addNodeNameMap[server.node_name] = true;
                     if(params.enable_node_copy){
                         let configParams = {
                             server_name: `${sourceServer.application}.${sourceServer.server_name}`
@@ -175,7 +179,13 @@ ExpandService.expand = async(params) => {
             }
         }
         await transaction.commit();
-        return addServers;
+
+        let rst = {server_conf: addServers, tars_node_rst: []};
+        let addNodeName = _.keys(addNodeNameMap);
+        if(resourceConf.enableAutoInstall && addNodeName && addNodeName.length){
+            rst.tars_node_rst = await ResourceService.installTarsNodes(addNodeName);
+        }
+        return rst;
     }catch(e){
         await transaction.rollback();
         throw e;
