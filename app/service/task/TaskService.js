@@ -100,7 +100,7 @@ TaskService.addTask = async (params) => {
 
 TaskService.autoDeletePermission = function (application, server_name, taskNo) {
     let t = null,
-        timeout = 30 * 1000,   // 30S 超时
+        timeout = 60 * 1000,   // 30S 超时
         start = new Date().getTime();
     let f = function () {
         if(new Date().getTime() - start >= timeout) {
@@ -114,12 +114,15 @@ TaskService.autoDeletePermission = function (application, server_name, taskNo) {
                 AuthService.deleteAuth(application, server_name);
                 clearTimeout(t);
                 t = null;
+                return;
             }
+            t = setTimeout(f, 3000);
         }).catch(function (err) {
-            //console.info('autoDeletePermission err:',err);
+            t = setTimeout(f, 3000);
         });
+        logger.info('[unDeployPermission]:',taskNo);
     };
-    t = setTimeout(f, 3000);
+    f();
 };
 
 module.exports = TaskService;
