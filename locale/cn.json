@@ -122,7 +122,7 @@
       "setArea": "SET区域",
       "setGroup": "SET组"
     },
-    "errMsg": "错误信息"
+    "message": "信息"
   },
   "operate": {
     "update": "编辑",

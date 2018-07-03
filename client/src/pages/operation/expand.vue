@@ -149,7 +149,7 @@
             <p v-text="scope.row.rst?$t('common.success'):$t('common.error')"></p>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('common.errMsg')" prop="msg"></let-table-column>
+        <let-table-column :title="$t('common.message')" prop="msg"></let-table-column>
       </let-table>
     </let-modal>
 
