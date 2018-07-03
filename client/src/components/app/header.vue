@@ -12,7 +12,6 @@
         <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
       </let-tabs>
-      <span v-for="locale in locales">{{locale.name}}</span>
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
           <template v-for="locale in locales">

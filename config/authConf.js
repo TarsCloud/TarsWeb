@@ -15,7 +15,7 @@
  */
 
 /**
- * 用户体系配置
+ * 权限配置
  */
 module.exports = {
 
@@ -35,8 +35,6 @@ module.exports = {
      * @param   {String}    err_msg             错误信息
      */
     addAuthUrl: 'http://localhost:3001/api/auth/addAuth',
-
-
 
     /**
      * deleteAuthUrl             删除权限url，用于服务下线时候删除权限
