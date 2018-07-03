@@ -26,8 +26,12 @@ CompileService.addPatchTask = async (params) => {
 
 CompileService.getServerPatchByTaskId = async (taskId) => {
     let ret = await PatchDao.getPackageByTaskId(taskId);
-    let tgz = ret.tgz;
-    return await PatchDao.getServerPatchByPkgName(tgz);
+    if(ret) {
+        let tgz = ret.tgz;
+        return await PatchDao.getServerPatchByPkgName(tgz);
+    }else {
+        return {};
+    }
 };
 
 CompileService.getTagList = async (application, server_name) => {
