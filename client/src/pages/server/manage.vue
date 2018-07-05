@@ -409,6 +409,9 @@ export default {
         model: null,
         currentServer: null,
       },
+
+      // 失败重试次数
+      failCount :0
     };
   },
   computed: {
@@ -542,12 +545,23 @@ export default {
           if (data.status === 1) {
             setTimeout(() => {
               resolve(this.checkTaskStatus(taskid));
-            }, 2000);
+            }, 3000);
           // 成功
           } else if (data.status === 2) {
+            this.failCount = 0;
             resolve(`taskid: ${data.task_no}`);
           // 失败
-          } else {
+          } else if (!data.status) {
+            if(this.failCount>=5){
+              this.failCount = 0;
+              reject(new Error(`taskid: ${data.task_no}`));
+            }
+            setTimeout(() => {
+              this.failCount ++ ;
+              resolve(this.checkTaskStatus(taskid));
+            }, 3000);
+          }
+           else {
             reject(new Error(`taskid: ${data.task_no}`));
           }
         }).catch((err) => {
@@ -557,7 +571,7 @@ export default {
           } else {
             setTimeout(() => {
               resolve(this.checkTaskStatus(taskid, true));
-            }, 2000);
+            }, 3000);
           }
         });
       });

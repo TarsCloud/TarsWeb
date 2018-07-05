@@ -19,27 +19,19 @@ const TaskService = require('../../service/task/TaskService');
 const util = require('../../tools/util');
 const kafkaConf = require('../../../config/webConf').kafkaConf;
 const AuthService = require('../../service/auth/AuthService');
-let taskQueue;
 
 const TaskController = {
-    tempQueue : []
+
 };
 
-if(kafkaConf.enable) {
-    const TaskQueue = require('../../service/task/TaskQueue');
-    taskQueue = new TaskQueue();
+let kafkaProducer;
+let kafkaConsumer;
 
-    taskQueue.getTaskMessage( message => {
-        try{
-            logger.info('getTaskMessage:',message);
-            let params = JSON.parse(message.value);
-            TaskService.addTask(params).then(()=>{
-                TaskController.tempQueue.shift();
-            });
-        }catch(e){
-            logger.error('[kafka message]:',message.value);
-        }
-    });
+if(kafkaConf.enable) {
+    kafkaProducer = require('../../service/task/KafkaProducer');
+    kafkaConsumer = require('../../service/task/KafkaConsumer');
+
+    kafkaConsumer.consume();
 }
 
 
@@ -78,31 +70,8 @@ TaskController.getTasks = async (ctx) => {
 
 TaskController.getTask = async (ctx) => {
     try{
-        logger.info('TaskController.tempQueue:',TaskController.tempQueue);
-        let ret = {};
-        if(TaskController.tempQueue.includes(ctx.paramsObj.task_no)) {
-            ret = {
-                "task_no": ctx.paramsObj.task_no,               // 任务ID
-                "serial": false,              // 是否串行
-                "status": 1,                 // 任务状态
-                "items":[{
-                    "task_no": ctx.paramsObj.task_no,
-                    "item_no": "",           // 子任务ID
-                    "application": "",       // 应用
-                    "server_name": "",       // 服务
-                    "node_name": "",         // 节点
-                    "command": "",           // 命令
-                    "parameters": {},        // 参数
-                    "start_time": "",        // 开始时间
-                    "end_time": "",          // 结束时间
-                    "status": 1,            // 子任务状态
-                    "status_info": "",       // 状态信息
-                    "execute_info": ""       // 执行信息
-                }]
-            };
-        }else {
-            ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no).catch(e=> logger.error('[TaskService.getTaskRsp]:',e));
-        }
+        let ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
+        if(!ret) ret = 'waiting';
         ctx.makeResObj(200, '', ret);
     }catch(e) {
         logger.error('[TaskController.getTask]:', e, ctx);
@@ -117,9 +86,11 @@ TaskController.addTask = async (ctx) => {
     }
     try {
         let task_no = util.getUUID().toString();
+
         if(kafkaConf.enable) {
-            TaskController.tempQueue.push(task_no);
-            await taskQueue.addTask([{messages:JSON.stringify({serial, items, task_no})}]);
+            kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
+                logger.info('task produce success!');
+            });
         } else {
             await TaskService.addTask({serial, items, task_no});
         }
