@@ -13,13 +13,20 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
- 
-const cn = require('../../locale/cn.json');
-const en = require('../../locale/en.json');
+
 const stream = require('stream');
 const _ = require('lodash');
+const fs = require('fs-extra');
+const path = require('path');
 
-const localeMap = {'cn': formatJson(cn), 'en': formatJson(en)};
+let localeMap = {};
+
+let fileNames = fs.readdirSync(path.join(__dirname, '../../locale'));
+let locale = {};
+fileNames.forEach((fileName) => {
+    let content = require(path.join(__dirname, '../../locale/', fileName));
+    localeMap[content.localeCode] = formatJson(content);
+});
 
 function formatJson(localeJson){
     let resultJson = {};

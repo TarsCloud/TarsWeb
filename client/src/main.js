@@ -5,7 +5,7 @@ import './plugins/ajax';
 
 import App from './App';
 import router from './router';
-import i18n from './locale/i18n'
+import {i18n, loadLang} from './locale/i18n'
 
 
 Vue.config.productionTip = false;
@@ -17,4 +17,7 @@ new Vue({
   router,
   components: { App },
   template: '<App/>',
+  beforeMount(){
+    loadLang.call(this);
+  }
 });

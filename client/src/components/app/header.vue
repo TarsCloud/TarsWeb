@@ -14,8 +14,8 @@
       </let-tabs>
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
-          <template v-for="locale in locales">
-            <let-option :value="locale.localeCode">{{locale.name}}</let-option>
+          <template v-for="locale in localeMessages">
+            <let-option :value="locale.localeCode">{{locale.localeName}}</let-option>
           </template>
         </let-select>
       </div>
@@ -38,7 +38,7 @@
 <script>
 import serverIcon from '@/assets/img/server-icon.png';
 import opaIcon from '@/assets/img/opa-icon.png';
-import locales from '@/locale/index';
+import {localeMessages} from '@/locale/i18n';
 
 export default {
   data() {
@@ -50,10 +50,9 @@ export default {
       uid: '--',
       userOptOpen: false,
       enableLogin: false,
-      locales: locales
+      localeMessages: localeMessages
     };
   },
-
   methods: {
     clickTab(tabkey) {
       this.$router.replace(tabkey);

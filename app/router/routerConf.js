@@ -30,6 +30,7 @@ const ResourceController = require('../controller/resource/ResourceController');
 
 const AuthController = require('../controller/auth/AuthController');
 const LoginController = require('../controller/login/LoginController');
+const LocaleController = require('../controller/locale/LocaleController');
 
 const pageConf = [
     //首页
@@ -128,7 +129,10 @@ const apiConf = [
 
     //登录管理
     ['get', '/get_login_uid', LoginController.getLoginUid],
-    ['get', '/is_enable_login', LoginController.isEnableLogin]
+    ['get', '/is_enable_login', LoginController.isEnableLogin],
+
+    //语言包接口
+    ['get', '/get_locale', LocaleController.getLocale]
 ];
 
 module.exports = {pageConf, apiConf};

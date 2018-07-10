@@ -1,4 +1,7 @@
 {
+  "localeCode": "cn",
+  "localeName": "中文",
+
   "header": {
     "tab": {
       "tab1": "服务管理",
