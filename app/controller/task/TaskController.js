@@ -28,6 +28,7 @@ let kafkaProducer;
 let kafkaConsumer;
 
 if(kafkaConf.enable) {
+    const kafka = require('kafka-node');
     kafkaProducer = require('../../service/task/KafkaProducer');
     kafkaConsumer = require('../../service/task/KafkaConsumer');
 
@@ -70,8 +71,18 @@ TaskController.getTasks = async (ctx) => {
 
 TaskController.getTask = async (ctx) => {
     try{
-        let ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
-        if(!ret) ret = 'waiting';
+        let ret;
+        if(kafkaConf.enable) {
+            let task = await TaskService.getTaskStatus(ctx.paramsObj.task_no);
+            logger.info(task);
+            if(task.status=='waiting') {
+                ret = {status: 0};
+            }else{
+                ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
+            }
+        }else {
+            ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
+        }
         ctx.makeResObj(200, '', ret);
     }catch(e) {
         logger.error('[TaskController.getTask]:', e, ctx);
@@ -88,7 +99,7 @@ TaskController.addTask = async (ctx) => {
         let task_no = util.getUUID().toString();
 
         if(kafkaConf.enable) {
-            kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
+            await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
                 logger.info('task produce success!');
             });
         } else {

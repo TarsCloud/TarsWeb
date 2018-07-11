@@ -542,26 +542,15 @@ export default {
           task_no: taskid,
         }).then((data) => {
           // 进行中，1秒后重试
-          if (data.status === 1) {
+          if (data.status === 1 || data.status === 0) {
             setTimeout(() => {
               resolve(this.checkTaskStatus(taskid));
             }, 3000);
           // 成功
           } else if (data.status === 2) {
-            this.failCount = 0;
             resolve(`taskid: ${data.task_no}`);
           // 失败
-          } else if (!data.status) {
-            if(this.failCount>=5){
-              this.failCount = 0;
-              reject(new Error(`taskid: ${data.task_no}`));
-            }
-            setTimeout(() => {
-              this.failCount ++ ;
-              resolve(this.checkTaskStatus(taskid));
-            }, 3000);
-          }
-           else {
+          }  else {
             reject(new Error(`taskid: ${data.task_no}`));
           }
         }).catch((err) => {

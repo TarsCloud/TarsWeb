@@ -458,7 +458,6 @@ export default {
             }
           });
           this.finishModal.model.items = data.items;       
-          console.info(this.finishModal.model.items); 
         }).catch((err) => {
           clearTimeout(timerId);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
