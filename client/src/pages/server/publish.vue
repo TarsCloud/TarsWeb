@@ -222,10 +222,10 @@
           v-if="publishUrlConfModal.model"
           required>
           <let-form-item :label="$t('pub.dlg.tag')">
-            <let-input size="small" 
-              v-model="publishUrlConfModal.model.tag" 
+            <let-input size="small"
+              v-model="publishUrlConfModal.model.tag"
               :placeholder="$t('pub.tips.tag')"
-              :required-tip="$t('deployService.table.tips.empty')" 
+              :required-tip="$t('deployService.table.tips.empty')"
               required ></let-input>
           </let-form-item>
         </let-form>
@@ -318,7 +318,7 @@ export default {
       patchType: 'patch',
       patchRadioData: [
         {value:'patch', text:this.$t('pub.dlg.upload')}
-        
+
       ],
       tagList: [],
       tagVersion: '',
@@ -457,8 +457,8 @@ export default {
               timerId = setTimeout(getTask, 3000);
             }
           });
-          this.finishModal.model.items = data.items;       
-          console.info(this.finishModal.model.items); 
+          this.finishModal.model.items = data.items;
+          console.info(this.finishModal.model.items);
         }).catch((err) => {
           clearTimeout(timerId);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -606,7 +606,7 @@ export default {
         this.$ajax.getJSON('/server/api/set_tag_conf', {
           path: this.publishUrlConfModal.model.tag,
           application : this.publishModal.model.application,
-          server_name : this.publishModal.model.server_name, 
+          server_name : this.publishModal.model.server_name,
           }).then(data => {
           loading.hide();
           this.$tip.success(this.$t('common.success'));
@@ -687,7 +687,7 @@ export default {
                   }).catch(err => {
                     loading.hide();
                     this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
-                  }); 
+                  });
                 }
                 setTimeout(timer, 2000);
             }
