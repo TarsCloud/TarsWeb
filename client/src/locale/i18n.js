@@ -1,21 +1,32 @@
 import Vue from "vue";
 import VueI18n from "vue-i18n";
 import VueCookie from "vue-cookie";
-import locales from "./";
 Vue.use(VueI18n);
 Vue.use(VueCookie);
 
-let message = {};
-locales.forEach((locale)=> {
-  message[locale.localeCode] = locale.path;
-});
+export const i18n =  new VueI18n({});
 
-let locale = VueCookie.get('locale');
-locale = message[locale] ? locale : 'cn';
+export var localeMessages = [];
 
-const i18n = new VueI18n({
-  locale: locale,
-  messages: message
-});
+export function loadLang(){
+  this.$ajax.getJSON('/server/api/get_locale').then((locales) => {
+     let locale = VueCookie.get('locale');
+     if(Object.prototype.toString.call(locales) == '[object Object]'){
+       for(var localeCode in locales){
+         i18n.setLocaleMessage(localeCode, locales[localeCode]);
+         localeMessages.push({
+           localeCode: localeCode,
+           localeName: locales[localeCode]['localeName'],
+           localeMessages: locales
+         })
+       }
+       locale = locales[locale] ? locale : 'cn';
+       localeMessages = locales;
+     }
+     i18n.locale = locale;
+  }).catch((err)=>{
 
-export default i18n
+  });
+};
+
+

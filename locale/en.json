@@ -1,4 +1,7 @@
 {
+  "localeCode": "en",
+  "localeName": "English",
+
   "header": {
     "tab": {
       "tab1": "Services",
