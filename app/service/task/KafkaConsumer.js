@@ -22,9 +22,7 @@ const TaskService = require('./TaskService');
 const path = require('path');
 const KafkaDao = require('../../dao/KafkaDao');
 
-const KafkaConsumer = {
-    maxCount : 10,   // 最大一次发起10个任务
-};
+const KafkaConsumer = {};
 
 
 const options = {
@@ -41,7 +39,7 @@ KafkaConsumer.consume = () =>{
     consumer.on('message', message => {
         count ++;
         try{
-            if(count == KafkaConsumer.maxCount) {
+            if(count == kafkaConf.maxCount) {
                 consumer.pause();
             }
             let task_no = JSON.parse(message.value).task_no;
