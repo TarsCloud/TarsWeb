@@ -457,8 +457,7 @@ export default {
               timerId = setTimeout(getTask, 3000);
             }
           });
-          this.finishModal.model.items = data.items;
-          console.info(this.finishModal.model.items);
+          this.finishModal.model.items = data.items;       
         }).catch((err) => {
           clearTimeout(timerId);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
