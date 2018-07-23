@@ -96,7 +96,7 @@ TreeService.parents = (treeNodeMap, treeNode, rootNodes)=> {
     newTreeNode.id = id;
     newTreeNode.name = name.substring(1);
     newTreeNode.pid = pid;
-    newTreeNode.parent = true;
+    newTreeNode.is_parent = true;
     newTreeNode.open = true;
     newTreeNode.children = [];
     newTreeNode.children.push(treeNode);
