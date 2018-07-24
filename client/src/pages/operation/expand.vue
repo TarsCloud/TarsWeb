@@ -81,7 +81,7 @@
 
       <let-form-item :label="$t('serviceExpand.form.nodeConfig')" itemWidth="100%">
           <let-checkbox
-            v-model="model.enable_node_copy">
+            v-model="model.copy_node_config">
             {{$t('serviceExpand.form.copyNodeConfig')}}
           </let-checkbox>
       </let-form-item>
@@ -171,7 +171,7 @@ const getInitialModel = () => ({
   set_name: '',
   set_area: '',
   set_group: '',
-  enable_node_copy: false,
+  copy_node_config: false,
 });
 
 export default {
@@ -327,7 +327,7 @@ export default {
             server_name: this.model.server_name,
             set: parseInt(this.model.set, 10) === -1 ? '' : this.model.set,
             node_name: this.model.node_name,
-            enable_node_copy: this.model.enable_node_copy,
+            copy_node_config: this.model.copy_node_config,
             expand_preview_servers: previewServers,
           };
 

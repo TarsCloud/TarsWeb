@@ -50,10 +50,20 @@ DeployServerController.deployServer = async(ctx) => {
     var params = ctx.paramsObj;
     try {
         let rst = await ServerService.addServerConf(params);
-        // ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
+        rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
         ctx.makeResObj(200, '', rst);
     } catch (e) {
         logger.error('[getServerNotifyList]', e, ctx);
+        ctx.makeErrResObj();
+    }
+};
+
+DeployServerController.serverTypeList = async(ctx) => {
+    try {
+        let ServerTypeList = ['tars_cpp', 'tars_java', 'tars_nodejs', 'tars_php'];
+        ctx.makeResObj(200, '', ServerTypeList);
+    } catch (e) {
+        logger.error('[serverTypeList]', e, ctx);
         ctx.makeErrResObj();
     }
 };
