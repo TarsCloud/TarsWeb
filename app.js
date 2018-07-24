@@ -29,7 +29,8 @@ const postMidware = require('./app/midware/postMidware');
 const localeMidware = require('./app/midware/localeMidware');
 const helmet = require("koa-helmet");
 // const compress = require('koa-compress')
-const loginMidware = require('./app/midware/loginMidware');
+const loginMidware = require('yami-sso-client').koa;
+console.log(loginMidware);
 const limitMidware = require('./app/midware/limitMidware');
 const WebConf = require('./config/webConf');
 
@@ -65,7 +66,9 @@ preMidware.forEach((midware)=>{
 });
 
 //登录校验
-app.use(loginMidware);
+let loginConf = require('./config/loginConf.js');
+loginConf.ignore =loginConf.ignore.concat(['/favicon.ico', '/pages/server/api/get_locale']);
+app.use(loginMidware(loginConf));
 
 //激活router
 app.use(pageRouter.routes(), pageRouter.allowedMethods());

@@ -31,6 +31,7 @@ let cookieConfig = Object.assign({
 
 //登录校验中间件
 module.exports = async(ctx, next) => {
+
     if (ctx.request.path === '/logout') {
         ctx.cookies.set(loginConf.ticketCookieName || 'ticket', null, cookieDomainConfig);
         ctx.cookies.set(loginConf.uidCookieName || 'uid', null, cookieDomainConfig);
