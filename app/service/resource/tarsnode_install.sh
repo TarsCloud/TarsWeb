@@ -6,7 +6,7 @@ if [ ! -d "/usr/local/app/tars/tarsnode" ]; then
     tar -zxvf tarsnode.tar.gz
     rm tarsnode.tar.gz
     cd ./tarsnode/conf
-    sed -i "s/192.168.2.131/${machine_ip}/g" `grep 192.168.2.131 -rl ./*`
+    sed -i "s/{{machine_ip}}/${machine_ip}/g" `grep 192.168.2.131 -rl ./*`
     cd ../bin
     chmod u+x tarsnode
     ./tarsnode --config=../conf/tarsnode.conf
