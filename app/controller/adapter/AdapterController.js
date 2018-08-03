@@ -103,7 +103,7 @@ AdapterController.deleteAdapterConf = async(ctx) => {
             ctx.makeNotAuthResObj();
         }else{
             await AdapterService.deleteAdapterConf(id);
-            ctx.makeResObj(200, '', id);
+            ctx.makeResObj(200, '', [id]);
         }
     } catch (e) {
         logger.error('[addAdapterConf]', e, ctx);

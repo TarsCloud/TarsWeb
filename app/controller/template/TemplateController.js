@@ -66,7 +66,7 @@ TemplateController.updateTemplate = async(ctx) => {
 
 TemplateController.getTemplate = async(ctx) => {
     try {
-        let templateName = ctx.paramsObj.profile_template;
+        let templateName = ctx.paramsObj.template_name;
         ctx.makeResObj(200, '', util.viewFilter(await TemplateService.getTemplateByName(templateName), templateStruct));
     } catch (e) {
         logger.error('[getTemplate]', e, ctx);

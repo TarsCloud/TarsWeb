@@ -67,6 +67,7 @@ const apiConf = [
 
     //上线和扩容接口
     ['post', '/deploy_server', DeployServerController.deployServer],
+    ['get', '/server_type_list', DeployServerController.serverTypeList],
     ['post', '/expand_server_preview', ExpandServerController.expandServerPreview, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', expand_nodes: 'notEmpty'},
         ['application', 'server_name', 'set', 'node_name', 'expand_nodes', 'enable_set', 'set_name', 'set_area', 'set_group', 'copy_node_config']
     ],
@@ -110,7 +111,7 @@ const apiConf = [
     ['get', '/tarsproperty_monitor_data', MonitorController.tarsproperty],
 
     //模板管理
-    ['get', '/profile_template', TemplateController.getTemplate, {profile_template: 'notEmpty'}],
+    ['get', '/profile_template', TemplateController.getTemplate, {template_name: 'notEmpty'}],
     ['get', '/query_profile_template', TemplateController.getTemplateList],
     ['get', '/template_name_list', TemplateController.getTemplateNameList],
     ['post', '/add_profile_template', TemplateController.addTemplate, {template_name: 'notEmpty', parents_name: 'notEmpty', profile: 'notEmpty'}],

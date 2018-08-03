@@ -101,7 +101,7 @@ ExpandService.expand = async(params) => {
                     addServers.push(rst.dataValues);
                     addServersMap[`${server.application}-${server.server_name}-${server.node_name}`] = true;
                     addNodeNameMap[server.node_name] = true;
-                    if(params.enable_node_copy){
+                    if(params.copy_node_config){
                         let configParams = {
                             server_name: `${sourceServer.application}.${sourceServer.server_name}`
                         };
