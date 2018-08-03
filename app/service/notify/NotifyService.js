@@ -27,7 +27,7 @@ NotifyService.getServerNotifyList = async(params, curPage, pageSize)=> {
     serverConfs.forEach((v) => {
         serverIds.push(v.application + '.' + v.server_name + '_' + v.node_name);
     });
-    return await NotifyDao.getServerNotifyList(serverIds, curPage, pageSize)
+    return await NotifyDao.getServerNotifyList(serverIds, curPage, pageSize);
 }
 
 module.exports = NotifyService;

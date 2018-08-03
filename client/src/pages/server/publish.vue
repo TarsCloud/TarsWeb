@@ -387,16 +387,18 @@ export default {
         update_text: '',
         show: true
       };
-      this.getPatchList(first.application, first.server_name).then((data) => {
-        this.publishModal.model.patchList = data;
+      this.getPatchList(first.application, first.server_name, 1, 50).then((data) => {
+        this.publishModal.model.patchList = data.rows;
       });
       this.publishModal.show = true;
     },
-    getPatchList(application, serverName) {
+    getPatchList(application, serverName, currPage, pageSize) {
       return this.$ajax.getJSON('/server/api/server_patch_list', {
         application,
         module_name: serverName,
-      }).then(data => data);
+        curr_page : currPage,
+        page_size : pageSize
+      });
     },
     closePublishModal() {
       // 关闭发布弹出框
@@ -474,9 +476,9 @@ export default {
     gotoHistory() {
       // 切换到发布历史
       this.showHistory = true;
-      this.getHistoryList();
+      this.getHistoryList(1);
     },
-    getHistoryList() {
+    getHistoryList(curr_page) {
       // 更新历史记录
       const loading = this.$Loading.show();
       const params = {
@@ -484,23 +486,18 @@ export default {
         server_name: this.serverList[0].server_name || '',
         from: this.startTime,
         to: this.endTime,
+        page_size: this.historyPageSize,
+        curr_page: curr_page
       };
       this.$ajax.getJSON(`/server/api/task_list`, params).then((data) => {
         loading.hide();
-        this.totalHistoryList = data || [];
-        this.historyTotalPage = Math.ceil(this.totalHistoryList.length / this.historyPageSize);
-        this.historyPage = 1;
-        this.updateHistoryList();
+        this.totalHistoryList = data.rows || [];
+        this.historyTotalPage = Math.ceil(data.count / this.historyPageSize);
+        this.historyPage = curr_page;
       }).catch((err) => {
         loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       });
-    },
-    updateHistoryList() {
-      // 更新服务列表
-      const start = (this.historyPage - 1) * this.historyPageSize;
-      const end = this.historyPage * this.historyPageSize;
-      this.historyList = this.totalHistoryList.slice(start, end);
     },
     viewTask(taskId) {
       this.$ajax.getJSON('/server/api/task', {
@@ -511,7 +508,7 @@ export default {
       });
     },
     changeHistoryPage(page) {
-      this.historyPage = page;
+      this.getHistoryList(page);
     },
     showUploadModal() {
       if (this.serverList.length <= 0) {
@@ -545,9 +542,9 @@ export default {
         formdata.append('comment', this.uploadModal.model.comment);
         formdata.append('task_id', new Date().getTime());
         this.$ajax.postForm('/server/api/upload_patch_package', formdata).then(() => {
-          this.getPatchList(this.uploadModal.model.application, this.uploadModal.model.server_name).then((data) => {
+          this.getPatchList(this.uploadModal.model.application, this.uploadModal.model.server_name,1,50).then((data) => {
             loading.hide();
-            this.publishModal.model.patchList = data;
+            this.publishModal.model.patchList = data.rows;
             this.closeUploadModal();
           });
         }).catch((err) => {
@@ -712,7 +709,7 @@ export default {
       this.updateServerList();
     },
     historyPage() {
-      this.updateHistoryList();
+      this.getHistoryList(1);
     },
   },
 };

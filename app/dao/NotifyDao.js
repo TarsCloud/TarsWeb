@@ -31,7 +31,7 @@ NotifyDao.getServerNotifyList = async(serverIds, curPage, pageSize) => {
         options.limit = pageSize;
         options.offset = pageSize * (curPage - 1);
     }
-    return await tServerNotifys.findAll(options);
+    return await tServerNotifys.findAndCountAll(options);
 };
 
 

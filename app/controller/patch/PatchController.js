@@ -74,13 +74,13 @@ PatchController.uploadPatchPackage = async (ctx) => {
 };
 
 PatchController.serverPatchList = async (ctx) => {
-    let {application, module_name, currPage = 0, pageSize = 0} = ctx.paramsObj;
+    let {application, module_name, curr_page = 0, page_size = 0} = ctx.paramsObj;
     try{
         if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            let list = await PatchService.getServerPatch(application, module_name, currPage, pageSize);
-            ctx.makeResObj(200,'',util.viewFilter(list,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}}));
+            let ret = await PatchService.getServerPatch(application, module_name, parseInt(curr_page), parseInt(page_size));
+            ctx.makeResObj(200,'',{count:ret.count,rows:util.viewFilter(ret.rows,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}})});
         }
     }catch(e) {
         logger.error('[PatchController.serverPatchList]:', e, ctx);

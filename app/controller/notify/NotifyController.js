@@ -32,7 +32,7 @@ const serverNotifyStruct = {
 
 NotifyController.getServerNotifyList = async(ctx) => {
     let treeNodeId = ctx.paramsObj.tree_node_id;
-    let curPage = parseInt(ctx.paramsObj.cur_page) || 0;
+    let curPage = parseInt(ctx.paramsObj.curr_page) || 0;
     let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
     try {
         let params = ServerController.formatTreeNodeId(treeNodeId);
@@ -40,7 +40,7 @@ NotifyController.getServerNotifyList = async(ctx) => {
             ctx.makeNotAuthResObj();
         } else {
             let rst = await NotifyService.getServerNotifyList(params, curPage, pageSize);
-            ctx.makeResObj(200, '', util.viewFilter(rst, serverNotifyStruct));
+            ctx.makeResObj(200, '', {count:rst.count,rows:util.viewFilter(rst.rows, serverNotifyStruct)});
         }
 
     } catch (e) {

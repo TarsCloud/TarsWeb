@@ -185,9 +185,9 @@
         "title": "Servants管理",
         "adress": "绑定地址",
         "thread": "线程数",
-        "maxConnecttions": "最大<br>连接数",
-        "maxQueue": "队列<br>最大长度",
-        "timeout": "队列超时<br>时间(ms)"
+        "maxConnecttions": "最大连接数",
+        "maxQueue": "队列最大长度",
+        "timeout": "队列超时时间(ms)"
       },
       "msg": {
         "fail": "加载服务列表失败，是否重试?"

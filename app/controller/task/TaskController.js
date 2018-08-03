@@ -39,16 +39,16 @@ if(kafkaConf.enable) {
 
 TaskController.getTasks = async (ctx) => {
     try{
-        let {application, server_name, command, from, to} = ctx.paramsObj;
+        let {application, server_name, command, from, to, curr_page = 0, page_size = 0} = ctx.paramsObj;
         if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
             let ret = [];
-            let tasks = await TaskService.getTasks({application, server_name, command, from, to}).catch(function (e) {
+            let tasks = await TaskService.getTasks({application, server_name, command, from, to, curr_page, page_size}).catch(function (e) {
                 logger.error('[getTasks]:',e);
                 return e;
             });
-            for(let i=0,len=tasks.length;i<len;i++) {
+            for(let i=0,len=tasks.rows.length;i<len;i++) {
                 let task = tasks[i];
                 try {
                     ret.push(await TaskService.getTaskRsp(task.task_no));
@@ -61,7 +61,7 @@ TaskController.getTasks = async (ctx) => {
                     });
                 }
             }
-            ctx.makeResObj(200, '', ret);
+            ctx.makeResObj(200, '', {count:tasks.count,rows:ret});
         }
     }catch(e) {
         logger.error('[TaskController.getTasks]:', e, ctx);

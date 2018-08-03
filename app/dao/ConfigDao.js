@@ -160,7 +160,7 @@ ConfigDao.getConfigFileHistoryList = async (id, curPage, pageSize) => {
             offset: pageSize * (curPage - 1)
         })
     }
-    return await tConfigHistoryFiles.findAll(opts);
+    return await tConfigHistoryFiles.findAndCountAll(opts);
 };
 
 ConfigDao.insertConfigRef = async (configId, refId) => {

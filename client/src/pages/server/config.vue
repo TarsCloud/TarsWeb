@@ -569,7 +569,7 @@ export default {
       }).then((data) => {
         loading.hide();
         this.detailModal.model = {
-          table: data,
+          table: data.rows,
           detail: '',
         };
       }).catch((err) => {

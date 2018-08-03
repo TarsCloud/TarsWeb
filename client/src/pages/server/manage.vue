@@ -44,16 +44,16 @@
     </let-table>
 
     <!-- 服务实时状态 -->
-    <let-table v-if="showingList && showOthers"
-      :data="showingList" :title="$t('serverList.title.serverStatus')" :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
+    <let-table v-if="serverNotifyList && showOthers"
+      :data="serverNotifyList" :title="$t('serverList.title.serverStatus')" :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
       <let-table-column :title="$t('common.time')" prop="notifytime"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.result')" prop="result"></let-table-column>
     </let-table>
-    <let-pagination v-if="serverNotifyList && serverNotifyList.length && serverNotifyList.length > 20"
+    <let-pagination
       :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
-      :total="Math.ceil(serverNotifyList.length / 20)">
+      :total="total">
     </let-pagination>
 
 
@@ -368,8 +368,9 @@ export default {
 
       // 操作历史列表
       serverNotifyList: [],
-      showingList: [],
       pageNum: 1,
+      pageSize: 20,
+      total:1,
 
       // 编辑服务
       serverTypes: [
@@ -443,19 +444,19 @@ export default {
       });
     },
     // 获取服务实时状态
-    getServerNotifyList() {
+    getServerNotifyList(curr_page) {
       if (!this.showOthers) return;
       const loading = this.$refs.serverNotifyListLoading.$loading.show();
 
       this.$ajax.getJSON('/server/api/server_notify_list', {
         tree_node_id: this.$route.params.treeid,
-        page_size: 100,
-        cur_page: 1,
+        page_size: this.pageSize,
+        curr_page: curr_page,
       }).then((data) => {
         loading.hide();
-        this.pageNum = 1;
-        this.serverNotifyList = data;
-        this.showingList = data.concat([]).splice(0, 20);
+        this.pageNum = curr_page;
+        this.total = Math.ceil(data.count/this.pageSize);
+        this.serverNotifyList = data.rows;
       }).catch((err) => {
         loading.hide();
         this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
@@ -463,8 +464,7 @@ export default {
     },
     // 切换服务实时状态页码
     gotoPage(num) {
-      this.pageNum = num;
-      this.showingList = this.serverNotifyList.concat([]).splice((num - 1) * 20, 20);
+      this.getServerNotifyList(num);
     },
 
     // 获取模版列表
@@ -865,7 +865,7 @@ export default {
   },
   mounted() {
     this.getServerList();
-    this.getServerNotifyList();
+    this.getServerNotifyList(1);
   },
 };
 </script>

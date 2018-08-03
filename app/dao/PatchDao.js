@@ -41,7 +41,7 @@ module.exports = {
                 offset: pageSize * (curPage - 1)
             })
         }
-        return await tServerPatchs.findAll(opts);
+        return await tServerPatchs.findAndCountAll(opts);
     },
 
     getServerPatchByPkgName : async(name) => {

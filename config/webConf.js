@@ -23,7 +23,7 @@ module.exports = {
         defaultLanguage: 'cn',    //cn 或 en ，用户默认的语言环境
     },
     kafkaConf : {
-        enable : true,
+        enable : false,
         kafkaHost : 'localhost:9092',
         zkHost : 'localhost:2181',
         topic : 'tarsTask',

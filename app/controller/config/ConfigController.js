@@ -166,9 +166,9 @@ ConfigController.nodeConfigFileList = async(ctx) => {
 };
 
 ConfigController.getConfigFileHistory = async(ctx) => {
-    let {id, currPage = 0, pageSize = 0} = ctx.paramsObj;
+    let id = ctx.paramsObj.id;
     try{
-        let ret = await ConfigService.getConfigFileHistory(id, currPage, pageSize);
+        let ret = await ConfigService.getConfigFileHistory(id);
         if(ret && ret.configid != undefined){
             let serverParams = await ConfigService.getServerInfoByConfigId(ret.configid);
             if(!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))){
@@ -184,14 +184,14 @@ ConfigController.getConfigFileHistory = async(ctx) => {
 };
 
 ConfigController.configFileHistoryList = async(ctx) => {
-    let config_id = ctx.paramsObj.config_id;
+    let {config_id, currPage = 0, pageSize = 0} = ctx.paramsObj;
     try{
         let serverParams = await ConfigService.getServerInfoByConfigId(config_id);
         if(!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))){
             ctx.makeNotAuthResObj();
         }else{
-            let list = await ConfigService.getConfigFileHistoryList(config_id);
-            ctx.makeResObj(200, '', util.viewFilter(list,{id:'',config_id:'',reason:'',content:'',posttime:{formatter:util.formatTimeStamp}}));
+            let ret = await ConfigService.getConfigFileHistoryList(config_id, currPage, pageSize);
+            ctx.makeResObj(200, '', {count:ret.count,rows:util.viewFilter(ret.rows,{id:'',config_id:'',reason:'',content:'',posttime:{formatter:util.formatTimeStamp}})});
         }
     }catch(e){
         logger.error('[configFileHistoryList]', e, ctx);
