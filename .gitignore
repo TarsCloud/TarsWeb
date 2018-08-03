@@ -7,3 +7,5 @@ config/webConf.js
 test/
 tars-node-web.zip
 files/tarsnode.tar.gz
+/uploads
+/.vscode
