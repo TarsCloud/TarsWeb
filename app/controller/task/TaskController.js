@@ -49,7 +49,8 @@ TaskController.getTasks = async (ctx) => {
                 return e;
             });
             for(let i=0,len=tasks.rows.length;i<len;i++) {
-                let task = tasks[i];
+                let task = tasks.rows[i];
+
                 try {
                     ret.push(await TaskService.getTaskRsp(task.task_no));
                 }catch(e){
