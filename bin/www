@@ -1,0 +1,87 @@
+#!/usr/bin/env node
+const app = require('../app');
+const debug = require('debug')('demo:server');
+const http = require('http');
+const logger = require('../app/logger')
+const webConf = require('../config/webConf').webConf;
+const cluster = require('cluster');
+const os = require('os');
+
+//获取端口
+const port = normalizePort(process.env.PORT || webConf.port || '3000');
+const enableMultiProcess =  false;
+
+//创建服务
+try {
+    let numCpus = os.cpus().length;
+    if (cluster.isMaster && enableMultiProcess) {
+        for (let i = 0; i < numCpus; i++) {
+            cluster.fork();
+        }
+        cluster.on('listening', function (worker, address) {
+        });
+        let processNum = numCpus;
+        cluster.on('exit', function (worker, code, signal) {
+            processNum--;
+            console.error('worker ' + worker.process.pid + ' died');
+            if (!processNum) {
+                throw(new Error('Server startup failed'));
+            }
+        });
+    } else if (cluster.isWorker || !enableMultiProcess) {
+        let server = http.createServer(app.callback());
+        server.listen(port, '0.0.0.0', function () {
+            logger.info('Server has been started successfully');
+        });
+        server.on('error', onError);
+    }
+} catch (e) {
+    logger.error(e.toString())
+}
+
+
+//标准化端口值
+function normalizePort(val) {
+    let port = parseInt(val, 10);
+    if (isNaN(port)) {
+        return val;
+    }
+    if (port >= 0) {
+        return port;
+    }
+    return false;
+}
+
+
+// 服务错误回调
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    let bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    switch (error.code) {
+        case 'EACCES':
+            logger.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            logger.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+//服务监听事件
+function onListening() {
+    let addr = server.address();
+    let bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}

@@ -1,0 +1,29 @@
+{
+  "ret_code": 200,
+  "data": {
+    "id": 36,
+    "application": "accc",
+    "server_name": "bvvv",
+    "node_name": "127.0.0.1",
+    "server_type": "tars_cpp",
+    "enable_set": false,
+    "set_name": null,
+    "set_area": null,
+    "set_group": null,
+    "setting_state": "inactive",
+    "present_state": "inactive",
+    "bak_flag": false,
+    "template_name": "tars.default",
+    "profile": null,
+    "async_thread_num": 3,
+    "base_path": "",
+    "exe_path": "",
+    "start_script_path": null,
+    "stop_script_path": null,
+    "monitor_script_path": null,
+    "patch_time": "0000:00:00 00:00:00",
+    "patch_version": "",
+    "process_id": 0,
+    "posttime": "2018-03-26 20:03:16"
+  }
+}

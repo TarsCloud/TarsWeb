@@ -1,0 +1,35 @@
+{
+  "ret_code": 200,
+  "data": [
+  {
+    "application": "TestApp",
+    "server_name": "HelloServer",
+    "node_name": "172.16.0.161",
+    "ret_code": 0,
+    "err_msg": "notifyServer [TestApp.HelloServer] 'tars.loadconfig 5' succ:[notify prefix object num:1]\n[1]:[succ] get remote config:5\n"
+  },{
+    "application": "TestApp",
+    "server_name": "HelloServer",
+    "node_name": "172.16.0.161",
+    "ret_code": 0,
+    "err_msg": "notifyServer [TestApp.HelloServer] 'tars.loadconfig 5' succ:[notify prefix object num:1]\n[1]:[succ] get remote config:5\n"
+  },{
+    "application": "TestApp",
+    "server_name": "HelloServerHelloServer",
+    "node_name": "172.16.0.161",
+    "ret_code": 2,
+    "err_msg": "notifyServer [TestApp.HelloServer] 'tars.loadconfig 5' succ:[notify prefix object num:1]\n[1]:[succ] get remote config:5\n"
+  },{
+    "application": "TestApp",
+    "server_name": "HelloServer",
+    "node_name": "172.16.0.161",
+    "ret_code": 0,
+    "err_msg": "notifyServer [TestApp.HelloServer] 'tars.loadconfig 5' succ:[notify prefix object num:1]\n[1]:[succ] get remote config:5\n"
+  },{
+    "application": "TestApp",
+    "server_name": "HelloServer",
+    "node_name": "172.16.0.161",
+    "ret_code": 2,
+    "err_msg": "notifyServer [TestApp.HelloServer] 'tars.loadconfig 5' succ:[notify prefix object num:1]\n[1]:[succ] get remote config:5\n"
+  }]
+}
