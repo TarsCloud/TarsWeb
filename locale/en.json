@@ -158,7 +158,8 @@
         "appConfig": "APP Configuration",
         "statMonitor": "Status Monitor",
         "propertyMonitor": "Property Monitor",
-        "privileage": "Privileage"
+        "privileage": "Privileage",
+        "infDebuger": "Interface Debuger"
       }
     }
   },
@@ -541,5 +542,17 @@
   "resource":{
     "installRstMsg": ",The results of installment of Tarsnode are as follows:",
     "installResult": "Install result"
+  },
+  "inf": {
+    "list": {
+      "debug" : "debug"
+    },
+    "title": {
+      "listTitle" : "Tars Files",
+      "dlgTitle": "Upload Tars File"
+    },
+    "dlg": {
+      "selectLabel" : "modules/interfaces/functions"
+    }
   }
 }

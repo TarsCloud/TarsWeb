@@ -31,6 +31,7 @@ const ResourceController = require('../controller/resource/ResourceController');
 const AuthController = require('../controller/auth/AuthController');
 const LoginController = require('../controller/login/LoginController');
 const LocaleController = require('../controller/locale/LocaleController');
+const InfTestController = require('../controller/infTest/InfTestController');
 
 const pageConf = [
     //首页
@@ -133,7 +134,14 @@ const apiConf = [
     ['get', '/is_enable_login', LoginController.isEnableLogin],
 
     //语言包接口
-    ['get', '/get_locale', LocaleController.getLocale]
+    ['get', '/get_locale', LocaleController.getLocale],
+
+    //接口测试
+    ['post', '/interface_test', InfTestController.interfaceDebug],
+    ['post', '/upload_tars_file', InfTestController.uploadTarsFile],
+    ['get', '/get_file_list', InfTestController.getFileList, {application: 'notEmpty', server_name: 'notEmpty'}],
+    ['get', '/get_contexts', InfTestController.getContexts, {application: 'notEmpty', server_name: 'notEmpty', file_name:'notEmpty'}],
+    ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', file_name:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}]
 ];
 
 module.exports = {pageConf, apiConf};

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Tencent is pleased to support the open source community by making Tars available.
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
@@ -19,25 +19,25 @@
 // TARS version 1.1.0.
 // **********************************************************************
 
-"use strict;"
+"use strict";
 
-var assert     = require('assert');
-var TarsStream = require('@tars/stream');
-
+var assert    = require("assert");
+var TarsStream = require("@tars/stream");
 
 var tars = tars || {};
 module.exports.tars = tars;
 
 tars.ServerState = {
-    Inactive : 0,
-    Activating : 1,
-    Active : 2,
-    Deactivating : 3,
-    Destroying : 4,
-    Destroyed : 5
+    "Inactive" : 0,
+    "Activating" : 1,
+    "Active" : 2,
+    "Deactivating" : 3,
+    "Destroying" : 4,
+    "Destroyed" : 5,
+    "_classname" : "tars.ServerState"
 };
-tars.ServerState._write = function(os, tag, val) { return os.writeInt32(tag, val); }
-tars.ServerState._read  = function(is, tag, def) { return is.readInt32(tag, true, def); }
+tars.ServerState._write = function(os, tag, val) { return os.writeInt32(tag, val); };
+tars.ServerState._read  = function(is, tag, def) { return is.readInt32(tag, true, def); };
 
 tars.LoadInfo = function() {
     this.avg1 = 0;
@@ -47,9 +47,8 @@ tars.LoadInfo = function() {
     this._classname = "tars.LoadInfo";
 };
 tars.LoadInfo._classname = "tars.LoadInfo";
-
-tars.LoadInfo._write = function (os, tag, value) { os.writeStruct(tag, value); }
-tars.LoadInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); }
+tars.LoadInfo._write = function (os, tag, value) { os.writeStruct(tag, value); };
+tars.LoadInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 tars.LoadInfo._readFrom = function (is) {
     var tmp = new tars.LoadInfo();
     tmp.avg1 = is.readFloat(0, true, 0);
@@ -64,42 +63,41 @@ tars.LoadInfo.prototype._writeTo = function (os) {
     os.writeFloat(2, this.avg15);
     os.writeInt32(3, this.avgCpu);
 };
-tars.LoadInfo.prototype._equal = function (anItem) {
-    assert(false, 'this structure not define key operation');
-}
+tars.LoadInfo.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
 tars.LoadInfo.prototype._genKey = function () {
     if (!this._proto_struct_name_) {
-        this._proto_struct_name_ = 'STRUCT' + Math.random();
+        this._proto_struct_name_ = "STRUCT" + Math.random();
     }
     return this._proto_struct_name_;
-}
+};
 tars.LoadInfo.prototype.toObject = function() { 
-    var tmp = {};
-
-    tmp.avg1 = this.avg1;
-    tmp.avg5 = this.avg5;
-    tmp.avg15 = this.avg15;
-    tmp.avgCpu = this.avgCpu;
-    
-    return tmp;
-}
+    return {
+        "avg1" : this.avg1,
+        "avg5" : this.avg5,
+        "avg15" : this.avg15,
+        "avgCpu" : this.avgCpu
+    };
+};
 tars.LoadInfo.prototype.readFromObject = function(json) { 
-    !json.hasOwnProperty("avg1") || (this.avg1 = json.avg1);
-    !json.hasOwnProperty("avg5") || (this.avg5 = json.avg5);
-    !json.hasOwnProperty("avg15") || (this.avg15 = json.avg15);
-    !json.hasOwnProperty("avgCpu") || (this.avgCpu = json.avgCpu);
-}
+    json.hasOwnProperty("avg1") && (this.avg1 = json.avg1);
+    json.hasOwnProperty("avg5") && (this.avg5 = json.avg5);
+    json.hasOwnProperty("avg15") && (this.avg15 = json.avg15);
+    json.hasOwnProperty("avgCpu") && (this.avgCpu = json.avgCpu);
+};
 tars.LoadInfo.prototype.toBinBuffer = function () {
-    var os = new TarsStream.OutputStream();
+    var os = new TarsStream.TarsOutputStream();
     this._writeTo(os);
     return os.getBinBuffer();
-}
+};
 tars.LoadInfo.new = function () {
     return new tars.LoadInfo();
-}
+};
 tars.LoadInfo.create = function (is) {
     return tars.LoadInfo._readFrom(is);
-}
+};
+
 tars.PatchInfo = function() {
     this.bPatching = false;
     this.iPercent = 0;
@@ -110,9 +108,8 @@ tars.PatchInfo = function() {
     this._classname = "tars.PatchInfo";
 };
 tars.PatchInfo._classname = "tars.PatchInfo";
-
-tars.PatchInfo._write = function (os, tag, value) { os.writeStruct(tag, value); }
-tars.PatchInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); }
+tars.PatchInfo._write = function (os, tag, value) { os.writeStruct(tag, value); };
+tars.PatchInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 tars.PatchInfo._readFrom = function (is) {
     var tmp = new tars.PatchInfo();
     tmp.bPatching = is.readBoolean(0, true, false);
@@ -131,46 +128,45 @@ tars.PatchInfo.prototype._writeTo = function (os) {
     os.writeString(4, this.sResult);
     os.writeBoolean(5, this.bSucc);
 };
-tars.PatchInfo.prototype._equal = function (anItem) {
-    assert(false, 'this structure not define key operation');
-}
+tars.PatchInfo.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
 tars.PatchInfo.prototype._genKey = function () {
     if (!this._proto_struct_name_) {
-        this._proto_struct_name_ = 'STRUCT' + Math.random();
+        this._proto_struct_name_ = "STRUCT" + Math.random();
     }
     return this._proto_struct_name_;
-}
+};
 tars.PatchInfo.prototype.toObject = function() { 
-    var tmp = {};
-
-    tmp.bPatching = this.bPatching;
-    tmp.iPercent = this.iPercent;
-    tmp.iModifyTime = this.iModifyTime;
-    tmp.sVersion = this.sVersion;
-    tmp.sResult = this.sResult;
-    tmp.bSucc = this.bSucc;
-    
-    return tmp;
-}
+    return {
+        "bPatching" : this.bPatching,
+        "iPercent" : this.iPercent,
+        "iModifyTime" : this.iModifyTime,
+        "sVersion" : this.sVersion,
+        "sResult" : this.sResult,
+        "bSucc" : this.bSucc
+    };
+};
 tars.PatchInfo.prototype.readFromObject = function(json) { 
-    !json.hasOwnProperty("bPatching") || (this.bPatching = json.bPatching);
-    !json.hasOwnProperty("iPercent") || (this.iPercent = json.iPercent);
-    !json.hasOwnProperty("iModifyTime") || (this.iModifyTime = json.iModifyTime);
-    !json.hasOwnProperty("sVersion") || (this.sVersion = json.sVersion);
-    !json.hasOwnProperty("sResult") || (this.sResult = json.sResult);
-    !json.hasOwnProperty("bSucc") || (this.bSucc = json.bSucc);
-}
+    json.hasOwnProperty("bPatching") && (this.bPatching = json.bPatching);
+    json.hasOwnProperty("iPercent") && (this.iPercent = json.iPercent);
+    json.hasOwnProperty("iModifyTime") && (this.iModifyTime = json.iModifyTime);
+    json.hasOwnProperty("sVersion") && (this.sVersion = json.sVersion);
+    json.hasOwnProperty("sResult") && (this.sResult = json.sResult);
+    json.hasOwnProperty("bSucc") && (this.bSucc = json.bSucc);
+};
 tars.PatchInfo.prototype.toBinBuffer = function () {
-    var os = new TarsStream.OutputStream();
+    var os = new TarsStream.TarsOutputStream();
     this._writeTo(os);
     return os.getBinBuffer();
-}
+};
 tars.PatchInfo.new = function () {
     return new tars.PatchInfo();
-}
+};
 tars.PatchInfo.create = function (is) {
     return tars.PatchInfo._readFrom(is);
-}
+};
+
 tars.PreparePatchInfo = function() {
     this.bPreparePatching = false;
     this.iPercent = 0;
@@ -181,9 +177,8 @@ tars.PreparePatchInfo = function() {
     this._classname = "tars.PreparePatchInfo";
 };
 tars.PreparePatchInfo._classname = "tars.PreparePatchInfo";
-
-tars.PreparePatchInfo._write = function (os, tag, value) { os.writeStruct(tag, value); }
-tars.PreparePatchInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); }
+tars.PreparePatchInfo._write = function (os, tag, value) { os.writeStruct(tag, value); };
+tars.PreparePatchInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 tars.PreparePatchInfo._readFrom = function (is) {
     var tmp = new tars.PreparePatchInfo();
     tmp.bPreparePatching = is.readBoolean(0, true, false);
@@ -202,46 +197,45 @@ tars.PreparePatchInfo.prototype._writeTo = function (os) {
     os.writeString(4, this.sResult);
     os.writeInt32(5, this.ret);
 };
-tars.PreparePatchInfo.prototype._equal = function (anItem) {
-    assert(false, 'this structure not define key operation');
-}
+tars.PreparePatchInfo.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
 tars.PreparePatchInfo.prototype._genKey = function () {
     if (!this._proto_struct_name_) {
-        this._proto_struct_name_ = 'STRUCT' + Math.random();
+        this._proto_struct_name_ = "STRUCT" + Math.random();
     }
     return this._proto_struct_name_;
-}
+};
 tars.PreparePatchInfo.prototype.toObject = function() { 
-    var tmp = {};
-
-    tmp.bPreparePatching = this.bPreparePatching;
-    tmp.iPercent = this.iPercent;
-    tmp.iModifyTime = this.iModifyTime;
-    tmp.sVersion = this.sVersion;
-    tmp.sResult = this.sResult;
-    tmp.ret = this.ret;
-    
-    return tmp;
-}
+    return {
+        "bPreparePatching" : this.bPreparePatching,
+        "iPercent" : this.iPercent,
+        "iModifyTime" : this.iModifyTime,
+        "sVersion" : this.sVersion,
+        "sResult" : this.sResult,
+        "ret" : this.ret
+    };
+};
 tars.PreparePatchInfo.prototype.readFromObject = function(json) { 
-    !json.hasOwnProperty("bPreparePatching") || (this.bPreparePatching = json.bPreparePatching);
-    !json.hasOwnProperty("iPercent") || (this.iPercent = json.iPercent);
-    !json.hasOwnProperty("iModifyTime") || (this.iModifyTime = json.iModifyTime);
-    !json.hasOwnProperty("sVersion") || (this.sVersion = json.sVersion);
-    !json.hasOwnProperty("sResult") || (this.sResult = json.sResult);
-    !json.hasOwnProperty("ret") || (this.ret = json.ret);
-}
+    json.hasOwnProperty("bPreparePatching") && (this.bPreparePatching = json.bPreparePatching);
+    json.hasOwnProperty("iPercent") && (this.iPercent = json.iPercent);
+    json.hasOwnProperty("iModifyTime") && (this.iModifyTime = json.iModifyTime);
+    json.hasOwnProperty("sVersion") && (this.sVersion = json.sVersion);
+    json.hasOwnProperty("sResult") && (this.sResult = json.sResult);
+    json.hasOwnProperty("ret") && (this.ret = json.ret);
+};
 tars.PreparePatchInfo.prototype.toBinBuffer = function () {
-    var os = new TarsStream.OutputStream();
+    var os = new TarsStream.TarsOutputStream();
     this._writeTo(os);
     return os.getBinBuffer();
-}
+};
 tars.PreparePatchInfo.new = function () {
     return new tars.PreparePatchInfo();
-}
+};
 tars.PreparePatchInfo.create = function (is) {
     return tars.PreparePatchInfo._readFrom(is);
-}
+};
+
 tars.NodeInfo = function() {
     this.nodeName = "";
     this.nodeObj = "";
@@ -255,9 +249,8 @@ tars.NodeInfo = function() {
     this._classname = "tars.NodeInfo";
 };
 tars.NodeInfo._classname = "tars.NodeInfo";
-
-tars.NodeInfo._write = function (os, tag, value) { os.writeStruct(tag, value); }
-tars.NodeInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); }
+tars.NodeInfo._write = function (os, tag, value) { os.writeStruct(tag, value); };
+tars.NodeInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 tars.NodeInfo._readFrom = function (is) {
     var tmp = new tars.NodeInfo();
     tmp.nodeName = is.readString(0, true, "");
@@ -282,52 +275,51 @@ tars.NodeInfo.prototype._writeTo = function (os) {
     os.writeString(7, this.coreFileSize);
     os.writeInt32(8, this.openFiles);
 };
-tars.NodeInfo.prototype._equal = function (anItem) {
-    assert(false, 'this structure not define key operation');
-}
+tars.NodeInfo.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
 tars.NodeInfo.prototype._genKey = function () {
     if (!this._proto_struct_name_) {
-        this._proto_struct_name_ = 'STRUCT' + Math.random();
+        this._proto_struct_name_ = "STRUCT" + Math.random();
     }
     return this._proto_struct_name_;
-}
+};
 tars.NodeInfo.prototype.toObject = function() { 
-    var tmp = {};
-
-    tmp.nodeName = this.nodeName;
-    tmp.nodeObj = this.nodeObj;
-    tmp.endpointIp = this.endpointIp;
-    tmp.endpointPort = this.endpointPort;
-    tmp.timeOut = this.timeOut;
-    tmp.dataDir = this.dataDir;
-    tmp.version = this.version;
-    tmp.coreFileSize = this.coreFileSize;
-    tmp.openFiles = this.openFiles;
-    
-    return tmp;
-}
+    return {
+        "nodeName" : this.nodeName,
+        "nodeObj" : this.nodeObj,
+        "endpointIp" : this.endpointIp,
+        "endpointPort" : this.endpointPort,
+        "timeOut" : this.timeOut,
+        "dataDir" : this.dataDir,
+        "version" : this.version,
+        "coreFileSize" : this.coreFileSize,
+        "openFiles" : this.openFiles
+    };
+};
 tars.NodeInfo.prototype.readFromObject = function(json) { 
-    !json.hasOwnProperty("nodeName") || (this.nodeName = json.nodeName);
-    !json.hasOwnProperty("nodeObj") || (this.nodeObj = json.nodeObj);
-    !json.hasOwnProperty("endpointIp") || (this.endpointIp = json.endpointIp);
-    !json.hasOwnProperty("endpointPort") || (this.endpointPort = json.endpointPort);
-    !json.hasOwnProperty("timeOut") || (this.timeOut = json.timeOut);
-    !json.hasOwnProperty("dataDir") || (this.dataDir = json.dataDir);
-    !json.hasOwnProperty("version") || (this.version = json.version);
-    !json.hasOwnProperty("coreFileSize") || (this.coreFileSize = json.coreFileSize);
-    !json.hasOwnProperty("openFiles") || (this.openFiles = json.openFiles);
-}
+    json.hasOwnProperty("nodeName") && (this.nodeName = json.nodeName);
+    json.hasOwnProperty("nodeObj") && (this.nodeObj = json.nodeObj);
+    json.hasOwnProperty("endpointIp") && (this.endpointIp = json.endpointIp);
+    json.hasOwnProperty("endpointPort") && (this.endpointPort = json.endpointPort);
+    json.hasOwnProperty("timeOut") && (this.timeOut = json.timeOut);
+    json.hasOwnProperty("dataDir") && (this.dataDir = json.dataDir);
+    json.hasOwnProperty("version") && (this.version = json.version);
+    json.hasOwnProperty("coreFileSize") && (this.coreFileSize = json.coreFileSize);
+    json.hasOwnProperty("openFiles") && (this.openFiles = json.openFiles);
+};
 tars.NodeInfo.prototype.toBinBuffer = function () {
-    var os = new TarsStream.OutputStream();
+    var os = new TarsStream.TarsOutputStream();
     this._writeTo(os);
     return os.getBinBuffer();
-}
+};
 tars.NodeInfo.new = function () {
     return new tars.NodeInfo();
-}
+};
 tars.NodeInfo.create = function (is) {
     return tars.NodeInfo._readFrom(is);
-}
+};
+
 tars.ServerStateInfo = function() {
     this.serverState = tars.ServerState.Inactive;
     this.processId = 0;
@@ -338,9 +330,8 @@ tars.ServerStateInfo = function() {
     this._classname = "tars.ServerStateInfo";
 };
 tars.ServerStateInfo._classname = "tars.ServerStateInfo";
-
-tars.ServerStateInfo._write = function (os, tag, value) { os.writeStruct(tag, value); }
-tars.ServerStateInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); }
+tars.ServerStateInfo._write = function (os, tag, value) { os.writeStruct(tag, value); };
+tars.ServerStateInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 tars.ServerStateInfo._readFrom = function (is) {
     var tmp = new tars.ServerStateInfo();
     tmp.serverState = is.readInt32(0, true, tars.ServerState.Inactive);
@@ -359,46 +350,45 @@ tars.ServerStateInfo.prototype._writeTo = function (os) {
     os.writeString(4, this.serverName);
     os.writeInt32(5, this.settingState);
 };
-tars.ServerStateInfo.prototype._equal = function (anItem) {
-    assert(false, 'this structure not define key operation');
-}
+tars.ServerStateInfo.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
 tars.ServerStateInfo.prototype._genKey = function () {
     if (!this._proto_struct_name_) {
-        this._proto_struct_name_ = 'STRUCT' + Math.random();
+        this._proto_struct_name_ = "STRUCT" + Math.random();
     }
     return this._proto_struct_name_;
-}
+};
 tars.ServerStateInfo.prototype.toObject = function() { 
-    var tmp = {};
-
-    tmp.serverState = this.serverState;
-    tmp.processId = this.processId;
-    tmp.nodeName = this.nodeName;
-    tmp.application = this.application;
-    tmp.serverName = this.serverName;
-    tmp.settingState = this.settingState;
-    
-    return tmp;
-}
+    return {
+        "serverState" : this.serverState,
+        "processId" : this.processId,
+        "nodeName" : this.nodeName,
+        "application" : this.application,
+        "serverName" : this.serverName,
+        "settingState" : this.settingState
+    };
+};
 tars.ServerStateInfo.prototype.readFromObject = function(json) { 
-    !json.hasOwnProperty("serverState") || (this.serverState = json.serverState);
-    !json.hasOwnProperty("processId") || (this.processId = json.processId);
-    !json.hasOwnProperty("nodeName") || (this.nodeName = json.nodeName);
-    !json.hasOwnProperty("application") || (this.application = json.application);
-    !json.hasOwnProperty("serverName") || (this.serverName = json.serverName);
-    !json.hasOwnProperty("settingState") || (this.settingState = json.settingState);
-}
+    json.hasOwnProperty("serverState") && (this.serverState = json.serverState);
+    json.hasOwnProperty("processId") && (this.processId = json.processId);
+    json.hasOwnProperty("nodeName") && (this.nodeName = json.nodeName);
+    json.hasOwnProperty("application") && (this.application = json.application);
+    json.hasOwnProperty("serverName") && (this.serverName = json.serverName);
+    json.hasOwnProperty("settingState") && (this.settingState = json.settingState);
+};
 tars.ServerStateInfo.prototype.toBinBuffer = function () {
-    var os = new TarsStream.OutputStream();
+    var os = new TarsStream.TarsOutputStream();
     this._writeTo(os);
     return os.getBinBuffer();
-}
+};
 tars.ServerStateInfo.new = function () {
     return new tars.ServerStateInfo();
-}
+};
 tars.ServerStateInfo.create = function (is) {
     return tars.ServerStateInfo._readFrom(is);
-}
+};
+
 tars.PatchRequest = function() {
     this.appname = "";
     this.servername = "";
@@ -415,9 +405,8 @@ tars.PatchRequest = function() {
     this._classname = "tars.PatchRequest";
 };
 tars.PatchRequest._classname = "tars.PatchRequest";
-
-tars.PatchRequest._write = function (os, tag, value) { os.writeStruct(tag, value); }
-tars.PatchRequest._read  = function (is, tag, def) { return is.readStruct(tag, true, def); }
+tars.PatchRequest._write = function (os, tag, value) { os.writeStruct(tag, value); };
+tars.PatchRequest._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 tars.PatchRequest._readFrom = function (is) {
     var tmp = new tars.PatchRequest();
     tmp.appname = is.readString(0, true, "");
@@ -448,58 +437,57 @@ tars.PatchRequest.prototype._writeTo = function (os) {
     os.writeString(10, this.ostype);
     os.writeString(11, this.filepath);
 };
-tars.PatchRequest.prototype._equal = function (anItem) {
-    assert(false, 'this structure not define key operation');
-}
+tars.PatchRequest.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
 tars.PatchRequest.prototype._genKey = function () {
     if (!this._proto_struct_name_) {
-        this._proto_struct_name_ = 'STRUCT' + Math.random();
+        this._proto_struct_name_ = "STRUCT" + Math.random();
     }
     return this._proto_struct_name_;
-}
+};
 tars.PatchRequest.prototype.toObject = function() { 
-    var tmp = {};
-
-    tmp.appname = this.appname;
-    tmp.servername = this.servername;
-    tmp.nodename = this.nodename;
-    tmp.groupname = this.groupname;
-    tmp.binname = this.binname;
-    tmp.version = this.version;
-    tmp.user = this.user;
-    tmp.servertype = this.servertype;
-    tmp.patchobj = this.patchobj;
-    tmp.md5 = this.md5;
-    tmp.ostype = this.ostype;
-    tmp.filepath = this.filepath;
-    
-    return tmp;
-}
+    return {
+        "appname" : this.appname,
+        "servername" : this.servername,
+        "nodename" : this.nodename,
+        "groupname" : this.groupname,
+        "binname" : this.binname,
+        "version" : this.version,
+        "user" : this.user,
+        "servertype" : this.servertype,
+        "patchobj" : this.patchobj,
+        "md5" : this.md5,
+        "ostype" : this.ostype,
+        "filepath" : this.filepath
+    };
+};
 tars.PatchRequest.prototype.readFromObject = function(json) { 
-    !json.hasOwnProperty("appname") || (this.appname = json.appname);
-    !json.hasOwnProperty("servername") || (this.servername = json.servername);
-    !json.hasOwnProperty("nodename") || (this.nodename = json.nodename);
-    !json.hasOwnProperty("groupname") || (this.groupname = json.groupname);
-    !json.hasOwnProperty("binname") || (this.binname = json.binname);
-    !json.hasOwnProperty("version") || (this.version = json.version);
-    !json.hasOwnProperty("user") || (this.user = json.user);
-    !json.hasOwnProperty("servertype") || (this.servertype = json.servertype);
-    !json.hasOwnProperty("patchobj") || (this.patchobj = json.patchobj);
-    !json.hasOwnProperty("md5") || (this.md5 = json.md5);
-    !json.hasOwnProperty("ostype") || (this.ostype = json.ostype);
-    !json.hasOwnProperty("filepath") || (this.filepath = json.filepath);
-}
+    json.hasOwnProperty("appname") && (this.appname = json.appname);
+    json.hasOwnProperty("servername") && (this.servername = json.servername);
+    json.hasOwnProperty("nodename") && (this.nodename = json.nodename);
+    json.hasOwnProperty("groupname") && (this.groupname = json.groupname);
+    json.hasOwnProperty("binname") && (this.binname = json.binname);
+    json.hasOwnProperty("version") && (this.version = json.version);
+    json.hasOwnProperty("user") && (this.user = json.user);
+    json.hasOwnProperty("servertype") && (this.servertype = json.servertype);
+    json.hasOwnProperty("patchobj") && (this.patchobj = json.patchobj);
+    json.hasOwnProperty("md5") && (this.md5 = json.md5);
+    json.hasOwnProperty("ostype") && (this.ostype = json.ostype);
+    json.hasOwnProperty("filepath") && (this.filepath = json.filepath);
+};
 tars.PatchRequest.prototype.toBinBuffer = function () {
-    var os = new TarsStream.OutputStream();
+    var os = new TarsStream.TarsOutputStream();
     this._writeTo(os);
     return os.getBinBuffer();
-}
+};
 tars.PatchRequest.new = function () {
     return new tars.PatchRequest();
-}
+};
 tars.PatchRequest.create = function (is) {
     return tars.PatchRequest._readFrom(is);
-}
+};
+
 tars.PreparePatchRequest = function() {
     this.appname = "";
     this.servername = "";
@@ -515,9 +503,8 @@ tars.PreparePatchRequest = function() {
     this._classname = "tars.PreparePatchRequest";
 };
 tars.PreparePatchRequest._classname = "tars.PreparePatchRequest";
-
-tars.PreparePatchRequest._write = function (os, tag, value) { os.writeStruct(tag, value); }
-tars.PreparePatchRequest._read  = function (is, tag, def) { return is.readStruct(tag, true, def); }
+tars.PreparePatchRequest._write = function (os, tag, value) { os.writeStruct(tag, value); };
+tars.PreparePatchRequest._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 tars.PreparePatchRequest._readFrom = function (is) {
     var tmp = new tars.PreparePatchRequest();
     tmp.appname = is.readString(0, true, "");
@@ -550,53 +537,52 @@ tars.PreparePatchRequest.prototype._equal = function (anItem) {
     return this.appname === anItem.appname && 
         this.servername === anItem.servername && 
         this.version === anItem.version;
-}
+};
 tars.PreparePatchRequest.prototype._genKey = function () {
     if (!this._proto_struct_name_) {
-        this._proto_struct_name_ = 'STRUCT' + Math.random();
+        this._proto_struct_name_ = "STRUCT" + Math.random();
     }
     return this._proto_struct_name_;
-}
+};
 tars.PreparePatchRequest.prototype.toObject = function() { 
-    var tmp = {};
-
-    tmp.appname = this.appname;
-    tmp.servername = this.servername;
-    tmp.groupname = this.groupname;
-    tmp.version = this.version;
-    tmp.user = this.user;
-    tmp.servertype = this.servertype;
-    tmp.patchobj = this.patchobj;
-    tmp.md5 = this.md5;
-    tmp.ostype = this.ostype;
-    tmp.specialNodeList = this.specialNodeList.toObject();
-    tmp.filepath = this.filepath;
-    
-    return tmp;
-}
+    return {
+        "appname" : this.appname,
+        "servername" : this.servername,
+        "groupname" : this.groupname,
+        "version" : this.version,
+        "user" : this.user,
+        "servertype" : this.servertype,
+        "patchobj" : this.patchobj,
+        "md5" : this.md5,
+        "ostype" : this.ostype,
+        "specialNodeList" : this.specialNodeList.toObject(),
+        "filepath" : this.filepath
+    };
+};
 tars.PreparePatchRequest.prototype.readFromObject = function(json) { 
-    !json.hasOwnProperty("appname") || (this.appname = json.appname);
-    !json.hasOwnProperty("servername") || (this.servername = json.servername);
-    !json.hasOwnProperty("groupname") || (this.groupname = json.groupname);
-    !json.hasOwnProperty("version") || (this.version = json.version);
-    !json.hasOwnProperty("user") || (this.user = json.user);
-    !json.hasOwnProperty("servertype") || (this.servertype = json.servertype);
-    !json.hasOwnProperty("patchobj") || (this.patchobj = json.patchobj);
-    !json.hasOwnProperty("md5") || (this.md5 = json.md5);
-    !json.hasOwnProperty("ostype") || (this.ostype = json.ostype);
-    !json.hasOwnProperty("specialNodeList") || (this.specialNodeList.readFromObject(json.specialNodeList));
-    !json.hasOwnProperty("filepath") || (this.filepath = json.filepath);
-}
+    json.hasOwnProperty("appname") && (this.appname = json.appname);
+    json.hasOwnProperty("servername") && (this.servername = json.servername);
+    json.hasOwnProperty("groupname") && (this.groupname = json.groupname);
+    json.hasOwnProperty("version") && (this.version = json.version);
+    json.hasOwnProperty("user") && (this.user = json.user);
+    json.hasOwnProperty("servertype") && (this.servertype = json.servertype);
+    json.hasOwnProperty("patchobj") && (this.patchobj = json.patchobj);
+    json.hasOwnProperty("md5") && (this.md5 = json.md5);
+    json.hasOwnProperty("ostype") && (this.ostype = json.ostype);
+    json.hasOwnProperty("specialNodeList") && (this.specialNodeList.readFromObject(json.specialNodeList));
+    json.hasOwnProperty("filepath") && (this.filepath = json.filepath);
+};
 tars.PreparePatchRequest.prototype.toBinBuffer = function () {
-    var os = new TarsStream.OutputStream();
+    var os = new TarsStream.TarsOutputStream();
     this._writeTo(os);
     return os.getBinBuffer();
-}
+};
 tars.PreparePatchRequest.new = function () {
     return new tars.PreparePatchRequest();
-}
+};
 tars.PreparePatchRequest.create = function (is) {
     return tars.PreparePatchRequest._readFrom(is);
-}
+};
+
 
 

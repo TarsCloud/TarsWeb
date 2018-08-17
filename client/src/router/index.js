@@ -9,6 +9,7 @@ import ServerConfig from '@/pages/server/config';
 import ServerServerMonitor from '@/pages/server/monitor-server';
 import ServerPropertyMonitor from '@/pages/server/monitor-property';
 import userManage from '@/pages/server/user-manage';
+import InterfaceDebuger from '@/pages/server/interface-debuger';
 
 // 运维管理
 import Operation from '@/pages/operation/index';
@@ -44,6 +45,10 @@ export default new Router({
         {
           path: ':treeid/property-monitor',
           component: ServerPropertyMonitor,
+        },
+        {
+          path: ':treeid/interface-debuger',
+          component: InterfaceDebuger,
         },
         {
           path: ':treeid/user-manage',

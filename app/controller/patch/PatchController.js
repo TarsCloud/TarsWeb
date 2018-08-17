@@ -44,6 +44,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
             await fs.ensureDirSync(updateTgzPath);
             let hash = md5Sum(`${baseUploadPath}/${file.filename}`);
             if(md5 && md5!=hash) {
+                logger.error('[uploadPatchPackage]:','#patch.md5#');
                 return ctx.makeErrResObj(500,'#patch.md5#');
             }
             let uploadTgzName = `${application}.${module_name}_${file.fieldname}_${new Date().getTime()}.tgz`;
