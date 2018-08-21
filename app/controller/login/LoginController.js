@@ -15,8 +15,8 @@
  */
  
 const logger = require('../../logger');
-const loginConf = require('../../../config/loginConf');
-
+// const loginConf = require('../../../config/loginConf');
+const loginConf = {};
 const LoginController = {};
 
 LoginController.isEnableLogin = async(ctx) =>{
