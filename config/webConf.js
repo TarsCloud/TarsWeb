@@ -17,7 +17,7 @@ var path = require('path');
 
 module.exports = {
     dbConf: {
-        host: 'localhost',       // 数据库地址
+        host: 'db.tars.com',       // 数据库地址
         port: '3306',            // 数据库端口
         user: 'tars',            // 用户名
         password: 'tars2015',       // 密码
