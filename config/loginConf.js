@@ -31,10 +31,10 @@ module.exports = {
     cookieDomain: 'wsd.com',              //cookie值对应的域
     ticketParamName: 'ticket',              //第三方登录服务回调时候，url中表示st的参数名
     // getUidByTicket: 'http://oss.api.tof.oa.com/api/v1/Passport/DecryptTicketWithClientIP',  //通过ticket从cas服务端校验和获取用户基本信息的url
-    getUidByTicket: getUidByTicket,         //通过ticket从cas服务端校验和获取用户基本信息的url,或获取用户基本信息的方法
+    getUidByTicket: '',         //通过ticket从cas服务端校验和获取用户基本信息的url,或获取用户基本信息的方法
     getUidByTicketParamName: 'ticket',      //调用获取用户信息接口时候st的参数名
     uidKey: 'data.uid',                     //结果JSON里面取出用户名的位置，取到该用户名才认为成功,可以多层
-    validate: validate,                     //通过token和用户名到cas服务端校验key和用户名是否匹配的url或方法
+    validate: '',                     //通过token和用户名到cas服务端校验key和用户名是否匹配的url或方法
     validateTicketParamName: 'ticket',      //校验接口传入st参数名
     validateUidParamName: 'uid',            //校验接口传入用户参数名
     validateMatch: [
@@ -46,64 +46,3 @@ module.exports = {
     apiNotLoginMes: '#common.noLogin#', //接口无登录权限的提示语
 };
 
-var tof3 = require('@tencent/tof').tof3;
-let _sysId = 22705;
-let _appKey = 'b4e856be75584beab77e71f5f2efcd0f';
-tof3.config({sysId: _sysId, appKey: _appKey});
-tof3.setReqHost('oss.api.tof.oa.com');
-
-/**
- * 由用户直接定制通过ticket获取用户信息的方法
- * @param ctx
- */
-async function getUidByTicket(ctx, ticket){
-    //TODO
-    return new Promise((resolve, reject)=>{
-        try{
-            tof3.passport.decryptTicketWithClientIP({ // 验证ticket的合法性
-                appkey: _appKey,
-                encryptedTicket: ticket,
-                browseIP: ctx.ip
-            }, function (err, data) {
-                if (err) {
-                    resolve(false)
-                }
-                if (data) {
-                    resolve(data.LoginName);
-                } else {
-                    resolve(false)
-                }
-            });
-        }catch(e){
-            resolve(false)
-        }
-    })
-}
-
-/**
- * 由用户直接定制判断用户名校验方法
- * @param ctx
- */
-async function validate(ctx, uid, ticket){
-    //TODO
-    return new Promise((resolve, reject)=>{
-        try{
-            tof3.passport.decryptTicketWithClientIP({ // 验证ticket的合法性
-                appkey: _appKey,
-                encryptedTicket: ticket,
-                browseIP: ctx.ip
-            }, function (err, data) {
-                if (err) {
-                    throw err;
-                }
-                if (data) {
-                    resolve(data.LoginName === uid);
-                } else {
-                    resolve(false)
-                }
-            });
-        }catch(e){
-            resolve(false)
-        }
-    })
-}
