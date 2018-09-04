@@ -49,25 +49,25 @@
           <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
-      <let-form-item :label="$t('serverList.table.th.ip')" required>
-        <let-input
-          size="small"
-          v-model="model.node_name"
-          :placeholder="$t('serverList.table.th.ip')"
-          required
-          :required-tip="$t('deployService.form.nodeTips')"
-          pattern="^[0-9]{1,3}(?:\.[0-9]{1,3}){3}$"
-          :pattern-tip="$t('deployService.form.nodeFormatTips')"
-        ></let-input>
-      </let-form-item>
-      <let-form-item label="SET">
-        <SetInputer
-          :enabled.sync="model.enable_set"
-          :name.sync="model.set_name"
-          :area.sync="model.set_area"
-          :group.sync="model.set_group"
-        ></SetInputer>
-      </let-form-item>
+      <!--<let-form-item :label="$t('serverList.table.th.ip')" required>-->
+        <!--<let-input-->
+          <!--size="small"-->
+          <!--v-model="model.node_name"-->
+          <!--:placeholder="$t('serverList.table.th.ip')"-->
+          <!--required-->
+          <!--:required-tip="$t('deployService.form.nodeTips')"-->
+          <!--pattern="^[0-9]{1,3}(?:\.[0-9]{1,3}){3}$"-->
+          <!--:pattern-tip="$t('deployService.form.nodeFormatTips')"-->
+        <!--&gt;</let-input>-->
+      <!--</let-form-item>-->
+      <!--<let-form-item label="SET">-->
+        <!--<SetInputer-->
+          <!--:enabled.sync="model.enable_set"-->
+          <!--:name.sync="model.set_name"-->
+          <!--:area.sync="model.set_area"-->
+          <!--:group.sync="model.set_group"-->
+        <!--&gt;</SetInputer>-->
+      <!--</let-form-item>-->
 
       <let-form-item :label="$t('user.op')" v-show="enableAuth">
         <let-input
@@ -103,22 +103,22 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('deployService.table.th.endpoint')">
-          <template slot="head" slot-scope="props">
-            <span class="required">{{props.column.title}}</span>
-          </template>
-          <template slot-scope="props">
-            <let-input
-              size="small"
-              v-model="props.row.bind_ip"
-              placeholder="IP"
-              required
-              :required-tip="$t('deployService.table.tips.ip')"
-              pattern="^[0-9]{1,3}(?:\.[0-9]{1,3}){3}$"
-              :pattern-tip="$t('deployService.table.tips.ipFormat')"
-            ></let-input>
-          </template>
-        </let-table-column>
+        <!--<let-table-column :title="$t('deployService.table.th.endpoint')">-->
+          <!--<template slot="head" slot-scope="props">-->
+            <!--<span class="required">{{props.column.title}}</span>-->
+          <!--</template>-->
+          <!--<template slot-scope="props">-->
+            <!--<let-input-->
+              <!--size="small"-->
+              <!--v-model="props.row.bind_ip"-->
+              <!--placeholder="IP"-->
+              <!--required-->
+              <!--:required-tip="$t('deployService.table.tips.ip')"-->
+              <!--pattern="^[0-9]{1,3}(?:\.[0-9]{1,3}){3}$"-->
+              <!--:pattern-tip="$t('deployService.table.tips.ipFormat')"-->
+            <!--&gt;</let-input>-->
+          <!--</template>-->
+        <!--</let-table-column>-->
         <let-table-column :title="$t('deployService.table.th.port')" width="100px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
@@ -267,7 +267,7 @@ const getInitialModel = () => ({
   server_name: '',
   server_type: types[0],
   template_name: '',
-  node_name: '',
+  node_name: '0.0.0.0',
   enable_set: false,
   set_name: '',
   set_area: '',
@@ -276,7 +276,7 @@ const getInitialModel = () => ({
   developer: '',
   adapters: [{
     obj_name: '',
-    bind_ip: '',
+    bind_ip: '0.0.0.0',
     port: '',
     port_type: 'tcp',
     protocol: 'tars',
@@ -327,15 +327,15 @@ export default {
       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
     });
 
-    this.$watch('model.node_name', (val, oldVal) => {
-      if (val === oldVal) {
-        return;
-      }
-
-      this.model.adapters.forEach((d) => {
-        d.bind_ip = val; // eslint-disable-line no-param-reassign
-      });
-    });
+//    this.$watch('model.node_name', (val, oldVal) => {
+//      if (val === oldVal) {
+//        return;
+//      }
+//
+//      this.model.adapters.forEach((d) => {
+//        d.bind_ip = val; // eslint-disable-line no-param-reassign
+//      });
+//    });
   },
 
   methods: {
