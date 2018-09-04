@@ -23,9 +23,10 @@ const InfTestService = {};
 
 
 InfTestService.debug = async (paramObj) => {
-    let context = await getContext(paramObj.tarsFilePath);
+    let context = await getContextFromDB(paramObj.id);
+    context = JSON.parse(context.context);
     let interface = context[paramObj.moduleName].interfaces[paramObj.interfaceName];
-    let client = new TarsClient(context, interface, 'TRom.NodeJsTestServer.NodeJsCommObj@tcp -h 127.0.0.1 -p 14002 -t 10000');
+    let client = new TarsClient(context, interface, paramObj.objName);
     let ret = await client.invoke(paramObj.functionName, JSON.parse(paramObj.params));
     return ret.response;
 }
@@ -53,8 +54,13 @@ async function getContext(tarsFilePath) {
     return context;
 }
 
-InfTestService.getAllData = async (tarsFilePath) =>{
-    let context = await getContext(tarsFilePath);
+async function getContextFromDB(id) {
+    return await InfTestDao.getContext(id);
+}
+
+InfTestService.getAllData = async (id) =>{
+    let context = (await getContextFromDB(id)).context;
+    context = JSON.parse(context);
     function f(context) {
         let obj = [];
         for(let item in context) {
@@ -80,25 +86,29 @@ InfTestService.getAllData = async (tarsFilePath) =>{
     return f(context);
 }
 
-InfTestService.getModuleData = async (tarsFilePath) =>{
-    let context = await getContext(tarsFilePath);
+InfTestService.getModuleData = async (id) =>{
+    let context = (await getContextFromDB(id)).context;
+    context = JSON.parse(context);
     let keys = Object.keys(context).filter(item => item != 'includes');
     return keys;
 }
 
-InfTestService.getInterfaceData = async (tarsFilePath, moduleName) => {
-    let context = await getContext(tarsFilePath);
+InfTestService.getInterfaceData = async (id, moduleName) => {
+    let context = (await getContextFromDB(id)).context;
+    context = JSON.parse(context);
     let keys = Object.keys(context[moduleName].interfaces);
     return keys;
 }
 
-InfTestService.getFunctionData = async (tarsFilePath, moduleName, interfaceName) => {
-    let context = await getContext(tarsFilePath);
+InfTestService.getFunctionData = async (id, moduleName, interfaceName) => {
+    let context = (await getContextFromDB(id)).context;
+    context = JSON.parse(context);
     return Object.keys(context[moduleName].interfaces[interfaceName].functions);
 }
 
-InfTestService.getParams = async (tarsFilePath, moduleName, interfaceName, functionName) => {
-    let context = await getContext(tarsFilePath);
+InfTestService.getParams = async (id, moduleName, interfaceName, functionName) => {
+    let context = (await getContextFromDB(id)).context;
+    context = JSON.parse(context);
     let params = context[moduleName].interfaces[interfaceName].functions[functionName].params;
     return params;
 }

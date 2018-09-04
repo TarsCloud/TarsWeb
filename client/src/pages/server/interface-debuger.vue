@@ -11,7 +11,7 @@
             <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="posttime"></let-table-column>
             <let-table-column :title="$t('operate.operates')" width="260px">
             <template slot-scope="scope">
-                <let-table-operation @click="showDebuger(scope.row.file_name)">{{$t('inf.list.debug')}}</let-table-operation>  
+                <let-table-operation @click="showDebuger(scope.row)">{{$t('inf.list.debug')}}</let-table-operation>  
                 <let-table-operation @click="changeConfig(scope.row, 'configList')">{{$t('operate.update')}}</let-table-operation>
                 <let-table-operation @click="deleteConfig(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
             </template>
@@ -115,7 +115,8 @@ export default {
             outParam:'',
             selectedFileName: '',
             selectedMethods: [],
-            objName : '' 
+            objName : '',
+            selectedId : '' 
         }
     },
     methods: {
@@ -161,18 +162,20 @@ export default {
         closeUploadModal() {
             this.uploadModal.show = false;
         },
-        showDebuger(file_name) {
+        showDebuger(row) {
             this.showDebug = true;
-            this.selectedFileName = file_name;
+            this.selectedFileName = row.file_name;
             this.inParam = null;
             this.outParam = null;
-            this.getContextData(file_name);
+            this.selectedId = row.f_id;
+            this.objName = null;
+            this.getContextData(row.f_id);
         },
-        getContextData(file_name) {
+        getContextData(id) {
             this.$ajax.getJSON('/server/api/get_contexts', {
+                id : id,
                 application : this.serverData.application,
                 server_name : this.serverData.server_name,
-                file_name : file_name,
                 type : 'all'
             }).then(data => {
                 this.contextData = data;
@@ -187,7 +190,7 @@ export default {
                 this.$ajax.getJSON('/server/api/get_params', {
                     application : this.serverData.application,
                     server_name : this.serverData.server_name,
-                    file_name : this.selectedFileName,
+                    id : this.selectedId,
                     module_name : value[0],
                     interface_name : value[1],
                     function_name : value[2]
@@ -215,13 +218,15 @@ export default {
         doDebug() {
             const loading = this.$Loading.show();
             this.$ajax.postJSON('/server/api/interface_test', {
+                id: this.selectedId,
                 application : this.serverData.application,
                 server_name : this.serverData.server_name,
                 file_name : this.selectedFileName,
                 module_name : this.selectedMethods[0],
                 interface_name : this.selectedMethods[1],
                 function_name : this.selectedMethods[2],
-                params : this.inParam
+                params : this.inParam,
+                objName : this.objName
             }).then(data => {
                 loading.hide();
                 this.outParam = data;

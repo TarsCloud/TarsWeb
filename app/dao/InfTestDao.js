@@ -32,5 +32,15 @@ module.exports = {
             Object.assign(opt, {attributes:fields});
         }
         return tTarsFiles.findAll(opt);
+    },
+
+    getContext : async(id) => {
+        return tTarsFiles.findOne({
+            raw : true,
+            where : {
+                f_id : id
+            },
+            attributes : ['context']
+        })
     }
 };

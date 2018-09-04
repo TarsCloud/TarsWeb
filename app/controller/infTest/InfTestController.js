@@ -25,17 +25,14 @@ const InfTestController = {};
 
 InfTestController.interfaceDebug = async (ctx) => {
     try {
-        const {application, server_name, file_name, module_name, interface_name, function_name, params} = ctx.paramsObj;
+        const {id, objName, application, server_name, module_name, interface_name, function_name, params} = ctx.paramsObj;
         if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            let baseUploadPath = WebConf.pkgUploadPath.path;
-            let tarsFilePath = `${baseUploadPath}/tars_files/${application}/${server_name}/${file_name}`;
-            let rsp = await InfTestService.debug({tarsFilePath, moduleName:module_name, interfaceName:interface_name, functionName:function_name, params});
+            let rsp = await InfTestService.debug({id, objName, moduleName:module_name, interfaceName:interface_name, functionName:function_name, params});
             ctx.makeResObj(200, '', JSON.stringify(rsp));
         }
     }catch(e) {
-        console.info(e);
         logger.error('[interfaceDebug]:', e, ctx);
         ctx.makeErrResObj();
     }
@@ -94,21 +91,19 @@ InfTestController.getFileList = async (ctx) => {
 
 InfTestController.getContexts = async (ctx) => {
     try {
-        let {application, server_name, file_name, type, module_name, interface_name} = ctx.paramsObj;
+        let {id, application, server_name, type, module_name, interface_name} = ctx.paramsObj;
         if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            let baseUploadPath = WebConf.pkgUploadPath.path;
-            let tarsFilePath = `${baseUploadPath}/tars_files/${application}/${server_name}/${file_name}`;
             let contexts;
             if(type == 'all') {
-                contexts = await InfTestService.getAllData(tarsFilePath);
+                contexts = await InfTestService.getAllData(id);
             } else if(type == 'module') {
-                contexts = await InfTestService.getModuleData(tarsFilePath);
+                contexts = await InfTestService.getModuleData(id);
             } else if(type == 'interface') {
-                contexts = await InfTestService.getInterfaceData(tarsFilePath, module_name);
+                contexts = await InfTestService.getInterfaceData(id, module_name);
             } else if (type == 'function') {
-                contexts = await InfTestService.getFunctionData(tarsFilePath, module_name, interface_name);
+                contexts = await InfTestService.getFunctionData(id, module_name, interface_name);
             }
             ctx.makeResObj(200, '', contexts);
         }
@@ -120,13 +115,11 @@ InfTestController.getContexts = async (ctx) => {
 
 InfTestController.getParams = async (ctx) => {
     try {
-        let {application, server_name, file_name, module_name, interface_name, function_name} = ctx.paramsObj;
+        let {application, server_name, id, module_name, interface_name, function_name} = ctx.paramsObj;
         if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            let baseUploadPath = WebConf.pkgUploadPath.path;
-            let tarsFilePath = `${baseUploadPath}/tars_files/${application}/${server_name}/${file_name}`;
-            let params =await InfTestService.getParams(tarsFilePath, module_name, interface_name, function_name);
+            let params =await InfTestService.getParams(id, module_name, interface_name, function_name);
             ctx.makeResObj(200, '', params);
         }
     }catch(e) {
