@@ -83,7 +83,6 @@ databases.forEach((database)=>{
     });
     Db[database] = tableObj;
     Db[database].sequelize = sequelize;
-    sequelize.sync();
 });
 
 

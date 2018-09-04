@@ -158,7 +158,8 @@
         "appConfig": "应用配置",
         "statMonitor": "服务监控",
         "propertyMonitor": "特性监控",
-        "privileage": "权限管理"
+        "privileage": "权限管理",
+        "infDebuger": "接口调试"
       }
     }
   },
@@ -541,5 +542,17 @@
   "resource": {
     "installRstMsg": "，TarsNode安装结果如下：",
     "installResult": "安装结果"
+  },
+  "inf": {
+    "list": {
+      "debug" : "调试"
+    },
+    "title": {
+      "listTitle" : "tars文件列表",
+      "dlgTitle" : "上传Tars文件"
+    },
+    "dlg": {
+      "selectLabel" : "模块/接口/方法"
+    }
   }
 }
