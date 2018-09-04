@@ -14,27 +14,33 @@
  * specific language governing permissions and limitations under the License.
  */
  
-const logger = require('../../logger');
-const loginConf = require('../../../config/loginConf');
+const {tTarsFiles} = require('./db').db_tars_web;
 
-const LoginController = {};
+module.exports = {
+    addTarsFile : async(params) => {
+        return tTarsFiles.upsert(params,{
+            fields : ['server_name','file_name','posttime','context']
+        })
+    },
 
-LoginController.isEnableLogin = async(ctx) =>{
-    try{
-        ctx.makeResObj(200, '', {enableLogin: loginConf.enableLogin || false});
-    }catch(e){
-        logger.error('[getLoginUid]', e, ctx);
-        ctx.makeErrResObj();
+    getTarsFile : async(params, fields) => {
+        let opt = {
+            raw :true,
+            where : params
+        };
+        if(fields) {
+            Object.assign(opt, {attributes:fields});
+        }
+        return tTarsFiles.findAll(opt);
+    },
+
+    getContext : async(id) => {
+        return tTarsFiles.findOne({
+            raw : true,
+            where : {
+                f_id : id
+            },
+            attributes : ['context']
+        })
     }
 };
-
-LoginController.getLoginUid = async(ctx) =>{
-    try{
-        ctx.makeResObj(200, '', {uid: ctx.uid || ''});
-    }catch(e){
-        logger.error('[getLoginUid]', e, ctx);
-        ctx.makeErrResObj();
-    }
-};
-
-module.exports = LoginController;

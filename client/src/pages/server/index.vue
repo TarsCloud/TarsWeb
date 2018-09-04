@@ -38,6 +38,8 @@
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/property-monitor'" :tab="$t('index.rightView.tab.propertyMonitor')"
           v-if="serverData.level === 5"></let-tab-pane>
+        <let-tab-pane :tabkey="base + '/interface-debuger'" :tab="$t('index.rightView.tab.infDebuger')"
+          v-if="serverData.level === 5"></let-tab-pane>  
         <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')"
                       v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
       </let-tabs>

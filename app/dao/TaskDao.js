@@ -38,10 +38,10 @@ module.exports = {
                 as:'taskItem'
             },
         }
-        if(params.curPage && params.pageSize){
+        if(params.curr_page && params.page_size){
             Object.assign(opts,{
-                limit: pageSize,
-                offset: pageSize * (curPage - 1)
+                limit: parseInt(params.page_size),
+                offset: parseInt(params.page_size) * (parseInt(params.curr_page) - 1)
             })
         }
 

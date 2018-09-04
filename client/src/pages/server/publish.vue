@@ -161,7 +161,7 @@
           <let-button type="submit" theme="primary">{{$t('operate.search')}}</let-button>
         </let-form-item>
       </let-form>
-      <let-table ref="historyTable" v-if="historyList && historyList.length > 0" :data="historyList" :title="$t('historyList.title')" :empty-msg="$t('common.nodata')">
+      <let-table ref="historyTable" v-if="totalHistoryList && totalHistoryList.length > 0" :data="totalHistoryList" :title="$t('historyList.title')" :empty-msg="$t('common.nodata')">
         <let-table-column :title="$t('serverList.servant.taskID')" prop="task_no"></let-table-column>
         <let-table-column :title="$t('historyList.table.th.c2')">
           <template slot-scope="scope">
@@ -180,11 +180,12 @@
         </let-table-column>
         <let-pagination slot="pagination" align="right"
           :total="historyTotalPage" :page="historyPage" @change="changeHistoryPage">
-        </let-pagination>
+      </let-pagination>
         <div slot="operations" style="margin-left: -15px;">
           <let-button theme="primary" size="small" @click="showHistory=false">{{$t('operate.goback')}}</let-button>
         </div>
       </let-table>
+      
 
       <!-- 子任务详情弹出框 -->
       <let-modal
@@ -480,6 +481,9 @@ export default {
     },
     getHistoryList(curr_page) {
       // 更新历史记录
+      if(typeof curr_page != 'number'){
+        curr_page = 1;
+      }
       const loading = this.$Loading.show();
       const params = {
         application: this.serverList[0].application || '',
@@ -489,11 +493,11 @@ export default {
         page_size: this.historyPageSize,
         curr_page: curr_page
       };
+      this.historyPage = curr_page;
       this.$ajax.getJSON(`/server/api/task_list`, params).then((data) => {
         loading.hide();
         this.totalHistoryList = data.rows || [];
         this.historyTotalPage = Math.ceil(data.count / this.historyPageSize);
-        this.historyPage = curr_page;
       }).catch((err) => {
         loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -707,10 +711,7 @@ export default {
     },
     page() {
       this.updateServerList();
-    },
-    historyPage() {
-      this.getHistoryList(1);
-    },
+    }
   },
 };
 </script>
