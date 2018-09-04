@@ -12,8 +12,7 @@
             <let-table-column :title="$t('operate.operates')" width="260px">
             <template slot-scope="scope">
                 <let-table-operation @click="showDebuger(scope.row)">{{$t('inf.list.debug')}}</let-table-operation>  
-                <let-table-operation @click="changeConfig(scope.row, 'configList')">{{$t('operate.update')}}</let-table-operation>
-                <let-table-operation @click="deleteConfig(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
+                <let-table-operation @click="deleteFile(scope.row.f_id)">{{$t('operate.delete')}}</let-table-operation>
             </template>
             </let-table-column>
         </let-table>
