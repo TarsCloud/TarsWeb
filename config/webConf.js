@@ -20,7 +20,7 @@ module.exports = {
         host: 'localhost',       // 数据库地址
         port: '3306',            // 数据库端口
         user: 'root',            // 用户名
-        password: 'admin',       // 密码
+        password: 'abc123',       // 密码
         charset: 'utf8_bin',     // 数据库编码
         pool: {
             max: 10,             // 连接池中最大连接数量
