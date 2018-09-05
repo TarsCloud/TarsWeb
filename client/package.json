@@ -13,6 +13,7 @@
   "dependencies": {
     "echarts": "^4.0.4",
     "let-ui": "^0.1.19",
+    "request": "^2.88.0",
     "v-charts": "^1.16.8",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",

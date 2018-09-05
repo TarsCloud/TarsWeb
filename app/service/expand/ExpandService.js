@@ -3,23 +3,25 @@
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
  *
- * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except 
+ * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  *
  * https://opensource.org/licenses/BSD-3-Clause
  *
- * Unless required by applicable law or agreed to in writing, software distributed 
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
- 
+
 const ServerDao = require('../../dao/ServerDao');
 const AdapterDao = require('../../dao/AdapterDao');
 const ConfigDao = require('../../dao/ConfigDao');
 const logger = require('../../logger');
 const ServerService = require('../server/ServerService');
+const AdapterService = require('../adapter/AdapterService');
 const AuthService = require('../auth/AuthService');
+const TaskService = require('../task/TaskService');
 const _ = require('lodash');
 const util = require('../../tools/util');
 const Sequelize = require('sequelize');
@@ -28,14 +30,83 @@ const ResourceService = require('../resource/ResourceService');
 
 const ExpandService = {}
 
-ExpandService.preview = async(params)=> {
+ExpandService.releaseNodeTfae = async (params) => {
+    let {
+        application,           // 应用
+        server_name,           // 服务名
+        node_name,             // 参考节点，没有默认就是0.0.0.0
+        expand_nodes,          // 扩容节点
+        enable_set,            // 启动 set,  不启动 set 名、区域、组不用填
+        set_name,              // set 名
+        set_area,              // set 区域
+        set_group,             // set 组，为数字
+        copy_node_config,      // 是否复制节点服务配置
+        patch_id               //上传包返回的 id
+    } = params;
+    // 预扩容节点信息
+    let rst = await ExpandService.preview(params);
+    // 获取节点端口
+    let portRst = await AdapterService.getAvaliablePort(expand_nodes);
+    // 节点附加端口
+    rst.forEach(node => {
+        portRst.forEach(nodePort => {
+            if (node.node_name === nodePort.node_name) node.port = nodePort.port
+        })
+    });
+    // 扩容参数
+    let expandOption = {
+        application,
+        server_name,
+        node_name,
+        copy_node_config,
+        expand_preview_servers: []
+    };
+    expandOption.expand_preview_servers = rst.map(node => {
+        return {
+            bind_ip: node.bind_ip,
+            node_name: node.node_name,
+            obj_name: node.obj_name,
+            port: node.port,
+            set: node.set,
+        }
+    });
+    // 扩容
+    let expandRst = await ExpandService.expand(expandOption);
+    let {server_conf} = expandRst;
+    if (server_conf.length === 0) throw new Error('节点都已存在，扩容失败');
+
+    // 发布
+    let task_no = util.getUUID().toString();
+    let taskOption = {
+        serial: true,
+        items: [],
+        task_no: task_no
+    };
+    taskOption.items = server_conf.map(server => {
+        return {
+            "server_id": server.id,
+            "command": "patch_tars",
+            "parameters": {
+                "patch_id": patch_id,
+                "bak_flag": false,
+                "update_text": ""
+
+            }
+        }
+    });
+    await TaskService.addTask(taskOption);
+    // ctx.makeResObj(200, '', task_no);
+    return {task_no}
+};
+
+ExpandService.preview = async (params) => {
     let application = params.application;
     let serverName = params.server_name;
     let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
     let sourceAdapter = await AdapterDao.getAdapterConf(application, serverName, params.node_name);
     let result = [];
-    params.expand_nodes.forEach((expandNode)=> {
-        sourceAdapter.forEach((adapter)=> {
+    params.expand_nodes.forEach((expandNode) => {
+        sourceAdapter.forEach((adapter) => {
             adapter = adapter.dataValues;
             let preServer = {
                 application: application,
@@ -60,9 +131,9 @@ ExpandService.preview = async(params)=> {
     return result;
 };
 
-ExpandService.expand = async(params) => {
+ExpandService.expand = async (params) => {
     let transaction = await ServerDao.sequelize.transaction(); //开启事务
-    try{
+    try {
         let application = params.application;
         let serverName = params.server_name;
         let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
@@ -73,7 +144,7 @@ ExpandService.expand = async(params) => {
         let addNodeNameMap = {};
         for (var i = 0; i < params.expand_preview_servers.length; i++) {
             let preServer = params.expand_preview_servers[i];
-            if(!addServersMap[`${application}-${serverName}-${preServer.node_name}`]){
+            if (!addServersMap[`${application}-${serverName}-${preServer.node_name}`]) {
                 let serverConf = await ServerDao.getServerConfByName(application, serverName, preServer.node_name);
                 if (!serverConf) {
                     let server = {
@@ -85,7 +156,7 @@ ExpandService.expand = async(params) => {
                     server.enable_set = enableSet ? 'Y' : 'N';
                     if (enableSet) {
                         server = _.extend(server, _.zipObject(['set_name', 'set_area', 'set_group'], preServer.set.split('.')));
-                    }else{
+                    } else {
                         server = _.extend(server, _.zipObject(['set_name', 'set_area', 'set_group'], [null, null, null]));
                     }
                     server = _.extend(server, {
@@ -101,7 +172,7 @@ ExpandService.expand = async(params) => {
                     addServers.push(rst.dataValues);
                     addServersMap[`${server.application}-${server.server_name}-${server.node_name}`] = true;
                     addNodeNameMap[server.node_name] = true;
-                    if(params.copy_node_config){
+                    if (params.copy_node_config) {
                         let configParams = {
                             server_name: `${sourceServer.application}.${sourceServer.server_name}`
                         };
@@ -109,11 +180,11 @@ ExpandService.expand = async(params) => {
                         sourceServer.set_area && (configParams.set_area = sourceServer.set_area);
                         sourceServer.set_group && (configParams.set_group = sourceServer.set_group);
                         let configs = await ConfigDao.getNodeConfigFile(configParams);
-                        configs = configs.filter((config)=>{
+                        configs = configs.filter((config) => {
                             config = config.dataValues;
                             return config.host == sourceServer.node_name
                         });
-                        for(let i = 0; i < configs.length; i++){
+                        for (let i = 0; i < configs.length; i++) {
                             let config = configs[i].dataValues;
                             let newConfig = {
                                 server_name: '',
@@ -145,7 +216,7 @@ ExpandService.expand = async(params) => {
             if (!targetAdapter) {
                 let sourceAdapter = ((application, serverName, nodeName, objName) => {
                     let sourceAdapter = {};
-                    _.each(sourceAdapters, (adapter)=> {
+                    _.each(sourceAdapters, (adapter) => {
                         adapter = adapter.dataValues;
                         if (adapter.application == application && adapter.server_name == serverName && adapter.node_name == nodeName && adapter.servant.substring(adapter.servant.lastIndexOf('.') + 1) == objName) {
                             sourceAdapter = adapter;
@@ -182,17 +253,17 @@ ExpandService.expand = async(params) => {
 
         let rst = {server_conf: addServers, tars_node_rst: []};
         let addNodeName = _.keys(addNodeNameMap);
-        if(resourceConf.enableAutoInstall && addNodeName && addNodeName.length){
+        if (resourceConf.enableAutoInstall && addNodeName && addNodeName.length) {
             rst.tars_node_rst = await ResourceService.installTarsNodes(addNodeName);
         }
         return rst;
-    }catch(e){
+    } catch (e) {
         await transaction.rollback();
         throw e;
     }
 };
 
-ExpandService.formatToArray = (list, key)=> {
+ExpandService.formatToArray = (list, key) => {
     let rst = [];
     list.forEach((item) => {
         rst.push(item[key]);
@@ -200,13 +271,13 @@ ExpandService.formatToArray = (list, key)=> {
     return rst;
 };
 
-ExpandService.getApplication = async(uid) => {
+ExpandService.getApplication = async (uid) => {
     if (await AuthService.hasAdminAuth(uid)) {
         return ExpandService.formatToArray(await ServerDao.getApplication(), 'application');
     } else {
         let authList = await AuthService.getAuthListByUid(uid);
         let appList = [];
-        authList.forEach((auth)=> {
+        authList.forEach((auth) => {
             let application = auth.application;
             appList.push(application);
         });
@@ -214,7 +285,7 @@ ExpandService.getApplication = async(uid) => {
     }
 };
 
-ExpandService.getServerName = async(application, uid) => {
+ExpandService.getServerName = async (application, uid) => {
     if (await AuthService.hasAdminAuth(uid)) {
         return ExpandService.formatToArray(await ServerDao.getServerName(application), 'server_name');
     } else {
@@ -224,15 +295,15 @@ ExpandService.getServerName = async(application, uid) => {
             let auth = authList[i];
             let authApplication = auth.application;
             let authServerName = auth.serverName;
-            if(authServerName){
-                if(authApplication == application){
+            if (authServerName) {
+                if (authApplication == application) {
                     serverList.push(authServerName);
                 }
-            }else if(authApplication == application){
+            } else if (authApplication == application) {
                 let serverConfs = await ServerDao.getServerConf({
                     application: application
                 });
-                serverConfs.forEach((serverConf)=> {
+                serverConfs.forEach((serverConf) => {
                     serverConf = serverConf.dataValues;
                     serverList.push(serverConf.server_name);
                 })
@@ -242,11 +313,11 @@ ExpandService.getServerName = async(application, uid) => {
     }
 };
 
-ExpandService.getSet = async(application, serverName) => {
+ExpandService.getSet = async (application, serverName) => {
     return ExpandService.formatToArray(await ServerDao.getSet(application, serverName), 'set');
 };
 
-ExpandService.getNodeName = async(application, serverName, set)=> {
+ExpandService.getNodeName = async (application, serverName, set) => {
     let params = {
         application: application,
         serverName: serverName

@@ -72,6 +72,9 @@ const apiConf = [
     ['post', '/expand_server_preview', ExpandServerController.expandServerPreview, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', expand_nodes: 'notEmpty'},
         ['application', 'server_name', 'set', 'node_name', 'expand_nodes', 'enable_set', 'set_name', 'set_area', 'set_group', 'copy_node_config']
     ],
+    ['post', '/release_node_tfae', ExpandServerController.releaseNodeTfae, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', expand_nodes: 'notEmpty'},
+        ['application', 'server_name', 'set', 'node_name', 'expand_nodes', 'enable_set', 'set_name', 'set_area', 'set_group', 'copy_node_config']
+    ],
     ['post', '/expand_server', ExpandServerController.expandServer],
     ['get', '/cascade_select_server', ExpandServerController.selectAppServer],
 
