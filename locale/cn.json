@@ -159,7 +159,9 @@
         "statMonitor": "服务监控",
         "propertyMonitor": "特性监控",
         "privileage": "权限管理",
-        "infDebuger": "接口调试"
+        "infDebuger": "接口调试",
+        "callChain": "调用链",
+        "task": "任务管理"
       }
     }
   },

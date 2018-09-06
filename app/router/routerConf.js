@@ -32,6 +32,7 @@ const AuthController = require('../controller/auth/AuthController');
 const LoginController = require('../controller/login/LoginController');
 const LocaleController = require('../controller/locale/LocaleController');
 const InfTestController = require('../controller/infTest/InfTestController');
+const CallChainController = require('../controller/callChain/CallChainController');
 
 const pageConf = [
     //首页
@@ -141,7 +142,9 @@ const apiConf = [
     ['post', '/upload_tars_file', InfTestController.uploadTarsFile],
     ['get', '/get_file_list', InfTestController.getFileList, {application: 'notEmpty', server_name: 'notEmpty'}],
     ['get', '/get_contexts', InfTestController.getContexts, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty'}],
-    ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}]
+    ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}],
+
+    ['get', '/get_trace_list', CallChainController.getTraceList],
 ];
 
 module.exports = {pageConf, apiConf};

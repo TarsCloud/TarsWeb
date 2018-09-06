@@ -121,12 +121,17 @@ export default {
     },
     methods: {
         getFileList() {
+            const loading = this.$Loading.show();
             this.$ajax.getJSON('/server/api/get_file_list',{
                 application : this.serverData.application,
                 server_name : this.serverData.server_name
             }).then(data => {
+                loading.hide();
                 this.tarsFileList = data;
-            })
+            }).catch((err) => {
+                loading.hide();
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
         },
         openTarsUploadFileModal() {
             this.uploadModal.show = true;

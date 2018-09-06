@@ -10,6 +10,8 @@ import ServerServerMonitor from '@/pages/server/monitor-server';
 import ServerPropertyMonitor from '@/pages/server/monitor-property';
 import userManage from '@/pages/server/user-manage';
 import InterfaceDebuger from '@/pages/server/interface-debuger';
+import CallChain from '@/pages/server/call-chain';
+import Task from '@/pages/server/task';
 
 // 运维管理
 import Operation from '@/pages/operation/index';
@@ -49,6 +51,14 @@ export default new Router({
         {
           path: ':treeid/interface-debuger',
           component: InterfaceDebuger,
+        },
+        {
+          path: ':treeid/call-chain',
+          component: CallChain,
+        },
+        {
+          path: ':treeid/task',
+          component: Task,
         },
         {
           path: ':treeid/user-manage',
