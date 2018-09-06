@@ -117,6 +117,18 @@ ExpandServerController.expandServerPreview = async(ctx) => {
     }
 };
 
+ExpandServerController.releaseNodeTfae = async(ctx) => {
+    var params = ctx.paramsObj;
+    try {
+        if (!params.node_name) params.node_name = '0.0.0.0';
+        let rst = await ExpandService.releaseNodeTfae(params);
+        ctx.makeResObj(200, '', rst);
+    } catch (e) {
+        logger.error('[expandServerPreviewTFAE]', e, ctx);
+        ctx.makeResObj(500, e.message);
+    }
+};
+
 ExpandServerController.expandServer = async(ctx) => {
     var params = ctx.paramsObj;
     try {

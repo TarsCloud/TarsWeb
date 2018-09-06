@@ -80,13 +80,13 @@ const RPCStruct = function(proxy, moduleName){
 //输出TARS RPC代理和组件
 module.exports = {
 
-    adminRegPrx : RPCClientPrx(AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj'),
+    adminRegPrx : RPCClientPrx(AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj@tcp -h 100.117.137.106 -t 60000 -p 8081 -e 0'),
     adminRegStruct : RPCStruct(AdminRegProxy, 'tars'),
 
     // adminRegPrx : RPCClientPrx(AdminRegProxy, 'tars', 'AdminReg', 'TARS.NodeTarsServer.AdminReg@tcp -h 127.0.0.1 -p 14004 -t 10000'),
     // adminRegStruct : RPCStruct(AdminRegProxy, 'tars'),
 
-    configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
+    configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj@tcp -h 100.117.137.106 -t 60000 -p 8081 -e 0'),
     configFStruct : RPCStruct(ConfigFProxy, 'tars'),
 
     client: client
