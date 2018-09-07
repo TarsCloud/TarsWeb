@@ -15,13 +15,12 @@
  */
  
 const logger = require('../../logger');
-//const CallChainDao = 
+const CallChainDao = require('../../dao/CallChainDao');
 
 const CallChainService = {}
 
 CallChainService.getTraceList = async(params) => {
-    console.info(params);
-    return [{}];
+    return await CallChainDao.getTraceList(params);
 }
 
 module.exports = CallChainService;
