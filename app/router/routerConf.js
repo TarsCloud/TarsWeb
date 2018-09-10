@@ -148,6 +148,7 @@ const apiConf = [
     ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}],
 
     ['get', '/get_trace_list', CallChainController.getTraceList],
+    ['get', '/get_trace_detail', CallChainController.getTraceDetailList, {id: 'notEmpty'}],
 ];
 
 module.exports = {pageConf, apiConf};

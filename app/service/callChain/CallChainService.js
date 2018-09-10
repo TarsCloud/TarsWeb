@@ -23,4 +23,8 @@ CallChainService.getTraceList = async(params) => {
     return await CallChainDao.getTraceList(params);
 }
 
+CallChainService.getTraceDetailList = async(id) => {
+    return await CallChainDao.getTraceDetailList(id);
+}
+
 module.exports = CallChainService;

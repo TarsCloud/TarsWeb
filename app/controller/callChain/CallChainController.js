@@ -16,12 +16,30 @@
  
 const logger = require('../../logger');
 const CallChainService = require('../../service/callChain/CallChainService');
+const util = require('../../tools/util');
 
 const CallChainController = {}
 
 CallChainController.getTraceList = async (ctx) => {
     let {id, start_time, end_time} = ctx.paramsObj;
-    ctx.makeResObj(200,'', await CallChainService.getTraceList({id, start_time, end_time}))
+    try {
+        let ret = await CallChainService.getTraceList({id, start_time, end_time});
+        ctx.makeResObj(200,'', util.viewFilter(ret, {trace_id:'', duration:'', timestamp:{formatter:util.formatTimeStamp}}));
+    }catch(e) {
+        logger.error('[CallChainController.getTraceList]:', e, ctx);
+        ctx.makeErrResObj();
+    }
+}
+
+CallChainController.getTraceDetailList = async (ctx) => {
+    let id = ctx.paramsObj.id;
+    try{
+        let ret = await CallChainService.getTraceDetailList(id);
+        ctx.makeResObj(200, '', ret);
+    }catch(e) {
+        logger.error('[CallChainController.getTraceDetailList]:', e, ctx);
+        ctx.makeErrResObj();
+    }
 }
 
 module.exports = CallChainController;

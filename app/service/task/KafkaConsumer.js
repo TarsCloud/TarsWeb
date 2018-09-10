@@ -52,7 +52,9 @@ KafkaConsumer.consume = () =>{
                     consumer.resume();
                 });
             }).catch(err=> console.info(err));
-        }catch(e){}
+        }catch(e){
+            logger.error('[KafkaConsumer.consume]:',e);
+        }
     });
 };
 

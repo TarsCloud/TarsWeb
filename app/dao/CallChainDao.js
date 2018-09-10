@@ -14,27 +14,42 @@
  * specific language governing permissions and limitations under the License.
  */
 
-//const {tCallChains} = require('./db').db_tars;
+const {tTracingSpan} = require('./db').db_tars;
 
 let CallChainDao = {};
 
 CallChainDao.getTraceList = async(params) => {
     
-    // let ret = await tCallChains.findAll({
-    //     raw : true,
-    //     where : {
-    //         create_time : {
-    //             $Between : [params.start_time, params.end_time]
-    //         },
-    //         id : {
-    //             $like : `${params.id}%`
-    //         }
-    //     }
-    // });
-    let mockData = [{
-        id : 101242533232, create_time : '2018-09-06 17:56:00', use_time : 10
-    }]
-    return mockData;
+    let whereObj = {}
+    if(params.id) {
+        Object.assign(whereObj, {trace_id : {
+            $like : `${params.id}%`
+        }});
+    }
+    if(params.start_time && params.end_time) {
+        Object.assign(whereObj, {timestamp : {
+            $Between : [params.start_time, params.end_time]
+        }});
+    }    
+    
+    let ret = await tTracingSpan.findAll({
+        raw : true,
+        attributes: ['trace_id','timestamp','duration'],
+        group:'trace_id',
+        where : whereObj
+    });
+    return ret;
+}
+
+CallChainDao.getTraceDetailList = async(id) => {
+    let ret = await tTracingSpan.findAll({
+        raw : true,
+        attributes: ['trace_id', 'span_id', 'name', 'status', 'timestamp', 'duration', 'server_endpoint_ipv4', 'server_endpoint_service_name', 'type', 'layer', 'parent_id'],
+        where:{
+            trace_id : id
+        }
+    });
+    return ret;
 }
 
 
