@@ -12,8 +12,7 @@
             <let-table-column :title="$t('operate.operates')" width="260px">
             <template slot-scope="scope">
                 <let-table-operation @click="showDebuger(scope.row)">{{$t('inf.list.debug')}}</let-table-operation>  
-                <let-table-operation @click="changeConfig(scope.row, 'configList')">{{$t('operate.update')}}</let-table-operation>
-                <let-table-operation @click="deleteConfig(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
+                <let-table-operation @click="deleteFile(scope.row.f_id)">{{$t('operate.delete')}}</let-table-operation>
             </template>
             </let-table-column>
         </let-table>
@@ -39,12 +38,12 @@
                 <div class="params_container">
                     <let-col :span="12" itemWidth="100%">
                         <let-form itemWidth="100%">
-                            <let-input type="textarea" :rows="20" class="param_area div_line" v-model="inParam" placeholder="请输入方法入参"></let-input>
+                            <let-input type="textarea" :rows="20" class="param_area div_line" v-model="inParam" :placeholder="$t('inf.dlg.inParam')"></let-input>
                         </let-form>
                     </let-col>
                     <let-col :span="12">
                         <let-form itemWidth="100%">
-                            <let-input type="textarea" :rows="20" class="param_area" v-model="outParam" placeholder="方法出参"></let-input>
+                            <let-input type="textarea" :rows="20" class="param_area" v-model="outParam" :placeholder="$t('inf.dlg.outParam')"></let-input>
                         </let-form>
                     </let-col>
                 </div>
@@ -67,7 +66,7 @@
             ref="uploadForm"
             itemWidth="100%"
             @submit.native.prevent="uploadTarsFile">
-                <let-form-item :label="$t('pub.dlg.releasePkg')" itemWidth="400px">
+                <let-form-item :label="$t('inf.title.dlgTitle')" itemWidth="400px">
                 <let-uploader
                     :placeholder="$t('pub.dlg.defaultValue')"
                     @upload="uploadFile" require>

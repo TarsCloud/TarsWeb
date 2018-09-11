@@ -51,6 +51,26 @@ CREATE TABLE `t_patch_task` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+--
+-- Table structure for table `t_tars_files`
+--
+
+DROP TABLE IF EXISTS `t_tars_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_tars_files` (
+  `f_id` int(11) NOT NULL AUTO_INCREMENT,
+  `application` varchar(64) NOT NULL DEFAULT '' COMMENT '应用名',
+  `server_name` varchar(128) NOT NULL DEFAULT '' COMMENT '服务名',
+  `file_name` varchar(64) NOT NULL DEFAULT '' COMMENT '文件名',
+  `posttime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `context` text COMMENT '解析后的JSON对象',
+  PRIMARY KEY (`server_name`,`file_name`),
+  UNIQUE KEY `f_id` (`f_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=gbk COMMENT='接口测试tars文件表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

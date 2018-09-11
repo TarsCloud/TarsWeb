@@ -552,7 +552,10 @@
       "dlgTitle": "Upload Tars File"
     },
     "dlg": {
-      "selectLabel" : "modules/interfaces/functions"
+      "selectLabel" : "modules/interfaces/functions",
+      "inParam" : "in params",
+      "outParam" : "out params",
+      "tarsFile" : "tars file"
     }
   }
 }
