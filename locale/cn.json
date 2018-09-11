@@ -161,6 +161,7 @@
         "privileage": "权限管理",
         "infDebuger": "接口调试",
         "callChain": "调用链",
+        "callChainAnalyze": "链路分析",
         "task": "任务管理"
       }
     }

@@ -42,6 +42,8 @@
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/call-chain'" :tab="$t('index.rightView.tab.callChain')"
           v-if="serverData.level === 5"></let-tab-pane>
+          <let-tab-pane :tabkey="base + '/call-chain-analyze'" :tab="$t('index.rightView.tab.callChainAnalyze')"
+          v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/task'" :tab="$t('index.rightView.tab.task')"
           v-if="serverData.level === 5"></let-tab-pane>    
         <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')"

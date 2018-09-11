@@ -45,7 +45,7 @@
                 <let-table-column title="服务/方法" prop="name"></let-table-column>
                 <let-table-column title="耗时">
                     <template slot-scope="scope">
-                        <span class="duration" :style="'width:'+scope.row.duration+'px;margin-left:'+scope.row.marginLeft+'px;background-color:'+scope.row.color"></span>{{scope.row.duration}}ms
+                        <span class="duration" :style="'width:'+scope.row.duration*scope.row.scale+'px;margin-left:'+scope.row.marginLeft+'px;background-color:'+scope.row.color"></span>{{scope.row.duration}}ms
                     </template>
                 </let-table-column>
             </let-table>
@@ -95,14 +95,18 @@ export default {
             }).then(data =>{
                 this.showDuration = true;
                 loading.hide();
-                let parentTimestamp = null;
+                let parentTimestamp = 0;
+                let scale = 1;
                 data.forEach(item => {
                     if(item.layer==1) {
                         parentTimestamp = item.timestamp;
                         item.marginLeft = 0;
-                    }else{
-                        item.marginLeft = item.timestamp - parentTimestamp;
+                        if(item.duration > 300) {
+                            scale = (300 / item.duration).toFixed(2);
+                        }
                     }
+                    item.scale = Number(scale);
+                    item.marginLeft = (item.timestamp - parentTimestamp)*item.scale;
                     item.color = this.colorArr[item.layer-1];
                 });
                 this.traceDetailList = data;
