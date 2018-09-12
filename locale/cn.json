@@ -195,7 +195,7 @@
       }
     },
     "dlg": {
-      "standby": "是否备机",
+      "isBackup": "是否备机",
       "placeholder": {
         "english": "全英文，全小写",
         "num": "数字或者*号",
