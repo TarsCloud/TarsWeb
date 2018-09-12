@@ -260,6 +260,7 @@ const types = [
   'tars_php',
   'tars_nodejs',
   'not_tars',
+  'tars_go'
 ];
 
 const getInitialModel = () => ({

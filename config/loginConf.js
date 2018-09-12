@@ -38,7 +38,7 @@ module.exports = {
     validateMatch: [
         ['data.result', true]
     ],                                      //校验通过匹配条件，可以从多层结果，多个情况
-    ignore: ['/static', '/tarsnode.tar.gz'], //不需要登录校验的路径
+    ignore: ['/static'], //不需要登录校验的路径
     ignoreIps: [],                           //访问ip白名单
     apiPrefix: ['/pages/server/api'],       //接口相应的路径前缀，这类接口访问不直接跳转到登录界面，而只是提示未登录
     apiNotLoginMes: '#common.noLogin#', //接口无登录权限的提示语

@@ -379,6 +379,7 @@ export default {
         'tars_php',
         'tars_nodejs',
         'not_tars',
+        'tars_go'
       ],
       configModal: {
         show: false,
