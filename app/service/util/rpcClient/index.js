@@ -15,7 +15,7 @@
  */
  
 const client  = require("@tars/rpc/protal.js").client;
-const TarsProxy = require("./rpcProxy/NodeTarsProxy");
+const QueryTracingProxy = require("./rpcProxy/QueryTracingProxy");
 const AdminRegProxy = require("./rpcProxy/AdminRegProxy");
 const ConfigFProxy = require("./rpcProxy/ConfigFProxy");
 const path = require('path');
@@ -83,13 +83,11 @@ module.exports = {
     adminRegPrx : RPCClientPrx(AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj@tcp -h 100.117.137.106 -t 60000 -p 8081 -e 0'),
     adminRegStruct : RPCStruct(AdminRegProxy, 'tars'),
 
-    // adminRegPrx : RPCClientPrx(AdminRegProxy, 'tars', 'AdminReg', 'TARS.NodeTarsServer.AdminReg@tcp -h 127.0.0.1 -p 14004 -t 10000'),
-    // adminRegStruct : RPCStruct(AdminRegProxy, 'tars'),
-
     configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj@tcp -h 100.117.137.106 -t 60000 -p 8081 -e 0'),
     configFStruct : RPCStruct(ConfigFProxy, 'tars'),
 
+    queryTracingPrx : RPCClientPrx(QueryTracingProxy, 'tars', 'QueryController', 'tars.tarsQueryTracingProxy@tcp -h 100.117.137.106 -t 60000 -p 8081 -e 0'),
+    queryTracingStruct : RPCStruct(QueryTracingProxy, 'tars'),
+
     client: client
-    // configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'TARS.NodeTarsServer.Config@tcp -h 127.0.0.1 -p 14003 -t 10000'),
-    // configFStruct : RPCStruct(ConfigFProxy, 'tars'),
 };

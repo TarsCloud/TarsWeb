@@ -8,7 +8,7 @@
                 </let-col>
                 <let-col class="grid-content bg-blue-little" span="7" offset="9">
                     <let-date-range-picker :start.sync="start_time" :end.sync="end_time"></let-date-range-picker>
-                    <let-button theme="primary">查询</let-button>
+                    <let-button theme="primary" @click="getTracesList">查询</let-button>
                 </let-col>
             </let-row>
 

@@ -45,7 +45,9 @@ onerror(app);
 app.use(limitMidware());
 
 //安全防护
-app.use(helmet());
+app.use(helmet({
+    frameguard: false
+}));
 
 //设置ejs模板
 // app.use(views(__dirname + '/views', {

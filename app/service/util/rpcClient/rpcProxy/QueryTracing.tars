@@ -1,0 +1,49 @@
+module tars {
+	
+	struct TracingAnalysisReq {
+		0 require string serviceName;
+		1 require long start;
+		2 require long end;
+	};
+
+	struct DependencyLink {
+	    0 require string parent;
+	    1 require string child;
+	};	
+	
+	struct ToPoGraph {
+		0 require vector<DependencyLink> links;
+	};
+	
+	struct ChainNodeItem {
+		0 require string serviceName;
+		1 require string method;
+		2 require int order;
+		3 require int layer;
+		4 require int QPS;
+		5 require int peakQPS;
+		6 require float callPercent;
+		7 require int avgCost;
+		8 require float failRate;
+	};
+	
+	struct ChainShape {
+		0 require vector<ChainNodeItem> shape;
+		1 optional string rootSign;
+	};
+	
+	struct ChainShapeCollection {
+		0 require string timestamp;
+		1 require map<string, ChainShape> chainShapes;
+	};
+	
+	struct TracingAnalysisRes {
+		0 require ToPoGraph dependencyGraph;
+		1 require ChainShapeCollection chainShapes; 
+	};
+	
+	interface QueryController {	
+		TracingAnalysisRes getQueryChainResult(TracingAnalysisReq request);
+	};
+
+};

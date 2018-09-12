@@ -16,6 +16,7 @@
  
 const logger = require('../../logger');
 const CallChainService = require('../../service/callChain/CallChainService');
+const AdminService = require('../../service/admin/AdminService');
 const util = require('../../tools/util');
 
 const CallChainController = {}
@@ -44,6 +45,17 @@ CallChainController.getTraceDetailList = async (ctx) => {
         ctx.makeResObj(200, '', ret);
     }catch(e) {
         logger.error('[CallChainController.getTraceDetailList]:', e, ctx);
+        ctx.makeErrResObj();
+    }
+}
+
+CallChainController.getTopo = async(ctx) => {
+    let {serviceName, start, end} = ctx.paramsObj;
+    try{
+        let ret = await AdminService.getTopoGraph(serviceName, start, end);
+        ctx.makeResObj(200, '', ret);
+    }catch(e) {
+        logger.error('[CallChainController.getTopo]:', e, ctx);
         ctx.makeErrResObj();
     }
 }
