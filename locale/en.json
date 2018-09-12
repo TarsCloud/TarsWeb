@@ -1,0 +1,561 @@
+{
+  "localeCode": "en",
+  "localeName": "English",
+
+  "header": {
+    "tab": {
+      "tab1": "Services",
+      "tab2": "operation"
+    },
+    "logout": "logout"
+  },
+  "api": {
+    "blank": {
+      "error": {
+        "message": "blank error message"
+      },
+      "template": {
+        "id": "blank template id",
+        "name": "blank template name"
+      },
+      "parent": {
+        "template": {
+          "name": "blank parent template name"
+        }
+      }
+    },
+    "create": {
+      "config": {
+        "file": "create configuration file"
+      }
+    },
+    "config": {
+      "file": {
+        "being": {
+          "referred": "configuration file being referred"
+        }
+      }
+    },
+    "cant": {
+      "delete": {
+        "or": {
+          "update": "can't delete/update"
+        }
+      },
+      "update": "can't update"
+    },
+    "nonexistent": {
+      "template": "nonexistent template",
+      "parent": {
+        "template": "nonexistent parent template"
+      },
+      "multipart": "can't find out upload data"
+    },
+    "template": {
+      "being": {
+        "referred": "template being referred"
+      }
+    },
+    "expand": {
+      "node": {
+        "status": {
+          "existent": "existent",
+          "nonexistent": "no expand"
+        }
+      }
+    },
+    "parameter": {
+      "blank": "parameter {0} is blank",
+      "invalid": "invalid parameter {0} value"
+    },
+    "execute": {
+      "package": {
+        "script": {
+          "error": "execute package command error"
+        }
+      }
+    },
+    "resource":{
+      "tarsNodeExist": "Tars Node is already exist",
+      "installFailed": "Install Tars Node failed",
+      "uninstallFailed": "Uninstall Tars Node failed",
+      "notConfig": "No machine configuration was found",
+      "serverExist": "There is a service on the machine that does not allow uninstall the tars node",
+      "sshFailed": "SSH link failed",
+      "installSuccess": "Install Tars Node successfully",
+      "uninstallSuccess": "Uninstall Tars Node successfully"
+    }
+  },
+  "common": {
+    "config": "configuration",
+    "patch": "publish",
+    "service": "service",
+    "time": "Time",
+    "name": "name",
+    "true": "true",
+    "false": "false",
+    "yes": "yes",
+    "no": "no",
+    "template": "template",
+    "type": "Type",
+    "cancel": "cancel",
+    "submit": "ok",
+    "status": "status",
+    "result": "result",
+    "error": "Error!!!",
+    "success": "Success!!!",
+    "ip": "node",
+    "systemError": "system error",
+    "noPrivilage": "no privilage",
+    "notEmpty": " is required",
+    "needNumber": " must be numeric type",
+    "needArray": " must be array type",
+    "needObject": " must be object type",
+    "needBoolean": " must be boolean type",
+    "noLogin": "You have not been login",
+    "nodata": "No Data",
+    "noService": "No Services",
+    "retry": "Click to try again",
+    "enable": "enable",
+    "disable": "disable",
+    "alert": "Alert",
+    "networkErr": "Network Error",
+    "set": {
+      "setName": "SET Name",
+      "setArea": "SET Area",
+      "setGroup": "SET Group"
+    },
+    "message": "Message"
+  },
+  "operate": {
+    "update": "update",
+    "undeploy": "undeploy",
+    "restart": "restart",
+    "stop": "stop",
+    "add": "add",
+    "manage": "management",
+    "delete": "delete",
+    "more": "more",
+    "operates": "Operates",
+    "view": "view",
+    "search": "search",
+    "servant": "servant",
+    "goback": "go back",
+    "title": {
+      "update": "Update",
+      "add": "Add",
+      "more": "More"
+    }
+  },
+  "index": {
+    "rightView": {
+      "title": "choose a service",
+      "tips": "if you want to check the service list or the Real-time service status ,<br>please choose a service on the left menu.",
+      "tab": {
+        "patch": "Publish",
+        "serviceConfig": "Service Configuration",
+        "setConfig": "SET Configuration",
+        "appConfig": "APP Configuration",
+        "statMonitor": "Status Monitor",
+        "propertyMonitor": "Property Monitor",
+        "privileage": "Privileage",
+        "infDebuger": "Interface Debuger"
+      }
+    }
+  },
+  "serverList": {
+    "title": {
+      "serverList": "Services",
+      "serverStatus": "Real Time Service Status"
+    },
+    "table": {
+      "th": {
+        "service": "Service",
+        "ip": "Node",
+        "enableSet": "SET",
+        "configStatus": "Configuration Status",
+        "currStatus": "Current Status",
+        "processID": "Process ID",
+        "version": "Version",
+        "time": "Publish Time",
+        "threadID": "Thread ID",
+        "serviceID": "Service ID",
+        "result": "Result"
+      },
+      "servant": {
+        "title": "Servants",
+        "adress": "endpoint",
+        "thread": "threads count",
+        "maxConnecttions": "Max connections",
+        "maxQueue": "Max queue",
+        "timeout": "Queue timeout(ms)"
+      },
+      "msg": {
+        "fail": "Failed to load the service list and retry?"
+      }
+    },
+    "dlg": {
+      "isBackup": "is backup",
+      "placeholder": {
+        "english": "all lower-case",
+        "num": "number or *",
+        "thread": "Nodejs >=1,other >=3"
+      },
+      "serviceType": "service type",
+      "asyncThread": "async threads",
+      "defaultPath": "default path",
+      "exePath": "exe path",
+      "startScript": "start script",
+      "stopScript": "stop script",
+      "monitorScript": "monitor script",
+      "privateTemplate": "private template",
+      "errMsg": {
+        "required": "All starred must be filled in",
+        "setName": "Set name can only contain english lowercase letters",
+        "setArea": "Set area can only contain english lowercase letters",
+        "setGroup": "Set group must be a number or *",
+        "defaultPath": "default path error,must be an absolute path",
+        "exePath": "EXE path error,must be an absolute path",
+        "startScript": "start script path error,must be an absolute path",
+        "stopScript": "stop script path error,must be an absolute path",
+        "monitorScript": "monitoring script path error,must be an absolute path",
+        "updateSuccess": "Success! the service has been updated successfully",
+        "updateFailed": "Failed! service update failed"
+      },
+      "msg": {
+        "undeploy": "Are you sure to undeploy this service?",
+        "undeployFailed": "undeploy failed"
+      },
+      "title": {
+        "editService": "Edit Service",
+        "undeploy": "undeploy",
+        "taskStatus": "task status"
+      }
+    },
+    "tips": {
+      "treeid": "Please select a service from the left side of the business tree",
+      "loadingError": "error",
+      "paramsError": "params error",
+      "systemError": "system error",
+      "undeploy": "can`t undeploy running service"
+    },
+    "restart": {
+      "notStart": "not start",
+      "running": "running",
+      "success": "success",
+      "failed": "failed",
+      "cancel": "cancel",
+      "parial": "partial success",
+      "restartFailed": "restart failed",
+      "restartResult": "restart result"
+    },
+    "stopService": {
+      "msg": {
+        "stopService": "Are you sure to stop this service"
+      }
+    },
+    "servant": {
+      "obj": "OBJ name can only contains english letters",
+      "thread": "threads must be numeric and greater than 0",
+      "error": "Error!!!  <br>address：To tcp or udp at the beginning, there-h-t-p three parameters, -p 0-65535-t greater than 0 -h ip",
+      "ip": "IP format is wrong, please re-fill.",
+      "servantAddFailed": "Servant added failed",
+      "servantUpdateFailed": "Servant updated failed",
+      "a": "Are you sure to delete the Servant",
+      "deployService": "deploy service",
+      "upload": "upload",
+      "appService": "app·service",
+      "objName": "OBJ name",
+      "c": "English letters, don't need to add in front of the app name and the service name",
+      "numOfThread": "threads count",
+      "BindingAddress": "Binding address",
+      "sample": "sample",
+      "maxConnecttions": "max connecttions",
+      "lengthOfQueue": "max queue length",
+      "queueTimeout": "queue timeout(ms)",
+      "allowIP": "allow ip",
+      "protocol": "protocol",
+      "notTARS": "not TARS",
+      "treatmentGroup": "treatment group",
+      "releasePackage": "release package",
+      "comment": "comment",
+      "logLevel": "log level",
+      "pushFile": "push config file",
+      "sendCommand": "send customer cmd",
+      "serviceLink": "view service Link",
+      "taskID": "taskID",
+      "statusCode": "error status code,status code"
+    }
+  },
+  "pub": {
+    "btn": {
+      "pub": "publish node",
+      "history": "history"
+    },
+    "dlg": {
+      "patchType": "PatchType",
+      "ip": "Node",
+      "releaseVersion": "release version",
+      "upload": "upload release package",
+      "compileAndPublish": "compile and publish",
+      "releasePkg": "release package",
+      "defaultValue": "choose ...",
+      "noConfFile": "no configuration files",
+      "a": "please choose an ip",
+      "ab": "please choose a release version",
+      "unpublished": "Unpublished",
+      "conf": "Configure compiler interface",
+      "tag": "version interface",
+      "compiler": "compiler interface",
+      "task": "compilation progress interface",
+      "compileProgress": "Compilation progress",
+      "uploadPkg": "Uploading package, please wait"
+    },
+    "tips": {
+      "default": "Release management management service level, please first in the left tree selection service business.",
+      "tagListUrl": "Please configure SVN / GIT version acquisition interface first",
+      "tag": "Please enter the interface address to get the version list"
+    },
+    "date": "Date"
+  },
+  "cfg": {
+    "title": {
+      "a": "Configuration",
+      "b": "Reference files",
+      "c": "Node configuration",
+      "viewConf": "View configuration content",
+      "viewMerged": "View merged configuration",
+      "viewHistory": "View update history"
+    },
+    "btn": {
+      "add": "add configuration",
+      "addRef": "add reference file",
+      "pushFile": "push file",
+      "fileName": "fileName",
+      "content": "content",
+      "reason": "reason",
+      "lastUpdate": "lastupdate time",
+      "mod": "the modification"
+    },
+    "table": {
+      "modCfg": "edit",
+      "delCfg": "delete",
+      "delRef": "delete",
+      "serviceName": "service name",
+      "viewMerge": "view",
+      "viewIpContent": "nodeConf",
+      "mangeRefFile": "manage reference file"
+    },
+    "msg": {
+      "chooseCfg": "please choose service configuration first",
+      "refFile": "reference file",
+      "addError": "add file error",
+      "delError": "delete error",
+      "confirm": "Are you sure to delete this file",
+      "viewContent": "view content",
+      "confirmCfg": "Are you sure to delete this configuration",
+      "nofile": "no file",
+      "selectNode": "Please select at least one node",
+      "empty": "Empty"
+    },
+    "dlg": {
+      "fileName": "fileName is required",
+      "fileNameReg": "The file name can contain only letters or Numbers, point, underscores, dash",
+      "contentReg": "content is required",
+      "addSucccess": "add success"
+    }
+  },
+  "monitor": {
+    "search": {
+      "a": "show date",
+      "b": "compare date",
+      "start": "start time",
+      "end": "end time",
+      "master": "master name",
+      "slave": "slave name",
+      "interfaceName": "interface name",
+      "masterIP": "master IP",
+      "slaveIP": "slave IP"
+    },
+    "btn": {
+      "submit": "get monitoring charts"
+    },
+    "msg": {
+      "info": "system is set up for the first time, contrast, countless according to please compare the date to date"
+    },
+    "table": {
+      "total": "total flow",
+      "curr": "the same day",
+      "contrast": "contrast day",
+      "fluctuating": "swings",
+      "average": "average response time in Day1",
+      "abnormal": "ratio of exceptional request in Day1",
+      "abnormalC": "ratio of exceptional request in Day2",
+      "timeout": "ratio of out-of-time request in Day1",
+      "timeoutC": "ratio of out-of-time request in Day2",
+      "errTips": "Service monitoring need specific to the service, please select a service in the left tree first.",
+      "a": "average time",
+      "b": "abnormal rate",
+      "c": "timeout rate",
+      "d": "Monitor time"
+    },
+    "select": {
+      "all": "all",
+      "property": "property",
+      "strategy": "policy"
+    },
+    "property": {
+      "property": "characteristic value of curr day",
+      "propertyC": "characteristic value of contrast day"
+    }
+  },
+  "deployService": {
+    "title": {
+      "deploy": "Deploy service",
+      "expand": "Expand service",
+      "template": "Manage template",
+      "apply": "Apply for deployment"
+    },
+    "form": {
+      "app": "APP",
+      "tips": "No need to add applications and services, such as MTT.HttpProxyServer.HttpProxyObj, where only fill HttpProxyObj",
+      "serviceType": "Service type",
+      "serviceName": "Service name",
+      "template": "Template",
+      "set": "Set grouping",
+      "obj": "OBJ binds IP",
+      "port": "port",
+      "portType": "PortType",
+      "placeholder": "Only supports English letters",
+      "portTips": "port range 0 ~ 65535, your input is beyond the scope",
+      "appTips": "application name cannot be empty",
+      "serviceTips": "the service name cannot be empty",
+      "serviceTypeTips": "the service type cannot be empty",
+      "templateTips": "the template cannot be empty",
+      "serviceFormatTips": "The service name can only contain letters, Numbers, and begin with a letter",
+      "nodeTips": "the node cannot be empty",
+      "nodeFormatTips": "Node format is not correct, please enter the IP address",
+      "setNameTips": "the Set name cannot be empty",
+      "setAreaTips": "the Set area cannot be empty",
+      "setNameFormatTips": "The Set name can only English lowercase letters",
+      "setAreaFormatTips": "The Set area can only English lowercase letters",
+      "setGroupTips": "Set group name cannot be empty",
+      "setGroupFormatTips": "Set group name can only numbers or *",
+      "inputTips": "all * must be filled",
+      "objTips": "OBJ name cannot be empty",
+      "deployServiceTip":"Are you sure to deploy this service?",
+      "getPort": "get port",
+      "ret": {
+        "success": "Deployed application submitted successfully",
+        "failed": "Deployed application submission failed!Please contact your administrator"
+      },
+      "nameTips": "This service is existing in the system, please change the application name, service name or nodes and retry"
+    },
+    "table": {
+      "th": {
+        "endpoint": "OBJ Endpoint",
+        "port": "Port",
+        "protocol": "Protocol",
+        "threads": "Threads"
+      },
+      "tips": {
+        "ip": "OBJ Endpoint cannot be empty",
+        "ipFormat": "IP format error",
+        "empty": "cannot be empty"
+      }
+    }
+  },
+  "template": {
+    "search": {
+      "parentTemplate": "Parent template"
+    },
+    "btn": {
+      "addTempate": "add tempate"
+    },
+    "form": {
+      "content": "content"
+    },
+    "view": {
+      "title": "View template"
+    },
+    "add": {
+      "templateNameTips": "The template name cannot be empty",
+      "templateFormatTips": "The template name can only contain letters, Numbers, and begin with a letter",
+      "parentTemplate": "Please select the parent template",
+      "title": "Add template"
+    },
+    "update": {
+      "title": "Update tempate",
+      "errTips": "update failed"
+    },
+    "delete": {
+      "confirmTips": "Are you sure to delete this template",
+      "title": "Delete template"
+    }
+  },
+  "serviceExpand": {
+    "title": "service expand",
+    "form": {
+      "tarIP": "Target IP",
+      "placeholder": "Multiple IP separated by comma (,), semicolon (;) newline (\\ n)",
+      "nodeConfig": "Node configuration",
+      "copyNodeConfig": "copy node configuration",
+      "preExpand": "Pre expand",
+      "noExpand": "no expand",
+      "disableSet": "disable Set",
+      "errTips": {
+        "tarIP": "tarIP can not be empty",
+        "preExpand": "expansion failed! Please contact the administrator",
+        "noneNodes": "Please check the object to be expanded",
+        "ipFormat": "Please fill in the correct IP address",
+        "success": "Expansion success"
+      }
+    }
+  },
+  "historyList": {
+    "title": "Release History",
+    "table": {
+      "th": {
+        "c2": "serial",
+        "c4": "details of the subtasks"
+      }
+    },
+    "dlg": {
+      "th": {
+        "c1": "ID",
+        "c2": "Application",
+        "c3": "Service",
+        "c4": "Node",
+        "c5": "Command",
+        "c7": "Execute info",
+        "c8": "Status"
+      }
+    }
+  },
+  "user": {
+    "op": "Operation",
+    "dev": "Developer",
+    "tips": {
+      "sep": "Multiple people separated by semicolon"
+    }
+  },
+  "resource":{
+    "installRstMsg": ",The results of installment of Tarsnode are as follows:",
+    "installResult": "Install result"
+  },
+  "inf": {
+    "list": {
+      "debug" : "debug"
+    },
+    "title": {
+      "listTitle" : "Tars Files",
+      "dlgTitle": "Upload Tars File"
+    },
+    "dlg": {
+      "selectLabel" : "modules/interfaces/functions",
+      "inParam" : "in params",
+      "outParam" : "out params",
+      "tarsFile" : "tars file"
+    }
+  }
+}
