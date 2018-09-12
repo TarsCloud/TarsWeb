@@ -22,15 +22,14 @@ var path = require('path');
 module.exports = {
     enableLogin: false,                     //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
-    loginUrl: 'http://passport.oa.com/modules/passport/signin.ashx',                 //登录跳转url
+    loginUrl: '',                 //登录跳转url
     redirectUrlParamName: 'url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
-    logoutUrl: 'http://passport.oa.com/modules/passport/signout.ashx',
+    logoutUrl: '',
     logoutredirectUrlParamName: 'url',
     ticketCookieName: 'ticket',             //cookie中保存ticket信息的cookie名
     uidCookieName: 'uid',                   //cookie中保存用户信息的cookie名
-    cookieDomain: 'wsd.com',              //cookie值对应的域
+    cookieDomain: '',              //cookie值对应的域
     ticketParamName: 'ticket',              //第三方登录服务回调时候，url中表示st的参数名
-    // getUidByTicket: 'http://oss.api.tof.oa.com/api/v1/Passport/DecryptTicketWithClientIP',  //通过ticket从cas服务端校验和获取用户基本信息的url
     getUidByTicket: '',         //通过ticket从cas服务端校验和获取用户基本信息的url,或获取用户基本信息的方法
     getUidByTicketParamName: 'ticket',      //调用获取用户信息接口时候st的参数名
     uidKey: 'data.uid',                     //结果JSON里面取出用户名的位置，取到该用户名才认为成功,可以多层

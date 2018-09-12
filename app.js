@@ -30,7 +30,6 @@ const localeMidware = require('./app/midware/localeMidware');
 const helmet = require("koa-helmet");
 // const compress = require('koa-compress')
 const loginMidware = require('yami-sso-client').koa;
-console.log(loginMidware);
 const limitMidware = require('./app/midware/limitMidware');
 const WebConf = require('./config/webConf');
 
