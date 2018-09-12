@@ -67,7 +67,7 @@
             ref="uploadForm"
             itemWidth="100%"
             @submit.native.prevent="uploadTarsFile">
-                <let-form-item :label="$t('pub.dlg.releasePkg')" itemWidth="400px">
+                <let-form-item itemWidth="400px">
                 <let-uploader
                     :placeholder="$t('pub.dlg.defaultValue')"
                     @upload="uploadFile" require>

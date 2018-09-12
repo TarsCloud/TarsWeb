@@ -1,14 +1,5 @@
 <template>
     <div class="call-chain-analyze">
-        <!-- <let-row>
-            <let-col class="grid-content bg-blue" span="8">
-                <input class="custom_input" v-model="serviceName" @keyup.enter="showTopo" placeholder="输入服务名"/>
-            </let-col>
-            <let-col class="grid-content bg-blue-little" span="7" offset="9">
-                <let-date-range-picker :start.sync="start_time" :end.sync="end_time"></let-date-range-picker>
-                <let-button theme="primary" @click="showTopo">查询</let-button>
-            </let-col>
-        </let-row> -->
         <let-form inline ref="topoForm">
             <let-form-item :size=3>
                 <input class="custom_input" v-model="serviceName" @keyup.enter="showTopo" placeholder="输入服务名"/>
@@ -18,8 +9,9 @@
                 <let-button theme="primary" @click="showTopo">查询</let-button>
             </let-form-item>
         </let-form>
-    </div>
 
+        <div id="topo" class="topo_graph"></div>
+    </div>
 </template>
 
 <script>
@@ -43,6 +35,7 @@ export default {
     },
     methods : {
         showTopo() {
+            let container = document.querySelector('#topo');
             if(this.$refs.topoForm.validate()){
                 const loading = this.$Loading.show();
                 this.$ajax.getJSON('/server/api/get_topo', {
@@ -51,7 +44,58 @@ export default {
                     end : this.end_time
                 }).then(data => {
                     loading.hide();
-                    console.info(data);
+                    // create an array with nodes
+                    var nodes = new vis.DataSet([
+                        {id: 1, label: 'POC.ProxySvr'},
+                        {id: 2, label: 'POC.TransSvr'},
+                        {id: 3, label: 'POC.AccessSvr'},
+                        {id: 4, label: 'POC.TransSvr2'},
+                        {id: 5, label: 'POC.TransSvr3'}
+                    ]);
+
+                    // create an array with edges
+                    var edges = new vis.DataSet([
+                        {from: 1, to: 2},
+                        {from: 2, to: 3},
+                        {from: 2, to: 4},
+                        {from: 2, to: 5}
+                    ]);
+
+                    var data = {
+                        nodes: nodes,
+                        edges: edges
+                    };
+                    var network = new vis.Network(container, data, {
+                        layout : {
+                            hierarchical:{
+                                enabled : true,
+                                direction : 'lR',
+                                levelSeparation : 200
+                            },
+                        },
+                        nodes : {
+                            shape : 'box',
+                            color : {
+                                border : '#cccccc',
+                                background : '#ffffff'
+                            },
+                            margin : {
+                                top: 13,
+                                bottom: 13,
+                                left: 27,
+                                right: 27
+                            }
+                        },
+                        edges : {
+                            arrows : {
+                                to : {
+                                    enabled : true,
+                                    scaleFactor : 0.5,
+                                    type : 'arrow'
+                                }
+                            }
+                        }
+                    });
                 }).catch((err) => {
                     loading.hide();
                     this.$tip.error(err.message || err.err_msg);
@@ -106,6 +150,10 @@ export default {
             box-sizing: border-box;
             width: 220px;
             height: 38px;
+        }
+        .topo_graph{
+            width: 100%;
+            height: 400px;
         }
     }
 </style>
