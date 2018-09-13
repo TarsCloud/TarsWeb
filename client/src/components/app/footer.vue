@@ -1,6 +1,6 @@
 <template>
   <div class="app_index__footer">
-    Copyright © {{thisYear}} BOSS. All Rights Reserved.
+    Copyright © {{thisYear}} Tencent. All Rights Reserved.
   </div>
 </template>
 

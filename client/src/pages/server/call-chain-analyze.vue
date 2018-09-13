@@ -11,6 +11,20 @@
         </let-form>
 
         <div id="topo" class="topo_graph"></div>
+
+        <let-table :data="chainShapesList" :empty-msg="$t('common.nodata')">
+            <let-table-column title="应用名">
+                <template slot-scope="scope">
+                    <span :style="'margin-left:'+(scope.row.layer-1)*30+'px'">{{scope.row.serviceName}}</span>
+                </template>
+            </let-table-column>
+            <let-table-column title="服务/方法" prop="method"></let-table-column>
+            <let-table-column title="QPS" prop="QPS"></let-table-column>
+            <let-table-column title="QPS峰值" prop="peakQPS"></let-table-column>
+            <let-table-column title="调用占比" prop="callPercent"></let-table-column>
+            <let-table-column title="平均耗时" prop="avgCost"></let-table-column>
+            <let-table-column title="失败率" prop="failRate"></let-table-column>
+        </let-table>
     </div>
 </template>
 
@@ -31,6 +45,7 @@ export default {
             serviceName : '',
             start_time: '',
             end_time: '',
+            chainShapesList: []
         }
     },
     methods : {
@@ -66,10 +81,13 @@ export default {
                         edges: edges
                     };
                     var network = new vis.Network(container, data, {
+                        physics : {
+                            enabled : false
+                        },
                         layout : {
                             hierarchical:{
                                 enabled : true,
-                                direction : 'lR',
+                                direction : 'LR',
                                 levelSeparation : 200
                             },
                         },
@@ -93,6 +111,10 @@ export default {
                                     scaleFactor : 0.5,
                                     type : 'arrow'
                                 }
+                            },
+                            smooth : {
+                                enabled : true,
+                                type : 'vertical'
                             }
                         }
                     });
