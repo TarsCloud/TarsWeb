@@ -4,15 +4,21 @@ module tars {
 		0 require string serviceName;
 		1 require long start;
 		2 require long end;
-	};
-
-	struct DependencyLink {
-	    0 require string parent;
-	    1 require string child;
 	};	
+	
+	struct DependencyLink {
+	    0 require string from;
+	    1 require string to;
+	};
+	
+	struct Vertex {
+	    0 require string id;
+	    1 require string label;
+	};
 	
 	struct ToPoGraph {
 		0 require vector<DependencyLink> links;
+		1 require vector<Vertex> vertexs;
 	};
 	
 	struct ChainNodeItem {
@@ -20,15 +26,15 @@ module tars {
 		1 require string method;
 		2 require int order;
 		3 require int layer;
-		4 require int QPS;
-		5 require int peakQPS;
+		4 require float QPS;
+		5 require float peakQPS;
 		6 require float callPercent;
 		7 require int avgCost;
 		8 require float failRate;
 	};
 	
 	struct ChainShape {
-		0 require vector<ChainNodeItem> shape;
+		0 require vector<ChainNodeItem> shape;  //有序的
 		1 optional string rootSign;
 	};
 	
@@ -42,8 +48,47 @@ module tars {
 		1 require ChainShapeCollection chainShapes; 
 	};
 	
+	/**
+	* 调用链详情请求
+	**/
+	struct TracingSpanReq {
+		0 require string serviceName;
+		1 optional long start;
+		2 optional long end;
+		3 optional string traceId;
+		4 optional string extal;
+	};
+	
+	struct Span {
+	   0 require string traceId;           //trace id,必填
+       1 require string id;             //span id，必填
+       2 require string parentId;        //parent span id，选填
+       3 require string name;              //span mane
+       4 require long timestamp;              //起始时间戳
+       5 require long duration;             //span的耗时，结束时间戳减去起始时间戳  
+       6 require int status;
+       7 require string serviceName;
+       8 require string ip;
+       9 require string port;
+       10 optional int layer;
+       11 optional string type;
+       12 optional map<string, string> tags;
+	};
+	
+	struct Tracer {
+	    0 require string tracerId;
+		1 require vector<Span> spans;
+	};
+	
+	struct TracingSpanRes {
+		0 require vector<Tracer> spans;
+	};
+	
 	interface QueryController {	
 		TracingAnalysisRes getQueryChainResult(TracingAnalysisReq request);
+		TracingSpanRes getQueryTracingResult(TracingSpanReq request);
 	};
+	
+	
 
 };
