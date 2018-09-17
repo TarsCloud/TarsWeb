@@ -419,6 +419,9 @@
       "apply": "Apply for deployment"
     },
     "form": {
+      "primaryBusiness": "The primary business",
+      "secondaryBusiness": "The secondary business",
+      "thirdlyBusiness": "The thirdly business",
       "app": "APP",
       "tips": "No need to add applications and services, such as MTT.HttpProxyServer.HttpProxyObj, where only fill HttpProxyObj",
       "serviceType": "Service type",

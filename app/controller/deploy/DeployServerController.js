@@ -16,6 +16,7 @@
  
 const logger = require('../../logger');
 const ServerService = require('../../service/server/ServerService');
+const PanshiService = require('../../service/panshi/PanshiService');
 const DeployServerController = {};
 const util = require('../../tools/util');
 
@@ -49,12 +50,13 @@ const serverConfStruct = {
 DeployServerController.deployServer = async(ctx) => {
     var params = ctx.paramsObj;
     try {
+        let panshiRegister = await PanshiService.register(params);
         let rst = await ServerService.addServerConf(params);
-        rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
+        rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct);
         ctx.makeResObj(200, '', rst);
     } catch (e) {
-        logger.error('[getServerNotifyList]', e, ctx);
-        ctx.makeErrResObj();
+        logger.error('[deployServer]', e, ctx);
+        ctx.makeResObj(500, e.message);
     }
 };
 
@@ -64,7 +66,7 @@ DeployServerController.serverTypeList = async(ctx) => {
         ctx.makeResObj(200, '', ServerTypeList);
     } catch (e) {
         logger.error('[serverTypeList]', e, ctx);
-        ctx.makeErrResObj();
+        ctx.makeResObj(500, e.message);
     }
 };
 

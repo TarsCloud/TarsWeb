@@ -33,6 +33,7 @@ const LoginController = require('../controller/login/LoginController');
 const LocaleController = require('../controller/locale/LocaleController');
 const InfTestController = require('../controller/infTest/InfTestController');
 const CallChainController = require('../controller/callChain/CallChainController');
+const PanshiController = require('../controller/panshi/PanshiController');
 
 const pageConf = [
     //首页
@@ -51,6 +52,9 @@ const apiConf = [
         ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path', 'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile']],
 
     ['get', '/tree', TreeController.listTree],
+    ['get', '/query_service', PanshiController.queryService],
+    ['get', '/query_system', PanshiController.querySystem, {ServiceId: 'notEmpty'}],
+    ['get', '/query_module', PanshiController.queryModule, {SystemId: 'notEmpty'}],
 
     //notify日志接口
     ['get', '/server_notify_list', NotifyController.getServerNotifyList, {tree_node_id: 'notEmpty'}],
