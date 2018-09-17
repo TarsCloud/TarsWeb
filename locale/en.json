@@ -161,6 +161,7 @@
         "privileage": "Privileage",
         "infDebuger": "Interface Debuger",
         "callChain": "Call Chain",
+        "callChainAnalyze": "Call Chain Analyze",
         "task": "Task"
       }
     }

@@ -153,6 +153,7 @@ const apiConf = [
 
     ['get', '/get_trace_list', CallChainController.getTraceList],
     ['get', '/get_trace_detail', CallChainController.getTraceDetailList, {id: 'notEmpty'}],
+    ['get', '/get_topo', CallChainController.getTopo, {serviceName:'notEmpty', start:'notEmpty', end:'notEmpty'}], 
 ];
 
 module.exports = {pageConf, apiConf};

@@ -48,7 +48,7 @@ TARS 通过配置文件/config/loginConf.js 与 第三方登录体系，或默�
 	//此处可以为一个url，或一个函数方法，通过ticket从登录服务端校验和获取用户基本信息的url 或 获取用户基本信息的方法。若是函数方法，则以下getUidByTicketParamName和uidKey参数无效，方法直接返回用户名即可
     getUidByTicketParamName: 'ticket',      //调用获取用户信息接口时候ticket的参数名
     uidKey: 'data.uid',                //结果JSON里面取出用户名的位置，取到该用户名才认为成功,可以多层，示例中表示从返回值的data对象中取uid。
-    validate: 'http://tarsuser.node.wsd.com/api/validate',  
+    validate: 'http://example.com/api/validate',  
 	//通过token和用户名到登录服务端校验key和用户名是否匹配的url或方法，若是函数方法，则以下validateTicketParamName,validateUidParamName和validateMatch参数无效，方法直接返回true或false表示是否通过登录即可。
 
     validateTicketParamName: 'ticket',      //校验接口传入ticket参数名

@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
  
-const {configFPrx, configFStruct, adminRegPrx, adminRegStruct, client} = require('../util/rpcClient');
+const {configFPrx, configFStruct, adminRegPrx, adminRegStruct, queryTracingPrx, client} = require('../util/rpcClient');
 var registry  = require("@tars/registry");
 const TarsStream = require('@tars/stream');
 const _ = require('lodash')
@@ -110,5 +110,11 @@ AdminService.getEndpoints = async (objName) => {
     let ret = await registry.findObjectById(objName);
     return ret.response.return.value;
 };
+
+AdminService.getTopoGraph = async (serviceName, start, end) => {
+    let ret = await queryTracingPrx.getQueryChainResult(serviceName, start, end);
+    console.info(ret);
+    return ret;
+}
 
 module.exports = AdminService;

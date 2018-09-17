@@ -11,6 +11,7 @@ import ServerPropertyMonitor from '@/pages/server/monitor-property';
 import userManage from '@/pages/server/user-manage';
 import InterfaceDebuger from '@/pages/server/interface-debuger';
 import CallChain from '@/pages/server/call-chain';
+import CallChainAnalyze from '@/pages/server/call-chain-analyze';
 import Task from '@/pages/server/task';
 
 // 运维管理
@@ -55,6 +56,10 @@ export default new Router({
         {
           path: ':treeid/call-chain',
           component: CallChain,
+        },
+        {
+          path: ':treeid/call-chain-analyze',
+          component: CallChainAnalyze,
         },
         {
           path: ':treeid/task',

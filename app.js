@@ -45,7 +45,9 @@ onerror(app);
 app.use(limitMidware());
 
 //安全防护
-app.use(helmet());
+app.use(helmet({
+    frameguard: false
+}));
 
 //设置ejs模板
 // app.use(views(__dirname + '/views', {
@@ -75,7 +77,7 @@ app.use(apiRouter.routes(), apiRouter.allowedMethods());
 
 //激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
-app.use(static(path.join(__dirname, './files'), {maxage: 7 * 24 * 60 * 60 * 1000}));
+app.use(static(path.join(__dirname, './client/static'), {maxage: 7 * 24 * 60 * 60 * 1000}));
 
 //后置中间件
 postMidware.forEach((midware)=>{

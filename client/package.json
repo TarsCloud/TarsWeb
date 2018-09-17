@@ -2,7 +2,6 @@
   "name": "tars-web",
   "version": "1.0.0",
   "description": "Tars web project",
-  "author": "Zhang Chengrong <zhangchengrong@yuewen.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js & y-server --hot",
@@ -15,6 +14,7 @@
     "let-ui": "^0.1.19",
     "request": "^2.88.0",
     "v-charts": "^1.16.8",
+    "vis": "^4.21.0",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
     "vue-i18n": "^7.8.0",
