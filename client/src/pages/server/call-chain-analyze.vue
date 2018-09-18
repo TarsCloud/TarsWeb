@@ -78,8 +78,8 @@ export default {
                     end : this.end_time
                 }).then(data => {
                     loading.hide();
-                    if(!data.dependencyGraph.vertexs.value && data.dependencyGraph.links.value){
-                        container.html('<div class="emptyMsg">没有数据</div>');
+                    if(!data.dependencyGraph.vertexs.value.length && !data.dependencyGraph.links.value.length){
+                        container.innerHTML= '<div class="emptyMsg">没有数据</div>';
                         return;
                     }
                     // create an array with nodes
