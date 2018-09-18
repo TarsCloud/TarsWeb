@@ -1,22 +1,6 @@
 <template>
   <div class="page_server">
-
-    <let-tree class="left-tree"
-      v-if="treeData && treeData.length"
-      :data="treeData"
-      :activeKey="$route.params.treeid"
-      @on-select="selectTree"/>
-    <div class="left-tree" v-if="treeData && !treeData.length">
-      <p class="loading">{{$t('common.noService')}}</p>
-    </div>
-    <div class="left-tree" v-if="!treeData" ref="treeLoading">
-      <div class="loading" v-if="treeData === false">
-        <p>{{treeErrMsg}}</p>
-        <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
-      </div>
-    </div>
-
-    <div class="right-view" v-if="!this.$route.params.treeid">
+<div class="right-view" v-if="!this.$route.params.treeid">
       <div class="empty">
         <img class="package" src="@/assets/img/package.png">
         <p class="title">{{$t('index.rightView.title')}}</p>

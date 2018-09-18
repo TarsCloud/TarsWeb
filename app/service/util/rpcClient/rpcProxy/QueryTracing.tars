@@ -31,16 +31,12 @@ module tars {
 		6 require float callPercent;
 		7 require int avgCost;
 		8 require float failRate;
-	};
-	
-	struct ChainShape {
-		0 require vector<ChainNodeItem> shape;  //有序的
-		1 optional string rootSign;
+		9 require string rootSign;
 	};
 	
 	struct ChainShapeCollection {
 		0 require string timestamp;
-		1 require map<string, ChainShape> chainShapes;
+		1 require vector<vector<ChainNodeItem>> chainShapes;
 	};
 	
 	struct TracingAnalysisRes {

@@ -18,6 +18,7 @@ const logger = require('../../logger');
 const CallChainService = require('../../service/callChain/CallChainService');
 const AdminService = require('../../service/admin/AdminService');
 const util = require('../../tools/util');
+const moment = require('moment');
 
 const CallChainController = {}
 
@@ -52,9 +53,10 @@ CallChainController.getTraceDetailList = async (ctx) => {
 CallChainController.getTopo = async(ctx) => {
     let {serviceName, start, end} = ctx.paramsObj;
     try{
-        //let ret = await AdminService.getTopoGraph(serviceName, start, end);
-        ret = []
-        ctx.makeResObj(200, '', ret);
+        start = moment(start).unix()*1000;
+        end = moment(end).unix()*1000;
+        let ret = await AdminService.getTopoGraph(serviceName, start, end);
+        ctx.makeResObj(200, '', ret.__return);
     }catch(e) {
         console.info(e);
         logger.error('[CallChainController.getTopo]:', e, ctx);

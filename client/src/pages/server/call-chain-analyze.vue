@@ -12,19 +12,38 @@
 
         <div id="topo" class="topo_graph"></div>
 
-        <let-table :data="chainShapesList" :empty-msg="$t('common.nodata')">
-            <let-table-column title="应用名">
-                <template slot-scope="scope">
-                    <span :style="'margin-left:'+(scope.row.layer-1)*30+'px'">{{scope.row.serviceName}}</span>
-                </template>
-            </let-table-column>
-            <let-table-column title="服务/方法" prop="method"></let-table-column>
-            <let-table-column title="QPS" prop="QPS"></let-table-column>
-            <let-table-column title="QPS峰值" prop="peakQPS"></let-table-column>
-            <let-table-column title="调用占比" prop="callPercent"></let-table-column>
-            <let-table-column title="平均耗时" prop="avgCost"></let-table-column>
-            <let-table-column title="失败率" prop="failRate"></let-table-column>
-        </let-table>
+        <div class="let-table let-table_stripe">
+            <table v-if="chainShapesList.length">
+                <thead>
+                    <tr>
+                        <th>应用名</th><th>服务/方法</th><th>QPS</th><th>QPS峰值</th><th>调用占比</th><th>平均耗时</th><th>失败率</th>
+                    </tr>
+                </thead>
+                <tbody v-for="item in chainShapesList">
+                    <tr v-for="sub in item.value">
+                        <td>{{sub.serviceName}}</td>
+                        <td>{{sub.method}}</td>
+                        <td>{{sub.QPS}}</td>
+                        <td>{{sub.peakQPS}}</td>
+                        <td>{{sub.callPercent}}</td>
+                        <td>{{sub.avgCost}}</td>
+                        <td>{{sub.failRate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table v-else>
+                <thead>
+                    <tr>
+                        <th>应用名</th><th>服务/方法</th><th>QPS</th><th>QPS峰值</th><th>调用占比</th><th>平均耗时</th><th>失败率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="7">没有数据</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -60,21 +79,10 @@ export default {
                 }).then(data => {
                     loading.hide();
                     // create an array with nodes
-                    var nodes = new vis.DataSet([
-                        {id: 1, label: 'POC.ProxySvr'},
-                        {id: 2, label: 'POC.TransSvr'},
-                        {id: 3, label: 'POC.AccessSvr'},
-                        {id: 4, label: 'POC.TransSvr2'},
-                        {id: 5, label: 'POC.TransSvr3'}
-                    ]);
+                    var nodes = new vis.DataSet(data.dependencyGraph.vertexs.value);
 
                     // create an array with edges
-                    var edges = new vis.DataSet([
-                        {from: 1, to: 2},
-                        {from: 2, to: 3},
-                        {from: 2, to: 4},
-                        {from: 2, to: 5}
-                    ]);
+                    var edges = new vis.DataSet(data.dependencyGraph.links.value);
 
                     var data = {
                         nodes: nodes,
@@ -88,7 +96,7 @@ export default {
                             hierarchical:{
                                 enabled : true,
                                 direction : 'LR',
-                                levelSeparation : 200
+                                levelSeparation : 300
                             },
                         },
                         nodes : {
@@ -118,6 +126,8 @@ export default {
                             }
                         }
                     });
+
+                    this.chainShapesList = data.chainShapes.chainShapes.value;
                 }).catch((err) => {
                     loading.hide();
                     this.$tip.error(err.message || err.err_msg);

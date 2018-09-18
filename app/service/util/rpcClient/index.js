@@ -80,13 +80,13 @@ const RPCStruct = function(proxy, moduleName){
 //输出TARS RPC代理和组件
 module.exports = {
 
-    adminRegPrx : RPCClientPrx(AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj@tcp -h 100.117.137.106 -t 60000 -p 8081 -e 0'),
+    adminRegPrx : RPCClientPrx(AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj'),
     adminRegStruct : RPCStruct(AdminRegProxy, 'tars'),
 
-    configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj@tcp -h 100.117.137.106 -t 60000 -p 8081 -e 0'),
+    configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
     configFStruct : RPCStruct(ConfigFProxy, 'tars'),
 
-    queryTracingPrx : RPCClientPrx(QueryTracingProxy, 'tars', 'QueryController', 'tars.tarsQueryTracingProxy@tcp -h 100.117.137.106 -t 60000 -p 8081 -e 0'),
+    queryTracingPrx : RPCClientPrx(QueryTracingProxy, 'tars', 'QueryController', 'Tars.TarsTracingQuery.QueryObj'),
     queryTracingStruct : RPCStruct(QueryTracingProxy, 'tars'),
 
     client: client

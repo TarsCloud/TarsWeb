@@ -1,26 +1,16 @@
 <template>
   <div id="app">
-    <app-header></app-header>
-
     <!-- 切换 tab 缓存接口（主要为左侧目录树） -->
     <keep-alive>
       <router-view class="main-width"></router-view>
     </keep-alive>
-
-    <app-footer class="app_index__footer"></app-footer>
   </div>
 </template>
 
 <script>
-import AppHeader from './components/app/header';
-import AppFooter from './components/app/footer';
 
 export default {
   name: 'App',
-  components: {
-    AppHeader,
-    AppFooter,
-  },
 };
 </script>
 

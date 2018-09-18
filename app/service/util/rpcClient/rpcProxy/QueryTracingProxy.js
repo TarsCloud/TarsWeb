@@ -238,6 +238,7 @@ tars.ChainNodeItem = function() {
     this.callPercent = 0;
     this.avgCost = 0;
     this.failRate = 0;
+    this.rootSign = "";
     this._classname = "tars.ChainNodeItem";
 };
 tars.ChainNodeItem._classname = "tars.ChainNodeItem";
@@ -254,6 +255,7 @@ tars.ChainNodeItem._readFrom = function (is) {
     tmp.callPercent = is.readFloat(6, true, 0);
     tmp.avgCost = is.readInt32(7, true, 0);
     tmp.failRate = is.readFloat(8, true, 0);
+    tmp.rootSign = is.readString(9, true, "");
     return tmp;
 };
 tars.ChainNodeItem.prototype._writeTo = function (os) {
@@ -266,6 +268,7 @@ tars.ChainNodeItem.prototype._writeTo = function (os) {
     os.writeFloat(6, this.callPercent);
     os.writeInt32(7, this.avgCost);
     os.writeFloat(8, this.failRate);
+    os.writeString(9, this.rootSign);
 };
 tars.ChainNodeItem.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -286,7 +289,8 @@ tars.ChainNodeItem.prototype.toObject = function() {
         "peakQPS" : this.peakQPS,
         "callPercent" : this.callPercent,
         "avgCost" : this.avgCost,
-        "failRate" : this.failRate
+        "failRate" : this.failRate,
+        "rootSign" : this.rootSign
     };
 };
 tars.ChainNodeItem.prototype.readFromObject = function(json) { 
@@ -299,6 +303,7 @@ tars.ChainNodeItem.prototype.readFromObject = function(json) {
     json.hasOwnProperty("callPercent") && (this.callPercent = json.callPercent);
     json.hasOwnProperty("avgCost") && (this.avgCost = json.avgCost);
     json.hasOwnProperty("failRate") && (this.failRate = json.failRate);
+    json.hasOwnProperty("rootSign") && (this.rootSign = json.rootSign);
 };
 tars.ChainNodeItem.prototype.toBinBuffer = function () {
     var os = new TarsStream.TarsOutputStream();
@@ -312,58 +317,9 @@ tars.ChainNodeItem.create = function (is) {
     return tars.ChainNodeItem._readFrom(is);
 };
 
-tars.ChainShape = function() {
-    this.shape = new TarsStream.List(tars.ChainNodeItem);
-    this.rootSign = "";
-    this._classname = "tars.ChainShape";
-};
-tars.ChainShape._classname = "tars.ChainShape";
-tars.ChainShape._write = function (os, tag, value) { os.writeStruct(tag, value); };
-tars.ChainShape._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
-tars.ChainShape._readFrom = function (is) {
-    var tmp = new tars.ChainShape();
-    tmp.shape = is.readList(0, true, TarsStream.List(tars.ChainNodeItem));
-    tmp.rootSign = is.readString(1, false, "");
-    return tmp;
-};
-tars.ChainShape.prototype._writeTo = function (os) {
-    os.writeList(0, this.shape);
-    os.writeString(1, this.rootSign);
-};
-tars.ChainShape.prototype._equal = function () {
-    assert.fail("this structure not define key operation");
-};
-tars.ChainShape.prototype._genKey = function () {
-    if (!this._proto_struct_name_) {
-        this._proto_struct_name_ = "STRUCT" + Math.random();
-    }
-    return this._proto_struct_name_;
-};
-tars.ChainShape.prototype.toObject = function() { 
-    return {
-        "shape" : this.shape.toObject(),
-        "rootSign" : this.rootSign
-    };
-};
-tars.ChainShape.prototype.readFromObject = function(json) { 
-    json.hasOwnProperty("shape") && (this.shape.readFromObject(json.shape));
-    json.hasOwnProperty("rootSign") && (this.rootSign = json.rootSign);
-};
-tars.ChainShape.prototype.toBinBuffer = function () {
-    var os = new TarsStream.TarsOutputStream();
-    this._writeTo(os);
-    return os.getBinBuffer();
-};
-tars.ChainShape.new = function () {
-    return new tars.ChainShape();
-};
-tars.ChainShape.create = function (is) {
-    return tars.ChainShape._readFrom(is);
-};
-
 tars.ChainShapeCollection = function() {
     this.timestamp = "";
-    this.chainShapes = new TarsStream.Map(TarsStream.String, tars.ChainShape);
+    this.chainShapes = new TarsStream.List(TarsStream.List(tars.ChainNodeItem));
     this._classname = "tars.ChainShapeCollection";
 };
 tars.ChainShapeCollection._classname = "tars.ChainShapeCollection";
@@ -372,12 +328,12 @@ tars.ChainShapeCollection._read  = function (is, tag, def) { return is.readStruc
 tars.ChainShapeCollection._readFrom = function (is) {
     var tmp = new tars.ChainShapeCollection();
     tmp.timestamp = is.readString(0, true, "");
-    tmp.chainShapes = is.readMap(1, true, TarsStream.Map(TarsStream.String, tars.ChainShape));
+    tmp.chainShapes = is.readList(1, true, TarsStream.List(TarsStream.List(tars.ChainNodeItem)));
     return tmp;
 };
 tars.ChainShapeCollection.prototype._writeTo = function (os) {
     os.writeString(0, this.timestamp);
-    os.writeMap(1, this.chainShapes);
+    os.writeList(1, this.chainShapes);
 };
 tars.ChainShapeCollection.prototype._equal = function () {
     assert.fail("this structure not define key operation");
