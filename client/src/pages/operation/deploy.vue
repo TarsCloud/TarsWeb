@@ -349,8 +349,8 @@
       chooseThirdlyBusiness (SubSystemId) {
         if (SubSystemId === undefined || SubSystemId === "") return false;
         let item = this.thirdlyBusiness.find(business => business.SubSystemId === SubSystemId);
-        let {SystemEngName} = item;
-        this.model.application = SystemEngName
+        let {SubSystemEngName} = item;
+        this.model.application = SubSystemEngName
       },
 
       addAdapter(template) {
