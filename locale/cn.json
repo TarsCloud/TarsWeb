@@ -46,6 +46,7 @@
     },
     "nonexistent": {
       "template": "模板不存在",
+      "noExpandNodes": "参考节点不存在",
       "parent": {
         "template": "父模板不存在"
       },

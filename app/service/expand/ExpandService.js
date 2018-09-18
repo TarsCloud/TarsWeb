@@ -42,7 +42,8 @@ ExpandService.releaseNodeTfae = async (params) => {
     // 预扩容节点信息
     let rst = await ExpandService.preview(params);
     // 获取节点端口
-    let portRst = await AdapterService.getAvaliablePort(expand_nodes);
+    let nodeNames = expand_nodes.map((node => node.ip));
+    let portRst = await AdapterService.getAvaliablePort(nodeNames);
     // 节点附加端口
     rst.forEach(node => {
         portRst.forEach(nodePort => {
@@ -67,6 +68,7 @@ ExpandService.releaseNodeTfae = async (params) => {
         }
     });
     // 扩容
+    console.log(expandOption,'expandOption');
     let expandRst = await ExpandService.expand(expandOption);
     let {server_conf} = expandRst;
     if (server_conf.length === 0) throw new Error('节点都已存在，扩容失败');
@@ -100,6 +102,9 @@ ExpandService.preview = async (params) => {
     let serverName = params.server_name;
     let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
     let sourceAdapter = await AdapterDao.getAdapterConf(application, serverName, params.node_name);
+    if (!sourceAdapter.length) {
+        throw new Error("#api.nonexistent.noExpandNodes#")
+    }
     let result = [];
     params.expand_nodes.forEach((expandNode) => {
         sourceAdapter.forEach((adapter) => {

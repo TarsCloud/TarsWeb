@@ -119,8 +119,12 @@ ExpandServerController.expandServerPreview = async(ctx) => {
 
 ExpandServerController.releaseNodeTfae = async(ctx) => {
     var params = ctx.paramsObj;
+    logger.info('[releaseNodeTfaeparams]', params.expand_nodes);
+    params.expand_nodes = JSON.parse(params.expand_nodes);
+
     try {
         if (!params.node_name) params.node_name = '0.0.0.0';
+        if (!params.copy_node_config) params.copy_node_config = true;
         let rst = await ExpandService.releaseNodeTfae(params);
         ctx.makeResObj(200, '', rst);
     } catch (e) {

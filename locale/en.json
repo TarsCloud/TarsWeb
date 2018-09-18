@@ -46,6 +46,7 @@
     },
     "nonexistent": {
       "template": "nonexistent template",
+      "noExpandNodes": "The reference node does not exist",
       "parent": {
         "template": "nonexistent parent template"
       },
