@@ -28,7 +28,7 @@ const logger = require('../../logger');
 
 let Db = {};
 
-let databases = ['db_tars','db_tars_web'];
+let databases = ['db_tars','db_tars_web','db_tracing'];
 
 databases.forEach((database)=>{
     let {

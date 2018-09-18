@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 const logger = require('../../logger');
-const rp = require("request-promise");
+const rp = require("request-promise-any");
 const uuidv1 = require('uuid/v1');
 const sha256 = require('sha256');
 const {panshiConf} = require('../../../config/webConf');
