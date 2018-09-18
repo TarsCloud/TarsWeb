@@ -38,7 +38,7 @@ module.exports = {
         calluser: 'tars',
         callsys: 'test_client',
         appkey: 'eff718a4894a42168eefee54ad134c51',
-        mappingUrl: 'http://localhost:7000/panshi/api'
+        mappingUrl: 'http://localhost:9089/panshi/api'
     },
     kafkaConf: {
         enable: false,
