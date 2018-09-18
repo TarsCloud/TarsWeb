@@ -78,17 +78,21 @@ export default {
                     end : this.end_time
                 }).then(data => {
                     loading.hide();
+                    if(!data.dependencyGraph.vertexs.value && data.dependencyGraph.links.value){
+                        container.html('<div class="emptyMsg">没有数据</div>');
+                        return;
+                    }
                     // create an array with nodes
                     var nodes = new vis.DataSet(data.dependencyGraph.vertexs.value);
 
                     // create an array with edges
                     var edges = new vis.DataSet(data.dependencyGraph.links.value);
 
-                    var data = {
+                    var netWorkData = {
                         nodes: nodes,
                         edges: edges
                     };
-                    var network = new vis.Network(container, data, {
+                    var network = new vis.Network(container, netWorkData, {
                         physics : {
                             enabled : false
                         },
@@ -163,9 +167,10 @@ export default {
         });
         this.serviceName = serviceName.join('.');
         this.setDate();
+        
     },
     mounted() {
-
+        this.showTopo();
     }
 }
 </script>
@@ -186,6 +191,12 @@ export default {
         .topo_graph{
             width: 100%;
             height: 400px;
+        }
+        .emptyMsg{
+            width:80px;
+            position: relative;
+            top:40%;
+            margin:0 auto;
         }
     }
 </style>

@@ -9,17 +9,17 @@
     >
       <let-form-item :label="$t('deployService.form.primaryBusiness')" required>
         <let-select v-model="model.primaryBusiness" size="small" required @change="choosePrimaryBusiness">
-          <let-option v-for="item in primaryBusiness" :value="item.ServiceId">{{item.ServiceName}}</let-option>
+          <let-option v-for="item in primaryBusiness" :value="item.ServiceId" :key="item.ServiceId">{{item.ServiceName}}</let-option>
         </let-select>
       </let-form-item>
       <let-form-item :label="$t('deployService.form.secondaryBusiness')" required>
         <let-select v-model="model.secondaryBusiness" size="small" required @change="chooseSecondaryBusiness">
-          <let-option v-for="item in secondaryBusiness" :value="item.SystemId">{{item.SystemName}}</let-option>
+          <let-option v-for="item in secondaryBusiness" :value="item.SystemId" :key="item.SystemId">{{item.SystemName}}</let-option>
         </let-select>
       </let-form-item>
       <let-form-item :label="$t('deployService.form.thirdlyBusiness')" required>
         <let-select v-model="model.thirdlyBusiness" size="small" required @change="chooseThirdlyBusiness">
-          <let-option v-for="item in thirdlyBusiness" :value="item.SubSystemId">{{item.SubSystemName}}</let-option>
+          <let-option v-for="item in thirdlyBusiness" :value="item.SubSystemId" :key="item.SubSystemId">{{item.SubSystemName}}</let-option>
         </let-select>
       </let-form-item>
 
