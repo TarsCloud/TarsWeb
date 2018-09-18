@@ -420,6 +420,9 @@
       "apply": "部署申请"
     },
     "form": {
+      "primaryBusiness": "一级业务",
+      "secondaryBusiness": "二级业务",
+      "thirdlyBusiness": "三级业务",
       "app": "应用",
       "tips": "无需加应用和服务，如MTT.HttpProxyServer.HttpProxyObj，这里只填HttpProxyObj",
       "serviceType": "服务类型",

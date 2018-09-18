@@ -36,10 +36,6 @@ ExpandService.releaseNodeTfae = async (params) => {
         server_name,           // 服务名
         node_name,             // 参考节点，没有默认就是0.0.0.0
         expand_nodes,          // 扩容节点
-        enable_set,            // 启动 set,  不启动 set 名、区域、组不用填
-        set_name,              // set 名
-        set_area,              // set 区域
-        set_group,             // set 组，为数字
         copy_node_config,      // 是否复制节点服务配置
         patch_id               //上传包返回的 id
     } = params;
@@ -111,20 +107,20 @@ ExpandService.preview = async (params) => {
             let preServer = {
                 application: application,
                 server_name: serverName,
-                node_name: expandNode,
+                node_name: expandNode.ip,
                 template_name: sourceServer.template_name,
                 port: 0,
                 auth: 0
             };
-            if (params.enable_set) {
-                preServer.set = [params.set_name, params.set_area, params.set_group].join('.');
+            if (expandNode.enable_set) {
+                preServer.set = [expandNode.set_name, expandNode.set_area, expandNode.set_group].join('.');
             } else {
                 preServer.set = '';
             }
             let servant = adapter.servant;
             preServer.obj_name = servant.substring(servant.lastIndexOf('.') + 1);
-            preServer.bind_ip = expandNode;
-            preServer.status = expandNode == sourceServer.node_name ? "#api.expand.node.status.existent#" : "#api.expand.node.status.nonexistent#";
+            preServer.bind_ip = expandNode.ip;
+            preServer.status = expandNode.ip == sourceServer.node_name ? "#api.expand.node.status.existent#" : "#api.expand.node.status.nonexistent#";
             result.push(preServer);
         });
     });

@@ -3,14 +3,14 @@
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
  *
- * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except 
+ * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  *
  * https://opensource.org/licenses/BSD-3-Clause
  *
- * Unless required by applicable law or agreed to in writing, software distributed 
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
 var path = require('path');
@@ -34,17 +34,25 @@ module.exports = {
         logFileKeepDays: '1',         //日志保留时间
         defaultLanguage: 'cn',    //cn 或 en ，用户默认的语言环境
     },
-    kafkaConf : {
-        enable : false,
-        kafkaHost : 'localhost:9092',
-        zkHost : 'localhost:2181',
-        topic : 'tarsTask',
-        maxCount : 100              // 后台并行处理的最大任务数
+    panshiConf: {
+        calluser: 'tars',
+        callsys: 'test_client',
+        appkey: 'eff718a4894a42168eefee54ad134c51',
+        mappingUrl: 'http://localhost:7000/panshi/api'
     },
-    pkgUploadPath : {
-        path : '/usr/local/app/patchs/tars.upload'
-    },
-    //防洪水攻击配置
+    kafkaConf: {
+        enable: false,
+        kafkaHost: 'localhost:9092',
+        zkHost: 'localhost:2181',
+        topic: 'tarsTask',
+        maxCount: 100              // 后台并行处理的最大任务数
+    }
+    ,
+    pkgUploadPath: {
+        path: '/usr/local/app/patchs/tars.upload'
+    }
+    ,
+//防洪水攻击配置
     limitConf: {
         enableLimit: true,            //是否启用此配置
         limit: 5000,                  //限制访问的次数
@@ -52,4 +60,5 @@ module.exports = {
         whilteList: [],               //白名单IP
         blackList: []                 //黑名单IP
     }
-};
+}
+;
