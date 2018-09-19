@@ -57,6 +57,7 @@ export default {
         set_area: '',
         set_group: '',
       },
+      browserAlert : ''
     };
   },
   computed: {
@@ -184,11 +185,10 @@ export default {
         this.$router.replace('manage');
       }
     },
+
+    
   },
-  created() {
-    this.serverData = this.getServerData();
-    this.isTrueTreeLevel();
-  },
+  
   mounted() {
     this.getTreeData();
     this.$ajax.getJSON('/server/api/is_enable_auth').then((data) => {
@@ -207,6 +207,7 @@ export default {
   padding-bottom: var(--gap-big);
   padding-top: var(--gap-big);
   display: flex;
+  .mid{margin:0 auto}
 
   /*目录树*/
   .left-tree {
