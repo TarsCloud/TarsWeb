@@ -502,14 +502,14 @@ tars.Span._readFrom = function (is) {
     var tmp = new tars.Span();
     tmp.traceId = is.readString(0, true, "");
     tmp.id = is.readString(1, true, "");
-    tmp.parentId = is.readString(2, true, "");
+    tmp.parentId = is.readString(2, false, "");
     tmp.name = is.readString(3, true, "");
     tmp.timestamp = is.readInt64(4, true, 0);
     tmp.duration = is.readInt64(5, true, 0);
     tmp.status = is.readInt32(6, true, 0);
     tmp.serviceName = is.readString(7, true, "");
-    tmp.ip = is.readString(8, true, "");
-    tmp.port = is.readString(9, true, "");
+    tmp.ip = is.readString(8, false, "");
+    tmp.port = is.readString(9, false, "");
     tmp.layer = is.readInt32(10, false, 0);
     tmp.type = is.readString(11, false, "");
     tmp.tags = is.readMap(12, false, TarsStream.Map(TarsStream.String, TarsStream.String));
@@ -583,57 +583,8 @@ tars.Span.create = function (is) {
     return tars.Span._readFrom(is);
 };
 
-tars.Tracer = function() {
-    this.tracerId = "";
-    this.spans = new TarsStream.List(tars.Span);
-    this._classname = "tars.Tracer";
-};
-tars.Tracer._classname = "tars.Tracer";
-tars.Tracer._write = function (os, tag, value) { os.writeStruct(tag, value); };
-tars.Tracer._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
-tars.Tracer._readFrom = function (is) {
-    var tmp = new tars.Tracer();
-    tmp.tracerId = is.readString(0, true, "");
-    tmp.spans = is.readList(1, true, TarsStream.List(tars.Span));
-    return tmp;
-};
-tars.Tracer.prototype._writeTo = function (os) {
-    os.writeString(0, this.tracerId);
-    os.writeList(1, this.spans);
-};
-tars.Tracer.prototype._equal = function () {
-    assert.fail("this structure not define key operation");
-};
-tars.Tracer.prototype._genKey = function () {
-    if (!this._proto_struct_name_) {
-        this._proto_struct_name_ = "STRUCT" + Math.random();
-    }
-    return this._proto_struct_name_;
-};
-tars.Tracer.prototype.toObject = function() { 
-    return {
-        "tracerId" : this.tracerId,
-        "spans" : this.spans.toObject()
-    };
-};
-tars.Tracer.prototype.readFromObject = function(json) { 
-    json.hasOwnProperty("tracerId") && (this.tracerId = json.tracerId);
-    json.hasOwnProperty("spans") && (this.spans.readFromObject(json.spans));
-};
-tars.Tracer.prototype.toBinBuffer = function () {
-    var os = new TarsStream.TarsOutputStream();
-    this._writeTo(os);
-    return os.getBinBuffer();
-};
-tars.Tracer.new = function () {
-    return new tars.Tracer();
-};
-tars.Tracer.create = function (is) {
-    return tars.Tracer._readFrom(is);
-};
-
 tars.TracingSpanRes = function() {
-    this.spans = new TarsStream.List(tars.Tracer);
+    this.spans = new TarsStream.List(TarsStream.List(tars.Span));
     this._classname = "tars.TracingSpanRes";
 };
 tars.TracingSpanRes._classname = "tars.TracingSpanRes";
@@ -641,7 +592,7 @@ tars.TracingSpanRes._write = function (os, tag, value) { os.writeStruct(tag, val
 tars.TracingSpanRes._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 tars.TracingSpanRes._readFrom = function (is) {
     var tmp = new tars.TracingSpanRes();
-    tmp.spans = is.readList(0, true, TarsStream.List(tars.Tracer));
+    tmp.spans = is.readList(0, true, TarsStream.List(TarsStream.List(tars.Span)));
     return tmp;
 };
 tars.TracingSpanRes.prototype._writeTo = function (os) {
