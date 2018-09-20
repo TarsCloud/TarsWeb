@@ -13,15 +13,15 @@
         <div id="topo" class="topo_graph"></div>
 
         <div class="let-table let-table_stripe">
-            <table v-if="chainShapesList.length">
+            <table v-if="formatedChainShapesList.length">
                 <thead>
                     <tr>
                         <th>应用名</th><th>服务/方法</th><th>QPS</th><th>QPS峰值</th><th>调用占比</th><th>平均耗时</th><th>失败率</th>
                     </tr>
                 </thead>
-                <tbody v-for="item in chainShapesList">
+                <tbody v-for="item in formatedChainShapesList">
                     <tr v-for="sub in item.value">
-                        <td>{{sub.serviceName}}</td>
+                        <td><span :style="{marginLeft:sub.layer*30+'px'}">{{sub.serviceName}}</span></td>
                         <td>{{sub.method}}</td>
                         <td>{{sub.QPS}}</td>
                         <td>{{sub.peakQPS}}</td>
@@ -70,63 +70,6 @@ export default {
     methods : {
         showTopo() {
             let container = document.querySelector('#topo');
-            let data = JSON.parse('{"data":{"dependencyGraph":{"links":{"_bValue":0,"value":[{"from":"0","to":"1875193187","_classname":"tars.DependencyLink"},{"from":"0","to":"1020676283","_classname":"tars.DependencyLink"}],"_classname":"List<tars.DependencyLink>"},"vertexs":{"_bValue":0,"value":[{"id":"1020676283","label":"testapp.tracingjavatwoserver.helloobj","_classname":"tars.Vertex"},{"id":"1875193187","label":"testapp.helloserver.helloobj","_classname":"tars.Vertex"},{"id":"0","label":"testapp.tracingjavaoneserver.helloobj","_classname":"tars.Vertex"}],"_classname":"List<tars.Vertex>"},"_classname":"tars.ToPoGraph"},"chainShapes":{"timestamp":"2018-27-19 11:27","chainShapes":{"_proto":{"_bValue":0,"value":[],"_classname":"List<tars.ChainNodeItem>"},"_bValue":0,"value":[{"_bValue":0,"value":[{"serviceName":"testapp.tracingjavaoneserver.helloobj","method":"hello","order":0,"layer":0,"QPS":0.019999999552965164,"peakQPS":0.07000000029802322,"callPercent":1,"avgCost":5122,"failRate":0,"rootSign":"53a4d34be1444dc244c1d29ccace0c8a","_classname":"tars.ChainNodeItem"},{"serviceName":"testapp.tracingjavatwoserver.helloobj","method":"test","order":1,"layer":1,"QPS":0.019999999552965164,"peakQPS":0.07000000029802322,"callPercent":1,"avgCost":1487,"failRate":0,"rootSign":"53a4d34be1444dc244c1d29ccace0c8a","_classname":"tars.ChainNodeItem"},{"serviceName":"testapp.helloserver.helloobj","method":"testhello","order":2,"layer":1,"QPS":0,"peakQPS":0,"callPercent":0,"avgCost":0,"failRate":0,"rootSign":"53a4d34be1444dc244c1d29ccace0c8a","_classname":"tars.ChainNodeItem"}],"_classname":"List<tars.ChainNodeItem>"}],"_classname":"List<List<tars.ChainNodeItem>>"},"_classname":"tars.ChainShapeCollection"},"_classname":"tars.TracingAnalysisRes"},"ret_code":200,"err_msg":""}')
-            data = data.data;
-            if(!data.dependencyGraph.vertexs.value.length && !data.dependencyGraph.links.value.length){
-                        container.innerHTML= '<div class="emptyMsg">没有数据</div>';
-                        return;
-                    }
-                    // create an array with nodes
-                    var nodes = new vis.DataSet(data.dependencyGraph.vertexs.value);
-
-                    // create an array with edges
-                    var edges = new vis.DataSet(data.dependencyGraph.links.value);
-
-                    var netWorkData = {
-                        nodes: nodes,
-                        edges: edges
-                    };
-                    var network = new vis.Network(container, netWorkData, {
-                        physics : {
-                            enabled : false
-                        },
-                        layout : {
-                            hierarchical:{
-                                enabled : true,
-                                direction : 'LR',
-                                levelSeparation : 300
-                            },
-                        },
-                        nodes : {
-                            shape : 'box',
-                            color : {
-                                border : '#cccccc',
-                                background : '#ffffff'
-                            },
-                            margin : {
-                                top: 13,
-                                bottom: 13,
-                                left: 27,
-                                right: 27
-                            }
-                        },
-                        edges : {
-                            arrows : {
-                                to : {
-                                    enabled : true,
-                                    scaleFactor : 0.5,
-                                    type : 'arrow'
-                                }
-                            },
-                            smooth : {
-                                enabled : true,
-                                type : 'vertical'
-                            }
-                        }
-                    });
-
-                    this.chainShapesList = data.chainShapes.chainShapes.value;
-            return;
             if(this.$refs.topoForm.validate()){
                 const loading = this.$Loading.show();
                 this.$ajax.getJSON('/server/api/get_topo', {
@@ -224,10 +167,20 @@ export default {
         });
         this.serviceName = serviceName.join('.');
         this.setDate();
-        
     },
     mounted() {
         this.showTopo();
+    },
+    computed: {
+        formatedChainShapesList: function() {
+            this.chainShapesList.map(item => {
+                item.value.map(n => {
+                    n.QPS = n.QPS.toFixed(2);
+                    n.peakQPS = n.peakQPS.toFixed(2);
+                })
+            });
+            return this.chainShapesList;
+        }
     }
 }
 </script>
