@@ -112,15 +112,25 @@ AdminService.getEndpoints = async (objName) => {
 };
 
 AdminService.getTopoGraph = async (serviceName, start, end) => {
-    let TracingAnalysisReq = new queryTracingStruct.TracingAnalysisReq();
-    TracingAnalysisReq.readFromObject({
+    let tracingAnalysisReq = new queryTracingStruct.TracingAnalysisReq();
+    tracingAnalysisReq.readFromObject({
         serviceName,
         start,
         end
     });
-    let ret = await queryTracingPrx.getQueryChainResult(TracingAnalysisReq);
-    console.info(ret);
-    return ret;
+    return queryTracingPrx.getQueryChainResult(tracingAnalysisReq);
+}
+
+AdminService.getTracingResultById = async (traceId, start, end) => {
+    let tracingSpanReq = new queryTracingStruct.TracingSpanReq();
+    tracingSpanReq.readFromObject({start, end, traceId});
+    return await queryTracingPrx.getQueryTracingResult(tracingSpanReq);
+}
+
+AdminService.getTracingResultByServiceName = async (serviceName, start, end) => {
+    let tracingSpanReq = new queryTracingStruct.TracingSpanReq();
+    tracingSpanReq.readFromObject({start, end, serviceName});
+    return await queryTracingPrx.getQueryTracingResult(tracingSpanReq);
 }
 
 module.exports = AdminService;

@@ -13,15 +13,15 @@
         <div id="topo" class="topo_graph"></div>
 
         <div class="let-table let-table_stripe">
-            <table v-if="chainShapesList.length">
+            <table v-if="formatedChainShapesList.length">
                 <thead>
                     <tr>
                         <th>应用名</th><th>服务/方法</th><th>QPS</th><th>QPS峰值</th><th>调用占比</th><th>平均耗时</th><th>失败率</th>
                     </tr>
                 </thead>
-                <tbody v-for="item in chainShapesList">
+                <tbody v-for="item in formatedChainShapesList">
                     <tr v-for="sub in item.value">
-                        <td>{{sub.serviceName}}</td>
+                        <td><span :style="{marginLeft:sub.layer*30+'px'}">{{sub.serviceName}}</span></td>
                         <td>{{sub.method}}</td>
                         <td>{{sub.QPS}}</td>
                         <td>{{sub.peakQPS}}</td>
@@ -167,10 +167,20 @@ export default {
         });
         this.serviceName = serviceName.join('.');
         this.setDate();
-        
     },
     mounted() {
         this.showTopo();
+    },
+    computed: {
+        formatedChainShapesList: function() {
+            this.chainShapesList.map(item => {
+                item.value.map(n => {
+                    n.QPS = n.QPS.toFixed(2);
+                    n.peakQPS = n.peakQPS.toFixed(2);
+                })
+            });
+            return this.chainShapesList;
+        }
     }
 }
 </script>

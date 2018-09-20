@@ -28,7 +28,7 @@ const TaskService = {};
 
 
 TaskService.getTaskRsp = async (taskNo) => {
-    let rsp = await AdminService.getTaskRsp(taskNo).catch(e => logger.error('[adminService.getTaskRsp]:',e));
+    let rsp = await AdminService.getTaskRsp(taskNo);
     logger.info('getTaskRsp:',rsp);
     return {
         task_no : rsp.taskNo,

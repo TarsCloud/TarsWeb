@@ -18,20 +18,31 @@ const logger = require('../../logger');
 const CallChainService = require('../../service/callChain/CallChainService');
 const AdminService = require('../../service/admin/AdminService');
 const util = require('../../tools/util');
+const _ = require('lodash');
 const moment = require('moment');
 
 const CallChainController = {}
 
 CallChainController.getTraceList = async (ctx) => {
-    let {id, start_time, end_time} = ctx.paramsObj;
+    let {type, content, start_time, end_time} = ctx.paramsObj;
     try {
-        let ret = await CallChainService.getTraceList({id, start_time, end_time});
-        // let ret = [{
-        //     duration:100,
-        //     timestamp:1536313740349,
-        //     trace_id:"100009384577"
-        // }];
-        ctx.makeResObj(200,'', util.viewFilter(ret, {trace_id:'', duration:'', timestamp:{formatter:util.formatTimeStamp}}));
+        let ret;
+        start_time = moment(start_time).unix()*1000;
+        end_time = moment(end_time).unix()*1000;
+        if(type == 'traceId') {
+            ret = await AdminService.getTracingResultById(content, start_time, end_time);
+        }else {
+            ret = await AdminService.getTracingResultByServiceName(content, start_time, end_time);
+        }
+        let data = JSON.parse('{"spans":{"_proto":{"_bValue":0,"value":[],"_classname":"List<tars.Span>"},"_bValue":0,"value":[{"_bValue":0,"value":[{"traceId":"39501a866547fdaa","id":"7ab1bda102cbb740","parentId":"39501a866547fdaa","name":"test","timestamp":1537279362305,"duration":1572,"status":0,"serviceName":"testapp.tracingjavatwoserver.helloobj","ip":"172.16.2.8","port":"18601","layer":1,"type":"tars","tags":{"_kproto":{"_classname":"string"},"_vproto":{"_classname":"string"},"_bKey":0,"_bValue":0,"value":{},"_classname":"map<string,string>"},"_classname":"tars.Span"},{"traceId":"39501a866547fdaa","id":"a4553942ccdbb2c2","parentId":"39501a866547fdaa","name":"testhello","timestamp":1537279362302,"duration":3581,"status":0,"serviceName":"tars","ip":"0.0.0.0","port":"0","layer":1,"type":"tars","tags":{"_kproto":{"_classname":"string"},"_vproto":{"_classname":"string"},"_bKey":0,"_bValue":0,"value":{},"_classname":"map<string,string>"},"_classname":"tars.Span"},{"traceId":"39501a866547fdaa","id":"39501a866547fdaa","parentId":"","name":"hello","timestamp":1537279362302,"duration":5325,"status":0,"serviceName":"testapp.tracingjavaoneserver.helloobj","ip":"172.16.2.2","port":"18701","layer":0,"type":"tars","tags":{"_kproto":{"_classname":"string"},"_vproto":{"_classname":"string"},"_bKey":0,"_bValue":0,"value":{},"_classname":"map<string,string>"},"_classname":"tars.Span"}],"_classname":"List<tars.Span>"}],"_classname":"List<List<tars.Span>>"},"_classname":"tars.TracingSpanRes"}');
+        let newData = [];
+        //console.info(data.spans.value);
+        for(let i=0;i<data.spans.value.length;i++) {
+            let item = data.spans.value[i];
+            newData.push(item.value);
+        }
+        ret.__return = _.flatten(newData);
+        ctx.makeResObj(200,'', ret.__return);
     }catch(e) {
         logger.error('[CallChainController.getTraceList]:', e, ctx);
         ctx.makeErrResObj();

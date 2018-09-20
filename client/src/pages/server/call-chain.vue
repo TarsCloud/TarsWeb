@@ -2,24 +2,28 @@
     <div class="page_server_call_chain">
         <!-- traceid列表 -->
         <div v-if="!showDuration">
-            <let-row>
-                <let-col class="grid-content bg-blue" span="8">
-                    <input class="custom_input" v-model="traceId" @keyup.enter="getTracesList" placeholder="输入TraceID"/>
-                </let-col>
-                <let-col class="grid-content bg-blue-little" span="7" offset="9">
+            <let-form ref="traceIdForm" inline >
+                <let-form-item itemWidth="45%">
+                    <let-select v-model="searchType" class="select_width">
+                        <let-option value="traceId">TraceID</let-option>
+                        <let-option value="service">Service</let-option>
+                    </let-select>
+                    <input class="custom_input" v-model="content" @keyup.enter="getTracesList" placeholder=""/>
+                </let-form-item>
+                <let-form-item itemWidth="40%">
                     <let-date-range-picker :start.sync="start_time" :end.sync="end_time"></let-date-range-picker>
                     <let-button theme="primary" @click="getTracesList">查询</let-button>
-                </let-col>
-            </let-row>
+                </let-form-item>
+            </let-form>
 
             <div class="mt10">
-                <let-table :data="traceidList" :empty-msg="$t('common.nodata')">
+                <let-table :data="computedList" :empty-msg="$t('common.nodata')">
                     <let-table-column title="业务名称">
                         <template slot-scope="scope">
-                            <let-table-operation @click="showDetail(scope.row.trace_id)">{{scope.row.trace_id}}</let-table-operation>  
+                            <let-table-operation @click="showDetail(scope.row.traceId)">{{scope.row.traceId}}</let-table-operation>
                         </template>
                     </let-table-column>
-                    <let-table-column title="产生时间" :sortable=true prop="timestamp"></let-table-column>
+                    <let-table-column title="产生时间" :sortable=true prop="timestampFormat"></let-table-column>
                     <let-table-column title="耗时(ms)" :sortable=true prop="duration"></let-table-column>
                 </let-table>
             </div>
@@ -31,10 +35,10 @@
             <let-table stripe :data="traceDetailList" title="服务配置" :empty-msg="$t('common.nodata')">
                 <let-table-column title="应用名">
                     <template slot-scope="scope">
-                        <span :style="'margin-left:'+(scope.row.layer-1)*30+'px'">{{scope.row.server_endpoint_service_name}}</span>
+                        <span :style="'margin-left:'+(scope.row.layer)*30+'px'">{{scope.row.serviceName}}</span>
                     </template>
                 </let-table-column>
-                <let-table-column title="IP" prop="server_endpoint_ipv4"></let-table-column>
+                <let-table-column title="IP" prop="ip"></let-table-column>
                 <let-table-column title="类型" prop="type"></let-table-column>    
                 <let-table-column title="状态" prop="status">
                     <template slot-scope="scope">
@@ -62,10 +66,13 @@ export default {
     },
     data() {
         return {
-            traceId:'',
+            serverData:[],
+            content:'',
+            searchType: 'traceId',
             start_time: '',
             end_time: '',
             traceidList: [],
+            computedList: [],
             showDuration:null,
             selectedTraceId : null,
             traceDetailList : null,
@@ -75,49 +82,78 @@ export default {
     methods: {
         getTracesList() {
             const loading = this.$Loading.show();
+            this.traceidList = [];
+            let initContent = [];
+            Object.entries(this.serverData).forEach(n => {
+                if(n[0]!='level' && n[1]!=''){
+                    initContent.push(n[1]);
+                }
+            })
             this.$ajax.getJSON('/server/api/get_trace_list',{
-                id : this.traceId,
+                type : this.searchType,
+                content : this.content || initContent.join('.'),
                 start_time : this.start_time,
                 end_time : this.end_time
             }).then(data => {
                 loading.hide();
                 this.traceidList = data;
+                let newData=data.filter(n => n.layer==0);
+                newData.forEach(n => {
+                    n.timestampFormat = this.dateToStr(new Date(n.timestamp), 'yyyy-mm-dd hh:mm:ss');
+                })
+                this.computedList = newData;
             }).catch((err) => {
                 loading.hide();
                 this.$tip.error(`系统错误: ${err.message || err.err_msg}`);
             });
         },
+        setDate() {
+            let day = new Date().getDate();
+            let oldDay = new Date().setDate(day-1);
+            this.start_time = this.dateToStr(new Date(oldDay), 'yyyy-mm-dd');
+            this.end_time = this.dateToStr(new Date(), 'yyyy-mm-dd');
+        },
+        dateToStr(date, format) {
+            if(!date || date=='Invalid Date') return;
+            return format.replace(/yyyy/gi, date.getFullYear().toString())
+                .replace(/MM/i, fn(date.getMonth() + 1))
+                .replace(/dd/gi, fn(date.getDate()))
+                .replace(/hh/gi, fn(date.getHours()))
+                .replace(/mm/gi, fn(date.getMinutes()))
+                .replace(/ss/gi, fn(date.getSeconds()));
+            
+            function fn (n) {
+                return (n < 10 ? '0' + n : n).toString();
+            }
+        },
         showDetail(id) {
             this.selectedTraceId = id;
-            const loading = this.$Loading.show();
-            this.$ajax.getJSON('/server/api/get_trace_detail', {
-                id : id
-            }).then(data =>{
-                this.showDuration = true;
-                loading.hide();
-                let parentTimestamp = 0;
-                let scale = 1;
-                data.forEach(item => {
-                    if(item.layer==1) {
-                        parentTimestamp = item.timestamp;
-                        item.marginLeft = 0;
-                        if(item.duration > 300) {
-                            scale = (300 / item.duration).toFixed(2);
-                        }
+            let data = this.traceidList.filter(item => item.traceId == id);
+            data = data.reverse();
+            this.showDuration = true;
+            let parentTimestamp = 0;
+            let scale = 1;
+            data.forEach(item => {
+                if(item.layer==0) {
+                    parentTimestamp = item.timestamp;
+                    item.marginLeft = 0;
+                    if(item.duration > 300) {
+                        scale = (300 / item.duration).toFixed(2);
                     }
-                    item.scale = Number(scale);
-                    item.marginLeft = (item.timestamp - parentTimestamp)*item.scale;
-                    item.color = this.colorArr[item.layer-1];
-                });
-                this.traceDetailList = data;
-            }).catch(err => {
-                loading.hide();
-                this.$tip.error(`系统错误: ${err.message || err.err_msg}`);
+                }
+                item.scale = Number(scale);
+                item.marginLeft = (item.timestamp - parentTimestamp)*item.scale;
+                item.color = this.colorArr[item.layer];
             });
+            this.traceDetailList = data;
         }
+    },
+    created() {
+        this.serverData = this.$parent.getServerData();
     },
     mounted() {
         this.getTracesList();
+        this.setDate();
     }
 }
 </script>
@@ -133,8 +169,8 @@ export default {
             font-size: 14px;
             padding: 0 16px;
             box-sizing: border-box;
-            width: 100%;
-            height: 40px;
+            width: 70%;
+            height: 42px;
         }
         .link{color:#3f5ae0}
         .duration{
@@ -144,6 +180,7 @@ export default {
             max-width: 300px;
             margin-right: 10px;
         }
+        .select_width{width:50px}
     }
 </style>
 

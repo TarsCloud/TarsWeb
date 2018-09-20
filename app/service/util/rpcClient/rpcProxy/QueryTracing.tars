@@ -58,26 +58,21 @@ module tars {
 	struct Span {
 	   0 require string traceId;           //trace id,必填
        1 require string id;             //span id，必填
-       2 require string parentId;        //parent span id，选填
+       2 optional string parentId;        //parent span id，选填
        3 require string name;              //span mane
        4 require long timestamp;              //起始时间戳
        5 require long duration;             //span的耗时，结束时间戳减去起始时间戳  
        6 require int status;
        7 require string serviceName;
-       8 require string ip;
-       9 require string port;
+       8 optional string ip;
+       9 optional string port;
        10 optional int layer;
        11 optional string type;
        12 optional map<string, string> tags;
 	};
 	
-	struct Tracer {
-	    0 require string tracerId;
-		1 require vector<Span> spans;
-	};
-	
 	struct TracingSpanRes {
-		0 require vector<Tracer> spans;
+		0 require vector<vector<Span>> spans;
 	};
 	
 	interface QueryController {	
