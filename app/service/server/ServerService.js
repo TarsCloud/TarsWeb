@@ -105,6 +105,10 @@ ServerService.updateServerConf = async(params)=> {
     return await ServerDao.updateServerConf(params);
 };
 
+ServerService.getNodeNameList = async(params)=> {
+    return await ServerDao.getNodeNameList(params);
+};
+
 
 ServerService.addServerConf = async(params)=> {
     let transaction = await ServerDao.sequelize.transaction();

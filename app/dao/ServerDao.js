@@ -185,4 +185,20 @@ ServerDao.getNodeName = async(params) => {
     })
 }
 
+ServerDao.getNodeNameList = async(params) => {
+    let where = {
+        application: params.application,
+        server_name: params.server_name,
+    }
+    return await tServerConf.findAll({
+        attributes: [[Sequelize.literal('distinct `node_name`'), 'node_name']],
+        where: where,
+        raw: true
+    })
+};
+
+ServerDao.destroy = async(where = {}) => {
+    return tServerConf.destroy({where})
+};
+
 module.exports = ServerDao;

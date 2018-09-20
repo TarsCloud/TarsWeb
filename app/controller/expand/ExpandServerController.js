@@ -15,6 +15,7 @@
  */
  
 const logger = require('../../logger');
+const ServerService = require('../../service/server/ServerService');
 const ExpandService = require('../../service/expand/ExpandService');
 const util = require('../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
@@ -119,11 +120,22 @@ ExpandServerController.expandServerPreview = async(ctx) => {
 
 ExpandServerController.releaseNodeTfae = async(ctx) => {
     var params = ctx.paramsObj;
-    logger.info('[releaseNodeTfaeparams]', params.expand_nodes);
+    logger.info('[releaseNodeTfaeparams]', params);
     params.expand_nodes = JSON.parse(params.expand_nodes);
 
     try {
-        if (!params.node_name) params.node_name = '0.0.0.0';
+        // 如果没有参考节点
+        if (!params.node_name) {
+            let nodeNameList = await ServerService.getNodeNameList({
+                application: params.application,
+                server_name: params.server_name,
+            });
+            logger.info('nodeNameList', nodeNameList);
+            if (!nodeNameList.length) {
+                throw new Error("#api.nonexistent.noExpandNodes#");
+            }
+            params.node_name = nodeNameList[0].node_name;
+        }
         if (!params.copy_node_config) params.copy_node_config = true;
         let rst = await ExpandService.releaseNodeTfae(params);
         ctx.makeResObj(200, '', rst);

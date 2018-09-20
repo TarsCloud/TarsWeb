@@ -40,9 +40,12 @@ ExpandService.releaseNodeTfae = async (params) => {
         patch_id               //上传包返回的 id
     } = params;
     // 预扩容节点信息
+    logger.info('[ExpandService.preview start]');
     let rst = await ExpandService.preview(params);
+    logger.info('[ExpandService.preview end]', rst);
     // 获取节点端口
     let nodeNames = expand_nodes.map((node => node.ip));
+    logger.info('[AdapterService.getAvaliablePort start]');
     let portRst = await AdapterService.getAvaliablePort(nodeNames);
     // 节点附加端口
     rst.forEach(node => {
@@ -68,10 +71,18 @@ ExpandService.releaseNodeTfae = async (params) => {
         }
     });
     // 扩容
-    console.log(expandOption,'expandOption');
+    logger.info('expandOption start', expandOption);
     let expandRst = await ExpandService.expand(expandOption);
+    logger.info('expandOption end', expandRst);
     let {server_conf} = expandRst;
     if (server_conf.length === 0) throw new Error('节点都已存在，扩容失败');
+
+    // 删除 0.0.0.0 节点
+    await ServerDao.destroy({
+        application,
+        server_name,
+        node_name: "0.0.0.0"
+    });
 
     // 发布
     let task_no = util.getUUID().toString();
@@ -92,6 +103,7 @@ ExpandService.releaseNodeTfae = async (params) => {
             }
         }
     });
+    logger.info('addTaskaddTaskaddTask start ');
     await TaskService.addTask(taskOption);
     // ctx.makeResObj(200, '', task_no);
     return {task_no}
@@ -102,11 +114,12 @@ ExpandService.preview = async (params) => {
     let serverName = params.server_name;
     let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
     let sourceAdapter = await AdapterDao.getAdapterConf(application, serverName, params.node_name);
-    if (!sourceAdapter.length) {
+    if (!sourceServer) {
         throw new Error("#api.nonexistent.noExpandNodes#")
     }
     let result = [];
     params.expand_nodes.forEach((expandNode) => {
+        if(!expandNode.ip) return false;
         sourceAdapter.forEach((adapter) => {
             adapter = adapter.dataValues;
             let preServer = {
@@ -247,6 +260,7 @@ ExpandService.expand = async (params) => {
                 let portType = sourceAdapter.endpoint.substring(0, sourceAdapter.endpoint.indexOf(' '));
                 portType = _.indexOf(['tcp', 'udp'], portType) > -1 ? portType : 'tcp';
                 adapter.endpoint = portType + ' -h ' + preServer.bind_ip + ' -t ' + sourceAdapter.queuetimeout + ' -p ' + preServer.port + ' -e ' + (preServer.auth ? preServer.auth : 0);
+                console.log('adapter', adapter);
                 await AdapterDao.insertAdapterConf(adapter, transaction);
             }
         }
@@ -260,7 +274,7 @@ ExpandService.expand = async (params) => {
         return rst;
     } catch (e) {
         await transaction.rollback();
-        throw e;
+        throw new Error(e);
     }
 };
 
