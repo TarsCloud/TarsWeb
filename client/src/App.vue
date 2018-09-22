@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <app-header v-if="isTest"></app-header>
     <!-- 切换 tab 缓存接口（主要为左侧目录树） -->
     <keep-alive>
       <router-view class="main-width"></router-view>
@@ -9,8 +10,23 @@
 
 <script>
 
+import AppHeader from './components/app/header';
+import AppFooter from './components/app/footer';
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    AppHeader,
+    AppFooter,
+  },
+  data() {
+    return {
+      isTest: false
+    }
+  },
+  mounted() {
+    this.isTest = /server2/.test(this.$route.fullPath);
+  },
 };
 </script>
 

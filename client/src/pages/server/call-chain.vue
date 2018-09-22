@@ -32,7 +32,7 @@
         <!-- 调用链查询 -->
         <div v-if="showDuration">
             <h3><a href="javascript:;" class="link" @click="showDuration=false">调用链查询</a> / {{selectedTraceId}}</h3>
-            <let-table stripe :data="traceDetailList" title="服务配置" :empty-msg="$t('common.nodata')">
+            <let-table stripe :data="traceDetailList" :empty-msg="$t('common.nodata')">
                 <let-table-column title="应用名">
                     <template slot-scope="scope">
                         <span :style="'margin-left:'+(scope.row.layer)*30+'px'">{{scope.row.serviceName}}</span>
@@ -89,6 +89,9 @@ export default {
                     initContent.push(n[1]);
                 }
             })
+            if(!this.content){
+                this.searchType = 'service';
+            }
             this.$ajax.getJSON('/server/api/get_trace_list',{
                 type : this.searchType,
                 content : this.content || initContent.join('.'),

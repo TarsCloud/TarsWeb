@@ -1,5 +1,20 @@
 <template>
   <div class="page_server">
+<let-tree class="left-tree"
+      v-if="treeData && treeData.length && isTest"
+      :data="treeData"
+      :activeKey="$route.params.treeid"
+      @on-select="selectTree"/>
+    <div class="left-tree" v-if="treeData && !treeData.length  && isTest">
+      <p class="loading">{{$t('common.noService')}}</p>
+    </div>
+    <div class="left-tree" v-if="!treeData  && isTest" ref="treeLoading">
+      <div class="loading" v-if="treeData === false">
+        <p>{{treeErrMsg}}</p>
+        <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
+      </div>
+    </div>
+
 <div class="right-view" v-if="!this.$route.params.treeid">
       <div class="empty">
         <img class="package" src="@/assets/img/package.png">
@@ -57,7 +72,9 @@ export default {
         set_area: '',
         set_group: '',
       },
-      browserAlert : ''
+      browserAlert : '',
+      panshiUrl : '',
+      isTest : false
     };
   },
   computed: {
@@ -158,6 +175,10 @@ export default {
       return serverData;
     },
 
+    getPanshiUrl() {
+      return this.$ajax.getJSON('/server/api/get_panshi_url');
+    },
+
     clickTab(tabkey) {
       this.$router.push(Object.assign({}, this.$route, {
         path: tabkey,
@@ -196,6 +217,7 @@ export default {
      }).catch((err)=>{
 
       });
+    this.isTest = /server2/.test(this.$route.fullPath);
   },
 };
 </script>
