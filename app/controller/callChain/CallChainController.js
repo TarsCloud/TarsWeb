@@ -34,15 +34,13 @@ CallChainController.getTraceList = async (ctx) => {
         }else {
             ret = await AdminService.getTracingResultByServiceName(content, start_time, end_time);
         }
-        let data = JSON.parse('{"spans":{"_proto":{"_bValue":0,"value":[],"_classname":"List<tars.Span>"},"_bValue":0,"value":[{"_bValue":0,"value":[{"traceId":"39501a866547fdaa","id":"7ab1bda102cbb740","parentId":"39501a866547fdaa","name":"test","timestamp":1537279362305,"duration":1572,"status":0,"serviceName":"testapp.tracingjavatwoserver.helloobj","ip":"172.16.2.8","port":"18601","layer":1,"type":"tars","tags":{"_kproto":{"_classname":"string"},"_vproto":{"_classname":"string"},"_bKey":0,"_bValue":0,"value":{},"_classname":"map<string,string>"},"_classname":"tars.Span"},{"traceId":"39501a866547fdaa","id":"a4553942ccdbb2c2","parentId":"39501a866547fdaa","name":"testhello","timestamp":1537279362302,"duration":3581,"status":0,"serviceName":"tars","ip":"0.0.0.0","port":"0","layer":1,"type":"tars","tags":{"_kproto":{"_classname":"string"},"_vproto":{"_classname":"string"},"_bKey":0,"_bValue":0,"value":{},"_classname":"map<string,string>"},"_classname":"tars.Span"},{"traceId":"39501a866547fdaa","id":"39501a866547fdaa","parentId":"","name":"hello","timestamp":1537279362302,"duration":5325,"status":0,"serviceName":"testapp.tracingjavaoneserver.helloobj","ip":"172.16.2.2","port":"18701","layer":0,"type":"tars","tags":{"_kproto":{"_classname":"string"},"_vproto":{"_classname":"string"},"_bKey":0,"_bValue":0,"value":{},"_classname":"map<string,string>"},"_classname":"tars.Span"}],"_classname":"List<tars.Span>"}],"_classname":"List<List<tars.Span>>"},"_classname":"tars.TracingSpanRes"}');
         let newData = [];
-        //console.info(data.spans.value);
+        let data = ret.__return;
         for(let i=0;i<data.spans.value.length;i++) {
             let item = data.spans.value[i];
             newData.push(item.value);
         }
-        ret.__return = _.flatten(newData);
-        ctx.makeResObj(200,'', ret.__return);
+        ctx.makeResObj(200,'', _.flatten(newData));
     }catch(e) {
         logger.error('[CallChainController.getTraceList]:', e, ctx);
         ctx.makeErrResObj();

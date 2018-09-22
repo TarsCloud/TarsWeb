@@ -18,6 +18,7 @@ const logger = require('../../logger');
 const fs = require('fs-extra');
 const util = require('../../tools/util');
 const path = require('path');
+const panshiConf = require('../../../config/webConf').panshiConf;
 
 let fileNames = fs.readdirSync(path.join(__dirname, '../../../locale'));
 let locale = {};
@@ -30,5 +31,9 @@ const LocaleController = {};
 LocaleController.getLocale = async(ctx) => {
     ctx.makeResObj(200, '', locale || {});
 };
+
+LocaleController.getPanshiUrl = (ctx)=> {
+    ctx.makeResObj(200, '', panshiConf.panshiDomain);
+}
 
 module.exports = LocaleController;

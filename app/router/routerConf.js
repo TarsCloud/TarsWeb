@@ -142,6 +142,9 @@ const apiConf = [
     //语言包接口
     ['get', '/get_locale', LocaleController.getLocale],
 
+    //获取磐石系统URL
+    ['get', '/get_panshi_url', LocaleController.getPanshiUrl],
+
     //接口测试
     ['post', '/interface_test', InfTestController.interfaceDebug],
     ['post', '/upload_tars_file', InfTestController.uploadTarsFile],
