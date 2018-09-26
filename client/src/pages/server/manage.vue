@@ -239,7 +239,7 @@
           <let-input
             size="small"
             v-model="servantDetailModal.model.thread_num"
-            :placeholder="$t('serverList.servant.obj')"
+            :placeholder="$t('serverList.servant.thread')"
             required
             pattern="^[1-9][0-9]*$"
             :pattern-tip="$t('serverList.servant.thread')"
