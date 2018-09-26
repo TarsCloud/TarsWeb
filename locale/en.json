@@ -559,7 +559,8 @@
       "dlgTitle": "Upload Tars File"
     },
     "dlg": {
-      "selectLabel" : "modules/interfaces/functions"
+      "selectLabel" : "modules/interfaces/functions",
+      "deleteMsg" : "Are you sure delete this file?"
     }
   }
 }

@@ -62,6 +62,7 @@ const apiConf = [
     //Adapter接口
     ['get', '/adapter_conf', AdapterController.getAdapterConfById, {id: 'notEmpty'}],
     ['get', '/adapter_conf_list', AdapterController.getAdapterConfListByServerConfId, {id: 'notEmpty'}],
+    ['get', '/all_adapter_conf_list', AdapterController.getAllAdapterConfList, {application: 'notEmpty', server_name: 'notEmpty'}],
     ['post', '/add_adapter_conf', AdapterController.addAdapterConf, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty'},
      ['application', 'server_name', 'node_name', 'thread_num', 'endpoint', 'max_connections', 'allow_ip', 'servant', 'queuecap', 'queuetimeout', 'protocol', 'handlegroup']
     ],

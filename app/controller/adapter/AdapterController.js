@@ -65,7 +65,7 @@ AdapterController.getAdapterConfListByServerConfId = async(ctx) => {
     try {
         let rst = await AdapterService.getAdapterConfList(id);
         if(!_.isEmpty(rst)){
-            let adapter = rst[0].dataValues;
+            let adapter = rst[0];
             if (!await AuthService.hasDevAuth(adapter.application, adapter.server_name, ctx.uid)) {
                 ctx.makeNotAuthResObj();
                 return;
@@ -74,6 +74,21 @@ AdapterController.getAdapterConfListByServerConfId = async(ctx) => {
         ctx.makeResObj(200, '', util.viewFilter(rst, adapterConfStruct));
     } catch (e) {
         logger.error('[getAdapterConfListByServerConfId]', e, ctx);
+        ctx.makeErrResObj();
+    }
+};
+
+AdapterController.getAllAdapterConfList = async(ctx) => {
+    let {application, server_name} = ctx.paramsObj;
+    try {
+        if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+            ctx.makeNotAuthResObj();
+        }else{
+            let rst = await AdapterService.getAllAdapterConfList(application, server_name);
+            ctx.makeResObj(200, '', util.viewFilter(rst, {servant:'',id:''}));
+        }
+    } catch (e) {
+        logger.error('[getAllAdapterConfList]', e, ctx);
         ctx.makeErrResObj();
     }
 };

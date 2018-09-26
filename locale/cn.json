@@ -559,7 +559,8 @@
       "dlgTitle" : "上传Tars文件"
     },
     "dlg": {
-      "selectLabel" : "模块/接口/方法"
+      "selectLabel" : "模块/接口/方法",
+      "deleteMsg" : "您确定要删除吗？"
     }
   }
 }

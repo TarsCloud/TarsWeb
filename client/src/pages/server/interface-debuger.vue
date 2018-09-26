@@ -12,8 +12,7 @@
             <let-table-column :title="$t('operate.operates')" width="260px">
             <template slot-scope="scope">
                 <let-table-operation @click="showDebuger(scope.row)">{{$t('inf.list.debug')}}</let-table-operation>  
-                <let-table-operation @click="changeConfig(scope.row, 'configList')">{{$t('operate.update')}}</let-table-operation>
-                <let-table-operation @click="deleteConfig(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
+                <let-table-operation @click="deleteTarsFile(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
             </template>
             </let-table-column>
         </let-table>
@@ -25,8 +24,10 @@
                     <let-cascader :data="contextData" required  size="small" @change="getParams"></let-cascader>
                     
                 </let-form-item>
-                <let-form-item :label="$t('serverList.servant.objName')">
-                    <let-input v-model="objName" required></let-input>
+                <let-form-item :label="$t('serverList.servant.objName')" v-if="objList.length">
+                    <let-select v-model="objName">
+                        <let-option v-for="item in objList" :value="item.servant" :key="item.id"></let-option>
+                    </let-select>
                 </let-form-item>
                 <let-form-item>
                     <let-button theme="primary" @click="doDebug">{{$t('inf.list.debug')}}</let-button>
@@ -116,6 +117,7 @@ export default {
             selectedFileName: '',
             selectedMethods: [],
             objName : '',
+            objList : [],
             selectedId : '' 
         }
     },
@@ -175,6 +177,27 @@ export default {
             this.selectedId = row.f_id;
             this.objName = null;
             this.getContextData(row.f_id);
+            this.getObjList();
+        },
+        deleteTarsFile(id) {
+            this.$confirm(this.$t('inf.dlg.deleteMsg'), this.$t('common.alert')).then(()=>{
+                
+            }).catch(()=>{
+
+            });
+        },
+        getObjList() {
+            this.$ajax.getJSON('/server/api/all_adapter_conf_list', {
+                application : this.serverData.application,
+                server_name : this.serverData.server_name,
+            }).then(data => {
+                if(data.length){
+                    this.objList = data;
+                    this.objName = data[0].servant;
+                }
+            }).catch(err=>{
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
         },
         getContextData(id) {
             this.$ajax.getJSON('/server/api/get_contexts', {
