@@ -269,6 +269,9 @@ export default {
         show: false,
         model: null,
       },
+
+      //set信息
+      treeNodeId:''
     };
   },
   computed: {
@@ -296,6 +299,11 @@ export default {
         this.getNodeConfigList();
       });
     },
+    '$parent.treeidRoute': function(treeid){
+      console.info('treeid:',treeid);
+      this.serverData = this.$parent.serverData;
+      this.getConfigList(this.serverData);
+    }
   },
   methods: {
     // 配置列表
@@ -610,13 +618,21 @@ export default {
       this.nodeRefFileListModal.model = null;
       this.refFileModal.id = id;
       this.getNodeRefFileList(id);
+    },
+    getparentTreeId(callback) {
+      let treeid = this.$parent.treeNodeId;
+      let count = 0;
+      let f=setInterval(()=>{
+        if(!treeid && count<5) {
+          treeid = this.$parent.treeNodeId;
+          count ++;
+        }else{
+          clearInterval(f);
+          f=null;
+          callback(treeid);
+        }
+      },500)
     }
-  },
-  created() {
-    this.serverData = this.$parent.getServerData();
-  },
-  mounted() {
-    this.getConfigList(this.serverData);
   },
 };
 </script>

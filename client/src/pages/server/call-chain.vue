@@ -23,8 +23,8 @@
                             <let-table-operation @click="showDetail(scope.row.traceId)">{{scope.row.traceId}}</let-table-operation>
                         </template>
                     </let-table-column>
-                    <let-table-column title="产生时间" :sortable=true prop="timestampFormat"></let-table-column>
-                    <let-table-column title="耗时(ms)" :sortable=true prop="duration"></let-table-column>
+                    <let-table-column title="产生时间" prop="timestampFormat"></let-table-column>
+                    <let-table-column title="耗时(ms)" prop="duration"></let-table-column>
                 </let-table>
             </div>
         </div>
@@ -33,7 +33,7 @@
         <div v-if="showDuration">
             <h3><a href="javascript:;" class="link" @click="showDuration=false">调用链查询</a> / {{selectedTraceId}}</h3>
             <let-table stripe :data="traceDetailList" :empty-msg="$t('common.nodata')">
-                <let-table-column title="应用名">
+                <let-table-column title="应用/服务">
                     <template slot-scope="scope">
                         <span :style="'margin-left:'+(scope.row.layer)*30+'px'">{{scope.row.serviceName}}</span>
                     </template>
@@ -42,8 +42,7 @@
                 <let-table-column title="类型" prop="type"></let-table-column>    
                 <let-table-column title="状态" prop="status">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.status==1">OK</span>
-                        <span v-else>ERROR</span>
+                        <span >{{statusMap[scope.row.status]}}</span>
                     </template>
                 </let-table-column>
                 <let-table-column title="服务/方法" prop="name"></let-table-column>
@@ -76,7 +75,12 @@ export default {
             showDuration:null,
             selectedTraceId : null,
             traceDetailList : null,
-            colorArr : ['#33cc59', '#fa5a4b', '#ffaa33', '#9a41d9', '#d99cee', '#71d2e7', '#e7d271']
+            colorArr : ['#33cc59', '#fa5a4b', '#ffaa33', '#9a41d9', '#d99cee', '#71d2e7', '#e7d271'],
+            statusMap : {
+                '0' : '成功',
+                '-1': '超时',
+                '-2': '失败'
+            }
         }
     },
     methods: {
@@ -135,18 +139,28 @@ export default {
             data = data.reverse();
             this.showDuration = true;
             let parentTimestamp = 0;
+            let parentDuration = 0;
             let scale = 1;
             data.forEach(item => {
                 if(item.layer==0) {
                     parentTimestamp = item.timestamp;
+                    parentDuration = item.duration;
                     item.marginLeft = 0;
                     if(item.duration > 300) {
                         scale = (300 / item.duration).toFixed(2);
                     }
                 }
                 item.scale = Number(scale);
-                item.marginLeft = (item.timestamp - parentTimestamp)*item.scale;
-                item.color = this.colorArr[item.layer];
+                item.marginLeft = (item.timestamp - parentTimestamp)*item.scale >300 ? 300 : (item.timestamp - parentTimestamp)*item.scale;
+                if(item.duration/parentDuration > 0.75 && item.duration/parentDuration<1){
+                    item.color = '#fa5a4b'; //danger
+                }else if(item.duration/parentDuration > 0.5 && item.duration/parentDuration <0.75){
+                    item.color = '#ffaa33'; //warning
+                }else if(item.duration/parentDuration > 0.25 && item.duration/parentDuration<0.5){
+                    item.color = '#9a41d9' //normal
+                }else{
+                    item.color = '#33cc59'; //good
+                }
             });
             this.traceDetailList = data;
         }

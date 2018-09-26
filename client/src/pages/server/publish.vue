@@ -1,6 +1,6 @@
 <template>
   <div class="page_server_publish">
-    <iframe :src="panshiDomain+'/open-page.html#/op/task_list'" frameborder="0" width="100%" height="1200px"></iframe>
+    <iframe :src="panshiDomain+'/open-page.html#/op/task_new/'+this.serverData.server_name" frameborder="0" width="100%" height="1200px"></iframe>
   </div>
 </template>
 

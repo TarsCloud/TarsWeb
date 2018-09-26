@@ -1,10 +1,10 @@
 <template>
     <div class="call-chain-analyze">
         <let-form inline ref="topoForm">
-            <let-form-item :size=3>
+            <let-form-item  itemWidth="45%">
                 <input class="custom_input" v-model="serviceName" @keyup.enter="showTopo" placeholder="输入服务名"/>
             </let-form-item>
-            <let-form-item :size=3>
+            <let-form-item  itemWidth="40%">
                 <let-date-range-picker required :start.sync="start_time" :end.sync="end_time"></let-date-range-picker>
                 <let-button theme="primary" @click="showTopo">查询</let-button>
             </let-form-item>
@@ -52,15 +52,6 @@ export default {
     name : 'CallChainAnalyze',
     data() {
         return {
-            // 当前页面信息
-            serverData: {
-                level: 5,
-                application: '',
-                server_name: '',
-                set_name: '',
-                set_area: '',
-                set_group: '',
-            },
             serviceName : '',
             start_time: '',
             end_time: '',
@@ -160,12 +151,13 @@ export default {
         }
     },
     created() {
-        this.serverData = this.$parent.getServerData();
+        console.info(this.$route.params);
         const treeArr = this.$route.params.treeid.split('.');
         let serviceName = treeArr.map(item => {
             return item.substr(1);
         });
         this.serviceName = serviceName.join('.');
+        console.info(this.serviceName);
         this.setDate();
     },
     mounted() {

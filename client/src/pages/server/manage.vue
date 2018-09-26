@@ -1,8 +1,5 @@
 <template>
   <div class="page_server_manage">
-    <let-select style="width: 300px" v-if="setInfo.length">
-      <let-option v-for="item in setInfo" :value="item" :key="item">{{item}}</let-option>
-    </let-select>
     <!-- 服务列表 -->
     <let-table v-if="serverList" :data="serverList" :title="$t('serverList.title.serverList')" :empty-msg="$t('common.nodata')" ref="serverListLoading">
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
@@ -368,6 +365,7 @@ export default {
       // 服务列表
       treeNodeId: '',
       setInfo: '',
+      selectedSetInfo:'',
       serverList: [],
 
       // 操作历史列表
@@ -429,6 +427,14 @@ export default {
       }
       return this.checkServantEndpoint(this.servantDetailModal.model.endpoint);
     },
+  },
+  watch: {
+    '$parent.treeidRoute': function(treeid){
+      console.info('treeid:',treeid);
+      this.treeNodeId = this.$parent.treeNodeId;
+      this.getServerList();
+      this.getServerNotifyList(1);
+    }
   },
   methods: {
     // 获取服务列表
@@ -863,36 +869,25 @@ export default {
       }
       return timeStr;
     },
-
-    getSetInfo(application, server_name) {
-      return this.$ajax.getJSON('/server/api/cascade_select_server', {
-        level: 3,
-        application,
-        server_name
-      }).then(data=>{
-        // 重新构建treeId
-        let treeArr = ['1'+this.serverData.application];
-        if(data.length) {
-          this.setInfo = data;
-          let setArr = data[0].split('.');
-          setArr = setArr.map((n,index) => (index+2).toString() + n);
-          treeArr = treeArr.concat(setArr);
+    getparentTreeId(callback) {
+      let treeid = this.$parent.treeNodeId;
+      let count = 0;
+      let f=setInterval(()=>{
+        if(treeid=='' && count<5) {
+          treeid = this.$parent.treeNodeId;
+          count ++;
+        }else{
+          clearInterval(f);
+          f=null;
+          callback(treeid);
         }
-        treeArr.push('5'+this.serverData.server_name);
-        this.treeNodeId = treeArr.join('.');
-      });
+      },500)
     }
   },
   created() {
     this.serverData = this.$parent.getServerData();
   },
-  mounted() {
-    this.getSetInfo(this.serverData.application, this.serverData.server_name).then(()=>{
-      console.info(this.treeNodeId);
-      this.getServerList();
-      this.getServerNotifyList(1);
-    })
-  },
+  
 };
 </script>
 

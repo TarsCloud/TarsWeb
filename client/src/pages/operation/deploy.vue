@@ -7,17 +7,17 @@
       itemWidth="480px"
       @submit.native.prevent="save"
     >
-      <let-form-item :label="$t('deployService.form.primaryBusiness')" required>
+      <let-form-item :label="$t('deployService.form.primaryBusiness')" required itemWidth="45%">
         <let-select v-model="model.primaryBusiness" size="small" required @change="choosePrimaryBusiness">
           <let-option v-for="item in primaryBusiness" :value="item.ServiceId" :key="item.ServiceId">{{item.ServiceName}}</let-option>
         </let-select>
       </let-form-item>
-      <let-form-item :label="$t('deployService.form.secondaryBusiness')" required>
+      <let-form-item :label="$t('deployService.form.secondaryBusiness')" required itemWidth="45%">
         <let-select v-model="model.secondaryBusiness" size="small" required @change="chooseSecondaryBusiness">
           <let-option v-for="item in secondaryBusiness" :value="item.SystemId" :key="item.SystemId">{{item.SystemName}}</let-option>
         </let-select>
       </let-form-item>
-      <let-form-item :label="$t('deployService.form.thirdlyBusiness')" required>
+      <let-form-item :label="$t('deployService.form.thirdlyBusiness')" required itemWidth="45%">
         <let-select v-model="model.thirdlyBusiness" size="small" required @change="chooseThirdlyBusiness">
           <let-option v-for="item in thirdlyBusiness" :value="item.SubSystemId" :key="item.SubSystemId">{{item.SubSystemName}}</let-option>
         </let-select>
@@ -34,7 +34,7 @@
       <!--:pattern-tip="$t('deployService.form.placeholder')"-->
       <!--&gt;</let-input>-->
       <!--</let-form-item>-->
-      <let-form-item :label="$t('deployService.form.serviceName')" required>
+      <let-form-item :label="$t('deployService.form.serviceName')" required itemWidth="45%">
         <let-input
           size="small"
           v-model="model.server_name"
@@ -45,7 +45,7 @@
           :pattern-tip="$t('deployService.form.serviceFormatTips')"
         ></let-input>
       </let-form-item>
-      <let-form-item :label="$t('deployService.form.serviceType')" required>
+      <let-form-item :label="$t('deployService.form.serviceType')" required itemWidth="45%">
         <let-select
           size="small"
           v-model="model.server_type"
@@ -55,7 +55,7 @@
           <let-option v-for="d in types" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
-      <let-form-item :label="$t('deployService.form.template')" required>
+      <let-form-item :label="$t('deployService.form.template')" required itemWidth="45%">
         <let-select
           size="small"
           v-model="model.template_name"
@@ -65,7 +65,7 @@
           <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
-      <let-form-item :label="$t('user.op')" v-show="enableAuth">
+      <let-form-item :label="$t('user.op')" v-show="enableAuth" itemWidth="45%">
         <let-input
           size="small"
           v-model="model.operator"
@@ -73,7 +73,7 @@
         ></let-input>
       </let-form-item>
 
-      <let-form-item :label="$t('user.dev')" v-show="enableAuth">
+      <let-form-item :label="$t('user.dev')" v-show="enableAuth" itemWidth="45%">
         <let-input
           size="small"
           v-model="model.developer"
@@ -149,7 +149,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" width="100px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -164,7 +164,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxQueue')" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.maxQueue')" width="80px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -179,7 +179,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.timeout')" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.timeout')" width="80px">
           <template slot-scope="props">
             <let-input
               size="small"
@@ -189,7 +189,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('operate.operates')" width="120px">
+        <let-table-column :title="$t('operate.operates')" width="60px">
           <template slot-scope="props">
             <let-table-operation @click="addAdapter(props.row)">{{$t('operate.add')}}</let-table-operation>
             <let-table-operation

@@ -95,57 +95,26 @@ export default new Router({
       path: '*',
       redirect: '/server',
     },
-    {
-      path: '/server2',
-      name: 'Server',
-      component: Server,
-      children: [
-        {
-          path: ':treeid/manage',
-          component: ServerManage,
-        },
-        {
-          path: ':treeid/publish',
-          component: ServerPublish,
-        },
-        {
-          path: ':treeid/config',
-          component: ServerConfig,
-        },
-        {
-          path: ':treeid/server-monitor',
-          component: ServerServerMonitor,
-        },
-        {
-          path: ':treeid/property-monitor',
-          component: ServerPropertyMonitor,
-        },
-        {
-          path: ':treeid/interface-debuger',
-          component: InterfaceDebuger,
-        },
-        {
-          path: ':treeid/call-chain',
-          component: CallChain,
-        },
-        {
-          path: ':treeid/call-chain-analyze',
-          component: CallChainAnalyze,
-        },
-        {
-          path: ':treeid/task',
-          component: Task,
-        },
-        {
-          path: ':treeid/user-manage',
-          component: userManage,
-        },
-      ],
-    },
+    
     {
       path: '/pages/call-chain',
       name: 'CallChain',
       component: CallChain
+    },
+    {
+      path: '/pages/deploy',
+      name: 'Deploy',
+      component: OperationDeploy
+    },
+    {
+      path: '/pages/templates',
+      name: 'Templates',
+      component: OperationTemplates
+    },
+    {
+      path: '/pages/call-chain-analyze/:treeid',
+      name: 'CallChainAnalyze',
+      component: CallChainAnalyze
     }
   ],
   scrollBehavior (to, from, savedPosition) {

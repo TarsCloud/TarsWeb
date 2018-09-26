@@ -8,7 +8,7 @@
     <div class="left-tree" v-if="treeData && !treeData.length  && isTest">
       <p class="loading">{{$t('common.noService')}}</p>
     </div>
-    <div class="left-tree" v-if="!treeData  && isTest" ref="treeLoading">
+    <div class="left-tree" v-if="!treeData && isTest" ref="treeLoading">
       <div class="loading" v-if="treeData === false">
         <p>{{treeErrMsg}}</p>
         <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
@@ -24,6 +24,9 @@
     </div>
 
     <div class="right-view" v-else>
+      <let-select style="width: 300px;margin-top:10px" v-if="setInfo.length>1" v-model="selectedSetInfo" @change="refreshLists()">
+      <let-option v-for="item in setInfo" :value="item?item:'no_set'" :key="item">{{item ? item : 'no_set'}}</let-option>
+    </let-select>
       <let-tabs @click="clickTab" :activekey="$route.path">
         <let-tab-pane :tabkey="base + '/manage'" :tab="$t('header.tab.tab1')"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/publish'" :tab="$t('index.rightView.tab.patch')"
@@ -44,7 +47,7 @@
           <let-tab-pane :tabkey="base + '/call-chain-analyze'" :tab="$t('index.rightView.tab.callChainAnalyze')"
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/task'" :tab="$t('index.rightView.tab.task')"
-          v-if="serverData.level === 5"></let-tab-pane>    
+          v-if="serverData.level === 9"></let-tab-pane>    
         <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')"
                       v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
       </let-tabs>
@@ -72,9 +75,13 @@ export default {
         set_area: '',
         set_group: '',
       },
+      isTest:false,
       browserAlert : '',
       panshiUrl : '',
-      isTest : false
+      treeidRoute : '',
+      setInfo:[],
+      selectedSetInfo:'',
+      treeNodeId:''
     };
   },
   computed: {
@@ -84,9 +91,15 @@ export default {
   },
   watch: {
     '$route.params.treeid': function (treeid) { // eslint-disable-line
-      this.serverData = this.getServerData();
       this.isTrueTreeLevel();
     },
+    '$route': function(to, from) {
+      this.serverData = this.getServerData();
+      this.getSetInfo(this.serverData.application, this.serverData.server_name);
+    },
+    selectedSetInfo: function(set) {
+      this.refreshLists();
+    }
   },
   methods: {
     selectTree(nodeKey) {
@@ -133,11 +146,11 @@ export default {
         });
       });
     },
-    getServerData() {
-      if (!this.$route.params.treeid) {
+    getServerData(treeId) {
+      if (!this.$route.params.treeid && !treeId) {
         return {};
       }
-      const treeArr = this.$route.params.treeid.split('.');
+      const treeArr =treeId || this.$route.params.treeid.split('.');
       const serverData = {
         level: 5,
         application: '',
@@ -206,18 +219,52 @@ export default {
         this.$router.replace('manage');
       }
     },
-
-    
+    getSetInfo(application, server_name) {
+      return this.$ajax.getJSON('/server/api/cascade_select_server', {
+        level: 3,
+        application,
+        server_name
+      }).then(data=>{
+        let treeArr = ['1'+application];
+        this.setInfo = data;
+        this.selectedSetInfo = data[0] || 'no_set';
+        if(data.length) {
+          if(this.selectedSetInfo !='no_set') {
+            let setArr = this.selectedSetInfo.split('.');
+            setArr = setArr.map((n,index) => (index+2).toString() +n);
+            treeArr = treeArr.concat(setArr);
+          }
+        }
+        treeArr.push('5'+server_name);
+        this.treeNodeId = treeArr.join('.');
+        this.treeidRoute = treeArr.join('.')+this.$route.fullPath;
+      });
+    },
+    refreshLists() {
+      let serverData = this.getServerData();
+      let treeArr = ['1'+serverData.application];
+      if(this.selectedSetInfo !='no_set') {
+        let setArr = this.selectedSetInfo.split('.');
+        setArr = setArr.map((n,index) => (index+2).toString() +n);
+        treeArr = treeArr.concat(setArr);
+      }
+      treeArr.push('5'+serverData.server_name);
+      this.treeNodeId = treeArr.join('.');
+      this.serverData = this.getServerData(treeArr);
+      this.treeidRoute = treeArr.join('.')+this.$route.fullPath;
+    }
   },
-  
   mounted() {
     this.getTreeData();
     this.$ajax.getJSON('/server/api/is_enable_auth').then((data) => {
       this.enableAuth = data.enableAuth || false;
      }).catch((err)=>{
 
-      });
-    this.isTest = /server2/.test(this.$route.fullPath);
+    });
+  },
+  created() {
+    this.serverData = this.getServerData();
+    this.getSetInfo(this.serverData.application, this.serverData.server_name);
   },
 };
 </script>
@@ -227,7 +274,6 @@ export default {
 
 .page_server {
   padding-bottom: var(--gap-big);
-  padding-top: var(--gap-big);
   display: flex;
   .mid{margin:0 auto}
 
@@ -301,7 +347,7 @@ export default {
   /*右侧窗口*/
   .right-view {
     flex: 1;
-    margin-left: 40px;
+    margin-left: -20px;
     margin-top: -10px;
 
     .empty {
