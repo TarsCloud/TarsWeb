@@ -74,8 +74,10 @@ ExpandService.releaseNodeTfae = async (params) => {
     logger.info('expandOption start', expandOption);
     let expandRst = await ExpandService.expand(expandOption);
     logger.info('expandOption end', expandRst);
-    let {server_conf} = expandRst;
-    if (server_conf.length === 0) throw new Error('节点都已存在，扩容失败');
+    let {server_conf, existServers} = expandRst;
+    if (server_conf.length === 0 && existServers.length === 0) throw new Error('不存在需要扩容发布的节点');
+
+    let publishServers = server_conf.concat(existServers);
 
     // 删除 0.0.0.0 节点
     await ServerDao.destroy({
@@ -91,7 +93,7 @@ ExpandService.releaseNodeTfae = async (params) => {
         items: [],
         task_no: task_no
     };
-    taskOption.items = server_conf.map(server => {
+    taskOption.items = publishServers.map(server => {
         return {
             "server_id": server.id,
             "command": "patch_tars",
@@ -121,6 +123,7 @@ ExpandService.preview = async (params) => {
     params.expand_nodes.forEach((expandNode) => {
         if(!expandNode.ip) return false;
         sourceAdapter.forEach((adapter) => {
+            adapter = adapter.dataValues;
             let preServer = {
                 application: application,
                 server_name: serverName,
@@ -153,6 +156,7 @@ ExpandService.expand = async (params) => {
         let sourceAdapters = await AdapterDao.getAdapterConf(application, serverName, params.node_name) || [];
         sourceServer = sourceServer && sourceServer.dataValues || {};
         let addServers = [];
+        let existServers = [];
         let addServersMap = {};
         let addNodeNameMap = {};
         for (var i = 0; i < params.expand_preview_servers.length; i++) {
@@ -217,6 +221,8 @@ ExpandService.expand = async (params) => {
                             await ConfigDao.insertConfigFile(newConfig, transaction);
                         }
                     }
+                } else {
+                    existServers.push(serverConf.dataValues);
                 }
             }
 
@@ -230,6 +236,7 @@ ExpandService.expand = async (params) => {
                 let sourceAdapter = ((application, serverName, nodeName, objName) => {
                     let sourceAdapter = {};
                     _.each(sourceAdapters, (adapter) => {
+                        adapter = adapter.dataValues;
                         if (adapter.application == application && adapter.server_name == serverName && adapter.node_name == nodeName && adapter.servant.substring(adapter.servant.lastIndexOf('.') + 1) == objName) {
                             sourceAdapter = adapter;
                             return false;
@@ -264,7 +271,7 @@ ExpandService.expand = async (params) => {
         }
         await transaction.commit();
 
-        let rst = {server_conf: addServers, tars_node_rst: []};
+        let rst = {server_conf: addServers, tars_node_rst: [], existServers: existServers};
         let addNodeName = _.keys(addNodeNameMap);
         if (resourceConf.enableAutoInstall && addNodeName && addNodeName.length) {
             rst.tars_node_rst = await ResourceService.installTarsNodes(addNodeName);
