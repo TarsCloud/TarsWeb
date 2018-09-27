@@ -123,7 +123,6 @@ ExpandService.preview = async (params) => {
     params.expand_nodes.forEach((expandNode) => {
         if(!expandNode.ip) return false;
         sourceAdapter.forEach((adapter) => {
-            adapter = adapter.dataValues;
             let preServer = {
                 application: application,
                 server_name: serverName,
@@ -236,7 +235,7 @@ ExpandService.expand = async (params) => {
                 let sourceAdapter = ((application, serverName, nodeName, objName) => {
                     let sourceAdapter = {};
                     _.each(sourceAdapters, (adapter) => {
-                        adapter = adapter.dataValues;
+                        adapter = adapter;
                         if (adapter.application == application && adapter.server_name == serverName && adapter.node_name == nodeName && adapter.servant.substring(adapter.servant.lastIndexOf('.') + 1) == objName) {
                             sourceAdapter = adapter;
                             return false;

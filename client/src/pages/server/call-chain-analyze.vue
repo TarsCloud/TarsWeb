@@ -2,7 +2,9 @@
     <div class="call-chain-analyze">
         <let-form inline ref="topoForm">
             <let-form-item  itemWidth="45%">
-                <input class="custom_input" v-model="serviceName" @keyup.enter="showTopo" placeholder="输入服务名"/>
+                <let-select v-model="serviceName">
+                    <let-option v-for="item in objList" :value="item.servant" :key="item.id"></let-option>
+                </let-select>
             </let-form-item>
             <let-form-item  itemWidth="40%">
                 <let-date-range-picker required :start.sync="start_time" :end.sync="end_time"></let-date-range-picker>
@@ -53,6 +55,7 @@ export default {
     data() {
         return {
             serviceName : '',
+            objList : [],
             start_time: '',
             end_time: '',
             chainShapesList: []
@@ -129,6 +132,19 @@ export default {
                 });
             }
         },
+        getObjList(application, server_name) {
+            this.$ajax.getJSON('/server/api/all_adapter_conf_list', {
+                application : application,
+                server_name : server_name,
+            }).then(data => {
+                if(data.length){
+                    this.objList = data;
+                    this.serviceName = data[0].servant;
+                }
+            }).catch(err=>{
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
+        },
         setDate() {
             let day = new Date().getDate();
             let oldDay = new Date().setDate(day-1);
@@ -151,13 +167,14 @@ export default {
         }
     },
     created() {
-        console.info(this.$route.params);
         const treeArr = this.$route.params.treeid.split('.');
         let serviceName = treeArr.map(item => {
-            return item.substr(1);
+            if(item[0]=='1' || item[0]=='5'){
+                return item.substr(1);
+            }
         });
         this.serviceName = serviceName.join('.');
-        console.info(this.serviceName);
+        this.getObjList(serviceName[0], serviceName[1]);
         this.setDate();
     },
     mounted() {

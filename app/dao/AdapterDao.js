@@ -36,8 +36,7 @@ AdapterDao.getAdapterConf = async(application, serverName, nodeName) => {
     }
     return await tAdapterConf.findAll({
         raw:true,
-        where: whereObj,
-        group: 'servant'
+        where: whereObj
     });
 };
 

@@ -113,4 +113,8 @@ InfTestService.getParams = async (id, moduleName, interfaceName, functionName) =
     return params;
 }
 
+InfTestService.deleteTarsFile = async (id) => {
+    return await InfTestDao.deleteTarsFile(id);
+}
+
  module.exports = InfTestService;

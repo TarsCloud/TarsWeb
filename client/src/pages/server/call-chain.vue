@@ -67,7 +67,7 @@ export default {
         return {
             serverData:[],
             content:'',
-            searchType: 'traceId',
+            searchType: 'service',
             start_time: '',
             end_time: '',
             traceidList: [],
@@ -75,6 +75,7 @@ export default {
             showDuration:null,
             selectedTraceId : null,
             traceDetailList : null,
+            objList: [],
             colorArr : ['#33cc59', '#fa5a4b', '#ffaa33', '#9a41d9', '#d99cee', '#71d2e7', '#e7d271'],
             statusMap : {
                 '0' : '成功',
@@ -87,18 +88,12 @@ export default {
         getTracesList() {
             const loading = this.$Loading.show();
             this.traceidList = [];
-            let initContent = [];
-            Object.entries(this.serverData).forEach(n => {
-                if(n[0]!='level' && n[1]!=''){
-                    initContent.push(n[1]);
-                }
-            })
             if(!this.content){
                 this.searchType = 'service';
             }
             this.$ajax.getJSON('/server/api/get_trace_list',{
                 type : this.searchType,
-                content : this.content || initContent.join('.'),
+                content : this.content,
                 start_time : this.start_time,
                 end_time : this.end_time
             }).then(data => {
@@ -132,6 +127,20 @@ export default {
             function fn (n) {
                 return (n < 10 ? '0' + n : n).toString();
             }
+        },
+        getObjList(application, server_name) {
+            this.$ajax.getJSON('/server/api/all_adapter_conf_list', {
+                application : application,
+                server_name : server_name,
+            }).then(data => {
+                if(data.length){
+                    this.objList = data;
+                    this.content = data[0].servant;
+                    this.getTracesList();
+                }
+            }).catch(err=>{
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
         },
         showDetail(id) {
             this.selectedTraceId = id;
@@ -169,7 +178,8 @@ export default {
         this.serverData = this.$parent.getServerData();
     },
     mounted() {
-        this.getTracesList();
+        this.getObjList(this.serverData.application, this.serverData.server_name);
+        
         this.setDate();
     }
 }
