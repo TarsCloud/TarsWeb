@@ -555,7 +555,8 @@
       "selectLabel" : "模块/接口/方法",
       "inParam" : "方法入参",
       "outParam" : "方法出参",
-      "tarsFile" : "tars文件"
+      "tarsFile" : "tars文件",
+      "deleteMsg" : "您确定要删除吗？"
     }
   }
 }
