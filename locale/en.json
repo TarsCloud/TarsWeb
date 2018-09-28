@@ -555,7 +555,8 @@
       "selectLabel" : "modules/interfaces/functions",
       "inParam" : "in params",
       "outParam" : "out params",
-      "tarsFile" : "tars file"
+      "tarsFile" : "tars file",
+      "deleteMsg" : "are you sure to delete this file?"
     }
   }
 }
