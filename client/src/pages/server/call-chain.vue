@@ -145,7 +145,13 @@ export default {
         showDetail(id) {
             this.selectedTraceId = id;
             let data = this.traceidList.filter(item => item.traceId == id);
-            data = data.reverse();
+            data = data.sort((a, b)=>{
+                if(a.layer - b.layer == 0) {
+                    return a.timestamp - b.timestamp;
+                }else {
+                    return a.layer - b.layer;
+                }
+            });
             this.showDuration = true;
             let parentTimestamp = 0;
             let parentDuration = 0;
@@ -161,7 +167,7 @@ export default {
                 }
                 item.scale = Number(scale);
                 item.marginLeft = (item.timestamp - parentTimestamp)*item.scale >300 ? 300 : (item.timestamp - parentTimestamp)*item.scale;
-                if(item.duration/parentDuration > 0.75 && item.duration/parentDuration<1){
+                if(item.duration/parentDuration > 0.75 && item.duration/parentDuration<=1){
                     item.color = '#fa5a4b'; //danger
                 }else if(item.duration/parentDuration > 0.5 && item.duration/parentDuration <0.75){
                     item.color = '#ffaa33'; //warning
