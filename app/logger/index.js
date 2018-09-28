@@ -1,4 +1,4 @@
-/**
+/** *
  * Tencent is pleased to support the open source community by making Tars available.
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
@@ -88,7 +88,7 @@ var sqlLogger = new winston.Logger({
     ]
 });
 
-/**
+/** *
  * 按照用户配置的日志保留时间自动清理过期日志文件
  */
 let logFileKeepDays = webConf.logFileKeepDays || '7';  //默认保留7天日志

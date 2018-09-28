@@ -1,4 +1,4 @@
-/**
+/** *
  * Tencent is pleased to support the open source community by making Tars available.
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
@@ -15,18 +15,18 @@
  */
  
 module.exports = {
-    /**
+    /** *
      * 是否启用自定义编译发布模块
      */
     enable : false,
 
-    /**
+    /** *
      * getVersionList           获取代码版本列表的接口
      * TARS平台会提供的参数
      * @param   {String}    application         应用名
      * @param   {String}    server_name         服务名
      */
-    /**
+    /** *
      * 接口需要返回的参数
      * @param   {String}    path                SVN/GIT路径
      * @param   {String}    version             SVN/GIT版本
@@ -35,7 +35,7 @@ module.exports = {
     getVersionList : '',
 
 
-    /**
+    /** *
      * compileUrl     自定义的编译接口
      * TARS平台会提供的参数
      * @param   {String}    application         应用名
@@ -45,19 +45,19 @@ module.exports = {
      * @param   {String}    version             代码版本号
      * @param   {String}    comment             备注
      */
-    /**
+    /** *
      * 接口需要返回的参数
      * @param   {String}    data         编译任务ID      {data : 1529570349924}
      */
     compileUrl : '',
 
 
-    /**
+    /** *
      * compileTaskUrl     获取编译进度的接口
      * TARS平台会提供的参数
      * @param   {String}    taskNo              从编译接口获取的任务ID
      */
-    /**
+    /** *
      * 接口需要返回的参数
      * @param   {String}    application         应用名
      * @param   {String}    server_name         服务名

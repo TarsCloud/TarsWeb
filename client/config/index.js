@@ -34,7 +34,7 @@ module.exports = {
     // in the browser.
     showEslintErrorsInOverlay: false,
 
-    /**
+    /** *
      * Source Maps
      */
 
@@ -58,7 +58,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
 
-    /**
+    /** *
      * Source Maps
      */
 

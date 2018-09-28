@@ -1,4 +1,4 @@
-/**
+/** *
  * Tencent is pleased to support the open source community by making Tars available.
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
@@ -28,7 +28,7 @@ const resourceConf = require('../../../config/resourceConf');
 const Util = require('../../tools/util');
 const logger = require('../../logger');
 
-/**
+/** *
  * 批量检测并安装Tars node
  * @param ips
  * @returns {Array}
@@ -57,7 +57,7 @@ ResourceService.installTarsNodes = async(ips) => {
     return rst;
 };
 
-/**
+/** *
  * 安装单个Tars node
  * @param ip
  * @returns {*}
@@ -90,7 +90,7 @@ ResourceService.doInstallTarsNode = async(ip) => {
     }
 };
 
-/**
+/** *
  * 批量卸载Tars node
  * @param ips
  * @returns {Array.<*>}
@@ -127,7 +127,7 @@ ResourceService.uninstallTarsNode = async(ips) => {
     return rst.concat(uninstallRst);
 };
 
-/**
+/** *
  * 卸载单个机器上的Tarsnode
  * @param ip
  * @returns {*}
@@ -154,7 +154,7 @@ ResourceService.doUninstallTarsNode = async(ip) => {
     }
 };
 
-/**
+/** *
  * 获取ssh配置并执行ssh任务
  * @param ip
  * @param shell
@@ -181,7 +181,7 @@ ResourceService.doSSHTask = async(ip, shell)=> {
     }
 };
 
-/**
+/** *
  * 获取ssh配置
  * @param ip
  * @returns {*}
@@ -221,7 +221,7 @@ ResourceService.getSSHConfig = async(ip) => {
     }
 };
 
-/**
+/** *
  * 远程登录机器并执行ssh
  * @param ip
  * @param shell

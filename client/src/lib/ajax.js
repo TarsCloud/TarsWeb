@@ -6,7 +6,7 @@ const assign = Object.assign;
 
 /* eslint-disable no-param-reassign */
 
-/**
+/** *
  * encode 字符串
  * @param {String} value 需要转码的字符串
  * @return {String} 转码结果
@@ -19,7 +19,7 @@ function encode(value) {
     .replace(/[!'()~*]/g, ch => `%${ch.charCodeAt().toString(16).slice(-2).toUpperCase()}`); // eslint-disable-line max-len, newline-per-chained-call
 }
 
-/**
+/** *
  * 将请求对象换成字符串
  * @param {Object} obj 请求对象
  * @return {String} 请求字符串
@@ -44,7 +44,7 @@ function encodeObj(obj) {
   return params.join('&').replace(/%20/g, '+');
 }
 
-/**
+/** *
  * 将请求对象换成 "x-www-form-urlencoded" 类型字符串
  * @param {Object} obj 请求对象
  * @return {String} 请求字符串
@@ -178,7 +178,7 @@ const StatusHandler = new FunctionUtil();
 // 全局结果处理方法
 const ResultHandler = new FunctionUtil(() => true);
 
-/**
+/** *
  * 将请求 url 与 params 转换成带 queryString 的 url
  * @param {String} url 基本 url
  * @param {Object} params 请求参数
@@ -198,7 +198,7 @@ function parseUrl(url, params) {
   return url + queryString;
 }
 
-/**
+/** *
  * 检查请求的返回状态码
  * @param {Object} response 服务器响应结果
  * @return {Object} 正常的响应结果
@@ -214,7 +214,7 @@ function checkStatus(response) {
   throw new Error(response.statusText);
 }
 
-/**
+/** *
  * 将服务器相应结果转换为json
  * @param {Object} response 服务器响应结果
  * @return {Promise} JSON数据
@@ -226,7 +226,7 @@ function parseJSON(response) {
   });
 }
 
-/**
+/** *
  * 请求成功回调函数
  * @param {Object} result 服务器返回结果
  * @return {Object|Promise} 正常的数据 或者 失败的Promise
@@ -238,7 +238,7 @@ function successCallback(result) {
 
   return Promise.reject(result);
 }
-/**
+/** *
  * 请求失败回调函数
  * @param {Object} ex 失败信息
  * @return {Promise} 失败的Promise
@@ -247,7 +247,7 @@ function errorCallback(ex) {
   return Promise.reject(ex);
 }
 
-/**
+/** *
  * Get请求
  * @param {String} url 路径
  * @param {Object} params 参数
@@ -264,7 +264,7 @@ function get(url, params) {
     .catch(errorCallback);
 }
 
-/**
+/** *
  * Get请求（返回JSON）
  * @param {String} url 路径
  * @param {Object} params 参数
@@ -282,7 +282,7 @@ function getJSON(url, params) {
     .catch(errorCallback);
 }
 
-/**
+/** *
  * Post请求
  * @param {String} url 路径
  * @param {Object} params 参数
@@ -304,7 +304,7 @@ function post(url, params) {
     .catch(errorCallback);
 }
 
-/**
+/** *
  * Post请求（发送formdata）
  * @param {String} url 路径
  * @param {FormData} formdata 参数
@@ -330,7 +330,7 @@ function postForm(url, formdata) {
     .catch(errorCallback);
 }
 
-/**
+/** *
  * Post请求（发送json）
  * @param {String} url 路径
  * @param {Object} params 参数
@@ -353,7 +353,7 @@ function postJSON(url, params) {
     .catch(errorCallback);
 }
 
-/**
+/** *
  * Put请求
  * @param {String} url 路径
  * @param {Object} params 参数
@@ -375,7 +375,7 @@ function put(url, params) {
     .catch(errorCallback);
 }
 
-/**
+/** *
  * Delete请求
  * @param {String} url 路径
  * @param {Object} params 参数
@@ -394,7 +394,7 @@ function remove(url, params) {
     .catch(errorCallback);
 }
 
-/**
+/** *
  * 导出文件
  * @param {String} url 路径
  * @param {Object} params 参数
