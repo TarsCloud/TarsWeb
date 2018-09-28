@@ -42,5 +42,13 @@ module.exports = {
             },
             attributes : ['context']
         })
+    },
+
+    deleteTarsFile : async(id) => {
+        return tTarsFiles.destroy({
+            where : {
+                f_id : id
+            }
+        });
     }
 };

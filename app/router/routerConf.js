@@ -142,7 +142,8 @@ const apiConf = [
     ['post', '/upload_tars_file', InfTestController.uploadTarsFile],
     ['get', '/get_file_list', InfTestController.getFileList, {application: 'notEmpty', server_name: 'notEmpty'}],
     ['get', '/get_contexts', InfTestController.getContexts, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty'}],
-    ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}]
+    ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}],
+    ['get', '/delete_tars_file', InfTestController.deleteTarsFile, {id: 'notEmpty'}],
 ];
 
 module.exports = {pageConf, apiConf};
