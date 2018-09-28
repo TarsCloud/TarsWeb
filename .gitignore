@@ -1,11 +1,3 @@
-node_modules/
-.gitignore
-log/
 .idea/
-config/webConf.js
-.eslintrc.js
-test/
-tars-node-web.zip
-files/tarsnode.tar.gz
-/uploads
-/.vscode
+node_modules/
+log/

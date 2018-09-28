@@ -65,7 +65,7 @@
               <let-form-item :label="$t('serverList.servant.comment')">
                 <let-input v-model="publishModal.model.update_text"></let-input>
               </let-form-item>
-              <let-form-item :label="$t('pub.dlg.patchType')">
+              <let-form-item :label="$t('pub.dlg.patchType')" v-if="patchRadioData.length>1">
                 <let-radio-group type="button" size="small" @change="patchChange" v-model="patchType" :data="patchRadioData">
                 </let-radio-group>
               </let-form-item>

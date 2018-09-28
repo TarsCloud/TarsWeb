@@ -128,4 +128,14 @@ InfTestController.getParams = async (ctx) => {
     }
 }
 
+InfTestController.deleteTarsFile = async (ctx) => {
+    try {
+        let {id} = ctx.paramsObj;
+        ctx.makeResObj(200, '', await InfTestService.deleteTarsFile(id));
+    }catch(e) {
+        logger.error('[deleteTarsFile]:', e, ctx);
+        ctx.makeErrResObj();
+    }
+}
+
 module.exports = InfTestController;

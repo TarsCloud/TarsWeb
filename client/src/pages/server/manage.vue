@@ -251,7 +251,7 @@
             ref="endpoint"
             size="small"
             v-model="servantDetailModal.model.endpoint"
-            placeholder="tcp -h 172.27.205.40 -t 60000 -p 12000"
+            placeholder="tcp -h 127.0.0.1 -t 60000 -p 12000"
             required
             :extraTip="isEndpointValid ? '' :
               $t('serverList.servant.error')"
@@ -379,6 +379,7 @@ export default {
         'tars_php',
         'tars_nodejs',
         'not_tars',
+        'tars_go'
       ],
       configModal: {
         show: false,

@@ -65,9 +65,9 @@ preMidware.forEach((midware)=>{
 });
 
 //登录校验
-let loginConf = require('./config/loginConf.js');
-loginConf.ignore =loginConf.ignore.concat(['/static', '/tarsnode.tar.gz', '/favicon.ico', '/pages/server/api/get_locale']);
-app.use(loginMidware(loginConf));
+// let loginConf = require('./config/loginConf.js');
+// loginConf.ignore =loginConf.ignore.concat(['/static', '/tarsnode.tar.gz', '/favicon.ico', '/pages/server/api/get_locale']);
+// app.use(loginMidware(loginConf));
 
 //激活router
 app.use(pageRouter.routes(), pageRouter.allowedMethods());

@@ -195,7 +195,7 @@
       }
     },
     "dlg": {
-      "standby": "是否备机",
+      "isBackup": "是否备机",
       "placeholder": {
         "english": "全英文，全小写",
         "num": "数字或者*号",
@@ -552,7 +552,10 @@
       "dlgTitle" : "上传Tars文件"
     },
     "dlg": {
-      "selectLabel" : "模块/接口/方法"
+      "selectLabel" : "模块/接口/方法",
+      "inParam" : "方法入参",
+      "outParam" : "方法出参",
+      "tarsFile" : "tars文件"
     }
   }
 }

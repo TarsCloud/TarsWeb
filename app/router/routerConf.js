@@ -50,6 +50,7 @@ const apiConf = [
         ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path', 'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile']],
 
     ['get', '/tree', TreeController.listTree],
+    ['get', '/send_command', ServerController.sendCommand, {server_ids: 'notEmpty', command: 'notEmpty'}],
 
     //notify日志接口
     ['get', '/server_notify_list', NotifyController.getServerNotifyList, {tree_node_id: 'notEmpty'}],
@@ -141,7 +142,8 @@ const apiConf = [
     ['post', '/upload_tars_file', InfTestController.uploadTarsFile],
     ['get', '/get_file_list', InfTestController.getFileList, {application: 'notEmpty', server_name: 'notEmpty'}],
     ['get', '/get_contexts', InfTestController.getContexts, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty'}],
-    ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}]
+    ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}],
+    ['get', '/delete_tars_file', InfTestController.deleteTarsFile, {id: 'notEmpty'}],
 ];
 
 module.exports = {pageConf, apiConf};
