@@ -1,12 +1,7 @@
 <template>
     <div class="call-chain-analyze">
         <let-form inline ref="topoForm">
-            <let-form-item  itemWidth="45%">
-                <let-select v-model="serviceName">
-                    <let-option v-for="item in objList" :value="item.servant" :key="item.id"></let-option>
-                </let-select>
-            </let-form-item>
-            <let-form-item  itemWidth="40%">
+            <let-form-item itemWidth="100%">
                 <let-date-range-picker required :start.sync="start_time" :end.sync="end_time"></let-date-range-picker>
                 <let-button theme="primary" @click="showTopo">查询</let-button>
             </let-form-item>
@@ -93,7 +88,7 @@ export default {
                         layout : {
                             hierarchical:{
                                 enabled : true,
-                                direction : 'LR',
+                                direction : 'RL',
                                 levelSeparation : 300
                             },
                         },
@@ -132,19 +127,6 @@ export default {
                 });
             }
         },
-        getObjList(application, server_name) {
-            this.$ajax.getJSON('/server/api/all_adapter_conf_list', {
-                application : application,
-                server_name : server_name,
-            }).then(data => {
-                if(data.length){
-                    this.objList = data;
-                    this.serviceName = data[0].servant;
-                }
-            }).catch(err=>{
-                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-            });
-        },
         setDate() {
             let day = new Date().getDate();
             let oldDay = new Date().setDate(day-1);
@@ -174,7 +156,6 @@ export default {
             }
         });
         this.serviceName = serviceName.join('.');
-        this.getObjList(serviceName[0], serviceName[1]);
         this.setDate();
     },
     mounted() {

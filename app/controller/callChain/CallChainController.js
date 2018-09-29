@@ -47,18 +47,6 @@ CallChainController.getTraceList = async (ctx) => {
     }
 }
 
-CallChainController.getTraceDetailList = async (ctx) => {
-    let id = ctx.paramsObj.id;
-    try{
-        let ret = await CallChainService.getTraceDetailList(id);
-        //let ret = [{"trace_id":"100009384577","span_id":"1","name":"http://xxx/getUser","status":1,"timestamp":1536313740349,"duration":100,"server_endpoint_ipv4":"10.1.1.1","server_endpoint_service_name":"POC.proxy","type":"HTTP","layer":1,"parent_id":"null"},{"trace_id":"100009384577","span_id":"2","name":"TransObj@trans","status":1,"timestamp":1536313740349,"duration":25,"server_endpoint_ipv4":"10.17.2.2","server_endpoint_service_name":"POC.TransServer","type":"TARS","layer":2,"parent_id":"1"},{"trace_id":"100009384577","span_id":"3","name":"AccesObj@getAcces","status":1,"timestamp":1536313740374,"duration":50,"server_endpoint_ipv4":"10.17.2.3","server_endpoint_service_name":"POC.Acces","type":"TARS","layer":3,"parent_id":"2"},{"trace_id":"100009384577","span_id":"4","name":"Mybatis@getAcces","status":1,"timestamp":1536313740424,"duration":25,"server_endpoint_ipv4":"10.17.2.3","server_endpoint_service_name":"POC.Acces","type":"DB","layer":4,"parent_id":"3"}];
-        ctx.makeResObj(200, '', ret);
-    }catch(e) {
-        logger.error('[CallChainController.getTraceDetailList]:', e, ctx);
-        ctx.makeErrResObj();
-    }
-}
-
 CallChainController.getTopo = async(ctx) => {
     let {serviceName, start, end} = ctx.paramsObj;
     try{
