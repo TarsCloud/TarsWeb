@@ -15,7 +15,6 @@
  */
  
 const logger = require('../../logger');
-const CallChainService = require('../../service/callChain/CallChainService');
 const AdminService = require('../../service/admin/AdminService');
 const util = require('../../tools/util');
 const _ = require('lodash');

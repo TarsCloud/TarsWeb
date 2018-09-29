@@ -28,7 +28,7 @@ const logger = require('../../logger');
 
 let Db = {};
 
-let databases = ['db_tars','db_tars_web','db_tracing'];
+let databases = ['db_tars','db_tars_web'];
 
 databases.forEach((database)=>{
     let {
@@ -67,6 +67,7 @@ databases.forEach((database)=>{
     (async function () {
         try {
             let connect = await sequelize.authenticate();
+            sequelize.query('set sql_mode = ""');
             console.log('Mysql connection has been established successfully.');
 
         } catch (err) {
