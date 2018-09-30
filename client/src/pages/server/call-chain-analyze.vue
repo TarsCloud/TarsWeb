@@ -20,11 +20,11 @@
                     <tr v-for="sub in item.value">
                         <td><span :style="{marginLeft:sub.layer*30+'px'}">{{sub.serviceName}}</span></td>
                         <td>{{sub.method}}</td>
-                        <td>{{sub.QPS}}</td>
-                        <td>{{sub.peakQPS}}</td>
-                        <td>{{sub.callPercent}}</td>
-                        <td>{{sub.avgCost}}</td>
-                        <td>{{sub.failRate}}</td>
+                        <td>{{sub.QPS}}/s</td>
+                        <td>{{sub.peakQPS}}/s</td>
+                        <td>{{sub.callPercent}}%</td>
+                        <td>{{sub.avgCost}}ms</td>
+                        <td>{{sub.failRate}}%</td>
                     </tr>
                 </tbody>
             </table>
@@ -167,6 +167,8 @@ export default {
                 item.value.map(n => {
                     n.QPS = n.QPS.toFixed(2);
                     n.peakQPS = n.peakQPS.toFixed(2);
+                    n.callPercent = n.callPercent.toFixed(2);
+                    n.failRate = (n.failRate*100).toFixed(2);
                 })
             });
             return this.chainShapesList;

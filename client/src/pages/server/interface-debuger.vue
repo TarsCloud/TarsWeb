@@ -220,6 +220,21 @@ export default {
                 this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
             });
         },
+        parseFields(fields) {
+            let tmp = {};
+            for(let item in fields) {
+                let defaultVal = fields[item].defaultValue;
+                if(!defaultVal) {
+                    if(fields[item].type === 'string') {
+                        defaultVal = '';
+                    }else if(fields[item].type === 'long' || fields[item].type === 'int') {
+                        defaultVal = 0;
+                    }
+                }
+                tmp[item] = defaultVal;
+            }
+            return tmp;
+        },
         getParams(value) {
             this.selectedMethods = value;
             if(value.length ==3) {
@@ -234,18 +249,29 @@ export default {
                 }).then(data => {
                     loading.hide();
                     let obj = {};
-                    data.forEach(item => {
-                        if(!item.out) {
-                            if(item.type === 'string') {
-                                obj[item.name] = '';
-                            }else if(item.type === 'array') {
-                                obj[item.name] = [];
-                            }else{
-                                obj[item.name] = '';
+                    this.$ajax.getJSON('/server/api/get_structs', {id: this.selectedId, module_name: value[0]}).then(contextData=>{
+                        data.forEach(item => {
+                            if(!item.out) {
+                                if(item.type === 'string') {
+                                    obj[item.name] = '';
+                                }else if(item.type === 'array') {
+                                    obj[item.name] = [];
+                                }else if(typeof item.type === 'object'){
+                                    if(item.type.vector) {
+                                        obj[item.name] = [];
+                                    }else if(item.type.isEnum){
+                                        let tmp = {};
+                                        obj[item.name] = {};
+                                    }else if(item.type.isStruct){
+                                        obj[item.name] = this.parseFields(contextData.structs[item.type.name].fields);
+                                    }
+                                }else{
+                                    obj[item.name] = '';
+                                }
                             }
-                        }
+                        });
+                        this.inParam = JSON.stringify(obj);
                     });
-                    this.inParam = JSON.stringify(obj);
                 }).catch((err) => {
                     loading.hide();
                     this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

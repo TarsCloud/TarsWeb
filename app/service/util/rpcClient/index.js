@@ -86,7 +86,7 @@ module.exports = {
     configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
     configFStruct : RPCStruct(ConfigFProxy, 'tars'),
 
-    queryTracingPrx : RPCClientPrx(QueryTracingProxy, 'tars', 'QueryController', 'tars.tarsTracingQuery.QueryObj'),
+    queryTracingPrx : RPCClientPrx(QueryTracingProxy, 'tars', 'QueryController', 'tars.tarsTracingQuery.QueryObj@tcp -h 127.0.0.1 -p 14002 -t 10000'),
     queryTracingStruct : RPCStruct(QueryTracingProxy, 'tars'),
 
     client: client

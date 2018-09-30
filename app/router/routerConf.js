@@ -153,6 +153,7 @@ const apiConf = [
     ['get', '/get_contexts', InfTestController.getContexts, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty'}],
     ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}],
     ['get', '/delete_tars_file', InfTestController.deleteTarsFile, {id: 'notEmpty'}],
+    ['get', '/get_structs', InfTestController.getStructs, {id: 'notEmpty', module_name: 'notEmpty'}],
 
     ['get', '/get_trace_list', CallChainController.getTraceList],
     ['get', '/get_trace_detail', CallChainController.getTraceDetailList, {id: 'notEmpty'}],

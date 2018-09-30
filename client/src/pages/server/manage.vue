@@ -441,7 +441,7 @@ export default {
     getServerList() {
       const loading = this.$refs.serverListLoading.$loading.show();
 
-      this.$ajax.getJSON('/server/api/server_list', {
+      return this.$ajax.getJSON('/server/api/server_list', {
         tree_node_id: this.treeNodeId,
       }).then((data) => {
         loading.hide();
@@ -588,7 +588,12 @@ export default {
         return this.checkTaskStatus(res).then((info) => {
           loading.hide();
           // 任务成功重新拉取列表
-          this.getServerList();
+          this.getServerList().then(()=>{
+            // 服务下线时同步数据到磐石
+            if(this.serverList.length) {
+              console.info('#TODO 这里调用磐石接口同步服务数据');
+            }
+          })
           this.$tip.success({
             title: tipObj.success,
             message: info,
@@ -843,16 +848,16 @@ export default {
         this.undeployServer(server.id);
       // 设置日志等级
       } else if (model.selected === 'setloglevel') {
-        this.sendCommand(server.id, `${server.application}.setloglevel ${model.setloglevel}`);
+        this.sendCommand(server.id, `tars.setloglevel ${model.setloglevel}`);
       // push 日志文件
       } else if (model.selected === 'loadconfig' && this.$refs.moreCmdForm.validate()) {
-        this.sendCommand(server.id, `${server.application}.loadconfig ${model.loadconfig}`);
+        this.sendCommand(server.id, `tars.loadconfig ${model.loadconfig}`);
       // 发送自定义命令
       } else if (model.selected === 'command' && this.$refs.moreCmdForm.validate()) {
         this.sendCommand(server.id, model.command);
       // 查看服务链接
       } else if (model.selected === 'connection') {
-        this.sendCommand(server.id, `${server.application}.connection`, true);
+        this.sendCommand(server.id, `tars.connection`, true);
       }
     },
     closeMoreCmdModal() {
