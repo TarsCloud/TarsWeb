@@ -834,16 +834,16 @@ export default {
         this.undeployServer(server.id);
       // 设置日志等级
       } else if (model.selected === 'setloglevel') {
-        this.sendCommand(server.id, `${server.application}.setloglevel ${model.setloglevel}`);
+        this.sendCommand(server.id, `tars.setloglevel ${model.setloglevel}`);
       // push 日志文件
       } else if (model.selected === 'loadconfig' && this.$refs.moreCmdForm.validate()) {
-        this.sendCommand(server.id, `${server.application}.loadconfig ${model.loadconfig}`);
+        this.sendCommand(server.id, `tars.loadconfig ${model.loadconfig}`);
       // 发送自定义命令
       } else if (model.selected === 'command' && this.$refs.moreCmdForm.validate()) {
         this.sendCommand(server.id, model.command);
       // 查看服务链接
       } else if (model.selected === 'connection') {
-        this.sendCommand(server.id, `${server.application}.connection`, true);
+        this.sendCommand(server.id, `tars.connection`, true);
       }
     },
     closeMoreCmdModal() {
