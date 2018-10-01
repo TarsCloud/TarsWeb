@@ -753,6 +753,7 @@ export default {
           });
         // 修改
         } else {
+          this.servantDetailModal.model.servant=this.servantDetailModal.model.application+'.'+this.servantDetailModal.model.server_name+'.'+this.servantDetailModal.model.obj_name;
           this.$ajax.postJSON('/server/api/update_adapter_conf', this.servantDetailModal.model).then((res) => {
             loading.hide();
             this.servantModal.model = this.servantModal.model.map((item) => {
