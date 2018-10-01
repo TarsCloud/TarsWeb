@@ -50,8 +50,8 @@ const serverConfStruct = {
 DeployServerController.deployServer = async(ctx) => {
     var params = ctx.paramsObj;
     try {
-        let panshiRegister = await PanshiService.register(params);
         let rst = await ServerService.addServerConf(params);
+        let panshiRegister = await PanshiService.register(params);
         rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct);
         ctx.makeResObj(200, '', rst);
     } catch (e) {

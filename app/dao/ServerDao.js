@@ -52,12 +52,14 @@ ServerDao.getServerConf = async(params) => {
     params.application != undefined && (where.application = params.application);
     params.serverName != undefined && (where.server_name = params.serverName);
     params.nodeName != undefined && (where.node_name = params.nodeName);
-    if (params.enableSet && params.enableSet == 'Y') {
-        params.setName && (where.set_name = params.setName);
-        params.setArea && (where.set_area = params.setArea);
-        params.setGroup && (where.set_group = params.setGroup);
-    }else{
-        where.enable_set = 'N'
+    if(params.enableSet) {
+        if(params.enableSet == 'Y') {
+            params.setName && (where.set_name = params.setName);
+            params.setArea && (where.set_area = params.setArea);
+            params.setGroup && (where.set_group = params.setGroup);
+        }else {
+            where.enable_set = 'N'
+        }
     }
     let options = {
         where: where,

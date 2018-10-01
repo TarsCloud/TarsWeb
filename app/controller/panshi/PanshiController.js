@@ -16,12 +16,16 @@
 
 const logger = require('../../logger');
 const PanshiService = require('../../service/panshi/PanshiService');
+const ServerService = require('../../service/server/ServerService');
+const AuthService = require('../../service/auth/AuthService');
+const TaskService = require('../../service/task/TaskService');
+const util = require('../../tools/util'); 
 
-const PageController = {
+const PanshiController = {
 
 };
 
-PageController.queryService = async (ctx) => {
+PanshiController.queryService = async (ctx) => {
     try {
         let data = await PanshiService.queryService();
         ctx.makeResObj(200, '', data);
@@ -31,7 +35,7 @@ PageController.queryService = async (ctx) => {
     }
 };
 
-PageController.querySystem = async (ctx) => {
+PanshiController.querySystem = async (ctx) => {
     let ServiceId = ctx.paramsObj.ServiceId;
     try {
         let data = await PanshiService.querySystem({ServiceId});
@@ -42,7 +46,7 @@ PageController.querySystem = async (ctx) => {
     }
 };
 
-PageController.queryModule = async (ctx) => {
+PanshiController.queryModule = async (ctx) => {
     let SystemId = ctx.paramsObj.SystemId;
     try {
         let data = await PanshiService.queryModule({SystemId});
@@ -53,9 +57,46 @@ PageController.queryModule = async (ctx) => {
     }
 };
 
+PanshiController.batchUndeployTars = async (ctx) => {
+    let {application, server_name, serial=true} = ctx.paramsObj;
+    try {
+        if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+            ctx.makeNotAuthResObj();
+        } else {
+            let ret = await ServerService.getServerConfList4Tree({application, serverName:server_name});
+            let serverId = ret.map(item => item.id);
+            let data = {
+                status: 0,  // 0找不到服务，1下线成功，2部分成功，3失败
+                total: 0,
+                failCount: 0,
+                succCount: 0,
+                failMsg: '',
+                succMsg: ''
+            };
+            if(!serverId.length){
+                ctx.makeResObj(200, '', data);
+            }else {
+                let task_no = util.getUUID().toString();
+                let items = [];
+                serverId.forEach(id => {
+                    items.push({
+                        server_id : id,
+                        command : 'undeploy_tars',
+                        parameters : ''
+                    });
+                })
+                let ret = await TaskService.addTask({serial, items, task_no});
+                console.info(ret);
+                ctx.makeResObj(200, '', ret);
+            }
+        }
+    } catch (err) {
+        logger.error('[batchUndeployTars]', err, ctx);
+        ctx.makeResObj(500, err.message)
+    }
+}
 
 
 
 
-
-module.exports = PageController;
+module.exports = PanshiController;

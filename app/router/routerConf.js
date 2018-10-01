@@ -34,6 +34,7 @@ const LocaleController = require('../controller/locale/LocaleController');
 const InfTestController = require('../controller/infTest/InfTestController');
 const CallChainController = require('../controller/callChain/CallChainController');
 const PanshiController = require('../controller/panshi/PanshiController');
+const TokenController = require('../controller/token/tokenController');
 
 const pageConf = [
     //首页
@@ -158,6 +159,12 @@ const apiConf = [
     ['get', '/get_trace_list', CallChainController.getTraceList],
     ['get', '/get_trace_detail', CallChainController.getTraceDetailList, {id: 'notEmpty'}],
     ['get', '/get_topo', CallChainController.getTopo, {serviceName:'notEmpty', start:'notEmpty', end:'notEmpty'}], 
+
+    //授权管理
+    ['get', '/get_tokens', TokenController.getTokens, {application: 'notEmpty', server_name: 'notEmpty',}],
+
+    //与磐石系统联动而封装的接口
+    ['get', '/batch_undeploy_tars', PanshiController.batchUndeployTars, {application: 'notEmpty', server_name: 'notEmpty',}],
 ];
 
 module.exports = {pageConf, apiConf};
