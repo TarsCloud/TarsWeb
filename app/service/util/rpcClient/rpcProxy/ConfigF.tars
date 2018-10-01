@@ -1,4 +1,4 @@
-/** *
+/**
  * Tencent is pleased to support the open source community by making Tars available.
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
@@ -48,12 +48,12 @@ module tars
         5 optional string containername="";
     };
     
-    /** *
+    /**
      * config obj to load server's system config.
      **/
     interface Config
     {
-        /** *
+        /**
          * 读取配置文件列表
          * @param app, app name
          * @param server, server name
@@ -61,7 +61,7 @@ module tars
          **/
         int ListConfig(string app, string server, out vector<string> vf);
 
-        /** *
+        /**
          * 读取配置文件
          * @param app, app name
          * @param server, server name
@@ -70,7 +70,7 @@ module tars
          **/
         int loadConfig(string app, string server, string filename, out string config);
 
-        /** *
+        /**
          * 根据host读取文件
          * @param appSerever, app.server
          * @param filename, config file name
@@ -79,7 +79,7 @@ module tars
          **/
         int loadConfigByHost(string appServerName, string filename, string host, out string config);
 
-        /** *
+        /**
          * 检查配置文件是否服务TC_Config格式
          * @param appSerever, app.server
          * @param filename, config file name
@@ -89,7 +89,7 @@ module tars
          **/
         int checkConfig(string appServerName, string filename, string host, out string result);
 
-        /** *
+        /**
          * 读取服务所在节点的配置文件列表
          * 
          * @param configInfo, ConfigInfo 配置文件信息，如果没有set分组信息，请设置setdivision为空""
@@ -98,7 +98,7 @@ module tars
          **/
         int ListConfigByInfo(ConfigInfo configInfo, out vector<string> vf);
 
-        /** *
+        /**
          * 读取配置文件
          * @param configInfo, ConfigInfo 配置文件信息
          * @param config, 配置文件内容
@@ -106,7 +106,7 @@ module tars
          **/
         int loadConfigByInfo(ConfigInfo configInfo, out string config);
 
-        /** *
+        /**
          * 检查配置文件是否符合TC_Config格式
          * @param configInfo, ConfigInfo 配置文件信息
          * @param result, 提示

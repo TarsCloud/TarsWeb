@@ -69,56 +69,56 @@ TARS 通过配置文件/config/authConf.js 与 第三方权限系统，或默认
 ```
 {
 
-    /** *
+    /**
      * 是否启用自定义权限模块
      */
     enableAuth: false,
 
     
-    /** *
+    /**
      * addAuthUrl             新增权限url
      * TARS平台会提供的参数
      * @param   {Array}    auth         权限对象列表，格式如 {"flag": "app-server", "role": "operator", "uid": "username"}
      */
-    /** *
+    /**
      * 接口需要返回的参数
      * @param   {Number}    ret_code            返回码，200表示成功
      * @param   {String}    err_msg             错误信息
      */
     addAuthUrl: 'http://localhost/api/auth/addAuth',
 
-    /** *
+    /**
      * deleteAuthUrl             删除权限url，用于服务下线时候删除权限
      * TARS平台会提供的参数
      * @param   {String}    flag                权限单位，在tars中为“应用-服务”
      */
-    /** *
+    /**
      * 接口需要返回的参数
      * @param   {Number}    ret_code            返回码，200表示成功
      * @param   {String}    err_msg             错误信息
      */
     deleteAuthUrl: 'http://localhost/api/auth/deleteAuth',
 
-    /** *
+    /**
      * updateAuthUrl             更新权限url
      * TARS平台会提供的参数
      * @param   {String}    flag                权限单位，在tars中为“应用-服务”
      * @param   {String}    role                角色，在tars中为operator或developer
      * @param   {String}    uid                 用户名
      */
-    /** *
+    /**
      * 接口需要返回的参数
      * @param   {Number}    ret_code            返回码，200表示成功
      * @param   {String}    err_msg             错误信息
      */
     updateAuthUrl: 'http://localhost/api/auth/updateAuth',
 
-    /** *
+    /**
      * getAuthListByUidUrl             通过用户名获取权限列表url
      * TARS平台会提供的参数
      * @param   {String}    uid                 用户名
      */
-    /** *
+    /**
      * 接口需要返回的参数
      * @param   {Array}     data                服务列表，内容如下
      *        @param   {String}    flag                权限单位，在tars中为“应用-服务”
@@ -129,12 +129,12 @@ TARS 通过配置文件/config/authConf.js 与 第三方权限系统，或默认
      */
     getAuthListByUidUrl: 'http://localhost/api/auth/getAuthListByUid',
 
-    /** *
+    /**
      * getAuthListByFlagUrl             通过应用名+服务名获取用户列表url
      * TARS平台会提供的参数
      * @param   {String}    flag                 应用+服务名
      */
-    /** *
+    /**
      * 接口需要返回的参数
      * @param   {Array}     data                服务列表，内容如下
      *        @param   {String}    flag                权限单位，在tars中为“应用-服务”
@@ -145,14 +145,14 @@ TARS 通过配置文件/config/authConf.js 与 第三方权限系统，或默认
      */
     getAuthListByFlagUrl: 'http://localhost/api/auth/getAuthListByFlag',
 
-    /** *
+    /**
      * getAuthUrl             判断用户是否有相应角色的操作权限
      * TARS平台会提供的参数
      * @param   {String}    flag                权限单位，在tars中为“应用-服务”
      * @param   {String}    role                角色，在tars中为operator或developer
      * @param   {String}    uid                 用户名
      */
-    /** *
+    /**
      * 接口需要返回的参数
      * @param   {Object}     data                服务列表，内容如下
      *        @param   {Boolean}    result              是否有操作权限

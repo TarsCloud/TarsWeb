@@ -1,4 +1,4 @@
-/** *
+/**
  * Tencent is pleased to support the open source community by making Tars available.
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
@@ -24,7 +24,7 @@ ConfigService.getUnusedApplicationConfigFile = async(application, configId) => {
     return await ConfigDao.getUnusedApplicationConfigFile(application, configId);
 };
 
-/** *
+/**
  * 新增配置文件
  * @param params
  * # level 服务层级
@@ -74,7 +74,7 @@ ConfigService.addConfigFile = async(params) => {
     return Promise.resolve(configFile);
 };
 
-/** *
+/**
  * 删除配置文件
  * @param id
  * @return {Promise.<*>}
@@ -104,7 +104,7 @@ ConfigService.deleteConfigFile = async(id) => {
     return Promise.resolve(id);
 };
 
-/** *
+/**
  * 更新配置文件
  * @param params
  * # id
@@ -135,7 +135,7 @@ ConfigService.updateConfigFile = async(params) => {
     return await ConfigDao.getConfigFile(params.id);
 };
 
-/** *
+/**
  * 获取配置文件
  * @param id
  * @return {*}
@@ -144,7 +144,7 @@ ConfigService.getConfigFile = async(id) => {
     return await ConfigDao.getConfigFile(id);
 };
 
-/** *
+/**
  * 通过配置文件id或引用记录Id获取应用服务set信息
  * @param id
  * @param type
@@ -180,7 +180,7 @@ ConfigService.getConfigFileList = async(ids) => {
     return await ConfigDao.getConfigFileList(ids);
 };
 
-/** *
+/**
  * 获取服务配置
  * # application
  * # server_name
@@ -193,7 +193,7 @@ ConfigService.getServerConfigFile = async(params) => {
     return await ConfigDao.getServerConfigFile(params);
 };
 
-/** *
+/**
  * 获取应用配置
  * @param application
  * @return {*}
@@ -202,7 +202,7 @@ ConfigService.getApplicationConfigFile = async(application) => {
     return await ConfigDao.getApplicationConfigFile(application);
 };
 
-/** *
+/**
  * 获取SET配置
  * @param params
  * # application
@@ -217,7 +217,7 @@ ConfigService.getSetConfigFile = async(params)=> {
     return await ConfigDao.getSetConfigFile(params);
 };
 
-/** *
+/**
  * 获取节点配置
  * @param params
  * # application
@@ -280,7 +280,7 @@ ConfigService.getNodeConfigFile = async(params) => {
     return await nodeConfigFile;
 };
 
-/** *
+/**
  * 获取配置文件修改记录
  * @param id
  * @return {*}
@@ -289,7 +289,7 @@ ConfigService.getConfigFileHistory = async(id) => {
     return  await ConfigDao.getConfigFileHistory(id);
 };
 
-/** *
+/**
  * 获取配置文件修改记录列表
  * @param config_id
  * @param curPage
@@ -300,7 +300,7 @@ ConfigService.getConfigFileHistoryList = async(config_id, curPage, pageSize) => 
     return await ConfigDao.getConfigFileHistoryList(config_id, curPage, pageSize);
 };
 
-/** *
+/**
  * 添加引用文件
  * @param config_id
  * @param reference_id
@@ -310,7 +310,7 @@ ConfigService.addConfigRef = async(config_id, reference_id) => {
     return await ConfigDao.insertConfigRef(config_id,reference_id);
 };
 
-/** *
+/**
  * 删除引用文件
  * @param id
  * @return {id}
@@ -324,7 +324,7 @@ ConfigService.deleteConfigRef = async(id) => {
     });
 };
 
-/** *
+/**
  * 引用列表
  * @param config_id
  * @return {*[]}
@@ -354,7 +354,7 @@ ConfigService.getConfigRefByConfigId = async(config_id) => {
     return refList;
 };
 
-/** *
+/**
  * 将Date对象变成字符串
  * @param {Object} date
  * @param {String} format

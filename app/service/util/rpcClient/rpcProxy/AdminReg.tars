@@ -1,4 +1,4 @@
-/** *
+/**
  * Tencent is pleased to support the open source community by making Tars available.
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
@@ -57,7 +57,7 @@ module tars
         EM_TARS_SUCCESS = 0
     };
 
-    /** *
+    /**
     * 管理平台过来的命令
     */
     enum EMTaskCommand
@@ -68,7 +68,7 @@ module tars
         EM_CMD_UNINSTALL
     };
 
-    /** *
+    /**
     * 任务的状态
     */
     enum EMTaskStatus {
@@ -80,7 +80,7 @@ module tars
         EM_T_PARIAL,
     };
 
-    /** *
+    /**
     * 任务ITEM状态
     */
     enum EMTaskItemStatus
@@ -92,7 +92,7 @@ module tars
         EM_I_CANCEL,
     };
 
-    /** *
+    /**
     * 异步任务
     */
     struct TaskItemReq
@@ -108,7 +108,7 @@ module tars
         8 optional map<string, string> parameters;
     };
 
-    /** *
+    /**
     * 任务当前的信息
     */
     struct TaskItemRsp
@@ -121,7 +121,7 @@ module tars
         5 optional string  executeLog;
     };
 
-    /** *
+    /**
     * Task任务
     */
     struct TaskReq
@@ -141,13 +141,13 @@ module tars
         4 optional EMTaskStatus status; 
     };
 
-    /** *
+    /**
      * admin 管理接口
      */
     interface AdminReg
     {
 
-        /** *
+        /**
          * 请求异步任务
          *
          * @param taskList : 任务列表
@@ -157,7 +157,7 @@ module tars
          */
         int addTaskReq(TaskReq taskReq);
 
-        /** *
+        /**
          * 获取任务状态
          *
          * @param taskIdList : 任务列表id
@@ -166,7 +166,7 @@ module tars
          */
         int getTaskRsp(string taskNo, out TaskRsp taskRsp);
 
-        /** *
+        /**
          * 获取根据应用, 服务, 命令字获取历史任务状态
          *
          * @param application : 应用名
@@ -177,7 +177,7 @@ module tars
          */
         int getTaskHistory(string application, string serverName, string command, out vector<TaskRsp> taskRsps);
 
-        /** *
+        /**
         * 设置task item的信息(内部使用)
         * @param itemNo, itemno
         * @param startTime, 开始时间
@@ -189,7 +189,7 @@ module tars
         int setTaskItemInfo(string itemNo, map<string, string> info);
 
         //////////////////////////////////////////////////////////////////////////////////
-        /** *
+        /**
          * 获取application列表
          *
          * @param out result : 结果描述
@@ -198,7 +198,7 @@ module tars
          */
         vector<string> getAllApplicationNames(out string result);
 
-        /** *
+        /**
          * 获取node列表
          *
          * @param out result : 结果描述
@@ -207,7 +207,7 @@ module tars
          */
         vector<string> getAllNodeNames(out string result);
 
-        /** *
+        /**
          * ping node
          *
          * @param name: node id
@@ -217,7 +217,7 @@ module tars
          */
         bool pingNode(string name, out string result);
 
-        /** *
+        /**
          * get node version
          *
          * @param name: node id
@@ -228,7 +228,7 @@ module tars
          */
         int getNodeVesion(string name, out string version, out string result);
 
-        /** *
+        /**
          * 停止 node
          *
          * @param name: node id
@@ -238,9 +238,9 @@ module tars
          */
         int shutdownNode(string name, out string result);
 
-        /** **********server****************/
+        /***********server****************/
 
-        /** *
+        /**
          * 获取server列表
          *
          * @param name: null
@@ -250,7 +250,7 @@ module tars
          */
         vector<vector<string> > getAllServerIds(out string result);
 
-        /** *
+        /**
          * 获取特定server状态
          *
          * @param application: 应用
@@ -263,7 +263,7 @@ module tars
          */
         int getServerState(string application,string serverName, string nodeName, out ServerStateDesc state, out string result);
 
-        /** *
+        /**
          * 获取某ip所属group 用于机房部署  例如某ip属于那个机房
          *
          * @param nodeNmae   : ip
@@ -274,7 +274,7 @@ module tars
          */
         int getGroupId(string ip, out int groupId, out string result);
 
-        /** *
+        /**
          * 启动特定server
          *
          * @param application: 应用
@@ -286,7 +286,7 @@ module tars
          */
         int startServer(string application,string serverName, string nodeName, out string result);
 
-        /** *
+        /**
          * 停止特定server
          *
          * @param application: 应用
@@ -298,7 +298,7 @@ module tars
          */
         int stopServer(string application,string serverName, string nodeName, out string result);
 
-        /** *
+        /**
          * 重启特定server
          *
          * @param application: 应用
@@ -310,7 +310,7 @@ module tars
          */
         int restartServer(string application,string serverName, string nodeName, out string result);
 
-        /** *
+        /**
          * 通知server
          *
          * @param application: 应用
@@ -323,7 +323,7 @@ module tars
          */
         int notifyServer(string application,string serverName, string nodeName, string command, out string result);
 
-        /** *
+        /**
          * 发布特定server
          *
          * @param application: 应用
@@ -338,7 +338,7 @@ module tars
          */
 //        int patchServer(string application, string serverName, string nodeName, bool shutdown, string version, string user, out string result);
 
-        /** *
+        /**
         * 卸载服务
         * @param application
         * @param serverName
@@ -347,7 +347,7 @@ module tars
         */
         int undeploy(string application, string serverName, string nodeName, string user,  out string log);
        
-        /** *
+        /**
          * 批量发布服务
          *
          * @param vector<PatchRequest>: 批量发布的请求
@@ -357,7 +357,7 @@ module tars
          */
         int batchPatch(PatchRequest req, out string result);
 
-        /** *
+        /**
          * 更新发布状态
          *
          *
@@ -365,7 +365,7 @@ module tars
          */
         int updatePatchLog(string application, string serverName, string nodeName, string patchId, string user, string patchType, bool succ);
 
-        /** *
+        /**
          * 预发布接口，将指定版本的二进制文件下载到node
          *
          * @param PreparePatchRequest: 预发布
@@ -375,13 +375,13 @@ module tars
          */
 //        int prepareBatchPatch(PreparePatchRequest req, out vector<string> nodeList, out string result);
         
-        /** *
+        /**
         * 获取预发布的进度信息
         * specialNodeList:如果为空，管理服务根据application+serverName查询node列表，如果不为空，直接使用
         */
 //        int getPreparePatchPercent(string application, string serverName, vector<string> specialNodeList, out map<string, PreparePatchInfo> patchInfos, out string result);
         
-        /** *
+        /**
          * 发布特定文件
          *
          * @param application: 应用
@@ -395,7 +395,7 @@ module tars
          */
 //        int patchSubborn(string application, string serverName, string nodeName, string sSrcFile, string sDstFile, out string result);
 
-        /** *
+        /**
         * 获取服务发布进度
         * @param application  : 服务所属应用名
         * @param serverName   : 服务名
@@ -406,7 +406,7 @@ module tars
         */
         int getPatchPercent(string application,string serverName,string nodeName,out PatchInfo tPatchInfo);
 
-        /** *
+        /**
          * 加载特定server
          *
          * @param application: 应用
@@ -418,7 +418,7 @@ module tars
          */
         int loadServer(string application, string serverName, string nodeName, out string result);
 
-        /** *
+        /**
          * 获取相应模板
          *
          * @param profileName: 模板名称
@@ -429,7 +429,7 @@ module tars
          */
         int getProfileTemplate(string profileName , out string profileTemplate, out string resultDesc);
 
-        /** *
+        /**
          * 获取服务相应模板
          *
          * @param application: 应用
@@ -442,7 +442,7 @@ module tars
          */
         int getServerProfileTemplate(string application, string serverName, string nodeName, out string profileTemplate, out string resultDesc);
 
-        /** *
+        /**
          * node通过接口获取连接上主控的node ip
          * @param sNodeIp:  node 的ip
          *
@@ -450,7 +450,7 @@ module tars
          */
         int getClientIp(out string sClientIp);
     
-    /** *
+    /**
     * 获取某个或则所有服务的setd和idc名字
     * @param info: 根据输入参数获取信息
     * @param out vServerInfo 服务信息

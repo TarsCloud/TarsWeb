@@ -1,4 +1,4 @@
-/** *
+/**
  * Tencent is pleased to support the open source community by making Tars available.
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
@@ -29,7 +29,7 @@ MonitorStatService.getTARSStatMonitorData = async (params) => {
 
 
 
-/** *
+/**
  * 处理显示日期和对比日期查询条件
  * @param params
  * @param the 是否当前日期

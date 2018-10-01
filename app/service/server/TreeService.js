@@ -1,4 +1,4 @@
-/** *
+/**
  * Tencent is pleased to support the open source community by making Tars available.
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
@@ -66,7 +66,7 @@ TreeService.getTreeNodes = async(uid) => {
     return rootNode;
 };
 
-/** *
+/**
  * 将应用服务转换成层级数据
  * @param treeList
  */
