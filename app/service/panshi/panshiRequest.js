@@ -99,14 +99,15 @@ PanshiRequest.prototype.request =  function ({method = "POST", params = {}, url}
         options.qs = params
     }
     logger.info('panshirequest [' + method+ ':' + url + ']: ', options);
-    return rp(options).then(function (data) {
-        logger.info(data);
-        if (data.result === 0) {
-            return data.data
-        } else {
-            throw new Error('[' + method+ ':' + url + ']' + (data.result_msg || data.result_info))
-        }
-    })
+    return rp(options)
+    // .then(data=>{
+    //     logger.info(data);
+    //     if (data.result === 0) {
+    //         return data.data;
+    //     } else {
+    //         throw new Error('[' + method+ ':' + url + ']' + (data.result_msg || data.result_info));
+    //     }     
+    // });
 };
 
 module.exports = PanshiRequest;

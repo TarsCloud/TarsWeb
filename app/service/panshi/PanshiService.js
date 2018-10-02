@@ -17,7 +17,7 @@
 const PanshiRequest = require('./panshiRequest.js');
 
 const panshiRequest = new PanshiRequest();
-
+const logger = require('../../logger');
 const PanshiService = {};
 
 module.exports = PanshiService;
@@ -49,6 +49,10 @@ PanshiService.register = async function (option) {
     return panshiRequest.request({params, url: '/module/register'})
 };
 
+PanshiService.syncUndeployInfo = async (server_name) => {
+    let params = panshiRequest.getParam({server_name});
+    return panshiRequest.request({params, url: '/module/remove_server', method:'GET'})
+}
 
 
 

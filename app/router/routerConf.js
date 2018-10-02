@@ -165,6 +165,7 @@ const apiConf = [
 
     //与磐石系统联动而封装的接口
     ['get', '/batch_undeploy_tars', PanshiController.batchUndeployTars, {application: 'notEmpty', server_name: 'notEmpty',}],
+    ['get', '/sync_undeploy_info', PanshiController.syncUndeployInfo, {server_name: 'notEmpty'}],
 ];
 
 module.exports = {pageConf, apiConf};

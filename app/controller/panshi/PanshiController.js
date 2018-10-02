@@ -28,7 +28,12 @@ const PanshiController = {
 PanshiController.queryService = async (ctx) => {
     try {
         let data = await PanshiService.queryService();
-        ctx.makeResObj(200, '', data);
+        if(data.result == 0){
+            ctx.makeResObj(200, '', data.data);
+        }else{
+            logger.error('[queryService]', (data.result_msg || data.result_info));
+            ctx.makeResObj(500, (data.result_msg || data.result_info));
+        }
     } catch (err) {
         logger.error('[queryService]', err, ctx);
         ctx.makeResObj(500, err.message)
@@ -39,7 +44,12 @@ PanshiController.querySystem = async (ctx) => {
     let ServiceId = ctx.paramsObj.ServiceId;
     try {
         let data = await PanshiService.querySystem({ServiceId});
-        ctx.makeResObj(200, '', data);
+        if(data.result == 0){
+            ctx.makeResObj(200, '', data.data);
+        }else{
+            logger.error('[querySystem]', (data.result_msg || data.result_info));
+            ctx.makeResObj(500, (data.result_msg || data.result_info));
+        }
     } catch (err) {
         logger.error('[querySystem]', err, ctx);
         ctx.makeResObj(500, err.message)
@@ -50,13 +60,23 @@ PanshiController.queryModule = async (ctx) => {
     let SystemId = ctx.paramsObj.SystemId;
     try {
         let data = await PanshiService.queryModule({SystemId});
-        ctx.makeResObj(200, '', data);
+        if(data.result == 0){
+            ctx.makeResObj(200, '', data.data);
+        }else{
+            logger.error('[queryModule]', (data.result_msg || data.result_info));
+            ctx.makeResObj(500, (data.result_msg || data.result_info));
+        }
     } catch (err) {
         logger.error('[queryModule]', err, ctx);
         ctx.makeResObj(500, err.message)
     }
 };
 
+/**
+ * 下线指定服务的所有节点
+ * @param {Object} ctx
+ * @returns {Object} {status:Number, msg:String|Object} 0没有服务,2成功,3失败,4取消,5部分成功 
+ */
 PanshiController.batchUndeployTars = async (ctx) => {
     let {application, server_name, serial=true} = ctx.paramsObj;
     try {
@@ -65,16 +85,8 @@ PanshiController.batchUndeployTars = async (ctx) => {
         } else {
             let ret = await ServerService.getServerConfList4Tree({application, serverName:server_name});
             let serverId = ret.map(item => item.id);
-            let data = {
-                status: 0,  // 0找不到服务，1下线成功，2部分成功，3失败
-                total: 0,
-                failCount: 0,
-                succCount: 0,
-                failMsg: '',
-                succMsg: ''
-            };
             if(!serverId.length){
-                ctx.makeResObj(200, '', data);
+                ctx.makeResObj(200, '', {status:0, msg: 'no server'});
             }else {
                 let task_no = util.getUUID().toString();
                 let items = [];
@@ -84,10 +96,14 @@ PanshiController.batchUndeployTars = async (ctx) => {
                         command : 'undeploy_tars',
                         parameters : ''
                     });
-                })
-                let ret = await TaskService.addTask({serial, items, task_no});
-                console.info(ret);
-                ctx.makeResObj(200, '', ret);
+                });
+                let taskNo = await TaskService.addTask({serial, items, task_no});
+                let rsp = await getTaskRsp(taskNo);
+                if(rsp.status == 3 && rsp.msg) {
+                    ctx.makeResObj(200, '', rsp);
+                }else {
+                    ctx.makeResObj(200, '', {status: rsp.status, msg: rsp});
+                }
             }
         }
     } catch (err) {
@@ -96,7 +112,52 @@ PanshiController.batchUndeployTars = async (ctx) => {
     }
 }
 
+PanshiController.syncUndeployInfo = async (ctx) => {
+    let {server_name} = ctx.paramsObj;
+    try {
+        let data = await PanshiService.syncUndeployInfo(server_name);
+        if(data.result == 0){
+            ctx.makeResObj(200, '', data.result_info);
+        }else{
+            logger.error('[syncUndeployInfo]', data.result_info);
+            ctx.makeResObj(500, data.result_info);
+        }
+    } catch (err) {
+        logger.error('[syncUndeployInfo]', err, ctx);
+        ctx.makeResObj(500, err.message)
+    }
+}
 
+function getTaskRsp (task_no) {
+    let t = null,
+        timeout = 60 * 1000,   // 60S 超时
+        start = new Date().getTime();
+    return Promise((resolve, reject) =>{
+        let f = function () {
+            if(new Date().getTime() - start >= timeout) {
+                clearTimeout(t);
+                t = null;
+                logger.error('PanshiController.getTaskRsp err: timeout');
+                reject({status:3, msg:'timeout'});
+            }
+            TaskService.getTaskRsp(task_no).then(data=> {
+                if(data.status!=0 && data.status!=1){
+                    clearTimeout(t);
+                    t = null;
+                    resolve(data);
+                    return;
+                }
+                t = setTimeout(f, 3000);
+            }).catch(function (err) {
+                logger.error('PanshiController.getTaskRsp err:',err);
+                clearTimeout(t);
+                t = null;
+                reject({status:3, msg: err});
+            });
+        };
+        f();
+    });
+}
 
 
 module.exports = PanshiController;
