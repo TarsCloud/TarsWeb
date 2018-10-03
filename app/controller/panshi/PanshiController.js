@@ -84,10 +84,24 @@ PanshiController.batchUndeployTars = async (ctx) => {
             ctx.makeNotAuthResObj();
         } else {
             let ret = await ServerService.getServerConfList4Tree({application, serverName:server_name});
-            let serverId = ret.map(item => item.id);
-            if(!serverId.length){
+            ret = ret.map(item => {
+                return {
+                    id : item.id,
+                    currState : item.present_state,
+                    settingState : item.setting_state
+                }
+            });
+            if(!ret.length){
                 ctx.makeResObj(200, '', {status:0, msg: 'no server'});
             }else {
+                // 如果有节点存活则不允许下线服务
+                let activeNode = ret.filter(item => item.currState == 'active');
+                if(activeNode.length) {
+                    ctx.makeResObj(200, '', {status:3, msg: 'some nodes are active,please stop them first'});
+                    return;
+                }
+
+                let serverId = ret.map(item => item.id);
                 let task_no = util.getUUID().toString();
                 let items = [];
                 serverId.forEach(id => {
@@ -132,7 +146,7 @@ function getTaskRsp (task_no) {
     let t = null,
         timeout = 60 * 1000,   // 60S 超时
         start = new Date().getTime();
-    return Promise((resolve, reject) =>{
+    return new Promise((resolve, reject) =>{
         let f = function () {
             if(new Date().getTime() - start >= timeout) {
                 clearTimeout(t);
