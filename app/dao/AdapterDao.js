@@ -15,8 +15,11 @@
  */
  
 const {tAdapterConf, sequelize} = require('./db').db_tars;
+const Sequelize = require('sequelize');
 
 const AdapterDao = {};
+AdapterDao.sequelize = sequelize;
+
 
 AdapterDao.getAdapterConfById = async(id) => {
     return await tAdapterConf.findOne({
@@ -35,6 +38,9 @@ AdapterDao.getAdapterConf = async(application, serverName, nodeName) => {
         Object.assign(whereObj, {node_name: nodeName});
     }
     return await tAdapterConf.findAll({
+        attribute:[[Sequelize.literal('distinct `servant`'), 'servant'],'application','server_name','adapter_name','thread_num',
+        'endpoint','max_connections','allow_ip','node_name','queuecap','queuetimeout','posttime' ,'lastuser' ,'protocol' ,'handlegroup'    
+        ],
         raw:true,
         where: whereObj
     });
