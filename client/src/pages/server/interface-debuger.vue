@@ -26,7 +26,7 @@
                 </let-form-item>
                 <let-form-item :label="$t('serverList.servant.objName')" v-if="objList.length">
                     <let-select v-model="objName">
-                        <let-option v-for="item in objList" :value="item.servant" :key="item.id"></let-option>
+                        <let-option v-for="item in objList" :value="item.servant" :key="item.servant"></let-option>
                     </let-select>
                 </let-form-item>
                 <let-form-item>

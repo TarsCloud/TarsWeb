@@ -13,6 +13,7 @@ import InterfaceDebuger from '@/pages/server/interface-debuger';
 import CallChain from '@/pages/server/call-chain';
 import CallChainAnalyze from '@/pages/server/call-chain-analyze';
 import Task from '@/pages/server/task';
+import Token from '@/pages/server/token';
 
 // 运维管理
 import Operation from '@/pages/operation/index';
@@ -64,6 +65,10 @@ export default new Router({
         {
           path: ':treeid/task',
           component: Task,
+        },
+        {
+          path: ':treeid/server-token',
+          component: Token,
         },
         {
           path: ':treeid/user-manage',

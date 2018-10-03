@@ -161,7 +161,7 @@ const apiConf = [
     ['get', '/get_topo', CallChainController.getTopo, {serviceName:'notEmpty', start:'notEmpty', end:'notEmpty'}], 
 
     //授权管理
-    ['get', '/get_tokens', TokenController.getTokens, {application: 'notEmpty', server_name: 'notEmpty',}],
+    ['get', '/get_tokens', TokenController.getTokens],
 
     //与磐石系统联动而封装的接口
     ['get', '/batch_undeploy_tars', PanshiController.batchUndeployTars, {application: 'notEmpty', server_name: 'notEmpty',}],

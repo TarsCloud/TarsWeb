@@ -1,0 +1,141 @@
+<template>
+    <div class="page-token">
+        <wrapper>
+            <let-button size="small" theme="primary" class="add-btn" @click="showAddTokenDlg">{{$t('token.list.add')}}</let-button>
+            <let-table :data="tokenList" :title="$t('token.title.listTitle')" :empty-msg="$t('common.nodata')">
+                <let-table-column :title="$t('token.title.called')" prop="sObjName"></let-table-column>
+                <let-table-column :title="$t('token.title.call')" prop="call"></let-table-column>
+                <let-table-column title="Token" prop="token"></let-table-column>
+                <let-table-column width="100px" :title="$t('operate.operates')" prop="token"></let-table-column>
+            </let-table>
+        </wrapper>
+
+        <let-modal v-model="addTokenModal.show" :title="$t('token.list.add')"
+            width="500px"
+            @close="addTokenModal.show=false"
+            @on-cancel="addTokenModal.show=false"
+            @on-confirm="addToken"
+        >
+            <let-form ref="tokenForm"  itemWidth="100%">
+                <let-form-item :label="$t('token.dlg.called')" required>
+                    <let-select v-model="addTokenModal.objName" size="small" required>
+                        <let-option v-for="item in addTokenModal.objList" :key="item.servant" :value="item.servant"></let-option>
+                    </let-select>
+                </let-form-item>
+                <let-form-item :label="$t('token.dlg.call')" required>
+                    <let-input
+                        size="small"
+                        v-model="addTokenModal.callServer"
+                        :placeholder="$t('serverList.servant.appService')"
+                        pattern="^[A-Za-z]+\.[a-zA-Z]([a-zA-Z0-9]+)?$"
+                        :pattern-tip="$t('token.dlg.patternTip')"
+                        required
+                    ></let-input>
+                </let-form-item>
+            </let-form>
+        </let-modal>
+
+
+    </div>
+</template>
+
+
+<script>
+import wrapper from '@/components/section-wrappper';
+export default {
+    name: 'Token',
+    components: {
+        wrapper,
+    },
+    data() {
+        return {
+            // 当前页面信息
+            serverData: {
+                level: 5,
+                application: '',
+                server_name: '',
+                set_name: '',
+                set_area: '',
+                set_group: '',
+            },
+            tokenList: [],
+            addTokenModal:{
+                show : false,
+                objName : '',
+                objList : [],
+                callServer : ''
+            }
+        }
+    },
+    methods:{
+        showAddTokenDlg(){
+            this.addTokenModal.show = true;
+        },
+        getObjList() {
+            return this.$ajax.getJSON('/server/api/all_adapter_conf_list', {
+                application : this.serverData.application,
+                server_name : this.serverData.server_name,
+            }).then(data => {
+                if(data.length){
+                    this.addTokenModal.objList = data;
+                    this.addTokenModal.objName = data[0].servant;
+                }
+            }).catch(err=>{
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
+        },
+        addToken() {
+            if (this.$refs.tokenForm.validate()) {
+                let callServer = this.addTokenModal.callServer.split('.');
+                let param = {
+                    application : callServer[0],
+                    server_name : callServer[1],
+                    calleeObj : this.addTokenModal.objName
+                }
+                const loading = this.$Loading.show();
+                this.$ajax.getJSON('/server/api/add_token',param).then(data=>{
+                    loading.hide();
+                    this.addTokenModal.show = false;
+                    this.getTokenList();
+                }).catch(err=>{
+                    loading.hide();
+                    this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+                });
+            }
+        },
+        getTokenList() {
+            const loading = this.$Loading.show();
+            let objs = this.addTokenModal.objList.map(item => item.servant);
+            this.$ajax.getJSON('/server/api/get_tokens',{
+                objName : objs
+            }).then(data=>{
+                loading.hide();
+                this.tokenList = data;
+            }).catch(err=>{
+                loading.hide();
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
+        }
+    },
+    created() {
+        this.serverData = this.$parent.getServerData();
+    },
+    mounted() {
+        this.getObjList().then(()=>{
+            this.getTokenList();
+        });
+    },
+}
+</script>
+
+<style>
+.page-token{
+    .add-btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 2;
+    }
+}
+</style>
+

@@ -163,7 +163,8 @@
         "infDebuger": "Interface Debuger",
         "callChain": "Call Chain",
         "callChainAnalyze": "Call Chain Analyze",
-        "task": "Task"
+        "task": "Task",
+        "token": "Token"
       }
     }
   },
@@ -561,6 +562,21 @@
     "dlg": {
       "selectLabel" : "modules/interfaces/functions",
       "deleteMsg" : "Are you sure delete this file?"
+    }
+  },
+  "token": {
+    "list": {
+      "add" : "add token"
+    },
+    "title": {
+      "listTitle" : "Token list",
+      "called" : "Called",
+      "call" : "Call"
+    },
+    "dlg": {
+      "called" : "called Obj",
+      "call" : "call server",
+      "patternTip": "application.server_name"
     }
   }
 }

@@ -22,6 +22,8 @@ const TokenController = {}
 
 TokenController.getTokens = async (ctx) => {
     try {
+        let objs = ctx.paramsObj.objName;
+        
         ctx.makeResObj(200, '', []);
     }catch(e) {
         logger.error('[TokenController.getTokens]:', e, ctx);

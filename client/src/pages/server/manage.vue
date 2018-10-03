@@ -590,9 +590,10 @@ export default {
           // 任务成功重新拉取列表
           this.getServerList().then(()=>{
             // 服务下线时同步数据到磐石
+            console.info('request panshi interface');
             if(!this.serverList.length) {
               this.$ajax.getJSON('/server/api/sync_undeploy_info', {
-                server_name : server_name
+                server_name : this.serverData.server_name
               });
             }
           })
