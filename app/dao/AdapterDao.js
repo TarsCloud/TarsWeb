@@ -38,13 +38,23 @@ AdapterDao.getAdapterConf = async(application, serverName, nodeName) => {
         Object.assign(whereObj, {node_name: nodeName});
     }
     return await tAdapterConf.findAll({
-        attribute:[[Sequelize.literal('distinct `servant`'), 'servant'],'application','server_name','adapter_name','thread_num',
-        'endpoint','max_connections','allow_ip','node_name','queuecap','queuetimeout','posttime' ,'lastuser' ,'protocol' ,'handlegroup'    
-        ],
         raw:true,
         where: whereObj
     });
 };
+
+AdapterDao.getServantByServerName = async(application, serverName) => {
+    let whereObj = {
+        application: application,
+        server_name: serverName
+    };
+    return await tAdapterConf.findAll({
+        attributes:['servant'],
+        group:'servant',
+        raw:true,
+        where: whereObj
+    });
+}
 
 
 AdapterDao.getAdapterConfByObj = async(params) => {

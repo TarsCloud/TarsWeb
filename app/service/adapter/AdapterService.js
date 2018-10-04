@@ -60,7 +60,7 @@ AdapterService.getAdapterConfList = async(serverConfId) => {
 
 //通过服务ID获取服务下的所有adapter信息
 AdapterService.getAllAdapterConfList = async(application, server_name) => {
-    return await AdapterDao.getAdapterConf(application, server_name);
+    return await AdapterDao.getServantByServerName(application, server_name);
 };
 
 // 新增adapter

@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
  
-const {configFPrx, configFStruct, adminRegPrx, adminRegStruct, queryTracingPrx, queryTracingStruct, client} = require('../util/rpcClient');
+const {configFPrx, configFStruct, adminRegPrx, adminRegStruct, queryTracingPrx, queryTracingStruct, authPrx, authStruct, client} = require('../util/rpcClient');
 var registry  = require("@tars/registry");
 const TarsStream = require('@tars/stream');
 const _ = require('lodash')
@@ -131,6 +131,28 @@ AdminService.getTracingResultByServiceName = async (serviceName, start, end) => 
     let tracingSpanReq = new queryTracingStruct.TracingSpanReq();
     tracingSpanReq.readFromObject({start, end, serviceName});
     return await queryTracingPrx.getQueryTracingResult(tracingSpanReq);
+}
+
+AdminService.getTokens = async(objs) => {
+    let tokenReq = new authStruct.TokenRequest();
+    tokenReq.readFromObject(objs);
+    return await authPrx.getTokens(tokenReq);
+}
+
+AdminService.applyToken = async (application, server_name, calledObjName) => {
+    let applyTokenReq = new authStruct.applyTokenReq();
+    applyTokenReq.readFromObject(application, server_name, calledObjName);
+    return await authPrx.applyToken(applyTokenReq);
+}
+
+AdminService.deleteToken = async (application, server_name, calledObjName) => {
+    let deleteTokenReq = new authStruct.deleteTokenReq();
+    deleteTokenReq.readFromObject(application, server_name, calledObjName);
+    return await authPrx.deleteToken(deleteTokenReq);
+}
+
+AdminService.authProcess = async () => {
+    
 }
 
 module.exports = AdminService;

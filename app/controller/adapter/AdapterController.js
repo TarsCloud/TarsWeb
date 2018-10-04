@@ -85,7 +85,7 @@ AdapterController.getAllAdapterConfList = async(ctx) => {
             ctx.makeNotAuthResObj();
         }else{
             let rst = await AdapterService.getAllAdapterConfList(application, server_name);
-            ctx.makeResObj(200, '', util.viewFilter(rst, {servant:'',id:''}));
+            ctx.makeResObj(200, '', rst);
         }
     } catch (e) {
         logger.error('[getAllAdapterConfList]', e, ctx);

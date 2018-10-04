@@ -18,6 +18,7 @@ const client  = require("@tars/rpc/protal.js").client;
 const QueryTracingProxy = require("./rpcProxy/QueryTracingProxy");
 const AdminRegProxy = require("./rpcProxy/AdminRegProxy");
 const ConfigFProxy = require("./rpcProxy/ConfigFProxy");
+const AuthProxy = require("./rpcProxy/AuthProxy");
 const path = require('path');
 client.initialize(path.join(__dirname, '../../../../config/tars.conf'));
 const RPCClientPrx = (proxy, moduleName, interfaceName, servantName, setInfo) => {
@@ -88,6 +89,9 @@ module.exports = {
 
     queryTracingPrx : RPCClientPrx(QueryTracingProxy, 'tars', 'QueryController', 'tars.tarsTracingQuery.QueryObj'),
     queryTracingStruct : RPCStruct(QueryTracingProxy, 'tars'),
+
+    authPrx : RPCClientPrx(AuthProxy, 'tars', 'Auth', 'tars.tarsauth.AuthObj'),
+    authStruct : RPCStruct(AuthProxy, 'tars'),
 
     client: client
 };
