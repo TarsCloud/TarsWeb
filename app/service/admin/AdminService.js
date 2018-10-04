@@ -140,19 +140,20 @@ AdminService.getTokens = async(objs) => {
 }
 
 AdminService.applyToken = async (application, server_name, calledObjName) => {
-    let applyTokenReq = new authStruct.applyTokenReq();
+    let applyTokenReq = new authStruct.ApplyTokenRequest();
     applyTokenReq.readFromObject(application, server_name, calledObjName);
     return await authPrx.applyToken(applyTokenReq);
 }
 
 AdminService.deleteToken = async (application, server_name, calledObjName) => {
-    let deleteTokenReq = new authStruct.deleteTokenReq();
+    let deleteTokenReq = new authStruct.DeleteTokenRequest();
     deleteTokenReq.readFromObject(application, server_name, calledObjName);
     return await authPrx.deleteToken(deleteTokenReq);
 }
 
-AdminService.authProcess = async () => {
-    
+AdminService.authProcess = async (application, server_name, token) => {
+    let authReq = new authStruct.AuthRequest();
+    authReq.readFromObject(application, server_name, token);
 }
 
 module.exports = AdminService;
