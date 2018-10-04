@@ -1,7 +1,7 @@
 <template>
     <div class="call-chain-analyze">
         <let-form inline ref="topoForm">
-            <let-form-item itemWidth="100%">
+            <let-form-item itemWidth="90%">
                 <let-date-range-picker required :start.sync="start_time" :end.sync="end_time"></let-date-range-picker>
                 <let-button theme="primary" @click="showTopo">查询</let-button>
             </let-form-item>
@@ -49,24 +49,35 @@ export default {
     name : 'CallChainAnalyze',
     data() {
         return {
-            serviceName : '',
+            serverData : {},
             objList : [],
             start_time: '',
             end_time: '',
             chainShapesList: []
         }
     },
+    watch:{
+        '$parent.treeidRoute': function(treeid){
+            this.serverData = this.$parent.serverData;
+            this.showTopo();
+        },
+    },
     methods : {
         showTopo() {
             let container = document.querySelector('#topo');
             if(this.$refs.topoForm.validate()){
                 const loading = this.$Loading.show();
-                this.$ajax.getJSON('/server/api/get_topo', {
-                    serviceName : this.serviceName,
+                let param = {
+                    serviceName : this.serverData.application+'.'+this.serverData.server_name,
                     start : this.start_time,
-                    end : this.end_time
-                }).then(data => {
-                    loading.hide();
+                    end : this.end_time,
+                }
+                if(this.serverData.set_name){
+                    let setInfo = this.serverData.set_name+'.'+this.serverData.set_area+'.'+this.serverData.set_group;
+                    Object.assign(param, {set_div:setInfo});
+                }
+                this.$ajax.getJSON('/server/api/get_topo', param).then(data => {
+                   loading.hide();
                     if(!data.dependencyGraph.vertexs.value.length && !data.dependencyGraph.links.value.length){
                         container.innerHTML= '<div class="emptyMsg">没有数据</div>';
                         return;
@@ -146,20 +157,26 @@ export default {
             function fn (n) {
                 return (n < 10 ? '0' + n : n).toString();
             }
+        },
+        getServerData(treeNodeId) {
+            const treeArr = treeNodeId.split('.');
+            let serviceName = [],
+                setInfo = [];
+            treeArr.map(item => {
+                if(item[0]=='1' || item[0]=='5'){
+                    serviceName.push(item.substr(1));
+                }else if(item[0]=='2' || item[0]=='3' || item[0]=='4'){
+                    setInfo.push(item.substr(1));
+                }
+            });
+            return {serviceName, setInfo};
         }
     },
     created() {
-        const treeArr = this.$route.params.treeid.split('.');
-        let serviceName = treeArr.map(item => {
-            if(item[0]=='1' || item[0]=='5'){
-                return item.substr(1);
-            }
-        });
-        this.serviceName = serviceName.join('.');
         this.setDate();
     },
     mounted() {
-        this.showTopo();
+        this.treeNodeId = this.$parent.treeNodeId;
     },
     computed: {
         formatedChainShapesList: function() {
