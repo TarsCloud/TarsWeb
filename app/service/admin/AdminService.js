@@ -111,12 +111,13 @@ AdminService.getEndpoints = async (objName) => {
     return ret.response.return.value;
 };
 
-AdminService.getTopoGraph = async (serviceName, start, end) => {
+AdminService.getTopoGraph = async (serviceName, start, end, set_div) => {
     let tracingAnalysisReq = new queryTracingStruct.TracingAnalysisReq();
     tracingAnalysisReq.readFromObject({
         serviceName,
         start,
-        end
+        end,
+        set_div
     });
     return queryTracingPrx.getQueryChainResult(tracingAnalysisReq);
 }
@@ -135,19 +136,29 @@ AdminService.getTracingResultByServiceName = async (serviceName, start, end) => 
 
 AdminService.getTokens = async(objs) => {
     let tokenReq = new authStruct.TokenRequest();
-    tokenReq.readFromObject(objs);
+    objs.forEach(obj =>{
+        tokenReq.push(obj);
+    });
     return await authPrx.getTokens(tokenReq);
 }
 
 AdminService.applyToken = async (application, server_name, calledObjName) => {
     let applyTokenReq = new authStruct.ApplyTokenRequest();
-    applyTokenReq.readFromObject(application, server_name, calledObjName);
+    applyTokenReq.readFromObject({
+        sApplication: application,
+        sServer: server_name,
+        sObjName: calledObjName
+    });
     return await authPrx.applyToken(applyTokenReq);
 }
 
 AdminService.deleteToken = async (application, server_name, calledObjName) => {
     let deleteTokenReq = new authStruct.DeleteTokenRequest();
-    deleteTokenReq.readFromObject(application, server_name, calledObjName);
+    deleteTokenReq.readFromObject({
+        sApplication: application,
+        sServer: server_name,
+        sObjName: calledObjName
+    });
     return await authPrx.deleteToken(deleteTokenReq);
 }
 

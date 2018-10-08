@@ -8,6 +8,7 @@ import ServerPublish from '@/pages/server/publish';
 import ServerConfig from '@/pages/server/config';
 import ServerServerMonitor from '@/pages/server/monitor-server';
 import ServerPropertyMonitor from '@/pages/server/monitor-property';
+import ServerBisMonitor from '@/pages/server/monitor-business';
 import userManage from '@/pages/server/user-manage';
 import InterfaceDebuger from '@/pages/server/interface-debuger';
 import CallChain from '@/pages/server/call-chain';
@@ -49,6 +50,10 @@ export default new Router({
         {
           path: ':treeid/property-monitor',
           component: ServerPropertyMonitor,
+        },
+        {
+          path: ':treeid/business-monitor',
+          component: ServerBisMonitor,
         },
         {
           path: ':treeid/interface-debuger',

@@ -38,6 +38,8 @@
           v-if="serverData.level === 5 || serverData.level === 4 || serverData.level === 1"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/server-monitor'" :tab="$t('index.rightView.tab.statMonitor')"
           v-if="serverData.level === 5"></let-tab-pane>
+        <let-tab-pane :tabkey="base + '/bis-monitor'" :tab="$t('index.rightView.tab.bisMonitor')"
+          v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/property-monitor'" :tab="$t('index.rightView.tab.propertyMonitor')"
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/interface-debuger'" :tab="$t('index.rightView.tab.infDebuger')"

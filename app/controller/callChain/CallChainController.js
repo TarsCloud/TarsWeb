@@ -47,11 +47,11 @@ CallChainController.getTraceList = async (ctx) => {
 }
 
 CallChainController.getTopo = async(ctx) => {
-    let {serviceName, start, end} = ctx.paramsObj;
+    let {serviceName, start, end, set_div} = ctx.paramsObj;
     try{
         start = moment(start).unix()*1000;
         end = moment(end).unix()*1000;
-        let ret = await AdminService.getTopoGraph(serviceName, start, end);
+        let ret = await AdminService.getTopoGraph(serviceName, start, end, set_div);
         ctx.makeResObj(200, '', ret.__return);
     }catch(e) {
         console.info(e);

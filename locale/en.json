@@ -163,6 +163,7 @@
         "infDebuger": "Interface Debuger",
         "callChain": "Call Chain",
         "callChainAnalyze": "Call Chain Analyze",
+        "bisMonitor": "business monitor",
         "task": "Task",
         "token": "Token"
       }

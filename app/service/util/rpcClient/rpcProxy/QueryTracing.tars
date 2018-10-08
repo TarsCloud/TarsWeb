@@ -4,6 +4,7 @@ module tars {
 		0 require string serviceName;
 		1 require long start;
 		2 require long end;
+		3 optional string set_div;
 	};	
 	
 	struct DependencyLink {
@@ -32,6 +33,7 @@ module tars {
 		7 require int avgCost;
 		8 require float failRate;
 		9 require string rootSign;
+		10 optional string set_div;
 	};
 	
 	struct ChainShapeCollection {

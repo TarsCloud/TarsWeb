@@ -1,6 +1,6 @@
 <template>
   <div class="page_server_server_monitor">
-    <iframe :src="panshiDomain+'/open-page.html#/mon/curve/'+monitorName+':4'" frameborder="0" width="100%" height="1300px"></iframe>
+    <iframe :src="panshiDomain+'/jsp/biz/attrDataMonitChart.jsp?modulename='+monitorName+'&unit=m1'" frameborder="0" width="100%" height="1300px"></iframe>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
     this.serverData = this.$parent.getServerData();
     this.monitorName = this.serverData.server_name +'_ts';
     this.$parent.getPanshiUrl().then(data => {
-      this.panshiDomain = data;
+      this.panshiDomain = data.replace(/\/.+/,'');
     })
   }
 };

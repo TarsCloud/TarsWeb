@@ -31,6 +31,7 @@ tars.TracingAnalysisReq = function() {
     this.serviceName = "";
     this.start = 0;
     this.end = 0;
+    this.set_div = "";
     this._classname = "tars.TracingAnalysisReq";
 };
 tars.TracingAnalysisReq._classname = "tars.TracingAnalysisReq";
@@ -41,12 +42,14 @@ tars.TracingAnalysisReq._readFrom = function (is) {
     tmp.serviceName = is.readString(0, true, "");
     tmp.start = is.readInt64(1, true, 0);
     tmp.end = is.readInt64(2, true, 0);
+    tmp.set_div = is.readString(3, false, "");
     return tmp;
 };
 tars.TracingAnalysisReq.prototype._writeTo = function (os) {
     os.writeString(0, this.serviceName);
     os.writeInt64(1, this.start);
     os.writeInt64(2, this.end);
+    os.writeString(3, this.set_div);
 };
 tars.TracingAnalysisReq.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -61,13 +64,15 @@ tars.TracingAnalysisReq.prototype.toObject = function() {
     return {
         "serviceName" : this.serviceName,
         "start" : this.start,
-        "end" : this.end
+        "end" : this.end,
+        "set_div" : this.set_div
     };
 };
 tars.TracingAnalysisReq.prototype.readFromObject = function(json) { 
     json.hasOwnProperty("serviceName") && (this.serviceName = json.serviceName);
     json.hasOwnProperty("start") && (this.start = json.start);
     json.hasOwnProperty("end") && (this.end = json.end);
+    json.hasOwnProperty("set_div") && (this.set_div = json.set_div);
 };
 tars.TracingAnalysisReq.prototype.toBinBuffer = function () {
     var os = new TarsStream.TarsOutputStream();
@@ -239,6 +244,7 @@ tars.ChainNodeItem = function() {
     this.avgCost = 0;
     this.failRate = 0;
     this.rootSign = "";
+    this.set_div = "";
     this._classname = "tars.ChainNodeItem";
 };
 tars.ChainNodeItem._classname = "tars.ChainNodeItem";
@@ -256,6 +262,7 @@ tars.ChainNodeItem._readFrom = function (is) {
     tmp.avgCost = is.readInt32(7, true, 0);
     tmp.failRate = is.readFloat(8, true, 0);
     tmp.rootSign = is.readString(9, true, "");
+    tmp.set_div = is.readString(10, false, "");
     return tmp;
 };
 tars.ChainNodeItem.prototype._writeTo = function (os) {
@@ -269,6 +276,7 @@ tars.ChainNodeItem.prototype._writeTo = function (os) {
     os.writeInt32(7, this.avgCost);
     os.writeFloat(8, this.failRate);
     os.writeString(9, this.rootSign);
+    os.writeString(10, this.set_div);
 };
 tars.ChainNodeItem.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -290,7 +298,8 @@ tars.ChainNodeItem.prototype.toObject = function() {
         "callPercent" : this.callPercent,
         "avgCost" : this.avgCost,
         "failRate" : this.failRate,
-        "rootSign" : this.rootSign
+        "rootSign" : this.rootSign,
+        "set_div" : this.set_div
     };
 };
 tars.ChainNodeItem.prototype.readFromObject = function(json) { 
@@ -304,6 +313,7 @@ tars.ChainNodeItem.prototype.readFromObject = function(json) {
     json.hasOwnProperty("avgCost") && (this.avgCost = json.avgCost);
     json.hasOwnProperty("failRate") && (this.failRate = json.failRate);
     json.hasOwnProperty("rootSign") && (this.rootSign = json.rootSign);
+    json.hasOwnProperty("set_div") && (this.set_div = json.set_div);
 };
 tars.ChainNodeItem.prototype.toBinBuffer = function () {
     var os = new TarsStream.TarsOutputStream();

@@ -58,7 +58,9 @@ export default {
     },
     watch:{
         '$parent.treeidRoute': function(treeid){
-            this.serverData = this.$parent.serverData;
+            console.info(treeid);
+            this.serverData = this.getServerData(treeid);
+            console.info(this.serverData);
             this.showTopo();
         },
     },
@@ -66,18 +68,19 @@ export default {
         showTopo() {
             let container = document.querySelector('#topo');
             if(this.$refs.topoForm.validate()){
-                const loading = this.$Loading.show();
+                //const loading = this.$Loading.show();
+                let serviceName = this.serverData.serviceName.join('.');
+                let setInfo = this.serverData.setInfo.length ? this.serverData.setInfo.join('.') : '';
                 let param = {
-                    serviceName : this.serverData.application+'.'+this.serverData.server_name,
+                    serviceName : serviceName,
                     start : this.start_time,
                     end : this.end_time,
                 }
-                if(this.serverData.set_name){
-                    let setInfo = this.serverData.set_name+'.'+this.serverData.set_area+'.'+this.serverData.set_group;
+                if(setInfo){
                     Object.assign(param, {set_div:setInfo});
                 }
                 this.$ajax.getJSON('/server/api/get_topo', param).then(data => {
-                   loading.hide();
+                   //loading.hide();
                     if(!data.dependencyGraph.vertexs.value.length && !data.dependencyGraph.links.value.length){
                         container.innerHTML= '<div class="emptyMsg">没有数据</div>';
                         return;
@@ -133,7 +136,7 @@ export default {
 
                     this.chainShapesList = data.chainShapes.chainShapes.value;
                 }).catch((err) => {
-                    loading.hide();
+                    //loading.hide();
                     this.$tip.error(err.message || err.err_msg);
                 });
             }
@@ -159,7 +162,7 @@ export default {
             }
         },
         getServerData(treeNodeId) {
-            const treeArr = treeNodeId.split('.');
+            const treeArr = treeNodeId.replace(/\/.+/,'').split('.');
             let serviceName = [],
                 setInfo = [];
             treeArr.map(item => {
