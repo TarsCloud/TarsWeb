@@ -21,7 +21,7 @@ export default {
     this.serverData = this.$parent.getServerData();
     this.monitorName = this.serverData.server_name +'_ts';
     this.$parent.getPanshiUrl().then(data => {
-      this.panshiDomain = data.replace(/\/.+/,'');
+      this.panshiDomain = data;
     })
   }
 };

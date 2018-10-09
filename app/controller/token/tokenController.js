@@ -23,7 +23,8 @@ const TokenController = {}
 TokenController.getTokens = async (ctx) => {
     try {
         let objs = ctx.paramsObj.objName.split(',');
-        ctx.makeResObj(200, '', await AdminService.getTokens(objs));
+        let ret = await AdminService.getTokens(objs);
+        ctx.makeResObj(200, '', ret.__return);
     }catch(e) {
         logger.error('[TokenController.getTokens]:', e, ctx);
         ctx.makeErrResObj(e);
@@ -32,8 +33,9 @@ TokenController.getTokens = async (ctx) => {
 
 TokenController.applyToken = async(ctx) =>{
     try {
-        let {application, server_name, calledObjName} = ctx.paramsObj;
-        ctx.makeResObj(200, '', await AdminService.applyToken({application, server_name, calledObjName}));
+        let {application, server_name, called_obj_name} = ctx.paramsObj;
+        let ret = await AdminService.applyToken(application, server_name, called_obj_name);
+        ctx.makeResObj(200, '', ret.__return);
     }catch(e) {
         logger.error('[TokenController.applyToken]:', e, ctx);
         ctx.makeErrResObj(e);
@@ -42,10 +44,11 @@ TokenController.applyToken = async(ctx) =>{
 
 TokenController.deleteToken = async(ctx) => {
     try {
-        let {application, server_name, calledObjName} = ctx.paramsObj;
-        ctx.makeResObj(200, '', await AdminService.deleteToken({application, server_name, calledObjName}));
+        let {application, server_name, called_obj_name} = ctx.paramsObj;
+        let ret = await AdminService.deleteToken(application, server_name, called_obj_name);
+        ctx.makeResObj(200, '', ret);
     }catch(e) {
-        logger.error('[TokenController.applyToken]:', e, ctx);
+        logger.error('[TokenController.deleteToken]:', e, ctx);
         ctx.makeErrResObj(e);
     }
 }

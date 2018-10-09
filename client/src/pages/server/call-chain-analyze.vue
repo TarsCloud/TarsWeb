@@ -60,7 +60,6 @@ export default {
         '$parent.treeidRoute': function(treeid){
             console.info(treeid);
             this.serverData = this.getServerData(treeid);
-            console.info(this.serverData);
             this.showTopo();
         },
     },

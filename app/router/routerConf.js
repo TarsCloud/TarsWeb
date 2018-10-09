@@ -56,6 +56,7 @@ const apiConf = [
     ['get', '/query_service', PanshiController.queryService],
     ['get', '/query_system', PanshiController.querySystem, {ServiceId: 'notEmpty'}],
     ['get', '/query_module', PanshiController.queryModule, {SystemId: 'notEmpty'}],
+    ['get', '/server_nodes', ServerController.getServerNodes, {application: 'notEmpty', server_name: 'notEmpty'}],
 
     //notify日志接口
     ['get', '/server_notify_list', NotifyController.getServerNotifyList, {tree_node_id: 'notEmpty'}],
@@ -161,7 +162,9 @@ const apiConf = [
     ['get', '/get_topo', CallChainController.getTopo, {serviceName:'notEmpty', start:'notEmpty', end:'notEmpty'}], 
 
     //授权管理
-    ['get', '/get_tokens', TokenController.getTokens],
+    ['get', '/get_tokens', TokenController.getTokens, {objName:'notEmpty'}],
+    ['get', '/apply_token', TokenController.applyToken, {application:'notEmpty', server_name:'notEmpty', called_obj_name:'notEmpty'}],
+    ['get', '/delete_token', TokenController.deleteToken, {application:'notEmpty', server_name:'notEmpty', called_obj_name:'notEmpty'}],
 
     //与磐石系统联动而封装的接口
     ['get', '/batch_undeploy_tars', PanshiController.batchUndeployTars, {application: 'notEmpty', server_name: 'notEmpty',}],

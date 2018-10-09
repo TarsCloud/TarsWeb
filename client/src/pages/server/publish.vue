@@ -18,7 +18,7 @@ export default {
   created() {
     this.serverData = this.$parent.getServerData();
     this.$parent.getPanshiUrl().then(data => {
-      this.panshiDomain = data;
+      this.panshiDomain = data + '/tfae/web/';
     })
   }
 };

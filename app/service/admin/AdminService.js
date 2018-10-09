@@ -136,28 +136,32 @@ AdminService.getTracingResultByServiceName = async (serviceName, start, end) => 
 
 AdminService.getTokens = async(objs) => {
     let tokenReq = new authStruct.TokenRequest();
-    objs.forEach(obj =>{
-        tokenReq.push(obj);
-    });
+    logger.info(objs);
+    tokenReq.readFromObject({vObjName:objs})
     return await authPrx.getTokens(tokenReq);
 }
 
-AdminService.applyToken = async (application, server_name, calledObjName) => {
+AdminService.applyToken = async (application, serverName, calledObjName) => {
     let applyTokenReq = new authStruct.ApplyTokenRequest();
-    applyTokenReq.readFromObject({
+    let param = {
         sApplication: application,
-        sServer: server_name,
+        sServer: serverName,
         sObjName: calledObjName
+    };
+    applyTokenReq.readFromObject({
+        sKey: param
     });
     return await authPrx.applyToken(applyTokenReq);
 }
 
-AdminService.deleteToken = async (application, server_name, calledObjName) => {
+AdminService.deleteToken = async (application, serverName, calledObjName) => {
     let deleteTokenReq = new authStruct.DeleteTokenRequest();
     deleteTokenReq.readFromObject({
-        sApplication: application,
-        sServer: server_name,
-        sObjName: calledObjName
+        sKey: {
+            sApplication: application,
+            sServer: serverName,
+            sObjName: calledObjName
+        }
     });
     return await authPrx.deleteToken(deleteTokenReq);
 }

@@ -93,10 +93,11 @@
             required
           ></let-input>
         </let-form-item>
-        <let-form-item :label="$t('cfg.btn.reason')" v-if="!configModal.isNew">
+        <let-form-item :label="$t('cfg.btn.reason')" v-if="!configModal.isNew" required>
           <let-input
             size="small"
             v-model="configModal.model.reason"
+            required
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('cfg.btn.content')" required>
@@ -301,7 +302,8 @@ export default {
     },
     '$parent.treeidRoute': function(treeid){
       console.info('treeid:',treeid);
-      this.serverData = this.$parent.serverData;
+      treeid = treeid.replace(/\/.+/,'').split('.');
+      this.serverData = this.$parent.getServerData(treeid);
       this.getConfigList(this.serverData);
     }
   },
@@ -618,20 +620,6 @@ export default {
       this.nodeRefFileListModal.model = null;
       this.refFileModal.id = id;
       this.getNodeRefFileList(id);
-    },
-    getparentTreeId(callback) {
-      let treeid = this.$parent.treeNodeId;
-      let count = 0;
-      let f=setInterval(()=>{
-        if(!treeid && count<5) {
-          treeid = this.$parent.treeNodeId;
-          count ++;
-        }else{
-          clearInterval(f);
-          f=null;
-          callback(treeid);
-        }
-      },500)
     }
   },
 };

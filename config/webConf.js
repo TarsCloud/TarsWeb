@@ -39,7 +39,7 @@ module.exports = {
         callsys: 'test_client',
         appkey: 'eff718a4894a42168eefee54ad134c51',
         mappingUrl: 'http://localhost:9089/panshi/api',
-        panshiDomain: 'http://119.29.202.216:8080/tfae/web'
+        panshiDomain: 'http://119.29.202.216:8080'
     },
     kafkaConf: {
         enable: false,

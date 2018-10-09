@@ -6,7 +6,11 @@
                 <let-table-column :title="$t('token.title.called')" prop="sObjName"></let-table-column>
                 <let-table-column :title="$t('token.title.call')" prop="call"></let-table-column>
                 <let-table-column title="Token" prop="token"></let-table-column>
-                <let-table-column width="100px" :title="$t('operate.operates')" prop="token"></let-table-column>
+                <let-table-column width="100px" :title="$t('operate.operates')">
+                    <template slot-scope="scope">
+                        <let-table-operation @click="deleteToken(scope.row)">{{$t('operate.delete')}}</let-table-operation>
+                    </template>
+                </let-table-column>
             </let-table>
         </wrapper>
 
@@ -90,10 +94,10 @@ export default {
                 let param = {
                     application : callServer[0],
                     server_name : callServer[1],
-                    calleeObj : this.addTokenModal.objName
+                    called_obj_name : this.addTokenModal.objName
                 }
                 const loading = this.$Loading.show();
-                this.$ajax.getJSON('/server/api/add_token',param).then(data=>{
+                this.$ajax.getJSON('/server/api/apply_token',param).then(data=>{
                     loading.hide();
                     this.addTokenModal.show = false;
                     this.getTokenList();
@@ -103,6 +107,23 @@ export default {
                 });
             }
         },
+        deleteToken(row) {
+            this.$confirm(this.$t('inf.dlg.deleteMsg'), this.$t('common.alert')).then(()=>{
+                const loading = this.$Loading.show();
+                let callServer = row.call.split('.');
+                this.$ajax.getJSON('/server/api/delete_token', {
+                    application : callServer[0],
+                    server_name : callServer[1],
+                    called_obj_name : row.sObjName
+                }).then(data=>{
+                    loading.hide();
+                    this.getTokenList();
+                }).catch(err=>{
+                    loading.hide();
+                    this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+                })
+            }).catch()    
+        },
         getTokenList() {
             const loading = this.$Loading.show();
             let objs = this.addTokenModal.objList.map(item => item.servant);
@@ -110,7 +131,13 @@ export default {
                 objName : objs
             }).then(data=>{
                 loading.hide();
-                this.tokenList = data;
+                this.tokenList = data.value;
+                data.value.forEach(item => {
+                    for(let i in item.mTokens.value){
+                        item.call = i;
+                        item.token = item.mTokens.value[i];
+                    }
+                });
             }).catch(err=>{
                 loading.hide();
                 this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

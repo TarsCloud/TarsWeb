@@ -275,4 +275,19 @@ ServerController.loadServer = async(ctx) => {
     }
 };
 
+ServerController.getServerNodes = async(ctx) => {
+    let {application, server_name} = ctx.paramsObj;
+    try{
+        if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+            ctx.makeNotAuthResObj();
+        } else {
+            let ret = await ServerService.getServerConfList4Tree({application, serverName:server_name});
+            ctx.makeResObj(200, '', ret);
+        }
+    }  catch (e) {
+        logger.error('[getServerNodes]', e, ctx);
+        ctx.makeErrResObj();
+    }
+}
+
 module.exports = ServerController;

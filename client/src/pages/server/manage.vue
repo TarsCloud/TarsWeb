@@ -588,15 +588,19 @@ export default {
         return this.checkTaskStatus(res).then((info) => {
           loading.hide();
           // 任务成功重新拉取列表
-          this.getServerList().then(()=>{
-            // 服务下线时同步数据到磐石
-            console.info('request panshi interface');
-            if(!this.serverList.length) {
+          this.getServerList();
+          this.$ajax.getJSON('/servr/api/server_nodes',{
+            application : this.serverData.application,
+            server_name : this.serverData.server_name
+          }).then(data => {
+            if(!data.length){
               this.$ajax.getJSON('/server/api/sync_undeploy_info', {
                 server_name : this.serverData.server_name
               });
             }
-          })
+          }).catch(err=>{
+            throw err;
+          });
           this.$tip.success({
             title: tipObj.success,
             message: info,
