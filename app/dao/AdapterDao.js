@@ -27,14 +27,32 @@ AdapterDao.getAdapterConfById = async(id) => {
 };
 
 AdapterDao.getAdapterConf = async(application, serverName, nodeName) => {
+    let whereObj = {
+        application: application,
+        server_name: serverName
+    };
+    if(nodeName) {
+        Object.assign(whereObj, {node_name: nodeName});
+    }
     return await tAdapterConf.findAll({
-        where: {
-            application: application,
-            server_name: serverName,
-            node_name: nodeName
-        }
+        raw:true,
+        where: whereObj
     });
 };
+
+AdapterDao.getServantByServerName = async(application, serverName) => {
+    let whereObj = {
+        application: application,
+        server_name: serverName
+    };
+    return await tAdapterConf.findAll({
+        attributes:['servant'],
+        group:'servant',
+        raw:true,
+        where: whereObj
+    });
+}
+
 
 AdapterDao.getAdapterConfByObj = async(params) => {
     return await tAdapterConf.findOne({

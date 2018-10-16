@@ -28,7 +28,7 @@ const TaskService = {};
 
 
 TaskService.getTaskRsp = async (taskNo) => {
-    let rsp = await AdminService.getTaskRsp(taskNo).catch(e => logger.error('[adminService.getTaskRsp]:',e));
+    let rsp = await AdminService.getTaskRsp(taskNo);
     logger.info('getTaskRsp:',rsp);
     return {
         task_no : rsp.taskNo,
@@ -99,7 +99,7 @@ TaskService.addTask = async (params) => {
         serial : params.serial,
         userName : params.user_name || ''
     };
-    await AdminService.addTask(req).catch(e => {console.error('[AdminService.addTask]:',e)});
+    await AdminService.addTask(req);
     return params.task_no;
 };
 

@@ -556,7 +556,8 @@
       "inParam" : "in params",
       "outParam" : "out params",
       "tarsFile" : "tars file",
-      "deleteMsg" : "are you sure to delete this file?"
+      "deleteMsg" : "are you sure to delete this file?",
+      "objName" : "Servant Name"
     }
   }
 }
