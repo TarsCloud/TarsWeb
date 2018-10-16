@@ -15,7 +15,6 @@
  */
  
 const client  = require("@tars/rpc/protal.js").client;
-const TarsProxy = require("./rpcProxy/NodeTarsProxy");
 const AdminRegProxy = require("./rpcProxy/AdminRegProxy");
 const ConfigFProxy = require("./rpcProxy/ConfigFProxy");
 const path = require('path');
