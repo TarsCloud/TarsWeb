@@ -186,7 +186,7 @@ export default {
                 item.value.map(n => {
                     n.QPS = n.QPS.toFixed(2);
                     n.peakQPS = n.peakQPS.toFixed(2);
-                    n.callPercent = n.callPercent.toFixed(2);
+                    n.callPercent = (n.callPercent*100).toFixed(2);
                     n.failRate = (n.failRate*100).toFixed(2);
                 })
             });

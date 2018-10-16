@@ -367,7 +367,8 @@
               this.$tip.success(this.$t('deployService.form.ret.success'));
             }
             this.model = getInitialModel();
-            //this.$refs.form.resetValid();
+            this.$refs.form.resetValid();
+            location.reload();
             this.model.template_name = this.templates[0];
           }).catch((err) => {
             loading.hide();

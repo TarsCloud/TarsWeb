@@ -53,7 +53,7 @@ DeployServerController.deployServer = async(ctx) => {
         let panshiRegister = await PanshiService.register(params);
         if(panshiRegister.result !=0){
             logger.error('[panshiRegister error]', panshiRegister.result_info, ctx);
-            ctx.makeResObj(500, e.message);
+            throw new Error(panshiRegister.result_info);
         }else {
             let rst = await ServerService.addServerConf(params);
             rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct);

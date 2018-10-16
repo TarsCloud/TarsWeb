@@ -275,6 +275,33 @@ ServerController.loadServer = async(ctx) => {
     }
 };
 
+ServerController.sendCommand = async(ctx) => {
+    let params = ctx.paramsObj;
+    try {
+        let rst = await ServerService.getServerConfById(params.server_ids);
+        if (!_.isEmpty(rst)) {
+            rst = rst.dataValues;
+            if (!await AuthService.hasDevAuth(rst.application, rst.server_name, ctx.uid)) {
+                ctx.makeNotAuthResObj();
+            } else {
+                let list = [{
+                    application : rst.application,
+                    serverName : rst.server_name,
+                    nodeName : rst.node_name
+                }]
+                let ret = await AdminService.doCommand(list, params.command);
+                ctx.makeResObj(200, '', ret);
+            }
+        } else {
+            logger.error('[sendCommand]:', '未查询到id=' + params.server_ids + '相应的服务', ctx);
+            ctx.makeErrResObj();
+        }
+    } catch (e) {
+        logger.error('[getRealtimeState]', e, ctx);
+        ctx.makeErrResObj();
+    }
+}
+
 ServerController.getServerNodes = async(ctx) => {
     let {application, server_name} = ctx.paramsObj;
     try{

@@ -7,6 +7,7 @@
                     <let-select v-model="searchType" class="select_width">
                         <let-option value="traceId">TraceID</let-option>
                         <let-option value="service">Service</let-option>
+                        <let-option value="tag">自定义</let-option>
                     </let-select>
                     <input class="custom_input" v-model="content" @keyup.enter="getTracesList" placeholder=""/>
                 </let-form-item>

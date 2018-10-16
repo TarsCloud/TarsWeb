@@ -1,6 +1,6 @@
 <template>
   <div class="page_server_property_monitor">
-    <iframe :src="panshiDomain+'/jsp/biz/attrDataMonitChart.jsp?modulename='+monitorName+'&unit=m1'" frameborder="0" width="100%" height="1300px"></iframe>
+    <iframe :src="panshiDomain+'/cft_oss2/jsp/biz/attrDataMonitChart.jsp?modulename='+monitorName+'&unit=m1'" frameborder="0" width="100%" height="1300px"></iframe>
   </div>
 </template>
 

@@ -24,7 +24,7 @@
                     <let-cascader :data="contextData" required  size="small" @change="getParams"></let-cascader>
                     
                 </let-form-item>
-                <let-form-item :label="$t('serverList.servant.objName')" v-if="objList.length">
+                <let-form-item :label="$t('inf.dlg.objName')" v-if="objList.length">
                     <let-select v-model="objName">
                         <let-option v-for="item in objList" :value="item.servant" :key="item.servant"></let-option>
                     </let-select>

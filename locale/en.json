@@ -562,7 +562,8 @@
     },
     "dlg": {
       "selectLabel" : "modules/interfaces/functions",
-      "deleteMsg" : "Are you sure delete this file?"
+      "deleteMsg" : "Are you sure delete this file?",
+      "objName" : "Servant name"
     }
   },
   "token": {

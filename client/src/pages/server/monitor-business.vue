@@ -1,6 +1,6 @@
 <template>
   <div class="page_server_business_monitor">
-    <iframe :src="panshiDomain+'/queryMonitView.do?module='+monitorName" frameborder="0" width="100%" height="1300px"></iframe>
+    <iframe :src="panshiDomain+'/cft_oss2/queryMonitView.do?module='+monitorName" frameborder="0" width="100%" height="1300px"></iframe>
   </div>
 </template>
 

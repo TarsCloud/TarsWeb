@@ -562,7 +562,8 @@
     },
     "dlg": {
       "selectLabel" : "模块/接口/方法",
-      "deleteMsg" : "您确定要删除吗？"
+      "deleteMsg" : "您确定要删除吗？",
+      "objName" : "Servant名"
     }
   },
   "token": {

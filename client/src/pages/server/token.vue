@@ -131,13 +131,18 @@ export default {
                 objName : objs
             }).then(data=>{
                 loading.hide();
-                this.tokenList = data.value;
-                data.value.forEach(item => {
+                let ret = data.value.filter(n=> JSON.stringify(n.mTokens.value)!='{}');
+                let newArr = [];
+                ret.forEach(item => {
                     for(let i in item.mTokens.value){
-                        item.call = i;
-                        item.token = item.mTokens.value[i];
+                        newArr.push({
+                            sObjName : item.sObjName,
+                            call : i,
+                            token : item.mTokens.value[i]
+                        });
                     }
                 });
+                this.tokenList = newArr;
             }).catch(err=>{
                 loading.hide();
                 this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

@@ -30,8 +30,10 @@ CallChainController.getTraceList = async (ctx) => {
         end_time = moment(end_time).unix()*1000;
         if(type == 'traceId') {
             ret = await AdminService.getTracingResultById(content, start_time, end_time);
-        }else {
+        }else if(type == 'service'){
             ret = await AdminService.getTracingResultByServiceName(content, start_time, end_time);
+        }else {
+            ret = await AdminService.getTracingResultByTag(content, start_time, end_time);
         }
         let newData = [];
         let data = ret.__return;

@@ -589,7 +589,7 @@ export default {
           loading.hide();
           // 任务成功重新拉取列表
           this.getServerList();
-          this.$ajax.getJSON('/servr/api/server_nodes',{
+          this.$ajax.getJSON('/server/api/server_nodes',{
             application : this.serverData.application,
             server_name : this.serverData.server_name
           }).then(data => {
