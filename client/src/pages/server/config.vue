@@ -93,10 +93,11 @@
             required
           ></let-input>
         </let-form-item>
-        <let-form-item :label="$t('cfg.btn.reason')" v-if="!configModal.isNew">
+        <let-form-item :label="$t('cfg.btn.reason')" v-if="!configModal.isNew" required>
           <let-input
             size="small"
             v-model="configModal.model.reason"
+            required
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('cfg.btn.content')" required>
@@ -515,7 +516,7 @@ export default {
       }
       const loading = this.$Loading.show();
       this.$ajax.getJSON('/server/api/push_config_file', {
-        config_ids: this.nodeCheckList.join(';'),
+        ids: this.nodeCheckList.join(';'),
       }).then((res) => {
         loading.hide();
         this.pushResultModal.model = res;

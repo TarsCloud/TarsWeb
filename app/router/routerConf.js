@@ -51,6 +51,7 @@ const apiConf = [
 
     ['get', '/tree', TreeController.listTree],
     ['get', '/send_command', ServerController.sendCommand, {server_ids: 'notEmpty', command: 'notEmpty'}],
+    ['get', '/server_nodes', ServerController.getServerNodes, {application: 'notEmpty', server_name: 'notEmpty'}],
 
     //notify日志接口
     ['get', '/server_notify_list', NotifyController.getServerNotifyList, {tree_node_id: 'notEmpty'}],
@@ -58,6 +59,7 @@ const apiConf = [
     //Adapter接口
     ['get', '/adapter_conf', AdapterController.getAdapterConfById, {id: 'notEmpty'}],
     ['get', '/adapter_conf_list', AdapterController.getAdapterConfListByServerConfId, {id: 'notEmpty'}],
+    ['get', '/all_adapter_conf_list', AdapterController.getAllAdapterConfList, {application: 'notEmpty', server_name: 'notEmpty'}],
     ['post', '/add_adapter_conf', AdapterController.addAdapterConf, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty'},
      ['application', 'server_name', 'node_name', 'thread_num', 'endpoint', 'max_connections', 'allow_ip', 'servant', 'queuecap', 'queuetimeout', 'protocol', 'handlegroup']
     ],
@@ -144,6 +146,7 @@ const apiConf = [
     ['get', '/get_contexts', InfTestController.getContexts, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty'}],
     ['get', '/get_params', InfTestController.getParams, {application: 'notEmpty', server_name: 'notEmpty', id:'notEmpty', module_name:'notEmpty', interface_name:'notEmpty', function_name:'notEmpty'}],
     ['get', '/delete_tars_file', InfTestController.deleteTarsFile, {id: 'notEmpty'}],
+    ['get', '/get_structs', InfTestController.getStructs, {id: 'notEmpty', module_name: 'notEmpty'}],
 ];
 
 module.exports = {pageConf, apiConf};

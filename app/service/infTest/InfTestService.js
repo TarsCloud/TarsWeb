@@ -21,7 +21,19 @@ const fs = require('fs-extra');
 
 const InfTestService = {};
 
-
+/**
+ * @name debug 发起调试
+ * @param {Object} paramObj
+ * @description paramObj {
+ * id   tars文件ID
+ * moduleName   模块名
+ * interfaceName    接口名
+ * objName  OBJ名
+ * functionName 方法名
+ * params   参数
+ * }
+ * @returns {Object} res 服务返回的数据 
+ */
 InfTestService.debug = async (paramObj) => {
     let context = await getContextFromDB(paramObj.id);
     context = JSON.parse(context.context);
@@ -31,6 +43,11 @@ InfTestService.debug = async (paramObj) => {
     return ret.response;
 }
 
+/**
+ * @name addTarsFile 将解析后的tars文件插入数据库
+ * @param {Object} params 
+ * @returns {Object} 插入的记录
+ */
 InfTestService.addTarsFile = async (params) => {
     await InfTestDao.addTarsFile(params);
     delete params.context;
@@ -38,10 +55,21 @@ InfTestService.addTarsFile = async (params) => {
     return (await InfTestService.getTarsFile(params, ['f_id', 'application', 'server_name', 'file_name', 'posttime']))[0];
 }
 
+/**
+ * @name getTarsFile 获取解析后的tars文件记录
+ * @param {Object} params 
+ * @param {Array} fields
+ * @returns {Object} 插入的记录 
+ */
 InfTestService.getTarsFile = async (params, fields) => {
     return await InfTestDao.getTarsFile(params, fields);
 }
 
+/**
+ * @name getContext 根据tars文件解析上下文
+ * @param {String} tarsFilePath 
+ * @returns {Object} context上下文
+ */
 InfTestService.getContext = async (tarsFilePath) => {
     return await getContext(tarsFilePath);
 }
@@ -58,6 +86,11 @@ async function getContextFromDB(id) {
     return await InfTestDao.getContext(id);
 }
 
+/**
+ * @name getAllData 将上下文解析成多层的模块接口方法嵌套JSON
+ * @param {String} id tars文件ID
+ * @returns {Object} context
+ */
 InfTestService.getAllData = async (id) =>{
     let context = (await getContextFromDB(id)).context;
     context = JSON.parse(context);
@@ -86,6 +119,30 @@ InfTestService.getAllData = async (id) =>{
     return f(context);
 }
 
+/**
+ * @name getStruct  获取上下文的enums,keys,struct,string等结构数据
+ * @param {String} id tars文件ID
+ * @param {String} moduleName 模块名
+ * @returns {Object} structs
+ */
+InfTestService.getStructs = async (id, moduleName) => {
+    let context = (await getContextFromDB(id)).context;
+    context = JSON.parse(context);
+    context = context[moduleName];
+    let obj = {};
+    for(let item in context) {
+        if(item != 'interfaces'){
+            obj[item] = context[item];
+        }
+    }
+    return obj;
+}
+
+/**
+ * @name getModuleData 获取所有模块
+ * @param {String} id tars文件ID
+ * @returns {Array} keys 模块
+ */
 InfTestService.getModuleData = async (id) =>{
     let context = (await getContextFromDB(id)).context;
     context = JSON.parse(context);
@@ -93,6 +150,12 @@ InfTestService.getModuleData = async (id) =>{
     return keys;
 }
 
+/**
+ * @name getInterfaceData 获取所有接口
+ * @param {String} id tars文件ID
+ * @param {String} moduleName 模块名
+ * @returns {Array} keys 接口
+ */
 InfTestService.getInterfaceData = async (id, moduleName) => {
     let context = (await getContextFromDB(id)).context;
     context = JSON.parse(context);
@@ -100,12 +163,27 @@ InfTestService.getInterfaceData = async (id, moduleName) => {
     return keys;
 }
 
+/**
+ * @name getFunctionData 获取所有方法
+ * @param {String} id tars文件ID
+ * @param {String} moduleName 模块名
+ * @param {String} interfaceName 接口名
+ * @returns {Array} keys 方法
+ */
 InfTestService.getFunctionData = async (id, moduleName, interfaceName) => {
     let context = (await getContextFromDB(id)).context;
     context = JSON.parse(context);
     return Object.keys(context[moduleName].interfaces[interfaceName].functions);
 }
 
+/**
+ * @name getParams 获取所有参数
+ * @param {String} id tars文件ID
+ * @param {String} moduleName 模块名
+ * @param {String} interfaceName 接口名
+ * @param {String} functionName 方法名
+ * @returns {Array} params 参数
+ */
 InfTestService.getParams = async (id, moduleName, interfaceName, functionName) => {
     let context = (await getContextFromDB(id)).context;
     context = JSON.parse(context);
@@ -113,6 +191,11 @@ InfTestService.getParams = async (id, moduleName, interfaceName, functionName) =
     return params;
 }
 
+/**
+ * 从DB删除解析后的tars文件
+ * @param {String} id tars文件ID
+ * @returns {Number} 删除的记录数
+ */
 InfTestService.deleteTarsFile = async (id) => {
     return await InfTestDao.deleteTarsFile(id);
 }

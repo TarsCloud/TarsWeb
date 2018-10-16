@@ -24,8 +24,10 @@
                     <let-cascader :data="contextData" required  size="small" @change="getParams"></let-cascader>
                     
                 </let-form-item>
-                <let-form-item :label="$t('serverList.servant.objName')">
-                    <let-input v-model="objName" required></let-input>
+                <let-form-item :label="$t('inf.dlg.objName')" v-if="objList.length">
+                    <let-select v-model="objName">
+                        <let-option v-for="item in objList" :value="item.servant" :key="item.servant"></let-option>
+                    </let-select>
                 </let-form-item>
                 <let-form-item>
                     <let-button theme="primary" @click="doDebug">{{$t('inf.list.debug')}}</let-button>
@@ -115,17 +117,23 @@ export default {
             selectedFileName: '',
             selectedMethods: [],
             objName : '',
+            objList : [],
             selectedId : '' 
         }
     },
     methods: {
         getFileList() {
+            const loading = this.$Loading.show();
             this.$ajax.getJSON('/server/api/get_file_list',{
                 application : this.serverData.application,
                 server_name : this.serverData.server_name
             }).then(data => {
+                loading.hide();
                 this.tarsFileList = data;
-            })
+            }).catch((err) => {
+                loading.hide();
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
         },
         openTarsUploadFileModal() {
             this.uploadModal.show = true;
@@ -169,18 +177,7 @@ export default {
             this.selectedId = row.f_id;
             this.objName = null;
             this.getContextData(row.f_id);
-        },
-        getContextData(id) {
-            this.$ajax.getJSON('/server/api/get_contexts', {
-                id : id,
-                application : this.serverData.application,
-                server_name : this.serverData.server_name,
-                type : 'all'
-            }).then(data => {
-                this.contextData = data;
-            }).catch((err) => {
-                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-            });
+            this.getObjList();
         },
         deleteTarsFile(id) {
             this.$confirm(this.$t('inf.dlg.deleteMsg'), this.$t('common.alert')).then(()=>{
@@ -198,6 +195,46 @@ export default {
 
             });
         },
+        getObjList() {
+            this.$ajax.getJSON('/server/api/all_adapter_conf_list', {
+                application : this.serverData.application,
+                server_name : this.serverData.server_name,
+            }).then(data => {
+                if(data.length){
+                    this.objList = data;
+                    this.objName = data[0].servant;
+                }
+            }).catch(err=>{
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
+        },
+        getContextData(id) {
+            this.$ajax.getJSON('/server/api/get_contexts', {
+                id : id,
+                application : this.serverData.application,
+                server_name : this.serverData.server_name,
+                type : 'all'
+            }).then(data => {
+                this.contextData = data;
+            }).catch((err) => {
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
+        },
+        parseFields(fields) {
+            let tmp = {};
+            for(let item in fields) {
+                let defaultVal = fields[item].defaultValue;
+                if(!defaultVal) {
+                    if(fields[item].type === 'string') {
+                        defaultVal = '';
+                    }else if(fields[item].type === 'long' || fields[item].type === 'int') {
+                        defaultVal = 0;
+                    }
+                }
+                tmp[item] = defaultVal;
+            }
+            return tmp;
+        },
         getParams(value) {
             this.selectedMethods = value;
             if(value.length ==3) {
@@ -212,18 +249,29 @@ export default {
                 }).then(data => {
                     loading.hide();
                     let obj = {};
-                    data.forEach(item => {
-                        if(!item.out) {
-                            if(item.type === 'string') {
-                                obj[item.name] = '';
-                            }else if(item.type === 'array') {
-                                obj[item.name] = [];
-                            }else{
-                                obj[item.name] = '';
+                    this.$ajax.getJSON('/server/api/get_structs', {id: this.selectedId, module_name: value[0]}).then(contextData=>{
+                        data.forEach(item => {
+                            if(!item.out) {
+                                if(item.type === 'string') {
+                                    obj[item.name] = '';
+                                }else if(item.type === 'array') {
+                                    obj[item.name] = [];
+                                }else if(typeof item.type === 'object'){
+                                    if(item.type.vector) {
+                                        obj[item.name] = [];
+                                    }else if(item.type.isEnum){
+                                        let tmp = {};
+                                        obj[item.name] = {};
+                                    }else if(item.type.isStruct){
+                                        obj[item.name] = this.parseFields(contextData.structs[item.type.name].fields);
+                                    }
+                                }else{
+                                    obj[item.name] = '';
+                                }
                             }
-                        }
+                        });
+                        this.inParam = JSON.stringify(obj);
                     });
-                    this.inParam = JSON.stringify(obj);
                 }).catch((err) => {
                     loading.hide();
                     this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
