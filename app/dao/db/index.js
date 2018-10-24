@@ -59,7 +59,8 @@ databases.forEach((database)=>{
         },
         timezone: (()=> {
             let timezone = String(0 - new Date().getTimezoneOffset() / 60);
-            return '+' + (timezone.length < 2 ? ('0' + timezone) : timezone) + ':00';
+            let prefix = timezone.indexOf('-') >=0 ? '' : '+' ;
+            return prefix + (timezone.length < 2 ? ('0' + timezone) : timezone) + ':00';
         })()  //获取当前时区并做转换
     });
 
