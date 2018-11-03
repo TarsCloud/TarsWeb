@@ -31,7 +31,7 @@ try {
     } else if (cluster.isWorker || !enableMultiProcess) {
         let server = http.createServer(app.callback());
         server.listen(port, '0.0.0.0', function () {
-            logger.info('Server has been started successfully');
+            logger.info(`Server has been started successfully, listening at ${port}`);
         });
         server.on('error', onError);
     }
