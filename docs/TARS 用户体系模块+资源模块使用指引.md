@@ -36,19 +36,19 @@ TARS 通过配置文件/config/loginConf.js 与 第三方登录体系，或默�
  {
     enableLogin: true,                  //是否启用登录验证
     defaultLoginUid: 'admin',             //若不启用登录验证，默认用户为admin
-    loginUrl: 'http://localhost/login.html',   //跳转到的登录url
-    redirectUrlParamName: 'service',        //跳转到登录url的时带原url的参数名，如：***/login?service=\*\*\*，默认是service
+    loginUrl: 'http://localhost:3001/login.html',   //跳转到的登录url
+    redirectUrlParamName: 'redirect_url',        //跳转到登录url的时带原url的参数名，如：***/login?service=\*\*\*，默认是service
     logoutUrl: '',                    //登出的url
     logoutredirectUrlParamName: 'url',      //跳转到登录url的时带原url的参数名，与登录的参数功能一致
     ticketCookieName: 'ticket',           //cookie中保存ticket信息的cookie名
     uidCookieName: 'uid',               //cookie中保存用户名信息的cookie名
     cookieDomain: 'localhost',           //cookie值对应的域，若为空，则为当前管理平台所在域
     ticketParamName: 'ticket',           //第三方登录服务登录成功回调时候，url中表示ticket的参数名
-    getUidByTicket: 'http://localhost/getUidByTicket',  
+    getUidByTicket: getUidByTicket,  
 	//此处可以为一个url，或一个函数方法，通过ticket从登录服务端校验和获取用户基本信息的url 或 获取用户基本信息的方法。若是函数方法，则以下getUidByTicketParamName和uidKey参数无效，方法直接返回用户名即可
     getUidByTicketParamName: 'ticket',      //调用获取用户信息接口时候ticket的参数名
     uidKey: 'data.uid',                //结果JSON里面取出用户名的位置，取到该用户名才认为成功,可以多层，示例中表示从返回值的data对象中取uid。
-    validate: 'http://example.com/api/validate',  
+    validate: validate,  
 	//通过token和用户名到登录服务端校验key和用户名是否匹配的url或方法，若是函数方法，则以下validateTicketParamName,validateUidParamName和validateMatch参数无效，方法直接返回true或false表示是否通过登录即可。
 
     validateTicketParamName: 'ticket',      //校验接口传入ticket参数名
