@@ -13,7 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
-
+const request = require('request-promise-any');
 
 /**
  * 登录配置
@@ -21,18 +21,18 @@
 module.exports = {
     enableLogin: false,                     //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
-    loginUrl: '',                 //登录跳转url
-    redirectUrlParamName: 'url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
+    loginUrl: 'http://localhost:3001/login.html',                 //登录跳转url
+    redirectUrlParamName: 'redirect_url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
     logoutUrl: '',
     logoutredirectUrlParamName: 'url',
     ticketCookieName: 'ticket',             //cookie中保存ticket信息的cookie名
     uidCookieName: 'uid',                   //cookie中保存用户信息的cookie名
-    cookieDomain: '',              //cookie值对应的域
+    cookieDomain: 'localhost',              //cookie值对应的域
     ticketParamName: 'ticket',              //第三方登录服务回调时候，url中表示st的参数名
-    getUidByTicket: '',         //通过ticket从cas服务端校验和获取用户基本信息的url,或获取用户基本信息的方法
+    getUidByTicket: getUidByTicket,         //通过ticket从cas服务端校验和获取用户基本信息的url,或获取用户基本信息的方法
     getUidByTicketParamName: 'ticket',      //调用获取用户信息接口时候st的参数名
     uidKey: 'data.uid',                     //结果JSON里面取出用户名的位置，取到该用户名才认为成功,可以多层
-    validate: '',                     //通过token和用户名到cas服务端校验key和用户名是否匹配的url或方法
+    validate: validate,                     //通过token和用户名到cas服务端校验key和用户名是否匹配的url或方法
     validateTicketParamName: 'ticket',      //校验接口传入st参数名
     validateUidParamName: 'uid',            //校验接口传入用户参数名
     validateMatch: [
@@ -44,3 +44,37 @@ module.exports = {
     apiNotLoginMes: '#common.noLogin#', //接口无登录权限的提示语
 };
 
+/**
+ * 通过ticket获取用户信息的方法
+ * @param {Object} ctx 
+ * @param {String} ticket 
+ */
+function getUidByTicket(ctx, ticket) {
+    // TODO 以下是示例代码，仅供参考
+    return new Promise((resolve, reject)=>{
+        request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
+            uidInfo = JSON.parse(uidInfo);
+            resolve(uidInfo.data.uid);
+        }).catch(err=>{
+            reject(err);
+        });
+    })
+}
+
+/**
+ * 校验ticket与uid是否相同的方法
+ * @param {Object} ctx 
+ * @param {String} uid 
+ * @param {String} ticket 
+ */
+function validate(ctx, uid, ticket) {
+    //TODO 以下是示例代码，仅供参考
+    return new Promise((resolve, reject)=>{
+        request.get('http://localhost:3001/api/validate?ticket='+ticket+'&uid='+uid).then(data=>{
+            data = JSON.parse(data);
+            resolve(data.data.result);
+        }).catch(err=>{
+            reject(err);
+        });
+    })
+}
