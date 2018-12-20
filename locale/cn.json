@@ -5,9 +5,21 @@
   "header": {
     "tab": {
       "tab1": "服务管理",
-      "tab2": "运维管理"
+      "tab2": "运维管理",
+      "tab3": "发布包管理"
     },
     "logout": "退出登录"
+  },
+  "releasePackage": {
+    "proxyList": "Proxy服务列表",
+    "routerList": "Router服务列表",
+    "cacheList": "Cache服务列表",
+    "uploadPackage": "上传发布包",
+    "moduleName": "模块名",
+    "uploadTime": "上传时间",
+    "default": "默认",
+    "confirmDeleteTip": "确定要删除这个发布包吗？",
+    "cacheType": "cache类型"
   },
   "api": {
     "blank": {
@@ -141,6 +153,7 @@
     "search": "查询",
     "servant": "管理Servant",
     "goback": "返回",
+    "default": "默认",
     "title": {
       "update": "编辑",
       "add": "添加",

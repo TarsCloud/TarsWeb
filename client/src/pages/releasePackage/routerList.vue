@@ -41,7 +41,7 @@
         itemWidth="100%"
         @submit.native.prevent="uploadPatchPackage">
         <let-form-item :label="$t('releasePackage.moduleName')">
-          {{uploadModal.model.module_name}}
+          {{uploadModal.model.application}}.{{uploadModal.model.module_name}}
         </let-form-item>
         <let-form-item :label="$t('pub.dlg.releasePkg')" itemWidth="400px">
           <let-uploader
@@ -73,7 +73,8 @@
         uploadModal: {
           show: false,
           model: {
-            module_name: 'DCache.RouterServer',
+            application: 'DCache',
+            module_name: 'RouterServer',
             file: {},
             comment: ''
           }
@@ -96,7 +97,9 @@
         if (this.$refs.uploadForm.validate()) {
           const loading = this.$Loading.show();
           const formdata = new FormData();
+          formdata.append('application', this.uploadModal.model.application);
           formdata.append('module_name', this.uploadModal.model.module_name);
+          formdata.append('task_id', new Date().getTime());
           formdata.append('suse', this.uploadModal.model.file);
           formdata.append('comment', this.uploadModal.model.comment);
           this.$ajax.postForm('/server/api/upload_patch_package', formdata).then(() => {
@@ -110,8 +113,9 @@
         }
       },
       getPatchPackage() {
-        this.$ajax.getJSON('/server/api/get_patch_package', {
-          module_name: this.uploadModal.model.module_name
+        this.$ajax.getJSON('/server/api/server_patch_list', {
+          application: 'DCache',
+          module_name: 'RouterServer'
         }).then((data) => {
           this.packages = data
         }).catch((err) => {
@@ -132,6 +136,7 @@
         this.$ajax.postJSON('/server/api/set_patch_package_default', {
           id,
           package_type,
+          application: this.uploadModal.model.application,
           module_name: this.uploadModal.model.module_name
         }).then((data) => {
           this.getPatchPackage();

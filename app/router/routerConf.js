@@ -109,6 +109,8 @@ const apiConf = [
     ['post', '/do_compile', PatchController.doCompile],
     ['get', '/compiler_task', PatchController.compilerTask],
     ['get', '/get_compile_conf', PatchController.getCompilerConf],
+    ['post', '/delete_patch_package', PatchController.deletePatchPackage],
+    ['post', '/set_patch_package_default', PatchController.setPatchPackageDefault],
 
     // 监控
     ['get', '/tarsstat_monitor_data', MonitorController.tarsstat],

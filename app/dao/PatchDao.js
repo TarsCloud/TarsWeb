@@ -44,6 +44,26 @@ module.exports = {
         return await tServerPatchs.findAndCountAll(opts);
     },
 
+    destroyServePatch: async ({where}) => {
+        return await tServerPatchs.destroy({where})
+    },
+
+    setPatchPackageDefault: async ({id, application, module_name, package_type}) => {
+        await tServerPatchs.update({
+            default_version: 0
+        }, {
+            where: {
+                server: application + '.' + module_name,
+                default_version: 1
+            }
+        });
+        return await tServerPatchs.update({
+            default_version: 1
+        }, {
+            where: {id}
+        });
+    },
+
     getServerPatchByPkgName : async(name) => {
         return await tServerPatchs.findOne({
             where : {

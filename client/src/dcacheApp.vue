@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <app-header></app-header>
+    <app-dcache-header></app-dcache-header>
 
     <!-- 切换 tab 缓存接口（主要为左侧目录树） -->
     <keep-alive>
@@ -12,13 +12,13 @@
 </template>
 
 <script>
-import AppHeader from './components/app/header';
+import AppDcacheHeader from './components/app/dcache-header.vue';
 import AppFooter from './components/app/footer';
 
 export default {
   name: 'App',
   components: {
-    AppHeader,
+    AppDcacheHeader,
     AppFooter,
   },
 };

@@ -26,4 +26,14 @@ PatchService.getServerPatch = async (application, server_name, curPage, pageSize
     return await PatchDao.getServerPatch(`${application}.${server_name}`, curPage, pageSize);
 };
 
+PatchService.deleteServerPatchById = async (id) => {
+    return await PatchDao.destroyServePatch({
+        where: {id}
+    })
+};
+
+PatchService.setPatchPackageDefault = async ({id, application, module_name, package_type}) => {
+    return await PatchDao.setPatchPackageDefault({id, application, module_name, package_type})
+};
+
 module.exports = PatchService;

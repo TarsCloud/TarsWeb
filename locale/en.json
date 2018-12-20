@@ -5,9 +5,21 @@
   "header": {
     "tab": {
       "tab1": "Services",
-      "tab2": "operation"
+      "tab2": "operation",
+      "tab3": "Release package"
     },
     "logout": "logout"
+  },
+  "releasePackage": {
+    "proxyList": "Proxy Service List",
+    "routerList": "Router Service List",
+    "cacheList": "Cache Service List",
+    "uploadPackage": "Upload publish package",
+    "moduleName": "moduleName",
+    "uploadTime": "upload time",
+    "default": "default",
+    "confirmDeleteTip": "Are you sure you want to delete this release package?",
+    "cacheType": "cache type"
   },
   "api": {
     "blank": {
@@ -141,6 +153,7 @@
     "search": "search",
     "servant": "servant",
     "goback": "go back",
+    "default": "default",
     "title": {
       "update": "Update",
       "add": "Add",

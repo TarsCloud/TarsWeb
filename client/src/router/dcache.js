@@ -17,6 +17,13 @@ import OperationDeploy from '@/pages/operation/deploy';
 import OperationExpand from '@/pages/operation/expand';
 import OperationTemplates from '@/pages/operation/templates';
 
+// 发布包管理
+import releasePackage from '@/pages/releasePackage/index';
+import proxyList from '@/pages/releasePackage/proxyList';
+import routerList from '@/pages/releasePackage/routerList';
+import cacheList from '@/pages/releasePackage/cacheList';
+
+
 Vue.use(Router);
 
 export default new Router({
@@ -73,6 +80,26 @@ export default new Router({
         {
           path: 'templates',
           component: OperationTemplates,
+        },
+      ],
+    },
+    {
+      path: '/releasePackage',
+      name: 'releasePackage',
+      component: releasePackage,
+      redirect: '/releasePackage/proxyList',
+      children: [
+        {
+          path: 'proxyList',
+          component: proxyList,
+        },
+        {
+          path: 'routerList',
+          component: routerList,
+        },
+        {
+          path: 'cacheList',
+          component: cacheList,
         },
       ],
     },

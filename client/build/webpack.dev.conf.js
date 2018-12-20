@@ -23,11 +23,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   // these devServer options should be customized in /config/index.js
   devServer: {
     clientLogLevel: 'warning',
-    historyApiFallback: {
-      rewrites: [
-        { from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, 'index.html') },
-      ],
-    },
+    // historyApiFallback: {
+    //   rewrites: [
+    //     { from: /./, to: path.posix.join(config.dev.assetsPublicPath, 'index.html') },
+    //   ],
+    // },
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.
     compress: true,
@@ -55,7 +55,16 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
-      inject: true
+      inject: true,
+      title: 'TARS',
+      chunks: ['app'],
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'dcache.html',
+      template: 'index.html',
+      inject: true,
+      title: 'DCACHE',
+      chunks: ['dcache'],
     }),
     // copy custom static assets
     new CopyWebpackPlugin([

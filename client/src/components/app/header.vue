@@ -5,7 +5,11 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <img class="logo" src="@/assets/img/logo.png">
+        <a href="/"><img class="logo" src="@/assets/img/logo.png"></a>
+        <a href="/dcache.html"><img class="logo" alt="dcache" src="@/assets/img/dcache-logo.png"></a>
+
+      </div>
+      <div class="dcache-logo-wrap">
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
@@ -39,6 +43,7 @@
 import serverIcon from '@/assets/img/server-icon.png';
 import opaIcon from '@/assets/img/opa-icon.png';
 import {localeMessages} from '@/locale/i18n';
+
 
 export default {
   data() {
@@ -88,7 +93,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="postcss">
 @import '../../assets/css/variable.css';
 
 .app_index__header {
@@ -102,7 +107,7 @@ export default {
   .tabs .let-tabs__header {
     border-bottom: none;
   }
-  .logo-wrap, .user-wrap ,.language-wrap {
+  .logo-wrap, .user-wrap ,.language-wrap, .dcache-logo-wrap {
     position: absolute;
     top: 0;
     height: 80px;
@@ -111,7 +116,17 @@ export default {
   }
   .logo-wrap {
     left: 0;
-
+    width: auto;
+    z-index: 100;
+    .logo {
+      height: 100%;
+      float: left;
+      padding-right: 40px;
+    }
+  }
+  .dcache-logo-wrap {
+    left: 150px;
+    width: 150px;
     .logo {
       height: 100%;
     }

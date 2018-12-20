@@ -23,7 +23,6 @@ const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
 const multer = require('koa-multer');
 const static = require('koa-static');
-const {pageRouter, apiRouter} = require('./app/router');
 const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
 const localeMidware = require('./app/midware/localeMidware');
@@ -69,7 +68,18 @@ let loginConf = require('./config/loginConf.js');
 loginConf.ignore =loginConf.ignore.concat(['/static', '/tarsnode.tar.gz', '/favicon.ico', '/pages/server/api/get_locale']);
 app.use(loginMidware(loginConf));
 
+// 是否启动 DCache
+let dcacheConf = require('./config/dcacheConf.js');
+if (dcacheConf.enableDcache) {
+  app.use(async (ctx, next) => {
+      await next(); ctx.cookies.set('dcache', 'true')
+  });
+  let tarsDcache = require('./../../../nodejs_modules/tars-dcache');
+}
+
 //激活router
+// dcache 会添加新的 page、api router， 不能提前
+const {pageRouter, apiRouter} = require('./app/router');
 app.use(pageRouter.routes(), pageRouter.allowedMethods());
 app.use(apiRouter.routes(), apiRouter.allowedMethods());
 

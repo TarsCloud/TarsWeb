@@ -5,7 +5,9 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <img class="logo" src="@/assets/img/logo.png">
+        <a href="/"><img class="logo" src="@/assets/img/logo.png"></a>
+        <a href="/dcache.html"><img class="logo" alt="dcache" src="@/assets/img/dcache-logo.png"></a>
+
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0]? $route.matched[0].path : '/server'">
@@ -89,12 +91,12 @@ export default {
 };
 </script>
 
-<style>
-@import '../../assets/css/variable.css';
+<style lang="postcss">
+  @import '../../assets/css/variable.css';
 
-.app_index__header {
-  height: 80px;
-  border-bottom: 1px solid var(--border-color);
+  .app_index__header {
+    height: 80px;
+    border-bottom: 1px solid var(--border-color);
 
   .main-width {
     position: relative;
@@ -103,7 +105,7 @@ export default {
   .tabs .let-tabs__header {
     border-bottom: none;
   }
-  .logo-wrap, .user-wrap ,.language-wrap {
+  .logo-wrap, .user-wrap ,.language-wrap, .dcache-logo-wrap {
     position: absolute;
     top: 0;
     height: 80px;
@@ -112,10 +114,20 @@ export default {
   }
   .logo-wrap {
     left: 0;
-
-    .logo {
-      height: 100%;
-    }
+    width: auto;
+    z-index: 100;
+  .logo {
+    height: 100%;
+    float: left;
+    padding-right: 40px;
+  }
+  }
+  .dcache-logo-wrap {
+    left: 150px;
+    width: 150px;
+  .logo {
+    height: 100%;
+  }
   }
   .language-wrap{
     right: 150px;
@@ -127,29 +139,29 @@ export default {
     width: 150px;
     text-align: right;
 
-    .user-info {
-      max-width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      height: 28px;
-      cursor: pointer;
+  .user-info {
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 28px;
+    cursor: pointer;
 
-      .avatar {
-        height: 100%;
-        border-radius: 50%;
-      }
-      .name {
-        margin: 0 8px;
-      }
-      .let-icon-caret-down {
-        position: relative;
-        right: auto;
-        top: auto;
-        padding-left: 0;
-        margin-top: 0;
-      }
-    }
+  .avatar {
+    height: 100%;
+    border-radius: 50%;
+  }
+  .name {
+    margin: 0 8px;
+  }
+  .let-icon-caret-down {
+    position: relative;
+    right: auto;
+    top: auto;
+    padding-left: 0;
+    margin-top: 0;
+  }
+  }
   }
 
   .user-pop-wrap{
@@ -168,5 +180,5 @@ export default {
   .fade-enter, .fade-leave-to{
     opacity: 0;
   }
-}
+  }
 </style>

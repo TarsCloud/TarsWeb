@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node server/bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
+    "dcache": "./node_modules/.bin/nodemon --watch ./../../../nodejs_modules/tars-dcache --watch ./ bin/www",
     "prd": "pm2 start bin/www --name=tars-node-web",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
