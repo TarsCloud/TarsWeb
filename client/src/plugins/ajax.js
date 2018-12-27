@@ -22,3 +22,5 @@ Object.defineProperty(Vue.prototype, '$ajax', {
     return Ajax;
   },
 });
+
+export default Ajax;

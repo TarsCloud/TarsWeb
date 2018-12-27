@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 // 服务管理
-import Server from '@/pages/server/index';
+import Server from '@/pages/server/dcacheIndex';
 import ServerManage from '@/pages/server/manage';
 import ServerPublish from '@/pages/server/publish';
 import ServerConfig from '@/pages/server/config';
@@ -11,11 +11,19 @@ import ServerPropertyMonitor from '@/pages/server/monitor-property';
 import userManage from '@/pages/server/user-manage';
 import InterfaceDebuger from '@/pages/server/interface-debuger';
 
-// 运维管理
-import Operation from '@/pages/operation/index';
-import OperationDeploy from '@/pages/operation/deploy';
-import OperationExpand from '@/pages/operation/expand';
-import OperationTemplates from '@/pages/operation/templates';
+
+// dcache 运维管理
+import Operation from '@/pages/dcacheOperation/index';
+import Apply from '@/pages/dcacheOperation/apply/index';
+import CreateApply from '@/pages/dcacheOperation/apply/createApply';
+import CreateService from '@/pages/dcacheOperation/apply/createService.vue';
+import installAndPublish from '@/pages/dcacheOperation/apply/installAndPublish.vue';
+import Module from '@/pages/dcacheOperation/module/index.vue';
+import CreateModule from '@/pages/dcacheOperation/module/CreateModule.vue';
+import ModuleConfig from '@/pages/dcacheOperation/module/ModuleConfig.vue';
+import ModuleServerConfig from '@/pages/dcacheOperation/module/ServerConfig.vue';
+import ModuleInstallAndPublish from '@/pages/dcacheOperation/module/InstallAndPublish.vue';
+import Region from '@/pages/dcacheOperation/region';
 
 // 发布包管理
 import releasePackage from '@/pages/releasePackage/index';
@@ -67,19 +75,55 @@ export default new Router({
       path: '/operation',
       name: 'Operation',
       component: Operation,
-      redirect: '/operation/deploy',
+      redirect: '/operation/apply',
       children: [
         {
-          path: 'deploy',
-          component: OperationDeploy,
+          path: 'apply',
+          name: 'apply',
+          component: Apply,
+          redirect: '/operation/apply/createApply',
+          children: [
+            {
+              path: 'createApply',
+              component: CreateApply,
+            },
+            {
+              path: 'createService/:applyId',
+              component: CreateService,
+            },
+            {
+              path: 'installAndPublish/:applyId',
+              component: installAndPublish,
+            },
+          ]
         },
         {
-          path: 'expand',
-          component: OperationExpand,
+          path: 'module',
+          component: Module,
+          redirect: '/operation/module/createModule',
+          children: [
+            {
+              path: 'createModule',
+              component: CreateModule,
+            },
+            {
+              path: 'moduleConfig/:moduleId',
+              component: ModuleConfig,
+            },
+            {
+              path: 'serverConfig/:moduleId',
+              component: ModuleServerConfig,
+            },
+            {
+              path: 'installAndPublish/:moduleId',
+              component: ModuleInstallAndPublish,
+            },
+          ]
         },
         {
-          path: 'templates',
-          component: OperationTemplates,
+          path: 'region',
+          name: 'region',
+          component: Region,
         },
       ],
     },

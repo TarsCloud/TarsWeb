@@ -36,4 +36,8 @@ PatchService.setPatchPackageDefault = async ({id, application, module_name, pack
     return await PatchDao.setPatchPackageDefault({id, application, module_name, package_type})
 };
 
+PatchService.find = async ({where}) => {
+    return await PatchDao.find({where})
+};
+
 module.exports = PatchService;
