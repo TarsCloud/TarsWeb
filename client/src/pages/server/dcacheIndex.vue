@@ -81,14 +81,14 @@
     methods: {
       selectTree(nodeKey, nodeInfo) {
         // 不是跳链， 是点击展开
-        if (nodeInfo.shrink) {
+//        if (nodeInfo.shrink) {
 //          nodeInfo.expand = !nodeInfo.expand;
-          if (nodeInfo.children && nodeInfo.children.length) {
-            this.$set(nodeInfo, 'expand', !nodeInfo.expand)
-          }
-          console.log(nodeInfo)
-          return false;
-        }
+//          if (nodeInfo.children && nodeInfo.children.length) {
+//            this.$set(nodeInfo, 'expand', !nodeInfo.expand)
+//          }
+//          console.log(nodeInfo)
+//          return false;
+//        }
         if (this.$route.path === '/server') {
           this.$router.push(`/server/${nodeKey}/manage`);
         } else {
