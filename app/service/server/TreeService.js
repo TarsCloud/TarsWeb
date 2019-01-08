@@ -21,10 +21,10 @@ const AuthService = require('../auth/AuthService');
 
 const TreeService = {};
 
-TreeService.getTreeNodes = async(uid) => {
+TreeService.getTreeNodes = async(uid, applicationList, serverNameList) => {
     let serverList;
     if(await AuthService.hasAdminAuth(uid)){
-        serverList = await ServerDao.getServerConf4Tree();
+        serverList = await ServerDao.getServerConf4Tree(applicationList, serverNameList);
     }else{
         let appCond = [];
         let serverCond = [];

@@ -74,8 +74,8 @@ if (dcacheConf.enableDcache) {
   app.use(async (ctx, next) => {
       await next(); ctx.cookies.set('dcache', 'true')
   });
-  // let tarsDcache = require('./../../../nodejs_modules/tars-dcache');
-  let tarsDcache = require('@tencent/tars-dcache');
+  let tarsDcache = require('./../../../nodejs_modules/tars-dcache');
+  // let tarsDcache = require('@tencent/tars-dcache');
 }
 
 //激活router

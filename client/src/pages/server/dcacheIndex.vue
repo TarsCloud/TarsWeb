@@ -80,15 +80,6 @@
     },
     methods: {
       selectTree(nodeKey, nodeInfo) {
-        // 不是跳链， 是点击展开
-//        if (nodeInfo.shrink) {
-//          nodeInfo.expand = !nodeInfo.expand;
-//          if (nodeInfo.children && nodeInfo.children.length) {
-//            this.$set(nodeInfo, 'expand', !nodeInfo.expand)
-//          }
-//          console.log(nodeInfo)
-//          return false;
-//        }
         if (this.$route.path === '/server') {
           this.$router.push(`/server/${nodeKey}/manage`);
         } else {
@@ -100,30 +91,32 @@
           let Proxy = item.Proxy[0];
           let Router = item.Router;
           item.children = [
-            {
-              name: this.$t('apply.ProxyManage'),
-              id: 'ProxyManage' + index,
-              shrink: true,
-              children: [
-                {name: Proxy.server_name, id: '1DCache.5' + Proxy.server_name}
-              ]
-            },
-            {
-              name: this.$t('apply.RouterManage'),
-              id: 'RouterManage' + index,
-              shrink: true,
-              nodeKey: 'shrink',
-              children: [
-                {name: Router.server_name, id: '1DCache.5' + Router.server_name}
-              ]
-            },
-            {
-              name: this.$t('apply.CacheManage'),
-              id: 'CacheManage' + index,
-              shrink: true,
-              nodeKey: 'shrink',
-              children: []
-            }
+            {name: Proxy.server_name, id: '1DCache.5' + Proxy.server_name},
+            {name: Router.server_name, id: '1DCache.5' + Router.server_name}
+//            {
+//              name: this.$t('apply.ProxyManage'),
+//              id: 'ProxyManage' + index,
+//              shrink: true,
+//              children: [
+//                {name: Proxy.server_name, id: '1DCache.5' + Proxy.server_name}
+//              ]
+//            },
+//            {
+//              name: this.$t('apply.RouterManage'),
+//              id: 'RouterManage' + index,
+//              shrink: true,
+//              nodeKey: 'shrink',
+//              children: [
+//                {name: Router.server_name, id: '1DCache.5' + Router.server_name}
+//              ]
+//            },
+//            {
+//              name: this.$t('apply.CacheManage'),
+//              id: 'CacheManage' + index,
+//              shrink: true,
+//              nodeKey: 'shrink',
+//              children: []
+//            }
           ];
         });
         return res
@@ -165,11 +158,12 @@
 //        });
           this.$ajax.getJSON('/server/api/dtree').then((res) => {
             loading.hide();
-            res = this.handleTreeData(res);
+//            res = this.handleTreeData(res);
             this.treeData = res;
             this.handleData(this.treeData, true);
           }).catch((err) => {
             loading.hide();
+            console.error(err)
             this.treeErrMsg = err.err_msg || err.message || '加载失败';
             this.treeData = false;
           });
