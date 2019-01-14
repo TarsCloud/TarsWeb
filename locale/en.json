@@ -647,5 +647,11 @@
       "deleteMsg" : "are you sure to delete this file?",
       "objName" : "Servant Name"
     }
+  },
+  "publishLog": {
+    "title": "Publish Log",
+    "sync": "synchronizing PMS...",
+    "releaseId": "Release ID"
   }
+
 }

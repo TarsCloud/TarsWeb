@@ -672,5 +672,11 @@
       "deleteMsg" : "您确定要删除吗？",
       "objName" : "Servant名"
     }
+  },
+  "publishLog": {
+    "title": "发布日志",
+    "sync": "同步PMS中...",
+    "releaseId": "发布任务ID",
+    "releaseProgress": "发布进度（%）"
   }
 }

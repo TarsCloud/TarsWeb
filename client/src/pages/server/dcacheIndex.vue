@@ -80,46 +80,16 @@
     },
     methods: {
       selectTree(nodeKey, nodeInfo) {
-        if (this.$route.path === '/server') {
-          this.$router.push(`/server/${nodeKey}/manage`);
+        if (nodeInfo.children && nodeInfo.children.length) {
+          this.$set(nodeInfo, 'expand', !nodeInfo.expand)
         } else {
-          this.$router.push({params: {treeid: nodeKey}});
+          if (this.$route.path === '/server') {
+            this.$router.push(`/server/${nodeKey}/manage`);
+          } else {
+            this.$router.push({params: {treeid: nodeKey}});
+          }
         }
-      },
-      handleTreeData (res) {
-        res.forEach((item, index) => {
-          let Proxy = item.Proxy[0];
-          let Router = item.Router;
-          item.children = [
-            {name: Proxy.server_name, id: '1DCache.5' + Proxy.server_name},
-            {name: Router.server_name, id: '1DCache.5' + Router.server_name}
-//            {
-//              name: this.$t('apply.ProxyManage'),
-//              id: 'ProxyManage' + index,
-//              shrink: true,
-//              children: [
-//                {name: Proxy.server_name, id: '1DCache.5' + Proxy.server_name}
-//              ]
-//            },
-//            {
-//              name: this.$t('apply.RouterManage'),
-//              id: 'RouterManage' + index,
-//              shrink: true,
-//              nodeKey: 'shrink',
-//              children: [
-//                {name: Router.server_name, id: '1DCache.5' + Router.server_name}
-//              ]
-//            },
-//            {
-//              name: this.$t('apply.CacheManage'),
-//              id: 'CacheManage' + index,
-//              shrink: true,
-//              nodeKey: 'shrink',
-//              children: []
-//            }
-          ];
-        });
-        return res
+
       },
       // 处理接口返回数据
       handleData(res, isFirstLayer) {
@@ -147,18 +117,8 @@
             target: this.$refs.treeLoading,
           });
 
-//        this.$ajax.getJSON('/server/api/tree').then((res) => {
-//          loading.hide();
-//          this.treeData = res;
-//          this.handleData(this.treeData, true);
-//        }).catch((err) => {
-//          loading.hide();
-//          this.treeErrMsg = err.err_msg || err.message || '加载失败';
-//          this.treeData = false;
-//        });
           this.$ajax.getJSON('/server/api/dtree').then((res) => {
             loading.hide();
-//            res = this.handleTreeData(res);
             this.treeData = res;
             this.handleData(this.treeData, true);
           }).catch((err) => {
