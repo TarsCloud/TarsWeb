@@ -85,4 +85,17 @@ export default {
     margin-left: 16px;
   }
 }
+
+.page_operation {
+  padding-top: 30px;
+  padding-bottom: 40px;
+
+&_children {
+   padding: 20px 0;
+ }
+}
+
+.danger {
+  color: var(--off-color);
+}
 </style>

@@ -6,7 +6,8 @@
     "tab": {
       "tab1": "服务管理",
       "tab2": "运维管理",
-      "tab3": "发布包管理"
+      "tab3": "发布包管理",
+      "tab4": "cache 配置"
     },
     "logout": "退出登录"
   },
@@ -169,7 +170,30 @@
     "maxReadFlow": "预估峰值读流量",
     "maxWriteFlow": "预估峰值写流量",
     "flowUnit": "次/秒",
-    "moduleRemark": "功能备注"
+    "moduleRemark": "功能备注",
+    "mainEngine": "主机",
+    "standByEngine": "备机",
+    "mirror": "镜像",
+    "add": "添加",
+    "modification": "修改",
+    "config": {
+      "tableTitle": "cache 配置列表",
+      "addSuccess": "添加配置成功",
+      "addConfig": "添加配置",
+      "deleteConfig": "删除配置",
+      "editConfig": "编辑配置",
+      "remark": "备注",
+      "path": "路径",
+      "item": "配置项",
+      "itemValue": "配置值",
+      "reload": "加载生效",
+      "period": "版本",
+      "configuration": "配置中心",
+      "noModuleExist": "模块不存在",
+      "value": "值",
+      "config_value": "原来值",
+      "modify_value": "修改值"
+    }
   },
   "service": {
     "serverName": "服务名",
@@ -254,6 +278,7 @@
     "servant": "管理Servant",
     "goback": "返回",
     "default": "默认",
+    "save": "保存",
     "title": {
       "update": "编辑",
       "add": "添加",

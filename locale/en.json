@@ -6,7 +6,8 @@
     "tab": {
       "tab1": "Services",
       "tab2": "operation",
-      "tab3": "Release package"
+      "tab3": "Release package",
+      "tab4": "cache configuration"
     },
     "logout": "logout"
   },
@@ -144,7 +145,30 @@
     "maxReadFlow": "Estimate peak read flow",
     "maxWriteFlow": "Estimate peak write flow",
     "flowUnit": "Times/SEC.",
-    "moduleRemark": "Function of note"
+    "moduleRemark": "Function of note",
+    "mainEngine": "main engine",
+    "standByEngine": "stand by engine",
+    "mirror": "mirror",
+    "add": "add",
+    "modification": "modification",
+    "config": {
+      "tableTitle": "cache configuration list",
+      "addSuccess": "add configuration success",
+      "addConfig": "add configuration",
+      "deleteConfig": "delete configuration",
+      "editConfig": "edit configuration",
+      "remark": "remark",
+      "path": "path",
+      "item": "item",
+      "itemValue": "item value",
+      "reload": "reload",
+      "period": "period",
+      "configuration": "Configuration",
+      "noModuleExist": "can't find this module",
+      "value": "value",
+      "config_value": "original value",
+      "modify_value": "Modify Values"
+    }
   },
   "service": {
     "serverName": "The service name",
@@ -229,6 +253,7 @@
     "servant": "servant",
     "goback": "go back",
     "default": "default",
+    "save": "save",
     "title": {
       "update": "Update",
       "add": "Add",

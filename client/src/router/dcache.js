@@ -4,6 +4,7 @@ import Router from 'vue-router';
 // 服务管理
 import Server from '@/pages/server/dcacheIndex';
 import ServerManage from '@/pages/server/manage';
+import cacheServerManage from '@/pages/server/cacheManage';
 import ServerPublish from '@/pages/server/publish';
 import ServerConfig from '@/pages/server/config';
 import ServerServerMonitor from '@/pages/server/monitor-server';
@@ -30,6 +31,10 @@ import releasePackage from '@/pages/releasePackage/index';
 import proxyList from '@/pages/releasePackage/proxyList';
 import routerList from '@/pages/releasePackage/routerList';
 import cacheList from '@/pages/releasePackage/cacheList';
+
+// cache 配置中心
+import CacheConfig from '@/pages/cacheConfig/config'
+import ModuleCache from '@/pages/cacheConfig/moduleCache'
 
 
 Vue.use(Router);
@@ -68,6 +73,14 @@ export default new Router({
         {
           path: ':treeid/user-manage',
           component: userManage,
+        },
+        {
+          path: ':treeid/cache',
+          component: cacheServerManage,
+        },
+        {
+          path: ':treeid/moduleCache',
+          component: ModuleCache,
         },
       ],
     },
@@ -132,6 +145,25 @@ export default new Router({
       name: 'releasePackage',
       component: releasePackage,
       redirect: '/releasePackage/proxyList',
+      children: [
+        {
+          path: 'proxyList',
+          component: proxyList,
+        },
+        {
+          path: 'routerList',
+          component: routerList,
+        },
+        {
+          path: 'cacheList',
+          component: cacheList,
+        },
+      ],
+    },
+    {
+      path: '/config',
+      name: 'config',
+      component: CacheConfig,
       children: [
         {
           path: 'proxyList',

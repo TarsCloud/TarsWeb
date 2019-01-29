@@ -80,7 +80,7 @@ ServerDao.getServerConfByTemplate = async(templateName) => {
     })
 };
 
-ServerDao.getServerConf4Tree = async(applicationList, serverNameList) => {
+ServerDao.getServerConf4Tree = async(applicationList, serverNameList, allAttr) => {
     let where = {$or: []};
     if (!!applicationList) {
         where.$or.push({application: applicationList});
@@ -91,12 +91,20 @@ ServerDao.getServerConf4Tree = async(applicationList, serverNameList) => {
     if (!applicationList && !serverNameList) {
         where = {};
     }
-    return await tServerConf.findAll({
-        attributes: [[Sequelize.literal('distinct `application`'), 'application'],
+
+
+    let option = {};
+
+    option.where = where;
+
+    if (allAttr) {
+    } else {
+        option.attributes = [[Sequelize.literal('distinct `application`'), 'application'],
             'server_name', 'enable_set', 'set_name', 'set_area', 'set_group'
-        ],
-        where: where
-    });
+        ]
+    }
+
+    return await tServerConf.findAll(option);
 };
 
 

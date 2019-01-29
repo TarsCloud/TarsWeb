@@ -23,12 +23,5 @@ export default {
 </script>
 
 <style>
-.page_operation {
-  padding-top: 30px;
-  padding-bottom: 40px;
 
-  &_children {
-    padding: 20px 0;
-  }
-}
 </style>

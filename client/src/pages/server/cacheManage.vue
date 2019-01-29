@@ -5,6 +5,13 @@
     <let-table v-if="serverList" :data="serverList" :title="$t('serverList.title.serverList')" :empty-msg="$t('common.nodata')" ref="serverListLoading">
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.ip')" width="140px">
+        <template slot-scope="{row:{cache_server_type}}">
+          <span v-if="cache_server_type===0">{{$t('cache.mainEngine')}}</span>
+          <span v-else-if="cache_server_type===1">{{$t('cache.standByEngine')}}</span>
+          <span v-else-if="cache_server_type===2">{{$t('cache.mirror')}}</span>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('serverList.table.th.enableSet')">
         <template slot-scope="scope">
           <span v-if="!scope.row.enable_set">{{$t('common.disable')}}</span>
@@ -432,7 +439,7 @@ export default {
     getServerList() {
       const loading = this.$refs.serverListLoading.$loading.show();
 
-      this.$ajax.getJSON('/server/api/server_list', {
+      this.$ajax.getJSON('/server/api/get_cache_server_list', {
         tree_node_id: this.$route.params.treeid,
       }).then((data) => {
         loading.hide();

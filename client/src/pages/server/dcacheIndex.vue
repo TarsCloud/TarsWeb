@@ -26,7 +26,8 @@
 
     <div class="right-view" v-else>
       <let-tabs @click="clickTab" :activekey="$route.path">
-        <let-tab-pane :tabkey="base + '/manage'" :tab="$t('header.tab.tab1')"></let-tab-pane>
+        <let-tab-pane :tabkey="base + '/cache'" :tab="$t('header.tab.tab1')"></let-tab-pane>
+        <let-tab-pane :tabkey="base + '/moduleCache'" :tab="$t('cache.config.configuration')"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/publish'" :tab="$t('index.rightView.tab.patch')"
                       v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/config'"
@@ -81,13 +82,15 @@
     methods: {
       selectTree(nodeKey, nodeInfo) {
         if (nodeInfo.children && nodeInfo.children.length) {
-          this.$set(nodeInfo, 'expand', !nodeInfo.expand)
-        } else {
-          if (this.$route.path === '/server') {
-            this.$router.push(`/server/${nodeKey}/manage`);
-          } else {
-            this.$router.push({params: {treeid: nodeKey}});
+          this.$set(nodeInfo, 'expand', !nodeInfo.expand);
+          console.log(nodeInfo.moduleName);
+          if (nodeInfo.moduleName) {
+              // 展示 dcache 模块下的所有服务
+            this.$router.push(`/server/${nodeInfo.moduleName}/cache`)
           }
+        } else {
+          // 正常的服务展示
+          this.$router.push(`/server/${nodeKey}/manage`);
         }
 
       },
@@ -244,6 +247,8 @@
         li {
           text-overflow: ellipsis;
           overflow: hidden;
+          word-break: break-all;
+          white-space: pre;
         }
       }
 

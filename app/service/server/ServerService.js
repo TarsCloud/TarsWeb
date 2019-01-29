@@ -109,6 +109,11 @@ ServerService.getNodeNameList = async(params)=> {
     return await ServerDao.getNodeNameList(params);
 };
 
+// 用服务名数组去获取服务列表
+ServerService.getServerNameList = async({applicationList, serverNameList, allAttr=false})=> {
+    return await ServerDao.getServerConf4Tree(applicationList, serverNameList, allAttr);
+};
+
 ServerService.addServerConf = async(params)=> {
     let transaction = await ServerDao.sequelize.transaction();
     try{

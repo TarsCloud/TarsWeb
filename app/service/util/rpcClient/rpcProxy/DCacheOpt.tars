@@ -265,6 +265,35 @@ struct TransferRsp
 };
 
 
+struct CacheConfigReq
+{
+    0 optional string id;       // config item 表索引id
+    1 optional string remark;   // 备注
+    2 optional string item;     // 配置项名，如：ObjName
+    3 optional string path;     // 配置项路径，如：Main, Main/Cache
+    4 optional string reload;   // 重载配置值
+    5 optional string period;   // 公共配置-U, 一期配置-T, 二期配置-MK
+};
+
+struct ServerConfigReq
+{
+    0 optional string appName;      // 应用名，如：TestApp
+    1 optional string moduleName;   // 模块名，如：TestAppModule1
+    2 optional string serverName;   // 服务名，如：DCache.TestAppModule1TCache1-1
+    3 optional string nodeName;     // 服务节点ip
+    4 optional string itemId;       // config item 表索引id
+    5 optional string configValue;  // 配置值
+    6 optional string configFlag;   // 默认填 0
+    7 optional string lastUser;     // 最后修改配置的用户名，默认 system
+    8 optional string indexId;      // config table 表索引id
+};
+
+struct ConfigRsp
+{
+    0 require string errMsg;
+    1 optional vector<map<string, string> > configItemList;
+};
+
 interface DCacheOpt
 {
     /*
@@ -317,6 +346,33 @@ interface DCacheOpt
     *扩容DCache(包含一期和二期)
     */
     int expandDCache(ExpandReq expandReq, out ExpandRsp expandRsq);
+
+
+    /*
+    * 配置中心操作接口
+    */
+
+    int addCacheConfigItem(CacheConfigReq configReq, out ConfigRsp configRsq);
+
+    int updateCacheConfigItem(CacheConfigReq configReq, out ConfigRsp configRsq);
+
+    int deleteCacheConfigItem(CacheConfigReq configReq, out ConfigRsp configRsq);
+
+    int getCacheConfigItemList(CacheConfigReq configReq, out ConfigRsp configRsq);
+
+    int addServerConfigItem(ServerConfigReq configReq, out ConfigRsp configRsq);
+
+    int updateServerConfigItem(ServerConfigReq configReq, out ConfigRsp configRsq);
+
+    int updateServerConfigItemBatch(vector<ServerConfigReq> configReq, out ConfigRsp configRsq);
+
+    int deleteServerConfigItem(ServerConfigReq configReq, out ConfigRsp configRsq);
+
+    int deleteServerConfigItemBatch(vector<ServerConfigReq> configReq, out ConfigRsp configRsq);
+
+    int getServerNodeConfigItemList(ServerConfigReq configReq, out ConfigRsp configRsq);
+
+    int getServerConfigItemList(ServerConfigReq configReq, out ConfigRsp configRsq);
 
   };
 
