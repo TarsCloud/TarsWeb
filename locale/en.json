@@ -167,7 +167,14 @@
       "noModuleExist": "can't find this module",
       "value": "value",
       "config_value": "original value",
-      "modify_value": "Modify Values"
+      "modify_value": "Modify Values",
+      "edit": "edit",
+      "view": "view",
+      "add": "add",
+      "allSelected": "All",
+      "batchUpdate": "Update",
+      "batchDelete": "Delete",
+      "addModuleConfig": "add module config"
     }
   },
   "service": {

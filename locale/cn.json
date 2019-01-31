@@ -192,7 +192,14 @@
       "noModuleExist": "模块不存在",
       "value": "值",
       "config_value": "原来值",
-      "modify_value": "修改值"
+      "modify_value": "修改值",
+      "edit": "编辑配置",
+      "view": "查看配置",
+      "add": "添加配置",
+      "allSelected": "全选",
+      "batchUpdate": "批量更新",
+      "batchDelete": "批量删除",
+      "addModuleConfig": "添加模块配置"
     }
   },
   "service": {

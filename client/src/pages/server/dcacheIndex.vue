@@ -26,21 +26,63 @@
 
     <div class="right-view" v-else>
       <let-tabs @click="clickTab" :activekey="$route.path">
-        <let-tab-pane :tabkey="base + '/cache'" :tab="$t('header.tab.tab1')"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/moduleCache'" :tab="$t('cache.config.configuration')"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/publish'" :tab="$t('index.rightView.tab.patch')"
-                      v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/config'"
-                      :tab="serverData.level === 5 ? $t('index.rightView.tab.serviceConfig') :
-                serverData.level === 4 ? $t('index.rightView.tab.setConfig') :
-                serverData.level === 1 ? $t('index.rightView.tab.appConfig') : ''"
-                      v-if="serverData.level === 5 || serverData.level === 4 || serverData.level === 1"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/server-monitor'" :tab="$t('index.rightView.tab.statMonitor')"
-                      v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/property-monitor'" :tab="$t('index.rightView.tab.propertyMonitor')"
-                      v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')"
-                      v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
+
+        <!--服务管理-->
+        <let-tab-pane
+          v-if="serverData.level !== 6"
+          :tabkey="`${base}/manage/${serverType}`"
+          :tab="$t('header.tab.tab1')"
+        ></let-tab-pane>
+
+        <!-- cache列表服务管理-->
+        <let-tab-pane
+          v-if="serverData.level === 6"
+          :tabkey="`${base}/cache`"
+          :tab="$t('header.tab.tab1')"
+        ></let-tab-pane>
+
+        <!--发布管理-->
+        <let-tab-pane
+          :tabkey="`${base}/publish/${serverType}`"
+          :tab="$t('index.rightView.tab.patch')"
+          v-if="serverData.level === 5"
+        ></let-tab-pane>
+
+        <!--服务配置-->
+        <let-tab-pane
+          :tabkey="`${base}/config/${serverType}`"
+          :tab="serverData.level === 5 ? $t('index.rightView.tab.serviceConfig') :serverData.level === 4 ? $t('index.rightView.tab.setConfig') :serverData.level === 1 ? $t('index.rightView.tab.appConfig') : ''"
+          v-if="serverData.level === 5 || serverData.level === 4 || serverData.level === 1"
+        ></let-tab-pane>
+
+        <!--服务监控-->
+        <let-tab-pane
+          :tabkey="`${base}/server-monitor/${serverType}`"
+          :tab="$t('index.rightView.tab.statMonitor')"
+          v-if="serverData.level === 5"
+        ></let-tab-pane>
+
+        <!--特性监控-->
+        <let-tab-pane
+          :tabkey="`${base}/property-monitor/${serverType}`"
+          :tab="$t('index.rightView.tab.propertyMonitor')"
+          v-if="serverData.level === 5"
+        ></let-tab-pane>
+
+
+        <!--用户管理-->
+        <let-tab-pane
+          :tabkey="`${base}/user-manage/${serverType}`"
+          :tab="$t('index.rightView.tab.privileage')"
+          v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
+
+        <!--模块才有的配置中心-->
+        <let-tab-pane
+          v-if="serverData.level === 6"
+          :tabkey="base + '/moduleCache'"
+          :tab="$t('cache.config.configuration')"
+        ></let-tab-pane>
+
       </let-tabs>
 
       <router-view ref="childView" class="page_server_child" :key="$route.params.treeid"></router-view>
@@ -65,6 +107,7 @@
           set_name: '',
           set_area: '',
           set_group: '',
+          module_name: '',
         },
       };
     },
@@ -72,25 +115,32 @@
       base() {
         return `/server/${this.$route.params.treeid}`;
       },
+      serverType() {
+        return this.$route.params.serverType
+      },
+
     },
     watch: {
       '$route.params.treeid': function (treeid) { // eslint-disable-line
+        console.log('$route.params.treeid$route.params.treeid')
         this.serverData = this.getServerData();
-        this.isTrueTreeLevel();
+//        this.isTrueTreeLevel();
       },
     },
     methods: {
       selectTree(nodeKey, nodeInfo) {
+        console.log(nodeInfo);
         if (nodeInfo.children && nodeInfo.children.length) {
           this.$set(nodeInfo, 'expand', !nodeInfo.expand);
-          console.log(nodeInfo.moduleName);
           if (nodeInfo.moduleName) {
               // 展示 dcache 模块下的所有服务
-            this.$router.push(`/server/${nodeInfo.moduleName}/cache`)
+            this.$router.push(`/server/6${nodeInfo.moduleName}/cache`)
           }
         } else {
-          // 正常的服务展示
-          this.$router.push(`/server/${nodeKey}/manage`);
+          // 正常的服务展示, tars 的就是正常的，  只有dcache、router、proxy才有serverType
+          let {serverType} = nodeInfo;
+          !serverType? serverType='tars':'';
+          this.$router.push(`/server/${nodeKey}/manage/${serverType}`);
         }
 
       },
@@ -164,6 +214,9 @@
               break;
             case 5:
               serverData.server_name = name;
+              break;
+            case 6:
+              serverData.module_name = name;
               break;
             default:
               break;

@@ -78,6 +78,7 @@
       }
     },
     async created () {
+        console.log('aaaaaaaaaaa')
       this.getConfig();
     }
   }

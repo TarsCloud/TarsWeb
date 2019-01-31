@@ -440,7 +440,7 @@ export default {
       const loading = this.$refs.serverListLoading.$loading.show();
 
       this.$ajax.getJSON('/server/api/get_cache_server_list', {
-        tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.$route.params.treeid.substr(1),
       }).then((data) => {
         loading.hide();
         this.serverList = data;

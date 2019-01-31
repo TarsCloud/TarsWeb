@@ -51,27 +51,31 @@ export default new Router({
           component: ServerManage,
         },
         {
-          path: ':treeid/publish',
+          path: ':treeid/manage/:serverType',
+          component: ServerManage,
+        },
+        {
+          path: ':treeid/publish/:serverType',
           component: ServerPublish,
         },
         {
-          path: ':treeid/config',
+          path: ':treeid/config/:serverType',
           component: ServerConfig,
         },
         {
-          path: ':treeid/server-monitor',
+          path: ':treeid/server-monitor/:serverType',
           component: ServerServerMonitor,
         },
         {
-          path: ':treeid/property-monitor',
+          path: ':treeid/property-monitor/:serverType',
           component: ServerPropertyMonitor,
         },
         {
-          path: ':treeid/interface-debuger',
+          path: ':treeid/interface-debuger/:serverType',
           component: InterfaceDebuger,
         },
         {
-          path: ':treeid/user-manage',
+          path: ':treeid/user-manage/:serverType',
           component: userManage,
         },
         {
@@ -162,22 +166,7 @@ export default new Router({
     },
     {
       path: '/config',
-      name: 'config',
-      component: CacheConfig,
-      children: [
-        {
-          path: 'proxyList',
-          component: proxyList,
-        },
-        {
-          path: 'routerList',
-          component: routerList,
-        },
-        {
-          path: 'cacheList',
-          component: cacheList,
-        },
-      ],
+      component: CacheConfig
     },
     {
       path: '*',

@@ -30,13 +30,22 @@
       </let-table-column>
       <let-table-column :title="$t('operate.operates')" width="260px">
         <template slot-scope="{row}">
-          <let-table-operation @click="editServerConfig(row)">{{$t('operate.update')}}</let-table-operation>
-          <let-table-operation @click="checkServerConfigList(row)">{{$t('operate.view')}}</let-table-operation>
-          <let-table-operation @click="addServerConfig(row)">{{$t('operate.add')}}</let-table-operation>
+          <let-table-operation @click="editServerConfig(row)">{{$t('cache.config.edit')}}</let-table-operation>
+          <let-table-operation @click="checkServerConfigList(row)">{{$t('cache.config.view')}}</let-table-operation>
+          <let-table-operation @click="addServerConfig(row)">{{$t('cache.config.add')}}</let-table-operation>
         </template>
       </let-table-column>
     </let-table>
-    <let-table :data="configList" :title="$t('cache.config.tableTitle')" :empty-msg="$t('common.nodata')">
+    <let-table :data="showConfigList" :title="$t('cache.config.tableTitle')" :empty-msg="$t('common.nodata')"
+               :stripe="true">
+      <let-table-column>
+        <template slot="head" slot-scope="props">
+          <let-checkbox v-model="isCheckedAll" :value="isCheckedAll" :change="checkedAllChange"></let-checkbox>
+        </template>
+        <template slot-scope="scope">
+          <let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('cache.config.remark')" prop="remark"></let-table-column>
       <let-table-column :title="$t('cache.config.path')" prop="path"></let-table-column>
       <let-table-column :title="$t('cache.config.item')" prop="item"></let-table-column>
@@ -46,13 +55,34 @@
           <let-input size="small" v-model="row.modify_value"></let-input>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('operate.operates')" >
+      <let-table-column :title="$t('operate.operates')">
         <template slot-scope="{row}">
           <let-table-operation @click="saveConfig(row)">{{$t('operate.save')}}</let-table-operation>
           <let-table-operation @click="deleteConfig(row)" class="danger">{{$t('operate.delete')}}</let-table-operation>
         </template>
       </let-table-column>
+      <!--分页-->
+      <let-pagination
+        :total="total"
+        :page="pagination.page"
+        show-sums
+        :sum="configList.length"
+        jump
+        @change="changePage"
+        slot="pagination"
+        align="right"
+        v-if="total"
+      >
+      </let-pagination>
+      <!--批量操作-->
+      <template slot="operations">
+        <let-button theme="success" :disabled="!hasCheckedItem" @click="saveConfigBatch">{{$t('cache.config.batchUpdate')}}</let-button>
+        <let-button theme="danger" :disabled="!hasCheckedItem" @click="deleteServerConfigItemBatch">{{$t('cache.config.batchDelete')}}</let-button>
+        <let-button theme="primary">{{$t('cache.config.addModuleConfig')}}</let-button>
+      </template>
+
     </let-table>
+
 
     <!-- 查看服务列表配置-->
     <let-modal
@@ -64,7 +94,8 @@
       :title="$t('cache.config.tableTitle')"
       class="server_config_list_modal"
     >
-      <server-config-list v-if="serverConfigListVisible" :moduleName="moduleName" v-bind="checkServer"></server-config-list>
+      <server-config-list v-if="serverConfigListVisible" :moduleName="moduleName"
+                          v-bind="checkServer"></server-config-list>
     </let-modal>
 
     <!-- 修改服务配置-->
@@ -103,21 +134,54 @@
     },
     data () {
       return {
-        moduleName: this.$route.params.treeid,
+        moduleName: this.$route.params.treeid.substr(1),
         configList: [],
         serverList: [],
         serverConfigListVisible: false,
         serverConfigVisible: false,
         addServerConfigVisible: false,
-        checkServer: {}
+        checkServer: {},
+        isCheckedAll: false,
+        pagination: {
+          page: 1
+        },
+      }
+    },
+    computed: {
+      showConfigList() {
+        return this.configList.slice(10 * (this.pagination.page - 1 ), 10 * this.pagination.page)
+      },
+      total () {
+        return Math.ceil(this.configList.length / 10)
+      },
+      hasCheckedItem () {
+          return this.showConfigList.filter(item => item.isChecked === true).length !== 0;
+      }
+    },
+    watch: {
+      isCheckedAll() {
+        const isCheckedAll = this.isCheckedAll;
+        this.showConfigList.forEach((item) => {
+          item.isChecked = isCheckedAll;
+        });
       }
     },
     methods: {
+      checkedAllChange () {
+        console.log(arguments);
+      },
+      changePage (page) {
+        this.pagination.page = page;
+      },
       async getModuleConfig () {
         try {
           let configItemList = await this.$ajax.getJSON('/server/api/cache/getModuleConfig', {moduleName: this.moduleName});
-          // 添加被修改的空值
-          configItemList.forEach(item => item.modify_value="");
+          // 添加被修改的空值           // 默认全部不选中
+
+          configItemList.forEach(item => {
+            item.modify_value = "";
+            item.isChecked = false;
+          });
           this.configList = configItemList;
         } catch (err) {
           console.error(err)
@@ -135,16 +199,61 @@
         }
       },
       async saveConfig (row) {
-        console.log(row);
         let {id, modify_value} = row;
         try {
-          let configItemList = await this.$ajax.getJSON('/server/api/cache/updateServerConfigItem', {id, configValue: modify_value});
+          let configItemList = await this.$ajax.getJSON('/server/api/cache/updateServerConfigItem', {
+            id,
+            configValue: modify_value
+          });
           await this.getModuleConfig();
         } catch (err) {
           console.error(err)
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
       },
+      async saveConfigBatch () {
+          let serverConfigList = this.showConfigList.filter(item => item.isChecked).map(item => {
+              return {
+                indexId: item.id,
+                configValue: item.modify_value
+              }
+          });
+        try {
+          let configItemList = await this.$ajax.postJSON('/server/api/cache/updateServerConfigItemBatch', {serverConfigList});
+          await this.getModuleConfig();
+        } catch (err) {
+          console.error(err)
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        }
+      },
+      deleteConfig ({id}) {
+        this.$confirm(this.$t('cache.config.deleteConfig'), this.$t('common.alert')).then(async () => {
+          try {
+            let configItemList = await this.$ajax.getJSON('/server/api/cache/deleteServerConfigItem', {id});
+            await this.getModuleConfig();
+          } catch (err) {
+            console.error(err)
+            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+          }
+        });
+      },
+      deleteServerConfigItemBatch ({id}) {
+        let serverConfigList = this.showConfigList.filter(item => item.isChecked).map(item => {
+          return {
+            indexId: item.id,
+          }
+        });
+        this.$confirm(this.$t('cache.config.deleteConfig'), this.$t('common.alert')).then(async () => {
+          try {
+            let configItemList = await this.$ajax.postJSON('/server/api/cache/deleteServerConfigItemBatch', {serverConfigList});
+            await this.getModuleConfig();
+          } catch (err) {
+            console.error(err)
+            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+          }
+        });
+      },
+
       // 处理未发布时间显示
       handleNoPublishedTime(timeStr, noPubTip = this.$t('pub.dlg.unpublished')) {
         if (timeStr === '0000:00:00 00:00:00') {
@@ -183,9 +292,9 @@
 </script>
 
 <style>
-.server_config_list_modal .let_modal__body{
-  max-height: 500px;
-  overflow-y: auto;
-  margin-top: 20px;
-}
+  .server_config_list_modal .let_modal__body {
+    max-height: 500px;
+    overflow-y: auto;
+    margin-top: 20px;
+  }
 </style>
