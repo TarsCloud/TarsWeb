@@ -51,7 +51,8 @@
             await this.$ajax.postJSON('/server/api/cache/addServerConfigItem', option);
             this.$tip.success(`${this.$t('cache.config.addSuccess')}`);
             this.configValue = null;
-            this.$emit('call-back');
+            // 添加模块配置的时候，回调获取新的模块配置列表
+            if (this.moduleName) this.$emit('call-back');
           } catch (err) {
             console.error(err)
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

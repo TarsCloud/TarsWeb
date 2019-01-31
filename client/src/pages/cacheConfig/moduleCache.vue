@@ -78,7 +78,7 @@
       <template slot="operations">
         <let-button theme="success" :disabled="!hasCheckedItem" @click="saveConfigBatch">{{$t('cache.config.batchUpdate')}}</let-button>
         <let-button theme="danger" :disabled="!hasCheckedItem" @click="deleteServerConfigItemBatch">{{$t('cache.config.batchDelete')}}</let-button>
-        <let-button theme="primary">{{$t('cache.config.addModuleConfig')}}</let-button>
+        <let-button theme="primary" @click="addServerConfig({moduleName})">{{$t('cache.config.addModuleConfig')}}</let-button>
       </template>
 
     </let-table>
@@ -117,7 +117,7 @@
       :footShow="false"
       :closeOnClickBackdrop="true"
     >
-      <add-server-config v-if="addServerConfigVisible" v-bind="checkServer"></add-server-config>
+      <add-server-config v-if="addServerConfigVisible" v-bind="checkServer" @call-back="getModuleConfig"></add-server-config>
     </let-modal>
 
   </section>
@@ -276,10 +276,12 @@
         }
       },
       addServerConfig(row) {
+        // 有moduleName 的是模块添加配置，  只有 serverName 和 nodeName 的是服务添加配置
         this.addServerConfigVisible = true;
         this.checkServer = {
           serverName: row.server_name,
-          nodeName: row.node_name
+          nodeName: row.node_name,
+          moduleName: row.moduleName,
         }
       },
 
