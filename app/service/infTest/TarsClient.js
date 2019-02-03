@@ -30,7 +30,7 @@ const TarsClient = function (context, interface, objName, setName){
     this._context = context;
     this._interface = interface;
     this._name = objName;
-    this._worker = Tars._createObjectProxy(objName, setName ? setName : '');
+    this._worker = Tars._createObjectProxy(objName, setName ? setName : '',{});
     this.writeParams = [];
     this.readParams = [];
 }
