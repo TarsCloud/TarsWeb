@@ -98,4 +98,6 @@ export default {
 .danger {
   color: var(--off-color);
 }
+
+
 </style>

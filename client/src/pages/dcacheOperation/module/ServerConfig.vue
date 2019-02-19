@@ -60,7 +60,7 @@
         <let-button size="small" theme="primary" @click="submitServerConfig">{{$t('common.nextStep')}}</let-button>
       </div>
     </let-form>
-    
+
     <let-modal :title="$t('module.MultiKeyConfig')" v-model="showMKModal" width="1000px" @on-confirm="submitMKCache">
       <let-form label-position="top" ref="multiKeyForm">
         <let-form-group :title="$t('MKCache.mainKey')" inline label-position="top">
@@ -420,6 +420,7 @@
         if (this.$refs.multiKeyForm.validate()) {
           sessionStorage.setItem('mkCache', JSON.stringify(this.mkCacheStructure));
           this.addServerConfig();
+          this.showMKModal = false;
         }
       }
     },
