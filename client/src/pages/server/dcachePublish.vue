@@ -90,7 +90,7 @@
             </let-button>
             <br>
             <!--proxy、router、dcache 发布选择框-->
-            <let-table :data="publishModal.model.patchList" :empty-msg="$t('common.nodata')">
+            <let-table :data="publishModal.model.patchList" :empty-msg="$t('common.nodata')" v-if="serverType !== 'tars'">
               <let-table-column>
                 <template slot-scope="scope">
                   <!--<let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>-->
