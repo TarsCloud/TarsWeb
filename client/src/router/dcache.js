@@ -3,8 +3,11 @@ import Router from 'vue-router';
 
 // 服务管理
 import Server from '@/pages/server/dcacheIndex';
+
 import ServerManage from '@/pages/server/manage';
-import cacheServerManage from '@/pages/server/cacheManage';
+import dcacheServerManage from '@/pages/server/dcacheManage.vue';
+import moduleServerManage from '@/pages/server/moduleManage.vue';
+
 // import ServerPublish from '@/pages/server/publish';
 import ServerPublish from '@/pages/server/dcachePublish';
 import ServerConfig from '@/pages/server/config';
@@ -49,11 +52,11 @@ export default new Router({
       children: [
         {
           path: ':treeid/manage',
-          component: ServerManage,
+          component: dcacheServerManage,
         },
         {
           path: ':treeid/manage/:serverType',
-          component: ServerManage,
+          component: dcacheServerManage,
         },
         {
           path: ':treeid/publish/:serverType',
@@ -81,7 +84,7 @@ export default new Router({
         },
         {
           path: ':treeid/cache',
-          component: cacheServerManage,
+          component: moduleServerManage,
         },
         {
           path: ':treeid/moduleCache',

@@ -161,7 +161,7 @@ const ServerUrl = new StringUtil();
 // 全局 fetch 配置
 const Options = new ObjectUtil({
   credentials: 'same-origin',
-  timeout: 10000,
+  timeout: 5000,
 });
 
 // 全局请求头
