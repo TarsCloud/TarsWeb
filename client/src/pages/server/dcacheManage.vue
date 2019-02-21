@@ -435,9 +435,23 @@ export default {
 
       this.$ajax.getJSON('/server/api/server_list', {
         tree_node_id: this.$route.params.treeid,
-      }).then((data) => {
+      }).then(async (data) => {
         loading.hide();
         this.serverList = data;
+
+
+        //在模块服务节点列表，如果该服务没有节点了， 在目录树去掉该服务；
+        if (this.serverType === 'dcache') {
+          let serverLength = this.serverList.length;
+          if (serverLength > 0) return false;
+          try {
+            await this.$ajax.postJSON('/server/api/cache/removeServer', {server_name: server_name});
+            this.$parent.getTreeData();
+          } catch (err) {
+            console.error(err)
+          }
+        }
+
       }).catch((err) => {
         loading.hide();
         this.$confirm(err.err_msg || err.message || this.$t('serverList.msg.fail'), this.$t('common.alert')).then(() => {
@@ -627,18 +641,6 @@ export default {
 
         } finally {
           this.closeMoreCmdModal();
-
-          //下线一个模块服务节点， 下线完后，如果该服务没有节点了， 在目录树去掉该服务；
-          if (this.serverType === 'dcache') {
-            let serverLength = this.serverList.length;
-            if (serverLength > 0) return false;
-            try {
-              await this.$ajax.postJSON('/server/api/cache/removeServer', {server_name: server_name});
-              this.$parent.getTreeData();
-            } catch (err) {
-                console.error(err)
-            }
-          }
         }
       });
     },
