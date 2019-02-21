@@ -439,7 +439,7 @@
         let {serverType} = this;
         let module_name = first.server_name;
         let patchPage = 1;
-        let patchPageSize = 10;
+        let patchPageSize = 5;
         if (serverType == 'router') {
           module_name = 'RouterServer'
         } else if (serverType == 'proxy') {
@@ -486,6 +486,16 @@
           const items = [];
           let patch_id = this.serverType === 'tars'? this.publishModal.model.patch_id.toString() : this.publishModal.publishId;
           if (!patch_id) return this.$tip.warning(this.$t('pub.dlg.ab'));
+          // 区分服务的类型，获取发布包 router、proxy、dcache、tars
+          let {serverType} = this;
+          let group_name = "";
+          if (serverType == 'router') {
+            group_name = 'RouterServer'
+          } else if (serverType == 'proxy') {
+            group_name = 'ProxyServer'
+          } else if (serverType == 'dcache') {
+            group_name = 'DCacheServerGroup'
+          }
           this.publishModal.model.serverList.forEach((item) => {
             items.push({
               server_id: item.id.toString(),
@@ -494,6 +504,7 @@
                 patch_id: patch_id,
                 bak_flag: item.bak_flag,
                 update_text: this.publishModal.model.update_text,
+                group_name
               },
             });
           });

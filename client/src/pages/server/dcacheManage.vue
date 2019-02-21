@@ -445,7 +445,7 @@ export default {
           let serverLength = this.serverList.length;
           if (serverLength > 0) return false;
           try {
-            await this.$ajax.postJSON('/server/api/cache/removeServer', {server_name: server_name});
+            await this.$ajax.postJSON('/server/api/cache/removeServer', {server_name: this.$route.params.treeid.split('.')[1].substr(1)});
             this.$parent.getTreeData();
           } catch (err) {
             console.error(err)
