@@ -652,7 +652,7 @@ export default {
       });
     },
     // 下线服务
-    undeployServer({id, server_name, ...a}) {
+    async undeployServer({id, server_name, ...a}) {
       this.$confirm(this.$t('serverList.dlg.msg.undeploy'), this.$t('common.alert')).then(async () => {
 
           let {serverList, serverType} = this;
@@ -663,7 +663,12 @@ export default {
             if (hasModule) return this.$tip.warning(this.$t('pub.dlg.hasModule'));
 
             // 如果下线的是仅有的节点,提醒用户下线后该应用将无用
-            await this.$confirm(this.$tip.warning(this.$t('pub.dlg.cantUseApply')))
+            try {
+              await this.$confirm(this.$t('pub.dlg.cantUseApply'))
+
+            } catch (err) {
+              return false;
+            }
           }
         try {
           await this.addTask(id, 'undeploy_tars', {
