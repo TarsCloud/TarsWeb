@@ -429,7 +429,9 @@
       "compiler": "compiler interface",
       "task": "compilation progress interface",
       "compileProgress": "Compilation progress",
-      "uploadPkg": "Uploading package, please wait"
+      "uploadPkg": "Uploading package, please wait",
+      "hasModule": "We need to log off all the modules under this application to log off the unique router and proxy services",
+      "cantUseApply": "下线的是仅有的节点,下线后该应用将无用"
     },
     "tips": {
       "default": "Release management management service level, please first in the left tree selection service business.",

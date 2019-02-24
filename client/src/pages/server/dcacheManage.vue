@@ -450,6 +450,29 @@ export default {
           } catch (err) {
             console.error(err)
           }
+
+        } else if (this.serverType === 'proxy') {
+
+          //在proxy服务节点列表，如果该服务没有节点了， 在目录树去掉该服务；
+          let serverLength = this.serverList.length;
+          if (serverLength > 0) return false;
+          try {
+            await this.$ajax.postJSON('/server/api/cache/removeProxy', {server_name: this.$route.params.treeid.split('.')[1].substr(1)});
+            this.$parent.getTreeData();
+          } catch (err) {
+            console.error(err)
+          }
+        } else if (this.serverType === 'router') {
+
+          //在proxy服务节点列表，如果该服务没有节点了， 在目录树去掉该服务；
+          let serverLength = this.serverList.length;
+          if (serverLength > 0) return false;
+          try {
+            await this.$ajax.postJSON('/server/api/cache/removeRouter', {server_name: this.$route.params.treeid.split('.')[1].substr(1)});
+            this.$parent.getTreeData();
+          } catch (err) {
+            console.error(err)
+          }
         }
 
       }).catch((err) => {
@@ -629,8 +652,19 @@ export default {
       });
     },
     // 下线服务
-    undeployServer({id, server_name}) {
+    undeployServer({id, server_name, ...a}) {
       this.$confirm(this.$t('serverList.dlg.msg.undeploy'), this.$t('common.alert')).then(async () => {
+
+          let {serverList, serverType} = this;
+//          console.log(serverList.length, serverType, id , server_name, a);
+          if (['proxy', 'router'].indexOf(serverType) > -1 && serverList.length === 1) {
+            // 如果是仅有的一个 proxy、 router 节点，要确保该应用下没有模块，提醒用户删除该应用下所有的模块才可以删除router、proxy
+            let hasModule = await this.$ajax.getJSON('/server/api/cache/hasModule', {serverType, serverName: server_name})
+            if (hasModule) return this.$tip.warning(this.$t('pub.dlg.hasModule'));
+
+            // 如果下线的是仅有的节点,提醒用户下线后该应用将无用
+            await this.$confirm(this.$tip.warning(this.$t('pub.dlg.cantUseApply')))
+          }
         try {
           await this.addTask(id, 'undeploy_tars', {
             success: this.$t('serverList.restart.success'),

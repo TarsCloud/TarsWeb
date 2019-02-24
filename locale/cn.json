@@ -454,7 +454,9 @@
       "compiler": "编译接口",
       "task": "查询编译进度接口",
       "compileProgress": "编译进度",
-      "uploadPkg": "正在回传发布包，请稍候"
+      "uploadPkg": "正在回传发布包，请稍候",
+      "hasModule": "需要下线该应用下所有的模块才可以下线唯一的 router、proxy 服务",
+      "cantUseApply": "下线的是仅有的节点,下线后该应用将无用"
     },
     "tips": {
       "default": "发布管理只管理服务层级，请您先在左侧业务树选择服务。",
