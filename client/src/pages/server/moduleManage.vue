@@ -5,7 +5,7 @@
     <let-table v-if="serverList" :data="serverList" :title="$t('serverList.title.serverList')" :empty-msg="$t('common.nodata')" ref="serverListLoading">
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.ip')" width="140px">
+      <let-table-column :title="$t('serverList.table.th.zb')" width="140px">
         <template slot-scope="{row:{cache_server_type}}">
           <span v-if="cache_server_type===0">{{$t('cache.mainEngine')}}</span>
           <span v-else-if="cache_server_type===1">{{$t('cache.standByEngine')}}</span>

@@ -72,7 +72,7 @@ app.use(loginMidware(loginConf));
 let dcacheConf = require('./config/dcacheConf.js');
 if (dcacheConf.enableDcache) {
   app.use(async (ctx, next) => {
-      await next(); ctx.cookies.set('dcache', 'true')
+      await next(); ctx.cookies.set('dcache', 'true', {httpOnly: false});
   });
   //  tars-dcache 的包，依赖了很多tars的模块，引用路径是从根目录开始的，防止引用出错，先改后更
     let cwd = process.cwd();
@@ -80,6 +80,10 @@ if (dcacheConf.enableDcache) {
   // let tarsDcache = require('./../../../nodejs_modules/tars-dcache');
   let tarsDcache = require('@tencent/tars-dcache');
   process.chdir(cwd);
+} else {
+    app.use(async (ctx, next) => {
+        await next(); ctx.cookies.set('dcache', 'false', {httpOnly: false});
+    })
 }
 
 //激活router

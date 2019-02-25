@@ -454,8 +454,9 @@
         this.getPatchList(first.application, module_name, patchPage, patchPageSize).then((data) => {
           this.publishModal.model.patchList = data.rows;
           this.publishModal.totalPatchPage = Math.ceil(data.count / patchPageSize);
+          this.publishModal.show = true;
+
         });
-        this.publishModal.show = true;
       },
       patchChangePage(page) {
         this.publishModal.patchPage = page;

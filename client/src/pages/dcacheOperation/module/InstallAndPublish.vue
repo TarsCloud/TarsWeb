@@ -93,8 +93,8 @@
       <let-button size="small" theme="primary" @click="installAndPublish">{{$t('apply.installAndPublish')}}
       </let-button>
     </let-form>
-    <let-modal :title="$t('publishLog.title')" v-model="showModal" width="800px" @on-confirm="confirmPublish">
-      <let-table ref="ProgressTable" :data="releaseProgress" :empty-msg="$t('common.nodata')" :title="$t('publishLog.sync')">
+    <let-modal  :title="$t('publishLog.title')" v-model="showModal" width="800px" @on-confirm="confirmPublish">
+      <let-table ref="ProgressTable" :data="releaseProgress" :empty-msg="$t('common.nodata')" >
         <let-table-column :title="$t('service.serverName')" prop="serverName" width="30%"></let-table-column>
         <let-table-column :title="$t('service.serverIp')" prop="nodeName" width="30%"></let-table-column>
         <let-table-column :title="$t('publishLog.releaseId')" prop="releaseId" width="15%"></let-table-column>
@@ -129,17 +129,39 @@
         let mkCache = sessionStorage.getItem('mkCache');
         this.$ajax.getJSON('/server/api/module_install_and_publish', {moduleId, mkCache}).then(response => {
           let releaseId = response.releaseRsp.releaseId;
-          this.$ajax.getJSON('/server/api/get_module_release_progress', {releaseId}).then(data => {
-            console.log(data);
-            this.showModal = true;
-            this.releaseProgress = data.progress;
-          }).catch(err => {
-            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-          });
+          this.getTaskRepeat({releaseId});
+//          this.$ajax.getJSON('/server/api/get_module_release_progress', {releaseId}).then(data => {
+//            console.log(data);
+//            this.showModal = true;
+//            this.releaseProgress = data.progress;
+//          }).catch(err => {
+//            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+//          });
           this.$tip.success(response.releaseRsp.errMsg)
         }).catch(err => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
+      },
+      getTaskRepeat({releaseId}) {
+        let timerId;
+        timerId && clearTimeout(timerId);
+        this.showModal = true;
+        const getTask = () => {
+          this.$ajax.getJSON('/server/api/get_module_release_progress', {releaseId}).then((data) => {
+            data.progress.forEach((item) => {
+              if (parseInt(item.percent, 10) === 100) {
+                clearTimeout(timerId);
+              } else {
+                timerId = setTimeout(getTask, 3000);
+              }
+            });
+            this.releaseProgress = data.progress;
+          }).catch((err) => {
+            clearTimeout(timerId);
+            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+          });
+        };
+        getTask();
       },
       getReleaseProgress (releaseId) {
         this.$ajax.getJSON('/server/api/get_module_release_progress', {releaseId}).then(data => {
@@ -165,25 +187,26 @@
           return 'key-value(KVCache)';
         } else {
           switch (base.mkcache_struct) {
-            case 1: 
+            case 1:
               return 'k-k-row(MKVCache)';
               break;
-            case 2: 
+            case 2:
               return 'Set(MKVCache)';
               break;
-            case 3: 
+            case 3:
               return 'List(MKVCache)';
               break;
-            case 4: 
+            case 4:
               return 'Zset(MKVCache)';
               break;
-            default: 
+            default:
               return null;
               break;
           }
         }
       },
       confirmPublish () {
+          this.showModal = false;
         this.$router.push('/server');
       }
     },

@@ -5,8 +5,8 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <a class="active" href="/"><img class="logo" src="@/assets/img/logo.png"></a>
-        <a class="" href="/dcache.html"><img class="logo" alt="dcache"
+        <a :class="{active: dcache === 'true'}" href="/"><img class="logo" src="@/assets/img/logo.png"></a>
+        <a v-if="dcache === 'true'" class="" href="/dcache.html"><img class="logo" alt="dcache"
                                                              src="@/assets/img/dcache-logo.png"></a>
       </div>
 
@@ -54,7 +54,8 @@
         uid: '--',
         userOptOpen: false,
         enableLogin: false,
-        localeMessages: localeMessages
+        localeMessages: localeMessages,
+        dcache: this.$cookie.get('dcache') || 'false',
       };
     },
     methods: {
@@ -88,6 +89,7 @@
     mounted() {
       this.getLoginUid();
       this.checkEnableLogin();
+      window.header =this;
     }
   };
 </script>

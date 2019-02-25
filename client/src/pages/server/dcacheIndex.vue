@@ -52,7 +52,7 @@
         <let-tab-pane
           :tabkey="`${base}/config/${serverType}`"
           :tab="serverData.level === 5 ? $t('index.rightView.tab.serviceConfig') :serverData.level === 4 ? $t('index.rightView.tab.setConfig') :serverData.level === 1 ? $t('index.rightView.tab.appConfig') : ''"
-          v-if="serverData.level === 5 || serverData.level === 4 || serverData.level === 1"
+          v-if="(serverData.level === 5 || serverData.level === 4 || serverData.level === 1) && serverType !== 'dcache'"
         ></let-tab-pane>
 
         <!--服务监控-->

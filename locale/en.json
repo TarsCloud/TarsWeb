@@ -292,6 +292,7 @@
       "th": {
         "service": "Service",
         "ip": "Node",
+        "zb": "main",
         "enableSet": "SET",
         "configStatus": "Configuration Status",
         "currStatus": "Current Status",

@@ -74,8 +74,8 @@
       <let-button size="small" theme="primary" @click="installAndPublish">{{$t('apply.installAndPublish')}}
       </let-button>
     </let-form>
-    <let-modal :title="$t('publishLog.title')" v-model="showModal" width="800px">
-      <let-table ref="ProgressTable" :data="items" :empty-msg="$t('common.nodata')" :title="$t('publishLog.sync')">
+    <let-modal  :title="$t('publishLog.title')" v-model="showModal" width="800px" @on-confirm="confirmPublish">
+      <let-table ref="ProgressTable" :data="items" :empty-msg="$t('common.nodata')" style="margin-top: 20px;">
         <let-table-column :title="$t('module.title')" prop="module" width="20%"></let-table-column>
         <let-table-column :title="$t('publishLog.releaseId')" prop="releaseId" width="20%"></let-table-column>
         <let-table-column :title="$t('publishLog.releaseProgress')" prop="percent"></let-table-column>
@@ -139,18 +139,44 @@
 //          router:{"releaseId":9,"errMsg":"sucess to release server"}}
           let proxyReleaseId = data.proxy.releaseId;
           let routerReleaseId = data.router.releaseId;
-          this.$ajax.getJSON('/server/api/get_release_progress', {"proxyReleaseId": proxyReleaseId, "routerReleaseId": routerReleaseId}).then(data => {
-            this.showModal = true;
-            this.items = data.progress;
-          }).catch(err => {
-            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-          });
+//          this.$ajax.getJSON('/server/api/get_release_progress', {"proxyReleaseId": proxyReleaseId, "routerReleaseId": routerReleaseId}).then(data => {
+//            this.showModal = true;
+//            this.items = data.progress;
+//          }).catch(err => {
+//            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+//          });
+          this.getTaskRepeat({proxyReleaseId, routerReleaseId});
           //let interval = setInterval(getReleaseProgress, 1000);
           this.$tip.success(data.proxy.errMsg)
 //          this.apply = apply || {}
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
+      },
+      getTaskRepeat({proxyReleaseId, routerReleaseId}) {
+        let timerId;
+        timerId && clearTimeout(timerId);
+        this.showModal = true;
+        const getTask = () => {
+          this.$ajax.getJSON('/server/api/get_release_progress', {"proxyReleaseId": proxyReleaseId, "routerReleaseId": routerReleaseId}).then((data) => {
+            data.progress.forEach((item) => {
+              if (parseInt(item.percent, 10) === 100) {
+                clearTimeout(timerId);
+              } else {
+                timerId = setTimeout(getTask, 3000);
+              }
+            });
+            this.items = data.progress;
+          }).catch((err) => {
+            clearTimeout(timerId);
+            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+          });
+        };
+        getTask();
+      },
+      confirmPublish () {
+        this.showModal = false;
+        this.$router.push('/operation/module/createModule');
       }
     },
     created () {
