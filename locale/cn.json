@@ -207,6 +207,7 @@
     "serverIp": "服务IP",
     "templateFile": "服务模版",
     "routerDbName": "路由数据库",
+    "routerDbNameTip": "提供可用的mysql实例，并设置一个希望的数据库名称，router将自动创建该数据库，并用其存储应用下各模块的路由信息。",
     "routerDbIp": "数据库IP",
     "routerDbPort": "数据库端口",
     "routerDbUser": "用户名",

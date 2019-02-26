@@ -17,7 +17,7 @@
       </let-form-group>
 
       <let-form-group :title="$t('module.moduleInfo')" inline label-position="top">
-        <let-form-item :label="$t('module.deployArea')" itemWidth="240px" required>
+        <let-form-item :label="$t('module.deployArea')" itemWidth="240px">
           {{moduleData.idc_area}}
         </let-form-item>
         <!-- <let-form-item :label="$t('module.keyType')" itemWidth="240px" required>
@@ -93,8 +93,8 @@
       <let-button size="small" theme="primary" @click="installAndPublish">{{$t('apply.installAndPublish')}}
       </let-button>
     </let-form>
-    <let-modal  :title="$t('publishLog.title')" v-model="showModal" width="800px" @on-confirm="confirmPublish">
-      <let-table ref="ProgressTable" :data="releaseProgress" :empty-msg="$t('common.nodata')" >
+    <let-modal :title="$t('publishLog.title')" v-model="showModal" width="800px" @on-confirm="confirmPublish">
+      <let-table ref="ProgressTable" :data="releaseProgress" :empty-msg="$t('common.nodata')">
         <let-table-column :title="$t('service.serverName')" prop="serverName" width="30%"></let-table-column>
         <let-table-column :title="$t('service.serverIp')" prop="nodeName" width="30%"></let-table-column>
         <let-table-column :title="$t('publishLog.releaseId')" prop="releaseId" width="15%"></let-table-column>
@@ -112,7 +112,8 @@
         moduleId,
         moduleData: {},
         releaseProgress: [],
-        showModal: false
+        showModal: false,
+        timerId: null
       }
     },
     methods: {
@@ -143,21 +144,24 @@
         });
       },
       getTaskRepeat({releaseId}) {
-        let timerId;
-        timerId && clearTimeout(timerId);
+        clearTimeout(this.timerId);
         this.showModal = true;
         const getTask = () => {
           this.$ajax.getJSON('/server/api/get_module_release_progress', {releaseId}).then((data) => {
+            let done = true;
             data.progress.forEach((item) => {
-              if (parseInt(item.percent, 10) === 100) {
-                clearTimeout(timerId);
-              } else {
-                timerId = setTimeout(getTask, 3000);
+              if (parseInt(item.percent, 10) !== 100) {
+                done = false;
               }
             });
+            if (done) {
+              clearTimeout(this.timerId);
+            } else {
+              this.timerId = setTimeout(getTask, 1000);
+            }
             this.releaseProgress = data.progress;
           }).catch((err) => {
-            clearTimeout(timerId);
+            clearTimeout(this.timerId);
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           });
         };
@@ -206,9 +210,16 @@
         }
       },
       confirmPublish () {
-          this.showModal = false;
+        this.showModal = false;
+        document.body.classList.remove('has-modal-open')
         this.$router.push('/server');
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      // 导航离开该组件的对应路由时调用
+      // 可以访问组件实例 `this`
+      clearTimeout(this.timerId);
+      next()
     },
     created () {
       this.getModuleFullInfo()

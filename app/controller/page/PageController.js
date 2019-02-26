@@ -22,6 +22,4 @@ PageController.index = async (ctx) => {
     await ctx.redirect('/index.html');
 };
 
-PageController.dcache = async (ctx) => {
-
 module.exports = PageController;

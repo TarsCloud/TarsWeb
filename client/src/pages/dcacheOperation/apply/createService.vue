@@ -30,6 +30,9 @@
             <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
           </let-select>
         </let-form-item>
+        <br>
+        <span style="margin-left:20px;">{{$t('service.routerDbNameTip')}}</span>
+        <br>
         <let-form-item :label="$t('service.routerDbName')" itemWidth="240px" required>
           <let-input
             size="small"
@@ -205,5 +208,7 @@
 </script>
 
 <style>
-
+  .let-form-cols-1 .let-form-item__label {
+    width: 140px;
+  }
 </style>

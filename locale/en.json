@@ -182,6 +182,7 @@
     "serverIp": "Service IP",
     "templateFile": "The service template",
     "routerDbName": "Routing database",
+    "routerDbNameTip": "Provide the available mysql instance and set a desired database name, router will automatically create the database and use it to store routing information for each module under the application.",
     "routerDbIp": "The database of IP",
     "routerDbPort": "Database port",
     "routerDbUser": "username",

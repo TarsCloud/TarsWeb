@@ -99,9 +99,10 @@
                 <let-input
                   size="small"
                   v-model="scope.row.defaultValue"
-                  required
-                  :required-tip="$t('deployService.table.tips.empty')"
+
                 />
+                <!--required-->
+                <!--:required-tip="$t('deployService.table.tips.empty')"-->
               </template>
             </let-table-column>
             <let-table-column :title="$t('MKCache.maxLen')" prop="maxLen">
@@ -109,9 +110,9 @@
                 <let-input
                   size="small"
                   v-model="scope.row.maxLen"
-                  required
-                  :required-tip="$t('deployService.table.tips.empty')"
                 />
+                <!--required-->
+                <!--:required-tip="$t('deployService.table.tips.empty')"-->
               </template>
             </let-table-column>
           </let-table>
@@ -153,9 +154,10 @@
                 <let-input
                   size="small"
                   v-model="scope.row.defaultValue"
-                  required
-                  :required-tip="$t('deployService.table.tips.empty')"
+
                 />
+                <!--required-->
+                <!--:required-tip="$t('deployService.table.tips.empty')"-->
               </template>
             </let-table-column>
             <let-table-column :title="$t('MKCache.maxLen')" prop="maxLen">
@@ -163,9 +165,9 @@
                 <let-input
                   size="small"
                   v-model="scope.row.maxLen"
-                  required
-                  :required-tip="$t('deployService.table.tips.empty')"
                 />
+                <!--required-->
+                <!--:required-tip="$t('deployService.table.tips.empty')"-->
               </template>
             </let-table-column>
             <let-table-column :title="$t('operate.operates')" width="15%">
@@ -430,3 +432,5 @@
     }
   }
 </script>
+
+

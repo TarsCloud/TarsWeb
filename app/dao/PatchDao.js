@@ -59,7 +59,8 @@ module.exports = {
         }, {
             where: {
                 server: application + '.' + module_name,
-                default_version: 1
+                default_version: 1,
+                package_type
             }
         });
         return await tServerPatchs.update({

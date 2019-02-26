@@ -74,7 +74,7 @@
       <let-button size="small" theme="primary" @click="installAndPublish">{{$t('apply.installAndPublish')}}
       </let-button>
     </let-form>
-    <let-modal  :title="$t('publishLog.title')" v-model="showModal" width="800px" @on-confirm="confirmPublish">
+    <let-modal :title="$t('publishLog.title')" v-model="showModal" width="800px" @on-confirm="confirmPublish">
       <let-table ref="ProgressTable" :data="items" :empty-msg="$t('common.nodata')" style="margin-top: 20px;">
         <let-table-column :title="$t('module.title')" prop="module" width="20%"></let-table-column>
         <let-table-column :title="$t('publishLog.releaseId')" prop="releaseId" width="20%"></let-table-column>
@@ -120,7 +120,8 @@
           set_area: [],
           Router: routerModel(),
           Proxy: [proxyModel()],
-        }
+        },
+        timerId: null
       }
     },
     methods: {
@@ -154,21 +155,27 @@
         });
       },
       getTaskRepeat({proxyReleaseId, routerReleaseId}) {
-        let timerId;
-        timerId && clearTimeout(timerId);
+        clearTimeout(this.timerId);
         this.showModal = true;
         const getTask = () => {
-          this.$ajax.getJSON('/server/api/get_release_progress', {"proxyReleaseId": proxyReleaseId, "routerReleaseId": routerReleaseId}).then((data) => {
+          this.$ajax.getJSON('/server/api/get_release_progress', {
+            "proxyReleaseId": proxyReleaseId,
+            "routerReleaseId": routerReleaseId
+          }).then((data) => {
+            let done = true;
             data.progress.forEach((item) => {
-              if (parseInt(item.percent, 10) === 100) {
-                clearTimeout(timerId);
-              } else {
-                timerId = setTimeout(getTask, 3000);
+              if (parseInt(item.percent, 10) !== 100) {
+                done = false;
               }
             });
+            if (done) {
+              clearTimeout(this.timerId);
+            } else {
+              this.timerId = setTimeout(getTask, 1000);
+            }
             this.items = data.progress;
           }).catch((err) => {
-            clearTimeout(timerId);
+            clearTimeout(this.timerId);
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           });
         };
@@ -176,8 +183,15 @@
       },
       confirmPublish () {
         this.showModal = false;
+        document.body.classList.remove('has-modal-open');
         this.$router.push('/operation/module/createModule');
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      // 导航离开该组件的对应路由时调用
+      // 可以访问组件实例 `this`
+      clearTimeout(this.timerId);
+      next()
     },
     created () {
       this.getApplyInfo()
