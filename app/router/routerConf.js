@@ -111,6 +111,7 @@ const apiConf = [
     ['get', '/get_compile_conf', PatchController.getCompilerConf],
     ['post', '/delete_patch_package', PatchController.deletePatchPackage],
     ['post', '/set_patch_package_default', PatchController.setPatchPackageDefault],
+    ['get', '/has_dcahce_patch_package', PatchController.hasDcahcePatchPackage],
 
     // 监控
     ['get', '/tarsstat_monitor_data', MonitorController.tarsstat],

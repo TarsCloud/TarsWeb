@@ -105,6 +105,7 @@
     "createApply": "Create Application",
     "createRouterProxyService": "Create Router、proxy Service",
     "createRegionTips": "Before creating the application, create the locale",
+    "uploadPatchPackage": "Before creating the application, please upload the proxy, router, and dcache publishing packages and set the default Settings",
     "hasExist": "Application already exists",
     "RouterConfigInfo": "Router configuration information",
     "ProxyConfigInfo": "Proxy configuration information",

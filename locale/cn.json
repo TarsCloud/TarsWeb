@@ -105,6 +105,7 @@
     "createApply": "创建应用",
     "createRouterProxyService": "创建 router、proxy 服务",
     "createRegionTips": "创建应用之前，请先创建地区",
+    "uploadPatchPackage": "创建应用之前，请先上传 proxy、router、dcache 发布包并设置默认",
     "hasExist": "应用已存在",
     "RouterConfigInfo": "Router配置信息",
     "ProxyConfigInfo": "Proxy配置信息",

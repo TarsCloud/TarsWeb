@@ -199,4 +199,16 @@ PatchController.setPatchPackageDefault = async (ctx) => {
     }
 };
 
+PatchController.hasDcahcePatchPackage = async (ctx) => {
+    try {
+        let ret = await PatchService.hasDcahcePatchPackage();
+        ctx.makeResObj(200, '', ret);
+    } catch (e) {
+        logger.error('[PatchController.setPatchPackageDefault]:', e, ctx);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+
+
 module.exports = PatchController;

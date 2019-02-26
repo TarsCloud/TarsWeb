@@ -97,21 +97,36 @@
       window.a = this;
     },
     beforeRouteEnter (to, from, next) {
-      Ajax.getJSON('/server/api/get_region_list').then((regions) => {
-        if (regions.length) {
+//      Ajax.getJSON('/server/api/get_region_list').then((regions) => {
+//        if (regions.length) {
+//          next(vm => {
+//            vm.regions = regions
+//          })
+//        } else {
+//          next(vm => {
+//            vm.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.createRegionTips')}`);
+//            console.log('abc');
+//            vm.$router.push('/operation/region')
+//          })
+//        }
+//      }).catch((err) => {
+//        alert(err.message || err.err_msg);
+//      });
+      Ajax.getJSON('/server/api/has_dcahce_patch_package').then((hasDefaultPackage) => {
+        if (hasDefaultPackage) {
           next(vm => {
             vm.regions = regions
           })
         } else {
           next(vm => {
-            vm.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.createRegionTips')}`);
-            console.log('abc');
-            vm.$router.push('/operation/region')
+            vm.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.uploadPatchPackage')}`);
+            vm.$router.push('/releasePackage/proxyList')
           })
         }
       }).catch((err) => {
         alert(err.message || err.err_msg);
       });
+
     }
   }
 </script>
