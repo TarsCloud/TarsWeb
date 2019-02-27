@@ -223,6 +223,7 @@
     "status": "status",
     "result": "result",
     "error": "Error!!!",
+    "warning": "Warning!!!",
     "success": "Success!!!",
     "ip": "node",
     "systemError": "system error",

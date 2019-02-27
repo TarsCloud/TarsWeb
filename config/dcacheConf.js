@@ -1,4 +1,4 @@
 
 module.exports = {
-  enableDcache: true
+  enableDcache: false
 }
