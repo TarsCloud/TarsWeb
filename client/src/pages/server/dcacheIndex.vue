@@ -261,7 +261,7 @@
     },
     mounted() {
       this.getTreeData();
-      window.a = this;
+      window.dcacheIndex = this;
 
     },
   };

@@ -107,6 +107,11 @@
                 </template>
               </let-table-column>
               <let-table-column :title="$t('releasePackage.moduleName')" prop="server"></let-table-column>
+              <let-table-column :title="$t('releasePackage.cacheType')" v-if="serverType === 'dcache'">
+                <template slot-scope="scope">
+                  <span>{{scope.row.package_type==1?"KVcache": "MKVcache"}}</span>
+                </template>
+              </let-table-column>
               <let-table-column :title="$t('serverList.servant.comment')" prop="comment"></let-table-column>
               <let-table-column :title="$t('releasePackage.uploadTime')" prop="posttime"></let-table-column>
               <let-pagination slot="pagination" align="right"

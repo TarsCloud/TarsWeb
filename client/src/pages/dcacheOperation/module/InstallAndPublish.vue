@@ -213,6 +213,9 @@
         this.showModal = false;
         document.body.classList.remove('has-modal-open')
         this.$router.push('/server');
+        if (window.dcacheIndex && window.dcacheIndex.getTreeData) {
+          window.dcacheIndex.getTreeData()
+        }
       }
     },
     beforeRouteLeave (to, from, next) {
