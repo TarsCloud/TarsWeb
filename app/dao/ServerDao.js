@@ -16,6 +16,7 @@
  
 const {tServerConf, sequelize} = require('./db').db_tars;
 const Sequelize = require('sequelize');
+const mysql = require('mysql');
 
 const ServerDao = {};
 
@@ -162,7 +163,7 @@ ServerDao.getServerName = async(application) => {
 };
 
 ServerDao.getSet = async(application, serverName) => {
-    let rst = await tServerConf.sequelize.query('select distinct if(enable_set = \'Y\', CONCAT(set_name, \'.\', set_area, \'.\', set_group), \'\') as \'set\' from db_tars.t_server_conf where application = \'' + application + '\' and server_name = \'' + serverName + '\'');
+    let rst = await tServerConf.sequelize.query('select distinct if(enable_set = \'Y\', CONCAT(set_name, \'.\', set_area, \'.\', set_group), \'\') as \'set\' from db_tars.t_server_conf where application = ' + mysql.escape(application) + ' and server_name = ' + mysql.escape(serverName));
     return rst[0] || '';
 };
 
