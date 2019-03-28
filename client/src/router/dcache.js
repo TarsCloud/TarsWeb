@@ -6,7 +6,7 @@ import Server from '@/pages/server/dcacheIndex';
 
 import ServerManage from '@/pages/server/manage';
 import dcacheServerManage from '@/pages/server/dcacheManage.vue';
-import moduleServerManage from '@/pages/server/moduleManage.vue';
+import dcacheModuleManage from '@/pages/dcache/moduleManage/index.vue';
 
 // import ServerPublish from '@/pages/server/publish';
 import ServerPublish from '@/pages/server/dcachePublish';
@@ -84,7 +84,7 @@ export default new Router({
         },
         {
           path: ':treeid/cache',
-          component: moduleServerManage,
+          component: dcacheModuleManage,
         },
         {
           path: ':treeid/moduleCache',

@@ -11,12 +11,12 @@ import {i18n, loadLang} from './locale/i18n'
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
-loadLang.call(this).then(()=>{
+loadLang.call(this).then(() => {
   new Vue({
-    i18n : i18n,
+    i18n: i18n,
     el: '#app',
     router,
-    components: { App },
+    components: {App},
     template: '<App/>'
   });
 })

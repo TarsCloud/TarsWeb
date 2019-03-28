@@ -1,7 +1,6 @@
 {
   "localeCode": "en",
   "localeName": "English",
-
   "header": {
     "tab": {
       "tab1": "Services",
@@ -88,7 +87,7 @@
         }
       }
     },
-    "resource":{
+    "resource": {
       "tarsNodeExist": "Tars Node is already exist",
       "installFailed": "Install Tars Node failed",
       "uninstallFailed": "Uninstall Tars Node failed",
@@ -139,7 +138,7 @@
     "dbDataCountUnit": "Article ten thousand the data",
     "cacheTypeTip1": "Memory database (not obsolete)",
     "cacheTypeTip2": "Temporary cache (expired)",
-    "cacheTypeTip3": "Hot spot cache (capacity elimination)",
+    "cacheTypeTip3": "Hot spot cache (expand elimination)",
     "perRecordAvg": "Average size of data records",
     "perRecordAvgUnit": "Byte",
     "totalRecord": "Save in the Cache",
@@ -177,6 +176,12 @@
       "batchDelete": "Delete",
       "addModuleConfig": "add module config"
     }
+  },
+  "dcache": {
+    "expand": "expand",
+    "Shrinkage": "Shrinkage",
+    "Migration": "Migration",
+    "noTheSamePatchVersion": "There are different versions of the service and no capacity expansion is allowed"
   },
   "service": {
     "serverName": "The service name",
@@ -293,6 +298,7 @@
     },
     "table": {
       "th": {
+        "group": "group",
         "service": "Service",
         "ip": "Node",
         "zb": "main",
@@ -569,7 +575,7 @@
       "setGroupFormatTips": "Set group name can only numbers or *",
       "inputTips": "all * must be filled",
       "objTips": "OBJ name cannot be empty",
-      "deployServiceTip":"Are you sure to deploy this service?",
+      "deployServiceTip": "Are you sure to deploy this service?",
       "getPort": "get port",
       "ret": {
         "success": "Deployed application submitted successfully",
@@ -665,25 +671,25 @@
       "sep": "Multiple people separated by semicolon"
     }
   },
-  "resource":{
+  "resource": {
     "installRstMsg": ",The results of installment of Tarsnode are as follows:",
     "installResult": "Install result"
   },
   "inf": {
     "list": {
-      "debug" : "debug"
+      "debug": "debug"
     },
     "title": {
-      "listTitle" : "Tars Files",
+      "listTitle": "Tars Files",
       "dlgTitle": "Upload Tars File"
     },
     "dlg": {
-      "selectLabel" : "modules/interfaces/functions",
-      "inParam" : "in params",
-      "outParam" : "out params",
-      "tarsFile" : "tars file",
-      "deleteMsg" : "are you sure to delete this file?",
-      "objName" : "Servant Name"
+      "selectLabel": "modules/interfaces/functions",
+      "inParam": "in params",
+      "outParam": "out params",
+      "tarsFile": "tars file",
+      "deleteMsg": "are you sure to delete this file?",
+      "objName": "Servant Name"
     }
   },
   "publishLog": {
@@ -691,5 +697,4 @@
     "sync": "synchronizing PMS...",
     "releaseId": "Release ID"
   }
-
 }

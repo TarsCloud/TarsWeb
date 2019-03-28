@@ -12,92 +12,104 @@
 </template>
 
 <script>
-import AppDcacheHeader from './components/app/dcache-header.vue';
-import AppFooter from './components/app/footer';
+  import AppDcacheHeader from './components/app/dcache-header.vue';
+  import AppFooter from './components/app/footer';
 
-export default {
-  name: 'App',
-  components: {
-    AppDcacheHeader,
-    AppFooter,
-  },
-};
+  export default {
+    name: 'App',
+    components: {
+      AppDcacheHeader,
+      AppFooter,
+    },
+  };
 </script>
 
 <style>
-@import "./assets/font/lato/Lato.css";
-@import './assets/css/reset.css';
-@import './assets/css/variable.css';
+  @import "./assets/font/lato/Lato.css";
+  @import './assets/css/reset.css';
+  @import './assets/css/variable.css';
 
-.clearfix {
-  *zoom: 1;
+  .clearfix {
+    *zoom: 1;
 
-  &:after, &:before {
+  &
+  :after,
+
+  &
+  :before {
     display: table;
     content: ' ';
   }
 
-  &:after {
+  &
+  :after {
     clear: both;
   }
-}
-.toe {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  word-break: break-all;
-}
-.disabled {
-  opacity: 0.65;
-  pointer-events: none;
-}
-.hidden {
-  display: none;
-}
 
-.main-width {
-  margin: 0 auto;
-  max-width: var(--main-width);
-  padding: 0 var(--gap-small);
-}
+  }
+  .toe {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+  }
 
-#app {
-  position: relative;
-  padding-bottom: 48px;
-  min-height: 100%;
-  font-size: 14px;
-}
-.app_index__footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-}
+  .disabled {
+    opacity: 0.65;
+    pointer-events: none;
+  }
 
-/* 调换弹窗确定取消左右顺序 */
-.let-dialog .let-dialog__foot .let-align__inner {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: center;
+  .hidden {
+    display: none;
+  }
+
+  .main-width {
+    margin: 0 auto;
+    max-width: var(--main-width);
+    padding: 0 var(--gap-small);
+  }
+
+  #app {
+    position: relative;
+    padding-bottom: 48px;
+    min-height: 100%;
+    font-size: 14px;
+  }
+
+  .app_index__footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  /* 调换弹窗确定取消左右顺序 */
+  .let-dialog .let-dialog__foot .let-align__inner {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
 
   .let-button:first-child {
     margin-right: 0;
     margin-left: 16px;
   }
-}
 
-.page_operation {
-  padding-top: 30px;
-  padding-bottom: 40px;
+  }
 
-&_children {
-   padding: 20px 0;
- }
-}
+  .page_operation {
+    padding-top: 30px;
+    padding-bottom: 40px;
 
-.danger {
-  color: var(--off-color);
-}
+  &
+  _children {
+    padding: 20px 0;
+  }
+
+  }
+
+  .danger {
+    color: var(--off-color);
+  }
 
 
 </style>

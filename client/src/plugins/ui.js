@@ -9,7 +9,7 @@ import TarsFormItem from '@/components/tars-form-item';
 import cn from "let-ui/lib/locale/lang/zh-CN.min";
 import en from "let-ui/lib/locale/lang/en-US.min";
 
-Vue.use(letUI,  {locale: {en, cn}[VueCookie.get('locale') || 'cn'] || cn});
+Vue.use(letUI, {locale: {en, cn}[VueCookie.get('locale') || 'cn'] || cn});
 Vue.component(Icon.name, Icon);
 Vue.component(TarsFormItem.name, TarsFormItem);
 

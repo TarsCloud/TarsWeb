@@ -9,18 +9,20 @@
 </template>
 
 <script>
-export default {
-  name: 'TarsFormItem',
-  props: {
-    label: String,
-  },
-};
+  export default {
+    name: 'TarsFormItem',
+    props: {
+      label: String,
+    },
+  };
 </script>
 
 <style>
-.tars-form-item {
+  .tars-form-item {
+
   .clickable {
     color: #3f5ae0;
   }
-}
+
+  }
 </style>

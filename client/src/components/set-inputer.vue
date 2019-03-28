@@ -47,61 +47,65 @@
       :value="enabled"
       @input="updaters.enabled"
       @change="onEnabledChange"
-    >{{$t('serverList.table.th.enableSet')}}</let-checkbox>
+    >{{$t('serverList.table.th.enableSet')}}
+    </let-checkbox>
   </div>
 </template>
 
 <script>
-export default {
-  props: {
-    enabled: Boolean,
-    name: String,
-    area: String,
-    group: [Number, String],
-  },
-
-  created() {
-    this.updaters = {
-      name: this.updater('name'),
-      area: this.updater('area'),
-      group: this.updater('group'),
-      enabled: this.updater('enabled'),
-    };
-  },
-
-  methods: {
-    updater(name) {
-      return value => this.$emit(`update:${name}`, value);
+  export default {
+    props: {
+      enabled: Boolean,
+      name: String,
+      area: String,
+      group: [Number, String],
     },
-    onEnabledChange() {
-      this.$nextTick(() => {
-        if (!this.enabled) {
-          this.updaters.name('');
-          this.$refs.name.resetValid();
 
-          this.updaters.area('');
-          this.$refs.area.resetValid();
-
-          this.updaters.group('');
-          this.$refs.group.resetValid();
-        }
-      });
+    created() {
+      this.updaters = {
+        name: this.updater('name'),
+        area: this.updater('area'),
+        group: this.updater('group'),
+        enabled: this.updater('enabled'),
+      };
     },
-  },
-};
+
+    methods: {
+      updater(name) {
+        return value => this.$emit(`update:${name}`, value);
+      },
+      onEnabledChange() {
+        this.$nextTick(() => {
+          if (!this.enabled) {
+            this.updaters.name('');
+            this.$refs.name.resetValid();
+
+            this.updaters.area('');
+            this.$refs.area.resetValid();
+
+            this.updaters.group('');
+            this.$refs.group.resetValid();
+          }
+        });
+      },
+    },
+  };
 </script>
 
 <style>
-.set_inputer {
+  .set_inputer {
 
-  &_item {
+  &
+  _item {
     float: left;
     margin-right: 8px;
     width: 126px;
   }
 
-  &_switch {
+  &
+  _switch {
     float: right;
   }
-}
+
+  }
 </style>

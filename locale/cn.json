@@ -1,7 +1,6 @@
 {
   "localeCode": "cn",
   "localeName": "中文",
-
   "header": {
     "tab": {
       "tab1": "服务管理",
@@ -88,7 +87,7 @@
         }
       }
     },
-    "resource":{
+    "resource": {
       "tarsNodeExist": "Tars Node 已存在",
       "installFailed": "安装Tars Node失败",
       "uninstallFailed": "卸载Tars Node失败",
@@ -202,6 +201,12 @@
       "batchDelete": "批量删除",
       "addModuleConfig": "添加模块配置"
     }
+  },
+  "dcache": {
+    "expand": "扩容",
+    "Shrinkage": "缩容",
+    "Migration": "迁移",
+    "noTheSamePatchVersion": "存在不同版本的服务，不允许扩容"
   },
   "service": {
     "serverName": "服务名",
@@ -318,6 +323,7 @@
     },
     "table": {
       "th": {
+        "group": "组",
         "service": "服务",
         "ip": "节点",
         "zb": "主备",
@@ -594,7 +600,7 @@
       "setGroupFormatTips": "Set组名只能是数字或*号",
       "inputTips": "所有*号项都必须填写",
       "objTips": "OBJ不能为空",
-      "deployServiceTip":"确定要布署吗？",
+      "deployServiceTip": "确定要布署吗？",
       "getPort": "获取端口",
       "ret": {
         "success": "布署申请提交成功",
@@ -696,19 +702,19 @@
   },
   "inf": {
     "list": {
-      "debug" : "调试"
+      "debug": "调试"
     },
     "title": {
-      "listTitle" : "tars文件列表",
-      "dlgTitle" : "上传Tars文件"
+      "listTitle": "tars文件列表",
+      "dlgTitle": "上传Tars文件"
     },
     "dlg": {
-      "selectLabel" : "模块/接口/方法",
-      "inParam" : "方法入参",
-      "outParam" : "方法出参",
-      "tarsFile" : "tars文件",
-      "deleteMsg" : "您确定要删除吗？",
-      "objName" : "Servant名"
+      "selectLabel": "模块/接口/方法",
+      "inParam": "方法入参",
+      "outParam": "方法出参",
+      "tarsFile": "tars文件",
+      "deleteMsg": "您确定要删除吗？",
+      "objName": "Servant名"
     }
   },
   "publishLog": {

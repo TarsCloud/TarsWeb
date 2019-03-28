@@ -7,50 +7,51 @@
         :key="hour.val"
         :class="{active: hour.val === value}"
         @click="onChange(hour.val)"
-      >{{hour.txt}}</li>
+      >{{hour.txt}}
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line prefer-spread
-const hours = Array.apply(null, { length: 24 }).map((d, i) => i);
-const formattedHours = hours.map(d => ({ val: d, txt: `0${d}`.slice(-2) }));
-const formattedHoursWithAll = [{ val: -1, txt: 'all' }].concat(formattedHours);
+  // eslint-disable-next-line prefer-spread
+  const hours = Array.apply(null, {length: 24}).map((d, i) => i);
+  const formattedHours = hours.map(d => ({val: d, txt: `0${d}`.slice(-2)}));
+  const formattedHoursWithAll = [{val: -1, txt: 'all'}].concat(formattedHours);
 
-export default {
-  name: 'HoursFilter',
-  props: {
-    title: {
-      type: String,
-      default: '',
+  export default {
+    name: 'HoursFilter',
+    props: {
+      title: {
+        type: String,
+        default: '',
+      },
+      value: Number,
     },
-    value: Number,
-  },
 
-  filters: {
-    format(val) {
-      return `0${val}`.slice(-2);
+    filters: {
+      format(val) {
+        return `0${val}`.slice(-2);
+      },
     },
-  },
 
-  data() {
-    return {
-      hours: formattedHoursWithAll,
-    };
-  },
-
-  methods: {
-    onChange(val) {
-      this.$emit('input', val);
+    data() {
+      return {
+        hours: formattedHoursWithAll,
+      };
     },
-  },
-};
+
+    methods: {
+      onChange(val) {
+        this.$emit('input', val);
+      },
+    },
+  };
 </script>
 
 <style>
-.hours-filter {
-  overflow: hidden;
+  .hours-filter {
+    overflow: hidden;
 
   h4 {
     color: #9096A3;
@@ -77,14 +78,17 @@ export default {
     padding: 0 11px;
     text-align: center;
 
-    &.active {
-      border-color: #3F5AE0;
-      color: #3F5AE0;
-    }
-
-    &:last-child {
-      margin-right: 0;
-    }
+  &
+  .active {
+    border-color: #3F5AE0;
+    color: #3F5AE0;
   }
-}
+
+  &
+  :last-child {
+    margin-right: 0;
+  }
+
+  }
+  }
 </style>

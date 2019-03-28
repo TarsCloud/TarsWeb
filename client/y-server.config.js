@@ -9,7 +9,7 @@ module.exports = {
 
   plugins: [
     (app) => {
-      app.use(bodyParser.urlencoded({ extended: true }));
+      app.use(bodyParser.urlencoded({extended: true}));
     },
     {
       $name: 'mock',
