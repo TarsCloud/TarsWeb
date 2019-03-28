@@ -102,5 +102,6 @@ app.use(static(path.join(__dirname, './files'), {maxage: 7 * 24 * 60 * 60 * 1000
 postMidware.forEach((midware) => {
 	app.use(midware);
 });
-
+//
 module.exports = app;
+
