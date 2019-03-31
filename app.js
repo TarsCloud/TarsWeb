@@ -78,7 +78,7 @@ if (dcacheConf.enableDcache) {
 	//  tars-dcache 的包，依赖了很多tars的模块，引用路径是从根目录开始的，防止引用出错，先改后更
 	let cwd = process.cwd();
 	process.chdir('./');
-	let tarsDcache = require('./../../../nodejs_modules/tars-dcache');
+	let tarsDcache = require('./../tars-dcache');
 	// let tarsDcache = require('@tencent/tars-dcache');
 	process.chdir(cwd);
 } else {

@@ -6,7 +6,8 @@
       "tab1": "服务管理",
       "tab2": "运维管理",
       "tab3": "发布包管理",
-      "tab4": "cache 配置"
+      "tab4": "cache 配置",
+      "tab5": "操作管理"
     },
     "logout": "退出登录"
   },
@@ -206,7 +207,29 @@
     "expand": "扩容",
     "Shrinkage": "缩容",
     "Migration": "迁移",
-    "noTheSamePatchVersion": "存在不同版本的服务，不允许扩容"
+    "noTheSamePatchVersion": "存在不同版本的服务，不允许扩容",
+    "operationManage": {
+      "expand": "扩容管理",
+      "shrinkage": "缩容管理",
+      "migration": "迁移管理",
+      "appName": "应用名",
+      "moduleName": "模块名",
+      "srcGroupName": "迁移源组",
+      "dstGroupName": "迁移目的",
+      "status": "状态",
+      "beginTime": "开始时间",
+      "progress": "进度",
+      "statusText": {
+        "0": "新增迁移任务",
+        "1": "配置阶段完成",
+        "2": "发布完成",
+        "3": "正在迁移",
+        "4": "完成",
+        "5": "停止"
+      },
+      "ensureDelete": "确认删除吗？",
+      "ensureStop": "确认停止吗？"
+    }
   },
   "service": {
     "serverName": "服务名",

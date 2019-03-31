@@ -16,6 +16,7 @@
         <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab3')" tabkey="/releasePackage" :icon="opaIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab4')" tabkey="/config" :icon="opaIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab5')" tabkey="/operationManage" :icon="opaIcon"></let-tab-pane>
       </let-tabs>
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">

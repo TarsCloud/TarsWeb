@@ -28,3 +28,13 @@ export function getReleaseProgress ({releaseId}) {
     params: {releaseId}
   })
 }
+
+export function getRouterChange ({type = '1'}) {
+  return Axios({
+    method: 'get',
+    url: '/cache/getRouterChange',
+    params: {
+      type
+    }
+  })
+}

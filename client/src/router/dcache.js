@@ -40,6 +40,12 @@ import cacheList from '@/pages/releasePackage/cacheList';
 import CacheConfig from '@/pages/cacheConfig/config'
 import ModuleCache from '@/pages/cacheConfig/moduleCache'
 
+// 操作管理
+import OperationManage from '@/pages/dcache/operationManage/index.vue'
+import OperationManageExpand from '@/pages/dcache/operationManage/expand.vue'
+import OperationManageShrinkage from '@/pages/dcache/operationManage/shrinkage.vue'
+import OperationManageMigration from '@/pages/dcache/operationManage/migration.vue'
+
 
 Vue.use(Router);
 
@@ -171,6 +177,26 @@ export default new Router({
     {
       path: '/config',
       component: CacheConfig
+    },
+    {
+      path: '/operationManage',
+      name: 'operationManage',
+      component: OperationManage,
+      redirect: '/operationManage/expand',
+      children: [
+        {
+          path: 'expand',
+          component: OperationManageExpand,
+        },
+        {
+          path: 'shrinkage',
+          component: OperationManageShrinkage,
+        },
+        {
+          path: 'migration',
+          component: OperationManageMigration,
+        },
+      ],
     },
     {
       path: '*',

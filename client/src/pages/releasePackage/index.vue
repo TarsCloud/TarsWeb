@@ -11,23 +11,22 @@
 
 <script>
 
-  export default {
-    name: 'Oparetion',
-    methods: {
-      onTabClick(tabkey) {
-        this.$router.replace(tabkey);
-      },
+export default {
+  methods: {
+    onTabClick(tabkey) {
+      this.$router.replace(tabkey);
     },
-  };
+  },
+};
 </script>
 
 <style>
-  .page_operation {
-    padding-top: 30px;
-    padding-bottom: 40px;
+.page_operation {
+  padding-top: 30px;
+  padding-bottom: 40px;
 
   &_children {
-     padding: 20px 0;
-   }
+    padding: 20px 0;
   }
+}
 </style>

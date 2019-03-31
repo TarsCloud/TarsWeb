@@ -6,7 +6,8 @@
       "tab1": "Services",
       "tab2": "operation",
       "tab3": "Release package",
-      "tab4": "cache configuration"
+      "tab4": "cache configuration",
+      "tab5": "operation manage"
     },
     "logout": "logout"
   },
@@ -181,7 +182,29 @@
     "expand": "expand",
     "Shrinkage": "Shrinkage",
     "Migration": "Migration",
-    "noTheSamePatchVersion": "There are different versions of the service and no capacity expansion is allowed"
+    "noTheSamePatchVersion": "There are different versions of the service and no capacity expansion is allowed",
+    "operationManage": {
+      "expand": "expand manage",
+      "shrinkage": "shrinkage manage",
+      "migration": "migration manage",
+      "appName": "application name",
+      "moduleName": "module name",
+      "srcGroupName": "srcGroupName",
+      "dstGroupName": "distGroupName",
+      "status": "status",
+      "beginTime": "begin time",
+      "progress": "progress",
+      "statusText": {
+        "0": "New migration tasks",
+        "1": "Configuration phase complete",
+        "2": "Release to complete",
+        "3": "On the move",
+        "4": "Complete",
+        "5": "Stop"
+      },
+      "ensureDelete": "Are you sure to delete it?",
+      "ensureStop": "Are you sure to stop it?"
+    }
   },
   "service": {
     "serverName": "The service name",
