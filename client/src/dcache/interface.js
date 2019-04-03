@@ -29,12 +29,76 @@ export function getReleaseProgress ({releaseId}) {
   })
 }
 
+export function configTransfer ({appName, moduleName, type = '1', srcGroupName = [], dstGroupName = []}) {
+  return Axios({
+    method: 'post',
+    url: '/cache/configTransfer',
+    data: {
+      appName,
+      moduleName,
+      type,
+      srcGroupName,
+      dstGroupName,
+    }
+  })
+}
+
+/**
+ * 获取操作记录
+ * @type String 0、1、2 迁移、扩容、缩容
+ */
 export function getRouterChange ({type = '1'}) {
   return Axios({
     method: 'get',
     url: '/cache/getRouterChange',
     params: {
       type
+    }
+  })
+}
+
+/**
+ * 停止迁移、扩容、缩容操作
+ * @appName     应用名
+ * @moduleName  模块名
+ * @type        '0' 是迁移， '1' 是扩容， '2' 是缩容
+ * @srcGroupName 原组
+ * @dstGroupName 目标组
+ * 
+ */
+export function stopTransfer ({appName = '', moduleName ='', type = '1', srcGroupName = [], dstGroupName = []}) {
+  return Axios({
+    method: 'post',
+    url: '/cache/stopTransfer',
+    data: {
+      appName,
+      moduleName,
+      type,
+      srcGroupName,
+      dstGroupName
+    }
+  })
+}
+
+/**
+ * 删除迁移、扩容、缩容操作记录
+ * @appName     应用名
+ * @moduleName  模块名
+ * @type        '0' 是迁移， '1' 是扩容， '2' 是缩容
+ * @srcGroupName 原组
+ * @dstGroupName 目标组
+ * 
+ */
+export function deleteTransfer ({appName = '', moduleName ='', type = '1', srcGroupName = [], dstGroupName = []}) {
+  return Axios({
+    method: 'post',
+    url: '/cache/deleteTransfer',
+    data: {
+      appName,
+      moduleName,
+      type,
+      srcGroupName,
+      dstGroupName
     }
   })
 }

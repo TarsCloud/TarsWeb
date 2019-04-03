@@ -42,6 +42,7 @@
 
             if (this.timer) window.clearTimeout(this.timer);
             this.success = true;
+            this.$emit('done-fn');
           }
         } catch (err) {
 
@@ -53,7 +54,6 @@
     },
     created () {
     	this.getProgress();
-    	window.a = this;
     },
     destroyed () {
     	if (this.timer) window.clearTimeout(this.timer);

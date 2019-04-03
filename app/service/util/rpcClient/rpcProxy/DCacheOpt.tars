@@ -300,10 +300,10 @@ struct TransferReq
     0 require string appName;
     1 require string moduleName;
     2 require string srcGroupName;
-    3 require bool hasDstServer;
-    4 require vector<CacheHostParam> cacheHost;
-    5 require DCacheType cacheType;
-    6 require string version;
+    3 require vector<CacheHostParam> cacheHost;
+    4 require DCacheType cacheType;
+    5 require string version;
+    6 optional bool transferExisted=false; // 是否向已存在的服务迁移
 };
 
 struct TransferRsp
@@ -352,6 +352,7 @@ struct ConfigTransferReq
     2 require TransferType type; // TRANSFER(0): 迁移， EXPAND(1): 扩容， REDUCE(2): 缩容
     3 optional vector<string> srcGroupName; // 源组组名
     4 optional vector<string> dstGroupName; // 目的组组名
+    5 optional bool transferData=true;      // 是否迁移数据
 };
 
 struct ConfigTransferRsp
@@ -439,6 +440,49 @@ struct SwitchInfoRsp
     2 require vector<SwitchRecord> switchRecord;
 };
 
+// 停止迁移任务: 适用于迁移，扩容，缩容
+struct StopTransferReq
+{
+    0 require string appName;
+    1 require string moduleName;
+    2 require TransferType type; // TRANSFER_TYPE(0): 迁移， EXPAND_TYPE(1): 扩容， REDUCE_TYPE(2): 缩容
+    3 optional string srcGroupName; // 源组组名
+    4 optional string dstGroupName; // 目的组组名
+};
+
+struct StopTransferRsp
+{
+    0 require string errMsg;
+};
+
+// 删除迁移任务: 适用于迁移，扩容，缩容
+struct DeleteTransferReq
+{
+    0 require string appName;
+    1 require string moduleName;
+    2 require TransferType type; // TRANSFER_TYPE(0): 迁移， EXPAND_TYPE(1): 扩容， REDUCE_TYPE(2): 缩容
+    3 optional string srcGroupName; // 源组组名
+    4 optional string dstGroupName; // 目的组组名
+};
+
+struct DeleteTransferRsp
+{
+    0 require string errMsg;
+};
+
+struct TransferGroupReq
+{
+    0 require string appName;
+    1 require string moduleName;
+    2 require string srcGroupName;  // 源组组名
+    3 require string dstGroupName;  // 目的组组名
+    4 require bool transferData;    // 是否迁移数据
+};
+
+struct TransferGroupRsp
+{
+    0 require string errMsg;
+};
 
 /*
 * 配置中心
@@ -521,6 +565,11 @@ interface DCacheOpt
     int transferDCache(TransferReq req, out TransferRsp rsp);
 
     /*
+    * 迁移DCache到已经存在的组(包含一期和二期)
+    */
+    int transferDCacheGroup(TransferGroupReq req, out TransferGroupRsp rsp);
+
+    /*
     *扩容DCache(包含一期和二期)
     */
     int expandDCache(ExpandReq expandReq, out ExpandRsp expandRsp);
@@ -554,6 +603,18 @@ interface DCacheOpt
     * 获取自动切换或手动切换的结果
     */
     int getSwitchInfo(SwitchInfoReq req, out SwitchInfoRsp rsp);
+
+    /*
+    * 停止迁移任务(迁移，扩容，缩容 共用)
+    */
+    int stopTransfer(StopTransferReq req, out StopTransferRsp rsp);
+
+    /*
+    * 删除迁移任务(迁移，扩容，缩容 共用)
+    */
+    int deleteTransfer(DeleteTransferReq req, out DeleteTransferRsp rsp);
+
+
 
     /*
     * 配置中心操作接口

@@ -1,6 +1,6 @@
 <template>
   <div class="operation-manage">
-    <let-tabs @click="onTabClick" :active="$route.matched[1] ? $route.matched[1].path : '/operationManage/expand'">
+    <let-tabs @click="onTabClick" :activekey="$route.path">
       <let-tab-pane :tab="$t('dcache.operationManage.expand')" tabkey="/operationManage/expand"></let-tab-pane>
       <let-tab-pane :tab="$t('dcache.operationManage.shrinkage')" tabkey="/operationManage/shrinkage"></let-tab-pane>
       <let-tab-pane :tab="$t('dcache.operationManage.migration')" tabkey="/operationManage/migration"></let-tab-pane>

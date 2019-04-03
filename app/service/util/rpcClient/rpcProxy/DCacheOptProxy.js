@@ -1896,10 +1896,10 @@ DCache.TransferReq = function() {
     this.appName = "";
     this.moduleName = "";
     this.srcGroupName = "";
-    this.hasDstServer = true;
     this.cacheHost = new TarsStream.List(DCache.CacheHostParam);
     this.cacheType = DCache.DCacheType.KVCACHE;
     this.version = "";
+    this.transferExisted = false;
     this._classname = "DCache.TransferReq";
 };
 DCache.TransferReq._classname = "DCache.TransferReq";
@@ -1910,20 +1910,20 @@ DCache.TransferReq._readFrom = function (is) {
     tmp.appName = is.readString(0, true, "");
     tmp.moduleName = is.readString(1, true, "");
     tmp.srcGroupName = is.readString(2, true, "");
-    tmp.hasDstServer = is.readBoolean(3, true, true);
-    tmp.cacheHost = is.readList(4, true, TarsStream.List(DCache.CacheHostParam));
-    tmp.cacheType = is.readInt32(5, true, DCache.DCacheType.KVCACHE);
-    tmp.version = is.readString(6, true, "");
+    tmp.cacheHost = is.readList(3, true, TarsStream.List(DCache.CacheHostParam));
+    tmp.cacheType = is.readInt32(4, true, DCache.DCacheType.KVCACHE);
+    tmp.version = is.readString(5, true, "");
+    tmp.transferExisted = is.readBoolean(6, false, false);
     return tmp;
 };
 DCache.TransferReq.prototype._writeTo = function (os) {
     os.writeString(0, this.appName);
     os.writeString(1, this.moduleName);
     os.writeString(2, this.srcGroupName);
-    os.writeBoolean(3, this.hasDstServer);
-    os.writeList(4, this.cacheHost);
-    os.writeInt32(5, this.cacheType);
-    os.writeString(6, this.version);
+    os.writeList(3, this.cacheHost);
+    os.writeInt32(4, this.cacheType);
+    os.writeString(5, this.version);
+    os.writeBoolean(6, this.transferExisted);
 };
 DCache.TransferReq.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -1939,20 +1939,20 @@ DCache.TransferReq.prototype.toObject = function() {
         "appName" : this.appName,
         "moduleName" : this.moduleName,
         "srcGroupName" : this.srcGroupName,
-        "hasDstServer" : this.hasDstServer,
         "cacheHost" : this.cacheHost.toObject(),
         "cacheType" : this.cacheType,
-        "version" : this.version
+        "version" : this.version,
+        "transferExisted" : this.transferExisted
     };
 };
 DCache.TransferReq.prototype.readFromObject = function(json) { 
     _hasOwnProperty.call(json, "appName") && (this.appName = json.appName);
     _hasOwnProperty.call(json, "moduleName") && (this.moduleName = json.moduleName);
     _hasOwnProperty.call(json, "srcGroupName") && (this.srcGroupName = json.srcGroupName);
-    _hasOwnProperty.call(json, "hasDstServer") && (this.hasDstServer = json.hasDstServer);
     _hasOwnProperty.call(json, "cacheHost") && (this.cacheHost.readFromObject(json.cacheHost));
     _hasOwnProperty.call(json, "cacheType") && (this.cacheType = json.cacheType);
     _hasOwnProperty.call(json, "version") && (this.version = json.version);
+    _hasOwnProperty.call(json, "transferExisted") && (this.transferExisted = json.transferExisted);
     return this;
 };
 DCache.TransferReq.prototype.toBinBuffer = function () {
@@ -2233,6 +2233,7 @@ DCache.ConfigTransferReq = function() {
     this.type = DCache.TransferType.UNSPECIFIED_TYPE;
     this.srcGroupName = new TarsStream.List(TarsStream.String);
     this.dstGroupName = new TarsStream.List(TarsStream.String);
+    this.transferData = true;
     this._classname = "DCache.ConfigTransferReq";
 };
 DCache.ConfigTransferReq._classname = "DCache.ConfigTransferReq";
@@ -2245,6 +2246,7 @@ DCache.ConfigTransferReq._readFrom = function (is) {
     tmp.type = is.readInt32(2, true, DCache.TransferType.UNSPECIFIED_TYPE);
     tmp.srcGroupName = is.readList(3, false, TarsStream.List(TarsStream.String));
     tmp.dstGroupName = is.readList(4, false, TarsStream.List(TarsStream.String));
+    tmp.transferData = is.readBoolean(5, false, true);
     return tmp;
 };
 DCache.ConfigTransferReq.prototype._writeTo = function (os) {
@@ -2253,6 +2255,7 @@ DCache.ConfigTransferReq.prototype._writeTo = function (os) {
     os.writeInt32(2, this.type);
     os.writeList(3, this.srcGroupName);
     os.writeList(4, this.dstGroupName);
+    os.writeBoolean(5, this.transferData);
 };
 DCache.ConfigTransferReq.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -2269,7 +2272,8 @@ DCache.ConfigTransferReq.prototype.toObject = function() {
         "moduleName" : this.moduleName,
         "type" : this.type,
         "srcGroupName" : this.srcGroupName.toObject(),
-        "dstGroupName" : this.dstGroupName.toObject()
+        "dstGroupName" : this.dstGroupName.toObject(),
+        "transferData" : this.transferData
     };
 };
 DCache.ConfigTransferReq.prototype.readFromObject = function(json) { 
@@ -2278,6 +2282,7 @@ DCache.ConfigTransferReq.prototype.readFromObject = function(json) {
     _hasOwnProperty.call(json, "type") && (this.type = json.type);
     _hasOwnProperty.call(json, "srcGroupName") && (this.srcGroupName.readFromObject(json.srcGroupName));
     _hasOwnProperty.call(json, "dstGroupName") && (this.dstGroupName.readFromObject(json.dstGroupName));
+    _hasOwnProperty.call(json, "transferData") && (this.transferData = json.transferData);
     return this;
 };
 DCache.ConfigTransferReq.prototype.toBinBuffer = function () {
@@ -2790,6 +2795,336 @@ DCache.SwitchInfoRsp.new = function () {
 };
 DCache.SwitchInfoRsp.create = function (is) {
     return DCache.SwitchInfoRsp._readFrom(is);
+};
+
+DCache.StopTransferReq = function() {
+    this.appName = "";
+    this.moduleName = "";
+    this.type = DCache.TransferType.UNSPECIFIED_TYPE;
+    this.srcGroupName = "";
+    this.dstGroupName = "";
+    this._classname = "DCache.StopTransferReq";
+};
+DCache.StopTransferReq._classname = "DCache.StopTransferReq";
+DCache.StopTransferReq._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.StopTransferReq._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.StopTransferReq._readFrom = function (is) {
+    var tmp = new DCache.StopTransferReq;
+    tmp.appName = is.readString(0, true, "");
+    tmp.moduleName = is.readString(1, true, "");
+    tmp.type = is.readInt32(2, true, DCache.TransferType.UNSPECIFIED_TYPE);
+    tmp.srcGroupName = is.readString(3, false, "");
+    tmp.dstGroupName = is.readString(4, false, "");
+    return tmp;
+};
+DCache.StopTransferReq.prototype._writeTo = function (os) {
+    os.writeString(0, this.appName);
+    os.writeString(1, this.moduleName);
+    os.writeInt32(2, this.type);
+    os.writeString(3, this.srcGroupName);
+    os.writeString(4, this.dstGroupName);
+};
+DCache.StopTransferReq.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.StopTransferReq.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.StopTransferReq.prototype.toObject = function() { 
+    return {
+        "appName" : this.appName,
+        "moduleName" : this.moduleName,
+        "type" : this.type,
+        "srcGroupName" : this.srcGroupName,
+        "dstGroupName" : this.dstGroupName
+    };
+};
+DCache.StopTransferReq.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "appName") && (this.appName = json.appName);
+    _hasOwnProperty.call(json, "moduleName") && (this.moduleName = json.moduleName);
+    _hasOwnProperty.call(json, "type") && (this.type = json.type);
+    _hasOwnProperty.call(json, "srcGroupName") && (this.srcGroupName = json.srcGroupName);
+    _hasOwnProperty.call(json, "dstGroupName") && (this.dstGroupName = json.dstGroupName);
+    return this;
+};
+DCache.StopTransferReq.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.StopTransferReq.new = function () {
+    return new DCache.StopTransferReq();
+};
+DCache.StopTransferReq.create = function (is) {
+    return DCache.StopTransferReq._readFrom(is);
+};
+
+DCache.StopTransferRsp = function() {
+    this.errMsg = "";
+    this._classname = "DCache.StopTransferRsp";
+};
+DCache.StopTransferRsp._classname = "DCache.StopTransferRsp";
+DCache.StopTransferRsp._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.StopTransferRsp._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.StopTransferRsp._readFrom = function (is) {
+    var tmp = new DCache.StopTransferRsp;
+    tmp.errMsg = is.readString(0, true, "");
+    return tmp;
+};
+DCache.StopTransferRsp.prototype._writeTo = function (os) {
+    os.writeString(0, this.errMsg);
+};
+DCache.StopTransferRsp.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.StopTransferRsp.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.StopTransferRsp.prototype.toObject = function() { 
+    return {
+        "errMsg" : this.errMsg
+    };
+};
+DCache.StopTransferRsp.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "errMsg") && (this.errMsg = json.errMsg);
+    return this;
+};
+DCache.StopTransferRsp.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.StopTransferRsp.new = function () {
+    return new DCache.StopTransferRsp();
+};
+DCache.StopTransferRsp.create = function (is) {
+    return DCache.StopTransferRsp._readFrom(is);
+};
+
+DCache.DeleteTransferReq = function() {
+    this.appName = "";
+    this.moduleName = "";
+    this.type = DCache.TransferType.UNSPECIFIED_TYPE;
+    this.srcGroupName = "";
+    this.dstGroupName = "";
+    this._classname = "DCache.DeleteTransferReq";
+};
+DCache.DeleteTransferReq._classname = "DCache.DeleteTransferReq";
+DCache.DeleteTransferReq._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.DeleteTransferReq._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.DeleteTransferReq._readFrom = function (is) {
+    var tmp = new DCache.DeleteTransferReq;
+    tmp.appName = is.readString(0, true, "");
+    tmp.moduleName = is.readString(1, true, "");
+    tmp.type = is.readInt32(2, true, DCache.TransferType.UNSPECIFIED_TYPE);
+    tmp.srcGroupName = is.readString(3, false, "");
+    tmp.dstGroupName = is.readString(4, false, "");
+    return tmp;
+};
+DCache.DeleteTransferReq.prototype._writeTo = function (os) {
+    os.writeString(0, this.appName);
+    os.writeString(1, this.moduleName);
+    os.writeInt32(2, this.type);
+    os.writeString(3, this.srcGroupName);
+    os.writeString(4, this.dstGroupName);
+};
+DCache.DeleteTransferReq.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.DeleteTransferReq.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.DeleteTransferReq.prototype.toObject = function() { 
+    return {
+        "appName" : this.appName,
+        "moduleName" : this.moduleName,
+        "type" : this.type,
+        "srcGroupName" : this.srcGroupName,
+        "dstGroupName" : this.dstGroupName
+    };
+};
+DCache.DeleteTransferReq.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "appName") && (this.appName = json.appName);
+    _hasOwnProperty.call(json, "moduleName") && (this.moduleName = json.moduleName);
+    _hasOwnProperty.call(json, "type") && (this.type = json.type);
+    _hasOwnProperty.call(json, "srcGroupName") && (this.srcGroupName = json.srcGroupName);
+    _hasOwnProperty.call(json, "dstGroupName") && (this.dstGroupName = json.dstGroupName);
+    return this;
+};
+DCache.DeleteTransferReq.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.DeleteTransferReq.new = function () {
+    return new DCache.DeleteTransferReq();
+};
+DCache.DeleteTransferReq.create = function (is) {
+    return DCache.DeleteTransferReq._readFrom(is);
+};
+
+DCache.DeleteTransferRsp = function() {
+    this.errMsg = "";
+    this._classname = "DCache.DeleteTransferRsp";
+};
+DCache.DeleteTransferRsp._classname = "DCache.DeleteTransferRsp";
+DCache.DeleteTransferRsp._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.DeleteTransferRsp._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.DeleteTransferRsp._readFrom = function (is) {
+    var tmp = new DCache.DeleteTransferRsp;
+    tmp.errMsg = is.readString(0, true, "");
+    return tmp;
+};
+DCache.DeleteTransferRsp.prototype._writeTo = function (os) {
+    os.writeString(0, this.errMsg);
+};
+DCache.DeleteTransferRsp.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.DeleteTransferRsp.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.DeleteTransferRsp.prototype.toObject = function() { 
+    return {
+        "errMsg" : this.errMsg
+    };
+};
+DCache.DeleteTransferRsp.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "errMsg") && (this.errMsg = json.errMsg);
+    return this;
+};
+DCache.DeleteTransferRsp.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.DeleteTransferRsp.new = function () {
+    return new DCache.DeleteTransferRsp();
+};
+DCache.DeleteTransferRsp.create = function (is) {
+    return DCache.DeleteTransferRsp._readFrom(is);
+};
+
+DCache.TransferGroupReq = function() {
+    this.appName = "";
+    this.moduleName = "";
+    this.srcGroupName = "";
+    this.dstGroupName = "";
+    this.transferData = true;
+    this._classname = "DCache.TransferGroupReq";
+};
+DCache.TransferGroupReq._classname = "DCache.TransferGroupReq";
+DCache.TransferGroupReq._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.TransferGroupReq._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.TransferGroupReq._readFrom = function (is) {
+    var tmp = new DCache.TransferGroupReq;
+    tmp.appName = is.readString(0, true, "");
+    tmp.moduleName = is.readString(1, true, "");
+    tmp.srcGroupName = is.readString(2, true, "");
+    tmp.dstGroupName = is.readString(3, true, "");
+    tmp.transferData = is.readBoolean(4, true, true);
+    return tmp;
+};
+DCache.TransferGroupReq.prototype._writeTo = function (os) {
+    os.writeString(0, this.appName);
+    os.writeString(1, this.moduleName);
+    os.writeString(2, this.srcGroupName);
+    os.writeString(3, this.dstGroupName);
+    os.writeBoolean(4, this.transferData);
+};
+DCache.TransferGroupReq.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.TransferGroupReq.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.TransferGroupReq.prototype.toObject = function() { 
+    return {
+        "appName" : this.appName,
+        "moduleName" : this.moduleName,
+        "srcGroupName" : this.srcGroupName,
+        "dstGroupName" : this.dstGroupName,
+        "transferData" : this.transferData
+    };
+};
+DCache.TransferGroupReq.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "appName") && (this.appName = json.appName);
+    _hasOwnProperty.call(json, "moduleName") && (this.moduleName = json.moduleName);
+    _hasOwnProperty.call(json, "srcGroupName") && (this.srcGroupName = json.srcGroupName);
+    _hasOwnProperty.call(json, "dstGroupName") && (this.dstGroupName = json.dstGroupName);
+    _hasOwnProperty.call(json, "transferData") && (this.transferData = json.transferData);
+    return this;
+};
+DCache.TransferGroupReq.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.TransferGroupReq.new = function () {
+    return new DCache.TransferGroupReq();
+};
+DCache.TransferGroupReq.create = function (is) {
+    return DCache.TransferGroupReq._readFrom(is);
+};
+
+DCache.TransferGroupRsp = function() {
+    this.errMsg = "";
+    this._classname = "DCache.TransferGroupRsp";
+};
+DCache.TransferGroupRsp._classname = "DCache.TransferGroupRsp";
+DCache.TransferGroupRsp._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.TransferGroupRsp._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.TransferGroupRsp._readFrom = function (is) {
+    var tmp = new DCache.TransferGroupRsp;
+    tmp.errMsg = is.readString(0, true, "");
+    return tmp;
+};
+DCache.TransferGroupRsp.prototype._writeTo = function (os) {
+    os.writeString(0, this.errMsg);
+};
+DCache.TransferGroupRsp.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.TransferGroupRsp.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.TransferGroupRsp.prototype.toObject = function() { 
+    return {
+        "errMsg" : this.errMsg
+    };
+};
+DCache.TransferGroupRsp.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "errMsg") && (this.errMsg = json.errMsg);
+    return this;
+};
+DCache.TransferGroupRsp.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.TransferGroupRsp.new = function () {
+    return new DCache.TransferGroupRsp();
+};
+DCache.TransferGroupRsp.create = function (is) {
+    return DCache.TransferGroupRsp._readFrom(is);
 };
 
 DCache.CacheConfigReq = function() {
@@ -3458,6 +3793,83 @@ DCache.DCacheOptProxy.prototype.deleteServerConfigItemBatch = function (configRe
     }
 };
 DCache.DCacheOptProxy.deleteServerConfigItemBatch = __DCache_DCacheOpt$deleteServerConfigItemBatch$IF;
+
+var __DCache_DCacheOpt$deleteTransfer$IF = {
+    "name" : "deleteTransfer",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "req",
+        "class" : "DCache.DeleteTransferReq",
+        "direction" : "in"
+    }, {
+        "name" : "rsp",
+        "class" : "DCache.DeleteTransferRsp",
+        "direction" : "out"
+    }]
+};
+
+var __DCache_DCacheOpt$deleteTransfer$IE = function (req) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeStruct(1, req);
+    return os.getBinBuffer();
+};
+
+var __DCache_DCacheOpt$deleteTransfer$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "rsp" : is.readStruct(2, true, DCache.DeleteTransferRsp)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$deleteTransfer$PE = function (req, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeStruct("req", req);
+    return tup;
+};
+
+var __DCache_DCacheOpt$deleteTransfer$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "rsp" : tup.readStruct("rsp", DCache.DeleteTransferRsp)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$deleteTransfer$ER = function (data) {
+    throw _makeError(data, "Call DCacheOpt::deleteTransfer failed");
+};
+
+DCache.DCacheOptProxy.prototype.deleteTransfer = function (req) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("deleteTransfer", __DCache_DCacheOpt$deleteTransfer$PE(req, version), arguments[arguments.length - 1], __DCache_DCacheOpt$deleteTransfer$IF).then(__DCache_DCacheOpt$deleteTransfer$PD, __DCache_DCacheOpt$deleteTransfer$ER);
+    } else {
+        return this._worker.tars_invoke("deleteTransfer", __DCache_DCacheOpt$deleteTransfer$IE(req), arguments[arguments.length - 1], __DCache_DCacheOpt$deleteTransfer$IF).then(__DCache_DCacheOpt$deleteTransfer$ID, __DCache_DCacheOpt$deleteTransfer$ER);
+    }
+};
+DCache.DCacheOptProxy.deleteTransfer = __DCache_DCacheOpt$deleteTransfer$IF;
 
 var __DCache_DCacheOpt$expandDCache$IF = {
     "name" : "expandDCache",
@@ -4626,6 +5038,83 @@ DCache.DCacheOptProxy.prototype.reloadRouterConfByModuleFromDB = function (appNa
 };
 DCache.DCacheOptProxy.reloadRouterConfByModuleFromDB = __DCache_DCacheOpt$reloadRouterConfByModuleFromDB$IF;
 
+var __DCache_DCacheOpt$stopTransfer$IF = {
+    "name" : "stopTransfer",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "req",
+        "class" : "DCache.StopTransferReq",
+        "direction" : "in"
+    }, {
+        "name" : "rsp",
+        "class" : "DCache.StopTransferRsp",
+        "direction" : "out"
+    }]
+};
+
+var __DCache_DCacheOpt$stopTransfer$IE = function (req) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeStruct(1, req);
+    return os.getBinBuffer();
+};
+
+var __DCache_DCacheOpt$stopTransfer$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "rsp" : is.readStruct(2, true, DCache.StopTransferRsp)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$stopTransfer$PE = function (req, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeStruct("req", req);
+    return tup;
+};
+
+var __DCache_DCacheOpt$stopTransfer$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "rsp" : tup.readStruct("rsp", DCache.StopTransferRsp)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$stopTransfer$ER = function (data) {
+    throw _makeError(data, "Call DCacheOpt::stopTransfer failed");
+};
+
+DCache.DCacheOptProxy.prototype.stopTransfer = function (req) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("stopTransfer", __DCache_DCacheOpt$stopTransfer$PE(req, version), arguments[arguments.length - 1], __DCache_DCacheOpt$stopTransfer$IF).then(__DCache_DCacheOpt$stopTransfer$PD, __DCache_DCacheOpt$stopTransfer$ER);
+    } else {
+        return this._worker.tars_invoke("stopTransfer", __DCache_DCacheOpt$stopTransfer$IE(req), arguments[arguments.length - 1], __DCache_DCacheOpt$stopTransfer$IF).then(__DCache_DCacheOpt$stopTransfer$ID, __DCache_DCacheOpt$stopTransfer$ER);
+    }
+};
+DCache.DCacheOptProxy.stopTransfer = __DCache_DCacheOpt$stopTransfer$IF;
+
 var __DCache_DCacheOpt$switchServer$IF = {
     "name" : "switchServer",
     "return" : "int32",
@@ -4779,6 +5268,83 @@ DCache.DCacheOptProxy.prototype.transferDCache = function (req) {
     }
 };
 DCache.DCacheOptProxy.transferDCache = __DCache_DCacheOpt$transferDCache$IF;
+
+var __DCache_DCacheOpt$transferDCacheGroup$IF = {
+    "name" : "transferDCacheGroup",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "req",
+        "class" : "DCache.TransferGroupReq",
+        "direction" : "in"
+    }, {
+        "name" : "rsp",
+        "class" : "DCache.TransferGroupRsp",
+        "direction" : "out"
+    }]
+};
+
+var __DCache_DCacheOpt$transferDCacheGroup$IE = function (req) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeStruct(1, req);
+    return os.getBinBuffer();
+};
+
+var __DCache_DCacheOpt$transferDCacheGroup$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "rsp" : is.readStruct(2, true, DCache.TransferGroupRsp)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$transferDCacheGroup$PE = function (req, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeStruct("req", req);
+    return tup;
+};
+
+var __DCache_DCacheOpt$transferDCacheGroup$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "rsp" : tup.readStruct("rsp", DCache.TransferGroupRsp)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$transferDCacheGroup$ER = function (data) {
+    throw _makeError(data, "Call DCacheOpt::transferDCacheGroup failed");
+};
+
+DCache.DCacheOptProxy.prototype.transferDCacheGroup = function (req) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("transferDCacheGroup", __DCache_DCacheOpt$transferDCacheGroup$PE(req, version), arguments[arguments.length - 1], __DCache_DCacheOpt$transferDCacheGroup$IF).then(__DCache_DCacheOpt$transferDCacheGroup$PD, __DCache_DCacheOpt$transferDCacheGroup$ER);
+    } else {
+        return this._worker.tars_invoke("transferDCacheGroup", __DCache_DCacheOpt$transferDCacheGroup$IE(req), arguments[arguments.length - 1], __DCache_DCacheOpt$transferDCacheGroup$IF).then(__DCache_DCacheOpt$transferDCacheGroup$ID, __DCache_DCacheOpt$transferDCacheGroup$ER);
+    }
+};
+DCache.DCacheOptProxy.transferDCacheGroup = __DCache_DCacheOpt$transferDCacheGroup$IF;
 
 var __DCache_DCacheOpt$uninstall4DCache$IF = {
     "name" : "uninstall4DCache",

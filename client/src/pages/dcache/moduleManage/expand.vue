@@ -68,13 +68,13 @@
       :closeOnClickBackdrop="false"
       :width="'1000px'"
       >
-      <release-progress v-if="releaseing" :release-id="releaseId"></release-progress>
+      <release-progress @done-fn='releaseSuccess' v-if="releaseing" :release-id="releaseId"></release-progress>
     </let-modal>
   </section>
 </template>
 
 <script>
-  import {expandModule, getReleaseProgress} from '@/dcache/interface.js'
+  import {expandModule, configTransfer} from '@/dcache/interface.js'
   import ReleaseProgress from './../components/releaseProgress.vue'
   export default {
   	components: {ReleaseProgress},
@@ -102,6 +102,9 @@
       cache_version () {
         return this.expandServers[0].cache_version
       },
+      groupName () {
+        return this.servers[0].group_name
+      }
 
     },
     methods: {
@@ -111,17 +114,13 @@
           try {
 
           	// 扩容取到发布 id
-            let { releaseId } = await expandModule({servers, appName, moduleName, cache_version});
+            let {releaseId} = await expandModule({servers, appName, moduleName, cache_version});
 
             // 打开日志发布 modal
             this.releaseId = releaseId;
             this.releaseing = true;
-
-            // 获取发布进度
-//            let progress = await getReleaseProgress({releaseId});
-
-            // 用 id 查询 发布进度
           } catch (err) {
+
           	console.error(err);
           	this.$tip.error(err.message)
           }
@@ -151,6 +150,23 @@
         else if (key === 1) return this.$t('module.backServer');
         else return this.$t('module.mirror');
       },
+      async releaseSuccess () {
+        let {appName, moduleName, groupName} = this;
+        try {
+          let option = {
+            appName,
+            moduleName,
+            type: '1',
+            srcGroupName: [],
+            dstGroupName: [groupName]
+          }
+          let rsp = await configTransfer(option);
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(err.message);
+        }
+        
+      }
     },
     created () {
     	this.getServers();

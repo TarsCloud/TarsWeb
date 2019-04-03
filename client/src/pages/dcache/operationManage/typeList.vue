@@ -18,8 +18,8 @@
       </let-table-column>
       <let-table-column :title="$t('operate.operates')"  prop="appName" width="100px">
         <template slot-scope="{row}" >
-          <let-table-operation @click="ensureStop(row)">{{$t('operate.stop')}}</let-table-operation>
-          <let-table-operation @click="ensureDelete(row)">{{$t('operate.delete')}}</let-table-operation>
+          <let-table-operation v-if="row.status === 3" @click="ensureStop(row)">{{$t('operate.stop')}}</let-table-operation>
+          <let-table-operation v-if="row.status !== 3" @click="ensureDelete(row)">{{$t('operate.delete')}}</let-table-operation>
         </template>
       </let-table-column>
       <let-pagination slot="pagination" align="right"
@@ -29,7 +29,8 @@
   </div>
 </template>
 <script>
-import { getRouterChange } from '@/dcache/interface.js'
+import Router from 'vue-router';
+import {getRouterChange, stopTransfer, deleteTransfer} from '@/dcache/interface.js'
 export default {
   data () {
     return {
@@ -42,6 +43,14 @@ export default {
     showList () {
       let {page, list} = this;
       return list.slice((page -1 ) * 10, page * 10);
+    },
+    type () {
+      let typeMap = {
+        expand: '1',
+        shrinkage: '2',
+        migration: '0'
+      }
+      return typeMap[this.$route.params.type] || '1'
     }
   },
   methods: {
@@ -51,7 +60,7 @@ export default {
     async getRouterChange () {
       try {
 
-        let { totalNum, transferRecord } = await getRouterChange({type: '2'});
+        let { totalNum, transferRecord } = await getRouterChange({type: this.type});
         this.list = transferRecord.map(item => {
           //  status: "0"-新增迁移任务，"1"-配置阶段完成，"2"-发布完成，"3"-正在迁移，"4"-完成，5""-停止
           item.statusText = 'dcache.operationManage.statusText.' + item.status;
@@ -73,30 +82,42 @@ export default {
       this.page = page;
     },
     /**
-    * 确认停止
-    */
+     * 确认停止
+     */
     async ensureStop (row) {
       try {
         await this.$confirm(this.$t('dcache.operationManage.ensureStop'));
         console.log('ensure stop', row)
+        let {appName, moduleName, type, srcGroupName, dstGroupName} = row;
+        await stopTransfer({appName, moduleName, type, srcGroupName, dstGroupName});
+        this.getRouterChange();
       } catch (err) {
         console.error(err)
+        this.$tip.error(err.message)
       }
     },
     /**
-    * 确认删除
-    */
+     * 确认删除
+     */
     async ensureDelete (row) {
       try {
         await this.$confirm(this.$t('dcache.operationManage.ensureDelete'));
         console.log('ensure delete', row)
+        let {appName, moduleName, type, srcGroupName, dstGroupName} = row;
+        await deleteTransfer({appName, moduleName, type, srcGroupName, dstGroupName});
+        this.getRouterChange();
       } catch (err) {
         console.error(err)
+        this.$tip.error(err.message)
       }
     },
   },
+  beforeRouteUpdate (to, from, next) {
+    next();
+    this.getRouterChange();
+  },
   created () {
     this.getRouterChange();
-  }
+  },
 }
 </script>
