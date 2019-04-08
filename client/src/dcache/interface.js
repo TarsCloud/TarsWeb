@@ -115,6 +115,12 @@ export function deleteTransfer ({appName = '', moduleName ='', type = '1', srcGr
   })
 }
 
+/**
+ * 缩容
+ * @param appName
+ * @param moduleName
+ * @param srcGroupName
+ */
 export function reduceDcache ({appName = '', moduleName ='', srcGroupName = []}) {
   return Axios({
     method: 'post',
@@ -123,6 +129,24 @@ export function reduceDcache ({appName = '', moduleName ='', srcGroupName = []})
       appName,
       moduleName,
       srcGroupName,
+    }
+  })
+}
+
+/**
+ * 主备切换
+ * @param appName
+ * @param moduleName
+ * @param srcGroupName
+ */
+export function switchServer ({appName = '', moduleName ='', groupName = ''}) {
+  return Axios({
+    method: 'post',
+    url: '/cache/switchServer',
+    data: {
+      appName,
+      moduleName,
+      groupName,
     }
   })
 }

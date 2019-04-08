@@ -18,10 +18,10 @@
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.zb')" width="140px">
-        <template slot-scope="{row:{cache_server_type}}">
-          <span v-if="cache_server_type===0">{{$t('cache.mainEngine')}}</span>
-          <span v-else-if="cache_server_type===1">{{$t('cache.standByEngine')}}</span>
-          <span v-else-if="cache_server_type===2">{{$t('cache.mirror')}}</span>
+        <template slot-scope="{row:{server_type}}">
+          <span v-if="server_type===0">{{$t('cache.mainEngine')}}</span>
+          <span v-else-if="server_type===1">{{$t('cache.standByEngine')}}</span>
+          <span v-else-if="server_type===2">{{$t('cache.mirror')}}</span>
         </template>
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.enableSet')">
@@ -68,6 +68,7 @@
         <let-button theme="primary" :disabled="!hasCheckedItem" @click="shrinkageHandler">{{$t('dcache.Shrinkage')}}
         </let-button>
         <let-button theme="primary" :disabled="!hasCheckedItem" @click="">{{$t('dcache.Migration')}}</let-button>
+        <let-button theme="primary" :disabled="!hasCheckedItem" @click="switchHandler">{{$t('dcache.switch')}}</let-button>
       </template>
     </let-table>
 
@@ -407,7 +408,7 @@
 
 <script>
   import Expand from './expand.vue'
-  import {hasOperation, reduceDcache} from '@/dcache/interface.js'
+  import {hasOperation, reduceDcache, switchServer} from '@/dcache/interface.js'
 
   export default {
     components: {Expand},
@@ -538,8 +539,8 @@
           // 该模块已经有任务在迁移操作了， 不允许再缩容， 请去操作管理停止操作再缩容
           let server = this.serverList[0];
           let {app_name, module_name} = server;
-          // let hasOperationRecord = await hasOperation({appName: app_name, moduleName: module_name});
-          // if (hasOperationRecord) throw new Error(this.$t('dcache.hasShrinkageOperation'));
+          let hasOperationRecord = await hasOperation({appName: app_name, moduleName: module_name});
+          if (hasOperationRecord) throw new Error(this.$t('dcache.hasShrinkageOperation'));
           let allGroupNameArr = this.serverList.map(item => item.group_name);
           // 去重
           allGroupNameArr = Array.from(new Set(allGroupNameArr));
@@ -563,6 +564,31 @@
           this.$tip.error(err.message)
         }
 
+      },
+      /**
+       * switchHandler
+       */
+      async switchHandler() {
+        try {
+          // 该模块已经有任务在迁移操作了， 不允许再缩容， 请去操作管理停止操作再缩容
+          let server = this.serverList[0];
+          let {app_name, module_name} = server;
+          let servers = this.serverList.filter(item => item.isChecked);
+          let selectedGroupNameArr = servers.map(item => item.group_name);
+          // 已选去重
+          selectedGroupNameArr = Array.from(new Set(selectedGroupNameArr));
+          if (selectedGroupNameArr.length != 1) throw new Error(this.$t('dcache.operationManage.onceSwitch'));
+
+          // 确定切换
+          await this.$confirm(this.$t('dcache.operationManage.ensureSwitch'));
+
+          // 切换
+          await switchServer({appName: app_name, moduleName: module_name, groupName: selectedGroupNameArr[0]});
+          this.$tip.success(this.$t('dcache.operationManage.switchSuccess'))
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(err.message);
+        }
       },
 
       /**

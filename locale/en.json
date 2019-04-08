@@ -182,6 +182,7 @@
     "expand": "expand",
     "Shrinkage": "Shrinkage",
     "Migration": "Migration",
+    "switch": "Main/backup switch",
     "noTheSamePatchVersion": "There are different versions of the service and no capacity expansion is allowed",
     "hasExpandOperation": "This module already has tasks in the migration operation, no more capacity is allowed, please go to operation management stop operation and expand capacity",
     "hasShrinkageOperation": "This module already has the task in the migration operation, does not allow any more volume reduction, please go to the operation management stop operation again volume reduction",
@@ -208,7 +209,10 @@
       "ensureDelete": "Are you sure to delete it?",
       "ensureStop": "Are you sure to stop it?",
       "ensureShrinkage": "Are you sure to shrinkage it?",
-      "hasShrinkage": "Volume reduction has been initiated. Please go to operation management to check the progress of volume reduction"
+      "hasShrinkage": "Volume reduction has been initiated. Please go to operation management to check the progress of volume reduction",
+      "onceSwitch": "Only one set of switches is allowed at a time",
+      "ensureSwitch": "Are you sure to switch？",
+      "switchSuccess": "switch success"
     }
   },
   "service": {

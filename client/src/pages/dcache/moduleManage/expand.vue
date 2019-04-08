@@ -63,12 +63,12 @@
     <!-- 发布日志 -->
     <let-modal
       :title="$t('publishLog.title')"
-      v-model="releaseing"
+      v-model="releasing"
       :footShow="false"
       :closeOnClickBackdrop="false"
       :width="'1000px'"
       >
-      <release-progress @done-fn='releaseSuccess' v-if="releaseing" :release-id="releaseId"></release-progress>
+      <release-progress @done-fn='releaseSuccess' v-if="releasing" :release-id="releaseId"></release-progress>
     </let-modal>
   </section>
 </template>
@@ -88,7 +88,7 @@
       return {
       	servers: [],
         releaseId: '',
-        releaseing: false,
+        releasing: false,
         abc: true
       }
     },
@@ -118,7 +118,7 @@
 
             // 打开日志发布 modal
             this.releaseId = releaseId;
-            this.releaseing = true;
+            this.releasing = true;
           } catch (err) {
 
           	console.error(err);
