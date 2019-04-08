@@ -183,6 +183,9 @@
     "Shrinkage": "Shrinkage",
     "Migration": "Migration",
     "noTheSamePatchVersion": "There are different versions of the service and no capacity expansion is allowed",
+    "hasExpandOperation": "This module already has tasks in the migration operation, no more capacity is allowed, please go to operation management stop operation and expand capacity",
+    "hasShrinkageOperation": "This module already has the task in the migration operation, does not allow any more volume reduction, please go to the operation management stop operation again volume reduction",
+    "leaveOneServiceGroup": "Leave at least one service group",
     "operationManage": {
       "expand": "expand manage",
       "shrinkage": "shrinkage manage",
@@ -203,7 +206,9 @@
         "5": "Stop"
       },
       "ensureDelete": "Are you sure to delete it?",
-      "ensureStop": "Are you sure to stop it?"
+      "ensureStop": "Are you sure to stop it?",
+      "ensureShrinkage": "Are you sure to shrinkage it?",
+      "hasShrinkage": "Volume reduction has been initiated. Please go to operation management to check the progress of volume reduction"
     }
   },
   "service": {

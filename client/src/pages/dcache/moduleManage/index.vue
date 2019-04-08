@@ -65,7 +65,8 @@
       <!--批量操作-->
       <template slot="operations">
         <let-button theme="primary" @click="expandHandler">{{$t('dcache.expand')}}</let-button>
-        <let-button theme="primary" :disabled="!hasCheckedItem" @click="">{{$t('dcache.Shrinkage')}}</let-button>
+        <let-button theme="primary" :disabled="!hasCheckedItem" @click="shrinkageHandler">{{$t('dcache.Shrinkage')}}
+        </let-button>
         <let-button theme="primary" :disabled="!hasCheckedItem" @click="">{{$t('dcache.Migration')}}</let-button>
       </template>
     </let-table>
@@ -373,7 +374,9 @@
           </let-radio>
         </let-form-item>
         <let-form-item itemWidth="100%">
-          <let-radio v-model="moreCmdModal.model.selected" label="undeploy_tars" class="danger">{{$t('operate.undeploy')}} {{$t('common.service')}}</let-radio>
+          <let-radio v-model="moreCmdModal.model.selected" label="undeploy_tars" class="danger">
+            {{$t('operate.undeploy')}} {{$t('common.service')}}
+          </let-radio>
         </let-form-item>
       </let-form>
     </let-modal>
@@ -404,6 +407,8 @@
 
 <script>
   import Expand from './expand.vue'
+  import {hasOperation, reduceDcache} from '@/dcache/interface.js'
+
   export default {
     components: {Expand},
     name: 'ServerManage',
@@ -490,7 +495,7 @@
         }
         return this.checkServantEndpoint(this.servantDetailModal.model.endpoint);
       },
-      hasCheckedItem () {
+      hasCheckedItem() {
         return this.serverList.filter(item => item.isChecked === true).length !== 0;
       }
     },
@@ -506,20 +511,64 @@
       /**
        *  扩容
        */
-      expandHandler () {
+      async expandHandler() {
+        try {
+//存在不同版本的服务，不允许扩容
+          let isSamePatchVersion = this.checkPatchVersion();
+          if (!isSamePatchVersion) throw new Error(this.$t('dcache.noTheSamePatchVersion'));
 
-        //存在不同版本的服务，不允许扩容
-        let isSamePatchVersion = this.checkPatchVersion();
-        if (!isSamePatchVersion) return this.$tip.error(this.$t('dcache.noTheSamePatchVersion'));
+          // 该模块已经有任务在扩容了， 不允许再扩容， 请去操作管理停止再扩容
+          let server = this.serverList[0];
+          let {app_name, module_name} = server;
+          let hasOperationRecord = await hasOperation({appName: app_name, moduleName: module_name});
+          if (hasOperationRecord) throw new Error(this.$t('dcache.hasExpandOperation'));
 
-        this.lastGroupServers = this.getLastGroupServers();
-        this.expandShow = true;
+          this.lastGroupServers = this.getLastGroupServers();
+          this.expandShow = true;
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(err.message)
+        }
+      },
+      /**
+       * 缩容
+       */
+      async shrinkageHandler() {
+        try {
+          // 该模块已经有任务在迁移操作了， 不允许再缩容， 请去操作管理停止操作再缩容
+          let server = this.serverList[0];
+          let {app_name, module_name} = server;
+          // let hasOperationRecord = await hasOperation({appName: app_name, moduleName: module_name});
+          // if (hasOperationRecord) throw new Error(this.$t('dcache.hasShrinkageOperation'));
+          let allGroupNameArr = this.serverList.map(item => item.group_name);
+          // 去重
+          allGroupNameArr = Array.from(new Set(allGroupNameArr));
+
+          let servers = this.serverList.filter(item => item.isChecked);
+          let selectedGroupNameArr = servers.map(item => item.group_name);
+          // 已选去重
+          selectedGroupNameArr = Array.from(new Set(selectedGroupNameArr));
+
+          // 至少留一个服务组
+          if (allGroupNameArr.toString() === selectedGroupNameArr.toString()) throw new Error(this.$t('dcache.leaveOneServiceGroup'));
+
+          // 确认缩容
+          await this.$confirm(this.$t('dcache.operationManage.ensureShrinkage'));
+
+          // 缩容
+          await  reduceDcache({appName: app_name, moduleName: module_name, srcGroupName: selectedGroupNameArr});
+          this.$tip.success(this.$t('dcache.operationManage.hasShrinkage'))
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(err.message)
+        }
+
       },
 
       /**
        * 获取最后一个分组的所有服务
        */
-      getLastGroupServers () {
+      getLastGroupServers() {
         let theFristGroupName = this.serverList[this.serverList.length - 1].group_name;
         return this.serverList.filter(item => item.group_name === theFristGroupName)
       },
@@ -528,7 +577,7 @@
        * checkpathversion 检查发布版本是否一致
        * @returns {boolean}
        */
-      checkPatchVersion () {
+      checkPatchVersion() {
         let same = true;
         let obj = {};
         this.serverList.forEach(({patch_version}, index) => {
@@ -538,7 +587,7 @@
         });
         return same
       },
-      checkedAllChange () {
+      checkedAllChange() {
         console.log(arguments);
       },
       // 获取服务列表

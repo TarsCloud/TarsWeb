@@ -208,6 +208,9 @@
     "Shrinkage": "缩容",
     "Migration": "迁移",
     "noTheSamePatchVersion": "存在不同版本的服务，不允许扩容",
+    "hasExpandOperation": "该模块已经有任务在迁移操作了， 不允许再扩容， 请去操作管理停止操作再扩容",
+    "hasShrinkageOperation": "该模块已经有任务在迁移操作了， 不允许再缩容， 请去操作管理停止操作再缩容",
+    "leaveOneServiceGroup": "至少留一个服务组",
     "operationManage": {
       "expand": "扩容管理",
       "shrinkage": "缩容管理",
@@ -228,7 +231,9 @@
         "5": "停止"
       },
       "ensureDelete": "确认删除吗？",
-      "ensureStop": "确认停止吗？"
+      "ensureStop": "确认停止吗？",
+      "ensureShrinkage": "确认缩容吗？",
+      "hasShrinkage": "已经发起缩容，请到操作管理查看缩容进度"
     }
   },
   "service": {

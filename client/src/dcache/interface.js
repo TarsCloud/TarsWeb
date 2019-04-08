@@ -57,6 +57,18 @@ export function getRouterChange ({type = '1'}) {
   })
 }
 
+export function hasOperation ({appName, moduleName, type}) {
+  return Axios({
+    method: 'get',
+    url: '/cache/hasOperation',
+    params: {
+      appName,
+      moduleName,
+      type,
+    }
+  })
+}
+
 /**
  * 停止迁移、扩容、缩容操作
  * @appName     应用名
@@ -102,3 +114,17 @@ export function deleteTransfer ({appName = '', moduleName ='', type = '1', srcGr
     }
   })
 }
+
+export function reduceDcache ({appName = '', moduleName ='', srcGroupName = []}) {
+  return Axios({
+    method: 'post',
+    url: '/cache/reduceDcache',
+    data: {
+      appName,
+      moduleName,
+      srcGroupName,
+    }
+  })
+}
+
+
