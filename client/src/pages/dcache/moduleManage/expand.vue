@@ -110,15 +110,15 @@
     methods: {
       async submitServerConfig () {
         if (this.$refs.detailForm.validate()) {
-          let {servers, appName, moduleName, cache_version} = this;
+          let {servers, appName, moduleName, cache_version, groupName} = this;
           try {
 
           	// 扩容取到发布 id
-            let {releaseId} = await expandModule({servers, appName, moduleName, cache_version});
+            let {releaseId} = await expandModule({servers, appName, moduleName, cache_version, type: '1', srcGroupName: [], dstGroupName: [groupName]});
 
             // 打开日志发布 modal
             this.releaseId = releaseId;
-            this.releasing = true;
+            //this.releasing = true;
           } catch (err) {
 
           	console.error(err);
@@ -165,7 +165,7 @@
           console.error(err);
           this.$tip.error(err.message);
         }
-        
+
       }
     },
     created () {
