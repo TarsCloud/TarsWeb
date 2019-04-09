@@ -584,7 +584,8 @@
 
           // 切换
           await switchServer({appName: app_name, moduleName: module_name, groupName: selectedGroupNameArr[0]});
-          this.$tip.success(this.$t('dcache.operationManage.switchSuccess'))
+          this.$tip.success(this.$t('dcache.operationManage.switchSuccess'));
+          this.getServerList();
         } catch (err) {
           console.error(err);
           this.$tip.error(err.message);

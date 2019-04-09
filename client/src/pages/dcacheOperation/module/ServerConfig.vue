@@ -421,8 +421,8 @@
       submitMKCache () {
         if (this.$refs.multiKeyForm.validate()) {
           sessionStorage.setItem('mkCache', JSON.stringify(this.mkCacheStructure));
-          this.addServerConfig();
           this.showMKModal = false;
+          this.addServerConfig();
         }
       }
     },

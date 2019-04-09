@@ -137,13 +137,31 @@ export function reduceDcache ({appName = '', moduleName ='', srcGroupName = []})
  * 主备切换
  * @param appName
  * @param moduleName
- * @param srcGroupName
+ * @param groupName
  */
 export function switchServer ({appName = '', moduleName ='', groupName = ''}) {
   return Axios({
     method: 'post',
     url: '/cache/switchServer',
     data: {
+      appName,
+      moduleName,
+      groupName,
+    }
+  })
+}
+
+/**
+ * 查询主备切换
+ * @param appName
+ * @param moduleName
+ * @param groupName
+ */
+export function getSwitchInfo ({appName = '', moduleName ='', groupName = ''}) {
+  return Axios({
+    method: 'get',
+    url: '/cache/getSwitchInfo',
+    params: {
       appName,
       moduleName,
       groupName,
