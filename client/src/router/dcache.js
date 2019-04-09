@@ -43,6 +43,7 @@ import ModuleCache from '@/pages/cacheConfig/moduleCache'
 // 操作管理
 import OperationManage from '@/pages/dcache/operationManage/index.vue'
 import OperationManageTypeList from '@/pages/dcache/operationManage/typeList.vue'
+import MainBackup from '@/pages/dcache/operationManage/mainBackup.vue'
 
 
 Vue.use(Router);
@@ -182,6 +183,10 @@ export default new Router({
       component: OperationManage,
       redirect: '/operationManage/expand',
       children: [
+        {
+          path: 'mainBackup',
+          component: MainBackup,
+        },
         {
           path: ':type',
           component: OperationManageTypeList,
