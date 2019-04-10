@@ -17,6 +17,7 @@
 const client  = require("@tars/rpc/protal.js").client;
 const AdminRegProxy = require("./rpcProxy/AdminRegProxy");
 const ConfigFProxy = require("./rpcProxy/ConfigFProxy");
+const DCacheOptProxy = require("./rpcProxy/DCacheOptProxy");
 const path = require('path');
 client.initialize(path.join(__dirname, '../../../../config/tars.conf'));
 const RPCClientPrx = (proxy, moduleName, interfaceName, servantName, setInfo) => {
@@ -84,6 +85,9 @@ module.exports = {
 
     configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
     configFStruct : RPCStruct(ConfigFProxy, 'tars'),
+
+    DCacheOptPrx: RPCClientPrx(DCacheOptProxy, 'DCache', 'DCacheOpt', 'DCache.DCacheOptServer.DCacheOptObj'),
+    DCacheOptStruct: RPCStruct(DCacheOptProxy, 'DCache'),
 
     client: client
 };

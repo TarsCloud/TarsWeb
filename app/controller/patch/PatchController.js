@@ -28,7 +28,7 @@ const PatchController = {};
 
 PatchController.uploadPatchPackage = async (ctx) => {
     try{
-        let {application, module_name, md5, task_id, comment} = ctx.req.body;
+        let {application, module_name, md5, task_id, comment, package_type} = ctx.req.body;
         if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
@@ -57,6 +57,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
                 md5 : hash,
                 update_text : comment || '',
                 task_id : task_id,
+                package_type: package_type || '0',
                 posttime : new Date()
             };
             logger.info('[addServerPatch:]',paramsObj);
@@ -81,7 +82,7 @@ PatchController.serverPatchList = async (ctx) => {
             ctx.makeNotAuthResObj();
         } else {
             let ret = await PatchService.getServerPatch(application, module_name, parseInt(curr_page), parseInt(page_size));
-            ctx.makeResObj(200,'',{count:ret.count,rows:util.viewFilter(ret.rows,{id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}})});
+            ctx.makeResObj(200,'',{count:ret.count,rows:util.viewFilter(ret.rows,{package_type: '', default_version: '', id:'',server:'',tgz:'',update_text:{key:'comment'},posttime:{formatter:util.formatTimeStamp}})});
         }
     }catch(e) {
         logger.error('[PatchController.serverPatchList]:', e, ctx);
@@ -175,5 +176,39 @@ PatchController.compilerTask = async (ctx) => {
         ctx.makeErrResObj(500, e.toString());
     }
 };
+
+PatchController.deletePatchPackage = async (ctx) => {
+    let {id} = ctx.paramsObj;
+    try {
+        let ret = await PatchService.deleteServerPatchById(id);
+        ctx.makeResObj(200, '', {});
+    } catch (e) {
+        logger.error('[PatchController.deletePatchPackage]:', e, ctx);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+PatchController.setPatchPackageDefault = async (ctx) => {
+    let {id, application, module_name, package_type} = ctx.paramsObj;
+    try {
+        let ret = await PatchService.setPatchPackageDefault({id, application, module_name, package_type});
+        ctx.makeResObj(200, '', ret);
+    } catch (e) {
+        logger.error('[PatchController.setPatchPackageDefault]:', e, ctx);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+PatchController.hasDcahcePatchPackage = async (ctx) => {
+    try {
+        let ret = await PatchService.hasDcahcePatchPackage();
+        ctx.makeResObj(200, '', ret);
+    } catch (e) {
+        logger.error('[PatchController.setPatchPackageDefault]:', e, ctx);
+        ctx.makeErrResObj(500, e.toString());
+    }
+};
+
+
 
 module.exports = PatchController;

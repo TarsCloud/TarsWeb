@@ -5,9 +5,22 @@
   "header": {
     "tab": {
       "tab1": "Services",
-      "tab2": "operation"
+      "tab2": "operation",
+      "tab3": "Release package",
+      "tab4": "cache configuration"
     },
     "logout": "logout"
+  },
+  "releasePackage": {
+    "proxyList": "Proxy Service List",
+    "routerList": "Router Service List",
+    "cacheList": "Cache Service List",
+    "uploadPackage": "Upload publish package",
+    "moduleName": "moduleName",
+    "uploadTime": "upload time",
+    "default": "default",
+    "confirmDeleteTip": "Are you sure you want to delete this release package?",
+    "cacheType": "cache type"
   },
   "api": {
     "blank": {
@@ -86,7 +99,114 @@
       "uninstallSuccess": "Uninstall Tars Node successfully"
     }
   },
+  "apply": {
+    "title": "Application",
+    "name": "Application Name",
+    "createApply": "Create Application",
+    "createRouterProxyService": "Create Router、proxy Service",
+    "createRegionTips": "Before creating the application, create the locale",
+    "uploadPatchPackage": "Before creating the application, please upload the proxy, router, and dcache publishing packages and set the default Settings",
+    "hasExist": "Application already exists",
+    "RouterConfigInfo": "Router configuration information",
+    "ProxyConfigInfo": "Proxy configuration information",
+    "install": "Installation",
+    "publish": "Release",
+    "installAndPublish": "Install And Publish",
+    "ProxyManage": "The Proxy Management",
+    "RouterManage": "The Router Management",
+    "CacheManage": "The Cache Management",
+    "noDefaultProxyPackage": "There is no default Proxy distribution package",
+    "noDefaultRouterPackage": "There is no default Router distribution package"
+  },
+  "module": {
+    "title": "Module",
+    "name": "Module Name",
+    "keyType": "Key Type",
+    "createModule": "Create Module",
+    "createModuleService": "Creating Module Services",
+    "moduleConfig": "Module Configuration",
+    "scenario": "Application Scenarios",
+    "createApplyTips": "Before creating the module, create the application",
+    "cacheType": "Cache Types",
+    "follower": "Focus People",
+    "serverConfig": "Server Config"
+  },
+  "cache": {
+    "title": "cache",
+    "cachePersistent": "Cache + persistence",
+    "cacheType": "Cache Type",
+    "persistentNumber": "The total number of persistent entries",
+    "dbDataCountUnit": "Article ten thousand the data",
+    "cacheTypeTip1": "Memory database (not obsolete)",
+    "cacheTypeTip2": "Temporary cache (expired)",
+    "cacheTypeTip3": "Hot spot cache (capacity elimination)",
+    "perRecordAvg": "Average size of data records",
+    "perRecordAvgUnit": "Byte",
+    "totalRecord": "Save in the Cache",
+    "maxReadFlow": "Estimate peak read flow",
+    "maxWriteFlow": "Estimate peak write flow",
+    "flowUnit": "Times/SEC.",
+    "moduleRemark": "Function of note",
+    "mainEngine": "main engine",
+    "standByEngine": "stand by engine",
+    "mirror": "mirror",
+    "add": "add",
+    "modification": "modification",
+    "config": {
+      "tableTitle": "cache configuration list",
+      "addSuccess": "add configuration success",
+      "addConfig": "add configuration",
+      "deleteConfig": "delete configuration",
+      "editConfig": "edit configuration",
+      "remark": "remark",
+      "path": "path",
+      "item": "item",
+      "itemValue": "item value",
+      "reload": "reload",
+      "period": "period",
+      "configuration": "Configuration",
+      "noModuleExist": "can't find this module",
+      "value": "value",
+      "config_value": "original value",
+      "modify_value": "Modify Values",
+      "edit": "edit",
+      "view": "view",
+      "add": "add",
+      "allSelected": "All",
+      "batchUpdate": "Update",
+      "batchDelete": "Delete",
+      "addModuleConfig": "add module config"
+    }
+  },
+  "service": {
+    "serverName": "The service name",
+    "serverIp": "Service IP",
+    "templateFile": "The service template",
+    "routerDbName": "Routing database",
+    "routerDbNameTip": "Provide the available mysql instance and set a desired database name, router will automatically create the database and use it to store routing information for each module under the application.",
+    "routerDbIp": "The database of IP",
+    "routerDbPort": "Database port",
+    "routerDbUser": "username",
+    "routerDbPass": "password",
+    "multipleIp": "Service IP(multiple IP USES ; Separated)"
+  },
+  "region": {
+    "title": "region",
+    "idcArea": "IDC area",
+    "setArea": "Allochthonous mirror region",
+    "list": "Region list",
+    "label": "Region label",
+    "modify": "Modify the area",
+    "add": "The new area",
+    "regionTips": "For example: shenzhen",
+    "labelTips": "For example: sz"
+  },
   "common": {
+    "createPerson": "createPerson",
+    "baseInfo": "baseInfo",
+    "nextStep": "nextStep",
+    "admin": "admin",
+    "serial": "serial",
     "config": "configuration",
     "patch": "publish",
     "service": "service",
@@ -103,6 +223,7 @@
     "status": "status",
     "result": "result",
     "error": "Error!!!",
+    "warning": "Warning!!!",
     "success": "Success!!!",
     "ip": "node",
     "systemError": "system error",
@@ -141,6 +262,8 @@
     "search": "search",
     "servant": "servant",
     "goback": "go back",
+    "default": "default",
+    "save": "save",
     "title": {
       "update": "Update",
       "add": "Add",
@@ -172,6 +295,7 @@
       "th": {
         "service": "Service",
         "ip": "Node",
+        "zb": "main",
         "enableSet": "SET",
         "configStatus": "Configuration Status",
         "currStatus": "Current Status",
@@ -309,7 +433,9 @@
       "compiler": "compiler interface",
       "task": "compilation progress interface",
       "compileProgress": "Compilation progress",
-      "uploadPkg": "Uploading package, please wait"
+      "uploadPkg": "Uploading package, please wait",
+      "hasModule": "We need to log off all the modules under this application to log off the unique router and proxy services",
+      "cantUseApply": "下线的是仅有的节点,下线后该应用将无用"
     },
     "tips": {
       "default": "Release management management service level, please first in the left tree selection service business.",
@@ -559,5 +685,11 @@
       "deleteMsg" : "are you sure to delete this file?",
       "objName" : "Servant Name"
     }
+  },
+  "publishLog": {
+    "title": "Publish Log",
+    "sync": "synchronizing PMS...",
+    "releaseId": "Release ID"
   }
+
 }

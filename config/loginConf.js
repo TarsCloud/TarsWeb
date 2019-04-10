@@ -13,7 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
-const request = require('request-promise-any');
+let request = require('request-promise-any');
 
 /**
  * 登录配置
@@ -45,36 +45,41 @@ module.exports = {
 };
 
 /**
- * 通过ticket获取用户信息的方法
- * @param {Object} ctx 
- * @param {String} ticket 
+ * 由用户直接定制通过ticket获取用户信息的方法
+ * @param ctx
  */
-function getUidByTicket(ctx, ticket) {
-    // TODO 以下是示例代码，仅供参考
+async function getUidByTicket(ctx, ticket){
+    //TODO
     return new Promise((resolve, reject)=>{
-        request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
-            uidInfo = JSON.parse(uidInfo);
-            resolve(uidInfo.data.uid);
-        }).catch(err=>{
-            reject(err);
-        });
+        try{
+            request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
+                uidInfo = JSON.parse(uidInfo);
+                resolve(uidInfo.data.uid);
+            }).catch(err=>{
+                reject(err);
+            })
+        }catch(e){
+            resolve(false)
+        }
     })
 }
 
 /**
- * 校验ticket与uid是否相同的方法
- * @param {Object} ctx 
- * @param {String} uid 
- * @param {String} ticket 
+ * 由用户直接定制判断用户名校验方法
+ * @param ctx
  */
-function validate(ctx, uid, ticket) {
-    //TODO 以下是示例代码，仅供参考
+async function validate(ctx, uid, ticket){
+    //TODO
     return new Promise((resolve, reject)=>{
-        request.get('http://localhost:3001/api/validate?ticket='+ticket+'&uid='+uid).then(data=>{
-            data = JSON.parse(data);
-            resolve(data.data.result);
-        }).catch(err=>{
-            reject(err);
-        });
+        try{
+            request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
+                uidInfo = JSON.parse(uidInfo);
+                resolve(uidInfo.data.uid === uid);
+            }).catch(err=>{
+                reject(err);
+            })
+        }catch(e){
+            reject(false)
+        }
     })
 }

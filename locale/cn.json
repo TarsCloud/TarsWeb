@@ -5,9 +5,22 @@
   "header": {
     "tab": {
       "tab1": "服务管理",
-      "tab2": "运维管理"
+      "tab2": "运维管理",
+      "tab3": "发布包管理",
+      "tab4": "cache 配置"
     },
     "logout": "退出登录"
+  },
+  "releasePackage": {
+    "proxyList": "Proxy服务列表",
+    "routerList": "Router服务列表",
+    "cacheList": "Cache服务列表",
+    "uploadPackage": "上传发布包",
+    "moduleName": "模块名",
+    "uploadTime": "上传时间",
+    "default": "默认",
+    "confirmDeleteTip": "确定要删除这个发布包吗？",
+    "cacheType": "cache类型"
   },
   "api": {
     "blank": {
@@ -86,7 +99,139 @@
       "uninstallSuccess": "卸载TarsNode成功"
     }
   },
+  "apply": {
+    "title": "应用",
+    "name": "应用名",
+    "createApply": "创建应用",
+    "createRouterProxyService": "创建 router、proxy 服务",
+    "createRegionTips": "创建应用之前，请先创建地区",
+    "uploadPatchPackage": "创建应用之前，请先上传 proxy、router、dcache 发布包并设置默认",
+    "hasExist": "应用已存在",
+    "RouterConfigInfo": "Router配置信息",
+    "ProxyConfigInfo": "Proxy配置信息",
+    "install": "安装",
+    "publish": "发布",
+    "installAndPublish": "安装发布",
+    "ProxyManage": "Proxy 管理",
+    "RouterManage": "Router 管理",
+    "CacheManage": "Cache 管理",
+    "noDefaultProxyPackage": "不存在默认的Proxy发布包",
+    "noDefaultRouterPackage": "不存在默认的Router发布包"
+  },
+  "module": {
+    "title": "模块",
+    "name": "模块名",
+    "namingRule": "应用名+自定义名称",
+    "keyType": "key类型",
+    "createModule": "创建模块",
+    "createModuleService": "创建模块服务",
+    "moduleConfig": "模块配置",
+    "scenario": "应用场景",
+    "createApplyTips": "创建模块之前，请先创建应用",
+    "cacheType": "cache 类型",
+    "follower": "关注人",
+    "serverConfig": "服务配置",
+    "serverGroup": "服务组",
+    "memorySize": "内存大小（G）",
+    "deployArea": "部署地区",
+    "moduleId": "ID",
+    "moduleInfo": "Cache模块信息",
+    "serverInfo": "Cache服务信息",
+    "mainServer": "主机",
+    "backServer": "备机",
+    "mirror": "镜像",
+    "shmKey": "共享内存key",
+    "shmKeyRule": "十进制共享内存key",
+    "MultiKeyConfig": "多字段配置",
+    "hasExist": "模块已存在"
+  },
+  "MKCache": {
+    "mainKey": "主索引(mkey)",
+    "unionKey": "联合索引(ukey)",
+    "dataValue": "数据字段(value)",
+    "fieldName": "字段名",
+    "dataType": "字段类型",
+    "fieldProperty": "必选/可选",
+    "defaultValue": "默认值",
+    "maxLen": "最大长度(字节)",
+    "error": "至少需保留一项"
+  },
+  "cache": {
+    "title": "cache",
+    "cachePersistent": "cache + 持久化",
+    "cacheType": "Cache类型",
+    "persistentNumber": "持久化的总数据条数",
+    "dbDataCountUnit": "万条数据",
+    "cacheTypeTip1": "内存数据库(不淘汰)",
+    "cacheTypeTip2": "临时缓存(过期淘汰)",
+    "cacheTypeTip3": "热点缓存(容量淘汰)",
+    "perRecordAvg": "数据记录平均大小",
+    "perRecordAvgUnit": "字节Byte",
+    "totalRecord": "Cache中保存",
+    "maxReadFlow": "预估峰值读流量",
+    "maxWriteFlow": "预估峰值写流量",
+    "flowUnit": "次/秒",
+    "moduleRemark": "功能备注",
+    "mainEngine": "主机",
+    "standByEngine": "备机",
+    "mirror": "镜像",
+    "add": "添加",
+    "modification": "修改",
+    "config": {
+      "tableTitle": "cache 配置列表",
+      "addSuccess": "添加配置成功",
+      "addConfig": "添加配置",
+      "deleteConfig": "删除配置",
+      "editConfig": "编辑配置",
+      "remark": "备注",
+      "path": "路径",
+      "item": "配置项",
+      "itemValue": "配置值",
+      "reload": "加载生效",
+      "period": "版本",
+      "configuration": "配置中心",
+      "noModuleExist": "模块不存在",
+      "value": "值",
+      "config_value": "原来值",
+      "modify_value": "修改值",
+      "edit": "编辑配置",
+      "view": "查看配置",
+      "add": "添加配置",
+      "allSelected": "全选",
+      "batchUpdate": "批量更新",
+      "batchDelete": "批量删除",
+      "addModuleConfig": "添加模块配置"
+    }
+  },
+  "service": {
+    "serverName": "服务名",
+    "serverIp": "服务IP",
+    "templateFile": "服务模版",
+    "routerDbName": "路由数据库",
+    "routerDbNameTip": "提供可用的mysql实例，并设置一个希望的数据库名称，router将自动创建该数据库，并用其存储应用下各模块的路由信息。",
+    "routerDbIp": "数据库IP",
+    "routerDbPort": "数据库端口",
+    "routerDbUser": "用户名",
+    "routerDbPass": "密码",
+    "multipleIp": "服务IP(多个IP用;分隔)"
+  },
+  "region": {
+    "title": "地区",
+    "idcArea": "IDC地区",
+    "setArea": "异地镜像地区",
+    "list": "地区列表",
+    "label": "地区标签",
+    "modify": "修改地区",
+    "add": "新增地区",
+    "regionTips": "例如：深圳",
+    "labelTips": "例如：sz"
+  },
   "common": {
+    "createPerson": "创建人",
+    "baseInfo": "基本信息",
+    "nextStep": "下一步",
+    "admin": "管理员",
+    "serial": "序号",
     "config": "配置",
     "patch": "发布",
     "service": "服务",
@@ -103,6 +248,7 @@
     "status": "状态",
     "result": "结果",
     "error": "错误",
+    "warning": "警告",
     "success": "成功!!!",
     "ip": "节点",
     "systemError": "系统内部错误",
@@ -141,6 +287,8 @@
     "search": "查询",
     "servant": "管理Servant",
     "goback": "返回",
+    "default": "默认",
+    "save": "保存",
     "title": {
       "update": "编辑",
       "add": "添加",
@@ -172,6 +320,7 @@
       "th": {
         "service": "服务",
         "ip": "节点",
+        "zb": "主备",
         "enableSet": "启用Set",
         "configStatus": "设置状态",
         "currStatus": "当前状态",
@@ -309,7 +458,9 @@
       "compiler": "编译接口",
       "task": "查询编译进度接口",
       "compileProgress": "编译进度",
-      "uploadPkg": "正在回传发布包，请稍候"
+      "uploadPkg": "正在回传发布包，请稍候",
+      "hasModule": "需要下线该应用下所有的模块才可以下线唯一的 router、proxy 服务",
+      "cantUseApply": "下线的是仅有的节点,下线后该应用将无用"
     },
     "tips": {
       "default": "发布管理只管理服务层级，请您先在左侧业务树选择服务。",
@@ -559,5 +710,11 @@
       "deleteMsg" : "您确定要删除吗？",
       "objName" : "Servant名"
     }
+  },
+  "publishLog": {
+    "title": "发布日志",
+    "sync": "同步PMS中...",
+    "releaseId": "发布任务ID",
+    "releaseProgress": "发布进度（%）"
   }
 }

@@ -766,7 +766,7 @@ export default {
         }).then((res) => {
           loading.hide();
           this.servantModal.model = this.servantModal.model.map((item) => {  // eslint-disable-line
-            if (item.id !== res) return item;
+            if (item.id !== id) return item;
           }).filter(item => item);
           this.$tip.success(this.$t('common.success'));
         }).catch((err) => {

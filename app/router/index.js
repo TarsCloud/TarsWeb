@@ -21,7 +21,6 @@ const noCacheMidware = require('../midware/noCacheMidware');
 const {paramsDealMidware, paramsCheckMidware} = require('../midware/paramsMidware');
 const path = require('path');
 
-
 //获取路由
 const getRouter = (router, routerConf) => {
     routerConf.forEach(function (conf) {

@@ -16,7 +16,6 @@
  
 const {tServerConf, sequelize} = require('./db').db_tars;
 const Sequelize = require('sequelize');
-const mysql = require('mysql');
 
 const ServerDao = {};
 
@@ -81,7 +80,7 @@ ServerDao.getServerConfByTemplate = async(templateName) => {
     })
 };
 
-ServerDao.getServerConf4Tree = async(applicationList, serverNameList) => {
+ServerDao.getServerConf4Tree = async(applicationList, serverNameList, allAttr) => {
     let where = {$or: []};
     if (!!applicationList) {
         where.$or.push({application: applicationList});
@@ -92,12 +91,20 @@ ServerDao.getServerConf4Tree = async(applicationList, serverNameList) => {
     if (!applicationList && !serverNameList) {
         where = {};
     }
-    return await tServerConf.findAll({
-        attributes: [[Sequelize.literal('distinct `application`'), 'application'],
+
+
+    let option = {};
+
+    option.where = where;
+
+    if (allAttr) {
+    } else {
+        option.attributes = [[Sequelize.literal('distinct `application`'), 'application'],
             'server_name', 'enable_set', 'set_name', 'set_area', 'set_group'
-        ],
-        where: where
-    });
+        ]
+    }
+
+    return await tServerConf.findAll(option);
 };
 
 
@@ -163,7 +170,7 @@ ServerDao.getServerName = async(application) => {
 };
 
 ServerDao.getSet = async(application, serverName) => {
-    let rst = await tServerConf.sequelize.query('select distinct if(enable_set = \'Y\', CONCAT(set_name, \'.\', set_area, \'.\', set_group), \'\') as \'set\' from db_tars.t_server_conf where application = ' + mysql.escape(application) + ' and server_name = ' + mysql.escape(serverName));
+    let rst = await tServerConf.sequelize.query('select distinct if(enable_set = \'Y\', CONCAT(set_name, \'.\', set_area, \'.\', set_group), \'\') as \'set\' from db_tars.t_server_conf where application = \'' + application + '\' and server_name = \'' + serverName + '\'');
     return rst[0] || '';
 };
 
