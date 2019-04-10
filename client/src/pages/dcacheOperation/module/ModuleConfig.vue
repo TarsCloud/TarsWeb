@@ -206,18 +206,18 @@
         setRegions.splice(setRegions.indexOf(setRegions.find(item => item.label == this.model.idc_area)), 1);
         this.setRegions = setRegions;
       },
-//      getRegionList () {
-//        this.$ajax.getJSON('/server/api/get_region_list').then((regions) => {
-//          if (regions.length) {
-//            this.regions = regions
-//          } else {
-//            this.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.createRegionTips')}`);
-//            this.$router.push('region')
-//          }
-//        }).catch((err) => {
-//          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-//        });
-//      },
+     getRegionList () {
+       this.$ajax.getJSON('/server/api/get_region_list').then((regions) => {
+         if (regions.length) {
+           this.regions = regions
+         } else {
+           // this.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.createRegionTips')}`);
+           // this.$router.push('region')
+         }
+       }).catch((err) => {
+         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+       });
+     },
       getModuleInfo () {
         let {moduleId} = this.$route.params;
         this.$ajax.getJSON('/server/api/get_module_info', {moduleId}).then((data) => {
@@ -230,7 +230,7 @@
       },
     },
     created () {
-//      this.getRegionList();
+     this.getRegionList();
       this.getModuleInfo();
     }
   }

@@ -14,13 +14,13 @@
         >
         </let-input>
       </let-form-item>
-      <let-form-item :label="$t('common.admin')" itemWidth="240px" required>
+      <let-form-item :label="$t('common.admin')" itemWidth="240px" >
         <let-input
           size="small"
           v-model="model.admin"
-          required
-          :required-tip="$t('deployService.table.tips.empty')"
         >
+<!--          required-->
+<!--          :required-tip="$t('deployService.table.tips.empty')"-->
         </let-input>
       </let-form-item>
       <br>
@@ -41,7 +41,7 @@
           :multiple="true"
           v-model="model.setArea"
         >
-          <let-option v-for="d in setRegions" :key="d.label" :value="d.label" >
+          <let-option v-for="d in setRegions" :key="d.label" :value="d.label">
             {{d.region}}
           </let-option>
         </let-select>
@@ -63,7 +63,7 @@
     setArea: [],
   });
   export default {
-    data () {
+    data() {
       return {
         regions: [],
         setRegions: [],
@@ -71,13 +71,13 @@
       }
     },
     methods: {
-      changeSelect () {
+      changeSelect() {
         this.model.setArea = [];
         let setRegions = this.regions.concat();
-        setRegions.splice( setRegions.indexOf(setRegions.find(item => item.label == this.model.idcArea)) ,1);
+        setRegions.splice(setRegions.indexOf(setRegions.find(item => item.label == this.model.idcArea)), 1);
         this.setRegions = setRegions;
       },
-      createApply () {
+      createApply() {
         if (this.$refs.detailForm.validate()) {
           const model = this.model;
           const url = '/server/api/add_apply';
@@ -93,35 +93,33 @@
         }
       }
     },
-    created () {
+    created() {
       window.a = this;
     },
-    beforeRouteEnter (to, from, next) {
-//      Ajax.getJSON('/server/api/get_region_list').then((regions) => {
-//        if (regions.length) {
-//          next(vm => {
-//            vm.regions = regions
-//          })
-//        } else {
-//          next(vm => {
-//            vm.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.createRegionTips')}`);
-//            console.log('abc');
-//            vm.$router.push('/operation/region')
-//          })
-//        }
-//      }).catch((err) => {
-//        alert(err.message || err.err_msg);
-//      });
-      Ajax.getJSON('/server/api/has_dcahce_patch_package').then((hasDefaultPackage) => {
-        if (hasDefaultPackage) {
+    beforeRouteEnter(to, from, next) {
+      Ajax.getJSON('/server/api/get_region_list').then((regions) => {
+        if (regions.length) {
           next(vm => {
             vm.regions = regions
           })
         } else {
+          // next(vm => {
+          //   vm.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.createRegionTips')}`);
+          //   console.log('abc');
+          //   vm.$router.push('/operation/region')
+          // })
+        }
+      }).catch((err) => {
+        alert(err.message || err.err_msg);
+      });
+      Ajax.getJSON('/server/api/has_dcahce_patch_package').then((hasDefaultPackage) => {
+        if (!hasDefaultPackage) {
           next(vm => {
             vm.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.uploadPatchPackage')}`);
             vm.$router.push('/releasePackage/proxyList')
           })
+        } else {
+          next()
         }
       }).catch((err) => {
         alert(err.message || err.err_msg);

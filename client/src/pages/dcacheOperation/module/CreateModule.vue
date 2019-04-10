@@ -29,13 +29,13 @@
           </let-option>
         </let-select>
       </let-form-item>
-      <let-form-item :label="$t('module.follower')" itemWidth="240px" required>
+      <let-form-item :label="$t('module.follower')" itemWidth="240px" >
         <let-input
           size="small"
           v-model="model.follower"
-          required
-          :required-tip="$t('deployService.table.tips.empty')"
         >
+<!--          required-->
+<!--          :required-tip="$t('deployService.table.tips.empty')"-->
         </let-input>
       </let-form-item>
       <div>
