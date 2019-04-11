@@ -124,7 +124,12 @@
       '$route.params.treeid': function (treeid) { // eslint-disable-line
         console.log('$route.params.treeid$route.params.treeid')
         this.serverData = this.getServerData();
-//        this.isTrueTreeLevel();
+        // this.isTrueTreeLevel();
+      },
+      '$route' (to, from) {
+        if (to.path === '/server') {
+          this.getTreeData();
+        }
       },
     },
     methods: {

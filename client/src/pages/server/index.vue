@@ -80,11 +80,10 @@ export default {
       this.isTrueTreeLevel();
     },
     '$route' (to, from) {
-      console.log(from, to);
-      if (to.fullPath === '/server') {
+      if (to.path === '/server') {
         this.getTreeData();
       }
-    }
+    },
   },
   methods: {
     selectTree(nodeKey) {
