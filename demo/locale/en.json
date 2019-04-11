@@ -1,0 +1,67 @@
+{
+  "localeCode": "en",
+  "localeName": "English",
+
+  "login": {
+    "loginTitle": "Please Sign In",
+    "userName": "User name",
+    "password": "Password",
+    "repeatPassword": "Repeat password",
+    "login": "Sign in",
+    "toRegisterPage": "Create an account",
+    "toLoginPage": "Sign in",
+    "userNameTips": "User name is required",
+    "userNameRegTips": "The user name can contain only letters or Numbers, underscores",
+    "passwordTips": "Password is required",
+    "passwordNoCorrect": "Incorrect password",
+    "userNoExist": "User name does not exist",
+    "loginFailed": "Sign in failed",
+    "registerTitle": "Please Sign Up",
+    "repeatPasswordTips": "Repeat password is required",
+    "register": "Sign up",
+    "passwordDiff": "Two different input password, please re-entry",
+    "hasExist": "User name already exists",
+    "registerSucc": "Sign up successfully",
+    "registerFailed": "Sign up failed",
+    "getUidFailed": "Get user name failed",
+    "logout": "Sign out",
+    "noLogin": "You have not been sign in"
+  },
+  "auth": {
+    "flag": "Flag",
+    "role": "Role",
+    "uid": "Uid",
+    "flagTips": "Flag is required",
+    "roleTips": "Role is required",
+    "uidTips": "Uid is required",
+    "uidPlaceholder": "if multiple uid, with a semicolon (;) space",
+    "addPrivilege": "Add Privilege",
+    "delPrivilege": "Revoke Privilege",
+    "privilegeManageTitle": "Privilege Manage",
+    "loadListError": "Load privilege list failed",
+    "selectRecord": "Please select at least one record",
+    "confirmDelete": "Are you sure to delete this record?",
+    "delSucc": "Delete successfully",
+    "delError": "Delete error"
+  },
+  "common": {
+    "search": "search",
+    "nextPage": "next",
+    "prevPage": "back",
+    "nodata": "no data",
+    "success": " successfully",
+    "failed": " failed",
+    "confirmTitle": "System Confirm",
+    "systemError": "system error",
+    "noPrivilage": "no privilage",
+    "notEmpty": " is required",
+    "needNumber": " must be numeric type",
+    "needArray": " must be array type",
+    "needObject": " must be object type",
+    "needBoolean": " must be boolean type"
+  },
+  "localeSelect": {
+    "cn": "Chinese",
+    "en": "English"
+  }
+}
