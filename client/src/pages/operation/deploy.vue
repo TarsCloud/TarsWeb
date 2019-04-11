@@ -437,5 +437,10 @@ export default {
     margin-top: 20px;
     margin-bottom:10px;
   }
+  .set_inputer_item {
+    float: left;
+    margin-right: 8px;
+    width: 126px;
+  }
 }
 </style>

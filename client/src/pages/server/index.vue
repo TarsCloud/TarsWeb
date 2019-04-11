@@ -39,7 +39,7 @@
         <let-tab-pane :tabkey="base + '/property-monitor'" :tab="$t('index.rightView.tab.propertyMonitor')"
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/interface-debuger'" :tab="$t('index.rightView.tab.infDebuger')"
-          v-if="serverData.level === 5"></let-tab-pane>  
+          v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')"
                       v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
       </let-tabs>
@@ -79,6 +79,12 @@ export default {
       this.serverData = this.getServerData();
       this.isTrueTreeLevel();
     },
+    '$route' (to, from) {
+      console.log(from, to);
+      if (to.fullPath === '/server') {
+        this.getTreeData();
+      }
+    }
   },
   methods: {
     selectTree(nodeKey) {
