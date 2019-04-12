@@ -233,9 +233,14 @@
       },
 
       clickTab(tabkey) {
-        this.$router.push(Object.assign({}, this.$route, {
-          path: tabkey,
-        }));
+        const toPath = this.isServerManage(tabkey);
+        const currentPath = this.isServerManage(this.$route.path)
+        const path = (toPath && currentPath) ? { path: tabkey, query: { time: Date.now() } } : { path: tabkey, query: {} };
+        this.$router.push(Object.assign({}, this.$route, path));
+      },
+
+      isServerManage(tabkey) {
+        return tabkey.indexOf('/server') > -1 && tabkey.indexOf('/manage') > -1;
       },
 
       // 有些目录层级不显示某些标签，处理之

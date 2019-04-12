@@ -428,6 +428,12 @@ export default {
       return this.checkServantEndpoint(this.servantDetailModal.model.endpoint);
     },
   },
+  watch: {
+    '$route' (to, from) {
+      this.getServerList();
+      this.getServerNotifyList(1);
+    },
+  },
   methods: {
     // 获取服务列表
     getServerList() {
