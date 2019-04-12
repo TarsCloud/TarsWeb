@@ -104,7 +104,7 @@
           try {
 
           	// 扩容取到发布 id
-            let {releaseId} = await expandModule({servers, appName, moduleName, cache_version, type: '1', srcGroupName: [], dstGroupName: [groupName]});
+            let {releaseId} = await expandModule({servers, appName, moduleName, cache_version, srcGroupName: [], dstGroupName: [groupName]});
 
             // 打开日志发布 modal
             this.releaseId = releaseId;

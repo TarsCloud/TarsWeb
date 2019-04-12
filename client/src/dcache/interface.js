@@ -9,7 +9,7 @@ import Axios from '@/lib/axios.js'
  * @param status
  * @param cache_version
  */
-export function expandModule ({servers, appName, moduleName, type = 'expand', status ='1', cache_version}) {
+export function expandModule ({servers, appName, moduleName, type = 'expand', status ='1', cache_version, srcGroupName = [], dstGroupName = []}) {
   return Axios({
     method: 'post',
     url: '/cache/expandModule',
