@@ -60,16 +60,6 @@
         <let-button size="small" theme="primary" @click="submitServerConfig">{{$t('common.submit')}}</let-button>
       </div>
     </let-form>
-    <!-- 发布日志 -->
-    <let-modal
-      :title="$t('publishLog.title')"
-      v-model="releasing"
-      :footShow="false"
-      :closeOnClickBackdrop="false"
-      :width="'1000px'"
-      >
-      <release-progress @done-fn='releaseSuccess' v-if="releasing" :release-id="releaseId"></release-progress>
-    </let-modal>
   </section>
 </template>
 
@@ -118,7 +108,10 @@
 
             // 打开日志发布 modal
             this.releaseId = releaseId;
-            //this.releasing = true;
+            // this.releasing = true;
+            this.$tip.success(this.$t('dcache.operationManage.hasExpand'));
+            this.$emit('close');
+
           } catch (err) {
 
           	console.error(err);

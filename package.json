@@ -12,7 +12,7 @@
   "dependencies": {
     "@tars/rpc": "*",
     "@tars/stream": "*",
-    "@tencent/tars-dcache": "^1.0.10",
+    "@tars-dcache": "^1.1.6",
     "axios": "^0.18.0",
     "callsite": "^1.0.0",
     "cluster": "^0.7.7",

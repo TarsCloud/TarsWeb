@@ -390,7 +390,7 @@
       :width="'1000px'"
       :title="$t('dcache.expand')"
     >
-      <Expand v-if="expandShow" :expand-servers="lastGroupServers"></Expand>
+      <Expand @close="expandShow = false" v-if="expandShow" :expand-servers="lastGroupServers"></Expand>
     </let-modal>
 
     <!-- 发布日志 -->
