@@ -238,7 +238,7 @@ ConfigService.getNodeConfigFile = async(params) => {
         set_group:params.set_group || undefined
     });
     let servers = await ServerDao.getServerConf({
-        params:params.application,
+        application:params.application,
         serverName:params.server_name,
         enableSet:enableSet?'Y':'N',
         setName:params.set_name,
