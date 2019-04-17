@@ -5,13 +5,13 @@
         <let-form-item :label="$t('apply.name')" itemWidth="240px" required>
           {{apply.name}}
         </let-form-item>
-        <let-form-item :label="$t('common.admin')" itemWidth="240px" required>
+        <let-form-item :label="$t('common.admin')" itemWidth="240px">
           {{apply.admin}}
         </let-form-item>
-        <let-form-item :label="$t('region.idcArea')" itemWidth="240px" required>
+        <let-form-item :label="$t('region.idcArea')" itemWidth="240px">
           {{apply.idc_area}}
         </let-form-item>
-        <let-form-item :label="$t('region.setArea')" itemWidth="240px" required>
+        <let-form-item :label="$t('region.setArea')" itemWidth="240px">
           {{apply.set_area.join(',')}}
         </let-form-item>
         <let-form-item :label="$t('common.createPerson')" itemWidth="240px" required>

@@ -11,7 +11,7 @@
         <let-form-item :label="$t('module.cacheType')" itemWidth="240px" required>
           {{mapCacheType(moduleData.ModuleBase)}}
         </let-form-item>
-        <let-form-item :label="$t('module.follower')" itemWidth="240px" required>
+        <let-form-item :label="$t('module.follower')" itemWidth="240px">
           {{moduleData.ModuleBase && moduleData.ModuleBase.follower}}
         </let-form-item>
       </let-form-group>
