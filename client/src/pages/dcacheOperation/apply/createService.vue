@@ -130,6 +130,7 @@
 </template>
 
 <script>
+import { checkServerIdentity } from 'tls';
   const routerModel = () => {
     return {
       apply_id: 17,
@@ -188,16 +189,31 @@
         if (this.$refs.detailForm.validate()) {
           const model = this.apply;
           const url = '/server/api/save_router_proxy';
-          const loading = this.$Loading.show();
-          this.$ajax.postJSON(url, model).then((data) => {
-            loading.hide();
-            let {applyId} = this;
-            this.$router.push('/operation/apply/installAndPublish/' + applyId);
-          }).catch((err) => {
-            loading.hide();
-            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-          });
+          const hasDuplicateIp = this.checkDuplicateIp(model.Proxy);
+          if (hasDuplicateIp) this.$tip.error(this.$t('apply.duplicateIp'));
+          else {
+            const loading = this.$Loading.show();
+            this.$ajax.postJSON(url, model).then((data) => {
+              loading.hide();
+              let {applyId} = this;
+              this.$router.push('/operation/apply/installAndPublish/' + applyId);
+            }).catch((err) => {
+              loading.hide();
+              this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
+          }
         }
+      },
+      checkDuplicateIp (proxy) {
+        const ipList = [];
+        let duplicate = false;
+        proxy.forEach(item => {
+          item.server_ip.split(';').filter(i => i).forEach(ip => {
+            if (ipList.indexOf(ip) > -1) duplicate = true;
+            else ipList.push(ip);
+          });
+        });
+        return duplicate;
       }
     },
     async created () {

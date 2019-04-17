@@ -116,7 +116,8 @@
     "RouterManage": "The Router Management",
     "CacheManage": "The Cache Management",
     "noDefaultProxyPackage": "There is no default Proxy distribution package",
-    "noDefaultRouterPackage": "There is no default Router distribution package"
+    "noDefaultRouterPackage": "There is no default Router distribution package",
+    "duplicateIp": "Duplicate service IP is not allowed, please input correct service IP"
   },
   "module": {
     "title": "Module",

@@ -116,7 +116,8 @@
     "RouterManage": "Router 管理",
     "CacheManage": "Cache 管理",
     "noDefaultProxyPackage": "不存在默认的Proxy发布包",
-    "noDefaultRouterPackage": "不存在默认的Router发布包"
+    "noDefaultRouterPackage": "不存在默认的Router发布包",
+    "duplicateIp": "服务IP不允许重复， 请重新输入正确的服务IP"
   },
   "module": {
     "title": "模块",
