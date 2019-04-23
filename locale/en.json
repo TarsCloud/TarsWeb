@@ -122,6 +122,7 @@
   "module": {
     "title": "Module",
     "name": "Module Name",
+    "namingRule": "Application name + custom name. only digits, letters, hyphen and underscore allowed.",
     "keyType": "Key Type",
     "createModule": "Create Module",
     "createModuleService": "Creating Module Services",

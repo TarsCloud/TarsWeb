@@ -11,6 +11,8 @@
           :placeholder="$t('module.namingRule')"
           required
           :required-tip="$t('deployService.table.tips.empty')"
+          pattern="^[a-zA-Z][a-zA-Z0-9_-]+$"
+          :pattern-tip="$t('module.namingRule')"
         >
         </let-input>
       </let-form-item>
@@ -223,14 +225,22 @@
         this.$ajax.getJSON('/server/api/get_module_info', {moduleId}).then((data) => {
           this.model.apply_id = data.apply_id;
           this.model.module_id = data.id;
-          this.module = data
+          this.module = data;
+          this.getAppName(data.apply_id);
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       },
+      getAppName (applyId) {
+        this.$ajax.getJSON('/server/api/get_apply_and_router_and_proxy', {applyId}).then((apply) => {
+          this.model.module_name = apply.name || '';
+        }).catch((err) => {
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        });
+      }
     },
     created () {
-     this.getRegionList();
+      this.getRegionList();
       this.getModuleInfo();
     }
   }
