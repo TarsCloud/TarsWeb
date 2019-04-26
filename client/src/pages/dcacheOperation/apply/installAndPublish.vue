@@ -81,7 +81,7 @@
         <let-table-column :title="$t('publishLog.releaseProgress')" prop="percent">
           <template slot-scope="scope">
             <span>{{scope.row.percent}}</span>
-            <icon v-if="scope.row.percent != 100" name="spinner" />
+            <icon v-if="scope.row.percent != 100" name="spinner" class="spinner-icon" />
           </template>
         </let-table-column>
       </let-table>
@@ -197,7 +197,7 @@
 </script>
 
 <style lang="postcss">
-  .icon {
+  .spinner-icon {
     color: #fff;
     height: 17px;
     width: 17px;
