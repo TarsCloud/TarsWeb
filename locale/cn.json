@@ -122,7 +122,7 @@
   "module": {
     "title": "模块",
     "name": "模块名",
-    "namingRule": "应用名+自定义名称",
+    "namingRule": "应用名+自定义名称, 只允许字母、数字、_和-",
     "keyType": "key类型",
     "createModule": "创建模块",
     "createModuleService": "创建模块服务",

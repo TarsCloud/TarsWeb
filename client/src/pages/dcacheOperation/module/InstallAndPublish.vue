@@ -98,13 +98,20 @@
         <let-table-column :title="$t('service.serverName')" prop="serverName" width="30%"></let-table-column>
         <let-table-column :title="$t('service.serverIp')" prop="nodeName" width="30%"></let-table-column>
         <let-table-column :title="$t('publishLog.releaseId')" prop="releaseId" width="15%"></let-table-column>
-        <let-table-column :title="$t('publishLog.releaseProgress')" prop="percent"></let-table-column>
+        <let-table-column :title="$t('publishLog.releaseProgress')" prop="percent">
+          <template slot-scope="scope">
+            <span>{{scope.row.percent}}</span>
+            <icon v-if="scope.row.percent != 100" name="spinner" />
+          </template>
+        </let-table-column>
       </let-table>
     </let-modal>
   </section>
 </template>
 
 <script>
+  import '@/assets/icon/spinner.svg';
+
   export default {
     data () {
       let {moduleId} = this.$route.params;
@@ -131,13 +138,6 @@
         this.$ajax.getJSON('/server/api/module_install_and_publish', {moduleId, mkCache}).then(response => {
           let releaseId = response.releaseRsp.releaseId;
           this.getTaskRepeat({releaseId});
-//          this.$ajax.getJSON('/server/api/get_module_release_progress', {releaseId}).then(data => {
-//            console.log(data);
-//            this.showModal = true;
-//            this.releaseProgress = data.progress;
-//          }).catch(err => {
-//            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-//          });
           this.$tip.success(response.releaseRsp.errMsg)
         }).catch(err => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -229,3 +229,12 @@
     }
   }
 </script>
+
+<style lang="postcss">
+  .icon {
+    color: #fff;
+    height: 17px;
+    width: 17px;
+    margin-left: 20px;
+  }
+</style>

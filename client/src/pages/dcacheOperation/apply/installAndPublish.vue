@@ -78,13 +78,20 @@
       <let-table ref="ProgressTable" :data="items" :empty-msg="$t('common.nodata')" style="margin-top: 20px;">
         <let-table-column :title="$t('module.title')" prop="module" width="20%"></let-table-column>
         <let-table-column :title="$t('publishLog.releaseId')" prop="releaseId" width="20%"></let-table-column>
-        <let-table-column :title="$t('publishLog.releaseProgress')" prop="percent"></let-table-column>
+        <let-table-column :title="$t('publishLog.releaseProgress')" prop="percent">
+          <template slot-scope="scope">
+            <span>{{scope.row.percent}}</span>
+            <icon v-if="scope.row.percent != 100" name="spinner" />
+          </template>
+        </let-table-column>
       </let-table>
     </let-modal>
   </section>
 </template>
 
 <script>
+  import '@/assets/icon/spinner.svg';
+
   const routerModel = () => {
     return {
       apply_id: 17,
@@ -136,20 +143,10 @@
       installAndPublish () {
         let {applyId} = this;
         this.$ajax.getJSON('/server/api/install_and_publish', {applyId}).then((data) => {
-//          data = {proxy:{"releaseId":9,"errMsg":"sucess to release server"},
-//          router:{"releaseId":9,"errMsg":"sucess to release server"}}
           let proxyReleaseId = data.proxy.releaseId;
           let routerReleaseId = data.router.releaseId;
-//          this.$ajax.getJSON('/server/api/get_release_progress', {"proxyReleaseId": proxyReleaseId, "routerReleaseId": routerReleaseId}).then(data => {
-//            this.showModal = true;
-//            this.items = data.progress;
-//          }).catch(err => {
-//            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-//          });
           this.getTaskRepeat({proxyReleaseId, routerReleaseId});
-          //let interval = setInterval(getReleaseProgress, 1000);
           this.$tip.success(data.proxy.errMsg)
-//          this.apply = apply || {}
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
@@ -199,6 +196,11 @@
   }
 </script>
 
-<style>
-
+<style lang="postcss">
+  .icon {
+    color: #fff;
+    height: 17px;
+    width: 17px;
+    margin-left: 20px;
+  }
 </style>
