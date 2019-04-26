@@ -131,7 +131,8 @@
     "createApplyTips": "Before creating the module, create the application",
     "cacheType": "Cache Types",
     "follower": "Focus People",
-    "serverConfig": "Server Config"
+    "serverConfig": "Server Config",
+    "namingError": "Module name must not be the same as Application name"
   },
   "cache": {
     "title": "cache",

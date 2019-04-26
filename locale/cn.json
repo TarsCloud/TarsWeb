@@ -144,7 +144,8 @@
     "shmKey": "共享内存key",
     "shmKeyRule": "十进制共享内存key",
     "MultiKeyConfig": "多字段配置",
-    "hasExist": "模块已存在"
+    "hasExist": "模块已存在",
+    "namingError": "模块名不允许与应用名一样"
   },
   "MKCache": {
     "mainKey": "主索引(mkey)",

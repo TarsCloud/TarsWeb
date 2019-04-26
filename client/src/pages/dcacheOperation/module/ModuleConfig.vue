@@ -183,12 +183,15 @@
         module: {
           cache_version: 1,
         },
+        app_name: '',
         model: getInitialModel()
       }
     },
     methods: {
       addModuleConfig () {
-        if (this.$refs.detailForm.validate()) {
+        if (this.app_name === this.model.module_name) {
+          this.$tip.error(this.$t('module.namingError'));
+        }else if (this.$refs.detailForm.validate()) {
           const model = this.model;
           const url = '/server/api/add_module_config';
           const loading = this.$Loading.show();
@@ -233,7 +236,8 @@
       },
       getAppName (applyId) {
         this.$ajax.getJSON('/server/api/get_apply_and_router_and_proxy', {applyId}).then((apply) => {
-          this.model.module_name = apply.name || '';
+          this.app_name = apply.name || '';
+          this.model.module_name = this.app_name;
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
