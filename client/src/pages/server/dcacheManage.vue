@@ -35,6 +35,7 @@
       <let-table-column :title="$t('operate.operates')" width="260px">
         <template slot-scope="scope">
           <let-table-operation @click="configServer(scope.row.id)">{{$t('operate.update')}}</let-table-operation>
+          <let-table-operation @click="openExpandModal(scope.row)" v-if="serverType === 'proxy' || serverType === 'router'">{{$t('dcache.expand')}}</let-table-operation>
           <let-table-operation @click="restartServer(scope.row.id)">{{$t('operate.restart')}}</let-table-operation>
           <let-table-operation class="danger" @click="stopServer(scope.row.id)">{{$t('operate.stop')}}</let-table-operation>
           <let-table-operation @click="manageServant(scope.row)">{{$t('operate.servant')}}</let-table-operation>
@@ -56,6 +57,39 @@
       :total="total">
     </let-pagination>
 
+    <!-- 服务扩容弹窗 -->
+    <let-modal
+      v-model="expandModal.show"
+      :title="$t('serviceExpand.title')"
+      width="800px"
+      :footShow="!!(expandModal.model && expandModal.model.server_name)"
+      @on-confirm="expandService"
+      @close="closeExpandModal"
+      @on-cancel="closeExpandModal">
+        <let-form
+          v-if="!!(expandModal.model && expandModal.model.server_name)"
+          ref="expandForm" itemWidth="360px" :columns="2" class="two-columns">
+          <let-form-item :label="$t('common.service')">{{expandModal.model.server_name}}</let-form-item>
+          <let-form-item :label="$t('common.ip')">{{expandModal.model.node_name}}</let-form-item>
+          <let-form-item :label="$t('serviceExpand.form.tarIP')" itemWidth="100%" required>
+            <let-input
+              type="textarea"
+              :rows="3"
+              v-model="expandModal.expandIpStr"
+              :placeholder="$t('serviceExpand.form.placeholder')"
+              required
+              :required-tip="$t('deployService.table.tips.empty')"
+              >
+            </let-input>
+          </let-form-item>
+          <let-form-item :label="$t('serviceExpand.form.nodeConfig')" itemWidth="100%">
+            <let-checkbox
+              v-model="expandModal.model.copy_node_config">
+              {{$t('serviceExpand.form.copyNodeConfig')}}
+            </let-checkbox>
+          </let-form-item>
+        </let-form>
+    </let-modal>
 
     <!-- 编辑服务弹窗 -->
     <let-modal
@@ -349,6 +383,19 @@
 </template>
 
 <script>
+const getInitialExpandModel = () => ({
+  application: 'DCache',
+  server_name: '',
+  set: '',
+  node_name: '',
+  expand_nodes: [],
+  enable_set: false,
+  set_name: '',
+  set_area: '',
+  set_group: '',
+  copy_node_config: false,
+});
+
 export default {
   name: 'ServerManage',
   data() {
@@ -411,6 +458,13 @@ export default {
         show: false,
         model: null,
         currentServer: null,
+      },
+
+      // 服务扩容
+      expandModal: {
+        show: false,
+        model: getInitialExpandModel(),
+        expandIpStr: ''
       },
 
       // 失败重试次数
@@ -927,6 +981,73 @@ export default {
       }
       return timeStr;
     },
+
+    openExpandModal (rowData) {
+      const { server_name, node_name } = rowData;
+      this.expandModal.show = true;
+      this.expandModal.model.server_name = server_name;
+      this.expandModal.model.node_name = node_name;
+    },
+    expandService () {
+      if (this.$refs.expandForm.validate()) {
+        const model = Object.assign({}, this.expandModal.model);
+        model.expand_nodes = this.expandModal.expandIpStr.trim().split(/[,;\n]/);
+        const loading = this.$Loading.show();
+        this.$ajax.postJSON('/server/api/expand_server_preview', model).then((data) => {
+          if (!data) {
+            this.$tip.error(this.$t('serviceExpand.form.errTips.noneNodes'));
+          } else {
+            const previewItems = data.filter(item => item.status === this.$t('serviceExpand.form.noExpand'));
+            const previewServers = [];
+            const bindIps = [];
+            previewItems.forEach((item) => {
+              bindIps.push(item.bind_ip);
+            });
+            this.$ajax.getJSON('/server/api/auto_port', {node_name: bindIps.join(';')}).then((portData) => {
+              portData.forEach((node, index) => {
+                this.$set(previewItems[index], 'port', String(node.port || ''))
+              });
+              previewItems.forEach((item) => {
+                previewServers.push({
+                  bind_ip: item.bind_ip,
+                  node_name: item.node_name,
+                  obj_name: item.obj_name,
+                  port: item.port,
+                  set: item.set,
+                });
+              });
+              const params = {
+                application: model.application,
+                server_name: model.server_name,
+                set: model.set,
+                node_name: model.node_name,
+                copy_node_config: model.copy_node_config,
+                expand_preview_servers: previewServers,
+              };
+              this.$ajax.postJSON('/server/api/expand_server', params).then((data) => {
+                this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
+                loading.hide();
+              }).catch((err) => {
+                loading.hide();
+                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+              });
+            }).catch((err) => {
+              loading.hide();
+              this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
+          }
+        }).catch((err) => {
+          loading.hide();
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        });
+      }
+    },
+    closeExpandModal () {
+      if (this.$refs.expandForm) this.$refs.expandForm.resetValid();
+      this.expandModal.show = false;
+      this.expandModal.model = getInitialExpandModel();
+      this.expandModal.expandIpStr = '';
+    }
   },
   created() {
     this.serverData = this.$parent.getServerData();

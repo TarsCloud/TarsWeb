@@ -36,7 +36,7 @@ ExpandService.preview = async (params) => {
 	let result = [];
 	params.expand_nodes.forEach((expandNode) => {
 		sourceAdapter.forEach((adapter) => {
-			adapter = adapter.dataValues;
+			// adapter = adapter.dataValues;
 			let preServer = {
 				application: application,
 				server_name: serverName,
