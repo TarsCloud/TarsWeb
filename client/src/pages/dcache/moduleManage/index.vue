@@ -67,7 +67,8 @@
         <let-button theme="primary" @click="expandHandler">{{$t('dcache.expand')}}</let-button>
         <let-button theme="primary" :disabled="!hasCheckedItem" @click="shrinkageHandler">{{$t('dcache.Shrinkage')}}
         </let-button>
-        <let-button theme="primary" :disabled="!hasCheckedItem" @click="">{{$t('dcache.Migration')}}</let-button>
+        <let-button theme="primary" :disabled="!hasCheckedItem" @click="serverMigrationHandler">{{$t('dcache.serverMigration')}}</let-button>
+        <non-server-migration :disabled="!hasCheckedItem" :expand-servers="serverList" v-if="serverList.length"></non-server-migration>
         <let-button theme="primary" :disabled="!hasCheckedItem" @click="switchHandler">{{$t('dcache.switch')}}</let-button>
       </template>
     </let-table>
@@ -393,32 +394,37 @@
       <Expand @close="expandShow = false" v-if="expandShow" :expand-servers="lastGroupServers"></Expand>
     </let-modal>
 
-    <!-- 发布日志 -->
+    <!-- 部署迁移 -->
     <let-modal
-      :title="$t('publishLog.title')"
-      v-model="releaseing"
+      v-model="serverMigrationShow"
       :footShow="false"
       :closeOnClickBackdrop="false"
       :width="'1000px'"
+      :title="$t('dcache.serverMigration')"
     >
-
+      <server-migration @close="serverMigrationShow = false" v-if="serverMigrationShow" :expand-servers="lastGroupServers"></server-migration>
     </let-modal>
+
   </div>
 </template>
 
 <script>
   import Expand from './expand.vue'
+  import ServerMigration from './serverMigration.vue'
+  import nonServerMigration from './nonServerMigration.vue'
   import {hasOperation, reduceDcache, switchServer} from '@/dcache/interface.js'
 
   export default {
-    components: {Expand},
+    components: {Expand, ServerMigration, nonServerMigration},
     name: 'ServerManage',
     data() {
       return {
         // 扩容
         expandShow: false,
-        // 发布日志
-        releaseing: true,
+        // 部署迁移
+        serverMigrationShow: false,
+        // 非部署迁移
+        nonServerMigrationShow: false,
         // 扩容的组服务
         lastGroupServers: [],
         // 全选
@@ -564,6 +570,28 @@
           this.$tip.error(err.message)
         }
 
+      },
+      /**
+       *  部署迁移
+       */
+      async serverMigrationHandler() {
+        try {
+          //存在不同版本的服务，不允许迁移
+          let isSamePatchVersion = this.checkPatchVersion();
+          if (!isSamePatchVersion) throw new Error(this.$t('dcache.noTheSamePatchVersion'));
+
+          // 该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止再迁移
+          let server = this.serverList[0];
+          let {app_name, module_name} = server;
+          let hasOperationRecord = await hasOperation({appName: app_name, moduleName: module_name});
+          if (hasOperationRecord) throw new Error(this.$t('dcache.hasMigrationOperation'));
+
+          this.lastGroupServers = this.getLastGroupServers();
+          this.serverMigrationShow = true;
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(err.message)
+        }
       },
       /**
        * switchHandler

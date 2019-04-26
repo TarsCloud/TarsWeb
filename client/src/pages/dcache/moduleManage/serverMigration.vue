@@ -1,19 +1,24 @@
 <template>
   <section class="container">
     <let-form inline ref="detailForm">
-      <let-form-group  inline label-position="top">
+      <let-form-item required :label="$t('dcache.migrationMethod')">
+        <let-radio-group v-model="transferData"
+                         :data="migrationMethods">
+        </let-radio-group>
+      </let-form-item>
+      <let-form-group inline label-position="top">
         <let-table ref="table" :data="servers" :empty-msg="$t('common.nodata')">
-          <let-table-column :title="$t('module.name')" prop="module_name" >
+          <let-table-column :title="$t('module.name')" prop="module_name">
             <template slot-scope="{row}">
               {{row.module_name}}
             </template>
           </let-table-column>
-          <let-table-column :title="$t('module.serverGroup')" prop="group_name" >
+          <let-table-column :title="$t('module.serverGroup')" prop="group_name">
             <template slot-scope="{row}">
               {{row.group_name}}
             </template>
           </let-table-column>
-          <let-table-column :title="$t('service.serverName')" prop="server_name" >
+          <let-table-column :title="$t('service.serverName')" prop="server_name">
             <template slot-scope="{row}">
               {{row.server_name}}
             </template>
@@ -64,42 +69,36 @@
 </template>
 
 <script>
-  import {expandModule} from '@/dcache/interface.js'
+  import {transferDCache} from '@/dcache/interface.js'
   import Mixin from './mixin.js'
+
   export default {
     mixins: [Mixin],
-    data () {
+    data() {
       return {
       }
     },
     methods: {
-      async submitServerConfig () {
+      async submitServerConfig() {
         if (this.$refs.detailForm.validate()) {
-          let {servers, appName, moduleName, cache_version, dstGroupName} = this;
+          let { servers, appName, moduleName, cache_version, groupName, srcGroupName, dstGroupName, transferData } = this;
           try {
 
-          	// 扩容取到发布 id
-            let {releaseId} = await expandModule({servers, appName, moduleName, cache_version, srcGroupName: [], dstGroupName: [dstGroupName]});
+            await transferDCache({ servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, transferData });
 
-            this.$tip.success(this.$t('dcache.operationManage.hasExpand'));
+            this.$tip.success(this.$t('dcache.operationManage.hasServerMigration'));
             this.$emit('close');
 
           } catch (err) {
 
-          	console.error(err);
-          	this.$tip.error(err.message)
+            console.error(err);
+            this.$tip.error(err.message)
           }
         }
       },
-
-      mapServerType (key) {
-        if (key === 0) return this.$t('module.mainServer');
-        else if (key === 1) return this.$t('module.backServer');
-        else return this.$t('module.mirror');
-      }
     },
-    created () {
-    	this.getServers();
+    created() {
+      this.getServers();
     }
   }
 </script>
