@@ -512,7 +512,11 @@
         this.serverList.forEach((item) => {
           item.isChecked = isCheckedAll;
         });
-      }
+      },
+      '$route' (to, from) {
+        this.getServerList();
+        this.getServerNotifyList(1);
+      },
     },
     methods: {
       /**

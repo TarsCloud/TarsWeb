@@ -240,7 +240,7 @@
       },
 
       isServerManage(tabkey) {
-        return tabkey.indexOf('/server') > -1 && tabkey.indexOf('/manage') > -1;
+        return tabkey.indexOf('/server') > -1 && ( tabkey.indexOf('/manage') > -1 || tabkey.indexOf('/cache') > -1);
       },
 
       // 有些目录层级不显示某些标签，处理之
