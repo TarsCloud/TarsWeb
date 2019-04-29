@@ -49,46 +49,43 @@
   };
 </script>
 
-<style>
+<style lang="postcss">
   .hours-filter {
     overflow: hidden;
 
-  h4 {
-    color: #9096A3;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
+    h4 {
+      color: #9096A3;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
 
-  ul {
-    margin-bottom: -8px;
-    overflow: hidden;
-  }
+    ul {
+      margin-bottom: -8px;
+      overflow: hidden;
+    }
 
-  li {
-    border: 1px solid #C0C4CC;
-    border-radius: 14px;
-    color: #454E66;
-    cursor: pointer;
-    float: left;
-    font-size: 12px;
-    line-height: 26px;
-    margin-bottom: 8px;
-    margin-right: 8px;
-    min-width: 39px;
-    padding: 0 11px;
-    text-align: center;
+    li {
+      border: 1px solid #C0C4CC;
+      border-radius: 14px;
+      color: #454E66;
+      cursor: pointer;
+      float: left;
+      font-size: 12px;
+      line-height: 26px;
+      margin-bottom: 8px;
+      margin-right: 8px;
+      min-width: 39px;
+      padding: 0 11px;
+      text-align: center;
 
-  &
-  .active {
-    border-color: #3F5AE0;
-    color: #3F5AE0;
-  }
+      &.active {
+        border-color: #3F5AE0;
+        color: #3F5AE0;
+      }
 
-  &
-  :last-child {
-    margin-right: 0;
-  }
-
-  }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
   }
 </style>

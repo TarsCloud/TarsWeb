@@ -33,7 +33,7 @@
       </let-form-item>
     </let-form>
 
-    <let-row ref="charts" class="charts">
+    <let-row ref="charts" class="charts" v-if="showChart">
       <let-col v-for="d in charts" :key="d.title" :span="12">
         <compare-chart v-bind="d"></compare-chart>
       </let-col>
@@ -128,6 +128,7 @@ export default {
       allItems: [],
       hour: -1,
       page: 1,
+      showChart: true,
     };
   },
 
@@ -236,11 +237,13 @@ export default {
 
     groupBy(name) {
       this.query.group_by = name;
+      this.showChart = false;
       this.fetchData();
     },
 
     search() {
       delete this.query.group_by;
+      this.showChart = true;
       this.fetchData();
     },
 
@@ -251,7 +254,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="postcss">
 .page_server_server_monitor {
   padding-bottom: 20px;
 
