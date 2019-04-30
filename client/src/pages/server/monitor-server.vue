@@ -35,7 +35,7 @@
 
     <let-row ref="charts" class="charts" v-if="showChart">
       <let-col v-for="d in charts" :key="d.title" :span="12">
-        <compare-chart v-bind="d"></compare-chart>
+        <compare-chart v-bind="d" v-if="allItems.length > 0"></compare-chart>
       </let-col>
     </let-row>
 
@@ -99,6 +99,26 @@ import CompareChart from '@/components/charts/compare-chart';
 
 const pageSize = 20;
 const formatter = 'YYYYMMDD';
+const dataFormatter = (data) => {
+  if (data && data.length > 0) {
+    return data.map(item => {
+      const result = { ...item };
+      const keys = Object.keys(item);
+      const preRegex = /^pre_.*/;
+      const theRegex = /^the_.*/;
+      keys.forEach(key => {
+        if (preRegex.test(key) || theRegex.test(key)) {
+          if (item[key] === "0.00%") {
+            result[key] = "0";
+          }
+        }
+      });
+      return result;
+    });
+  } else {
+    return data;
+  }
+};
 
 export default {
   name: 'ServerPropertyMonitor',
@@ -227,7 +247,7 @@ export default {
       return this.$ajax.getJSON('/server/api/tarsstat_monitor_data', this.query).then((data) => {
         chartLoading.hide();
         tableLoading.hide();
-        this.allItems = data;
+        this.allItems = dataFormatter(data);
       }).catch((err) => {
         chartLoading.hide();
         tableLoading.hide();
