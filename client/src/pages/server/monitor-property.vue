@@ -34,7 +34,7 @@
       </let-form-group>
     </let-form>
 
-    <compare-chart ref="chart" class="chart" v-bind="chartOptions"></compare-chart>
+    <compare-chart ref="chart" class="chart" v-bind="chartOptions" v-if="showChart"></compare-chart>
 
     <hours-filter v-model="hour"></hours-filter>
 
@@ -96,6 +96,7 @@ export default {
       allItems: [],
       hour: -1,
       page: 1,
+      showChart: true,
     };
   },
 
@@ -149,11 +150,13 @@ export default {
 
     groupBy(name) {
       this.query.group_by = name;
+      this.showChart = false;
       this.fetchData();
     },
 
     search() {
       delete this.query.group_by;
+      this.showChart = true;
       this.fetchData();
     },
 
@@ -164,7 +167,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="postcss">
 .page_server_property_monitor {
   padding-bottom: 20px;
 
