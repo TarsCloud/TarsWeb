@@ -215,6 +215,8 @@
     "leaveOneServiceGroup": "Leave at least one service group",
     "onlyOneServiceGroup": "There is only one service group and non-deployed migrations are not allowed",
     "oneGroup": "Migration services, only one group can be selected",
+    "offline": "off line",
+    "cantOffline": "selected services, there are surviving services, please stop, and then offline",
     "operationManage": {
       "expand": "expand manage",
       "shrinkage": "shrinkage manage",

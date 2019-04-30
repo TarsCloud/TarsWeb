@@ -239,6 +239,8 @@
     "leaveOneServiceGroup": "至少留一个服务组",
     "onlyOneServiceGroup": "只有一个服务组，不允许非部署迁移",
     "oneGroup": "迁移服务， 只能选一个组",
+    "offline": "下线服务",
+    "cantOffline": "选中的服务中，有存活的服务，请先停止， 再下线",
     "operationManage": {
       "expand": "扩容管理",
       "shrinkage": "缩容管理",

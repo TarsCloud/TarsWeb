@@ -70,6 +70,7 @@
         <let-button theme="primary" :disabled="!hasCheckedItem" @click="serverMigrationHandler">{{$t('dcache.serverMigration')}}</let-button>
         <non-server-migration :disabled="!hasCheckedItem" :expand-servers="serverList" v-if="serverList.length"></non-server-migration>
         <let-button theme="primary" :disabled="!hasCheckedItem" @click="switchHandler">{{$t('dcache.switch')}}</let-button>
+        <offline :disabled="!hasCheckedItem" :checked-servers="checkedServers"></offline>
       </template>
     </let-table>
 
@@ -412,10 +413,11 @@
   import Expand from './expand.vue'
   import ServerMigration from './serverMigration.vue'
   import nonServerMigration from './nonServerMigration.vue'
+  import offline from './offline.vue'
   import {hasOperation, reduceDcache, switchServer} from '@/dcache/interface.js'
 
   export default {
-    components: {Expand, ServerMigration, nonServerMigration},
+    components: {Expand, ServerMigration, nonServerMigration, offline},
     name: 'ServerManage',
     data() {
       return {
@@ -504,6 +506,9 @@
       },
       hasCheckedItem() {
         return this.serverList.filter(item => item.isChecked === true).length !== 0;
+      },
+      checkedServers() {
+        return this.serverList.filter(item => item.isChecked === true);
       }
     },
     watch: {

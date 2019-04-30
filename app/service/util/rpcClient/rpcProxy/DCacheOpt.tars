@@ -255,8 +255,8 @@ struct InstallMKVCacheRsp
 struct UninstallReq
 {
     0 require UninstallType unType;     //下线类型,0为单个Cache服务 1为按服务组,2为按模块,3为配额单服务下线
-    1 require string moduleName;        //模块名
-    2 require DBInfo routerDb;          //路由数据库信息
+    1 require string appName;
+    2 require string moduleName;        //模块名
     3 optional string serverName;       //cache服务名, 当unType!=0时可为空
     4 optional string groupName;        //cache服务组名, 当unType!=1时可为空
 };

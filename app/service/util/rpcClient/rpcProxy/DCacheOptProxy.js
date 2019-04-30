@@ -1534,8 +1534,8 @@ DCache.InstallMKVCacheRsp.create = function (is) {
 
 DCache.UninstallReq = function() {
     this.unType = DCache.UninstallType.SERVER;
+    this.appName = "";
     this.moduleName = "";
-    this.routerDb = new DCache.DBInfo;
     this.serverName = "";
     this.groupName = "";
     this._classname = "DCache.UninstallReq";
@@ -1546,16 +1546,16 @@ DCache.UninstallReq._read  = function (is, tag, def) { return is.readStruct(tag,
 DCache.UninstallReq._readFrom = function (is) {
     var tmp = new DCache.UninstallReq;
     tmp.unType = is.readInt32(0, true, DCache.UninstallType.SERVER);
-    tmp.moduleName = is.readString(1, true, "");
-    tmp.routerDb = is.readStruct(2, true, DCache.DBInfo);
+    tmp.appName = is.readString(1, true, "");
+    tmp.moduleName = is.readString(2, true, "");
     tmp.serverName = is.readString(3, false, "");
     tmp.groupName = is.readString(4, false, "");
     return tmp;
 };
 DCache.UninstallReq.prototype._writeTo = function (os) {
     os.writeInt32(0, this.unType);
-    os.writeString(1, this.moduleName);
-    os.writeStruct(2, this.routerDb);
+    os.writeString(1, this.appName);
+    os.writeString(2, this.moduleName);
     os.writeString(3, this.serverName);
     os.writeString(4, this.groupName);
 };
@@ -1571,16 +1571,16 @@ DCache.UninstallReq.prototype._genKey = function () {
 DCache.UninstallReq.prototype.toObject = function() { 
     return {
         "unType" : this.unType,
+        "appName" : this.appName,
         "moduleName" : this.moduleName,
-        "routerDb" : this.routerDb.toObject(),
         "serverName" : this.serverName,
         "groupName" : this.groupName
     };
 };
 DCache.UninstallReq.prototype.readFromObject = function(json) { 
     _hasOwnProperty.call(json, "unType") && (this.unType = json.unType);
+    _hasOwnProperty.call(json, "appName") && (this.appName = json.appName);
     _hasOwnProperty.call(json, "moduleName") && (this.moduleName = json.moduleName);
-    _hasOwnProperty.call(json, "routerDb") && (this.routerDb.readFromObject(json.routerDb));
     _hasOwnProperty.call(json, "serverName") && (this.serverName = json.serverName);
     _hasOwnProperty.call(json, "groupName") && (this.groupName = json.groupName);
     return this;
