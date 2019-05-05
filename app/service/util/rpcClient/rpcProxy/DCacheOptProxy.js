@@ -56,43 +56,43 @@ DCache.DCacheOptProxy.prototype.getVersion = function () {
     return this._worker.version;
 };
 
-DCache.DCacheType = {
-    "KVCACHE" : 1,
-    "MKVCACHE" : 2
-};
+(function(DCacheType) {
+    DCacheType[DCacheType["KVCACHE"] = 1] = "KVCACHE";
+    DCacheType[DCacheType["MKVCACHE"] = 2] = "MKVCACHE";
+}(DCache.DCacheType = {}));
 DCache.DCacheType._classname = "DCache.DCacheType";
 DCache.DCacheType._write = function(os, tag, val) { return os.writeInt32(tag, val); };
 DCache.DCacheType._read  = function(is, tag, def) { return is.readInt32(tag, true, def); };
 
-DCache.TransferType = {
-    "UNSPECIFIED_TYPE" : -1,
-    "TRANSFER_TYPE" : 0,
-    "EXPAND_TYPE" : 1,
-    "REDUCE_TYPE" : 2,
-    "DEFRAG_TYPE" : 3
-};
+(function(TransferType) {
+    TransferType[TransferType["UNSPECIFIED_TYPE"] = -1] = "UNSPECIFIED_TYPE";
+    TransferType[TransferType["TRANSFER_TYPE"] = 0] = "TRANSFER_TYPE";
+    TransferType[TransferType["EXPAND_TYPE"] = 1] = "EXPAND_TYPE";
+    TransferType[TransferType["REDUCE_TYPE"] = 2] = "REDUCE_TYPE";
+    TransferType[TransferType["DEFRAG_TYPE"] = 3] = "DEFRAG_TYPE";
+}(DCache.TransferType = {}));
 DCache.TransferType._classname = "DCache.TransferType";
 DCache.TransferType._write = function(os, tag, val) { return os.writeInt32(tag, val); };
 DCache.TransferType._read  = function(is, tag, def) { return is.readInt32(tag, true, def); };
 
-DCache.TransferStatus = {
-    "NEW_TASK" : 0,
-    "CONFIG_SERVER" : 1,
-    "RELEASE_SERVER" : 2,
-    "TRANSFERRING" : 3,
-    "TRANSFER_FINISH" : 4,
-    "TRANSFER_STOP" : 5
-};
+(function(TransferStatus) {
+    TransferStatus[TransferStatus["NEW_TASK"] = 0] = "NEW_TASK";
+    TransferStatus[TransferStatus["CONFIG_SERVER"] = 1] = "CONFIG_SERVER";
+    TransferStatus[TransferStatus["RELEASE_SERVER"] = 2] = "RELEASE_SERVER";
+    TransferStatus[TransferStatus["TRANSFERRING"] = 3] = "TRANSFERRING";
+    TransferStatus[TransferStatus["TRANSFER_FINISH"] = 4] = "TRANSFER_FINISH";
+    TransferStatus[TransferStatus["TRANSFER_STOP"] = 5] = "TRANSFER_STOP";
+}(DCache.TransferStatus = {}));
 DCache.TransferStatus._classname = "DCache.TransferStatus";
 DCache.TransferStatus._write = function(os, tag, val) { return os.writeInt32(tag, val); };
 DCache.TransferStatus._read  = function(is, tag, def) { return is.readInt32(tag, true, def); };
 
-DCache.UninstallType = {
-    "SERVER" : 0,
-    "GROUP" : 1,
-    "MODULE" : 2,
-    "QUOTA_SERVER" : 3
-};
+(function(UninstallType) {
+    UninstallType[UninstallType["SERVER"] = 0] = "SERVER";
+    UninstallType[UninstallType["GROUP"] = 1] = "GROUP";
+    UninstallType[UninstallType["MODULE"] = 2] = "MODULE";
+    UninstallType[UninstallType["QUOTA_SERVER"] = 3] = "QUOTA_SERVER";
+}(DCache.UninstallType = {}));
 DCache.UninstallType._classname = "DCache.UninstallType";
 DCache.UninstallType._write = function(os, tag, val) { return os.writeInt32(tag, val); };
 DCache.UninstallType._read  = function(is, tag, def) { return is.readInt32(tag, true, def); };
@@ -5741,6 +5741,7 @@ var __DCache_DCacheOpt$uninstall4DCache$IF = {
 
 var __DCache_DCacheOpt$uninstall4DCache$IE = function (uninstallInfo) {
     var os = new TarsStream.TarsOutputStream();
+    console.log('uninstallInfouninstallInfouninstallInfo', uninstallInfo);
     os.writeStruct(1, uninstallInfo);
     return os.getBinBuffer();
 };

@@ -211,11 +211,17 @@ export function recoverMirrorStatus({ appName, moduleName, groupName, mirrorIdc,
   })
 }
 
-export function uninstall4DCache({ appName, moduleName, serversNames }) {
+/**
+ * 下线 cache 服务
+ * @param appName
+ * @param moduleName
+ * @param serversNames
+ */
+export function uninstall4DCache({ appName, moduleName, serverNames }) {
   return Axios({
     method: 'post',
     url: '/cache/uninstall4DCache',
-    data: { appName, moduleName, serversNames }
+    data: { appName, moduleName, serverNames }
   })
 }
 

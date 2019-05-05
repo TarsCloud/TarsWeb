@@ -217,6 +217,11 @@
     "oneGroup": "Migration services, only one group can be selected",
     "offline": "off line",
     "cantOffline": "selected services, there are surviving services, please stop, and then offline",
+    "hostOfflineAllServers": "In the selected service, there is a host, and all services of this module will be offline",
+    "offlineAllBackupServers": "In the selected service, there is standby machine, and all standby machine services of this module will be offline",
+    "offlineMirrorServers": "The selected service has mirroring. Log off all the mirroring services of this module",
+    "offlineBackupMirrorServers": "The selected service has backup and mirroring to offline all backup and mirroring",
+    "sureOffline": "determine the offline",
     "operationManage": {
       "expand": "expand manage",
       "shrinkage": "shrinkage manage",

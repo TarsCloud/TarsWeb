@@ -29,10 +29,10 @@ enum TransferStatus
 
 enum UninstallType
 {
-    SERVER,  //按服务下线
-    GROUP,   //按服务组下线
-    MODULE,  //按模块下线
-    QUOTA_SERVER //按配额服务下线
+    SERVER          = 0,  //按服务下线
+    GROUP           = 1,   //按服务组下线
+    MODULE          = 2,  //按模块下线
+    QUOTA_SERVER    = 3 //按配额服务下线
 };
 
 struct DBInfo

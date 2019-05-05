@@ -67,10 +67,14 @@
         <let-button theme="primary" @click="expandHandler">{{$t('dcache.expand')}}</let-button>
         <let-button theme="primary" :disabled="!hasCheckedItem" @click="shrinkageHandler">{{$t('dcache.Shrinkage')}}
         </let-button>
-        <let-button theme="primary" :disabled="!hasCheckedItem" @click="serverMigrationHandler">{{$t('dcache.serverMigration')}}</let-button>
-        <non-server-migration :disabled="!hasCheckedItem" :expand-servers="serverList" v-if="serverList.length"></non-server-migration>
-        <let-button theme="primary" :disabled="!hasCheckedItem" @click="switchHandler">{{$t('dcache.switch')}}</let-button>
-        <offline :disabled="!hasCheckedItem" :checked-servers="checkedServers"></offline>
+        <let-button theme="primary" :disabled="!hasCheckedItem" @click="serverMigrationHandler">
+          {{$t('dcache.serverMigration')}}
+        </let-button>
+        <non-server-migration :disabled="!hasCheckedItem" :expand-servers="serverList"
+                              v-if="serverList.length"></non-server-migration>
+        <let-button theme="primary" :disabled="!hasCheckedItem" @click="switchHandler">{{$t('dcache.switch')}}
+        </let-button>
+        <offline :disabled="!hasCheckedItem" :server-list="serverList" @success-fn="getServerList"></offline>
       </template>
     </let-table>
 
@@ -403,7 +407,8 @@
       :width="'1000px'"
       :title="$t('dcache.serverMigration')"
     >
-      <server-migration @close="serverMigrationShow = false" v-if="serverMigrationShow" :expand-servers="lastGroupServers"></server-migration>
+      <server-migration @close="serverMigrationShow = false" v-if="serverMigrationShow"
+                        :expand-servers="lastGroupServers"></server-migration>
     </let-modal>
 
   </div>
@@ -417,7 +422,7 @@
   import {hasOperation, reduceDcache, switchServer} from '@/dcache/interface.js'
 
   export default {
-    components: {Expand, ServerMigration, nonServerMigration, offline},
+    components: { Expand, ServerMigration, nonServerMigration, offline },
     name: 'ServerManage',
     data() {
       return {
@@ -507,9 +512,6 @@
       hasCheckedItem() {
         return this.serverList.filter(item => item.isChecked === true).length !== 0;
       },
-      checkedServers() {
-        return this.serverList.filter(item => item.isChecked === true);
-      }
     },
     watch: {
       isCheckedAll() {
@@ -518,7 +520,7 @@
           item.isChecked = isCheckedAll;
         });
       },
-      '$route' (to, from) {
+      '$route'(to, from) {
         this.getServerList();
         this.getServerNotifyList(1);
       },
@@ -535,8 +537,8 @@
 
           // 该模块已经有任务在扩容了， 不允许再扩容， 请去操作管理停止再扩容
           let server = this.serverList[0];
-          let {app_name, module_name} = server;
-          let hasOperationRecord = await hasOperation({appName: app_name, moduleName: module_name});
+          let { app_name, module_name } = server;
+          let hasOperationRecord = await hasOperation({ appName: app_name, moduleName: module_name });
           if (hasOperationRecord) throw new Error(this.$t('dcache.hasExpandOperation'));
 
           this.lastGroupServers = this.getLastGroupServers();
@@ -553,8 +555,8 @@
         try {
           // 该模块已经有任务在迁移操作了， 不允许再缩容， 请去操作管理停止操作再缩容
           let server = this.serverList[0];
-          let {app_name, module_name} = server;
-          let hasOperationRecord = await hasOperation({appName: app_name, moduleName: module_name});
+          let { app_name, module_name } = server;
+          let hasOperationRecord = await hasOperation({ appName: app_name, moduleName: module_name });
           if (hasOperationRecord) throw new Error(this.$t('dcache.hasShrinkageOperation'));
           let allGroupNameArr = this.serverList.map(item => item.group_name);
           // 去重
@@ -572,7 +574,7 @@
           await this.$confirm(this.$t('dcache.operationManage.ensureShrinkage'));
 
           // 缩容
-          await  reduceDcache({appName: app_name, moduleName: module_name, srcGroupName: selectedGroupNameArr});
+          await reduceDcache({ appName: app_name, moduleName: module_name, srcGroupName: selectedGroupNameArr });
           this.$tip.success(this.$t('dcache.operationManage.hasShrinkage'))
         } catch (err) {
           console.error(err);
@@ -591,8 +593,8 @@
 
           // 该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止再迁移
           let server = this.serverList[0];
-          let {app_name, module_name} = server;
-          let hasOperationRecord = await hasOperation({appName: app_name, moduleName: module_name});
+          let { app_name, module_name } = server;
+          let hasOperationRecord = await hasOperation({ appName: app_name, moduleName: module_name });
           if (hasOperationRecord) throw new Error(this.$t('dcache.hasMigrationOperation'));
 
           this.lastGroupServers = this.getLastGroupServers();
@@ -609,7 +611,7 @@
         try {
           // 该模块已经有任务在迁移操作了， 不允许再缩容， 请去操作管理停止操作再缩容
           let server = this.serverList[0];
-          let {app_name, module_name} = server;
+          let { app_name, module_name } = server;
           let servers = this.serverList.filter(item => item.isChecked);
           let selectedGroupNameArr = servers.map(item => item.group_name);
           // 已选去重
@@ -620,7 +622,7 @@
           await this.$confirm(this.$t('dcache.operationManage.ensureSwitch'));
 
           // 切换
-          await switchServer({appName: app_name, moduleName: module_name, groupName: selectedGroupNameArr[0]});
+          await switchServer({ appName: app_name, moduleName: module_name, groupName: selectedGroupNameArr[0] });
           this.$tip.success(this.$t('dcache.operationManage.switchSuccess'));
           this.getServerList();
         } catch (err) {
@@ -644,7 +646,7 @@
       checkPatchVersion() {
         let same = true;
         let obj = {};
-        this.serverList.forEach(({patch_version}, index) => {
+        this.serverList.forEach(({ patch_version }, index) => {
           // 第一次赋值给 obj， 第二次开始检查有木有该值存在， 不存在说明存在不同的 patch_version
           if (index === 0) return obj[patch_version] = patch_version;
           if (!obj[patch_version]) same = false;
@@ -697,7 +699,7 @@
           if (this.configModal.model) {
             this.configModal.model.templates = data;
           } else {
-            this.configModal.model = {templates: data};
+            this.configModal.model = { templates: data };
           }
         }).catch((err) => {
           this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
@@ -1095,35 +1097,32 @@
   };
 </script>
 
-<style>
+<style lang="postcss">
   @import '../../../assets/css/variable.css';
 
   .page_server_manage {
+    .tbm16 {
+      margin: 16px 0;
+    }
 
-  .tbm16 {
-    margin: 16px 0;
-  }
+    .danger {
+      color: var(--off-color);
+    }
 
-  .danger {
-    color: var(--off-color);
-  }
+    .more-cmd {
+      .let-form-item__content {
+        display: flex;
+        align-items: center;
+      }
 
-  .more-cmd {
+      span.let-radio {
+        margin-right: 5px;
+      }
 
-  .let-form-item__content {
-    display: flex;
-    align-items: center;
-  }
-
-  span.let-radio {
-    margin-right: 5px;
-  }
-
-  label.let-radio {
-    width: 200px;
-  }
-
-  }
+      label.let-radio {
+        width: 200px;
+      }
+    }
   }
 
 </style>

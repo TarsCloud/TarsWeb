@@ -241,6 +241,11 @@
     "oneGroup": "迁移服务， 只能选一个组",
     "offline": "下线服务",
     "cantOffline": "选中的服务中，有存活的服务，请先停止， 再下线",
+    "hostOfflineAllServers": "选中的服务中，有主机，将下线该模块所有服务",
+    "offlineAllBackupServers": "选中的服务中，有备机，将下线该模块所有备机服务",
+    "offlineMirrorServers": "选中的服务有镜像， 下线该模块所有的镜像服务",
+    "offlineBackupMirrorServers": "选中的服务有备机和镜像，将下线所有备机和镜像",
+    "sureOffline": "确定下线",
     "operationManage": {
       "expand": "扩容管理",
       "shrinkage": "缩容管理",
