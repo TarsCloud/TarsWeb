@@ -68,6 +68,27 @@ import CompareChart from '@/components/charts/compare-chart';
 
 const pageSize = 20;
 const formatter = 'YYYYMMDD';
+const dataFormatter = (data) => {
+  if (data && data.length > 0) {
+    return data.map(item => {
+      const result = { ...item };
+      const keys = Object.keys(item);
+      const preRegex = /^pre_.*/;
+      const theRegex = /^the_.*/;
+      keys.forEach(key => {
+        if (preRegex.test(key) || theRegex.test(key)) {
+          if (item[key] === "--") {
+            result[key] = "0";
+          }
+        }
+      });
+      return result;
+    });
+  } else {
+    return data;
+  }
+};
+
 
 export default {
   name: 'ServerPropertyMonitor',

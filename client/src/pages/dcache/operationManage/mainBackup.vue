@@ -4,8 +4,8 @@
       <let-table-column :title="$t('dcache.operationManage.appName')" prop="appName"></let-table-column>
       <let-table-column :title="$t('dcache.operationManage.moduleName')" prop="moduleName"></let-table-column>
       <let-table-column :title="$t('dcache.operationManage.groupName')" prop="groupName"></let-table-column>
-      <let-table-column :title="$t('dcache.operationManage.masterServer')" prop="masterServer"></let-table-column>
-      <let-table-column :title="$t('dcache.operationManage.slaveServer')" prop="slaveServer"></let-table-column>
+      <!-- <let-table-column :title="$t('dcache.operationManage.masterServer')" prop="masterServer"></let-table-column>
+      <let-table-column :title="$t('dcache.operationManage.slaveServer')" prop="slaveServer"></let-table-column> -->
       <let-table-column :title="$t('dcache.operationManage.switchTime')" prop="switchTime"></let-table-column>
       <let-table-column :title="$t('dcache.operationManage.modifyTime')" prop="modifyTime"></let-table-column>
       <let-table-column :title="$t('dcache.operationManage.dbFlag')" prop="dbFlag"></let-table-column>
@@ -32,9 +32,9 @@
       </let-table-column>
       <let-table-column :title="$t('operate.operates')" prop="appName" width="100px">
         <template slot-scope="{row}">
-          <let-table-operation :title="$t('dcache.amig')" @click="ensureDelete(row)">{{$t('dcache.omig')}}</let-table-operation>
+          <!-- <let-table-operation :title="$t('dcache.amig')" @click="ensureDelete(row)">{{$t('dcache.omig')}}</let-table-operation> -->
           <let-table-operation :title="$t('dcache.areset')" @click="recoverMirrorStatus(row)">{{$t('dcache.oreset')}}</let-table-operation>
-          <let-table-operation :title="$t('dcache.switch')" @click="switchServer(row)">{{$t('dcache.oswitch')}}</let-table-operation>
+          <!-- <let-table-operation :title="$t('dcache.switch')" @click="switchServer(row)">{{$t('dcache.oswitch')}}</let-table-operation> -->
         </template>
       </let-table-column>
       <let-pagination slot="pagination" align="right"
