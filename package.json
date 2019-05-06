@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "start": "node server/bin/www",
+    "start": "node bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
     "prd": "pm2 start bin/www --name=tars-node-web",
     "test": "echo \"Error: no test specified\" && exit 1"
