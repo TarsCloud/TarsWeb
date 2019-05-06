@@ -747,7 +747,9 @@
         "ipFormat": "请正确填写IP地址",
         "success": "扩容成功"
       }
-    }
+    },
+    "newGroup": "增加一组",
+    "removeGroup": "删除最后一组"
   },
   "historyList": {
     "title": "发布历史",

@@ -723,7 +723,9 @@
         "ipFormat": "Please fill in the correct IP address",
         "success": "Expansion success"
       }
-    }
+    },
+    "newGroup": "Add a group",
+    "removeGroup": "Remove last group"
   },
   "historyList": {
     "title": "Release History",

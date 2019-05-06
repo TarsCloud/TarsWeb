@@ -34,7 +34,17 @@ export  default {
   },
   methods: {
     getServers () {
-      let servers = this.expandServers.map((item, index) => {
+      this.servers = this.newGroup(this.expandServers);
+    },
+    addNewGroup () {
+      const { servers } = this;
+      this.servers = servers.concat(this.newGroup(servers.slice(servers.length - 2)));
+    },
+    deleteGroup () {
+      this.servers.splice(this.servers.length - 2, 2);
+    },
+    newGroup (servers) {
+      return servers.map((item, index) => {
         let {group_name, server_name} = item;
 
         //  **********name1    => *******name2
@@ -49,7 +59,6 @@ export  default {
 
         return Object.assign({}, item, {group_name, server_name, server_ip: '', shmKey: ''})
       });
-      this.servers = servers;
     },
     mapServerType (key) {
       if (key === 0) return this.$t('module.mainServer');

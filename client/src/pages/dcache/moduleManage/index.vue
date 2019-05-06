@@ -635,8 +635,8 @@
        * 获取最后一个分组的所有服务
        */
       getLastGroupServers() {
-        let theFristGroupName = this.serverList[this.serverList.length - 1].group_name;
-        return this.serverList.filter(item => item.group_name === theFristGroupName)
+        let theLastGroupName = this.serverList.sort((a, b) => a.group_name > b.group_name)[this.serverList.length - 1].group_name;
+        return this.serverList.filter(item => item.group_name === theLastGroupName);
       },
 
       /**

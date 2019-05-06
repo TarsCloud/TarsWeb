@@ -58,6 +58,10 @@
       </let-form-group>
       <div>
         <let-button size="small" theme="primary" @click="submitServerConfig">{{$t('common.submit')}}</let-button>
+        <div class="alignRight">
+          <let-button size="small" theme="primary" @click="addNewGroup">{{$t('serviceExpand.newGroup')}}</let-button>
+          <let-button size="small" theme="danger" @click="deleteGroup" :disabled="this.servers.length === 2">{{$t('serviceExpand.removeGroup')}}</let-button>
+        </div>
       </div>
     </let-form>
   </section>
@@ -99,11 +103,13 @@
       }
     },
     created () {
-    	this.getServers();
+      this.getServers();
     }
   }
 </script>
 
 <style>
-
+  .alignRight {
+    float: right;
+  }
 </style>
