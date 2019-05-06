@@ -8,18 +8,18 @@
       <let-table-column :title="$t('dcache.operationManage.slaveServer')" prop="slaveServer"></let-table-column> -->
       <let-table-column :title="$t('dcache.operationManage.switchTime')" prop="switchTime"></let-table-column>
       <let-table-column :title="$t('dcache.operationManage.modifyTime')" prop="modifyTime"></let-table-column>
-      <let-table-column :title="$t('dcache.operationManage.dbFlag')" prop="dbFlag"></let-table-column>
-      <let-table-column :title="$t('dcache.operationManage.allowedOut')" prop="enableErase"></let-table-column>
-      <let-table-column :title="$t('dcache.operationManage.switchType')" prop="switchType">
+      <!-- <let-table-column :title="$t('dcache.operationManage.dbFlag')" prop="dbFlag"></let-table-column> -->
+      <!-- <let-table-column :title="$t('dcache.operationManage.allowedOut')" prop="enableErase"></let-table-column> -->
+      <!-- <let-table-column :title="$t('dcache.operationManage.switchType')" prop="switchType">
         <template slot-scope="{row: {switchType}}">
           <span :style="{color: color[switchType]}">{{$t(`dcache.${switchTypeText[switchType]}`)}}</span>
         </template>
-      </let-table-column>
-      <let-table-column :title="$t('dcache.operationManage.switchResult')" prop="switchResult">
+      </let-table-column> -->
+      <!-- <let-table-column :title="$t('dcache.operationManage.switchResult')" prop="switchResult">
         <template slot-scope="{row: {switchResult}}">
           <span :style="{color: color[switchResult]}">{{$t(`dcache.${switchResultText[switchResult]}`)}}</span>
         </template>
-      </let-table-column>
+      </let-table-column> -->
       <let-table-column :title="$t('dcache.operationManage.groupStatus')" prop="groupStatus">
         <template slot-scope="{row: {groupStatus}}">
           <span :style="{color: color[groupStatus]}">{{$t(`dcache.${groupStatusText[groupStatus]}`)}}</span>

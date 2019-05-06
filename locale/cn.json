@@ -250,7 +250,7 @@
       "expand": "扩容管理",
       "shrinkage": "缩容管理",
       "migration": "迁移管理",
-      "mainBackup": "主备切换管理",
+      "mainBackup": "切换管理",
       "appName": "应用名",
       "moduleName": "模块名",
       "srcGroupName": "迁移源组",

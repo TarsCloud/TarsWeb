@@ -226,7 +226,7 @@
       "expand": "expand manage",
       "shrinkage": "shrinkage manage",
       "migration": "migration manage",
-      "mainBackup": "main/backup manage",
+      "mainBackup": "switch manage",
       "appName": "application name",
       "moduleName": "module name",
       "srcGroupName": "srcGroupName",
