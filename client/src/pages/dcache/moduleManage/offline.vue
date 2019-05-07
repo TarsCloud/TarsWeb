@@ -96,7 +96,7 @@
       },
       async sureOffline() {
         const { offlineServers } = this;
-        const serverNames = offlineServers.map(server => server.server_name);
+        const serverNames = offlineServers.map(server => `DCache.${server.server_name}`);
         const appName = offlineServers[0].app_name;
         const moduleName = offlineServers[0].module_name;
         const option = {appName, moduleName, serverNames };
