@@ -31,6 +31,7 @@
         show: false,
         offlineServers: [],
         tip: '',
+        unType: 0
       }
     },
     computed: {
@@ -67,6 +68,7 @@
     methods: {
       init() {
         this.offlineServers = [];
+        this.unType = 0;
         const { activeServers, $t, hostServers, backupServers, allBackupServers, mirrorServers, allMirrorServers, allBackupMirrorServers } = this;
 
 
@@ -77,6 +79,7 @@
           // 选中的服务有主机， 下线该模块所有的服务
           this.tip = 'dcache.hostOfflineAllServers';
           this.offlineServers = this.serverList;
+          this.unType = 2;
         } else {
           if (backupServers.length) {
             // 选中的服务有备机， 下线该模块所有的备机服务
@@ -95,11 +98,11 @@
         this.show = true;
       },
       async sureOffline() {
-        const { offlineServers } = this;
+        const { offlineServers, unType } = this;
         const serverNames = offlineServers.map(server => `DCache.${server.server_name}`);
         const appName = offlineServers[0].app_name;
         const moduleName = offlineServers[0].module_name;
-        const option = {appName, moduleName, serverNames };
+        const option = { unType, appName, moduleName, serverNames };
         let loading = this.$Loading({
           text: 'loading...'
         });
