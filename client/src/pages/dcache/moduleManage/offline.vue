@@ -107,7 +107,8 @@
         try {
           const data = await uninstall4DCache(option);
           this.$tip.success('下线成功!');
-          this.$emit('success-fn')
+          this.show = false;
+          this.$emit('success-fn');
         } catch(err) {
           this.$tip.error(err.message)
         } finally {
