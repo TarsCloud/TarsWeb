@@ -225,11 +225,11 @@ export function recoverMirrorStatus({ appName, moduleName, groupName, mirrorIdc,
  * @param moduleName
  * @param serversNames
  */
-export function uninstall4DCache({ appName, moduleName, serverNames }) {
+export function uninstall4DCache({ unType, appName, moduleName, serverNames }) {
   return Axios({
     method: 'post',
     url: '/cache/uninstall4DCache',
-    data: { appName, moduleName, serverNames }
+    data: { unType, appName, moduleName, serverNames }
   })
 }
 
