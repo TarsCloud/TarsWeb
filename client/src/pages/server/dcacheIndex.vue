@@ -139,7 +139,7 @@
           this.$set(nodeInfo, 'expand', !nodeInfo.expand);
           if (nodeInfo.moduleName) {
               // 展示 dcache 模块下的所有服务
-            this.$router.push(`/server/6${nodeInfo.moduleName}/cache`)
+            this.$router.push(`/server/1${nodeInfo.pid.substr(1)}.6${nodeInfo.moduleName}/cache`)
           }
         } else {
           // 正常的服务展示, tars 的就是正常的，  只有dcache、router、proxy才有serverType
@@ -202,6 +202,7 @@
         };
 
         treeArr.forEach((item) => {
+          console.log('item', item);
           const level = +item.substr(0, 1);
           const name = item.substr(1);
           switch (level) {
@@ -284,7 +285,6 @@
     padding-bottom: var(--gap-big);
     padding-top: var(--gap-big);
     display: flex;
-
     /*目录树*/
     .left-tree {
       flex: 0 0 auto;

@@ -56,43 +56,43 @@ DCache.DCacheOptProxy.prototype.getVersion = function () {
     return this._worker.version;
 };
 
-(function(DCacheType) {
-    DCacheType[DCacheType["KVCACHE"] = 1] = "KVCACHE";
-    DCacheType[DCacheType["MKVCACHE"] = 2] = "MKVCACHE";
-}(DCache.DCacheType = {}));
+DCache.DCacheType = {
+    "KVCACHE" : 1,
+    "MKVCACHE" : 2
+};
 DCache.DCacheType._classname = "DCache.DCacheType";
 DCache.DCacheType._write = function(os, tag, val) { return os.writeInt32(tag, val); };
 DCache.DCacheType._read  = function(is, tag, def) { return is.readInt32(tag, true, def); };
 
-(function(TransferType) {
-    TransferType[TransferType["UNSPECIFIED_TYPE"] = -1] = "UNSPECIFIED_TYPE";
-    TransferType[TransferType["TRANSFER_TYPE"] = 0] = "TRANSFER_TYPE";
-    TransferType[TransferType["EXPAND_TYPE"] = 1] = "EXPAND_TYPE";
-    TransferType[TransferType["REDUCE_TYPE"] = 2] = "REDUCE_TYPE";
-    TransferType[TransferType["DEFRAG_TYPE"] = 3] = "DEFRAG_TYPE";
-}(DCache.TransferType = {}));
+DCache.TransferType = {
+    "UNSPECIFIED_TYPE" : -1,
+    "TRANSFER_TYPE" : 0,
+    "EXPAND_TYPE" : 1,
+    "REDUCE_TYPE" : 2,
+    "DEFRAG_TYPE" : 3
+};
 DCache.TransferType._classname = "DCache.TransferType";
 DCache.TransferType._write = function(os, tag, val) { return os.writeInt32(tag, val); };
 DCache.TransferType._read  = function(is, tag, def) { return is.readInt32(tag, true, def); };
 
-(function(TransferStatus) {
-    TransferStatus[TransferStatus["NEW_TASK"] = 0] = "NEW_TASK";
-    TransferStatus[TransferStatus["CONFIG_SERVER"] = 1] = "CONFIG_SERVER";
-    TransferStatus[TransferStatus["RELEASE_SERVER"] = 2] = "RELEASE_SERVER";
-    TransferStatus[TransferStatus["TRANSFERRING"] = 3] = "TRANSFERRING";
-    TransferStatus[TransferStatus["TRANSFER_FINISH"] = 4] = "TRANSFER_FINISH";
-    TransferStatus[TransferStatus["TRANSFER_STOP"] = 5] = "TRANSFER_STOP";
-}(DCache.TransferStatus = {}));
+DCache.TransferStatus = {
+    "NEW_TASK" : 0,
+    "CONFIG_SERVER" : 1,
+    "RELEASE_SERVER" : 2,
+    "TRANSFERRING" : 3,
+    "TRANSFER_FINISH" : 4,
+    "TRANSFER_STOP" : 5
+};
 DCache.TransferStatus._classname = "DCache.TransferStatus";
 DCache.TransferStatus._write = function(os, tag, val) { return os.writeInt32(tag, val); };
 DCache.TransferStatus._read  = function(is, tag, def) { return is.readInt32(tag, true, def); };
 
-(function(UninstallType) {
-    UninstallType[UninstallType["SERVER"] = 0] = "SERVER";
-    UninstallType[UninstallType["GROUP"] = 1] = "GROUP";
-    UninstallType[UninstallType["MODULE"] = 2] = "MODULE";
-    UninstallType[UninstallType["QUOTA_SERVER"] = 3] = "QUOTA_SERVER";
-}(DCache.UninstallType = {}));
+DCache.UninstallType = {
+    "SERVER" : 0,
+    "GROUP" : 1,
+    "MODULE" : 2,
+    "QUOTA_SERVER" : 3
+};
 DCache.UninstallType._classname = "DCache.UninstallType";
 DCache.UninstallType._write = function(os, tag, val) { return os.writeInt32(tag, val); };
 DCache.UninstallType._read  = function(is, tag, def) { return is.readInt32(tag, true, def); };
@@ -1175,6 +1175,61 @@ DCache.ReleaseInfo.new = function () {
 };
 DCache.ReleaseInfo.create = function (is) {
     return DCache.ReleaseInfo._readFrom(is);
+};
+
+DCache.CacheServerInfo = function() {
+    this.serverName = "";
+    this.serverIp = "";
+    this.serverType = "";
+    this._classname = "DCache.CacheServerInfo";
+};
+DCache.CacheServerInfo._classname = "DCache.CacheServerInfo";
+DCache.CacheServerInfo._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.CacheServerInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.CacheServerInfo._readFrom = function (is) {
+    var tmp = new DCache.CacheServerInfo;
+    tmp.serverName = is.readString(0, true, "");
+    tmp.serverIp = is.readString(1, true, "");
+    tmp.serverType = is.readString(2, true, "");
+    return tmp;
+};
+DCache.CacheServerInfo.prototype._writeTo = function (os) {
+    os.writeString(0, this.serverName);
+    os.writeString(1, this.serverIp);
+    os.writeString(2, this.serverType);
+};
+DCache.CacheServerInfo.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.CacheServerInfo.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.CacheServerInfo.prototype.toObject = function() { 
+    return {
+        "serverName" : this.serverName,
+        "serverIp" : this.serverIp,
+        "serverType" : this.serverType
+    };
+};
+DCache.CacheServerInfo.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "serverName") && (this.serverName = json.serverName);
+    _hasOwnProperty.call(json, "serverIp") && (this.serverIp = json.serverIp);
+    _hasOwnProperty.call(json, "serverType") && (this.serverType = json.serverType);
+    return this;
+};
+DCache.CacheServerInfo.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.CacheServerInfo.new = function () {
+    return new DCache.CacheServerInfo();
+};
+DCache.CacheServerInfo.create = function (is) {
+    return DCache.CacheServerInfo._readFrom(is);
 };
 
 DCache.InstallAppReq = function() {
@@ -3352,6 +3407,106 @@ DCache.RecoverMirrorRsp.create = function (is) {
     return DCache.RecoverMirrorRsp._readFrom(is);
 };
 
+DCache.CacheServerListReq = function() {
+    this.appName = "";
+    this.moduleName = "";
+    this._classname = "DCache.CacheServerListReq";
+};
+DCache.CacheServerListReq._classname = "DCache.CacheServerListReq";
+DCache.CacheServerListReq._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.CacheServerListReq._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.CacheServerListReq._readFrom = function (is) {
+    var tmp = new DCache.CacheServerListReq;
+    tmp.appName = is.readString(0, true, "");
+    tmp.moduleName = is.readString(1, true, "");
+    return tmp;
+};
+DCache.CacheServerListReq.prototype._writeTo = function (os) {
+    os.writeString(0, this.appName);
+    os.writeString(1, this.moduleName);
+};
+DCache.CacheServerListReq.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.CacheServerListReq.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.CacheServerListReq.prototype.toObject = function() { 
+    return {
+        "appName" : this.appName,
+        "moduleName" : this.moduleName
+    };
+};
+DCache.CacheServerListReq.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "appName") && (this.appName = json.appName);
+    _hasOwnProperty.call(json, "moduleName") && (this.moduleName = json.moduleName);
+    return this;
+};
+DCache.CacheServerListReq.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.CacheServerListReq.new = function () {
+    return new DCache.CacheServerListReq();
+};
+DCache.CacheServerListReq.create = function (is) {
+    return DCache.CacheServerListReq._readFrom(is);
+};
+
+DCache.CacheServerListRsp = function() {
+    this.errMsg = "";
+    this.cacheServerList = new TarsStream.List(DCache.CacheServerInfo);
+    this._classname = "DCache.CacheServerListRsp";
+};
+DCache.CacheServerListRsp._classname = "DCache.CacheServerListRsp";
+DCache.CacheServerListRsp._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.CacheServerListRsp._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.CacheServerListRsp._readFrom = function (is) {
+    var tmp = new DCache.CacheServerListRsp;
+    tmp.errMsg = is.readString(0, true, "");
+    tmp.cacheServerList = is.readList(1, true, TarsStream.List(DCache.CacheServerInfo));
+    return tmp;
+};
+DCache.CacheServerListRsp.prototype._writeTo = function (os) {
+    os.writeString(0, this.errMsg);
+    os.writeList(1, this.cacheServerList);
+};
+DCache.CacheServerListRsp.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.CacheServerListRsp.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.CacheServerListRsp.prototype.toObject = function() { 
+    return {
+        "errMsg" : this.errMsg,
+        "cacheServerList" : this.cacheServerList.toObject()
+    };
+};
+DCache.CacheServerListRsp.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "errMsg") && (this.errMsg = json.errMsg);
+    _hasOwnProperty.call(json, "cacheServerList") && (this.cacheServerList.readFromObject(json.cacheServerList));
+    return this;
+};
+DCache.CacheServerListRsp.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.CacheServerListRsp.new = function () {
+    return new DCache.CacheServerListRsp();
+};
+DCache.CacheServerListRsp.create = function (is) {
+    return DCache.CacheServerListRsp._readFrom(is);
+};
+
 DCache.CacheConfigReq = function() {
     this.id = "";
     this.remark = "";
@@ -4249,6 +4404,83 @@ DCache.DCacheOptProxy.prototype.getCacheConfigItemList = function (configReq) {
     }
 };
 DCache.DCacheOptProxy.getCacheConfigItemList = __DCache_DCacheOpt$getCacheConfigItemList$IF;
+
+var __DCache_DCacheOpt$getCacheServerList$IF = {
+    "name" : "getCacheServerList",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "req",
+        "class" : "DCache.CacheServerListReq",
+        "direction" : "in"
+    }, {
+        "name" : "rsp",
+        "class" : "DCache.CacheServerListRsp",
+        "direction" : "out"
+    }]
+};
+
+var __DCache_DCacheOpt$getCacheServerList$IE = function (req) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeStruct(1, req);
+    return os.getBinBuffer();
+};
+
+var __DCache_DCacheOpt$getCacheServerList$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "rsp" : is.readStruct(2, true, DCache.CacheServerListRsp)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$getCacheServerList$PE = function (req, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeStruct("req", req);
+    return tup;
+};
+
+var __DCache_DCacheOpt$getCacheServerList$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "rsp" : tup.readStruct("rsp", DCache.CacheServerListRsp)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$getCacheServerList$ER = function (data) {
+    throw _makeError(data, "Call DCacheOpt::getCacheServerList failed");
+};
+
+DCache.DCacheOptProxy.prototype.getCacheServerList = function (req) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("getCacheServerList", __DCache_DCacheOpt$getCacheServerList$PE(req, version), arguments[arguments.length - 1], __DCache_DCacheOpt$getCacheServerList$IF).then(__DCache_DCacheOpt$getCacheServerList$PD, __DCache_DCacheOpt$getCacheServerList$ER);
+    } else {
+        return this._worker.tars_invoke("getCacheServerList", __DCache_DCacheOpt$getCacheServerList$IE(req), arguments[arguments.length - 1], __DCache_DCacheOpt$getCacheServerList$IF).then(__DCache_DCacheOpt$getCacheServerList$ID, __DCache_DCacheOpt$getCacheServerList$ER);
+    }
+};
+DCache.DCacheOptProxy.getCacheServerList = __DCache_DCacheOpt$getCacheServerList$IF;
 
 var __DCache_DCacheOpt$getModuleStruct$IF = {
     "name" : "getModuleStruct",
@@ -5741,7 +5973,6 @@ var __DCache_DCacheOpt$uninstall4DCache$IF = {
 
 var __DCache_DCacheOpt$uninstall4DCache$IE = function (uninstallInfo) {
     var os = new TarsStream.TarsOutputStream();
-    console.log('uninstallInfouninstallInfouninstallInfo', uninstallInfo);
     os.writeStruct(1, uninstallInfo);
     return os.getBinBuffer();
 };

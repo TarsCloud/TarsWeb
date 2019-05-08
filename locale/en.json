@@ -248,6 +248,7 @@
       "hasShrinkage": "Volume reduction has been initiated. Please go to operation management to check the progress of volume reduction",
       "hasExpand": "Expansion has been initiated. Please go to operation management to check the expansion progress",
       "hasServerMigration": "Deployment migration has been initiated, please go to operation management to see the progress of deployment migration",
+      "hasnonServerMigration": "A non-deployed migration has been initiated. Go to action management to see the progress of the deployment migration",
       "onceSwitch": "Only one set of switches is allowed at a time",
       "ensureSwitch": "Are you sure to switch？",
       "switchSuccess": "switch success",

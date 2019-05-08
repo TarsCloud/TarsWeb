@@ -272,6 +272,7 @@
       "hasShrinkage": "已经发起缩容，请到操作管理查看缩容进度",
       "hasExpand": "已经发起扩容，请到操作管理查看扩容进度",
       "hasServerMigration": "已经发起部署迁移，请到操作管理查看部署迁移进度",
+      "hasnonServerMigration": "已经发起非部署迁移，请到操作管理查看部署迁移进度",
       "onceSwitch": "一次只允许一组切换",
       "ensureSwitch": "确定切换吗？",
       "switchSuccess": "切换成功",

@@ -419,7 +419,7 @@
   import ServerMigration from './serverMigration.vue'
   import nonServerMigration from './nonServerMigration.vue'
   import offline from './offline.vue'
-  import {hasOperation, reduceDcache, switchServer} from '@/dcache/interface.js'
+  import { hasOperation, reduceDcache, switchServer, getCacheServerList } from '@/dcache/interface.js'
 
   export default {
     components: { Expand, ServerMigration, nonServerMigration, offline },
@@ -657,7 +657,7 @@
         console.log(arguments);
       },
       // 获取服务列表
-      getServerList() {
+      async getServerList() {
         const loading = this.$refs.serverListLoading.$loading.show();
 
         this.$ajax.getJSON('/server/api/get_cache_server_list', {
@@ -672,6 +672,19 @@
             this.getServerList();
           });
         });
+        // 从 opt 获取服务列表
+        // const loading = this.$refs.serverListLoading.$loading.show();
+        // try {
+        //   const { application, module_name } = this.serverData;
+        //   const data = await getCacheServerList({ appName: application, moduleName: module_name });
+        //   data.forEach(item => item.ischecked = false);
+        //   this.serverList = data;
+        // } catch (err) {
+        //   console.error(err);
+        //   this.$tip.error(err.message)
+        // } finally {
+        //   loading.hide();
+        // }
       },
       // 获取服务实时状态
       getServerNotifyList(curr_page) {
@@ -1093,7 +1106,7 @@
     mounted() {
       this.getServerList();
       this.getServerNotifyList(1);
-    },
+    }
   };
 </script>
 

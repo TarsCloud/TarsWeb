@@ -201,6 +201,13 @@ struct ReleaseInfo
     9 optional string ostype;
 };
 
+struct CacheServerInfo
+{
+    0 require string serverName;
+    1 require string serverIp;
+    2 require string serverType; // M-主机, S-备机, I-镜像
+};
+
 /*
 * 接口请求和回应结构体
 */
@@ -513,6 +520,18 @@ struct RecoverMirrorRsp
     0 require string errMsg;
 };
 
+struct CacheServerListReq
+{
+    0 require string appName;
+    1 require string moduleName;
+};
+
+struct CacheServerListRsp
+{
+    0 require string errMsg;
+    1 require vector<CacheServerInfo> cacheServerList;
+};
+
 
 /*
 * 配置中心
@@ -657,6 +676,12 @@ interface DCacheOpt
     * 发生镜像切换后，恢复镜像状态时使用
     */
     int recoverMirrorStatus(RecoverMirrorReq req, out RecoverMirrorRsp rsp);
+
+
+    /*
+    * 获取服务列表
+    */
+    int getCacheServerList(CacheServerListReq req, out CacheServerListRsp rsp);
 
     /*
     * 配置中心操作接口

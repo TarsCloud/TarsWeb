@@ -34,6 +34,14 @@ export function transferDCache({ servers, appName, moduleName,  status = '1', ca
   })
 }
 
+/**
+ * 非部署迁移
+ * @param appName
+ * @param moduleName
+ * @param srcGroupName
+ * @param dstGroupName
+ * @param transferData
+ */
 export function transferDCacheGroup({ appName, moduleName, srcGroupName, dstGroupName, transferData }) {
   return Axios({
     method: 'post',
@@ -222,6 +230,19 @@ export function uninstall4DCache({ appName, moduleName, serverNames }) {
     method: 'post',
     url: '/cache/uninstall4DCache',
     data: { appName, moduleName, serverNames }
+  })
+}
+
+/**
+ * 获取 cache 服务
+ * @param appName
+ * @param moduleName
+ */
+export function getCacheServerList({ appName, moduleName }) {
+  return Axios({
+    method: 'get',
+    url: '/cache/getCacheServerList',
+    params: { appName, moduleName }
   })
 }
 

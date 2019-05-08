@@ -18,7 +18,7 @@
         <let-form-item required :label="$t('dcache.operationManage.srcGroupName') + '：'">
           {{srcGroupName}}
         </let-form-item>
-        <let-form-item itemWidth="100%" required :label="$t('dcache.operationManage.srcGroupName') + '：'">
+        <let-form-item itemWidth="100%" required :label="$t('dcache.operationManage.dstGroupName') + '：'">
           <let-select required v-model="groupName" size="small" >
             <let-option v-for="groupName in dstGroupNames" :value="groupName">{{groupName}}</let-option>
           </let-select>
@@ -90,8 +90,9 @@
 
             // 扩容取到发布 id
             // let {releaseId} = await expandModule({servers, appName, moduleName, cache_version, srcGroupName: [], dstGroupName: [dstGroupName]});
+            const data = await transferDCacheGroup({ appName, moduleName, srcGroupName, dstGroupName: groupName, transferData });
 
-            this.$tip.success(this.$t('dcache.operationManage.hasExpand'));
+            this.$tip.success(this.$t('dcache.operationManage.hasnonServerMigration'));
 
           } catch (err) {
             console.error(err);
