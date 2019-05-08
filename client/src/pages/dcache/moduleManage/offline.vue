@@ -96,7 +96,7 @@
       },
       async sureOffline() {
         const { offlineServers } = this;
-        const serverNames = offlineServers.map(server => server.server_name);
+        const serverNames = offlineServers.map(server => `DCache.${server.server_name}`);
         const appName = offlineServers[0].app_name;
         const moduleName = offlineServers[0].module_name;
         const option = {appName, moduleName, serverNames };
@@ -107,7 +107,8 @@
         try {
           const data = await uninstall4DCache(option);
           this.$tip.success('下线成功!');
-          this.$emit('success-fn')
+          this.show = false;
+          this.$emit('success-fn');
         } catch(err) {
           this.$tip.error(err.message)
         } finally {

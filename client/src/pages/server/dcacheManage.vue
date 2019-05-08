@@ -1025,8 +1025,11 @@ export default {
                 expand_preview_servers: previewServers,
               };
               this.$ajax.postJSON('/server/api/expand_server', params).then((data) => {
-                this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
                 loading.hide();
+                this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
+                this.closeExpandModal();
+                this.getServerList();
+                this.getServerNotifyList(1);
               }).catch((err) => {
                 loading.hide();
                 this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
