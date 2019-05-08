@@ -139,7 +139,8 @@
           this.$set(nodeInfo, 'expand', !nodeInfo.expand);
           if (nodeInfo.moduleName) {
               // 展示 dcache 模块下的所有服务
-            this.$router.push(`/server/1${nodeInfo.pid.substr(1)}.6${nodeInfo.moduleName}/cache`)
+            // this.$router.push(`/server/1${nodeInfo.pid.substr(1)}.6${nodeInfo.moduleName}/cache`)
+            this.$router.push(`/server/6${nodeInfo.moduleName}/cache`)
           }
         } else {
           // 正常的服务展示, tars 的就是正常的，  只有dcache、router、proxy才有serverType

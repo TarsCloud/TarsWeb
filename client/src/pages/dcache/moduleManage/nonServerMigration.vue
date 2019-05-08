@@ -8,7 +8,7 @@
       :width="'1000px'"
       :title="$t('dcache.nonServerMigration')"
     >
-      <let-form ref="detailForm" labelPosition="right" class="non-server-migration" >
+      <let-form ref="detailForm" labelPosition="right" class="non-server-migration" v-if="show" >
         <let-form-item required :label="$t('dcache.operationManage.appName') + '：'">
           {{appName}}
         </let-form-item>
@@ -62,6 +62,7 @@
     },
     methods: {
       init() {
+        this.groupName = '';
         /**
          * 只有一个服务组，不允许非部署迁移
          */
