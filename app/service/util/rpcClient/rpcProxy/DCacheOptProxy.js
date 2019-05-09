@@ -1181,6 +1181,9 @@ DCache.CacheServerInfo = function() {
     this.serverName = "";
     this.serverIp = "";
     this.serverType = "";
+    this.groupName = "";
+    this.idcArea = "";
+    this.memSize = "";
     this._classname = "DCache.CacheServerInfo";
 };
 DCache.CacheServerInfo._classname = "DCache.CacheServerInfo";
@@ -1191,12 +1194,18 @@ DCache.CacheServerInfo._readFrom = function (is) {
     tmp.serverName = is.readString(0, true, "");
     tmp.serverIp = is.readString(1, true, "");
     tmp.serverType = is.readString(2, true, "");
+    tmp.groupName = is.readString(3, true, "");
+    tmp.idcArea = is.readString(4, true, "");
+    tmp.memSize = is.readString(5, true, "");
     return tmp;
 };
 DCache.CacheServerInfo.prototype._writeTo = function (os) {
     os.writeString(0, this.serverName);
     os.writeString(1, this.serverIp);
     os.writeString(2, this.serverType);
+    os.writeString(3, this.groupName);
+    os.writeString(4, this.idcArea);
+    os.writeString(5, this.memSize);
 };
 DCache.CacheServerInfo.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -1211,13 +1220,19 @@ DCache.CacheServerInfo.prototype.toObject = function() {
     return {
         "serverName" : this.serverName,
         "serverIp" : this.serverIp,
-        "serverType" : this.serverType
+        "serverType" : this.serverType,
+        "groupName" : this.groupName,
+        "idcArea" : this.idcArea,
+        "memSize" : this.memSize
     };
 };
 DCache.CacheServerInfo.prototype.readFromObject = function(json) { 
     _hasOwnProperty.call(json, "serverName") && (this.serverName = json.serverName);
     _hasOwnProperty.call(json, "serverIp") && (this.serverIp = json.serverIp);
     _hasOwnProperty.call(json, "serverType") && (this.serverType = json.serverType);
+    _hasOwnProperty.call(json, "groupName") && (this.groupName = json.groupName);
+    _hasOwnProperty.call(json, "idcArea") && (this.idcArea = json.idcArea);
+    _hasOwnProperty.call(json, "memSize") && (this.memSize = json.memSize);
     return this;
 };
 DCache.CacheServerInfo.prototype.toBinBuffer = function () {
@@ -3460,6 +3475,7 @@ DCache.CacheServerListReq.create = function (is) {
 DCache.CacheServerListRsp = function() {
     this.errMsg = "";
     this.cacheServerList = new TarsStream.List(DCache.CacheServerInfo);
+    this.cacheType = DCache.DCacheType.KVCACHE;
     this._classname = "DCache.CacheServerListRsp";
 };
 DCache.CacheServerListRsp._classname = "DCache.CacheServerListRsp";
@@ -3469,11 +3485,13 @@ DCache.CacheServerListRsp._readFrom = function (is) {
     var tmp = new DCache.CacheServerListRsp;
     tmp.errMsg = is.readString(0, true, "");
     tmp.cacheServerList = is.readList(1, true, TarsStream.List(DCache.CacheServerInfo));
+    tmp.cacheType = is.readInt32(2, true, DCache.DCacheType.KVCACHE);
     return tmp;
 };
 DCache.CacheServerListRsp.prototype._writeTo = function (os) {
     os.writeString(0, this.errMsg);
     os.writeList(1, this.cacheServerList);
+    os.writeInt32(2, this.cacheType);
 };
 DCache.CacheServerListRsp.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -3487,12 +3505,14 @@ DCache.CacheServerListRsp.prototype._genKey = function () {
 DCache.CacheServerListRsp.prototype.toObject = function() { 
     return {
         "errMsg" : this.errMsg,
-        "cacheServerList" : this.cacheServerList.toObject()
+        "cacheServerList" : this.cacheServerList.toObject(),
+        "cacheType" : this.cacheType
     };
 };
 DCache.CacheServerListRsp.prototype.readFromObject = function(json) { 
     _hasOwnProperty.call(json, "errMsg") && (this.errMsg = json.errMsg);
     _hasOwnProperty.call(json, "cacheServerList") && (this.cacheServerList.readFromObject(json.cacheServerList));
+    _hasOwnProperty.call(json, "cacheType") && (this.cacheType = json.cacheType);
     return this;
 };
 DCache.CacheServerListRsp.prototype.toBinBuffer = function () {

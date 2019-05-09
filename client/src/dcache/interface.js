@@ -246,4 +246,11 @@ export function getCacheServerList({ appName, moduleName }) {
   })
 }
 
+export function getModuleConfig({ appName, moduleName }) {
+  return Axios({
+    method: 'get',
+    url: '/cache/getModuleConfig',
+    params: { appName, moduleName }
+  })
+}
 

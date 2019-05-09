@@ -79,7 +79,7 @@ struct CacheHostParam
 {
     0 require string serverName;        //服务名， 如MqqCacheServer
     1 require string serverIp;          //IP地址
-    2 require string templateFile;      //服务用的taf模板文件名
+    2 require string templateFile;      //服务用的tars模板文件名
     3 require string type;              //表明服务是主还是备， M/S
     4 require string bakSrcServerName;  //如果服务是备机，指定备份的源机，否则为空
     5 require string idc;               //服务所在idc
@@ -206,6 +206,9 @@ struct CacheServerInfo
     0 require string serverName;
     1 require string serverIp;
     2 require string serverType; // M-主机, S-备机, I-镜像
+    3 require string groupName;
+    4 require string idcArea;
+    5 require string memSize;
 };
 
 /*
@@ -529,7 +532,9 @@ struct CacheServerListReq
 struct CacheServerListRsp
 {
     0 require string errMsg;
+    //1 require string moduleName;
     1 require vector<CacheServerInfo> cacheServerList;
+    2 require DCacheType cacheType;
 };
 
 

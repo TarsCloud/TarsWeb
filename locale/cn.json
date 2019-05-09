@@ -235,7 +235,7 @@
     "noTheSamePatchVersion": "存在不同版本的服务，不允许操作",
     "hasExpandOperation": "该模块已经有任务在迁移操作了， 不允许再扩容， 请去操作管理停止操作再扩容",
     "hasShrinkageOperation": "该模块已经有任务在迁移操作了， 不允许再缩容， 请去操作管理停止操作再缩容",
-    "hasMigrationOperation": "该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止操作再缩容",
+    "hasMigrationOperation": "该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止操作再迁移",
     "leaveOneServiceGroup": "至少留一个服务组",
     "onlyOneServiceGroup": "只有一个服务组，不允许非部署迁移",
     "oneGroup": "迁移服务， 只能选一个组",

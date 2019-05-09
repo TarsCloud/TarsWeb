@@ -36,7 +36,7 @@
   </section>
 </template>
 <script>
-  import { transferDCacheGroup } from '@/dcache/interface.js'
+  import { transferDCacheGroup, hasOperation } from '@/dcache/interface.js'
   import Mixin from './mixin.js'
   export  default {
     mixins: [Mixin],
@@ -61,28 +61,41 @@
       }
     },
     methods: {
-      init() {
-        this.groupName = '';
-        /**
-         * 只有一个服务组，不允许非部署迁移
-         */
-        let allGroupNames = this.expandServers.map(server => server.group_name);
-        // 去重
-        allGroupNames = Array.from(new Set(allGroupNames));
-        if (allGroupNames.length === 1) return this.$tip.error(this.$t('dcache.onlyOneServiceGroup'));
+      async init() {
+        try {
 
-        /**
-         * 迁移服务， 只能选一个组
-         */
-        const checkServers = this.expandServers.filter(server => server.isChecked);
-        let groupNames = checkServers.map(server => server.group_name);
-        groupNames = Array.from(new Set(groupNames));
-        if (groupNames.length > 1) return this.$tip.error(this.$t('dcache.oneGroup'));
 
-        // 去掉源组的目标组
-        this.dstGroupNames = allGroupNames.filter(groupName => groupName !== groupNames[0]);
+          this.groupName = '';
 
-        this.show = true;
+          /**
+           * 只有一个服务组，不允许非部署迁移
+           */
+          let allGroupNames = this.expandServers.map(server => server.group_name);
+          // 去重
+          allGroupNames = Array.from(new Set(allGroupNames));
+          if (allGroupNames.length === 1) return this.$tip.error(this.$t('dcache.onlyOneServiceGroup'));
+
+          /**
+           * 迁移服务， 只能选一个组
+           */
+          const checkServers = this.expandServers.filter(server => server.isChecked);
+          let groupNames = checkServers.map(server => server.group_name);
+          groupNames = Array.from(new Set(groupNames));
+          if (groupNames.length > 1) return this.$tip.error(this.$t('dcache.oneGroup'));
+
+          // 去掉源组的目标组
+          this.dstGroupNames = allGroupNames.filter(groupName => groupName !== groupNames[0]);
+
+          // 该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止再迁移
+          const {appName, moduleName } = this;
+          let hasOperationRecord = await hasOperation({ appName, moduleName });
+          if (hasOperationRecord) throw new Error(this.$t('dcache.hasMigrationOperation'));
+
+          this.show = true;
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(err.message)
+        }
       },
       async submitServerConfig() {
         if (this.$refs.detailForm.validate()) {
