@@ -41,7 +41,8 @@ InfTestController.interfaceDebug = async (ctx) => {
 		}
 	} catch (e) {
 		logger.error('[interfaceDebug]:', e, ctx);
-		ctx.makeErrResObj();
+		console.error(err);
+		ctx.makeResObj(500, err.message);
 	}
 }
 
