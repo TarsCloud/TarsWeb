@@ -43,25 +43,25 @@
       },
       // 选中的主机服务
       hostServers() {
-        return this.checkedServers.filter(item => item.server_type === 0);
+        return this.checkedServers.filter(item => item.server_type === 'M');
       },
       // 选中的备机服务
       backupServers() {
-        return this.checkedServers.filter(item => item.server_type === 1);
+        return this.checkedServers.filter(item => item.server_type === 'S');
       },
       allBackupServers() {
-        return this.serverList.filter(item => item.server_type === 1);
+        return this.serverList.filter(item => item.server_type === 'S');
       },
       // 选中的镜像服务
       mirrorServers() {
-        return this.checkedServers.filter(item => item.server_type === 2);
+        return this.checkedServers.filter(item => item.server_type === 'I');
       },
       allMirrorServers() {
-        return this.serverList.filter(item => item.server_type === 2);
+        return this.serverList.filter(item => item.server_type === 'I');
       },
       // 所有备机和镜像
       allBackupMirrorServers() {
-        return this.serverList.filter(item => item.server_type !== 0);
+        return this.serverList.filter(item => item.server_type !== 'M');
       }
 
     },
@@ -70,7 +70,7 @@
         this.offlineServers = [];
         this.unType = 0;
         const { activeServers, $t, hostServers, backupServers, allBackupServers, mirrorServers, allMirrorServers, allBackupMirrorServers } = this;
-
+        console.log('abc');
 
         // 选中的服务中，有存活的服务，请先停止， 再下线
         if (activeServers.length) return this.$tip.error($t('dcache.cantOffline'));

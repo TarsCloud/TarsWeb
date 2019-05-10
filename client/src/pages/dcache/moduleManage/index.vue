@@ -658,26 +658,12 @@
       },
       // 获取服务列表
       async getServerList() {
-        // const loading = this.$refs.serverListLoading.$loading.show();
-        //
-        // this.$ajax.getJSON('/server/api/get_cache_server_list', {
-        //   tree_node_id: this.$route.params.treeid.substr(1),
-        // }).then((data) => {
-        //   loading.hide();
-        //   data.forEach(item => item.isChecked = false);
-        //   this.serverList = data;
-        // }).catch((err) => {
-        //   loading.hide();
-        //   this.$confirm(err.err_msg || err.message || this.$t('serverList.msg.fail'), this.$t('common.alert')).then(() => {
-        //     this.getServerList();
-        //   });
-        // });
         // 从 opt 获取服务列表
         const loading = this.$refs.serverListLoading.$loading.show();
         try {
           const { application, module_name } = this.serverData;
           const data = await getCacheServerList({ appName: application, moduleName: module_name });
-          data.forEach(item => item.ischecked = false);
+          data.forEach(item => item.isChecked = false);
           this.serverList = data;
         } catch (err) {
           console.error(err);
