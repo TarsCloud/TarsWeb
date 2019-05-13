@@ -246,6 +246,11 @@ export function getCacheServerList({ appName, moduleName }) {
   })
 }
 
+/**
+ * 获取模块配置
+ * @param appName
+ * @param moduleName
+ */
 export function getModuleConfig({ appName, moduleName }) {
   return Axios({
     method: 'get',
@@ -254,3 +259,12 @@ export function getModuleConfig({ appName, moduleName }) {
   })
 }
 
+/**
+ *
+ */
+export function getConfig() {
+  return Axios({
+    method: 'get',
+    url: '/cache/getConfig',
+  })
+}

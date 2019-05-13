@@ -30,7 +30,13 @@
             nodeName: this.nodeName,
           };
           let configItemList = await this.$ajax.getJSON('/server/api/cache/getServerConfig', option);
-          this.configList = configItemList;
+          this.configList = configItemList.filter(item => {
+            var items = configItemList.filter(subItem =>{
+              return subItem.path === item.path && subItem.item === item.item
+            });
+            var lastItem = items[items.length -1];
+            return item === lastItem
+          })
         } catch (err) {
           console.error(err)
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

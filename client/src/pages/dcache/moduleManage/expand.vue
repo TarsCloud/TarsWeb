@@ -85,7 +85,7 @@
           try {
 
           	// 扩容取到发布 id
-            let {releaseId} = await expandModule({servers, appName, moduleName, cache_version, srcGroupName: [], dstGroupName: [dstGroupName]});
+            let {releaseId} = await expandModule({ servers, appName, moduleName, cache_version, srcGroupName: [] });
 
             this.$tip.success(this.$t('dcache.operationManage.hasExpand'));
             this.$emit('close');

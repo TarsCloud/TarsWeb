@@ -22,14 +22,20 @@
 </template>
 
 <script>
+  import { getConfig, getModuleConfig } from '@/dcache/interface.js'
   export default {
-      props: {
-          serverName: {type: String, required: false},
-          nodeName: {type: String, required: false},
-          appName: {type: String, required: false},
-          moduleName: {type: String, required: false},
-      },
-    data () {
+    props: {
+      serverName: { type: String, required: false },
+      nodeName: { type: String, required: false },
+      appName: { type: String, required: false },
+      moduleName: { type: String, required: false },
+    },
+    computed: {
+      isModule() {
+        return !!(this.appName && this.moduleName);
+      }
+    },
+    data() {
       return {
         itemId: '',
         list: [],
@@ -37,7 +43,7 @@
       }
     },
     methods: {
-      async submit () {
+      async submit() {
         if (this.$refs.addConfigForm.validate()) {
           try {
             let option = {
@@ -50,7 +56,10 @@
             };
             await this.$ajax.postJSON('/server/api/cache/addServerConfigItem', option);
             this.$tip.success(`${this.$t('cache.config.addSuccess')}`);
-            this.configValue = null;
+            this.configValue = '';
+            this.itemId = '';
+
+            this.getConfig();
             // 添加模块配置的时候，回调获取新的模块配置列表
             if (this.moduleName) this.$emit('call-back');
           } catch (err) {
@@ -59,9 +68,19 @@
           }
         }
       },
-      async getConfig () {
+      async getConfig() {
         try {
-          let configItemList = await this.$ajax.getJSON('/server/api/cache/getConfig');
+          let configItemList = await getConfig();
+          // 配置中心”，“添加模块配置“，模块配置不能重复。 单个服务添加配置， 可以添加重复值， 不过在查看的时候，只能看最后一个。
+          const { isModule, appName, moduleName } = this;
+          if (isModule) {
+            const moduleConfig = await getModuleConfig({ appName, moduleName });
+            // 选出module 没有的配置，让用户添加
+            configItemList = configItemList.filter(configItem => {
+              const len = moduleConfig.filter(item => `${item.path}__${item.item}` === `${configItem.path}__${configItem.item}`).length;
+              return !len
+            })
+          }
           this.list = configItemList;
         } catch (err) {
           console.error(err)
@@ -70,7 +89,8 @@
       }
     },
     created() {
-      this.getConfig()
+      this.getConfig();
+      window.config = this;
     }
   }
 </script>

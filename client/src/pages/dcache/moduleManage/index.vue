@@ -396,7 +396,7 @@
       :width="'1000px'"
       :title="$t('dcache.expand')"
     >
-      <Expand @close="expandShow = false" v-if="expandShow" :expand-servers="lastGroupServers"></Expand>
+      <Expand @close="expandCloseHandler" v-if="expandShow" :expand-servers="lastGroupServers"></Expand>
     </let-modal>
 
     <!-- 部署迁移 -->
@@ -407,7 +407,7 @@
       :width="'1000px'"
       :title="$t('dcache.serverMigration')"
     >
-      <server-migration @close="serverMigrationShow = false" v-if="serverMigrationShow"
+      <server-migration @close="serverMigrationCloseHandler" v-if="serverMigrationShow"
                         :expand-servers="lastGroupServers"></server-migration>
     </let-modal>
 
@@ -526,6 +526,15 @@
       },
     },
     methods: {
+      expandCloseHandler () {
+        this.expandShow = false;
+        this.getServerList();
+      },
+      serverMigrationCloseHandler () {
+        this.serverMigrationShow = false;
+        this.getServerList();
+      },
+
       /**
        *  扩容
        */

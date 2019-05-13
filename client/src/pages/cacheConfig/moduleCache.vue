@@ -78,7 +78,7 @@
       <template slot="operations">
         <let-button theme="success" :disabled="!hasCheckedItem" @click="saveConfigBatch">{{$t('cache.config.batchUpdate')}}</let-button>
         <let-button theme="danger" :disabled="!hasCheckedItem" @click="deleteServerConfigItemBatch">{{$t('cache.config.batchDelete')}}</let-button>
-        <let-button theme="primary" @click="addServerConfig({moduleName})">{{$t('cache.config.addModuleConfig')}}</let-button>
+        <let-button theme="primary" @click="addServerConfig({appName, moduleName})">{{$t('cache.config.addModuleConfig')}}</let-button>
       </template>
 
     </let-table>
@@ -180,9 +180,7 @@
         try {
           const { appName, moduleName } = this;
           let configItemList = await getModuleConfig({ appName, moduleName });
-          // let configItemList = await this.$ajax.getJSON('/server/api/cache/getModuleConfig', {moduleName: this.moduleName});
           // 添加被修改的空值           // 默认全部不选中
-
           configItemList.forEach(item => {
             item.modify_value = "";
             item.isChecked = false;
@@ -289,12 +287,12 @@
           serverName: row.server_name,
           nodeName: row.node_name,
           moduleName: row.moduleName,
+          appName: row.appName,
         }
       },
 
     },
     created () {
-      console.log('abc');
       const { application, module_name } = this.$parent.getServerData();
       this.appName = application;
       this.moduleName = module_name;

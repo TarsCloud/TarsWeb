@@ -103,7 +103,6 @@
             let { appName, moduleName, srcGroupName, groupName, transferData } = this;
 
             // 扩容取到发布 id
-            // let {releaseId} = await expandModule({servers, appName, moduleName, cache_version, srcGroupName: [], dstGroupName: [dstGroupName]});
             const data = await transferDCacheGroup({ appName, moduleName, srcGroupName, dstGroupName: groupName, transferData });
 
             this.$tip.success(this.$t('dcache.operationManage.hasnonServerMigration'));
