@@ -197,7 +197,7 @@
       "configuration": "配置中心",
       "noModuleExist": "模块不存在",
       "value": "值",
-      "config_value": "原来值",
+      "config_value": "当前值",
       "modify_value": "修改值",
       "edit": "编辑配置",
       "view": "查看配置",
