@@ -125,7 +125,7 @@
   "module": {
     "title": "模块",
     "name": "模块名",
-    "namingRule": "应用名+自定义名称, 只允许字母、数字、_和-",
+    "namingRule": "应用名+自定义名称, 只允许字母和数字",
     "keyType": "key类型",
     "createModule": "创建模块",
     "createModuleService": "创建模块服务",
@@ -148,7 +148,7 @@
     "shmKeyRule": "十进制共享内存key",
     "MultiKeyConfig": "多字段配置",
     "hasExist": "模块已存在",
-    "namingError": "模块名不允许与应用名一样"
+    "namingError": "模块名须以应用名开头，且只允许字母和数字"
   },
   "MKCache": {
     "mainKey": "主索引(mkey)",
