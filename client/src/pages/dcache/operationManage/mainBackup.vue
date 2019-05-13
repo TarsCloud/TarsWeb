@@ -10,16 +10,16 @@
       <let-table-column :title="$t('dcache.operationManage.modifyTime')" prop="modifyTime"></let-table-column>
       <!-- <let-table-column :title="$t('dcache.operationManage.dbFlag')" prop="dbFlag"></let-table-column> -->
       <!-- <let-table-column :title="$t('dcache.operationManage.allowedOut')" prop="enableErase"></let-table-column> -->
-      <!-- <let-table-column :title="$t('dcache.operationManage.switchType')" prop="switchType">
+      <let-table-column :title="$t('dcache.operationManage.switchType')" prop="switchType">
         <template slot-scope="{row: {switchType}}">
           <span :style="{color: color[switchType]}">{{$t(`dcache.${switchTypeText[switchType]}`)}}</span>
         </template>
-      </let-table-column> -->
-      <!-- <let-table-column :title="$t('dcache.operationManage.switchResult')" prop="switchResult">
+      </let-table-column>
+      <let-table-column :title="$t('dcache.operationManage.switchResult')" prop="switchResult">
         <template slot-scope="{row: {switchResult}}">
           <span :style="{color: color[switchResult]}">{{$t(`dcache.${switchResultText[switchResult]}`)}}</span>
         </template>
-      </let-table-column> -->
+      </let-table-column>
       <let-table-column :title="$t('dcache.operationManage.groupStatus')" prop="groupStatus">
         <template slot-scope="{row: {groupStatus}}">
           <span :style="{color: color[groupStatus]}">{{$t(`dcache.${groupStatusText[groupStatus]}`)}}</span>
@@ -33,7 +33,7 @@
       <let-table-column :title="$t('operate.operates')" prop="appName" width="100px">
         <template slot-scope="{row}">
           <!-- <let-table-operation :title="$t('dcache.amig')" @click="ensureDelete(row)">{{$t('dcache.omig')}}</let-table-operation> -->
-          <let-table-operation :title="$t('dcache.areset')" @click="recoverMirrorStatus(row)">{{$t('dcache.oreset')}}</let-table-operation>
+          <let-table-operation :title="$t('dcache.areset')" @click="recoverMirrorStatus(row)" :disabled = "row.switchType != 2">{{$t('dcache.oreset')}}</let-table-operation>
           <!-- <let-table-operation :title="$t('dcache.switch')" @click="switchServer(row)">{{$t('dcache.oswitch')}}</let-table-operation> -->
         </template>
       </let-table-column>
@@ -53,8 +53,8 @@
         list: [],
         total: 0,
         page: 1,
-        // 切换类型: 0:主备切换, 1:镜像切换, 2:镜像无备机切换
-        switchTypeText: ['switch', 'mirrorSwitch', 'mirrorOffSwitch'],
+        // 切换类型: 0:主备切换, 1:镜像主备切换, 2:镜像切换， 3：备机不可读
+        switchTypeText: ['switch', 'mirrorSwitch', 'mirrorOffSwitch', 'readFail'],
         // 切换状态: 0:正在切换, 1:切换成功, 2:未切换, 3:切换失败
         switchResultText: ['switching', 'switchSuccess', 'notSwitch', 'switchFailure'],
         // 组的访问状态, 0标识读写，1标识只读,2镜像不可用
@@ -116,14 +116,16 @@
        * @returns {Promise<void>}
        */
       async recoverMirrorStatus(row) {
-        try {
-          const { appName, moduleName, groupName, mirrorIdc, dbFlag, enableErase } = row;
-          if (!mirrorIdc) throw new Error(this.$t('dcache.mirrorEmpty'));
-          await recoverMirrorStatus({ appName, moduleName, groupName, mirrorIdc, dbFlag, enableErase });
-          this.getSwitchInfo();
-        } catch (err) {
-          console.error(err);
-          this.$tip.error(err.message);
+        if (row.switchType === 2) {
+          try {
+            const { appName, moduleName, groupName, mirrorIdc, dbFlag, enableErase } = row;
+            if (!mirrorIdc) throw new Error(this.$t('dcache.mirrorEmpty'));
+            await recoverMirrorStatus({ appName, moduleName, groupName, mirrorIdc, dbFlag, enableErase });
+            this.getSwitchInfo();
+          } catch (err) {
+            console.error(err);
+            this.$tip.error(err.message);
+          }
         }
       }
     },

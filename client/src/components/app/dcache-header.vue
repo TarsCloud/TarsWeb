@@ -13,7 +13,7 @@
       <let-tabs class="tabs" :center="true" @click="clickTab"
                 :activekey="$route.matched[0]? $route.matched[0].path : '/server'">
         <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
-        <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.dcache.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab3')" tabkey="/releasePackage" :icon="opaIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab4')" tabkey="/config" :icon="opaIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab5')" tabkey="/operationManage" :icon="opaIcon"></let-tab-pane>

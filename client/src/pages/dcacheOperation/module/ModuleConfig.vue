@@ -11,7 +11,7 @@
           :placeholder="$t('module.namingRule')"
           required
           :required-tip="$t('deployService.table.tips.empty')"
-          pattern="^[a-zA-Z][a-zA-Z0-9_-]+$"
+          pattern="^[a-zA-Z][a-zA-Z0-9]+$"
           :pattern-tip="$t('module.namingRule')"
         >
         </let-input>
@@ -189,9 +189,10 @@
     },
     methods: {
       addModuleConfig () {
-        if (this.app_name === this.model.module_name) {
+        const regex = new RegExp('^' + this.app_name + '[a-zA-Z0-9]+$');
+        if (!regex.test(this.model.module_name)) {
           this.$tip.error(this.$t('module.namingError'));
-        }else if (this.$refs.detailForm.validate()) {
+        } else if (this.$refs.detailForm.validate()) {
           const model = this.model;
           const url = '/server/api/add_module_config';
           const loading = this.$Loading.show();
