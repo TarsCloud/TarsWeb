@@ -9,6 +9,9 @@
       "tab4": "cache 配置",
       "tab5": "操作管理"
     },
+    "dcache": {
+      "tab2": "服务创建"
+    },
     "logout": "退出登录"
   },
   "releasePackage": {
@@ -215,8 +218,9 @@
     "migrationMethod1": "完整数据迁移",
     "migrationMethod2": "无数据迁移",
     "switch": "主备切换",
-    "mirrorSwitch": "镜像切换",
-    "mirrorOffSwitch": "镜像无备机切换",
+    "mirrorSwitch": "镜像主备切换",
+    "mirrorOffSwitch": "镜像切换",
+    "readFail": "备机不可读",
     "switching": "正在切换",
     "switchSuccess": "切换成功",
     "notSwitch": "未切换",

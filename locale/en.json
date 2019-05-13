@@ -9,6 +9,9 @@
       "tab4": "cache configuration",
       "tab5": "operation manage"
     },
+    "dcache": {
+      "tab2": "Create Service"
+    },
     "logout": "logout"
   },
   "releasePackage": {
@@ -191,8 +194,9 @@
     "migrationMethod1": "Complete data migration",
     "migrationMethod2": "No data migration",
     "switch": "Main/backup",
-    "mirrorSwitch": "Mirror switch",
-    "mirrorOffSwitch": "Mirror off switch",
+    "mirrorSwitch": "Mirror Main/backup switch",
+    "mirrorOffSwitch": "Mirror switch",
+    "readFail": "Backup unreadable",
     "switching": "switching",
     "switchSuccess": "switch success",
     "notSwitch": "not switch",
