@@ -422,6 +422,7 @@
         if (this.$refs.multiKeyForm.validate()) {
           sessionStorage.setItem('mkCache', JSON.stringify(this.mkCacheStructure));
           this.showMKModal = false;
+          document.body.classList.remove('has-modal-open');
           this.addServerConfig();
         }
       }
