@@ -79,9 +79,10 @@
         <let-table-column :title="$t('module.title')" prop="module" width="20%"></let-table-column>
         <let-table-column :title="$t('publishLog.releaseId')" prop="releaseId" width="20%"></let-table-column>
         <let-table-column :title="$t('publishLog.releaseProgress')" prop="percent">
-          <template slot-scope="scope">
-            <span>{{scope.row.percent}}</span>
-            <icon v-if="scope.row.percent != 100" name="spinner" class="spinner-icon" />
+          <template slot-scope="{row: { percent, errMsg }}">
+            <span v-if="!errMsg">{{percent}}</span>
+            <p style="color: red" v-else="errMsg">{{ errMsg }}</p>
+            <icon v-if="percent !== '100' && !errMsg" name="spinner" class="spinner-icon"/>
           </template>
         </let-table-column>
       </let-table>
@@ -91,6 +92,7 @@
 
 <script>
   import '@/assets/icon/spinner.svg';
+  import {getReleaseProgress, installAndPublish} from '@/dcache/interface.js'
 
   const routerModel = () => {
     return {
@@ -117,8 +119,8 @@
     }
   };
   export default {
-    data () {
-      let {applyId} = this.$route.params;
+    data() {
+      let { applyId } = this.$route.params;
       return {
         applyId,
         showModal: false,
@@ -132,65 +134,76 @@
       }
     },
     methods: {
-      getApplyInfo () {
-        let {applyId} = this;
-        this.$ajax.getJSON('/server/api/get_apply_and_router_and_proxy', {applyId}).then((apply) => {
+      getApplyInfo() {
+        let { applyId } = this;
+        this.$ajax.getJSON('/server/api/get_apply_and_router_and_proxy', { applyId }).then((apply) => {
           this.apply = apply || {}
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       },
-      installAndPublish () {
-        let {applyId} = this;
-        this.$ajax.getJSON('/server/api/install_and_publish', {applyId}).then((data) => {
-          let proxyReleaseId = data.proxy.releaseId;
-          let routerReleaseId = data.router.releaseId;
-          this.getTaskRepeat({proxyReleaseId, routerReleaseId});
-          this.$tip.success(data.proxy.errMsg)
-        }).catch((err) => {
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
-      },
-      getTaskRepeat({proxyReleaseId, routerReleaseId}) {
-        clearTimeout(this.timerId);
-        this.showModal = true;
-        const getTask = () => {
-          this.$ajax.getJSON('/server/api/get_release_progress', {
-            "proxyReleaseId": proxyReleaseId,
-            "routerReleaseId": routerReleaseId
-          }).then((data) => {
-            let done = true;
-            data.progress.forEach((item) => {
-              if (parseInt(item.percent, 10) !== 100) {
-                done = false;
-              }
-            });
-            if (done) {
-              clearTimeout(this.timerId);
-            } else {
-              this.timerId = setTimeout(getTask, 1000);
+      async installAndPublish() {
+        try {
+          let { applyId } = this;
+          const { proxy, router } = await installAndPublish({ applyId });
+          this.showModal = true;
+          let proxyReleaseId = proxy.releaseId;
+          let routerReleaseId = router.releaseId;
+          this.items = [
+            {
+              "module": "ProxyServer",
+              "releaseId": proxyReleaseId,
+              "percent": "0",
+              "errMsg": "",
+              "timer": "",
+            }, {
+              "module": "RouterServer",
+              "releaseId": routerReleaseId,
+              "percent": "0",
+              "errMsg": "",
+              "timer": "",
             }
-            this.items = data.progress;
-          }).catch((err) => {
-            clearTimeout(this.timerId);
-            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-          });
-        };
-        getTask();
+          ];
+
+          this.items.forEach(item => this.repeatGetReleaseProgress(item));
+          // this.getTaskRepeat({proxyReleaseId, routerReleaseId});
+          // this.$tip.success(proxy.errMsg)
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+
+        }
       },
-      confirmPublish () {
+      async repeatGetReleaseProgress(item) {
+        clearTimeout(item.timer);
+        try {
+          const { percent } = await getReleaseProgress({ releaseId: item.releaseId });
+          item.percent = percent;
+          if (percent === '100') {
+            clearTimeout(item.timer);
+          } else {
+            item.timer = setTimeout(this.repeatGetReleaseProgress.bind(this, item), 1000);
+          }
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+          item.errMsg = err;
+          clearTimeout(item.timer);
+        }
+      },
+      confirmPublish() {
         this.showModal = false;
         document.body.classList.remove('has-modal-open');
         this.$router.push('/operation/module/createModule');
       }
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
       // 导航离开该组件的对应路由时调用
       // 可以访问组件实例 `this`
       clearTimeout(this.timerId);
       next()
     },
-    created () {
+    created() {
       this.getApplyInfo()
     }
   }

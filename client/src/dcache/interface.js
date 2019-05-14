@@ -260,7 +260,7 @@ export function getModuleConfig({ appName, moduleName }) {
 }
 
 /**
- *
+ * 获取所有的服务配置
  */
 export function getConfig() {
   return Axios({
@@ -268,3 +268,16 @@ export function getConfig() {
     url: '/cache/getConfig',
   })
 }
+
+/**
+ * 安装发布应用的 router 和 proxy 服务
+ * @param applyId
+ */
+export function installAndPublish ({ applyId }) {
+  return Axios({
+    method: 'get',
+    url: '/cache/install_and_publish',
+    params: { applyId }
+  })
+}
+
