@@ -148,7 +148,8 @@
     "shmKeyRule": "十进制共享内存key",
     "MultiKeyConfig": "多字段配置",
     "hasExist": "模块已存在",
-    "namingError": "模块名须以应用名开头，且只允许字母和数字"
+    "namingError": "模块名须以应用名开头，且只允许字母和数字",
+    "shmKeyError": "同一IP下不允许有相同的共享内存key"
   },
   "MKCache": {
     "mainKey": "主索引(mkey)",

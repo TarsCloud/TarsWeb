@@ -253,6 +253,7 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   const moduleModel = () => (
     {
       module_id: 17,
@@ -328,10 +329,19 @@
         if (this.$refs.detailForm.validate()) {
           if (this.isMkCache) {
             this.showMKModal = true;
-          } else {
+          } else if (this.checkSameShmKey(this.moduleData)) {
             this.addServerConfig();
+          } else {
+            this.$tip.error(this.$t('module.shmKeyError'));
           }
         }
+      },
+      checkSameShmKey (data) {
+        const uniqData = _.uniqWith(data, (object, other) => {
+          return object.server_ip === other.server_ip && object.shmKey === other.shmKey;
+        });
+        console.log(uniqData);
+        return data.length === uniqData.length;
       },
       addServerConfig () {
         const moduleData = this.moduleData;
