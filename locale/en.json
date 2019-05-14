@@ -135,7 +135,8 @@
     "cacheType": "Cache Types",
     "follower": "Focus People",
     "serverConfig": "Server Config",
-    "namingError": "Module name must not be started with Application name, only digits and letters allowed"
+    "namingError": "Module name must not be started with Application name, only digits and letters allowed",
+    "shmKeyError": "Same share memory keys are not allowed under same IP"
   },
   "cache": {
     "title": "cache",
