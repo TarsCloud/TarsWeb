@@ -38,9 +38,11 @@
               {{row.area}}
             </template>
           </let-table-column>
-          <let-table-column :title="$t('deployService.form.serviceType')" prop="server_type">
-            <template slot-scope="{row}">
-              {{mapServerType(row.server_type)}}
+          <let-table-column :title="$t('deployService.form.serviceType')" width="80px">
+            <template slot-scope="{row:{server_type}}">
+              <span v-if="server_type === 'M' ">{{$t('cache.mainEngine')}}</span>
+              <span v-else-if="server_type === 'S' ">{{$t('cache.standByEngine')}}</span>
+              <span v-else-if="server_type=== 'I' ">{{$t('cache.mirror')}}</span>
             </template>
           </let-table-column>
           <let-table-column :title="$t('module.memorySize')" prop="memory">

@@ -57,13 +57,15 @@ export  default {
           return arguments[1] + (+arguments[2] + 1) + '-' + (index + 1)
         });
 
-        return Object.assign({}, item, {group_name, server_name, server_ip: '', shmKey: ''})
+        let server_type = item.server_type;
+        if (index === 0) {
+          server_type = 'M';
+        } else if (index === 1) {
+          server_type = 'S'
+        }
+
+        return { ...item, group_name, server_name, server_ip: '', shmKey: '', server_type }
       });
-    },
-    mapServerType (key) {
-      if (key === 0) return this.$t('module.mainServer');
-      else if (key === 1) return this.$t('module.backServer');
-      else return this.$t('module.mirror');
     },
   },
 }
