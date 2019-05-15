@@ -273,6 +273,7 @@
       },
       "ensureDelete": "确认删除吗？",
       "ensureStop": "确认停止吗？",
+      "ensureRestart": "确认重启任务吗？",
       "ensureShrinkage": "确认缩容吗？",
       "hasShrinkage": "已经发起缩容，请到操作管理查看缩容进度",
       "hasExpand": "已经发起扩容，请到操作管理查看扩容进度",
@@ -384,7 +385,8 @@
       "update": "编辑",
       "add": "添加",
       "more": "更多命令"
-    }
+    },
+    "retry": "重启任务"
   },
   "index": {
     "rightView": {

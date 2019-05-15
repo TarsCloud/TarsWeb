@@ -126,6 +126,29 @@ export function stopTransfer({ appName = '', moduleName = '', type = '1', srcGro
 }
 
 /**
+ * 重试迁移、扩容、缩容操作
+ * @appName     应用名
+ * @moduleName  模块名
+ * @type        '0' 是迁移， '1' 是扩容， '2' 是缩容
+ * @srcGroupName 原组
+ * @dstGroupName 目标组
+ *
+ */
+export function restartTransfer({ appName = '', moduleName = '', type = '1', srcGroupName = [], dstGroupName = [] }) {
+  return Axios({
+    method: 'post',
+    url: '/cache/restartTransfer',
+    data: {
+      appName,
+      moduleName,
+      type,
+      srcGroupName,
+      dstGroupName
+    }
+  })
+}
+
+/**
  * 删除迁移、扩容、缩容操作记录
  * @appName     应用名
  * @moduleName  模块名

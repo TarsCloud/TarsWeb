@@ -5,7 +5,7 @@
       <let-table-column :title="$t('dcache.operationManage.moduleName')"  prop="moduleName"></let-table-column>
       <let-table-column :title="$t('dcache.operationManage.srcGroupName')"  prop="srcGroupName"></let-table-column>
       <let-table-column :title="$t('dcache.operationManage.dstGroupName')"  prop="dstGroupName"></let-table-column>
-      <let-table-column :title="$t('dcache.operationManage.status')"  prop="sgtatus">
+      <let-table-column :title="$t('dcache.operationManage.status')"  prop="status">
         <template slot-scope="{row}">
           {{$t(row.statusText)}}
         </template>
@@ -16,10 +16,11 @@
           {{row.progressText}}
         </template>
       </let-table-column>
-      <let-table-column :title="$t('operate.operates')"  prop="appName" width="100px">
+      <let-table-column :title="$t('operate.operates')"  prop="appName" width="120px">
         <template slot-scope="{row}" >
           <let-table-operation v-if="row.status === 3" @click="ensureStop(row)">{{$t('operate.stop')}}</let-table-operation>
           <let-table-operation v-if="row.status !== 3" @click="ensureDelete(row)">{{$t('operate.delete')}}</let-table-operation>
+          <let-table-operation v-if="row.status === 5" @click="restartDask(row)">{{$t('operate.retry')}}</let-table-operation>
         </template>
       </let-table-column>
       <let-pagination slot="pagination" align="right"
@@ -30,7 +31,7 @@
 </template>
 <script>
 import Router from 'vue-router';
-import {getRouterChange, stopTransfer, deleteTransfer} from '@/dcache/interface.js'
+import {getRouterChange, stopTransfer, deleteTransfer, restartTransfer} from '@/dcache/interface.js'
 export default {
   data () {
     return {
@@ -105,6 +106,20 @@ export default {
         console.log('ensure delete', row)
         let {appName, moduleName, type, srcGroupName, dstGroupName} = row;
         await deleteTransfer({appName, moduleName, type, srcGroupName, dstGroupName});
+        this.getRouterChange();
+      } catch (err) {
+        console.error(err)
+        this.$tip.error(err.message)
+      }
+    },
+    /**
+     * 重启任务
+     */
+    async restartDask (row) {
+      try {
+        await this.$confirm(this.$t('dcache.operationManage.ensureRestart'));
+        let {appName, moduleName, type, srcGroupName, dstGroupName} = row;
+        await restartTransfer({appName, moduleName, type, srcGroupName, dstGroupName});
         this.getRouterChange();
       } catch (err) {
         console.error(err)
