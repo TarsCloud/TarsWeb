@@ -1,3 +1,16 @@
+/**
+* Tencent is pleased to support the open source community by making DCache available.
+* Copyright (C) 2019 THL A29 Limited, a Tencent company. All rights reserved.
+* Licensed under the BSD 3-Clause License (the "License"); you may not use this file
+* except in compliance with the License. You may obtain a copy of the License at
+*
+* https://opensource.org/licenses/BSD-3-Clause
+*
+* Unless required by applicable law or agreed to in writing, software distributed under
+* the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+* either express or implied. See the License for the specific language governing permissions
+* and limitations under the License.
+*/
 
 module DCache
 {
@@ -29,10 +42,10 @@ enum TransferStatus
 
 enum UninstallType
 {
-    SERVER          = 0,  //按服务下线
-    GROUP           = 1,   //按服务组下线
-    MODULE          = 2,  //按模块下线
-    QUOTA_SERVER    = 3 //按配额服务下线
+    SERVER          = 0,    //按服务下线
+    GROUP           = 1,    //按服务组下线
+    MODULE          = 2,    //按模块下线
+    QUOTA_SERVER    = 3     //按配额服务下线
 };
 
 struct DBInfo
@@ -468,8 +481,8 @@ struct RestartTransferReq
     0 require string appName;
     1 require string moduleName;
     2 require TransferType type; // TRANSFER_TYPE(0): 迁移， EXPAND_TYPE(1): 扩容， REDUCE_TYPE(2): 缩容
-    3 optional string srcGroupName; // 源组组名
-    4 optional string dstGroupName; // 目的组组名
+    3 optional string srcGroupName; // 源组组名(type为迁移时必填，扩容和缩容不填)
+    4 optional string dstGroupName; // 目的组组名(type为迁移时必填，扩容和缩容不填)
 };
 
 struct RestartTransferRsp
@@ -568,6 +581,29 @@ struct ConfigRsp
 {
     0 require string errMsg;
     1 optional vector<map<string, string> > configItemList;
+};
+
+struct QueryPropReq
+{
+    0 require string moduleName;    //Dcache模块名
+    1 require string serverName;    //服务名 DCache.xxx, 不填表示查询模块下所有服务合并统计数据，填"*"表示列出所有服务的独立数据
+    2 require vector<string> date;  //需要查询的日期，日期格式20190508
+    3 require string startTime;     //e.g. 0800
+    4 require string endTime;       //e.g. 2360
+};
+
+struct QueryProp
+{
+    0 require string timeStamp;     //e.g. 0800, 为空表示全天合并数据
+    1 require map<string, double> propData;   //<属性名，属性值>
+};
+
+struct QueryResult
+{
+    0 require string moduleName;    //Dcache模块名
+    1 require string serverName;    //服务名 DCache.xxx，服务名为空表示result是模块所有服务合并数据
+    2 require string date;          //e.g. 20190508
+    3 require vector<QueryProp> data;
 };
 
 interface DCacheOpt
@@ -713,6 +749,12 @@ interface DCacheOpt
     int getServerNodeConfigItemList(ServerConfigReq configReq, out ConfigRsp configRsp);
 
     int getServerConfigItemList(ServerConfigReq configReq, out ConfigRsp configRsp);
+
+    /**
+    * 查询属性统计信息
+    * @return int,      返回0表示成功
+    */
+    int queryProperptyData(QueryPropReq req, out vector<QueryResult> rsp);
 
   };
 

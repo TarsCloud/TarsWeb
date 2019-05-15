@@ -3732,6 +3732,181 @@ DCache.ConfigRsp.create = function (is) {
     return DCache.ConfigRsp._readFrom(is);
 };
 
+DCache.QueryPropReq = function() {
+    this.moduleName = "";
+    this.serverName = "";
+    this.date = new TarsStream.List(TarsStream.String);
+    this.startTime = "";
+    this.endTime = "";
+    this._classname = "DCache.QueryPropReq";
+};
+DCache.QueryPropReq._classname = "DCache.QueryPropReq";
+DCache.QueryPropReq._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.QueryPropReq._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.QueryPropReq._readFrom = function (is) {
+    var tmp = new DCache.QueryPropReq;
+    tmp.moduleName = is.readString(0, true, "");
+    tmp.serverName = is.readString(1, true, "");
+    tmp.date = is.readList(2, true, TarsStream.List(TarsStream.String));
+    tmp.startTime = is.readString(3, true, "");
+    tmp.endTime = is.readString(4, true, "");
+    return tmp;
+};
+DCache.QueryPropReq.prototype._writeTo = function (os) {
+    os.writeString(0, this.moduleName);
+    os.writeString(1, this.serverName);
+    os.writeList(2, this.date);
+    os.writeString(3, this.startTime);
+    os.writeString(4, this.endTime);
+};
+DCache.QueryPropReq.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.QueryPropReq.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.QueryPropReq.prototype.toObject = function() { 
+    return {
+        "moduleName" : this.moduleName,
+        "serverName" : this.serverName,
+        "date" : this.date.toObject(),
+        "startTime" : this.startTime,
+        "endTime" : this.endTime
+    };
+};
+DCache.QueryPropReq.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "moduleName") && (this.moduleName = json.moduleName);
+    _hasOwnProperty.call(json, "serverName") && (this.serverName = json.serverName);
+    _hasOwnProperty.call(json, "date") && (this.date.readFromObject(json.date));
+    _hasOwnProperty.call(json, "startTime") && (this.startTime = json.startTime);
+    _hasOwnProperty.call(json, "endTime") && (this.endTime = json.endTime);
+    return this;
+};
+DCache.QueryPropReq.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.QueryPropReq.new = function () {
+    return new DCache.QueryPropReq();
+};
+DCache.QueryPropReq.create = function (is) {
+    return DCache.QueryPropReq._readFrom(is);
+};
+
+DCache.QueryProp = function() {
+    this.timeStamp = "";
+    this.propData = new TarsStream.Map(TarsStream.String, TarsStream.Double);
+    this._classname = "DCache.QueryProp";
+};
+DCache.QueryProp._classname = "DCache.QueryProp";
+DCache.QueryProp._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.QueryProp._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.QueryProp._readFrom = function (is) {
+    var tmp = new DCache.QueryProp;
+    tmp.timeStamp = is.readString(0, true, "");
+    tmp.propData = is.readMap(1, true, TarsStream.Map(TarsStream.String, TarsStream.Double));
+    return tmp;
+};
+DCache.QueryProp.prototype._writeTo = function (os) {
+    os.writeString(0, this.timeStamp);
+    os.writeMap(1, this.propData);
+};
+DCache.QueryProp.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.QueryProp.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.QueryProp.prototype.toObject = function() { 
+    return {
+        "timeStamp" : this.timeStamp,
+        "propData" : this.propData.toObject()
+    };
+};
+DCache.QueryProp.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "timeStamp") && (this.timeStamp = json.timeStamp);
+    _hasOwnProperty.call(json, "propData") && (this.propData.readFromObject(json.propData));
+    return this;
+};
+DCache.QueryProp.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.QueryProp.new = function () {
+    return new DCache.QueryProp();
+};
+DCache.QueryProp.create = function (is) {
+    return DCache.QueryProp._readFrom(is);
+};
+
+DCache.QueryResult = function() {
+    this.moduleName = "";
+    this.serverName = "";
+    this.date = "";
+    this.data = new TarsStream.List(DCache.QueryProp);
+    this._classname = "DCache.QueryResult";
+};
+DCache.QueryResult._classname = "DCache.QueryResult";
+DCache.QueryResult._write = function (os, tag, value) { os.writeStruct(tag, value); };
+DCache.QueryResult._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+DCache.QueryResult._readFrom = function (is) {
+    var tmp = new DCache.QueryResult;
+    tmp.moduleName = is.readString(0, true, "");
+    tmp.serverName = is.readString(1, true, "");
+    tmp.date = is.readString(2, true, "");
+    tmp.data = is.readList(3, true, TarsStream.List(DCache.QueryProp));
+    return tmp;
+};
+DCache.QueryResult.prototype._writeTo = function (os) {
+    os.writeString(0, this.moduleName);
+    os.writeString(1, this.serverName);
+    os.writeString(2, this.date);
+    os.writeList(3, this.data);
+};
+DCache.QueryResult.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+DCache.QueryResult.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+DCache.QueryResult.prototype.toObject = function() { 
+    return {
+        "moduleName" : this.moduleName,
+        "serverName" : this.serverName,
+        "date" : this.date,
+        "data" : this.data.toObject()
+    };
+};
+DCache.QueryResult.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "moduleName") && (this.moduleName = json.moduleName);
+    _hasOwnProperty.call(json, "serverName") && (this.serverName = json.serverName);
+    _hasOwnProperty.call(json, "date") && (this.date = json.date);
+    _hasOwnProperty.call(json, "data") && (this.data.readFromObject(json.data));
+    return this;
+};
+DCache.QueryResult.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+DCache.QueryResult.new = function () {
+    return new DCache.QueryResult();
+};
+DCache.QueryResult.create = function (is) {
+    return DCache.QueryResult._readFrom(is);
+};
+
 var __DCache_DCacheOpt$addCacheConfigItem$IF = {
     "name" : "addCacheConfigItem",
     "return" : "int32",
@@ -5271,6 +5446,83 @@ DCache.DCacheOptProxy.prototype.installMKVCacheModule = function (mkvCacheReq) {
     }
 };
 DCache.DCacheOptProxy.installMKVCacheModule = __DCache_DCacheOpt$installMKVCacheModule$IF;
+
+var __DCache_DCacheOpt$queryProperptyData$IF = {
+    "name" : "queryProperptyData",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "req",
+        "class" : "DCache.QueryPropReq",
+        "direction" : "in"
+    }, {
+        "name" : "rsp",
+        "class" : "list(DCache.QueryResult)",
+        "direction" : "out"
+    }]
+};
+
+var __DCache_DCacheOpt$queryProperptyData$IE = function (req) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeStruct(1, req);
+    return os.getBinBuffer();
+};
+
+var __DCache_DCacheOpt$queryProperptyData$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "rsp" : is.readList(2, true, TarsStream.List(DCache.QueryResult))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$queryProperptyData$PE = function (req, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeStruct("req", req);
+    return tup;
+};
+
+var __DCache_DCacheOpt$queryProperptyData$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "rsp" : tup.readList("rsp", TarsStream.List(DCache.QueryResult))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __DCache_DCacheOpt$queryProperptyData$ER = function (data) {
+    throw _makeError(data, "Call DCacheOpt::queryProperptyData failed");
+};
+
+DCache.DCacheOptProxy.prototype.queryProperptyData = function (req) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("queryProperptyData", __DCache_DCacheOpt$queryProperptyData$PE(req, version), arguments[arguments.length - 1], __DCache_DCacheOpt$queryProperptyData$IF).then(__DCache_DCacheOpt$queryProperptyData$PD, __DCache_DCacheOpt$queryProperptyData$ER);
+    } else {
+        return this._worker.tars_invoke("queryProperptyData", __DCache_DCacheOpt$queryProperptyData$IE(req), arguments[arguments.length - 1], __DCache_DCacheOpt$queryProperptyData$IF).then(__DCache_DCacheOpt$queryProperptyData$ID, __DCache_DCacheOpt$queryProperptyData$ER);
+    }
+};
+DCache.DCacheOptProxy.queryProperptyData = __DCache_DCacheOpt$queryProperptyData$IF;
 
 var __DCache_DCacheOpt$recoverMirrorStatus$IF = {
     "name" : "recoverMirrorStatus",
