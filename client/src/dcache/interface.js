@@ -26,11 +26,11 @@ export function expandModule({ servers, appName, moduleName, status = '1', cache
  * @param srcGroupName
  * @param dstGroupName
  */
-export function transferDCache({ servers, appName, moduleName,  status = '1', cache_version, srcGroupName, dstGroupName }) {
+export function transferDCache({ servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, transferExisted }) {
   return Axios({
     method: 'post',
     url: '/cache/transferDCache',
-    data: { servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, status }
+    data: { servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, transferExisted}
   })
 }
 
@@ -40,13 +40,13 @@ export function transferDCache({ servers, appName, moduleName,  status = '1', ca
  * @param moduleName
  * @param srcGroupName
  * @param dstGroupName
- * @param transferData
+ * @param transferExisted
  */
-export function transferDCacheGroup({ appName, moduleName, srcGroupName, dstGroupName, transferData }) {
+export function transferDCacheGroup({ appName, moduleName, srcGroupName, dstGroupName, transferExisted }) {
   return Axios({
     method: 'post',
     url: '/cache/transferDCacheGroup',
-    data: { appName, moduleName, srcGroupName, dstGroupName, transferData }
+    data: { appName, moduleName, srcGroupName, dstGroupName, transferExisted }
   })
 }
 

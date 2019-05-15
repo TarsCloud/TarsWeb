@@ -24,7 +24,7 @@
           </let-select>
         </let-form-item>
         <let-form-item required :label="$t('dcache.migrationMethod') + '：'" >
-          <let-radio-group v-model="transferData" style="width: 300px"
+          <let-radio-group v-model="transferExisted" style="width: 300px"
                            :data="migrationMethods">
           </let-radio-group>
         </let-form-item>
@@ -100,10 +100,10 @@
       async submitServerConfig() {
         if (this.$refs.detailForm.validate()) {
           try {
-            let { appName, moduleName, srcGroupName, groupName, transferData } = this;
+            let { appName, moduleName, srcGroupName, groupName, transferExisted } = this;
 
             // 扩容取到发布 id
-            const data = await transferDCacheGroup({ appName, moduleName, srcGroupName, dstGroupName: groupName, transferData });
+            const data = await transferDCacheGroup({ appName, moduleName, srcGroupName, dstGroupName: groupName, transferExisted });
 
             this.$tip.success(this.$t('dcache.operationManage.hasnonServerMigration'));
 
