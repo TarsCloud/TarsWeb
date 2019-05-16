@@ -328,7 +328,6 @@ struct TransferReq
     3 require vector<CacheHostParam> cacheHost;
     4 require DCacheType cacheType;
     5 require string version;
-    6 optional bool transferExisted=false; // 是否向已存在的服务迁移
 };
 
 struct TransferRsp
@@ -371,7 +370,7 @@ struct ConfigTransferReq
     2 require TransferType type; // TRANSFER(0): 迁移， EXPAND(1): 扩容， REDUCE(2): 缩容
     3 optional vector<string> srcGroupName; // 源组组名
     4 optional vector<string> dstGroupName; // 目的组组名
-    5 optional bool transferData=true;      // 是否迁移数据
+    5 optional bool transferData=true;      // 是否迁移数据(true: 迁移数据, false: 不迁移数据,仅用于type为TRANSFER)
 };
 
 struct ConfigTransferRsp
@@ -512,7 +511,7 @@ struct TransferGroupReq
     1 require string moduleName;
     2 require string srcGroupName;  // 源组组名
     3 require string dstGroupName;  // 目的组组名
-    4 require bool transferData;    // 是否迁移数据
+    4 require bool transferData;    // 是否迁移数据(true: 迁移数据, false: 不迁移数据)
 };
 
 struct TransferGroupRsp

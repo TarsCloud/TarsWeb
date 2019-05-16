@@ -1969,7 +1969,6 @@ DCache.TransferReq = function() {
     this.cacheHost = new TarsStream.List(DCache.CacheHostParam);
     this.cacheType = DCache.DCacheType.KVCACHE;
     this.version = "";
-    this.transferExisted = false;
     this._classname = "DCache.TransferReq";
 };
 DCache.TransferReq._classname = "DCache.TransferReq";
@@ -1983,7 +1982,6 @@ DCache.TransferReq._readFrom = function (is) {
     tmp.cacheHost = is.readList(3, true, TarsStream.List(DCache.CacheHostParam));
     tmp.cacheType = is.readInt32(4, true, DCache.DCacheType.KVCACHE);
     tmp.version = is.readString(5, true, "");
-    tmp.transferExisted = is.readBoolean(6, false, false);
     return tmp;
 };
 DCache.TransferReq.prototype._writeTo = function (os) {
@@ -1993,7 +1991,6 @@ DCache.TransferReq.prototype._writeTo = function (os) {
     os.writeList(3, this.cacheHost);
     os.writeInt32(4, this.cacheType);
     os.writeString(5, this.version);
-    os.writeBoolean(6, this.transferExisted);
 };
 DCache.TransferReq.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -2011,8 +2008,7 @@ DCache.TransferReq.prototype.toObject = function() {
         "srcGroupName" : this.srcGroupName,
         "cacheHost" : this.cacheHost.toObject(),
         "cacheType" : this.cacheType,
-        "version" : this.version,
-        "transferExisted" : this.transferExisted
+        "version" : this.version
     };
 };
 DCache.TransferReq.prototype.readFromObject = function(json) { 
@@ -2022,7 +2018,6 @@ DCache.TransferReq.prototype.readFromObject = function(json) {
     _hasOwnProperty.call(json, "cacheHost") && (this.cacheHost.readFromObject(json.cacheHost));
     _hasOwnProperty.call(json, "cacheType") && (this.cacheType = json.cacheType);
     _hasOwnProperty.call(json, "version") && (this.version = json.version);
-    _hasOwnProperty.call(json, "transferExisted") && (this.transferExisted = json.transferExisted);
     return this;
 };
 DCache.TransferReq.prototype.toBinBuffer = function () {

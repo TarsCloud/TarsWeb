@@ -2,7 +2,7 @@ export  default {
   data () {
     return {
       servers: [],
-      transferExisted: true,
+      transferData: true,
       migrationMethods: [
         { value: true, text: this.$t('dcache.migrationMethod1') },
         { value: false, text: this.$t('dcache.migrationMethod2') }

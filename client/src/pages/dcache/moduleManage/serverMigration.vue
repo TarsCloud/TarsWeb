@@ -2,7 +2,7 @@
   <section class="container">
     <let-form inline ref="detailForm">
       <let-form-item required :label="$t('dcache.migrationMethod')">
-        <let-radio-group v-model="transferExisted"
+        <let-radio-group v-model="transferData"
                          :data="migrationMethods">
         </let-radio-group>
       </let-form-item>
@@ -83,10 +83,10 @@
     methods: {
       async submitServerConfig() {
         if (this.$refs.detailForm.validate()) {
-          let { servers, appName, moduleName, cache_version, groupName, srcGroupName, dstGroupName, transferExisted } = this;
+          let { servers, appName, moduleName, cache_version, groupName, srcGroupName, dstGroupName, transferData } = this;
           try {
 
-            await transferDCache({ servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, transferExisted });
+            await transferDCache({ servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, transferData });
 
             this.$tip.success(this.$t('dcache.operationManage.hasServerMigration'));
             this.$emit('close');
