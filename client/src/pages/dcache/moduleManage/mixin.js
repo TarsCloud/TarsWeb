@@ -38,10 +38,10 @@ export  default {
     },
     addNewGroup () {
       const { servers } = this;
-      this.servers = servers.concat(this.newGroup(servers.slice(servers.length - 2)));
+      this.servers = servers.concat(this.newGroup(servers.slice(servers.length - this.expandServers.length)));
     },
     deleteGroup () {
-      this.servers.splice(this.servers.length - 2, 2);
+      this.servers.splice(this.servers.length - this.expandServers.length, this.expandServers.length);
     },
     newGroup (servers) {
       return servers.map((item, index) => {
@@ -58,11 +58,6 @@ export  default {
         });
 
         let server_type = item.server_type;
-        if (index === 0) {
-          server_type = 'M';
-        } else if (index === 1) {
-          server_type = 'S'
-        }
 
         return { ...item, group_name, server_name, server_ip: '', shmKey: '', server_type }
       });
