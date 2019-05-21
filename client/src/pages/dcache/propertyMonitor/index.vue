@@ -166,6 +166,7 @@
 
     methods: {
       async fetchData() {
+        const chartLoading = this.$refs.charts && this.$refs.charts.$loading.show();
         const tableLoading = this.$refs.table.$loading.show();
         try {
           const { query, query: { group_by, serverName }} = this;
@@ -178,6 +179,7 @@
           console.error(err);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         } finally {
+          chartLoading && chartLoading.hide();
           tableLoading.hide();
         }
       },
