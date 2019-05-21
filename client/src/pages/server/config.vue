@@ -104,7 +104,7 @@
           <let-input
             size="large"
             type="textarea"
-            :rows="4"
+            :rows="16"
             v-model="configModal.model.config"
             required
           ></let-input>

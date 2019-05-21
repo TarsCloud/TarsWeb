@@ -62,7 +62,7 @@
         <let-button size="small" theme="primary" @click="submitServerConfig">{{$t('common.submit')}}</let-button>
         <div class="alignRight">
           <let-button size="small" theme="primary" @click="addNewGroup">{{$t('serviceExpand.newGroup')}}</let-button>
-          <let-button size="small" theme="danger" @click="deleteGroup" :disabled="this.servers.length === 2">{{$t('serviceExpand.removeGroup')}}</let-button>
+          <let-button size="small" theme="danger" @click="deleteGroup" :disabled="this.servers.length === this.expandServers.length">{{$t('serviceExpand.removeGroup')}}</let-button>
         </div>
       </div>
     </let-form>

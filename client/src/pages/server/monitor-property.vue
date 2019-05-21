@@ -156,14 +156,14 @@ export default {
 
   methods: {
     fetchData() {
-      const chartLoading = this.$refs.chart.$loading.show();
+      const chartLoading = this.$refs.chart && this.$refs.chart.$loading.show();
       const tableLoading = this.$refs.table.$loading.show();
       return this.$ajax.getJSON('/server/api/tarsproperty_monitor_data', this.query).then((data) => {
-        chartLoading.hide();
+        chartLoading && chartLoading.hide();
         tableLoading.hide();
         this.allItems = data;
       }).catch((err) => {
-        chartLoading.hide();
+        chartLoading && chartLoading.hide();
         tableLoading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       });

@@ -374,7 +374,7 @@
         <let-form-item itemWidth="100%">
           <let-radio v-model="moreCmdModal.model.selected" label="connection">{{$t('serverList.servant.serviceLink')}}</let-radio>
         </let-form-item>
-        <let-form-item itemWidth="100%">
+        <let-form-item itemWidth="100%" v-if="serverType !== 'dcache'">
           <let-radio v-model="moreCmdModal.model.selected" label="undeploy_tars" class="danger">{{$t('operate.undeploy')}} {{$t('common.service')}}</let-radio>
         </let-form-item>
       </let-form>
@@ -1063,7 +1063,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="postcss">
 @import '../../assets/css/variable.css';
 
 .page_server_manage {
