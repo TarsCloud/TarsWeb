@@ -71,7 +71,7 @@
 </template>
 
 <script>
-  import {transferDCache} from '@/dcache/interface.js'
+  import { transferDCache } from '@/dcache/interface.js'
   import Mixin from './mixin.js'
 
   export default {

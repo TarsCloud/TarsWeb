@@ -304,3 +304,20 @@ export function installAndPublish ({ applyId }) {
   })
 }
 
+/**
+ * 获取模块的特性监控
+ * @param thedate
+ * @param predate
+ * @param startshowtime
+ * @param endshowtime
+ * @param moduleName
+ * @param serverName
+ */
+export function queryProperptyData({ thedate, predate, startshowtime, endshowtime, moduleName, serverName }) {
+  return Axios({
+    method: 'get',
+    url: '/cache/queryProperptyData',
+    params: { thedate, predate, startshowtime, endshowtime, moduleName, serverName }
+  })
+}
+

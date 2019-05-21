@@ -82,6 +82,12 @@
           :tabkey="base + '/moduleCache'"
           :tab="$t('cache.config.configuration')"
         ></let-tab-pane>
+        <!--模块特有的特性监控-->
+        <let-tab-pane
+          v-if="serverData.level === 6"
+          :tabkey="base + '/propertyMonitor'"
+          :tab="$t('index.rightView.tab.propertyMonitor')"
+        ></let-tab-pane>
 
       </let-tabs>
 

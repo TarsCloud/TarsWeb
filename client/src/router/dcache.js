@@ -23,6 +23,7 @@ import Server from '@/pages/server/dcacheIndex';
 import ServerManage from '@/pages/server/manage';
 import dcacheServerManage from '@/pages/server/dcacheManage.vue';
 import dcacheModuleManage from '@/pages/dcache/moduleManage/index.vue';
+import PropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
 
 // import ServerPublish from '@/pages/server/publish';
 import ServerPublish from '@/pages/server/dcachePublish';
@@ -110,6 +111,11 @@ export default new Router({
         {
           path: ':treeid/moduleCache',
           component: ModuleCache,
+        },
+        {
+          path: ':treeid/propertyMonitor',
+          component: PropertyMonitor,
+          fn: '特性监控',
         },
       ],
     },
