@@ -72,8 +72,7 @@
         </let-button>
         <non-server-migration :disabled="!hasCheckedItem" :expand-servers="serverList"
                               v-if="serverList.length"></non-server-migration>
-        <let-button theme="primary" :disabled="!hasCheckedItem" @click="switchHandler">{{$t('dcache.switch')}}
-        </let-button>
+        <let-button theme="primary" :disabled="!hasCheckedItem" @click="switchHandler">{{$t('dcache.switch')}}</let-button>
         <offline :disabled="!hasCheckedItem" :server-list="serverList" @success-fn="getServerList"></offline>
       </template>
     </let-table>
