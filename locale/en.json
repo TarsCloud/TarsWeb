@@ -221,7 +221,7 @@
     "onlyOneServiceGroup": "There is only one service group and non-deployed migrations are not allowed",
     "oneGroup": "Migration services, only one group can be selected",
     "offline": "off line",
-    "cantOffline": "selected services, there are surviving services, please stop, and then offline",
+    "cantOffline": "There is active service in selected services, please stop before offline",
     "hostOfflineAllServers": "In the selected service, there is a host, and all services of this module will be offline",
     "offlineAllBackupServers": "In the selected service, there is standby machine, and all standby machine services of this module will be offline",
     "offlineMirrorServers": "The selected service has mirroring. Log off all the mirroring services of this module",

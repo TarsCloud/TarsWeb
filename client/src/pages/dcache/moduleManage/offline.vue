@@ -38,9 +38,6 @@
       checkedServers() {
         return this.serverList.filter(item => item.isChecked === true);
       },
-      activeServers() {
-        return this.checkedServers.filter(server => server.present_state === 'active' || server.setting_state === 'active')
-      },
       // 选中的主机服务
       hostServers() {
         return this.checkedServers.filter(item => item.server_type === 'M');
@@ -69,11 +66,7 @@
       init() {
         this.offlineServers = [];
         this.unType = 0;
-        const { activeServers, $t, hostServers, backupServers, allBackupServers, mirrorServers, allMirrorServers, allBackupMirrorServers } = this;
-        console.log('abc');
-
-        // 选中的服务中，有存活的服务，请先停止， 再下线
-        if (activeServers.length) return this.$tip.error($t('dcache.cantOffline'));
+        const { $t, hostServers, backupServers, allBackupServers, mirrorServers, allMirrorServers, allBackupMirrorServers } = this;
 
         if (hostServers.length) {
           // 选中的服务有主机， 下线该模块所有的服务
@@ -95,7 +88,13 @@
             this.offlineServers = this.allBackupMirrorServers;
           }
         }
+         // 下线的服务中，有存活的服务，请先停止， 再下线
+        const activeServers = this.getActiveServers();
+        if (activeServers.length) return this.$tip.error($t('dcache.cantOffline'));
         this.show = true;
+      },
+      getActiveServers () {
+        return this.offlineServers.filter(server => server.present_state === 'active' || server.setting_state === 'active')
       },
       async sureOffline() {
         const { offlineServers, unType } = this;
