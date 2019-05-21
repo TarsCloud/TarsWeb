@@ -44,6 +44,7 @@ const RPCClientPrx = (proxy, moduleName, interfaceName, servantName, setInfo) =>
                         })();
                         return rst;
                     }catch(e){
+                        console.error(e);
                         if(e.response){
                             throw new Error(e.response && e.response.error && e.response.error.message);
                         }else{

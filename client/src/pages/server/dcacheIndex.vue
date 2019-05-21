@@ -45,7 +45,7 @@
         <let-tab-pane
           :tabkey="`${base}/publish/${serverType}`"
           :tab="$t('index.rightView.tab.patch')"
-          v-if="serverData.level === 5"
+          v-if="(serverData.level === 5 && serverType !== 'dcache')"
         ></let-tab-pane>
 
         <!--服务配置-->

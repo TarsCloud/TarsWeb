@@ -65,16 +65,17 @@
       <!--批量操作-->
       <template slot="operations">
         <let-button theme="primary" @click="expandHandler">{{$t('dcache.expand')}}</let-button>
-        <let-button theme="primary" :disabled="!hasCheckedItem" @click="shrinkageHandler">{{$t('dcache.Shrinkage')}}
+        <let-button theme="primary" :disabled="!hasCheckedServer" @click="shrinkageHandler">{{$t('dcache.Shrinkage')}}
         </let-button>
-        <let-button theme="primary" :disabled="!hasCheckedItem" @click="serverMigrationHandler">
+        <let-button theme="primary" :disabled="!hasCheckedServer" @click="serverMigrationHandler">
           {{$t('dcache.serverMigration')}}
         </let-button>
-        <non-server-migration :disabled="!hasCheckedItem" :expand-servers="serverList"
+        <non-server-migration :disabled="!hasCheckedServer" :expand-servers="serverList"
                               v-if="serverList.length"></non-server-migration>
-        <let-button theme="primary" :disabled="!hasCheckedItem" @click="switchHandler">{{$t('dcache.switch')}}
+        <let-button theme="primary" :disabled="!hasCheckedServer" @click="switchHandler">{{$t('dcache.switch')}}
         </let-button>
-        <offline :disabled="!hasCheckedItem" :server-list="serverList" @success-fn="getServerList"></offline>
+        <offline :disabled="!hasCheckedServer" :server-list="serverList" @success-fn="getServerList"></offline>
+        <offline :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList"></offline>
       </template>
     </let-table>
 
@@ -418,11 +419,12 @@
   import Expand from './expand.vue'
   import ServerMigration from './serverMigration.vue'
   import nonServerMigration from './nonServerMigration.vue'
+  import batchPublish from './batchPublish.vue'
   import offline from './offline.vue'
   import { hasOperation, reduceDcache, switchServer, getCacheServerList } from '@/dcache/interface.js'
 
   export default {
-    components: { Expand, ServerMigration, nonServerMigration, offline },
+    components: { Expand, ServerMigration, nonServerMigration, offline, batchPublish },
     name: 'ServerManage',
     data() {
       return {
@@ -509,9 +511,12 @@
         }
         return this.checkServantEndpoint(this.servantDetailModal.model.endpoint);
       },
-      hasCheckedItem() {
+      hasCheckedServer() {
         return this.serverList.filter(item => item.isChecked === true).length !== 0;
       },
+      checkedServers() {
+        return this.serverList.filter(item => item.isChecked === true);
+      }
     },
     watch: {
       isCheckedAll() {
