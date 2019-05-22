@@ -5,16 +5,18 @@
       ref="detailForm"
     >
       <let-form-item :label="$t('module.name')" itemWidth="240px" required>
-        <let-input
-          size="small"
-          v-model="model.module_name"
-          :placeholder="$t('module.namingRule')"
-          required
-          :required-tip="$t('deployService.table.tips.empty')"
-          pattern="^[a-zA-Z][a-zA-Z0-9]+$"
-          :pattern-tip="$t('module.namingRule')"
-        >
-        </let-input>
+        <let-poptip placement="top" :content="$t('module.namingRule')" trigger="hover">
+          <let-input
+            size="small"
+            v-model="model.module_name"
+            :placeholder="$t('module.namingRule')"
+            required
+            :required-tip="$t('deployService.table.tips.empty')"
+            pattern="^[a-zA-Z][a-zA-Z0-9]+$"
+            :pattern-tip="$t('module.namingRule')"
+          >
+          </let-input>
+        </let-poptip>
       </let-form-item>
       <!-- <let-form-item :label="$t('module.keyType')" itemWidth="240px" required v-if="module.cache_version == 1">
         <let-select
@@ -251,6 +253,25 @@
   }
 </script>
 
-<style>
+<style lang="postcss">
+  .poptip__popper {
+    max-width: 420px;
+  }
+  .let-poptip_top {
+    width: auto !important;
+    padding: 4px 8px;
+    background: #f56c77;
+    color: white;
+    border-radius: 6px;
+    top: -25px !important;
 
+    .let-poptip__arrow:after {
+      border-top-color: #f56c77;
+    }
+
+    .let-poptip__content {
+      font-size: 14px;
+      white-space: nowrap;
+    }
+  }
 </style>
