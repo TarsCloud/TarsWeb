@@ -75,7 +75,7 @@
         <let-button theme="primary" :disabled="!hasCheckedServer" @click="switchHandler">{{$t('dcache.switch')}}
         </let-button>
         <offline :disabled="!hasCheckedServer" :server-list="serverList" @success-fn="getServerList"></offline>
-        <offline :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList"></offline>
+        <batch-publish :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList"></batch-publish>
       </template>
     </let-table>
 

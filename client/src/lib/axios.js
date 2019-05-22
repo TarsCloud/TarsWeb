@@ -10,9 +10,8 @@ const axios = Axios.create({
 
     // 上传数据不序列化
     if (headers['Content-Type'] === 'multipart/form-data') {return data}
-    // console.log(qs.stringify(data), data)
+    if (headers['Content-Type'] === 'application/json') {return JSON.stringify(data)}
     return qs.stringify(data);
-    // return JSON.stringify(data);
   }]
 });
 

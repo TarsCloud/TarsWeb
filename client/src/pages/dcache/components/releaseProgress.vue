@@ -11,11 +11,11 @@
 </template>
 
 <script>
-  import {getReleaseProgress} from '@/dcache/interface.js'
+  import { getReleaseProgress } from '@/dcache/interface.js'
   export default {
     props: {
       releaseId: {
-        type: Number,
+        type: [Number, String],
         required: true
       }
     },

@@ -82,12 +82,12 @@ PatchController.uploadPatchPackage = async (ctx) => {
 };
 
 PatchController.serverPatchList = async (ctx) => {
-	let {application, module_name, curr_page = 0, page_size = 0} = ctx.paramsObj;
+	let { application, module_name, curr_page = 0, page_size = 0, package_type } = ctx.paramsObj;
 	try {
 		if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
-			let ret = await PatchService.getServerPatch(application, module_name, parseInt(curr_page), parseInt(page_size));
+			let ret = await PatchService.getServerPatch(application, module_name, parseInt(curr_page), parseInt(page_size), package_type);
 			ctx.makeResObj(200, '', {
 				count: ret.count,
 				rows: util.viewFilter(ret.rows, {

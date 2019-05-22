@@ -22,8 +22,8 @@ PatchService.addServerPatch = async (params) => {
 	return await PatchDao.insertServerPatch(params);
 };
 
-PatchService.getServerPatch = async (application, server_name, curPage, pageSize) => {
-	return await PatchDao.getServerPatch(`${application}.${server_name}`, curPage, pageSize);
+PatchService.getServerPatch = async (application, server_name, curPage, pageSize, package_type) => {
+	return await PatchDao.getServerPatch(`${application}.${server_name}`, curPage, pageSize, package_type);
 };
 
 PatchService.deleteServerPatchById = async (id) => {

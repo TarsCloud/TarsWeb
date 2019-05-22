@@ -191,6 +191,7 @@
     "Migration": "Migration",
     "serverMigration": "The deployment of the migration",
     "nonServerMigration": "Non-deployed migration",
+    "batchPublish": "batch publish",
     "migrationMethod": "migration method",
     "migrationMethod1": "Complete data migration",
     "migrationMethod2": "No data migration",

@@ -215,6 +215,7 @@
     "Migration": "迁移",
     "serverMigration": "部署迁移",
     "nonServerMigration": "非部署迁移",
+    "batchPublish": "批量发布",
     "migrationMethod": "迁移方式",
     "migrationMethod1": "完整数据迁移",
     "migrationMethod2": "无数据迁移",

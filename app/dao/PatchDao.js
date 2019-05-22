@@ -31,7 +31,7 @@ module.exports = {
 		return await tPatchTask.create(params);
 	},
 
-	getServerPatch: async (server, curPage, pageSize) => {
+	getServerPatch: async (server, curPage, pageSize, package_type) => {
 		var opts = {
 			order: [
 				['id', 'desc']
@@ -40,6 +40,7 @@ module.exports = {
 				server: server
 			}
 		};
+		if (package_type !== undefined) opts.where.package_type = package_type;
 		if (curPage && pageSize) {
 			Object.assign(opts, {
 				limit: pageSize,
