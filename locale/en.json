@@ -270,6 +270,10 @@
       "switchResult": "switch result",
       "groupStatus": "group status",
       "switchMethod": "switch method"
+    },
+    "batch": {
+      "restart": "batch restart",
+      "stop": "batch stop"
     }
   },
   "service": {
