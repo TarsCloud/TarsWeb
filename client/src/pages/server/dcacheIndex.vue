@@ -66,7 +66,7 @@
         <let-tab-pane
           :tabkey="`${base}/property-monitor/${serverType}`"
           :tab="$t('index.rightView.tab.propertyMonitor')"
-          v-if="serverData.level === 5"
+          v-if="serverData.level === 5 && this.$route.params.serverType !== 'dcache'"
         ></let-tab-pane>
 
 
