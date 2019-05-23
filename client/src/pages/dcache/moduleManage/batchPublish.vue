@@ -47,23 +47,23 @@
       </let-table>
     </let-modal>
     <let-modal
-      v-model="releaseId"
+      v-model="releaseIng"
       :footShow="false"
       :closeOnClickBackdrop="true"
       :width="'1000px'"
       :title="$t('dcache.batchPublish')"
     >
-      <release-progress v-if="!!releaseId" :release-id="releaseId"></release-progress>
+      <tars-release-progress v-if="!!releaseId && releaseIng" :release-id="releaseId"></tars-release-progress>
     </let-modal>
   </section>
 </template>
 <script>
   import { serverPatchList, addTask } from '@/dcache/interface.js'
-  import ReleaseProgress from './../components/releaseProgress.vue'
+  import tarsReleaseProgress from './../components/tarsReleaseProgress.vue'
   import Mixin from './mixin.js'
 
   export default {
-    components: { ReleaseProgress },
+    components: { tarsReleaseProgress },
     mixins: [Mixin],
     props: {
       disabled: Boolean,
@@ -79,7 +79,7 @@
     computed: {
       cacheVersion() {
         return this.checkedServers.length ? this.checkedServers[0].cache_version : 1;
-      }
+      },
     },
     data() {
       return {
@@ -94,12 +94,14 @@
           pageSize: 5,
           currPage: 1,
         },
+        releaseIng: false,
       }
     },
     methods: {
       init() {
         this.show = true;
         this.releaseId = null;
+        this.releaseIng = false;
         this.publishId = null;
         this.getVersionList();
       },
@@ -132,7 +134,7 @@
         console.log(items);
 
         const releaseId = await addTask({ items });
-        console.log(releaseId);
+        this.releaseIng = true;
         this.releaseId = releaseId;
 
       },

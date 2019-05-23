@@ -51,7 +51,7 @@ export function transferDCacheGroup({ appName, moduleName, srcGroupName, dstGrou
 }
 
 /**
- * 获取发布进度
+ * 获取opt发布进度
  * @param releaseId
  */
 export function getReleaseProgress({ releaseId }) {
@@ -59,6 +59,20 @@ export function getReleaseProgress({ releaseId }) {
     method: 'get',
     url: '/cache/getReleaseProgress',
     params: { releaseId }
+  })
+}
+
+/**
+ * 获取 tars 任务进度接口
+ * @param releaseId
+ */
+export function getTarsReleaseProgress({ releaseId }) {
+  return Axios({
+    method: 'get',
+    url: '/task',
+    params: {
+      task_no: releaseId
+    }
   })
 }
 
