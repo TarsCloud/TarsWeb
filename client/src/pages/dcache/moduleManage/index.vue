@@ -418,6 +418,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   import Expand from './expand.vue'
   import ServerMigration from './serverMigration.vue'
   import nonServerMigration from './nonServerMigration.vue'
@@ -607,6 +608,10 @@
           //存在不同版本的服务，不允许迁移
           let isSamePatchVersion = this.checkPatchVersion();
           if (!isSamePatchVersion) throw new Error(this.$t('dcache.noTheSamePatchVersion'));
+
+          // 迁移服务只允许选择一个组
+          const uniqByGroupName = _.uniqBy(this.checkedServers, 'group_name');
+          if (uniqByGroupName.length > 1) throw new Error(this.$t('dcache.oneGroup'));
 
           // 该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止再迁移
           let server = this.serverList[0];
