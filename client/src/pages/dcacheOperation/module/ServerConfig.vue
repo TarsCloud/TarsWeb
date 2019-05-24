@@ -3,19 +3,24 @@
     <let-form inline ref="detailForm">
       <let-form-group :title="$t('module.serverInfo')" inline label-position="top">
         <let-table ref="table" :data="moduleData" :empty-msg="$t('common.nodata')">
-          <let-table-column :title="$t('module.name')" prop="module_name" width="20%">
+          <let-table-column :title="$t('module.name')" prop="module_name" >
             <template slot-scope="scope">
               {{scope.row.module_name}}
             </template>
           </let-table-column>
-          <let-table-column :title="$t('module.serverGroup')" prop="group_name" width="15%">
+          <let-table-column :title="$t('module.serverGroup')" prop="group_name">
             <template slot-scope="scope">
               {{scope.row.group_name}}
             </template>
           </let-table-column>
-          <let-table-column :title="$t('service.serverName')" prop="server_name" width="20%">
+          <let-table-column :title="$t('service.serverName')" prop="server_name" >
             <template slot-scope="scope">
               {{scope.row.server_name}}
+            </template>
+          </let-table-column>
+          <let-table-column :title="$t('deployService.form.serviceType')" prop="server_type">
+            <template slot-scope="scope">
+              {{mapServerType(scope.row.server_type)}}
             </template>
           </let-table-column>
           <let-table-column :title="$t('service.serverIp')" prop="server_ip">
@@ -28,21 +33,6 @@
               />
             </template>
           </let-table-column>
-          <let-table-column :title="$t('module.deployArea')" prop="area">
-            <template slot-scope="scope">
-              {{scope.row.area}}
-            </template>
-          </let-table-column>
-          <let-table-column :title="$t('deployService.form.serviceType')" prop="server_type">
-            <template slot-scope="scope">
-              {{mapServerType(scope.row.server_type)}}
-            </template>
-          </let-table-column>
-          <let-table-column :title="$t('module.memorySize')" prop="memory">
-            <template slot-scope="scope">
-              {{scope.row.memory}}
-            </template>
-          </let-table-column>
           <let-table-column :title="$t('module.shmKey')" prop="shmKey">
             <template slot-scope="scope">
               <let-input
@@ -52,6 +42,29 @@
                 required
                 :required-tip="$t('deployService.table.tips.empty')"
               />
+            </template>
+          </let-table-column>
+          <let-table-column :title="$t('deployService.form.template')" prop="template_name">
+            <template slot-scope="scope">
+              <let-select
+                size="small"
+                v-model="scope.row.template_name"
+                required
+                :required-tip="$t('deployService.form.templateTips')"
+              >
+                <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
+              </let-select>
+            </template>
+          </let-table-column>
+          <let-table-column :title="$t('module.deployArea')" prop="area">
+            <template slot-scope="scope">
+              {{scope.row.area}}
+            </template>
+          </let-table-column>
+
+          <let-table-column :title="$t('module.memorySize')" prop="memory">
+            <template slot-scope="scope">
+              {{scope.row.memory}}
             </template>
           </let-table-column>
         </let-table>
@@ -254,6 +267,7 @@
 
 <script>
   import _ from 'lodash';
+  import { getModuleConfigInfo, templateNameList } from '@/dcache/interface.js'
   const moduleModel = () => (
     {
       module_id: 17,
@@ -285,6 +299,7 @@
       return {
         moduleId,
         moduleData: [],
+        templates: [],
         isMkCache: false,
         multiKey: false,
         dataTypeOption,
@@ -356,9 +371,14 @@
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       },
-      getModuleConfigInfo () {
-        let {moduleId} = this.$route.params;
-        this.$ajax.getJSON('/server/api/get_module_config_info', {moduleId}).then((data) => {
+      async getModuleConfigInfo () {
+        try {
+          //  加载模版
+          let templates = await templateNameList();
+          this.templates = templates;
+
+          let { moduleId } = this.$route.params;
+          let data = await getModuleConfigInfo({ moduleId });
           let cacheVersion = data.ModuleBase.cache_version === 1 ? 'KV' : 'MKV';
           data.group_name = data.module_name + cacheVersion + 'Group1';
           data.area = data.idc_area;
@@ -366,7 +386,6 @@
           data.server_type = 0;
           data.memory = Math.ceil(data.per_record_avg * data.total_record * 10000 / 1024 / 1024 / 1024);
           this.moduleData.push(data);
-
           let backData = {...data};
           backData.server_name = data.module_name + cacheVersion + 'CacheServer1-2';
           backData.server_type = 1;
@@ -382,12 +401,18 @@
             });
           }
 
+          // 设置 cache 服务默认 DCache.Cache 模版
+          let index = templates.indexOf('DCache.Cache');
+          if (index > -1)  this.moduleData.forEach(item => item.template_name = templates[index]);
+
+
           // 二期Cache 或者 一期 cache + 持久化 都需要填写数据结构。 一期暂时不用填写。
           this.isMkCache = data.ModuleBase.cache_version === 2 //|| data.cache_module_type === 2;
           this.multiKey = data.ModuleBase.cache_version === 2 && data.ModuleBase.mkcache_struct === 1;
-        }).catch((err) => {
+        } catch (err) {
+          console.error(err);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
+        }
       },
       mapServerType (key) {
         if (key === 0) return this.$t('module.mainServer');

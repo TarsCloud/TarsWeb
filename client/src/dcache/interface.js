@@ -370,3 +370,28 @@ export function addTask({ serial = true, items = [{ server_id: '', command: 'pat
     }
   })
 }
+
+/**
+ * 获取模块信息
+ * @param moduleId
+ */
+export function getModuleConfigInfo({ moduleId }) {
+  return Axios({
+    method: 'get',
+    url: '/get_module_config_info',
+    params: {
+      moduleId
+    }
+  })
+}
+
+/**
+ * 获取模版信息
+ */
+export function templateNameList() {
+  return Axios({
+    method: 'get',
+    url: '/template_name_list',
+    params: {},
+  })
+}

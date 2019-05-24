@@ -210,7 +210,7 @@ struct ReleaseInfo
     5 require string user;          //发布用户
     6 require string md5;           //发布包的md5
     7 require int status = 0;       //发布线程状态管理，前台不用填写。
-    8 optional string error;
+    8 optional string errmsg;
     9 optional string ostype;
 };
 
@@ -291,7 +291,7 @@ struct UninstallRsp
 
 struct UninstallProgressRsp
 {
-    0 require string percent;
+    0 require int percent;
     1 require string errMsg;
 };
 
@@ -314,7 +314,7 @@ struct ReleaseProgressReq
 struct ReleaseProgressRsp
 {
     0 require int releaseId;
-    1 require string percent;
+    1 require int percent;
     2 require vector<ReleaseInfo> releaseInfo;
     3 require string errMsg;
 };
