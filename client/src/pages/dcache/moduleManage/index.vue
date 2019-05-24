@@ -76,6 +76,8 @@
         </let-button>
         <offline :disabled="!hasCheckedServer" :server-list="serverList" @success-fn="getServerList"></offline>
         <batch-publish :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList"></batch-publish>
+        <batch-operation :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="restart"></batch-operation>
+        <batch-operation :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="stop"></batch-operation>
       </template>
     </let-table>
 
@@ -420,11 +422,12 @@
   import ServerMigration from './serverMigration.vue'
   import nonServerMigration from './nonServerMigration.vue'
   import batchPublish from './batchPublish.vue'
+  import batchOperation from './batchOperation.vue'
   import offline from './offline.vue'
   import { hasOperation, reduceDcache, switchServer, getCacheServerList } from '@/dcache/interface.js'
 
   export default {
-    components: { Expand, ServerMigration, nonServerMigration, offline, batchPublish },
+    components: { Expand, ServerMigration, nonServerMigration, offline, batchPublish, batchOperation },
     name: 'ServerManage',
     data() {
       return {

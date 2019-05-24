@@ -294,6 +294,10 @@
       "switchResult": "切换结果",
       "groupStatus": "组状态",
       "switchMethod": "切换方式"
+    },
+    "batch": {
+      "restart": "批量重启",
+      "stop": "批量停止"
     }
   },
   "service": {
