@@ -21,7 +21,7 @@
       :width="'1000px'"
       :title="$t(`dcache.batch.${type}`)"
     >
-      <tars-release-progress v-if="!!releaseId && releaseIng" :release-id="releaseId"></tars-release-progress>
+      <tars-release-progress v-if="!!releaseId && releaseIng" :release-id="releaseId" @close-fn="this.getServerList"></tars-release-progress>
     </let-modal>
   </section>
 </template>
@@ -80,6 +80,9 @@
         this.releaseIng = true;
         this.releaseId = releaseId;
       },
+      getServerList () {
+        this.$emit('success-fn');
+      }
     }
   }
 </script>
