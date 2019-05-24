@@ -82,7 +82,7 @@
           <template slot-scope="{row: { percent, errMsg }}">
             <span v-if="!errMsg">{{percent}}</span>
             <p style="color: red" v-else="errMsg">{{ errMsg }}</p>
-            <icon v-if="percent !== '100' && !errMsg" name="spinner" class="spinner-icon"/>
+            <icon v-if="percent !== 100 && !errMsg" name="spinner" class="spinner-icon"/>
           </template>
         </let-table-column>
       </let-table>
