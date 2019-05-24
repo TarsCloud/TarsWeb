@@ -179,7 +179,7 @@
         try {
           const { percent } = await getReleaseProgress({ releaseId: item.releaseId });
           item.percent = percent;
-          if (percent === '100') {
+          if (percent === 100) {
             clearTimeout(item.timer);
           } else {
             item.timer = setTimeout(this.repeatGetReleaseProgress.bind(this, item), 1000);

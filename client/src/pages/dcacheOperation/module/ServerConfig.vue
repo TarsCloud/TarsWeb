@@ -402,8 +402,8 @@
           }
 
           // 设置 cache 服务默认 DCache.Cache 模版
-          let index = templates.indexOf('DCache.Cache');
-          if (index > -1)  this.moduleData.forEach(item => item.template_name = templates[index]);
+          // let index = templates.indexOf('DCache.Cache');
+          // if (index > -1)  this.moduleData.forEach(item => item.template_name = templates[index]);
 
 
           // 二期Cache 或者 一期 cache + 持久化 都需要填写数据结构。 一期暂时不用填写。
