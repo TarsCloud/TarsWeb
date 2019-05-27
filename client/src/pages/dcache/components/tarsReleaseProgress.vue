@@ -70,6 +70,7 @@
     },
     destroyed () {
     	if (this.timer) window.clearTimeout(this.timer);
+      this.$emit('close-fn');
     }
   }
 </script>

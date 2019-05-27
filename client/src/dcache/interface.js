@@ -357,7 +357,7 @@ export function serverPatchList({ application = 'DCache', moduleName = 'DCacheSe
   })
 }
 
-export function addTask({ serial = true, items = [{ server_id: '', command: 'patch_tars', parameters: { patch_id: 0, bak_flag: '', group_name: '' } }] }) {
+export function addTask({ serial = false, items = [{ server_id: '', command: 'patch_tars', parameters: { patch_id: 0, bak_flag: '', group_name: '' } }] }) {
   return Axios({
     method: 'post',
     url: '/add_task',
