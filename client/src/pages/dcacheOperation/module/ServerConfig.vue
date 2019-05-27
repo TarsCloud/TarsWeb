@@ -44,7 +44,7 @@
               />
             </template>
           </let-table-column>
-          <let-table-column :title="$t('deployService.form.template')" prop="template_name">
+          <let-table-column :title="$t('deployService.form.template')" >
             <template slot-scope="scope">
               <let-select
                 size="small"
@@ -385,7 +385,7 @@
           data.server_name = data.module_name + cacheVersion + 'CacheServer1-1';
           data.server_type = 0;
           data.memory = Math.ceil(data.per_record_avg * data.total_record * 10000 / 1024 / 1024 / 1024);
-          this.moduleData.push(data);
+          this.moduleData.push({...data});
           let backData = {...data};
           backData.server_name = data.module_name + cacheVersion + 'CacheServer1-2';
           backData.server_type = 1;
@@ -400,11 +400,8 @@
               this.moduleData.push(mirItem);
             });
           }
-
           // 设置 cache 服务默认 DCache.Cache 模版
-          // let index = templates.indexOf('DCache.Cache');
-          // if (index > -1)  this.moduleData.forEach(item => item.template_name = templates[index]);
-
+          this.moduleData = this.moduleData.map(item =>  ({ ...item, 'template_name': templates.includes('DCache.Cache') ? 'DCache.Cache' : 'tars.default' }));
 
           // 二期Cache 或者 一期 cache + 持久化 都需要填写数据结构。 一期暂时不用填写。
           this.isMkCache = data.ModuleBase.cache_version === 2 //|| data.cache_module_type === 2;

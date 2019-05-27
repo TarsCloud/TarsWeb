@@ -274,7 +274,9 @@
     "batch": {
       "restart": "batch restart",
       "stop": "batch stop"
-    }
+    },
+    "execute": "in execution...",
+    "executeSuccess": "execution is completed "
   },
   "service": {
     "serverName": "The service name",

@@ -12,7 +12,7 @@
         </template>
       </let-table-column>
     </let-table>
-    <p ref="progressTip">{{success? '发布完成': '发布中...'}}</p>
+    <p ref="progressTip">{{$t(success ? 'dcache.executeSuccess' : 'dcache.execute') }}</p>
   </div>
 </template>
 
@@ -57,6 +57,7 @@
 
           }
         } catch (err) {
+          this.success = true;
           console.error(err);
           this.$tip.error(err.message)
         }

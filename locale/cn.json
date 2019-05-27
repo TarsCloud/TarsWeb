@@ -298,7 +298,9 @@
     "batch": {
       "restart": "批量重启",
       "stop": "批量停止"
-    }
+    },
+    "execute": "执行中...",
+    "executeSuccess": "执行成功"
   },
   "service": {
     "serverName": "服务名",
