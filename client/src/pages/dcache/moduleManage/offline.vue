@@ -8,14 +8,14 @@
       :width="'1000px'"
       :title="$t('dcache.offline')"
     >
-      <p style="color: red">{{$t(tip)}}</p>
+      <p style="color: red">{{$t(tip)}}{{canOffline ? '' : `,${$t('dcache.cantOffline')}`}}</p>
       <let-table ref="table" :data="offlineServers" :empty-msg="$t('common.nodata')">
         <!-- 模块名 -->
         <let-table-column :title="$t('module.name')" prop="module_name"></let-table-column>
         <let-table-column :title="$t('service.serverName')" prop="server_name"></let-table-column>
         <let-table-column :title="$t('service.serverIp')" prop="node_name"></let-table-column>
       </let-table>
-      <let-button :disabled="!offlineServers.length" size="small" theme="primary" @click="sureOffline">{{$t('dcache.sureOffline')}}</let-button>
+      <let-button :disabled="!canOffline" size="small" theme="primary" @click="sureOffline">{{$t('dcache.sureOffline')}}</let-button>
     </let-modal>
   </section>
 </template>
@@ -31,7 +31,8 @@
         show: false,
         offlineServers: [],
         tip: '',
-        unType: 0
+        unType: 0,
+        canOffline: false
       }
     },
     computed: {
@@ -66,6 +67,7 @@
       init() {
         this.offlineServers = [];
         this.unType = 0;
+        this.canOffline = false;
         const { $t, hostServers, backupServers, allBackupServers, mirrorServers, allMirrorServers, allBackupMirrorServers } = this;
 
         if (hostServers.length) {
@@ -90,7 +92,7 @@
         }
          // 下线的服务中，有存活的服务，请先停止， 再下线
         const activeServers = this.getActiveServers();
-        if (activeServers.length) return this.$tip.error($t('dcache.cantOffline'));
+        if (!activeServers.length) this.canOffline = true;
         this.show = true;
       },
       getActiveServers () {

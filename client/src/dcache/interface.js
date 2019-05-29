@@ -395,3 +395,10 @@ export function templateNameList() {
     params: {},
   })
 }
+
+export function getRegionList() {
+  return Axios({
+    method: 'get',
+    url: '/get_region_list'
+  })
+}

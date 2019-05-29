@@ -55,7 +55,7 @@
 
 <script>
   import Ajax from '@/plugins/ajax'
-
+  import { getRegionList } from '@/dcache/interface.js'
   const getInitialModel = () => ({
     name: '',
     admin: '',
@@ -91,30 +91,27 @@
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           });
         }
+      },
+      async getRegionList() {
+        try {
+          let regions = await getRegionList();
+          this.regions = regions;
+        } catch (err) {
+          console.error(err);
+
+        }
       }
     },
     created() {
-      window.a = this;
+      this.getRegionList();
     },
     beforeRouteEnter(to, from, next) {
-      Ajax.getJSON('/server/api/get_region_list').then((regions) => {
-        if (regions.length) {
-          next(vm => {
-            vm.regions = regions
-          })
-        } else {
-          // next(vm => {
-          //   vm.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.createRegionTips')}`);
-          //   console.log('abc');
-          //   vm.$router.push('/operation/region')
-          // })
-        }
-      }).catch((err) => {
-        alert(err.message || err.err_msg);
-      });
+
       Ajax.getJSON('/server/api/has_dcahce_patch_package').then((hasDefaultPackage) => {
         if (!hasDefaultPackage) {
+          console.log(hasDefaultPackage);
           next(vm => {
+            console.log('aaaaa')
             vm.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.uploadPatchPackage')}`);
             vm.$router.push('/releasePackage/proxyList')
           })
@@ -122,7 +119,7 @@
           next()
         }
       }).catch((err) => {
-        alert(err.message || err.err_msg);
+        console.error(err.message || err.err_msg);
       });
 
     }

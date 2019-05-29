@@ -3307,8 +3307,6 @@ DCache.RecoverMirrorReq = function() {
     this.moduleName = "";
     this.groupName = "";
     this.mirrorIdc = "";
-    this.dbFlag = "";
-    this.enableErase = "";
     this._classname = "DCache.RecoverMirrorReq";
 };
 DCache.RecoverMirrorReq._classname = "DCache.RecoverMirrorReq";
@@ -3320,8 +3318,6 @@ DCache.RecoverMirrorReq._readFrom = function (is) {
     tmp.moduleName = is.readString(1, true, "");
     tmp.groupName = is.readString(2, true, "");
     tmp.mirrorIdc = is.readString(3, true, "");
-    tmp.dbFlag = is.readString(4, true, "");
-    tmp.enableErase = is.readString(5, true, "");
     return tmp;
 };
 DCache.RecoverMirrorReq.prototype._writeTo = function (os) {
@@ -3329,8 +3325,6 @@ DCache.RecoverMirrorReq.prototype._writeTo = function (os) {
     os.writeString(1, this.moduleName);
     os.writeString(2, this.groupName);
     os.writeString(3, this.mirrorIdc);
-    os.writeString(4, this.dbFlag);
-    os.writeString(5, this.enableErase);
 };
 DCache.RecoverMirrorReq.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -3346,9 +3340,7 @@ DCache.RecoverMirrorReq.prototype.toObject = function() {
         "appName" : this.appName,
         "moduleName" : this.moduleName,
         "groupName" : this.groupName,
-        "mirrorIdc" : this.mirrorIdc,
-        "dbFlag" : this.dbFlag,
-        "enableErase" : this.enableErase
+        "mirrorIdc" : this.mirrorIdc
     };
 };
 DCache.RecoverMirrorReq.prototype.readFromObject = function(json) { 
@@ -3356,8 +3348,6 @@ DCache.RecoverMirrorReq.prototype.readFromObject = function(json) {
     _hasOwnProperty.call(json, "moduleName") && (this.moduleName = json.moduleName);
     _hasOwnProperty.call(json, "groupName") && (this.groupName = json.groupName);
     _hasOwnProperty.call(json, "mirrorIdc") && (this.mirrorIdc = json.mirrorIdc);
-    _hasOwnProperty.call(json, "dbFlag") && (this.dbFlag = json.dbFlag);
-    _hasOwnProperty.call(json, "enableErase") && (this.enableErase = json.enableErase);
     return this;
 };
 DCache.RecoverMirrorReq.prototype.toBinBuffer = function () {

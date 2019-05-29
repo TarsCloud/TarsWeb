@@ -181,7 +181,7 @@ struct TransferRecord
 struct SwitchRecord
 {
     0  require string appName;          //application name
-    1  require string moduleName;       //module name
+    1  require string moduleName;       //module name©
     2  require string groupName;        //group name
     3  require string masterServer;     //masterServer
     4  require string slaveServer;      //slaveServer
@@ -526,8 +526,6 @@ struct RecoverMirrorReq
     1 require string moduleName;
     2 require string groupName;
     3 require string mirrorIdc;
-    4 require string dbFlag;        // 是否有DB
-    5 require string enableErase;   // 是否使能淘汰
 };
 
 struct RecoverMirrorRsp

@@ -160,21 +160,22 @@
     apply_id: '',
   });
   const cacheModuleType = [
-    {key: '1', value: 'cache.title'},
-    {key: '2', value: 'cache.cachePersistent'},
+    { key: '1', value: 'cache.title' },
+    { key: '2', value: 'cache.cachePersistent' },
   ];
   const keyTypeOption = [
-    {key: '0', value: 'string'},
-    {key: '1', value: 'int'},
-    {key: '2', value: 'longlong'},
+    { key: '0', value: 'string' },
+    { key: '1', value: 'int' },
+    { key: '2', value: 'longlong' },
   ];
   import Ajax from '@/plugins/ajax'
+
   export default {
-    data () {
+    data() {
       const cacheTypeOption = [
-        {value: '1', text: this.$t('cache.cacheTypeTip1')},
-        {value: '2', text: this.$t('cache.cacheTypeTip2')},
-        {value: '3', text: this.$t('cache.cacheTypeTip3')},
+        { value: '1', text: this.$t('cache.cacheTypeTip1') },
+        { value: '2', text: this.$t('cache.cacheTypeTip2') },
+        { value: '3', text: this.$t('cache.cacheTypeTip3') },
       ];
       return {
         cacheTypeOption,
@@ -190,7 +191,7 @@
       }
     },
     methods: {
-      addModuleConfig () {
+      addModuleConfig() {
         const regex = new RegExp('^' + this.app_name + '[a-zA-Z0-9]+$');
         if (!regex.test(this.model.module_name)) {
           this.$tip.error(this.$t('module.namingError'));
@@ -208,27 +209,27 @@
           });
         }
       },
-      changeSelect () {
+      changeSelect() {
         this.model.set_area = [];
         let setRegions = this.regions.concat();
         setRegions.splice(setRegions.indexOf(setRegions.find(item => item.label == this.model.idc_area)), 1);
         this.setRegions = setRegions;
       },
-     getRegionList () {
-       this.$ajax.getJSON('/server/api/get_region_list').then((regions) => {
-         if (regions.length) {
-           this.regions = regions
-         } else {
-           // this.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.createRegionTips')}`);
-           // this.$router.push('region')
-         }
-       }).catch((err) => {
-         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-       });
-     },
-      getModuleInfo () {
-        let {moduleId} = this.$route.params;
-        this.$ajax.getJSON('/server/api/get_module_info', {moduleId}).then((data) => {
+      getRegionList() {
+        this.$ajax.getJSON('/server/api/get_region_list').then((regions) => {
+          if (regions.length) {
+            this.regions = regions
+          } else {
+            // this.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.createRegionTips')}`);
+            // this.$router.push('region')
+          }
+        }).catch((err) => {
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        });
+      },
+      getModuleInfo() {
+        let { moduleId } = this.$route.params;
+        this.$ajax.getJSON('/server/api/get_module_info', { moduleId }).then((data) => {
           this.model.apply_id = data.apply_id;
           this.model.module_id = data.id;
           this.module = data;
@@ -237,8 +238,8 @@
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       },
-      getAppName (applyId) {
-        this.$ajax.getJSON('/server/api/get_apply_and_router_and_proxy', {applyId}).then((apply) => {
+      getAppName(applyId) {
+        this.$ajax.getJSON('/server/api/get_apply_and_router_and_proxy', { applyId }).then((apply) => {
           this.app_name = apply.name || '';
           this.model.module_name = this.app_name;
         }).catch((err) => {
@@ -246,7 +247,7 @@
         });
       }
     },
-    created () {
+    created() {
       this.getRegionList();
       this.getModuleInfo();
     }
@@ -254,24 +255,36 @@
 </script>
 
 <style lang="postcss">
-  .poptip__popper {
-    max-width: 420px;
-  }
-  .let-poptip_top {
-    width: auto !important;
-    padding: 4px 8px;
-    background: #f56c77;
-    color: white;
-    border-radius: 6px;
-    top: -25px !important;
 
-    .let-poptip__arrow:after {
-      border-top-color: #f56c77;
+  .page_operation_module_info {
+    .poptip__popper {
+      max-width: 420px;
     }
 
-    .let-poptip__content {
-      font-size: 14px;
-      white-space: nowrap;
+    .let-poptip {
+      display: block;
+    }
+
+    .let-poptip__trigger {
+      display: block;
+    }
+
+    .let-poptip_top {
+      width: auto !important;
+      padding: 4px 8px;
+      background: #f56c77;
+      color: white;
+      border-radius: 6px;
+      top: -25px !important;
+
+      .let-poptip__arrow:after {
+        border-top-color: #f56c77;
+      }
+
+      .let-poptip__content {
+        font-size: 14px;
+        white-space: nowrap;
+      }
     }
   }
 </style>
