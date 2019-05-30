@@ -81,6 +81,7 @@
         this.releaseId = releaseId;
       },
       getServerList () {
+        this.show = false;
         this.$emit('success-fn');
       }
     }

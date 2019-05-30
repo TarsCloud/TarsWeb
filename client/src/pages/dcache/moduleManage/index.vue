@@ -685,7 +685,11 @@
         try {
           const { application, module_name } = this.serverData;
           const data = await getCacheServerList({ appName: application, moduleName: module_name });
-          data.forEach(item => item.isChecked = false);
+          data.forEach((item) => {
+            const preItem = this.serverList.find(subItem => subItem.id === item.id);
+            preItem ? item.isChecked = preItem.isChecked : item.isChecked = false;
+          });
+
           this.serverList = data;
         } catch (err) {
           console.error(err);
