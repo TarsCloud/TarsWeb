@@ -104,7 +104,7 @@ export function getRouterChange({ type = '1' }) {
   })
 }
 
-export function hasOperation({ appName, moduleName, type }) {
+export function hasOperation({ appName, moduleName, type, srcGroupName }) {
   return Axios({
     method: 'get',
     url: '/cache/hasOperation',
@@ -112,6 +112,7 @@ export function hasOperation({ appName, moduleName, type }) {
       appName,
       moduleName,
       type,
+      srcGroupName,
     }
   })
 }

@@ -76,6 +76,12 @@
 
   export default {
     mixins: [Mixin],
+    props: {
+      checkSrcGroupName: {
+        required: true,
+        type: String,
+      }
+    },
     data() {
       return {
       }
@@ -83,10 +89,10 @@
     methods: {
       async submitServerConfig() {
         if (this.$refs.detailForm.validate()) {
-          let { servers, appName, moduleName, cache_version, groupName, srcGroupName, dstGroupName, transferData } = this;
+          let { servers, appName, moduleName, cache_version, dstGroupName, transferData, checkSrcGroupName } = this;
           try {
 
-            await transferDCache({ servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, transferData });
+            await transferDCache({ servers, appName, moduleName, cache_version, srcGroupName: checkSrcGroupName, dstGroupName, transferData });
 
             this.$tip.success(this.$t('dcache.operationManage.hasServerMigration'));
             this.$emit('close');

@@ -15,12 +15,15 @@
         <let-table-column :title="$t('service.serverName')" prop="server_name"></let-table-column>
         <let-table-column :title="$t('service.serverIp')" prop="node_name"></let-table-column>
       </let-table>
-      <let-button :disabled="!canOffline" size="small" theme="primary" @click="sureOffline">{{$t('dcache.sureOffline')}}</let-button>
+      <let-button :disabled="!canOffline" size="small" theme="primary" @click="sureOffline">
+        {{$t('dcache.sureOffline')}}
+      </let-button>
     </let-modal>
   </section>
 </template>
 <script>
-  import { uninstall4DCache } from '@/dcache/interface.js'
+  import {uninstall4DCache, hasOperation} from '@/dcache/interface.js'
+
   export default {
     props: {
       disabled: Boolean,
@@ -38,6 +41,12 @@
     computed: {
       checkedServers() {
         return this.serverList.filter(item => item.isChecked === true);
+      },
+      appName() {
+        return this.checkedServers[0] && this.checkedServers[0].app_name
+      },
+      moduleName() {
+        return this.checkedServers[0] && this.checkedServers[0].module_name
       },
       // 选中的主机服务
       hostServers() {
@@ -64,38 +73,48 @@
 
     },
     methods: {
-      init() {
-        this.offlineServers = [];
-        this.unType = 0;
-        this.canOffline = false;
-        const { $t, hostServers, backupServers, allBackupServers, mirrorServers, allMirrorServers, allBackupMirrorServers } = this;
+      async init() {
+        try {
+          this.offlineServers = [];
+          this.unType = 0;
+          this.canOffline = false;
+          const { $t, hostServers, backupServers, allBackupServers, mirrorServers, allMirrorServers, allBackupMirrorServers, appName, moduleName } = this;
 
-        if (hostServers.length) {
-          // 选中的服务有主机， 下线该模块所有的服务
-          this.tip = 'dcache.hostOfflineAllServers';
-          this.offlineServers = this.serverList;
-          this.unType = 2;
-        } else {
-          if (backupServers.length) {
-            // 选中的服务有备机， 下线该模块所有的备机服务
-            this.tip = 'dcache.offlineAllBackupServers';
-            this.offlineServers = this.allBackupServers;
-          } else if (mirrorServers.length) {
-            // 选中的服务有镜像， 下线该模块所有的镜像服务
-            this.tip = 'dcache.offlineMirrorServers';
-            this.offlineServers = this.allMirrorServers;
-          } else if (backupServers.length && mirrorServers.length) {
-            // 选中的服务有备机和镜像，将下线该模块所有的备机和镜像服务
-            this.tip = 'dcache.offlineBackupMirrorServers';
-            this.offlineServers = this.allBackupMirrorServers;
+          // 该模块已经有任务在迁移操作了， 不允许再下线， 请去操作管理停止再下线
+          let hasOperationRecord = await hasOperation({ appName, moduleName });
+          if (hasOperationRecord) throw new Error(this.$t('dcache.hasMigrationOperation'));
+
+
+          if (hostServers.length) {
+            // 选中的服务有主机， 下线该模块所有的服务
+            this.tip = 'dcache.hostOfflineAllServers';
+            this.offlineServers = this.serverList;
+            this.unType = 2;
+          } else {
+            if (backupServers.length) {
+              // 选中的服务有备机， 下线该模块所有的备机服务
+              this.tip = 'dcache.offlineAllBackupServers';
+              this.offlineServers = this.allBackupServers;
+            } else if (mirrorServers.length) {
+              // 选中的服务有镜像， 下线该模块所有的镜像服务
+              this.tip = 'dcache.offlineMirrorServers';
+              this.offlineServers = this.allMirrorServers;
+            } else if (backupServers.length && mirrorServers.length) {
+              // 选中的服务有备机和镜像，将下线该模块所有的备机和镜像服务
+              this.tip = 'dcache.offlineBackupMirrorServers';
+              this.offlineServers = this.allBackupMirrorServers;
+            }
           }
+          // 下线的服务中，有存活的服务，请先停止， 再下线
+          const activeServers = this.getActiveServers();
+          if (!activeServers.length) this.canOffline = true;
+          this.show = true;
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(err.message)
         }
-         // 下线的服务中，有存活的服务，请先停止， 再下线
-        const activeServers = this.getActiveServers();
-        if (!activeServers.length) this.canOffline = true;
-        this.show = true;
       },
-      getActiveServers () {
+      getActiveServers() {
         return this.offlineServers.filter(server => server.present_state === 'active' || server.setting_state === 'active')
       },
       async sureOffline() {
@@ -113,7 +132,7 @@
           this.$tip.success('下线成功!');
           this.show = false;
           this.$emit('success-fn');
-        } catch(err) {
+        } catch (err) {
           this.$tip.error(err.message)
         } finally {
           loading.hide();

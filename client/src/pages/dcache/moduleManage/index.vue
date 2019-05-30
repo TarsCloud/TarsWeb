@@ -410,7 +410,7 @@
       :width="'1000px'"
       :title="$t('dcache.serverMigration')"
     >
-      <server-migration @close="serverMigrationCloseHandler" v-if="serverMigrationShow"
+      <server-migration @close="serverMigrationCloseHandler" v-if="serverMigrationShow" :check-src-group-name="checkSrcGroupName"
                         :expand-servers="lastGroupServers"></server-migration>
     </let-modal>
 
@@ -520,6 +520,9 @@
       },
       checkedServers() {
         return this.serverList.filter(item => item.isChecked === true);
+      },
+      checkSrcGroupName() {
+        return this.checkedServers[0] && this.checkedServers[0].group_name
       }
     },
     watch: {
@@ -614,9 +617,9 @@
           if (uniqByGroupName.length > 1) throw new Error(this.$t('dcache.oneGroup'));
 
           // 该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止再迁移
-          let server = this.serverList[0];
-          let { app_name, module_name } = server;
-          let hasOperationRecord = await hasOperation({ appName: app_name, moduleName: module_name });
+          let server = this.checkedServers[0];
+          let { app_name, module_name, group_name } = server;
+          let hasOperationRecord = await hasOperation({ appName: app_name, moduleName: module_name, srcGroupName: this.group_name });
           if (hasOperationRecord) throw new Error(this.$t('dcache.hasMigrationOperation'));
 
           this.lastGroupServers = this.getLastGroupServers();

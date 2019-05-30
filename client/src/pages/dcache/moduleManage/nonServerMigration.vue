@@ -57,7 +57,7 @@
     computed: {
       srcGroupName () {
         let checkServer = this.expandServers.find(server => server.isChecked);
-        return checkServer ? checkServer.group_name : '';
+        return checkServer.group_name;
       }
     },
     methods: {
@@ -87,8 +87,8 @@
           this.dstGroupNames = allGroupNames.filter(groupName => groupName !== groupNames[0]);
 
           // 该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止再迁移
-          const {appName, moduleName } = this;
-          let hasOperationRecord = await hasOperation({ appName, moduleName });
+          const {appName, moduleName, srcGroupName } = this;
+          let hasOperationRecord = await hasOperation({ appName, moduleName, srcGroupName });
           if (hasOperationRecord) throw new Error(this.$t('dcache.hasMigrationOperation'));
 
           this.show = true;

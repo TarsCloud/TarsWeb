@@ -70,7 +70,7 @@
 </template>
 
 <script>
-  import {expandModule} from '@/dcache/interface.js'
+  import { expandModule } from '@/dcache/interface.js'
   import Mixin from './mixin.js'
   export default {
     mixins: [Mixin],
