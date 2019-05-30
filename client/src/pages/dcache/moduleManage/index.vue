@@ -619,7 +619,7 @@
           // 该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止再迁移
           let server = this.checkedServers[0];
           let { app_name, module_name, group_name } = server;
-          let hasOperationRecord = await hasOperation({ appName: app_name, moduleName: module_name, srcGroupName: this.group_name });
+          let hasOperationRecord = await hasOperation({ appName: app_name, moduleName: module_name, srcGroupName: group_name });
           if (hasOperationRecord) throw new Error(this.$t('dcache.hasMigrationOperation'));
 
           this.lastGroupServers = this.getLastGroupServers();
