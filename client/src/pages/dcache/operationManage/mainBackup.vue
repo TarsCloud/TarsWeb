@@ -33,7 +33,7 @@
       <let-table-column :title="$t('operate.operates')" prop="appName" width="100px">
         <template slot-scope="{row}">
           <!-- <let-table-operation :title="$t('dcache.amig')" @click="ensureDelete(row)">{{$t('dcache.omig')}}</let-table-operation> -->
-          <let-table-operation :title="$t('dcache.areset')" @click="recoverMirrorStatus(row)" :disabled = "row.switchType != 2">{{$t('dcache.oreset')}}</let-table-operation>
+          <let-table-operation :title="$t('dcache.areset')" @click="recoverMirrorStatus(row)" :disabled = "!(row.switchType === 2 && row.groupStatus === 2)">{{$t('dcache.oreset')}}</let-table-operation>
           <!-- <let-table-operation :title="$t('dcache.switch')" @click="switchServer(row)">{{$t('dcache.oswitch')}}</let-table-operation> -->
         </template>
       </let-table-column>
