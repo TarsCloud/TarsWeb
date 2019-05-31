@@ -94,7 +94,8 @@ ExpandService.expand = async (params) => {
 						bak_flag: sourceServer.bak_flag,
 						base_path: sourceServer.base_path,
 						exe_path: sourceServer.exe_path,
-						start_script_path: sourceServer.start_script_path
+						start_script_path: sourceServer.start_script_path,
+						patch_version: sourceServer.patch_version,
 					});
 					server = util.leftAssign(ServerService.serverConfFields(), server);
 					let rst = await ServerDao.insertServerConf(server, transaction);
