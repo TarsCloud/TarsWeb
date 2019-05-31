@@ -28,7 +28,7 @@
           required
           :required-tip="$t('deployService.table.tips.empty')"
           @change="changeSelect('server_name')"
-          >
+        >
           <let-option v-for="d in serverNames" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
@@ -40,7 +40,7 @@
           required
           :required-tip="$t('deployService.table.tips.empty')"
           @change="changeSelect('set')"
-          >
+        >
           <let-option v-for="d in sets" :key="d" :value="d ? d : -1">
             {{d ? d : $t('serviceExpand.form.disableSet')}}
           </let-option>
@@ -53,7 +53,7 @@
           v-model="model.node_name"
           required
           :required-tip="$t('deployService.table.tips.empty')"
-          >
+        >
           <let-option v-for="d in nodeNames" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
@@ -66,7 +66,7 @@
           :placeholder="$t('serviceExpand.form.placeholder')"
           required
           :required-tip="$t('deployService.table.tips.empty')"
-          >
+        >
         </let-input>
       </let-form-item>
 
@@ -80,10 +80,10 @@
       </let-form-item>
 
       <let-form-item :label="$t('serviceExpand.form.nodeConfig')" itemWidth="100%">
-          <let-checkbox
-            v-model="model.copy_node_config">
-            {{$t('serviceExpand.form.copyNodeConfig')}}
-          </let-checkbox>
+        <let-checkbox
+          v-model="model.copy_node_config">
+          {{$t('serviceExpand.form.copyNodeConfig')}}
+        </let-checkbox>
       </let-form-item>
 
       <let-button type="sumbit" theme="primary">{{$t('serviceExpand.form.preExpand')}}</let-button>
@@ -96,13 +96,14 @@
       class="mt40"
       v-show="previewItems.length > 0"
     >
-      <let-table ref="table" :data="previewItems"  :empty-msg="$t('common.nodata')">
+      <let-table ref="table" :data="previewItems" :empty-msg="$t('common.nodata')">
         <let-table-column>
           <template slot="head" slot-scope="props">
             <let-checkbox v-model="isCheckedAll"></let-checkbox>
           </template>
           <template slot-scope="scope">
-            <let-checkbox v-model="scope.row.isChecked" v-if="scope.row.status == $t('serviceExpand.form.noExpand')"></let-checkbox>
+            <let-checkbox v-model="scope.row.isChecked"
+                          v-if="scope.row.status == $t('serviceExpand.form.noExpand')"></let-checkbox>
           </template>
         </let-table-column>
         <let-table-column :title="$t('historyList.dlg.th.c2')" prop="application"></let-table-column>
@@ -126,10 +127,11 @@
         </let-table-column>
         <let-table-column :title="$t('deployService.form.template')" prop="template_name"></let-table-column>
         <let-table-column :title="$t('historyList.dlg.th.c8')" prop="status"></let-table-column>
-       </let-table>
+      </let-table>
 
-       <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}</let-button>
-       <let-button type="sumbit" theme="primary">{{$t('deployService.title.expand')}}</let-button>
+      <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}
+      </let-button>
+      <let-button type="sumbit" theme="primary">{{$t('deployService.title.expand')}}</let-button>
     </let-form>
 
 
@@ -141,7 +143,8 @@
       @close="closeResultModal"
       @on-cancel="closeResultModal">
       <p class="result-text">{{$t('serviceExpand.form.errTips.success')}}{{$t('resource.installRstMsg')}}</p>
-      <let-table :data="resultModal.resultList" :empty-msg="$t('common.nodata')" :row-class-name="resultModal.rowClassName">
+      <let-table :data="resultModal.resultList" :empty-msg="$t('common.nodata')"
+                 :row-class-name="resultModal.rowClassName">
         <let-table-column title="ip" prop="ip">
         </let-table-column>
         <let-table-column :title="$t('resource.installResult')" prop="rst">
@@ -158,235 +161,268 @@
 </template>
 
 <script>
-import SetInputer from '@/components/set-inputer';
+  import SetInputer from '@/components/set-inputer';
 
-const ipReg = '((\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.){3}(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])';
-const getInitialModel = () => ({
-  application: '',
-  server_name: '',
-  set: '',
-  node_name: '',
-  expand_nodes: [],
-  enable_set: false,
-  set_name: '',
-  set_area: '',
-  set_group: '',
-  copy_node_config: false,
-});
+  const ipReg = '((\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.){3}(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])';
+  const getInitialModel = () => ({
+    application: '',
+    server_name: '',
+    set: '',
+    node_name: '',
+    expand_nodes: [],
+    enable_set: false,
+    set_name: '',
+    set_area: '',
+    set_group: '',
+    copy_node_config: false,
+  });
 
-export default {
-  name: 'OperationExpand',
+  export default {
+    name: 'OperationExpand',
 
-  components: {
-    SetInputer,
-  },
+    components: {
+      SetInputer,
+    },
 
-  data() {
-    return {
-      model: getInitialModel(),
-      applications: [],
-      serverNames: [],
-      sets: [],
-      nodeNames: [],
-      expandIpStr: '',
-      previewItems: [],
-      ipReg: `^${ipReg}$`,
-      isCheckedAll: false,
-      resultModal: {
-        show: false,
-        resultList: [],
-        rowClassName: (rowData)=>{
-          if(rowData && rowData.row && !rowData.row.rst){
-            return 'err-row'
+    data() {
+      return {
+        model: getInitialModel(),
+        applications: [],
+        serverNames: [],
+        sets: [],
+        nodeNames: [],
+        expandIpStr: '',
+        previewItems: [],
+        ipReg: `^${ipReg}$`,
+        isCheckedAll: false,
+        resultModal: {
+          show: false,
+          resultList: [],
+          rowClassName: (rowData) => {
+            if (rowData && rowData.row && !rowData.row.rst) {
+              return 'err-row'
+            }
+            return ''
           }
-          return ''
         }
-      }
-    };
-  },
-
-  mounted() {
-    this.getCascadeSelectServer({
-      level: 1,
-    }, this.$t('common.error')).then((data) => {
-      this.applications = data;
-    });
-  },
-
-  methods: {
-    changeSelect(attr) {
-      switch (attr) {
-        case 'application':
-          // 修改应用
-          this.model.server_name = '';
-          this.serverNames = [];
-          if (this.model.application) {
-            this.getCascadeSelectServer({
-              level: 2,
-              application: this.model.application,
-            }, this.$t('common.error')).then((data) => {
-              this.serverNames = data;
-            });
-          }
-          break;
-        case 'server_name':
-          // 修改服务
-          this.model.set = '';
-          this.sets = [];
-          if (this.model.server_name) {
-            this.getCascadeSelectServer({
-              level: 3,
-              application: this.model.application,
-              server_name: this.model.server_name,
-            }, this.$t('common.error')).then((data) => {
-              this.sets = data;
-            });
-          }
-          break;
-        case 'set': // 修改set
-          this.model.node_name = '';
-          this.model.nodeName = [];
-          if (this.model.set) {
-            const modelSet = parseInt(this.model.set, 10) === -1 ? '' : this.model.set;
-            this.getCascadeSelectServer({
-              level: 4,
-              application: this.model.application,
-              server_name: this.model.server_name,
-              set: modelSet,
-            }, this.$t('common.error')).then((data) => {
-              this.nodeNames = data;
-            });
-          }
-          break;
-        default:
-          break;
-      }
+      };
     },
-    getCascadeSelectServer(params, prefix = this.$t('common.error')) {
-      return this.$ajax.getJSON('/server/api/cascade_select_server', params).then(data => data).catch((err) => {
-        this.$tip.error(`${prefix}: ${err.message || err.err_msg}`);
+
+    mounted() {
+      this.getCascadeSelectServer({
+        level: 1,
+      }, this.$t('common.error')).then((data) => {
+        this.applications = data;
       });
     },
-    previewExpand() {
-      // 预扩容
-      if (this.$refs.configForm.validate()) {
-        const model = Object.assign({}, this.model);
-        model.set = parseInt(model.set, 10) === -1 ? '' : model.set;
-        model.expand_nodes = this.expandIpStr.trim().split(/[,;\n]/);
 
-        const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/expand_server_preview', model).then((data) => {
-          loading.hide();
-          const items = data || [];
-          items.forEach((item) => {
-            item.isChecked = false;
-          });
-          // hw-todo: let-ui bug
-          this.isCheckedAll = false;
-          this.previewItems = items;
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+    methods: {
+      changeSelect(attr) {
+        switch (attr) {
+          case 'application':
+            // 修改应用
+            this.model.server_name = '';
+            this.serverNames = [];
+            if (this.model.application) {
+              this.getCascadeSelectServer({
+                level: 2,
+                application: this.model.application,
+              }, this.$t('common.error')).then((data) => {
+                this.serverNames = data;
+              });
+            }
+            break;
+          case 'server_name':
+            // 修改服务
+            this.model.set = '';
+            this.sets = [];
+            if (this.model.server_name) {
+              this.getCascadeSelectServer({
+                level: 3,
+                application: this.model.application,
+                server_name: this.model.server_name,
+              }, this.$t('common.error')).then((data) => {
+                this.sets = data;
+              });
+            }
+            break;
+          case 'set': // 修改set
+            this.model.node_name = '';
+            this.model.nodeName = [];
+            if (this.model.set) {
+              const modelSet = parseInt(this.model.set, 10) === -1 ? '' : this.model.set;
+              this.getCascadeSelectServer({
+                level: 4,
+                application: this.model.application,
+                server_name: this.model.server_name,
+                set: modelSet,
+              }, this.$t('common.error')).then((data) => {
+                this.nodeNames = data;
+              });
+            }
+            break;
+          default:
+            break;
+        }
+      },
+      getCascadeSelectServer(params, prefix = this.$t('common.error')) {
+        return this.$ajax.getJSON('/server/api/cascade_select_server', params).then(data => data).catch((err) => {
+          this.$tip.error(`${prefix}: ${err.message || err.err_msg}`);
         });
-      }
-    },
-    getAutoPort(){
-      const loading = this.$Loading.show();
-      var adapters = this.previewItems.filter(item => item.status === this.$t('serviceExpand.form.noExpand') && item.isChecked);
-      var bindIps = [];
-      adapters.forEach((adapter) => {
-        bindIps.push(adapter.bind_ip);
-      });
-      this.$ajax.getJSON('/server/api/auto_port', {node_name: bindIps.join(';')}).then((data) => {
-          loading.hide();
-          data.forEach((node, index) => {
-            this.$set(adapters[index], 'port', String(node.port || ''))
-        });
-      }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
-    },
-    expand() {
-      // 扩容
-      if (this.$refs.expandForm.validate()) {
-        const previewItems = this.previewItems.filter(item => item.status === this.$t('serviceExpand.form.noExpand') && item.isChecked);
-        if (previewItems.length > 0) {
-          const previewServers = [];
-          previewItems.forEach((item) => {
-            previewServers.push({
-              bind_ip: item.bind_ip,
-              node_name: item.node_name,
-              obj_name: item.obj_name,
-              port: item.port,
-              set: item.set,
-            });
-          });
-          const params = {
-            application: this.model.application,
-            server_name: this.model.server_name,
-            set: parseInt(this.model.set, 10) === -1 ? '' : this.model.set,
-            node_name: this.model.node_name,
-            copy_node_config: this.model.copy_node_config,
-            expand_preview_servers: previewServers,
-          };
+      },
+      previewExpand() {
+        // 预扩容
+        if (this.$refs.configForm.validate()) {
+          const model = Object.assign({}, this.model);
+          model.set = parseInt(model.set, 10) === -1 ? '' : model.set;
+          model.expand_nodes = this.expandIpStr.trim().split(/[,;\n]/);
 
           const loading = this.$Loading.show();
-          this.$ajax.postJSON('/server/api/expand_server', params).then((data) => {
-            // hw-todo: 是否需要更新状态待定
-            /*
-            this.previewItems.forEach((item) => {
-              if (item.status === '未扩容' && item.isChecked) {
-                item.status = '已存在';
-              }
-            }); */
+          this.$ajax.postJSON('/server/api/expand_server_preview', model).then((data) => {
             loading.hide();
-            if(data.tars_node_rst && data.tars_node_rst.length){
-              this.showResultModal(data.tars_node_rst);
-            }else{
-              this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
-            }
+            const items = data || [];
+            items.forEach((item) => {
+              item.isChecked = false;
+            });
+            // hw-todo: let-ui bug
+            this.isCheckedAll = false;
+            this.previewItems = items;
           }).catch((err) => {
             loading.hide();
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           });
-        } else {
-          this.$tip.error(this.$t('serviceExpand.form.errTips.noneNodes'));
         }
+      },
+      getAutoPort() {
+        const loading = this.$Loading.show();
+        var adapters = this.previewItems.filter(item => item.status === this.$t('serviceExpand.form.noExpand') && item.isChecked);
+        var bindIps = [];
+        adapters.forEach((adapter) => {
+          bindIps.push(adapter.bind_ip);
+        });
+        this.$ajax.getJSON('/server/api/auto_port', { node_name: bindIps.join(';') }).then((data) => {
+          loading.hide();
+          data.forEach((node, index) => {
+            this.$set(adapters[index], 'port', String(node.port || ''))
+          });
+        }).catch((err) => {
+          loading.hide();
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        });
+      },
+      expand() {
+        // 扩容
+        if (this.$refs.expandForm.validate()) {
+          const previewItems = this.previewItems.filter(item => item.status === this.$t('serviceExpand.form.noExpand') && item.isChecked);
+          if (previewItems.length > 0) {
+            const previewServers = [];
+            previewItems.forEach((item) => {
+              previewServers.push({
+                bind_ip: item.bind_ip,
+                node_name: item.node_name,
+                obj_name: item.obj_name,
+                port: item.port,
+                set: item.set,
+              });
+            });
+            const params = {
+              application: this.model.application,
+              server_name: this.model.server_name,
+              set: parseInt(this.model.set, 10) === -1 ? '' : this.model.set,
+              node_name: this.model.node_name,
+              copy_node_config: this.model.copy_node_config,
+              expand_preview_servers: previewServers,
+            };
+
+            const loading = this.$Loading.show();
+            this.$ajax.postJSON('/server/api/expand_server', params).then((data) => {
+              // hw-todo: 是否需要更新状态待定
+              /*
+              this.previewItems.forEach((item) => {
+                if (item.status === '未扩容' && item.isChecked) {
+                  item.status = '已存在';
+                }
+              }); */
+              loading.hide();
+              if (data.tars_node_rst && data.tars_node_rst.length) {
+                this.showResultModal(data.tars_node_rst);
+              } else {
+                this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
+              }
+            }).catch((err) => {
+              loading.hide();
+              this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
+          } else {
+            this.$tip.error(this.$t('serviceExpand.form.errTips.noneNodes'));
+          }
+        }
+      },
+
+      showResultModal(data) {
+        this.resultModal.resultList = data;
+        this.resultModal.show = true;
+      },
+
+      closeResultModal() {
+        this.resultModal.show = false;
+        this.resultModal.resultList = [];
       }
     },
-
-    showResultModal(data){
-      this.resultModal.resultList = data;
-      this.resultModal.show = true;
+    watch: {
+      isCheckedAll() {
+        const isCheckedAll = this.isCheckedAll;
+        this.previewItems.forEach((item) => {
+          item.isChecked = isCheckedAll;
+        });
+      },
     },
-
-    closeResultModal(){
-      this.resultModal.show = false;
-      this.resultModal.resultList = [];
-    }
-  },
-  watch: {
-    isCheckedAll() {
-      const isCheckedAll = this.isCheckedAll;
-      this.previewItems.forEach((item) => {
-        item.isChecked = isCheckedAll;
-      });
-    },
-  },
-};
+  };
 </script>
+<style lang="postcss">
 
-<style>
-.mt40 {
-  margin-top: 40px;
-}
-tr.err-row td{
-  background:#f56c77!important;
-  color:#FFF;
-}
-.result-text{
-  margin-top: 20px;
-  margin-bottom:10px;
-}
+  .page_operation_expand {
+    .mt40 {
+      margin-top: 40px;
+    }
+
+    tr.err-row td {
+      background: #f56c77 !important;
+      color: #FFF;
+    }
+
+    .result-text {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    .let-table {
+      margin: 20px 0 36px;
+
+      th span.required {
+        display: inline-block;
+
+        &:after {
+          color: #f56c6c;
+          content: '*';
+          margin-left: 4px;
+        }
+      }
+
+      tr.err-row td {
+        background: #f56c77 !important;
+        color: #FFF;
+      }
+    }
+
+    .result-text {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .set_inputer_item {
+      float: left;
+      margin-right: 8px;
+      width: 126px;
+    }
+  }
 </style>
