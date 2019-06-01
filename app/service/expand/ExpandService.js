@@ -26,6 +26,26 @@ const Sequelize = require('sequelize');
 const resourceConf = require('../../../config/resourceConf');
 const ResourceService = require('../resource/ResourceService');
 
+/**
+ * 将Date对象变成字符串
+ * @param {Object} date
+ * @param {String} format
+ * @return {String} date 返回经指定格式格式化后的时间字符串
+ */
+function formatToStr(date, format) {
+	if (!date || date == 'Invalid Date') return;
+	return format.replace(/yyyy/gi, date.getFullYear().toString())
+		.replace(/MM/i, formatNum(date.getMonth() + 1))
+		.replace(/dd/gi, formatNum(date.getDate()))
+		.replace(/hh/gi, formatNum(date.getHours()))
+		.replace(/mm/gi, formatNum(date.getMinutes()))
+		.replace(/ss/gi, formatNum(date.getSeconds()));
+
+	function formatNum(n) {
+		return (n < 10 ? '0' + n : n).toString();
+	}
+}
+
 const ExpandService = {}
 
 ExpandService.preview = async (params) => {
@@ -126,11 +146,13 @@ ExpandService.expand = async (params) => {
 								config: '',
 								posttime: '',
 								level: 2,
-								configFlag: 0
+								config_flag: 0,
+								lastuser: '',
 							};
 							newConfig = util.leftAssign(newConfig, config);
-							newConfig.posttime = new Date();
+							newConfig.posttime =formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss');
 							newConfig.host = server.node_name;
+							newConfig.config = newConfig.config.replace(/^\s|\s$/g, '');
 							await ConfigDao.insertConfigFile(newConfig, transaction);
 						}
 					}

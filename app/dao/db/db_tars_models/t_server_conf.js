@@ -67,7 +67,7 @@ module.exports = function(sequelize, DataTypes) {
 		bak_flag: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
-			defaultValue: '0'
+			defaultValue: 0
 		},
 		setting_state: {
 			type: DataTypes.ENUM('active','inactive'),

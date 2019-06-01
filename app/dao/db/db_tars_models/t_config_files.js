@@ -15,7 +15,6 @@
  */
  
 /* jshint indent: 1 */
-
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('t_config_files', {
 		id: {
@@ -68,12 +67,12 @@ module.exports = function(sequelize, DataTypes) {
 		level: {
 			type: DataTypes.INTEGER(11),
 			allowNull: true,
-			defaultValue: '2'
+			defaultValue: 2
 		},
 		config_flag: {
 			type: DataTypes.INTEGER(10),
 			allowNull: false,
-			defaultValue: '0'
+			defaultValue: 0
 		}
 	}, {
 		tableName: 't_config_files',

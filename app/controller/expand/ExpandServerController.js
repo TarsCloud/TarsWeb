@@ -130,8 +130,9 @@ ExpandServerController.expandServer = async (ctx) => {
 			});
 		}
 	} catch (e) {
-		logger.error('[expandServerPreview]', e, ctx);
-		ctx.makeErrResObj();
+		console.log(e);
+		logger.error('[expandServer]', e, ctx);
+		ctx.makeErrResObj(500, e);
 	}
 };
 
