@@ -403,3 +403,33 @@ export function getRegionList() {
     url: '/get_region_list'
   })
 }
+
+export function expandServerPreview({ application = "", server_name = "", set = "", node_name = "", expand_nodes = [""], enable_set = false, set_name = "", set_area = "", set_group = "", copy_node_config = false }) {
+  return Axios({
+    method: 'post',
+    url: '/expand_server_preview',
+    data: { application, server_name, set, node_name, expand_nodes, enable_set, set_name, set_area, set_group, copy_node_config },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+export function autoPort({node_name}) {
+  return Axios({
+    method: 'get',
+    url: '/auto_port',
+    params: { node_name }
+  })
+}
+
+export function expandServer({ application = "", server_name = "", set = "", node_name = "", copy_node_config = false, expand_preview_servers = [{"bind_ip":"","node_name":"","obj_name":"","port":"","set":""}]}) {
+  return Axios({
+    method: 'post',
+    url: '/expand_server',
+    data: { application, server_name, set, node_name, copy_node_config, expand_preview_servers },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

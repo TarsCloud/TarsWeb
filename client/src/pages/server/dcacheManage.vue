@@ -383,6 +383,7 @@
 </template>
 
 <script>
+  import { expandServerPreview, autoPort, expandServer, addTask } from '@/dcache/interface.js'
 const getInitialExpandModel = () => ({
   application: 'DCache',
   server_name: '',
@@ -395,7 +396,6 @@ const getInitialExpandModel = () => ({
   set_group: '',
   copy_node_config: false,
 });
-
 export default {
   name: 'ServerManage',
   data() {
@@ -988,61 +988,132 @@ export default {
       this.expandModal.model.server_name = server_name;
       this.expandModal.model.node_name = node_name;
     },
-    expandService () {
+    async expandService () {
       if (this.$refs.expandForm.validate()) {
         const model = Object.assign({}, this.expandModal.model);
         model.expand_nodes = this.expandModal.expandIpStr.trim().split(/[,;\n]/);
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/expand_server_preview', model).then((data) => {
-          if (!data) {
-            this.$tip.error(this.$t('serviceExpand.form.errTips.noneNodes'));
-          } else {
-            const previewItems = data.filter(item => item.status === this.$t('serviceExpand.form.noExpand'));
-            const previewServers = [];
-            const bindIps = [];
-            previewItems.forEach((item) => {
-              bindIps.push(item.bind_ip);
+
+        try {
+          const data = await expandServerPreview(model);
+          if (!data) throw new Error(this.$t('serviceExpand.form.errTips.noneNodes'));
+          const previewItems = data.filter(item => item.status === this.$t('serviceExpand.form.noExpand'));
+          const previewServers = [];
+          const bindIps = [];
+          previewItems.forEach((item) => {
+            bindIps.push(item.bind_ip);
+          });
+          const portData = await autoPort({ node_name: bindIps.join(';') });
+          portData.forEach((node, index) => {
+            this.$set(previewItems[index], 'port', String(node.port || ''))
+          });
+          previewItems.forEach((item) => {
+            previewServers.push({
+              bind_ip: item.bind_ip,
+              node_name: item.node_name,
+              obj_name: item.obj_name,
+              port: item.port,
+              set: item.set,
             });
-            this.$ajax.getJSON('/server/api/auto_port', {node_name: bindIps.join(';')}).then((portData) => {
-              portData.forEach((node, index) => {
-                this.$set(previewItems[index], 'port', String(node.port || ''))
-              });
-              previewItems.forEach((item) => {
-                previewServers.push({
-                  bind_ip: item.bind_ip,
-                  node_name: item.node_name,
-                  obj_name: item.obj_name,
-                  port: item.port,
-                  set: item.set,
-                });
-              });
-              const params = {
-                application: model.application,
-                server_name: model.server_name,
-                set: model.set,
-                node_name: model.node_name,
-                copy_node_config: model.copy_node_config,
-                expand_preview_servers: previewServers,
-              };
-              this.$ajax.postJSON('/server/api/expand_server', params).then((data) => {
-                loading.hide();
-                this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
-                this.closeExpandModal();
-                this.getServerList();
-                this.getServerNotifyList(1);
-              }).catch((err) => {
-                loading.hide();
-                this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-              });
-            }).catch((err) => {
-              loading.hide();
-              this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-            });
+          });
+          const params = {
+            application: model.application,
+            server_name: model.server_name,
+            set: model.set,
+            node_name: model.node_name,
+            copy_node_config: model.copy_node_config,
+            expand_preview_servers: previewServers,
+          };
+          const { server_conf } = await expandServer(params);
+          const addTaskOption = {
+            serial: false,
+            items: []
+          };
+          let { serverType } = this;
+          let group_name = "";
+          if (serverType === 'router') {
+            group_name = 'RouterServer'
+          } else if (serverType === 'proxy') {
+            group_name = 'ProxyServer'
+          } else if (serverType === 'dcache') {
+            group_name = 'DCacheServerGroup'
           }
-        }).catch((err) => {
+          server_conf.forEach((item) => {
+            addTaskOption.items.push({
+              server_id: item.id.toString(),
+              command: 'patch_tars',
+              parameters: {
+                patch_id: item.patch_version,
+                bak_flag: item.bak_flag,
+                update_text: '',
+                group_name
+              },
+            })
+          });
+          const addTaskRsp = await addTask(addTaskOption);
+          this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
+          this.closeExpandModal();
+          this.getServerList();
+          this.getServerNotifyList(1);
+
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(err);
+        } finally {
           loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
+        }
+
+        // this.$ajax.postJSON('/server/api/expand_server_preview', model).then((data) => {
+        //   if (!data) {
+        //     this.$tip.error(this.$t('serviceExpand.form.errTips.noneNodes'));
+        //   } else {
+        //     const previewItems = data.filter(item => item.status === this.$t('serviceExpand.form.noExpand'));
+        //     const previewServers = [];
+        //     const bindIps = [];
+        //     previewItems.forEach((item) => {
+        //       bindIps.push(item.bind_ip);
+        //     });
+        //     this.$ajax.getJSON('/server/api/auto_port', {node_name: bindIps.join(';')}).then((portData) => {
+        //       portData.forEach((node, index) => {
+        //         this.$set(previewItems[index], 'port', String(node.port || ''))
+        //       });
+        //       previewItems.forEach((item) => {
+        //         previewServers.push({
+        //           bind_ip: item.bind_ip,
+        //           node_name: item.node_name,
+        //           obj_name: item.obj_name,
+        //           port: item.port,
+        //           set: item.set,
+        //         });
+        //       });
+        //       const params = {
+        //         application: model.application,
+        //         server_name: model.server_name,
+        //         set: model.set,
+        //         node_name: model.node_name,
+        //         copy_node_config: model.copy_node_config,
+        //         expand_preview_servers: previewServers,
+        //       };
+        //       this.$ajax.postJSON('/server/api/expand_server', params).then((data) => {
+        //         loading.hide();
+        //         this.$tip.success(this.$t('serviceExpand.form.errTips.success'));
+        //         this.closeExpandModal();
+        //         this.getServerList();
+        //         this.getServerNotifyList(1);
+        //       }).catch((err) => {
+        //         loading.hide();
+        //         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        //       });
+        //     }).catch((err) => {
+        //       loading.hide();
+        //       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        //     });
+        //   }
+        // }).catch((err) => {
+        //   loading.hide();
+        //   this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        // });
+
       }
     },
     closeExpandModal () {

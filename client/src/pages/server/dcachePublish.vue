@@ -516,7 +516,7 @@
           });
           const loading = this.$Loading.show();
           this.$ajax.postJSON('/server/api/add_task', {
-            serial: true,
+            serial: false,
             items,
           }).then((data) => {
             loading.hide();
