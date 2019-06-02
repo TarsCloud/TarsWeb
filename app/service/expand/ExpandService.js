@@ -85,8 +85,14 @@ ExpandService.expand = async (params) => {
 	try {
 		let application = params.application;
 		let serverName = params.server_name;
+		console.log('aaaaaaasssss')
+
 		let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
+		console.log('aaaaaaaccccc')
+
 		let sourceAdapters = await AdapterDao.getAdapterConf(application, serverName, params.node_name) || [];
+		console.log('aaaaaaaeeeeee')
+
 		sourceServer = sourceServer && sourceServer.dataValues || {};
 		let addServers = [];
 		let addServersMap = {};
@@ -122,6 +128,8 @@ ExpandService.expand = async (params) => {
 					addServers.push(rst.dataValues);
 					addServersMap[`${server.application}-${server.server_name}-${server.node_name}`] = true;
 					addNodeNameMap[server.node_name] = true;
+					console.log('aaaaaaawwwwwww')
+
 					if (params.copy_node_config) {
 						let configParams = {
 							server_name: `${sourceServer.application}.${sourceServer.server_name}`
@@ -129,8 +137,8 @@ ExpandService.expand = async (params) => {
 						sourceServer.set_name && (configParams.set_name = sourceServer.set_name);
 						sourceServer.set_area && (configParams.set_area = sourceServer.set_area);
 						sourceServer.set_group && (configParams.set_group = sourceServer.set_group);
-						let configs = await ConfigDao.getNodeConfigFile(configParams);
-						configs = configs.filter((config) => {
+						let configList = await ConfigDao.getNodeConfigFile(configParams);
+						let configs = configList.filter((config) => {
 							config = config.dataValues;
 							return config.host == sourceServer.node_name
 						});
@@ -150,9 +158,10 @@ ExpandService.expand = async (params) => {
 								lastuser: '',
 							};
 							newConfig = util.leftAssign(newConfig, config);
-							newConfig.posttime =formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss');
+							newConfig.posttime =new Date();
 							newConfig.host = server.node_name;
-							newConfig.config = newConfig.config.replace(/^\s|\s$/g, '');
+							// let perConfigNode = configList.find(item => item.dataValues.server_name === newConfig && item.dataValues.host === newConfig.host);
+							// if (perConfigNode) await ConfigDao.deleteConfigFile(perConfigNode.dataValues.id, transaction);
 							await ConfigDao.insertConfigFile(newConfig, transaction);
 						}
 					}

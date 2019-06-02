@@ -58,7 +58,8 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		posttime: {
 			type: DataTypes.DATE,
-			allowNull: true
+			allowNull: false,
+			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
 		lastuser: {
 			type: DataTypes.STRING(50),
