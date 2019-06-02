@@ -85,14 +85,8 @@ ExpandService.expand = async (params) => {
 	try {
 		let application = params.application;
 		let serverName = params.server_name;
-		console.log('aaaaaaasssss')
-
 		let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
-		console.log('aaaaaaaccccc')
-
 		let sourceAdapters = await AdapterDao.getAdapterConf(application, serverName, params.node_name) || [];
-		console.log('aaaaaaaeeeeee')
-
 		sourceServer = sourceServer && sourceServer.dataValues || {};
 		let addServers = [];
 		let addServersMap = {};
@@ -128,8 +122,6 @@ ExpandService.expand = async (params) => {
 					addServers.push(rst.dataValues);
 					addServersMap[`${server.application}-${server.server_name}-${server.node_name}`] = true;
 					addNodeNameMap[server.node_name] = true;
-					console.log('aaaaaaawwwwwww')
-
 					if (params.copy_node_config) {
 						let configParams = {
 							server_name: `${sourceServer.application}.${sourceServer.server_name}`
@@ -160,8 +152,13 @@ ExpandService.expand = async (params) => {
 							newConfig = util.leftAssign(newConfig, config);
 							newConfig.posttime =new Date();
 							newConfig.host = server.node_name;
-							// let perConfigNode = configList.find(item => item.dataValues.server_name === newConfig && item.dataValues.host === newConfig.host);
-							// if (perConfigNode) await ConfigDao.deleteConfigFile(perConfigNode.dataValues.id, transaction);
+							let perConfigNode = configList.find((item) => {
+								// `server_name`,`filename`,`host`,`level`,`set_name`,`set_area`,`set_group`  组成唯一值
+								const { server_name, filename, host, level, set_name, set_area, set_group } = item.dataValues;
+								const { server_name: nserver_name, filename: nfilename, host: nhost, level: nlevel, set_name: nset_name, set_area: nset_area, set_group: nset_group } = newConfig;
+								return server_name === nserver_name && filename === nfilename && host === nhost && level === nlevel && set_name === nset_name && set_area === nset_area && set_group === nset_group
+							});
+							if (perConfigNode) await ConfigDao.deleteConfigFile(perConfigNode.dataValues.id, transaction);
 							await ConfigDao.insertConfigFile(newConfig, transaction);
 						}
 					}

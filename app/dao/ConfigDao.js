@@ -123,7 +123,6 @@ ConfigDao.getNodeConfigFile = async (params) => {
 
 ConfigDao.deleteConfigFile = async (id, transaction) => {
 	if (transaction) {
-		return await tConfigFiles.create(params, {transaction: transaction});
 		return await tConfigFiles.destroy({where: {id: id}}, {transaction: transaction});
 	} else {
 		return await tConfigFiles.destroy({where: {id: id}});
