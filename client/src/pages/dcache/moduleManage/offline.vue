@@ -85,27 +85,28 @@
           if (hasOperationRecord) throw new Error(this.$t('dcache.hasMigrationOperation'));
 
 
-          if (hostServers.length) {
-            // 选中的服务有主机， 下线该模块所有的服务
-            this.tip = 'dcache.hostOfflineAllServers';
-            this.offlineServers = this.serverList;
-            this.unType = 2;
-          } else {
-            if (backupServers.length) {
-              // 选中的服务有备机， 下线该模块所有的备机服务
-              this.tip = 'dcache.offlineAllBackupServers';
-              this.offlineServers = this.allBackupServers;
-            } else if (mirrorServers.length) {
-              // 选中的服务有镜像， 下线该模块所有的镜像服务
-              this.tip = 'dcache.offlineMirrorServers';
-              this.offlineServers = this.allMirrorServers;
-            } else if (backupServers.length && mirrorServers.length) {
-              // 选中的服务有备机和镜像，将下线该模块所有的备机和镜像服务
-              this.tip = 'dcache.offlineBackupMirrorServers';
-              this.offlineServers = this.allBackupMirrorServers;
-            }
-          }
+          // if (hostServers.length) {
+          //   // 选中的服务有主机， 下线该模块所有的服务
+          //   this.tip = 'dcache.hostOfflineAllServers';
+          //   this.offlineServers = this.serverList;
+          //   this.unType = 2;
+          // } else {
+          //   if (backupServers.length) {
+          //     // 选中的服务有备机， 下线该模块所有的备机服务
+          //     this.tip = 'dcache.offlineAllBackupServers';
+          //     this.offlineServers = this.allBackupServers;
+          //   } else if (mirrorServers.length) {
+          //     // 选中的服务有镜像， 下线该模块所有的镜像服务
+          //     this.tip = 'dcache.offlineMirrorServers';
+          //     this.offlineServers = this.allMirrorServers;
+          //   } else if (backupServers.length && mirrorServers.length) {
+          //     // 选中的服务有备机和镜像，将下线该模块所有的备机和镜像服务
+          //     this.tip = 'dcache.offlineBackupMirrorServers';
+          //     this.offlineServers = this.allBackupMirrorServers;
+          //   }
+          // }
           // 下线的服务中，有存活的服务，请先停止， 再下线
+          this.offlineServers = this.checkedServers;
           const activeServers = this.getActiveServers();
           if (!activeServers.length) this.canOffline = true;
           this.show = true;

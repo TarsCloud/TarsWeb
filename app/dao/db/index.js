@@ -80,8 +80,8 @@ databases.forEach((database) => {
 	dbModels.forEach(function (dbModel) {
 		let tableName = dbModel.replace(/\.js$/g, '');
 		tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
-		tableObj[_.camelCase(tableName)].sync({ alter: true });
-		// tableObj[_.camelCase(tableName)].sync();
+		// tableObj[_.camelCase(tableName)].sync({ alter: true });
+		tableObj[_.camelCase(tableName)].sync();
 	});
 	Db[database] = tableObj;
 	Db[database].sequelize = sequelize;
