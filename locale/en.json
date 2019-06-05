@@ -223,6 +223,7 @@
     "oneGroup": "Migration services, only one group can be selected",
     "offline": "off line",
     "cantOffline": "There is active service in selected services, please stop before offline",
+    "hasRouterPageNo": "In the offline service, there are routing pages. Please be careful. ",
     "hostOfflineAllServers": "In the selected service, there is a host, and all services of this module will be offline",
     "offlineAllBackupServers": "In the selected service, there is standby machine, and all standby machine services of this module will be offline",
     "offlineMirrorServers": "The selected service has mirroring. Log off all the mirroring services of this module",
@@ -240,6 +241,7 @@
       "status": "status",
       "beginTime": "begin time",
       "progress": "progress",
+      "routerPageNo": "routerPageNo",
       "statusText": {
         "0": "New migration tasks",
         "1": "Configuration phase complete",

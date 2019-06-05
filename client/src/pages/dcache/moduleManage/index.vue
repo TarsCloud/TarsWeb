@@ -16,25 +16,26 @@
         <template slot-scope="{row:{group_name}}">{{/.*?(\d+)$/.exec(group_name)[1]}}</template>
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.zb')" width="140px">
+      <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="125px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.zb')" width="45px">
         <template slot-scope="{row:{server_type}}">
           <span v-if="server_type === 'M' ">{{$t('cache.mainEngine')}}</span>
           <span v-else-if="server_type === 'S' ">{{$t('cache.standByEngine')}}</span>
           <span v-else-if="server_type=== 'I' ">{{$t('cache.mirror')}}</span>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('serverList.table.th.enableSet')">
-        <template slot-scope="scope">
-          <span v-if="!scope.row.enable_set">{{$t('common.disable')}}</span>
-          <p v-else style="max-width: 200px">
-            {{$t('common.set.setName')}}：{{scope.row.set_name}}<br>
-            {{$t('common.set.setArea')}}：{{scope.row.set_area}}<br>
-            {{$t('common.set.setGroup')}}：{{scope.row.set_group}}
-          </p>
-        </template>
-      </let-table-column>
-      <let-table-column :title="$t('serverList.table.th.configStatus')" width="90px">
+      <let-table-column :title="$t('dcache.operationManage.routerPageNo')" prop="routerPageNo" width="65px"></let-table-column>
+<!--      <let-table-column :title="$t('serverList.table.th.enableSet')">-->
+<!--        <template slot-scope="scope">-->
+<!--          <span v-if="!scope.row.enable_set">{{$t('common.disable')}}</span>-->
+<!--          <p v-else style="max-width: 200px">-->
+<!--            {{$t('common.set.setName')}}：{{scope.row.set_name}}<br>-->
+<!--            {{$t('common.set.setArea')}}：{{scope.row.set_area}}<br>-->
+<!--            {{$t('common.set.setGroup')}}：{{scope.row.set_group}}-->
+<!--          </p>-->
+<!--        </template>-->
+<!--      </let-table-column>-->
+      <let-table-column :title="$t('serverList.table.th.configStatus')" width="65px">
         <template slot-scope="scope">
           <span :class="scope.row.setting_state === 'active' ? 'status-active' : 'status-off'"></span>
         </template>
@@ -45,11 +46,11 @@
             :class="scope.row.present_state === 'active' ? 'status-active' : scope.row.present_state === 'activating' ? 'status-activating' : 'status-off'"></span>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('serverList.table.th.processID')" prop="process_id" width="80px"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.version')" prop="patch_version" width="68px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.processID')" prop="process_id" width="65px" ></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.version')" prop="patch_version" width="45px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.time')">
         <template slot-scope="scope">
-          <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.patch_time)}}</span>
+          <span style="white-space: nowrap">{{handleNoPublishedTime(scope.row.patch_time)}}</span>
         </template>
       </let-table-column>
       <let-table-column :title="$t('operate.operates')" width="260px">

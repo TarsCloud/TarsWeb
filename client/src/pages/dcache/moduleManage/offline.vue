@@ -8,12 +8,13 @@
       :width="'1000px'"
       :title="$t('dcache.offline')"
     >
-      <p style="color: red">{{$t(tip)}}{{canOffline ? '' : `,${$t('dcache.cantOffline')}`}}</p>
+      <p style="color: red">{{hasRouterPageNo ? $t('dcache.hasRouterPageNo') : ''}}{{canOffline ? '' : $t('dcache.cantOffline')}}</p>
       <let-table ref="table" :data="offlineServers" :empty-msg="$t('common.nodata')">
         <!-- 模块名 -->
         <let-table-column :title="$t('module.name')" prop="module_name"></let-table-column>
         <let-table-column :title="$t('service.serverName')" prop="server_name"></let-table-column>
         <let-table-column :title="$t('service.serverIp')" prop="node_name"></let-table-column>
+        <let-table-column :title="$t('dcache.operationManage.routerPageNo')" prop="routerPageNo"></let-table-column>
       </let-table>
       <let-button :disabled="!canOffline" size="small" theme="primary" @click="sureOffline">
         {{$t('dcache.sureOffline')}}
@@ -35,12 +36,15 @@
         offlineServers: [],
         tip: '',
         unType: 0,
-        canOffline: false
+        canOffline: false,
       }
     },
     computed: {
       checkedServers() {
         return this.serverList.filter(item => item.isChecked === true);
+      },
+      hasRouterPageNo() {
+        return !!this.checkedServers.find(item => item.routerPageNo !== 0)
       },
       appName() {
         return this.checkedServers[0] && this.checkedServers[0].app_name

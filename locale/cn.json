@@ -247,6 +247,7 @@
     "oneGroup": "迁移服务， 只能选一个组",
     "offline": "下线服务",
     "cantOffline": "下线的服务中，有存活的服务，请先停止， 再下线",
+    "hasRouterPageNo": "下线的服务中，有路由页，请谨慎操作。 ",
     "hostOfflineAllServers": "选中的服务中，有主机，将下线该模块所有服务",
     "offlineAllBackupServers": "选中的服务中，有备机，将下线该模块所有备机服务",
     "offlineMirrorServers": "选中的服务有镜像， 下线该模块所有的镜像服务",
@@ -264,6 +265,7 @@
       "status": "状态",
       "beginTime": "开始时间",
       "progress": "进度",
+      "routerPageNo": "路由页",
       "statusText": {
         "0": "新增迁移任务",
         "1": "配置阶段完成",
