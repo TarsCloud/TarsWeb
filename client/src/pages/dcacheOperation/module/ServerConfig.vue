@@ -237,7 +237,6 @@
                 <let-input
                   size="small"
                   v-model="scope.row.defaultValue"
-                  required
                   :required-tip="$t('deployService.table.tips.empty')"
                 />
               </template>
@@ -247,7 +246,6 @@
                 <let-input
                   size="small"
                   v-model="scope.row.maxLen"
-                  required
                   :required-tip="$t('deployService.table.tips.empty')"
                 />
               </template>
