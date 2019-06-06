@@ -168,6 +168,8 @@
     "cacheType": "Cache类型",
     "persistentNumber": "持久化的总数据条数",
     "dbDataCountUnit": "万条数据",
+    "dbAccessServantObj": "DbAccess服务的Obj信息",
+    "dbAccessServantObjEx": "Test.TestDbAccessServer.DbAccessObj",
     "cacheTypeTip1": "内存数据库(不淘汰)",
     "cacheTypeTip2": "临时缓存(过期淘汰)",
     "cacheTypeTip3": "热点缓存(容量淘汰)",

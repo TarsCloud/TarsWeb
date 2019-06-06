@@ -111,12 +111,12 @@
                          :data="cacheTypeOption">
         </let-radio-group>
       </let-form-item>
-      <let-form-item :label="$t('cache.persistentNumber')" itemWidth="240px" v-if="model.cache_module_type == 2"
+      <let-form-item :label="$t('cache.dbAccessServantObj')" itemWidth="240px" v-if="model.cache_module_type == 2"
                      required>
         <let-input
           size="small"
           v-model="model.db_data_count"
-          :placeholder="$t('cache.dbDataCountUnit')"
+          :placeholder="$t('cache.dbAccessServantObjEx')"
           required
           :required-tip="$t('deployService.table.tips.empty')"
         >
