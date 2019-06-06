@@ -255,7 +255,9 @@
 </script>
 
 <style lang="postcss">
-
+  .let-form-cols-1 .let-form-item__label {
+    width: auto;
+  }
   .page_operation_module_info {
     .poptip__popper {
       max-width: 420px;
