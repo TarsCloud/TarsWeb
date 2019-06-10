@@ -56,15 +56,21 @@
               </let-select>
             </template>
           </let-table-column>
+          <let-table-column :title="$t('module.memorySize')" prop="memory">
+            <template slot-scope="scope">
+              <let-input
+                size="small"
+                v-model="scope.row.memory"
+                :placeholder="$t('module.memorySize')"
+                required
+                :required-tip="$t('deployService.table.tips.empty')"
+                style="width: 60px"
+              />
+            </template>
+          </let-table-column>
           <let-table-column :title="$t('module.deployArea')" prop="area">
             <template slot-scope="scope">
               {{scope.row.area}}
-            </template>
-          </let-table-column>
-
-          <let-table-column :title="$t('module.memorySize')" prop="memory">
-            <template slot-scope="scope">
-              {{scope.row.memory}}
             </template>
           </let-table-column>
         </let-table>
@@ -384,22 +390,17 @@
           data.server_type = 0;
           data.memory = Math.ceil(data.per_record_avg * data.total_record * 10000 / 1024 / 1024 / 1024);
           this.moduleData.push({...data});
-          let backData = {...data};
-          backData.server_name = data.module_name + cacheVersion + 'CacheServer1-2';
-          backData.server_type = 1;
+          let backData = { ...data, server_name: data.module_name + cacheVersion + 'CacheServer1-2', server_type: 1 };
           this.moduleData.push(backData);
 
           if (data.set_area.length > 0) {
             data.set_area.forEach((item, index) => {
-              let mirItem = {...data};
-              mirItem.area = item;
-              mirItem.server_name = data.module_name + cacheVersion + 'CacheServer1-' + (index + 3);
-              mirItem.server_type = 2;
+              let mirItem = { ...data, area: item, server_name: data.module_name + cacheVersion + 'CacheServer1-' + (index + 3), server_type: 2};
               this.moduleData.push(mirItem);
             });
           }
           // 设置 cache 服务默认 DCache.Cache 模版
-          this.moduleData = this.moduleData.map(item =>  ({ ...item, 'template_name': templates.includes('DCache.Cache') ? 'DCache.Cache' : 'tars.default' }));
+          this.moduleData = this.moduleData.map(item => ({ ...item, 'template_name': templates.includes('DCache.Cache') ? 'DCache.Cache' : 'tars.default' }));
 
           // 二期Cache 或者 一期 cache + 持久化 都需要填写数据结构。 一期暂时不用填写。
           this.isMkCache = data.ModuleBase.cache_version === 2 //|| data.cache_module_type === 2;
