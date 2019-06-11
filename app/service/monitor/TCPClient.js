@@ -33,6 +33,7 @@ let TCPClient = (ip, port, requestObj) => {
 					data += e.substring(0, e.indexOf('endline') + 7);
 				}
 				e = data;
+				logger.info('TCPClient DATA:', e);
 				let response = e.split(/\n/);
 				response = response.map((n) => {
 					return n.replace(/^\s*|\s*$/g, '').replace(/,$/, '');
@@ -42,7 +43,9 @@ let TCPClient = (ip, port, requestObj) => {
 				}
 				let ret = parseInt(response[0].split(':')[1]);
 				if (ret == -1) {
-					return reject(`line #1, Ret= -1`);
+					let exception = e.match(/\nret:-1([^\n]*?)\n/);
+					exception ? exception = exception[1] : `line #1, Ret= -1`;
+					return reject(exception);
 				}
 				if (!/linecount/.test(response[5])) {
 					return reject(`line #6, doesn't start with "linecount:", line= ${response[5]}`);
