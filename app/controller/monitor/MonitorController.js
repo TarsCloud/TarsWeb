@@ -85,7 +85,7 @@ MonitorController.tarsproperty = async (ctx) => {
 		}));
 	} catch (e) {
 		logger.error(e, ctx);
-		ctx.makeErrResObj(500, e.toString());
+		ctx.makeResObj(500, e.message);
 	}
 };
 

@@ -60,12 +60,10 @@ async function call(params, the) {
 		filter: conditions,
 		indexs: ['value']
 	};
-	let addrs = await AdminService.getEndpoints("tars.tarsqueryproperty.NoTarsObj").catch(err => {
-		logger.error('[AdminService.getEndpoints]:', err.toString());
-	});
+	let addrs = await AdminService.getEndpoints("tars.tarsqueryproperty.NoTarsObj");
 	if (!addrs || !addrs.length) {
 		logger.error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
-		return;
+		throw new Error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
 	}
 	let addr0 = addrs[0];
 	logger.info(`tars.tarsqueryproperty.NoTarsObj, use ${addr0.host}:${addr0.port}`);
