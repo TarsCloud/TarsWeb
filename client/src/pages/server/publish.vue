@@ -390,8 +390,8 @@ export default {
       };
       this.getPatchList(first.application, first.server_name, 1, 50).then((data) => {
         this.publishModal.model.patchList = data.rows;
+        window.setTimeout(() => this.publishModal.show = true, 300)
       });
-      this.publishModal.show = true;
     },
     getPatchList(application, serverName, currPage, pageSize) {
       return this.$ajax.getJSON('/server/api/server_patch_list', {
