@@ -17,10 +17,10 @@ var path = require('path');
 
 module.exports = {
 	dbConf: {
-		host: 'localhost',       // 数据库地址
+		host: 'db.tars.com',       // 数据库地址
 		port: '3306',            // 数据库端口
-		user: 'root',            // 用户名
-		password: 'admin123',       // 密码
+		user: 'tars',            // 用户名
+		password: 'tars2015',       // 密码
 		charset: 'utf8_bin',     // 数据库编码
 		pool: {
 			max: 10,             // 连接池中最大连接数量
@@ -34,15 +34,15 @@ module.exports = {
 		logFileKeepDays: '1',         //日志保留时间
 		defaultLanguage: 'cn',    //cn 或 en ，用户默认的语言环境
 	},
-	kafkaConf: {
-		enable: false,
-		kafkaHost: 'localhost:9092',
-		zkHost: 'localhost:2181',
-		topic: 'tarsTask',
-		maxCount: 100              // 后台并行处理的最大任务数
+	kafkaConf : {
+		enable : false,
+		kafkaHost : 'localhost:9092',
+		zkHost : 'localhost:2181',
+		topic : 'tarsTask',
+		maxCount : 100              // 后台并行处理的最大任务数
 	},
-	pkgUploadPath: {
-		path: '/usr/local/app/patchs/tars.upload'
+	pkgUploadPath : {
+		path : '/usr/local/app/patchs/tars.upload'
 	},
 	//防洪水攻击配置
 	limitConf: {
