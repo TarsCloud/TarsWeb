@@ -107,7 +107,7 @@
         </let-select>
       </let-form-item>
       <let-form-item :label="$t('cache.cacheType')" itemWidth="500px" v-if="model.cache_module_type == 1" required>
-        <let-radio-group size="small" v-model="model.cache_type" required
+        <let-radio-group size="small" v-model="model.key_type" required
                          :data="cacheTypeOption">
         </let-radio-group>
       </let-form-item>
@@ -115,7 +115,7 @@
                      required>
         <let-input
           size="small"
-          v-model="model.db_data_count"
+          v-model="model.dbAccessServant"
           :placeholder="$t('cache.dbAccessServantObjEx')"
           required
           :required-tip="$t('deployService.table.tips.empty')"
@@ -148,8 +148,8 @@
     key_type: null,
     module_name: '',    // 模块名
     cache_module_type: '',  // 模块存储类型
-    cache_type: '',   // 存储类型
-    db_data_count: '',  // 持久化存储条数
+    key_type: '',   // 存储类型
+    dbAccessServant: '',  // 数据库servant obj
     per_record_avg: '',
     total_record: '',
     max_read_flow: '',
