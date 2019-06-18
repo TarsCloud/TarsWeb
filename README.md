@@ -57,6 +57,7 @@
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## 开源模块
 基于 Tars 和 Tars web 开源的模块，现已开源模块有：
+* [DCache](https://github.com/Tencent/DCache)：DCache是一个基于TARS框架开发的分布式NoSQL存储系统，数据采用内存存储，支持连接后端DB实现数据持久化。
 * [@tars/dcache](https://www.npmjs.com/package/@tars/dcache)：是 Tars web 的扩展，用于管理 DCache 服务。
 
 
