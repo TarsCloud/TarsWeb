@@ -453,13 +453,13 @@ export default {
         this.$ajax.getJSON('/server/api/task', {
           task_no: taskId,
         }).then((data) => {
+          let done = true;
           data.items.forEach((item) => {
-            if (parseInt(item.status, 10) === 2 || parseInt(item.status, 10) === 3) {
-              clearTimeout(timerId);
-            }else {
-              timerId = setTimeout(getTask, 3000);
+            if (![2, 3].includes(item.status)) {
+              done = false;
             }
           });
+          done ? clearTimeout(timerId) : timerId = setTimeout(getTask, 2000);
           this.finishModal.model.items = data.items;
         }).catch((err) => {
           clearTimeout(timerId);
