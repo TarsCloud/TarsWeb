@@ -20,7 +20,7 @@
   
 ### 服务部署
   Tars web 提供了 `Tars` 服务部署功能，现支持的语言有 [C++](https://github.com/TarsCloud/TarsCpp)、[Java](https://github.com/TarsCloud/TarsJava)、
-  [go](https://github.com/TarsCloud/TarsGo)、[nodejs](https://github.com/tars-node/Tars.js)、[php](https://github.com/TarsPHP/TarsPHP)。
+ [go](https://github.com/TarsCloud/TarsGo)、[nodejs](https://github.com/tars-node/Tars.js)、[php](https://github.com/TarsPHP/TarsPHP)。
   在平台上，可以很简单的部署服务。填好应用名、服务名、obj 名、节点地址，选好服务类型、模版即可部署一个服务。
   
 ### 发布管理
