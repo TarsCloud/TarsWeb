@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.15, for macos10.14 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.22, for Linux (x86_64)
 --
--- Host: localhost    Database: db_cache_web
+-- Host: 127.0.0.1    Database: db_cache_web
 -- ------------------------------------------------------
--- Server version	8.0.15
+-- Server version	5.7.22
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
- SET NAMES utf8mb4 ;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `t_apply_app_base`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_apply_app_base` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` int(4) NOT NULL DEFAULT '1',
@@ -32,7 +32,7 @@ CREATE TABLE `t_apply_app_base` (
   `create_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `t_apply_app_base` (
 
 DROP TABLE IF EXISTS `t_apply_app_proxy_conf`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_apply_app_proxy_conf` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `apply_id` int(11) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE `t_apply_app_proxy_conf` (
   PRIMARY KEY (`id`),
   KEY `t_apply_app_proxy_conf_apply_id_foreign_idx` (`apply_id`),
   CONSTRAINT `t_apply_app_proxy_conf_apply_id_foreign_idx` FOREIGN KEY (`apply_id`) REFERENCES `t_apply_app_base` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +63,7 @@ CREATE TABLE `t_apply_app_proxy_conf` (
 
 DROP TABLE IF EXISTS `t_apply_app_router_conf`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_apply_app_router_conf` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `apply_id` int(11) NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE `t_apply_app_router_conf` (
   PRIMARY KEY (`id`),
   KEY `t_apply_app_router_conf_apply_id_foreign_idx` (`apply_id`),
   CONSTRAINT `t_apply_app_router_conf_apply_id_foreign_idx` FOREIGN KEY (`apply_id`) REFERENCES `t_apply_app_base` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,7 +89,7 @@ CREATE TABLE `t_apply_app_router_conf` (
 
 DROP TABLE IF EXISTS `t_apply_cache_module_base`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_apply_cache_module_base` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` int(4) NOT NULL DEFAULT '0',
@@ -101,7 +101,7 @@ CREATE TABLE `t_apply_cache_module_base` (
   `create_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `t_apply_cache_module_base` (
 
 DROP TABLE IF EXISTS `t_apply_cache_module_conf`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_apply_cache_module_conf` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `module_id` int(11) NOT NULL,
@@ -130,11 +130,12 @@ CREATE TABLE `t_apply_cache_module_conf` (
   `module_remark` text,
   `create_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime DEFAULT NULL,
+  `dbAccessServant` varchar(150) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `applyModule` (`apply_id`,`module_name`),
   KEY `t_apply_cache_module_conf_module_id_foreign_idx` (`module_id`),
-  CONSTRAINT `t_apply_cache_module_conf_module_id_foreign_idx` FOREIGN KEY (`module_id`) REFERENCES `t_apply_cache_module_base` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
+  CONSTRAINT `t_apply_cache_module_conf_module_id_foreign_idx` FOREIGN KEY (`module_id`) REFERENCES `t_apply_cache_module_base` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,10 +144,10 @@ CREATE TABLE `t_apply_cache_module_conf` (
 
 DROP TABLE IF EXISTS `t_apply_cache_server_conf`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_apply_cache_server_conf` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `area` varchar(50) NOT NULL DEFAULT '',
+  `area` varchar(50) DEFAULT '',
   `apply_id` int(11) NOT NULL,
   `module_name` varchar(100) NOT NULL DEFAULT '',
   `group_name` varchar(100) NOT NULL DEFAULT '',
@@ -160,9 +161,10 @@ CREATE TABLE `t_apply_cache_server_conf` (
   `modify_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime DEFAULT NULL,
   `is_docker` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `applyModule` (`apply_id`,`module_name`,`group_name`,`server_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=145 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=636 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,7 +173,7 @@ CREATE TABLE `t_apply_cache_server_conf` (
 
 DROP TABLE IF EXISTS `t_expand_server`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_expand_server` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `area` varchar(50) NOT NULL DEFAULT '',
@@ -195,7 +197,7 @@ CREATE TABLE `t_expand_server` (
   PRIMARY KEY (`id`),
   KEY `t_expand_server_operation_id_foreign_idx` (`operation_id`),
   CONSTRAINT `t_expand_server_operation_id_foreign_idx` FOREIGN KEY (`operation_id`) REFERENCES `t_module_operation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,7 +206,7 @@ CREATE TABLE `t_expand_server` (
 
 DROP TABLE IF EXISTS `t_module_operation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_module_operation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(50) NOT NULL,
@@ -215,7 +217,7 @@ CREATE TABLE `t_module_operation` (
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,7 +226,7 @@ CREATE TABLE `t_module_operation` (
 
 DROP TABLE IF EXISTS `t_region`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_region` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `region` varchar(50) NOT NULL,
@@ -271,7 +273,28 @@ CREATE TABLE `t_region` (
   UNIQUE KEY `region_20` (`region`),
   UNIQUE KEY `label_20` (`label`),
   UNIQUE KEY `region_21` (`region`),
-  UNIQUE KEY `label_21` (`label`)
+  UNIQUE KEY `label_21` (`label`),
+  UNIQUE KEY `region_22` (`region`),
+  UNIQUE KEY `label_22` (`label`),
+  UNIQUE KEY `region_23` (`region`),
+  UNIQUE KEY `label_23` (`label`),
+  UNIQUE KEY `region_24` (`region`),
+  UNIQUE KEY `label_24` (`label`),
+  UNIQUE KEY `region_25` (`region`),
+  UNIQUE KEY `label_25` (`label`),
+  UNIQUE KEY `region_26` (`region`),
+  UNIQUE KEY `label_26` (`label`),
+  UNIQUE KEY `region_27` (`region`),
+  UNIQUE KEY `label_27` (`label`),
+  UNIQUE KEY `region_28` (`region`),
+  UNIQUE KEY `label_28` (`label`),
+  UNIQUE KEY `region_29` (`region`),
+  UNIQUE KEY `label_29` (`label`),
+  UNIQUE KEY `region_30` (`region`),
+  UNIQUE KEY `label_30` (`label`),
+  UNIQUE KEY `region_31` (`region`),
+  UNIQUE KEY `label_31` (`label`),
+  UNIQUE KEY `region_32` (`region`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -281,7 +304,7 @@ CREATE TABLE `t_region` (
 
 DROP TABLE IF EXISTS `t_server_patchs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_server_patchs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `module_name` varchar(50) DEFAULT NULL,
@@ -317,4 +340,4 @@ CREATE TABLE `t_server_patchs` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-04-10 12:55:49
+-- Dump completed on 2019-06-18 15:33:11
