@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node server/bin/www",
+    "start": "node bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
     "dcache": "./node_modules/.bin/nodemon --watch ./../tars-dcache --watch ./ bin/www",
     "prd": "pm2 start bin/www --name=tars-node-web",
