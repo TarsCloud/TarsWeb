@@ -1,5 +1,5 @@
 <template>
-  <section class="">
+  <section class="moduleCache">
     <!-- 服务列表 -->
     <let-table v-if="serverList" :data="serverList" :title="$t('serverList.title.serverList')"
                :empty-msg="$t('common.nodata')" ref="serverListLoading">
@@ -49,10 +49,19 @@
       <let-table-column :title="$t('cache.config.remark')" prop="remark"></let-table-column>
       <let-table-column :title="$t('cache.config.path')" prop="path"></let-table-column>
       <let-table-column :title="$t('cache.config.item')" prop="item"></let-table-column>
-      <let-table-column :title="$t('cache.config.config_value')" prop="config_value"></let-table-column>
+      <let-table-column :title="$t('cache.config.config_value')" prop="config_value">
+        <template slot-scope="{ row: { config_value } }"><div style="white-space: pre-wrap;" >{{ config_value }}</div></template>
+      </let-table-column>
       <let-table-column :title="$t('cache.config.modify_value')" prop="period">
         <template slot-scope="{row}">
-          <let-input size="small" v-model="row.modify_value"></let-input>
+          <let-input
+            size="small"
+            v-model="row.modify_value"
+            type="textarea"
+            @focus="inputFocus"
+            @blur="inputBlur"
+            :rows="1" >
+          </let-input>
         </template>
       </let-table-column>
       <let-table-column :title="$t('operate.operates')">
@@ -176,6 +185,12 @@
       changePage (page) {
         this.pagination.page = page;
       },
+      inputFocus(e) {
+        e.target.rows = 4
+      },
+      inputBlur(e) {
+        e.target.rows = 1
+      },
       async getModuleConfig () {
         try {
           const { appName, moduleName } = this;
@@ -184,6 +199,7 @@
           configItemList.forEach(item => {
             item.modify_value = "";
             item.isChecked = false;
+            // item.config_value = item.config_value.replace(/\n/g,"<br/>");
           });
           this.configList = configItemList;
         } catch (err) {
@@ -307,5 +323,8 @@
     max-height: 500px;
     overflow-y: auto;
     margin-top: 20px;
+  }
+  .moduleCache .let-input textarea {
+    padding: 8px;
   }
 </style>
