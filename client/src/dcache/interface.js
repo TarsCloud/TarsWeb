@@ -46,7 +46,10 @@ export function transferDCacheGroup({ appName, moduleName, srcGroupName, dstGrou
   return Axios({
     method: 'post',
     url: '/cache/transferDCacheGroup',
-    data: { appName, moduleName, srcGroupName, dstGroupName, transferData }
+    data: { appName, moduleName, srcGroupName, dstGroupName, transferData },
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 
