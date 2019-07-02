@@ -33,7 +33,7 @@ AuthService.updateAuth = async(flag, role, uids) => {
     uids.forEach((uid)=> {
         newAuthList.push({flag: flag, role: role, uid: uid});
     });
-    await AuthDao.deleteAuth(flag, role);
+    await AuthDao.deleteAuth({flag, role});
     return await AuthDao.insertAuth(newAuthList);
 };
 
