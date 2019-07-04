@@ -54,7 +54,7 @@ export default {
       const loading = this.$Loading.show();
       this.$ajax.postJSON('/server/api/update_auth', {application: this.serverData.application, server_name: this.serverData.server_name, operator: this.operator, developer: this.developer}).then((data)=>{
         loading.hide();
-        this.$tip.success(`${this.$t('common.error')}`);
+        this.$tip.success(`${this.$t('common.success')}`);
       }).catch((err)=>{
         loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
