@@ -12,7 +12,7 @@
   "dependencies": {
     "@tars/rpc": "*",
     "@tars/stream": "*",
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "callsite": "^1.0.0",
     "cluster": "^0.7.7",
     "debug": "^2.6.3",
@@ -44,7 +44,7 @@
     "node-ssh": "^5.1.1",
     "request": "^2.87.0",
     "request-promise-any": "^1.0.5",
-    "sequelize": "^4.37.10",
+    "sequelize": "^6.0.0",
     "url": "^0.11.0",
     "validator": "^9.4.1",
     "winston": "^2.4.2",
