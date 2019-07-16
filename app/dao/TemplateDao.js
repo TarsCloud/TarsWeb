@@ -70,10 +70,14 @@ TemplateDao.getTemplateList = async (templateName, parentsName) => {
 	return await tProfileTemplate.findAll({
 		where: {
 			template_name: {
-				$like: '%' + templateName + '%'
+				//$like: '%' + templateName + '%'
+				//syntax breaking changes after V5, should be:
+				[Sequelize.Op.like]: '%' + templateName + '%'
 			},
 			parents_name: {
-				$like: '%' + parentsName + '%'
+				//$like: '%' + parentsName + '%'
+				//syntax breaking changes after V5, should be:
+				[Sequelize.Op.like]: '%' + parentsName + '%'
 			}
 		}
 	});
