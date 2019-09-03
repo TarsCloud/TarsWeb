@@ -5,7 +5,7 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <a :class="{active: dcache === 'true'}" href="/"><img class="logo" src="@/assets/img/logo.png"></a>
+        <a :class="{active: dcache === 'true'}" href="/"><img class="logo" src="@/assets/img/tars_logo.png"></a>
         <a v-if="dcache === 'true'" class="" href="/dcache.html"><img class="logo" alt="dcache"
                                                              src="@/assets/img/dcache-logo.png"></a>
       </div>
@@ -126,7 +126,7 @@
   a {
     display: inline-block;
     height: 80px;
-    padding: 30px 20px 0;
+    padding: 20px 20px 0;
     position: relative;
   &.active {
   &::after {
@@ -143,7 +143,7 @@
   }
 
   .logo {
-    height: 25px;
+    height: 31px;
   }
 
   }
