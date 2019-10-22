@@ -57,6 +57,10 @@ InfTestController.uploadTarsFile = async (ctx) => {
 				logger.error('[uploadTarsFile]:', 'no files', ctx);
 				return ctx.makeErrResObj();
 			}
+			if (!(/\.tars$/gi.test(file.originalname) && file.mimetype === 'application/octet-stream')) {
+				logger.error('[uploadTarsFile]:', 'only accept .tars files', ctx);
+				return ctx.makeResObj(500, 'only accept .tars files', null);
+			}
 			// tars文件上传目录，和发布包同一个根目录
 			let baseUploadPath = WebConf.pkgUploadPath.path;
 

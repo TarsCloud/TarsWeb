@@ -70,7 +70,8 @@
             @submit.native.prevent="uploadTarsFile">
                 <let-form-item itemWidth="400px">
                 <let-uploader
-                    :placeholder="$t('pub.dlg.defaultValue')"
+                    :placeholder="$t('pub.dlg.filetype')"
+                    accept=".tars"
                     @upload="uploadFile" require>
                     {{$t('common.submit')}}</let-uploader>
                     <span v-if="uploadModal.model.file">{{uploadModal.model.file.name}}</span>
@@ -145,7 +146,16 @@ export default {
             }
         },
         uploadFile(file) {
-            this.uploadModal.model.file = file;
+            if (file.name) {
+                const arr = file.name.split('.');
+                const filetype = arr[arr.length - 1];
+                if (filetype === 'tars') {
+                    this.uploadModal.model.file = file;
+                } else {
+                    this.uploadModal.model.file = '';
+                }
+            }
+            return this.uploadModal.model.file;
         },
         uploadTarsFile() {
             if(this.$refs.uploadForm.validate()) {

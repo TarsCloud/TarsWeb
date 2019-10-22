@@ -554,6 +554,7 @@
       "compileAndPublish": "编译并发布",
       "releasePkg": "发布包",
       "defaultValue": "请选择",
+      "filetype": "只能上传tars类型的文件",
       "noConfFile": "暂无配置文件",
       "a": "请至少选择一个服务节点",
       "ab": "请选择发布版本",

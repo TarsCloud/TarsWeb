@@ -70,8 +70,8 @@ InfTestService.getTarsFile = async (params, fields) => {
  * @param {String} tarsFilePath
  * @returns {Object} context上下文
  */
-InfTestService.getContext = async (tarsFilePath) => {
-	return await getContext(tarsFilePath);
+InfTestService.getContext = (tarsFilePath) => {
+	return getContext(tarsFilePath);
 }
 
 async function getContext(tarsFilePath) {
