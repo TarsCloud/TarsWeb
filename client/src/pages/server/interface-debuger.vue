@@ -72,14 +72,14 @@
                 <let-uploader
                     :placeholder="$t('pub.dlg.filetype')"
                     accept=".tars"
-                    @upload="uploadFile" require>
-                    {{$t('common.submit')}}</let-uploader>
-                    <span v-if="uploadModal.model.file">{{uploadModal.model.file.name}}</span>
+                    multiple
+                    @upload="uploadFile"
+                >{{$t('common.submit')}}</let-uploader>
+                    <li v-for="item in uploadModal.fileList2Show" :key="item.index">{{item.name}}</li>
                 </let-form-item>
                 <let-button type="submit" theme="primary">{{$t('serverList.servant.upload')}}</let-button>
             </let-form>
         </let-modal>
-
     </div>
 </template>
 
@@ -106,9 +106,9 @@ export default {
 
             uploadModal : {
                 show : false,
-                model : {}
+                model : {},
+                fileList2Show: [],
             },
-
             showDebug : false,
             contextData : [],
 
@@ -119,7 +119,7 @@ export default {
             selectedMethods: [],
             objName : '',
             objList : [],
-            selectedId : '' 
+            selectedId : '',
         }
     },
     methods: {
@@ -142,20 +142,28 @@ export default {
                 application : this.serverData.application,
                 server_name : this.serverData.server_name,
                 set_name : this.serverData.set_name,
-                file : null
+                file : []
             }
+            this.uploadModal.fileList2Show = [];
         },
-        uploadFile(file) {
-            if (file.name) {
+        uploadFile(fileList) {
+            this.uploadModal.fileList2Show = [];
+            if (fileList.length) {
+                let len = 0;
+                for (let file of fileList) {
+                    this.uploadModal.fileList2Show.push({name: file.name, index: Math.random()*100});
                 const arr = file.name.split('.');
                 const filetype = arr[arr.length - 1];
                 if (filetype === 'tars') {
-                    this.uploadModal.model.file = file;
+                        len += 1;
                 } else {
-                    this.uploadModal.model.file = '';
+                        break;
+                    }
+                }
+                if (len === fileList.length) {
+                    this.uploadModal.model.file = Array.from(fileList);
                 }
             }
-            return this.uploadModal.model.file;
         },
         uploadTarsFile() {
             if(this.$refs.uploadForm.validate()) {
@@ -164,7 +172,7 @@ export default {
                 formdata.append('application', this.uploadModal.model.application);
                 formdata.append('server_name', this.uploadModal.model.server_name);
                 formdata.append('set_name', this.uploadModal.model.set_name);
-                formdata.append('suse', this.uploadModal.model.file);
+                this.uploadModal.model.file.forEach( file => formdata.append('suse', file));
                 this.$ajax.postForm('/server/api/upload_tars_file', formdata).then(() => {
                     loading.hide();
                     this.getFileList();
@@ -280,7 +288,7 @@ export default {
                                 }
                             }
                         });
-                        this.inParam = JSON.stringify(obj);
+                        this.inParam = JSON.stringify(obj, null, 4);
                     });
                 }).catch((err) => {
                     loading.hide();

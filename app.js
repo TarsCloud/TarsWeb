@@ -53,7 +53,7 @@ app.use(helmet());
 
 app.use(bodyparser());
 
-app.use(upload.single('suse')); //这里决定了上传包的name只能叫suse。
+app.use(upload.array('suse',5)); //这里决定了上传包的name只能叫suse。
 
 //国际化多语言中间件
 app.use(localeMidware);
