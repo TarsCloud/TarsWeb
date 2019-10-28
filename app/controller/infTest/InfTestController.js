@@ -41,45 +41,54 @@ InfTestController.interfaceDebug = async (ctx) => {
 		}
 	} catch (e) {
 		logger.error('[interfaceDebug]:', e, ctx);
-		console.error(err);
-		ctx.makeResObj(500, err.message);
+		console.error(e);
+		ctx.makeResObj(500, e.message);
 	}
 }
 
 InfTestController.uploadTarsFile = async (ctx) => {
+	let {application, server_name, set_name} = ctx.paramsObj;
+	// tars文件上传目录，和发布包同一个根目录
+	let baseUploadPath = WebConf.pkgUploadPath.path;
+	let tarsFilePath = `${baseUploadPath}/tars_files/${application}/${server_name}`;
 	try {
-		let {application, server_name, set_name} = ctx.paramsObj;
+		await fs.ensureDirSync(tarsFilePath);
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
-			let file = ctx.req.file;
-			if (!file) {
+			let files = ctx.req.files;
+			if (!files.length) {
 				logger.error('[uploadTarsFile]:', 'no files', ctx);
-				return ctx.makeErrResObj();
+				throw new Error('[uploadTarsFile]: no files');
 			}
-			if (!(/\.tars$/gi.test(file.originalname) && file.mimetype === 'application/octet-stream')) {
-				logger.error('[uploadTarsFile]:', 'only accept .tars files', ctx);
-				return ctx.makeResObj(500, 'only accept .tars files', null);
+			// 检查文件类型并重命名文件
+			for (let file of files) {
+				if (!(/\.tars$/gi.test(file.originalname) && file.mimetype === 'application/octet-stream')) {
+					logger.error('[uploadTarsFile]:', 'only accept .tars files', ctx);
+					throw new Error('[uploadTarsFile]: #pub.dlg.filetype#');
+				}
+				await fs.rename(`${baseUploadPath}/${file.filename}`, `${tarsFilePath}/${file.originalname}`);
 			}
-			// tars文件上传目录，和发布包同一个根目录
-			let baseUploadPath = WebConf.pkgUploadPath.path;
-
-			let tarsFilePath = `${baseUploadPath}/tars_files/${application}/${server_name}`;
-			const context = await InfTestService.getContext(`${baseUploadPath}/${file.filename}`);
-			await fs.ensureDirSync(tarsFilePath);
-			await fs.rename(`${baseUploadPath}/${file.filename}`, `${tarsFilePath}/${file.originalname}`);
-			let ret = await InfTestService.addTarsFile({
-				application: application,
-				server_name: server_name,
-				file_name: file.originalname,
-				context: JSON.stringify(context),
-				posttime: new Date()
-			});
+			// 解析并入库
+			let ret = [];
+			for (let file of files) {
+				const context = await InfTestService.getContext(`${tarsFilePath}/${file.originalname}`);
+				ret.push(await InfTestService.addTarsFile({
+					application: application,
+					server_name: server_name,
+					file_name: file.originalname,
+					context: JSON.stringify(context),
+					posttime: new Date()
+				}));
+			}
 			ctx.makeResObj(200, '', ret);
 		}
 	} catch (e) {
 		logger.error('[uploadTarsFile]:', e, ctx);
 		ctx.makeErrResObj();
+	} finally {
+		// 删除重命名后的文件
+		fs.remove(`${tarsFilePath}`);
 	}
 }
 
