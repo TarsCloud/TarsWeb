@@ -180,8 +180,8 @@ const apiConf = [
 	['post', '/update_auth', AuthController.updateAuth, {
 		application: 'notEmpty',
 		server_name: 'notEmpty',
-		operator: 'notEmpty',
-		developer: 'notEmpty'
+		operator: '',
+		developer: ''
 	}],
 	['get', '/has_auth', AuthController.hasAuth, {application: 'notEmpty', role: 'notEmpty'}],
 

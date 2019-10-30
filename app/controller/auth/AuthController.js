@@ -24,6 +24,13 @@ const AuthController = {};
 
 AuthController.isEnableAuth = async (ctx) => {
 	try {
+		//只有admin用户可以分配权限
+		// if("admin" == ctx.uid){
+		// 	authConf.enableAuth = true;
+		// }
+		// else{
+		// 	authConf.enableAuth = false;
+		// }
 		ctx.makeResObj(200, '', {enableAuth: authConf.enableAuth});
 	} catch (e) {
 		logger.error('[isEnableAuth]', e, ctx);

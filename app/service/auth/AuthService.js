@@ -43,6 +43,10 @@ AuthService.hasAdminAuth = async (uid) => {
 };
 
 AuthService.checkHasAuth = async (application, serverName, role, uid) => {
+	//admin用户不校验权限
+	if ("admin" == uid){
+		return true;
+	}
 	if (!enableAuth) {
 		return true;
 	}

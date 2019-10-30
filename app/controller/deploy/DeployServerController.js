@@ -57,6 +57,11 @@ const serverConfStruct = {
 DeployServerController.deployServer = async (ctx) => {
 	var params = ctx.paramsObj;
 	try {
+		//除了admin之外的用户创建服务部署，自动添加当前用户developer权限
+		if ("admin" != ctx.uid)
+		{
+			params.developer = ctx.uid;
+		}
 		let rst = await ServerService.addServerConf(params);
 		rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
 		ctx.makeResObj(200, '', rst);
