@@ -34,7 +34,9 @@ const LEGAL_NAME = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/,
     };
 
 class TarsParser {
-    constructor() {}
+    constructor(fileDir) {
+        this.fileDir = fileDir;
+    }
 
     parseFile(context, content) {
         let tokenizer = new Tokenizer(content);
@@ -53,11 +55,13 @@ class TarsParser {
         if(tokenizer.next() != '{') {
             throw Error(`missing { after moduleName at '${moduleName}'`);
         }
-        context[moduleName] = {
-            enums : {},
-            structs : {},
-            interfaces : {},
-            consts : {}
+        if (!context[moduleName]) {
+            context[moduleName] = {
+                enums : {},
+                structs : {},
+                interfaces : {},
+                consts : {}
+            }
         }
         let token;
         while ((tokenizer.peek() || "}") !== "}") {
@@ -421,7 +425,7 @@ class TarsParser {
         include = token.replace(/^['"]|['"]$/g,'');
         context.includes = context.includes || {};
         context.includes[include] = true;
-        this.parseFile(context, fs.readFileSync(path.join(__dirname, include)).toString());
+        this.parseFile(context, fs.readFileSync(path.join(this.fileDir, include)).toString());
     }
 }
 

@@ -32,7 +32,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
 		if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
-			let file = ctx.req.file;
+			let file = ctx.req.files[0];
 			if (!file) {
 				logger.error('[uploadPatchPackage]:', 'no files');
 				return ctx.makeErrResObj(500, 'no files');

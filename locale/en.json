@@ -528,6 +528,7 @@
       "compileAndPublish": "compile and publish",
       "releasePkg": "release package",
       "defaultValue": "choose ...",
+      "filetype": "only accept .tars files",
       "noConfFile": "no configuration files",
       "a": "please choose an ip",
       "ab": "please choose a release version",

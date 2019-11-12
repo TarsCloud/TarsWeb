@@ -70,13 +70,14 @@ InfTestService.getTarsFile = async (params, fields) => {
  * @param {String} tarsFilePath
  * @returns {Object} context上下文
  */
-InfTestService.getContext = async (tarsFilePath) => {
-	return await getContext(tarsFilePath);
+InfTestService.getContext = (tarsFilePath) => {
+	return getContext(tarsFilePath);
 }
 
 async function getContext(tarsFilePath) {
 	const content = await fs.readFile(tarsFilePath);
-	const parser = new TarsParser();
+	const fileDir = tarsFilePath.split(/[/\\]/).slice(0, -1).join('/');
+	const parser = new TarsParser(fileDir);
 	let context = {};
 	parser.parseFile(context, content.toString());
 	return context;
