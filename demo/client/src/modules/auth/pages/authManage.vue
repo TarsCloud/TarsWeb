@@ -9,7 +9,11 @@
         <let-input size="small" v-model="query.flag"></let-input>
       </let-form-item>
       <let-form-item :label="$t('auth.role')">
-        <let-input size="small" v-model="query.role"></let-input>
+        <let-select v-model="query.role">
+          <let-option value="admin">admin</let-option>
+          <let-option value="operator">operator</let-option>
+          <let-option value="developer">developer</let-option>
+        </let-select>
       </let-form-item>
       <let-form-item label="uid">
         <let-input size="small" v-model="query.uid"></let-input>
@@ -53,11 +57,11 @@
             ></let-input>
           </let-form-item>
           <let-form-item :label="$t('auth.role')">
-            <let-input size="small"
-               v-model="dialog.role"
-               required
-               :required-tip="$t('auth.roleTips')"
-            ></let-input>
+            <let-select v-model="dialog.role">
+              <let-option value="admin">admin</let-option>
+              <let-option value="operator">operator</let-option>
+              <let-option value="developer">developer</let-option>
+            </let-select>
           </let-form-item>
           <let-form-item :label="$t('auth.uid')">
             <let-input size="small"

@@ -21,7 +21,7 @@ const LoginController = {};
 
 LoginController.isEnableLogin = async (ctx) => {
 	try {
-		ctx.makeResObj(200, '', {enableLogin: loginConf.enableLogin || false});
+		ctx.makeResObj(200, '', {enableLogin: loginConf.enableLogin || false, isAdmin: ctx.uid == 'admin'});
 	} catch (e) {
 		logger.error('[getLoginUid]', e, ctx);
 		ctx.makeErrResObj();

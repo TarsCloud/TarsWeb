@@ -12,7 +12,7 @@ module.exports = {
     logoutredirectUrlParamName: 'url',
     ticketCookieName: 'ticket',             //cookie中保存ticket信息的cookie名
     uidCookieName: 'uid',                   //cookie中保存用户信息的cookie名
-    cookieDomain: 'localhost',              //cookie值对应的域
+    cookieDomain: '',              //cookie值对应的域
     ticketParamName: 'ticket',              //第三方登录服务回调时候，url中表示st的参数名
     getUidByTicket: '',         //通过ticket从cas服务端校验和获取用户基本信息的url,或获取用户基本信息的方法
     getUidByTicketParamName: 'ticket',      //调用获取用户信息接口时候st的参数名

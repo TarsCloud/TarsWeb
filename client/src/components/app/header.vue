@@ -28,7 +28,8 @@
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}" v-show="enableLogin"></i>
           <transition name="fade">
             <div class="user-pop-wrap" v-show="enableLogin && userOptOpen">
-              <a href="/logout">{{$t('header.logout')}}</a>
+              <a href="/logout">{{$t('header.logout')}}</a> <br>
+              <a href="/auth" v-show="isAdmin">权限管理</a>
             </div>
           </transition>
         </p>
@@ -54,6 +55,7 @@
         uid: '--',
         userOptOpen: false,
         enableLogin: false,
+        isAdmin: false,
         localeMessages: localeMessages,
         dcache: this.$cookie.get('dcache') || 'false',
       };
@@ -81,6 +83,7 @@
       checkEnableLogin(){
         this.$ajax.getJSON('/server/api/is_enable_login').then((data) => {
           this.enableLogin = data.enableLogin || false;
+          this.isAdmin = data.isAdmin || false;
         }).catch((err) => {
 
         });
@@ -89,6 +92,7 @@
     mounted() {
       this.getLoginUid();
       this.checkEnableLogin();
+
       window.header =this;
     }
   };
