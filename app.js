@@ -33,6 +33,7 @@ const limitMidware = require('./app/midware/limitMidware');
 const WebConf = require('./config/webConf');
 
 const upload = multer({dest: WebConf.pkgUploadPath.path + '/'});
+const logger = require('./app/logger');
 
 //信任proxy头部，支持 X-Forwarded-Host
 app.proxy = true;
@@ -66,6 +67,12 @@ preMidware.forEach((midware) => {
 //登录校验
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/static', '/tarsnode.tar.gz', '/favicon.ico', '/pages/server/api/get_locale']);
+
+app.use(async (ctx, next) => {
+	loginConf.loginUrl = loginConf.loginUrl.replace("${domain}", ctx.host.split(':'));
+	await next();
+  });
+
 app.use(loginMidware(loginConf));
 
 // 是否启动 DCache

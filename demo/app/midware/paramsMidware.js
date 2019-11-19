@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const validator = require('validator');
+const logger = require('../logger');
 
 //api入参出参中间件
 const paramsDealMidware = (validParams) =>{
@@ -19,6 +20,9 @@ const paramsDealMidware = (validParams) =>{
         ctx.makeResObj = (retCode, errMsg, result) => {
             result = result == undefined ? {} : result;
             ctx.body = {data: result, ret_code: retCode, err_msg:errMsg};
+
+            logger.info('[makeResObj]', ctx.body);
+
         };
         ctx.makeErrResObj = () => {
             ctx.body = {data: {}, ret_code:500, err_msg: '#common.systemError#'};

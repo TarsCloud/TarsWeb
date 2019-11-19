@@ -9,7 +9,7 @@ TARS管理平台提供了与用户体系（包括单点登录系统和权限系�
     <li>在MySQL数据库创建db_user_system（数据库名）数据库，运行UserManage/sql/目录下的db_user_system.sql文件生成相关表。</li>
     <li>在UserManage/config目录下编辑webConf.js文件配置数据库。
     <li>运行npm run prd命令启动用户体系模块。</li>
-    <li>当项目成功运行起来之后，在TarsWeb/config目录下，logonConf.js文件中将enableLogin参数值改为true即可开启用户登录模块。</li>
+    <li>当项目成功运行起来之后，在TarsWeb/config目录下，loginConf.js文件中将enableLogin参数值改为true即可开启用户登录模块。</li>
 </ol>
 <strong>_注_：</strong>其中UserManage/config目录下的webConf.js只需修改下列选项即可。
     

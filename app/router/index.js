@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const {pageConf, apiConf} = require('./routerConf');
+const {pageConf, apiConf, proxyConf} = require('./routerConf');
 const Router = require('koa-router');
 const _ = require('lodash');
 const noCacheMidware = require('../midware/noCacheMidware');
@@ -40,6 +40,9 @@ const getRouter = (router, routerConf) => {
 	});
 };
 
+// //代理类型路由
+// const proxyRouter = new Router();
+// getRouter(proxyRouter, proxyConf);
 
 //页面类型路由
 const pageRouter = new Router();

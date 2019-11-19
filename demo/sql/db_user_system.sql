@@ -30,7 +30,7 @@ CREATE TABLE `t_auth` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=136 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -48,17 +48,8 @@ CREATE TABLE `t_login_temp_info` (
   `uid` varchar(256) DEFAULT NULL,
   `expire_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_login_temp_info`
---
-
-LOCK TABLES `t_login_temp_info` WRITE;
-/*!40000 ALTER TABLE `t_login_temp_info` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t_login_temp_info` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `t_user_info`
@@ -69,21 +60,13 @@ DROP TABLE IF EXISTS `t_user_info`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_user_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` varchar(256) DEFAULT NULL,
+  `uid` varchar(128) DEFAULT NULL,
   `password` varchar(256) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_name` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `t_user_info`
---
-
-LOCK TABLES `t_user_info` WRITE;
-/*!40000 ALTER TABLE `t_user_info` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t_user_info` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
