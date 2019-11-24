@@ -2,6 +2,14 @@
   "localeCode": "cn",
   "localeName": "中文",
 
+  "header": {
+    "tab": {
+      "tab1": "权限列表",
+      "tab2": "用户管理",
+      "tab3": "权限管理"
+    },
+    "modifyPass": "修改密码"
+  },
   "login":{
     "loginTitle": "请登录",
     "userName": "用户名",
@@ -26,12 +34,6 @@
     "getUidFailed": "获取用户信息失败",
     "logout": "退出登录",
     "noLogin": "您还没有登录"
-  },
-  "index": {
-    "indexInfo": "您的权限列表",
-    "userManage": "用户管理",
-    "viewAuth": "权限管理",
-    "modifyPass": "修改密码"
   },
   "auth":{
     "flag": "标志(应用名 或者 应用名.服务名)",

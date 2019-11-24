@@ -88,7 +88,6 @@
       },
       changeLocale(){
         this.$cookie.set('locale', this.locale, {expires: '1Y'});
-//      this.$i18n.locale = this.locale;
         location.reload();
       },
       checkEnableLogin(){

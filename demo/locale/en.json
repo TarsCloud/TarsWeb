@@ -2,6 +2,15 @@
   "localeCode": "en",
   "localeName": "English",
 
+  "header": {
+    "tab": {
+      "tab1": "My Privilege List",
+      "tab2": "Manage User",
+      "tab3": "Manage Privilege"
+    },
+    "modifyPass": "Modify Password"
+  },
+
   "login": {
     "loginTitle": "Please Sign In",
     "userName": "User name",
@@ -27,12 +36,6 @@
     "logout": "Sign out",
     "noLogin": "You have not been sign in"
   },
-  "index": {
-    "indexInfo": "Your Privilege List",
-    "userManage": "Manage User",
-    "viewAuth": "Manage Privilege",
-    "modifyPass": "Modify Password"
-  },  
   "auth": {
     "flag": "Flag(Application or Application.ServerName)",
     "role": "Role",
