@@ -5,7 +5,6 @@ const logger = require('../logger');
 
 const AuthDao = {}
 
-
 AuthDao.insertAuth = async(authList) => {
     return await tAuth.bulkCreate(authList);
 };

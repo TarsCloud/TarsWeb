@@ -12,7 +12,10 @@
     "dcache": {
       "tab2": "服务创建"
     },
-    "logout": "退出登录"
+    "logout": "退出登录",
+    "viewAuth": "权限管理",
+    "viewUser": "用户管理",
+    "modifyPass": "修改密码"
   },
   "releasePackage": {
     "proxyList": "Proxy服务列表",

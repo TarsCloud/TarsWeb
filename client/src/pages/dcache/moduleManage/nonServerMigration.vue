@@ -20,7 +20,7 @@
         </let-form-item>
         <let-form-item itemWidth="100%" required :label="$t('dcache.operationManage.dstGroupName') + '：'">
           <let-select required v-model="groupName" size="small" >
-            <let-option v-for="groupName in dstGroupNames" :value="groupName">{{groupName}}</let-option>
+            <let-option v-for="groupName in dstGroupNames" :value="groupName" :key="groupName">{{groupName}}</let-option>
           </let-select>
         </let-form-item>
         <let-form-item required :label="$t('dcache.migrationMethod') + '：'" >

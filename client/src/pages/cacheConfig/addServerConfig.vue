@@ -7,7 +7,7 @@
     >
       <let-form-item :label="$t('cache.config.item')" required>
         <let-select v-model="itemId" size="small">
-          <let-option v-for="item in list" :value="item.id">{{item.path}}__{{item.item}}({{item.remark}})</let-option>
+          <let-option v-for="item in list" :value="item.id" :key="item.id">{{item.path}}__{{item.item}}({{item.remark}})</let-option>
         </let-select>
       </let-form-item>
       <let-form-item :label="$t('cache.config.itemValue')" required>

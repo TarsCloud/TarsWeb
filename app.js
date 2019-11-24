@@ -69,9 +69,15 @@ let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/static', '/tarsnode.tar.gz', '/favicon.ico', '/pages/server/api/get_locale']);
 
 app.use(async (ctx, next) => {
-	loginConf.loginUrl = loginConf.loginUrl.replace("${domain}", ctx.host.split(':'));
+	let host = ctx.host.split(':')[0];
+	loginConf.loginUrl = loginConf.loginUrl.replace("localhost", host);
+	loginConf.viewAuthUrl = loginConf.viewAuthUrl.replace("localhost", host);
+	loginConf.viewUserUrl = loginConf.viewUserUrl.replace("localhost", host);
+	loginConf.modifyPassUrl = loginConf.modifyPassUrl.replace("localhost", host);
+
 	await next();
   });
+
 
 app.use(loginMidware(loginConf));
 

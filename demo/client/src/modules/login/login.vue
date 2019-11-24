@@ -36,7 +36,7 @@
       </let-form-item>
 
       <let-button type="submit" theme="primary">{{$t('login.login')}}</let-button>
-      <let-button type="button" @click.prevent="toRegisterPage" style="float:right;margin-right:12px;">{{$t('login.toRegisterPage')}}</let-button>
+      <!-- <let-button type="button" @click.prevent="toRegisterPage" style="float:right;margin-right:12px;">{{$t('login.toRegisterPage')}}</let-button> -->
     </let-form>
   </div>
 </template>
@@ -74,15 +74,18 @@ export default {
       this.$ajax.postJSON('/api/login', {uid: this.uid, password: this.password}).then((data)=>{
         loading.hide();
         var redirectUrl = decodeURIComponent(this.redirectUrl);
-        location.href = redirectUrl + (redirectUrl.indexOf('?') === -1?'?':'&') + 'ticket=' + data.ticket;
+        var href = redirectUrl + (redirectUrl.indexOf('?') === -1?'?':'&') + 'ticket=' + data.ticket;
+        // console.log(data, redirectUrl, href);
+
+        location.href = href;
       }).catch((err)=>{
         loading.hide();
         this.$tip.error(`${this.$t('login.loginFailed')}: ${err.err_msg || err.message}`);
       })
-    },
-    toRegisterPage(){
-      location.href="/register.html?redirect_url=" + encodeURIComponent(this.redirectUrl);
     }
+    // toRegisterPage(){
+    //   location.href="/register.html?redirect_url=" + encodeURIComponent(this.redirectUrl);
+    // }
   },
 };
 </script>

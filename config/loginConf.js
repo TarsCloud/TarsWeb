@@ -19,11 +19,14 @@ let request = require('request-promise-any');
  * 登录配置
  */
 module.exports = {
-    enableLogin: false,                     //是否启用登录验证
+    enableLogin: true,                     //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
     redirectUrlParamName: 'redirect_url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
-    loginUrl: 'http://${domain}:3001/login.html',   //登录跳转url(代码中要替换localhost)
+    loginUrl: 'http://localhost:3001/login.html',   //登录跳转url(代码中要替换localhost)
     logoutUrl: '',
+    viewAuthUrl: 'http://localhost:3001/auth.html',   //登录跳转url(代码中要替换localhost)
+    viewUserUrl: 'http://localhost:3001/auth.html#/user',   //登录跳转url(代码中要替换localhost)
+    modifyPassUrl: 'http://localhost:3001/pass.html',   //登录跳转url(代码中要替换localhost)
     logoutredirectUrlParamName: 'url',
     ticketCookieName: 'ticket',             //cookie中保存ticket信息的cookie名
     uidCookieName: 'uid',                   //cookie中保存用户信息的cookie名

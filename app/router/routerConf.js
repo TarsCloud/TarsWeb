@@ -184,6 +184,8 @@ const apiConf = [
 
 	//权限管理
 	['get', '/is_enable_auth', AuthController.isEnableAuth],
+	['get', '/get_roles', AuthController.getRoles],
+	['get', '/is_admin', AuthController.isAdmin],
 	['get', '/get_auth_list', AuthController.getAuthList],
 	['post', '/update_auth', AuthController.updateAuth, {
 		application: 'notEmpty',
@@ -192,6 +194,9 @@ const apiConf = [
 		developer: 'notEmpty'
 	}],
 	['get', '/has_auth', AuthController.hasAuth, {application: 'notEmpty', role: 'notEmpty'}],
+	['get', '/viewAuth', AuthController.viewAuth],
+	['get', '/viewUser', AuthController.viewUser],
+	['get', '/modifyPass', AuthController.modifyPass],
 
 	//登录管理
 	['get', '/get_login_uid', LoginController.getLoginUid],

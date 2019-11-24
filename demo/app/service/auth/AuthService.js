@@ -1,7 +1,44 @@
 let AuthDao = require('../../dao/AuthDao');
+let UserDao = require('../../dao/UserDao');
 let logger = require('../../logger');
 
 const AuthService = {}
+
+AuthService.isAdmin = async(uid) => {
+    // console.log('isAdmin', uid);
+
+    if(uid == 'admin') {
+        return true;
+    }
+
+    let authList = await AuthDao.getAuthList({uid: uid});
+
+    for(let auth of authList) {
+        if(auth.role == 'admin') {
+            return true;
+        }
+    }
+    return false;
+};
+
+AuthService.isInit = async(uid) => {
+
+    let userList = await AuthService.getUserIdList();
+
+    //超过一个用户
+    if(userList.length >= 2) {
+        return false;
+    }
+
+    //只有一个admin用户, 且密码是空的, 则需要初始化
+    // console.log('isInit', userList);
+    if(userList.length == 0 || userList[0].password == '') {
+        return true;
+    }    
+
+    return false;
+};
+
 
 AuthService.addAuth = async(authList) => {
     let newAuthList = [];
@@ -48,6 +85,7 @@ AuthService.getAuthListByUid = async(uid) => {
 AuthService.getAuthListByFlag = async(flag) => {
     return await AuthDao.getAuthList({flag: flag});
 };
+
 AuthService.getAuthList = async(flag, role, uid) =>{
     let params = {};
     if (flag !== undefined && flag !== null) {
@@ -61,6 +99,10 @@ AuthService.getAuthList = async(flag, role, uid) =>{
     }
     return await AuthDao.getAuthList(params, 'DESC');
 };
+
+AuthService.getUserIdList = async() => {
+    return await UserDao.getUserIdList();
+}; 
 
 AuthService.pageDeleteAuth = async(id) => {
     return await AuthDao.deleteAuthById(id);

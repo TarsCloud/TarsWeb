@@ -10,7 +10,6 @@
                                                              src="@/assets/img/dcache-logo.png"></a>
       </div>
 
-
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
         <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
@@ -18,18 +17,21 @@
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
           <template v-for="locale in localeMessages">
-            <let-option :value="locale.localeCode">{{locale.localeName}}</let-option>
+            <let-option :value="locale.localeCode" :key="locale.localeCode">{{locale.localeName}}</let-option>
           </template>
         </let-select>
       </div>
+
       <div class="user-wrap">
         <p class="user-info" @click="userOptOpen = !userOptOpen">
           <span class="name toe">{{uid}} </span>
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}" v-show="enableLogin"></i>
           <transition name="fade">
             <div class="user-pop-wrap" v-show="enableLogin && userOptOpen">
-              <a href="/logout">{{$t('header.logout')}}</a> <br>
-              <a href="/auth" v-show="isAdmin">权限管理</a>
+              <div> <a href="#" @click="modifyPass" >{{$t('header.modifyPass')}}</a> </div>
+              <div v-show="isAdmin"> <a href="#" @click="viewAuth" >{{$t('header.viewAuth')}}</a> </div>
+              <div v-show="isAdmin"> <a href="#" @click="viewUser" >{{$t('header.viewUser')}}</a> </div>
+              <div> <a href="/logout">{{$t('header.logout')}}</a> </div>
             </div>
           </transition>
         </p>
@@ -64,6 +66,15 @@
       clickTab(tabkey) {
         this.$router.replace(tabkey);
       },
+      viewAuth() {
+        window.open("/pages/server/api/viewAuth");
+      },
+      modifyPass() {
+        window.open("/pages/server/api/modifyPass");
+      },
+      viewUser() {
+        window.open("/pages/server/api/viewUser");
+      },      
       getLoginUid(){
         this.$ajax.getJSON('/server/api/get_login_uid').then((data) => {
           if (data && data.uid) {
@@ -82,16 +93,25 @@
       },
       checkEnableLogin(){
         this.$ajax.getJSON('/server/api/is_enable_login').then((data) => {
-          this.enableLogin = data.enableLogin || false;
-          this.isAdmin = data.isAdmin || false;
-        }).catch((err) => {
+                    // console.log(data);
 
+          this.enableLogin = data.enableLogin || false;
+        }).catch((err) => {
         });
       },
+      checkAdmin(){
+        this.isAdmin = false; 
+        this.$ajax.getJSON('/server/api/is_admin').then((data) => {
+          // console.log(data);
+          this.isAdmin = data.admin;
+        }).catch((err) => {
+        });
+      },      
     },
     mounted() {
       this.getLoginUid();
       this.checkEnableLogin();
+      this.checkAdmin();
 
       window.header =this;
     }

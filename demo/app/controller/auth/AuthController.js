@@ -11,6 +11,19 @@ const authStruct = {
     uid: ''
 };
 
+AuthController.isAdmin = async(ctx) => {
+    try{
+        // console.log('isAdmin', ctx, ctx.paramsObj);
+
+        let uid = ctx.uid;
+        let admin = await AuthService.isAdmin(uid);
+        ctx.makeResObj(200, '', {admin:admin});
+    }catch(e){
+        logger.error('[addAuth]', e, ctx);
+        ctx.makeErrResObj();
+    }
+};
+
 AuthController.addAuth = async(ctx) => {
     try{
         let auth = ctx.paramsObj.auth;
@@ -48,11 +61,19 @@ AuthController.updateAuth = async(ctx) => {
 
 AuthController.getAuth = async(ctx)=> {
     try{
-        let flag = ctx.paramsObj.flag;
-        let roles = ctx.paramsObj.role;
-        roles = roles.split(';');
         let uid = ctx.paramsObj.uid;
-        var rst = await AuthService.getAuth(flag, roles, uid);
+        let rst = false;
+
+        if(await AuthService.isAdmin(uid)) {
+            rst = true; 
+        } else {
+            let flag = ctx.paramsObj.flag;
+            let roles = ctx.paramsObj.role;
+            roles = roles.split(';');
+            rst = await AuthService.getAuth(flag, roles, uid);
+        }
+
+        // console.log('getAuth', rst);
         ctx.makeResObj(200, '', {result: !!rst});
     }catch(e){
         logger.error('[getAuth]', e, ctx);
@@ -64,6 +85,7 @@ AuthController.getAuthListByUid = async(ctx)=> {
     try{
         let uid = ctx.paramsObj.uid;
         let rst = await AuthService.getAuthListByUid(uid);
+        
         ctx.makeResObj(200, '', util.viewFilter(rst || [], authStruct));
     }catch(e){
         logger.error('[getAuthListByUid]', e, ctx);
@@ -88,6 +110,8 @@ AuthController.getAuthList = async(ctx)=> {
         let role = ctx.paramsObj.role || null;
         let uid = ctx.paramsObj.uid || null;
         let rst = await AuthService.getAuthList(flag, role, uid);
+        // console.log('getAuthList', ctx.paramsObj, rst);
+
         ctx.makeResObj(200, '', util.viewFilter(rst || [], authStruct));
     }catch(e){
         logger.error('[getAuthList]', e, ctx);
@@ -97,9 +121,16 @@ AuthController.getAuthList = async(ctx)=> {
 
 AuthController.pageDeleteAuth = async(ctx)=> {
     try{
-        let id = ctx.paramsObj.id || null;
-        await AuthService.pageDeleteAuth(id);
-        ctx.makeResObj(200, '', id);
+
+        if(await AuthService.isAdmin(ctx.paramsObj.uid )) {
+            ctx.makeResObj(500, '#auth.adminNotErase#', {});
+        }
+        else {
+            let id = ctx.paramsObj.id || null;
+
+            await AuthService.pageDeleteAuth(id);
+            ctx.makeResObj(200, '', id);
+        }
 
     }catch(e){
         logger.error('[getAuthList]', e, ctx);

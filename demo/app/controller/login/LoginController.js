@@ -6,6 +6,7 @@ const exprireTime = 7 * 24 *60 * 60 * 1000;
 
 
 LoginController.indexPage = async(ctx) =>{
+    // console.log('indexPage');
     await ctx.redirect('/index.html');
 };
 
@@ -34,6 +35,8 @@ LoginController.logout = async (ctx) => {
 
 //登录接口
 LoginController.login = async (ctx) => {
+    // console.log('login', ctx);
+
     let uid = ctx.paramsObj.uid;
     let password = ctx.paramsObj.password;
     try{

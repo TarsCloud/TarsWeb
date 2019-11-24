@@ -16,6 +16,7 @@
 
 const {
 	enableAuth,
+	isAdminUrl,
 	addAuthUrl,
 	deleteAuthUrl,
 	updateAuthUrl,
@@ -23,6 +24,8 @@ const {
 	getAuthUrl,
 	getAuthListByFlagUrl,
 } = require('../../../config/authConf');
+const loginConf = require('../../../config/loginConf');
+
 const util = require('../../tools/util');
 const logger = require('../../logger');
 const _ = require('lodash');
@@ -47,6 +50,8 @@ AuthService.checkHasAuth = async (application, serverName, role, uid) => {
 		return true;
 	}
 	let hasAuth = false;
+	// console.log('checkHasAuth:', application, serverName, role, uid);
+
 	if (serverName) {
 		hasAuth = await AuthService.httpCallCheckAuth(application + '.' + serverName, role, uid);
 	}
@@ -75,8 +80,48 @@ AuthService.httpCallCheckAuth = async (flag, roles, uid) => {
 		role: roles,
 		uid: uid
 	});
+	// console.log('httpCallCheckAuth', rst, flag, roles, uid);
 	if (rst && rst.ret_code == 200) {
 		return rst.data && rst.data.result || false;
+	} else {
+		throw (new Error(rst.err_msg));
+	}
+};
+
+AuthService.getRoles = async (uid) => {
+	if (!enableAuth) {
+		return [loginConf.defaultLoginUid];
+	}
+	var rst = await util.jsonRequest.get(getAuthListByUidUrl, {
+		uid: uid
+	});
+	if (rst && rst.ret_code == 200) {
+		let list = rst.data;
+		let rolesList = [];
+		list.forEach((auth) => {
+			rolesList.push(auth.role);
+		});
+
+		let unique = (rolesList)=> [...new Set(rolesList)];
+		unique(rolesList);
+		return rolesList || [];
+	} else {
+		throw (new Error(rst.err_msg));
+	}
+};
+
+
+AuthService.isAdmin = async (uid) => {
+	// console.log('uid', uid);
+	if (!enableAuth) {
+		return true;
+	}
+	var rst = await util.jsonRequest.get(isAdminUrl, {
+		uid: uid
+	});
+
+	if (rst && rst.ret_code == 200) {
+		return rst.data.admin;
 	} else {
 		throw (new Error(rst.err_msg));
 	}
@@ -89,11 +134,12 @@ AuthService.getAuthListByUid = async (uid) => {
 	var rst = await util.jsonRequest.get(getAuthListByUidUrl, {
 		uid: uid
 	});
+	// console.log(rst);
 	if (rst && rst.ret_code == 200) {
 		let list = rst.data;
 		let authList = [];
 		list.forEach((auth) => {
-			let flag = auth.flag;
+			let flag = auth.flag || "";
 			let idx = flag.indexOf('.');
 			if (idx > 1) {
 				authList.push({application: flag.substring(0, idx), serverName: flag.substring(idx + 1)})
@@ -192,6 +238,8 @@ AuthService.getAuthList = async (application, serverName) => {
 
 //检测是否有顶层目录的权限，主要用于获取配置列表等
 AuthService.checkHasParentAuth = async (params) => {
+	// console.log('checkHasParentAuth:', params);
+
 	if (!enableAuth || await AuthService.hasAdminAuth(params.uid)) {
 		return true;
 	}

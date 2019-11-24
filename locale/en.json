@@ -12,7 +12,10 @@
     "dcache": {
       "tab2": "Create Service"
     },
-    "logout": "logout"
+    "logout": "Logout",
+    "viewAuth": "Manager Privilage",
+    "viewUser": "Manager User",
+    "modifyPass": "Modify Password"
   },
   "releasePackage": {
     "proxyList": "Proxy Service List",

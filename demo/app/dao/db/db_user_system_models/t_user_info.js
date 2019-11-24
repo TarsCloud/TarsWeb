@@ -16,6 +16,10 @@ module.exports = function(sequelize, DataTypes) {
 		password: {
 			type: DataTypes.STRING(256),
 			allowNull: false
+		},
+		update_time: {
+			type: DataTypes.STRING(256),
+			allowNull: false			
 		}
 	}, {
 		tableName: 't_user_info',

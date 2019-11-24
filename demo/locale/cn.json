@@ -27,10 +27,16 @@
     "logout": "退出登录",
     "noLogin": "您还没有登录"
   },
+  "index": {
+    "indexInfo": "您的权限列表",
+    "userManage": "用户管理",
+    "viewAuth": "权限管理",
+    "modifyPass": "修改密码"
+  },
   "auth":{
-    "flag": "标志",
+    "flag": "标志(应用名 或者 应用名.服务名)",
     "role": "角色",
-    "uid": "用户",
+    "uid": "用户名",
     "flagTips": "标志不能为空",
     "roleTips": "角色不能为空",
     "uidTips": "用户不能为空",
@@ -41,8 +47,30 @@
     "loadListError": "加载权限列表失败",
     "selectRecord": "请选择要删除的权限",
     "confirmDelete": "确定要删除选中的权限吗？",
+    "loadUserIdError": "加载用户列表失败",
     "delSucc": "删除成功",
-    "delError": "删除失败"
+    "delError": "删除失败",
+    "adminNotErase": "admin用户权限无法删除",
+    "addUser": "新增用户",
+    "delUser": "删除用户",
+    "userManageTitle": "用户列表",
+    "userTime": "创建时间",
+    "adminDelError": "admin用户不允许删除"
+  },
+  "pass":{
+    "title": "修改密码",
+    "adminTitle": "第一次登录 -- 设置[admin]用户密码",
+    "userName": "用户名",
+    "password": "密码",
+    "repeatPassword": "二次确认密码",
+    "modify": "修改",
+    "passwordDiff": "两次密码输入不一致，请修改",
+    "modifySucc": "密码修改成功",
+    "modifyFailed": "密码修改失败",
+    "passwordTips": "密码不能为空",
+    "repeatPasswordTips": "二次确认密码不能为空",
+    "setAdminPasswordFailed": "不允许设置Admin用户密码",
+    "toIndexPage": "跳转到我的首页"
   },
   "common": {
     "search": "查询",
