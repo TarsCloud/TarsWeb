@@ -2,6 +2,7 @@
 // const _ = require('lodash');
 
 const AuthService = require('../service/auth/AuthService');
+const url = require('url');
 
 // let isInWhiteIps = (ctx) => {
 //     let ip = ctx.ip;
@@ -21,14 +22,19 @@ const AuthService = require('../service/auth/AuthService');
 //     }
 // };
 
-//只有一个用户, 且密码为空, 则跳转到修改Admin密码
+//admin用户才能访问
 module.exports = async(ctx, next) =>{
-    // console.log('authMidware', ctx);
 
-    // if(ctx.url.lastIndexOf('.html') != -1 && await AuthService.isInit() && ctx.url != '/adminPass.html') {
-    //     ctx.redirect('/adminPass.html');
-    //     return;
-    // }
+    var myurl = url.parse(ctx.url);
+
+    // console.log('authMidware', ctx, myurl);
+
+    if(myurl.pathname.indexOf('/api/auth/page/') == 0) {
+        if(!await AuthService.isAdmin(ctx.uid)) {
+            ctx.makeResObj(500, '#common.noPrivilage#', {});
+            return;
+        }
+    }
 
     await next();
 }

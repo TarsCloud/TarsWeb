@@ -79,6 +79,7 @@
     "nextPage": "下一页",
     "prevPage": "上一页",
     "nodata": "没有数据",
+    "admin": "admin用户, 拥有所有权限",
     "success": "成功",
     "failed": "失败",
     "confirmTitle": "系统提示",

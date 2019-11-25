@@ -24,6 +24,7 @@ const apiConf = [
 
     //需要登录
     ['post', '/modifyPass', UserController.modifyPass],
+    ['get', '/getMyAuthList', AuthController.getMyAuthList],
 
     //权限相关接口(从tars-web请求过来的, localhost默认开权限)
     ['get', '/auth/isAdmin', AuthController.isAdmin],
@@ -34,7 +35,7 @@ const apiConf = [
     ['get', '/auth/getAuth', AuthController.getAuth],
     ['get', '/auth/getAuthListByFlag', AuthController.getAuthListByFlag],
 
-    //登录且权限本地页面相关接口(比如是admin权限才可以操作)
+    //登录且权限本地页面相关接口(必须是admin权限才可以操作, authMiddleware里面限制了)
     ['get', '/auth/page/getUserIdList', UserController.getUserIdList],
     ['get', '/auth/page/getAuthList', AuthController.getAuthList],
     ['post', '/auth/page/addAuth', AuthController.addAuth],

@@ -83,12 +83,25 @@ AuthController.getAuth = async(ctx)=> {
 
 AuthController.getAuthListByUid = async(ctx)=> {
     try{
+        // console.log(ctx);
         let uid = ctx.paramsObj.uid;
         let rst = await AuthService.getAuthListByUid(uid);
         
         ctx.makeResObj(200, '', util.viewFilter(rst || [], authStruct));
     }catch(e){
         logger.error('[getAuthListByUid]', e, ctx);
+        ctx.makeErrResObj();
+    }
+};
+
+AuthController.getMyAuthList = async(ctx)=> {
+    try{
+        let uid = ctx.uid;
+        let rst = await AuthService.getAuthListByUid(uid);
+        
+        ctx.makeResObj(200, '', util.viewFilter(rst || [], authStruct));
+    }catch(e){
+        logger.error('[getMyAuthList]', e, ctx);
         ctx.makeErrResObj();
     }
 };

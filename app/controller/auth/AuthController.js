@@ -32,16 +32,8 @@ AuthController.isEnableAuth = async (ctx) => {
 	}
 };
 
-AuthController.viewAuth = async(ctx) => {
-	await ctx.redirect(loginConf.viewAuthUrl);
-}
-
-AuthController.viewUser = async(ctx) => {
-	await ctx.redirect(loginConf.viewUserUrl);
-}
-
-AuthController.modifyPass = async(ctx) => {
-	await ctx.redirect(loginConf.modifyPassUrl);
+AuthController.userCenter = async(ctx) => {
+	await ctx.redirect(loginConf.userCenterUrl);
 }
 
 AuthController.getRoles = async (ctx) => {

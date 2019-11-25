@@ -1,6 +1,7 @@
 const Koa = require('koa');
 const app = new Koa();
 const path = require('path');
+const url = require('url');
 const views = require('koa-views');
 const json = require('koa-json');
 const onerror = require('koa-onerror');
@@ -50,19 +51,23 @@ let loginConf = require('./config/loginConf.js');
 loginConf.ignore =loginConf.ignore.concat(['/static', '/adminPass.html', '/api/adminModifyPass', '/login.html', '/register.html', '/favicon.ico', '/api/get_locale', '/api/login']);
 
 app.use(async (ctx, next) => {
-	let host = ctx.host.split(':')[0];
-    loginConf.loginUrl = loginConf.loginUrl.replace("localhost", host);
-    // console.log(loginConf.loginUrl)
+    loginConf.loginUrl = loginConf.loginUrl.replace("localhost", ctx.host.split(':')[0]);
 
-    console.log('app use', ctx);
+    var myurl = url.parse(ctx.url);
 
-	if(ctx.url.lastIndexOf('.html') != -1 && await AuthService.isInit() && ctx.url.indexOf('/adminPass.html') == -1) {
-        console.log("goto adminPass");
-        ctx.redirect('/adminPass.html?redirect_url=' + decodeURIComponent(ctx.url));
+    if(await AuthService.isInit()) {
+
+        if((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
+            ctx.redirect('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
+            return;
+        }
+        
+    } else if(myurl.pathname == '/adminPass.html') {
+        ctx.redirect('/');
         return;
-	}
-	
-	await next();
+    }
+
+    await next();
   })
 
 app.use(loginMidware(loginConf));

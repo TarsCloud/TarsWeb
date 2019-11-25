@@ -82,11 +82,30 @@ export default {
         loading.hide();
         this.$tip.error(`${this.$t('login.loginFailed')}: ${err.err_msg || err.message}`);
       })
+    },
+    getQueryParam(key) {
+      if (!key) {
+          return '';
+      }
+
+      var value = '';
+      var paramStr = window.location.search ? window.location.search.substr(1) : '';
+
+      if (paramStr) {
+          paramStr.split('&').forEach(function (param) {
+              var arr = param.split('=');
+              if (arr[0] == key) {
+                  value = arr[1];
+              }
+          });
+      }
+
+      return value;
     }
-    // toRegisterPage(){
-    //   location.href="/register.html?redirect_url=" + encodeURIComponent(this.redirectUrl);
-    // }
   },
+  mounted() {
+    this.uid = this.getQueryParam('user');
+  }
 };
 </script>
 <style>

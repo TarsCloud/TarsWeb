@@ -51,4 +51,12 @@ AuthDao.deleteAuthById = async(id) => {
         }
     })
 }
+
+AuthDao.deleteAuthByUid = async(uid) => {
+    return await tAuth.destroy({
+        where: {
+            uid: uid
+        }
+    })
+}
 module.exports = AuthDao;

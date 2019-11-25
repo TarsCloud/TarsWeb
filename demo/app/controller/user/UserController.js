@@ -60,7 +60,7 @@ UserController.modifyPass = async(ctx)=> {
     }
 
     try{
-        let uid = ctx.paramsObj.uid || [];
+        let uid = ctx.uid || [];
         let rst = await UserService.modifyPass(uid, password);
         if(rst && rst.errMsg){
             ctx.makeResObj(500, rst.errMsg, {});

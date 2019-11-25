@@ -40,11 +40,6 @@
       <let-table-column :title="$t('auth.uid')" prop="uid" width="20%"></let-table-column>
       <let-table-column :title="$t('auth.flag')" prop="flag" width="15%"></let-table-column>
 
-      <!--<let-table-column title="操作" width="10%">-->
-        <!--<template slot-scope="scope">-->
-          <!--<let-table-operation><let-tooltip style="width: 150px;" content="操作">操作</let-tooltip></let-table-operation>-->
-        <!--</template>-->
-      <!--</let-table-column>-->
       <let-pagination slot="pagination" align="right" v-if="pageCount > 0"  :prev-text="$t('common.prevPage')" :next-text="$t('common.nextPage')"
                       :total="pageCount" :page="page" @change="changePage">
       </let-pagination>
@@ -125,7 +120,9 @@ export default {
       return authList;
     }
   },
-
+  activated() {
+    this.getIdList();
+  },
   methods: {
     search(){
       this.getAuthList(this.query.flag, this.query.role, this.query.uid);
@@ -145,6 +142,7 @@ export default {
       })
     },
     getIdList() {
+      this.userIds = [];
       this.$ajax.getJSON('/api/auth/page/getUserIdList').then((data)=>{
         data.forEach((user)=>{
           this.userIds.push(user.uid);
@@ -217,7 +215,7 @@ export default {
     }
   },
   mounted(){
-    this.getIdList();
+    // this.getIdList();
     this.getAuthList();
   },
   watch:{

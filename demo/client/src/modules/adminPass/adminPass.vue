@@ -51,6 +51,17 @@ export default {
       repeatPassword: ''
     };
   },
+  computed: {
+    redirectUrl(){
+      var key = 'redirect_url=';
+      var idx = location.search.indexOf(key);
+      if(idx > -1){
+        return decodeURIComponent(location.search.substring(idx + key.length));
+      }else{
+        return '/';
+      }
+    }
+  },
   components: {
     localeSelect
   },
@@ -79,7 +90,13 @@ export default {
       return this.repeatPassword === this.password;
     },
     toLoginPage(){
-      location.href="/login.html";
+        // var redirectUrl = decodeURIComponent(this.redirectUrl);
+        // var href = decodeURIComponent(redirectUrl);
+        // console.log(redirectUrl, href);
+
+        // location.href = href;
+
+      location.href="/login.html?user=admin&redirect_url=" + decodeURIComponent(this.redirectUrl);
     }
   },
 };

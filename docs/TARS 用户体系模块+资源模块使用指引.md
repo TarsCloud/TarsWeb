@@ -35,11 +35,12 @@ tars_web默认用户体系模块提供单点登录系统和权限系统，分别
 在用户体系模块安装完成运行成功之后，将enableLogin参数值改为true即可开启用户登录模块。(在使用默认用户体系模块的系统中不需要您修改其他参数)
 ```
 {
-        enableLogin: true,                        // 是否启用登录验证 true:开启 false: 关闭
+    enableLogin: true,                            // 是否启用登录验证 true:开启 false: 关闭
 	defaultLoginUid: 'admin',                     // 若不启用登录验证，默认用户为admin，可自行修改
-	loginUrl: 'http://localhost:3001/login.html', // 登录跳转url
+	loginUrl: 'http://localhost:3001/login.html', // 登录跳转url(代码中会替换localhost)
 	redirectUrlParamName: 'redirect_url',         //跳转到登录url的时所带的原url参数名，如：***/login?service=***，默认是service
 	logoutUrl: '',                                // 用户登出跳转页面链接，默认跳转到等哭页面
+	userCenterUrl: 'http://localhost:3001/',   	  //用户中心url(代码中会替换localhost)
 	logoutredirectUrlParamName: 'url',            // 跳转到登出页面时url所带的原URL的参数名
 	ticketCookieName: 'ticket',                   //cookie中保存ticket信息的cookie名
 	uidCookieName: 'uid',                         //cookie中保存用户信息的cookie名
@@ -71,8 +72,6 @@ tars_web默认用户体系模块提供单点登录系统和权限系统，分别
     /auth/getAuthListByUid：获取某用户具有的全部权限列表，入参为uid
     /auth/getAuth：判断用户是否具有权限，入参为flag，role，uid。
     /auth/getAuthListByFlag：获取有某个flag权限的用户信息，入参为flag
-	权限模块还提供了一个管理页面：
-	/auth.html：用于对权限进行增删改查。
 ```
 
 注意：默认的权限模块，为保证系统安全性，以上的列的6个接口，必须采用白名单的方式访问，不允许被其他人随意调用，管理页面Auth.html 需系统管理员才可使用。白名单和管理员的相关配置，可在UserManage/config/authConf.js中配置。

@@ -13,9 +13,7 @@
       "tab2": "Create Service"
     },
     "logout": "Logout",
-    "viewAuth": "Manager Privilage",
-    "viewUser": "Manager User",
-    "modifyPass": "Modify Password"
+    "userCenter": "User Center"
   },
   "releasePackage": {
     "proxyList": "Proxy Service List",

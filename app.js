@@ -71,9 +71,7 @@ loginConf.ignore = loginConf.ignore.concat(['/static', '/tarsnode.tar.gz', '/fav
 app.use(async (ctx, next) => {
 	let host = ctx.host.split(':')[0];
 	loginConf.loginUrl = loginConf.loginUrl.replace("localhost", host);
-	loginConf.viewAuthUrl = loginConf.viewAuthUrl.replace("localhost", host);
-	loginConf.viewUserUrl = loginConf.viewUserUrl.replace("localhost", host);
-	loginConf.modifyPassUrl = loginConf.modifyPassUrl.replace("localhost", host);
+	loginConf.userCenterUrl = loginConf.userCenterUrl.replace("localhost", host);
 
 	await next();
   });

@@ -194,9 +194,7 @@ const apiConf = [
 		developer: 'notEmpty'
 	}],
 	['get', '/has_auth', AuthController.hasAuth, {application: 'notEmpty', role: 'notEmpty'}],
-	['get', '/viewAuth', AuthController.viewAuth],
-	['get', '/viewUser', AuthController.viewUser],
-	['get', '/modifyPass', AuthController.modifyPass],
+	['get', '/userCenter', AuthController.userCenter],
 
 	//登录管理
 	['get', '/get_login_uid', LoginController.getLoginUid],

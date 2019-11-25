@@ -6,7 +6,6 @@ const exprireTime = 7 * 24 *60 * 60 * 1000;
 
 
 LoginController.indexPage = async(ctx) =>{
-    // console.log('indexPage');
     await ctx.redirect('/index.html');
 };
 

@@ -80,6 +80,7 @@
     "nextPage": "next",
     "prevPage": "back",
     "nodata": "no data",
+    "admin": "admin user has all privileges",
     "success": " successfully",
     "failed": " failed",
     "confirmTitle": "System Confirm",

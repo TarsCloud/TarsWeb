@@ -28,9 +28,7 @@
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}" v-show="enableLogin"></i>
           <transition name="fade">
             <div class="user-pop-wrap" v-show="enableLogin && userOptOpen">
-              <div> <a href="#" @click="modifyPass" >{{$t('header.modifyPass')}}</a> </div>
-              <div v-show="isAdmin"> <a href="#" @click="viewAuth" >{{$t('header.viewAuth')}}</a> </div>
-              <div v-show="isAdmin"> <a href="#" @click="viewUser" >{{$t('header.viewUser')}}</a> </div>
+              <div> <a href="#" @click="userCenter" >{{$t('header.userCenter')}}</a> </div>
               <div> <a href="/logout">{{$t('header.logout')}}</a> </div>
             </div>
           </transition>
@@ -66,15 +64,9 @@
       clickTab(tabkey) {
         this.$router.replace(tabkey);
       },
-      viewAuth() {
-        window.open("/pages/server/api/viewAuth");
+      userCenter() {
+        window.open("/pages/server/api/userCenter");
       },
-      modifyPass() {
-        window.open("/pages/server/api/modifyPass");
-      },
-      viewUser() {
-        window.open("/pages/server/api/viewUser");
-      },      
       getLoginUid(){
         this.$ajax.getJSON('/server/api/get_login_uid').then((data) => {
           if (data && data.uid) {

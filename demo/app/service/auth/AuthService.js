@@ -21,6 +21,7 @@ AuthService.isAdmin = async(uid) => {
     return false;
 };
 
+//是否是初始化(只有一个用户, 且admin密码为空)
 AuthService.isInit = async(uid) => {
 
     let userList = await AuthService.getUserIdList();

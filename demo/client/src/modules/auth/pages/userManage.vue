@@ -51,6 +51,8 @@
 
 <script>
 
+import moment from 'moment';
+
 export default {
   name: 'userPage',
   data() {
@@ -84,6 +86,7 @@ export default {
       userList.forEach((auth)=>{
         // console.log(auth);
         auth.isChecked = false;
+        auth.update_time = moment(auth.update_time).format("YYYY-MM-DD HH:mm:ss");
       });
       return userList;
     }
