@@ -22,7 +22,19 @@ module.exports = {
 	/**
 	 * 是否启用自定义权限模块
 	 */
-	enableAuth: false,
+	enableAuth: true,
+	
+	/**
+	 * isAdminUrl             是否是Adminurl
+	 * TARS平台会提供的参数
+	 * @param   {Array}    uid         权限对象列表，格式如 {"uid": "uid"}
+	 */
+	/**
+	 * 接口需要返回的参数
+	 * @param   {Number}    ret_code            返回码，200表示成功
+	 * @param   {String}    err_msg             错误信息
+	 */
+	isAdminUrl: 'http://localhost:3001/api/auth/isAdmin',
 
 	/**
 	 * addAuthUrl             新增权限url

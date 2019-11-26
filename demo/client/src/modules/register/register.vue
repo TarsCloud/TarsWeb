@@ -93,7 +93,7 @@ export default {
             this.$tip.success(`${this.$t('login.registerSucc')}`);
             setTimeout(()=>{
               this.toLoginPage();
-            }, 2000);
+            }, 1000);
         }).catch((err)=>{
             loading.hide();
             this.$tip.error(`${this.$t('login.registerFailed')}: ${err.err_msg || err.message}`);

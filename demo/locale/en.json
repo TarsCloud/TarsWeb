@@ -2,6 +2,15 @@
   "localeCode": "en",
   "localeName": "English",
 
+  "header": {
+    "tab": {
+      "tab1": "My Privilege List",
+      "tab2": "Manage User",
+      "tab3": "Manage Privilege"
+    },
+    "modifyPass": "Modify Password"
+  },
+
   "login": {
     "loginTitle": "Please Sign In",
     "userName": "User name",
@@ -28,7 +37,7 @@
     "noLogin": "You have not been sign in"
   },
   "auth": {
-    "flag": "Flag",
+    "flag": "Flag(Application or Application.ServerName)",
     "role": "Role",
     "uid": "Uid",
     "flagTips": "Flag is required",
@@ -41,14 +50,37 @@
     "loadListError": "Load privilege list failed",
     "selectRecord": "Please select at least one record",
     "confirmDelete": "Are you sure to delete this record?",
+    "loadUserIdError": "Load user list failed",
     "delSucc": "Delete successfully",
-    "delError": "Delete error"
+    "delError": "Delete error",
+    "adminNotErase": "Admin user privilege can not be delete",
+    "addUser": "Add User",
+    "delUser": "Delete User",
+    "userManageTitle": "User List",
+    "userTime": "Create Time",
+    "adminDelError": "admin Can not be deleted"
+  },
+  "pass":{
+    "title": "Modify Password",
+    "adminTitle": "First Login -- Set [admin] Password",
+    "userName": "Uid",
+    "password": "Password",
+    "repeatPassword": "Repeat password",    
+    "modify": "Modify",
+    "passwordDiff": "Two different input password, please re-entry",
+    "modifySucc": "Modify Succ",
+    "modifyFailed": "Modify Failed",
+    "passwordTips": "Password is required",
+    "repeatPasswordTips": "Repeat password is required",
+    "setAdminPasswordFailed": "Can not set admin user password",
+    "toIndexPage": "Goto My Index Page"
   },
   "common": {
     "search": "search",
     "nextPage": "next",
     "prevPage": "back",
     "nodata": "no data",
+    "admin": "admin user has all privileges",
     "success": " successfully",
     "failed": " failed",
     "confirmTitle": "System Confirm",

@@ -24,7 +24,7 @@ import ServerPublish from '@/pages/server/publish';
 import ServerConfig from '@/pages/server/config';
 import ServerServerMonitor from '@/pages/server/monitor-server';
 import ServerPropertyMonitor from '@/pages/server/monitor-property';
-import userManage from '@/pages/server/user-manage';
+import AuthManage from '@/pages/server/user-manage';
 import InterfaceDebuger from '@/pages/server/interface-debuger';
 
 // 运维管理
@@ -68,7 +68,7 @@ export default new Router({
         },
         {
           path: ':treeid/user-manage',
-          component: userManage,
+          component: AuthManage,
         },
       ],
     },

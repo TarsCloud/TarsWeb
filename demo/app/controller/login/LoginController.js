@@ -34,6 +34,8 @@ LoginController.logout = async (ctx) => {
 
 //登录接口
 LoginController.login = async (ctx) => {
+    // console.log('login', ctx);
+
     let uid = ctx.paramsObj.uid;
     let password = ctx.paramsObj.password;
     try{

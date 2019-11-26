@@ -19,6 +19,7 @@ const _ = require('lodash');
 const util = require('../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
 const authConf = require('../../../config/authConf');
+const loginConf = require('../../../config/loginConf');
 
 const AuthController = {};
 
@@ -30,6 +31,30 @@ AuthController.isEnableAuth = async (ctx) => {
 		ctx.makeErrResObj();
 	}
 };
+
+AuthController.userCenter = async(ctx) => {
+	await ctx.redirect(loginConf.userCenterUrl);
+}
+
+AuthController.getRoles = async (ctx) => {
+	try {
+		ctx.makeResObj(200, '', {roles: await AuthService.getRoles(ctx.uid)});
+	} catch (e) {
+		logger.error('[getRoles]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
+AuthController.isAdmin = async (ctx) => {
+	// console.log(ctx);
+	try {
+		ctx.makeResObj(200, '', {admin: await AuthService.isAdmin(ctx.uid)});
+	} catch (e) {
+		logger.error('[isAdmin]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
 
 AuthController.hasAuth = async (ctx) => {
 	try {

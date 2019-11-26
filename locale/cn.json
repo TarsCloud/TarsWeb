@@ -12,7 +12,8 @@
     "dcache": {
       "tab2": "服务创建"
     },
-    "logout": "退出登录"
+    "logout": "退出登录",
+    "userCenter": "用户中心"
   },
   "releasePackage": {
     "proxyList": "Proxy服务列表",

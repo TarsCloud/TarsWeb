@@ -31,7 +31,7 @@ CREATE TABLE `t_kafka_queue` (
   `status` varchar(16) NOT NULL DEFAULT 'waiting' COMMENT '任务状态',
   `message` varchar(256) DEFAULT '',
   PRIMARY KEY (`id`,`task_no`,`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +47,7 @@ CREATE TABLE `t_patch_task` (
   `tgz` text,
   `task_id` varchar(64) DEFAULT NULL COMMENT '任务ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -67,7 +67,7 @@ CREATE TABLE `t_tars_files` (
   `context` text COMMENT '解析后的JSON对象',
   PRIMARY KEY (`server_name`,`file_name`),
   UNIQUE KEY `f_id` (`f_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=gbk COMMENT='接口测试tars文件表';
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='接口测试tars文件表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

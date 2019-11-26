@@ -12,7 +12,8 @@
     "dcache": {
       "tab2": "Create Service"
     },
-    "logout": "logout"
+    "logout": "Logout",
+    "userCenter": "User Center"
   },
   "releasePackage": {
     "proxyList": "Proxy Service List",

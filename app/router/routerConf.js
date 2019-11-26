@@ -13,6 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
+// const HttpController = require('../controller/http/HttpController');
 
 const PageController = require('../controller/page/PageController');
 const ServerController = require('../controller/server/ServerController');
@@ -32,6 +33,13 @@ const AuthController = require('../controller/auth/AuthController');
 const LoginController = require('../controller/login/LoginController');
 const LocaleController = require('../controller/locale/LocaleController');
 const InfTestController = require('../controller/infTest/InfTestController');
+
+// const proxyConf = [
+// 	['get', '/login.html', HttpController.proxy],
+// 	['post', '/login.html', HttpController.proxy],
+// 	['get', '/api', HttpController.proxy],
+// 	['post', '/api', HttpController.proxy]
+// ];
 
 const pageConf = [
 	//首页
@@ -176,6 +184,8 @@ const apiConf = [
 
 	//权限管理
 	['get', '/is_enable_auth', AuthController.isEnableAuth],
+	['get', '/get_roles', AuthController.getRoles],
+	['get', '/is_admin', AuthController.isAdmin],
 	['get', '/get_auth_list', AuthController.getAuthList],
 	['post', '/update_auth', AuthController.updateAuth, {
 		application: 'notEmpty',
@@ -184,6 +194,7 @@ const apiConf = [
 		developer: 'notEmpty'
 	}],
 	['get', '/has_auth', AuthController.hasAuth, {application: 'notEmpty', role: 'notEmpty'}],
+	['get', '/userCenter', AuthController.userCenter],
 
 	//登录管理
 	['get', '/get_login_uid', LoginController.getLoginUid],

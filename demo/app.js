@@ -1,6 +1,7 @@
 const Koa = require('koa');
 const app = new Koa();
 const path = require('path');
+const url = require('url');
 const views = require('koa-views');
 const json = require('koa-json');
 const onerror = require('koa-onerror');
@@ -14,7 +15,8 @@ const localeMidware = require('./app/midware/localeMidware');
 const helmet = require("koa-helmet");
 // const compress = require('koa-compress')
 const loginMidware = require('yami-sso-client').koa;
-const authMidware = require('./app/midware/authMidware');
+const AuthService = require('./app/service/auth/AuthService');
+// const authMidware = require('./app/midware/authMidware');
 
 const upload = multer({dest: './uploads/'});
 
@@ -46,7 +48,28 @@ preMidware.forEach((midware)=>{
 
 //登录校验
 let loginConf = require('./config/loginConf.js');
-loginConf.ignore =loginConf.ignore.concat(['/static', '/login.html', '/register.html', '/favicon.ico', '/pages/server/api/get_locale']);
+loginConf.ignore =loginConf.ignore.concat(['/static', '/adminPass.html', '/api/adminModifyPass', '/login.html', '/register.html', '/favicon.ico', '/api/get_locale', '/api/login']);
+
+app.use(async (ctx, next) => {
+    loginConf.loginUrl = loginConf.loginUrl.replace("localhost", ctx.host.split(':')[0]);
+
+    var myurl = url.parse(ctx.url);
+
+    if(await AuthService.isInit()) {
+
+        if((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
+            ctx.redirect('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
+            return;
+        }
+        
+    } else if(myurl.pathname == '/adminPass.html') {
+        ctx.redirect('/');
+        return;
+    }
+
+    await next();
+  })
+
 app.use(loginMidware(loginConf));
 
 //激活router

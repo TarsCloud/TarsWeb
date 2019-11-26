@@ -1,18 +1,27 @@
 <template>
   <div style="margin: 20px auto;">
-    <div style="float:right">
+    <div style="float:center">
       <let-button size="small" theme="primary"  @click="addItem">{{$t('auth.addPrivilege')}}</let-button>
       <let-button size="small" theme="danger"  @click="delItem">{{$t('auth.delPrivilege')}}</let-button>
     </div>
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
+
+      <let-form-item :label="$t('auth.role')">
+        <let-select v-model="query.role">
+          <let-option value="">{{$t('auth.role')}}</let-option>
+          <let-option value="admin">admin</let-option>
+          <let-option value="operator">operator</let-option>
+          <let-option value="developer">developer</let-option>
+        </let-select>
+      </let-form-item>
+      <let-form-item :label="$t('auth.uid')">
+        <let-select v-model="query.uid">
+          <let-option value="">{{$t('auth.uid')}}</let-option>
+          <let-option v-for="id in userIds" :value="id" :key="id">{{id}}</let-option>
+        </let-select>
+      </let-form-item>
       <let-form-item :label="$t('auth.flag')">
         <let-input size="small" v-model="query.flag"></let-input>
-      </let-form-item>
-      <let-form-item :label="$t('auth.role')">
-        <let-input size="small" v-model="query.role"></let-input>
-      </let-form-item>
-      <let-form-item label="uid">
-        <let-input size="small" v-model="query.uid"></let-input>
       </let-form-item>
       <let-form-item>
         <let-button size="small" type="submit" theme="primary">{{$t('common.search')}}</let-button>
@@ -27,14 +36,10 @@
           <let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('auth.flag')" prop="flag" width="15%"></let-table-column>
       <let-table-column :title="$t('auth.role')" prop="role" width="20%"></let-table-column>
       <let-table-column :title="$t('auth.uid')" prop="uid" width="20%"></let-table-column>
-      <!--<let-table-column title="操作" width="10%">-->
-        <!--<template slot-scope="scope">-->
-          <!--<let-table-operation><let-tooltip style="width: 150px;" content="操作">操作</let-tooltip></let-table-operation>-->
-        <!--</template>-->
-      <!--</let-table-column>-->
+      <let-table-column :title="$t('auth.flag')" prop="flag" width="15%"></let-table-column>
+
       <let-pagination slot="pagination" align="right" v-if="pageCount > 0"  :prev-text="$t('common.prevPage')" :next-text="$t('common.nextPage')"
                       :total="pageCount" :page="page" @change="changePage">
       </let-pagination>
@@ -45,26 +50,23 @@
       <div>
         <let-form itemWidth="100%" ref="editForm">
           <let-input type="hidden" v-model="dialog.id"></let-input>
+          <let-form-item :label="$t('auth.role')">
+            <let-select v-model="dialog.role">
+              <let-option value="admin">admin</let-option>
+              <let-option value="operator">operator</let-option>
+              <let-option value="developer">developer</let-option>
+            </let-select>
+          </let-form-item>
+          <let-form-item :label="$t('auth.uid')">
+            <let-select v-model="dialog.uid">
+              <let-option v-for="id in userIds" :value="id" :key="id">{{id}}</let-option>
+            </let-select>
+          </let-form-item>
           <let-form-item :label="$t('auth.flag')">
             <let-input size="small"
                v-model="dialog.flag"
                required
                :required-tip="$t('auth.flagTips')"
-            ></let-input>
-          </let-form-item>
-          <let-form-item :label="$t('auth.role')">
-            <let-input size="small"
-               v-model="dialog.role"
-               required
-               :required-tip="$t('auth.roleTips')"
-            ></let-input>
-          </let-form-item>
-          <let-form-item :label="$t('auth.uid')">
-            <let-input size="small"
-               v-model="dialog.uid"
-               required
-               :required-tip="$t('auth.uidTips')"
-               :placeholder="$t('auth.uidPlaceholder')"
             ></let-input>
           </let-form-item>
         </let-form>
@@ -92,6 +94,7 @@ export default {
       totalCount: 0,
       page: 1,
       eachPageCount: 20,
+      userIds: [],
 
       //弹出框相关数据
       dialogTitle: '',
@@ -117,7 +120,9 @@ export default {
       return authList;
     }
   },
-
+  activated() {
+    this.getIdList();
+  },
   methods: {
     search(){
       this.getAuthList(this.query.flag, this.query.role, this.query.uid);
@@ -134,6 +139,16 @@ export default {
     }).catch((err) => {
         loading.hide();
         this.$tip.error(`${this.$t('auth.loadListError')}: ${err.err_msg || err.message}`);
+      })
+    },
+    getIdList() {
+      this.userIds = [];
+      this.$ajax.getJSON('/api/auth/page/getUserIdList').then((data)=>{
+        data.forEach((user)=>{
+          this.userIds.push(user.uid);
+        })
+    }).catch((err) => {
+        this.$tip.error(`${this.$t('auth.loadUserIdError')}: ${err.err_msg || err.message}`);
       })
     },
     changePage(val){
@@ -200,6 +215,7 @@ export default {
     }
   },
   mounted(){
+    // this.getIdList();
     this.getAuthList();
   },
   watch:{
@@ -218,9 +234,5 @@ export default {
     line-height: 2.5;
     font-size: 18px;
     border-bottom: 1px solid #c5d9e8;
-  }
-  .login-page{
-    width: 500px;
-    margin-top: 100px;
   }
 </style>

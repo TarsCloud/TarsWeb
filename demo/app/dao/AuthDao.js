@@ -5,7 +5,6 @@ const logger = require('../logger');
 
 const AuthDao = {}
 
-
 AuthDao.insertAuth = async(authList) => {
     return await tAuth.bulkCreate(authList);
 };
@@ -49,6 +48,14 @@ AuthDao.deleteAuthById = async(id) => {
     return await tAuth.destroy({
         where: {
             id: id
+        }
+    })
+}
+
+AuthDao.deleteAuthByUid = async(uid) => {
+    return await tAuth.destroy({
+        where: {
+            uid: uid
         }
     })
 }
