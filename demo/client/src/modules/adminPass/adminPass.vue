@@ -90,13 +90,7 @@ export default {
       return this.repeatPassword === this.password;
     },
     toLoginPage(){
-        // var redirectUrl = decodeURIComponent(this.redirectUrl);
-        // var href = decodeURIComponent(redirectUrl);
-        // console.log(redirectUrl, href);
-
-        // location.href = href;
-
-      location.href="/login.html?user=admin&redirect_url=" + decodeURIComponent(this.redirectUrl);
+      location.href=this.redirectUrl + (this.redirectUrl.indexOf('?') === -1?'?':'&') + "user=admin";
     }
   },
 };

@@ -35,9 +35,6 @@ export default {
       return this.authList.slice((this.page-1) * this.eachPageCount, this.page * this.eachPageCount);
     }
   },
-  // components: {
-  //   localeSelect
-  // },
   methods: {
     getAuthList(){
       const loading = this.$Loading.show();

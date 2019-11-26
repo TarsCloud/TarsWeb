@@ -53,13 +53,14 @@ export default {
   },
   computed: {
     redirectUrl(){
-      var key = 'redirect_url=';
-      var idx = location.search.indexOf(key);
-      if(idx > -1){
-        return decodeURIComponent(location.search.substring(idx + key.length));
-      }else{
-        return '/';
-      }
+      return this.getQueryParam('redirect_url', '/');
+      // var key = 'redirect_url=';
+      // var idx = location.search.indexOf(key);
+      // if(idx > -1){
+      //   return decodeURIComponent(location.search.substring(idx + key.length));
+      // }else{
+      //   return '/';
+      // }
     }
   },
   components: {
@@ -73,7 +74,7 @@ export default {
       const loading = this.$Loading.show();
       this.$ajax.postJSON('/api/login', {uid: this.uid, password: this.password}).then((data)=>{
         loading.hide();
-        var redirectUrl = decodeURIComponent(this.redirectUrl);
+        var redirectUrl = this.redirectUrl;
         var href = redirectUrl + (redirectUrl.indexOf('?') === -1?'?':'&') + 'ticket=' + data.ticket;
         // console.log(data, redirectUrl, href);
 
@@ -83,19 +84,19 @@ export default {
         this.$tip.error(`${this.$t('login.loginFailed')}: ${err.err_msg || err.message}`);
       })
     },
-    getQueryParam(key) {
+    getQueryParam(key, def) {
       if (!key) {
-          return '';
+          return def;
       }
 
-      var value = '';
+      var value = def;
       var paramStr = window.location.search ? window.location.search.substr(1) : '';
 
       if (paramStr) {
           paramStr.split('&').forEach(function (param) {
               var arr = param.split('=');
               if (arr[0] == key) {
-                  value = arr[1];
+                  value = decodeURIComponent(arr[1]);
               }
           });
       }
@@ -104,7 +105,7 @@ export default {
     }
   },
   mounted() {
-    this.uid = this.getQueryParam('user');
+    this.uid = this.getQueryParam('user', '');
   }
 };
 </script>
