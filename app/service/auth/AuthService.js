@@ -34,11 +34,11 @@ const ServerDao = require('../../dao/ServerDao');
 const AuthService = {};
 
 AuthService.hasDevAuth = async (application, serverName, uid) => {
-	return await AuthService.checkHasAuth(application, serverName, 'operator;developer', uid);
+	return await AuthService.checkHasAuth(application, serverName, 'operator', uid);
 };
 
 AuthService.hasOpeAuth = async (application, serverName, uid) => {
-	return await AuthService.checkHasAuth(application, serverName, 'operator', uid);
+	return await AuthService.checkHasAuth(application, serverName, 'operator;developer', uid);
 };
 
 AuthService.hasAdminAuth = async (uid) => {
@@ -54,13 +54,17 @@ AuthService.checkHasAuth = async (application, serverName, role, uid) => {
 
 	if (serverName) {
 		hasAuth = await AuthService.httpCallCheckAuth(application + '.' + serverName, role, uid);
+
+		// console.log('checkHasAuth1:', hasAuth);
 	}
 	if (!hasAuth) {
 		if (application) {
 			hasAuth = await AuthService.httpCallCheckAuth(application, role, uid);
+		// console.log('checkHasAuth2:', hasAuth);
 		}
 		if (!hasAuth) {
 			hasAuth = await AuthService.httpCallCheckAuth('', 'admin', uid);
+		// console.log('checkHasAuth3:', hasAuth);
 			if (!hasAuth) {
 				return false;
 			} else {
