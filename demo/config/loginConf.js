@@ -8,7 +8,8 @@ const AuthDao = require('../app/dao/AuthDao');
 module.exports = {
     enableLogin: true,                      //是否启用登录验证
     defaultLoginUid: 'admin',               //若不启用登录验证，默认用户为admin
-    loginUrl: 'http://localhost:3001/login.html',                //登录跳转url
+    baseLoginUrl: '${user-center-host}/login.html',  //登录跳转url(替换user-center-host, 得到实际的loginUrl)
+    loginUrl: '',                           //登录跳转url, 根据当前请求的host替换成具体的url
     redirectUrlParamName: 'url',            //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
     logoutUrl: '',
     logoutredirectUrlParamName: 'url',

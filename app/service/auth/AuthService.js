@@ -79,6 +79,7 @@ AuthService.checkHasAuth = async (application, serverName, role, uid) => {
 };
 
 AuthService.httpCallCheckAuth = async (flag, roles, uid) => {
+	
 	var rst = await util.jsonRequest.get(getAuthUrl, {
 		flag: flag,
 		role: roles,

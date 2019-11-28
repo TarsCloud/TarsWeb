@@ -22,8 +22,10 @@ module.exports = {
     enableLogin: true,                     //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
     redirectUrlParamName: 'redirect_url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
-    userCenterUrl: 'http://localhost:3001',   //登录跳转url(代码中要替换localhost)
-    loginUrl: 'http://localhost:3001/login.html',                 //登录跳转url(userCenterUrl + loginUrl)
+    baseUserCenterUrl: 'http://localhost:3001',   //登录跳转url(代码中要替换localhost)
+    baseLoginUrl: 'http://localhost:3001/login.html',                 //登录跳转url(userCenterUrl + loginUrl)
+    userCenterUrl: '',                      //登录跳转url(代码中要替换baseUserCenterUrl:localhost)
+    loginUrl: '',                           //登录跳转url(baseLoginUrl:localhost)
     logoutUrl: '',
     logoutredirectUrlParamName: 'url',
     ticketCookieName: 'ticket',             //cookie中保存ticket信息的cookie名
@@ -75,6 +77,12 @@ async function validate(ctx, uid, ticket){
         try{
             request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
                 uidInfo = JSON.parse(uidInfo);
+
+                // ticket也保存下来
+                if(uidInfo.data.uid === uid) {
+                    ctx.ticket = ticket;
+                }
+
                 resolve(uidInfo.data.uid === uid);
             }).catch(err=>{
                 reject(err);

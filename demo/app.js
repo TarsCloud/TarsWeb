@@ -51,35 +51,33 @@ preMidware.forEach((midware)=>{
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore =loginConf.ignore.concat(['/static', '/adminPass.html', '/api/adminModifyPass', '/login.html', '/register.html', '/favicon.ico', '/api/get_locale', '/api/login']);
 
+//写入cookie的domain, 方便和web, cookie互通
 if(process.env.COOKIE_DOMAIN) {
 	loginConf.cookieDomain = process.env.COOKIE_DOMAIN;
 }
 
-if(process.env.USER_CENTER_HOST) {
-    //存在外部host, 使用外部host代替, web和demo前端挂有代理的情况下出现
-    loginConf.loginUrl = loginConf.loginUrl.replace("http://localhost:3001", process.env.USER_CENTER_HOST);
-}
-
-logger.info('loginUrl:', loginConf.loginUrl, 'USER_CENTER_HOST:', process.env.USER_CENTER_HOST);
-
 app.use(async (ctx, next) => {
 
-    if(!process.env.USER_CENTER_HOST) {
-        let host = ctx.host.split(':')[0];
-        loginConf.loginUrl = loginConf.loginUrl.replace("localhost", host);    
-    }
+    // console.log(ctx);
+
+    //优先环境变量的host
+    let userCenterHost = process.env.USER_CENTER_HOST || ctx.host;
+
+    loginConf.loginUrl = loginConf.baseLoginUrl.replace("${user-center-host}", userCenterHost);
+
+    logger.info('userCenterHost:', userCenterHost, 'host:', ctx.host, 'loginUrl:', loginConf.loginUrl);
 
     var myurl = url.parse(ctx.url);
 
     if(await AuthService.isInit()) {
 
         if((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
-            ctx.redirect('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
+            ctx.redirect(userCenterHost + '/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
             return;
         }
         
     } else if(myurl.pathname == '/adminPass.html') {
-        ctx.redirect('/');
+        ctx.redirect(userCenterHost);
         return;
     }
 
