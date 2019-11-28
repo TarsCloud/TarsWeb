@@ -6,10 +6,10 @@ const AuthDao = require('../app/dao/AuthDao');
  * 登录配置
  */
 module.exports = {
-    enableLogin: true,                     //是否启用登录验证
-    defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
-    loginUrl: 'http://localhost:3001/login.html',                 //登录跳转url
-    redirectUrlParamName: 'url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
+    enableLogin: true,                      //是否启用登录验证
+    defaultLoginUid: 'admin',               //若不启用登录验证，默认用户为admin
+    loginUrl: 'http://localhost:3001/login.html',                //登录跳转url
+    redirectUrlParamName: 'url',            //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
     logoutUrl: '',
     logoutredirectUrlParamName: 'url',
     ticketCookieName: 'ticket',             //cookie中保存ticket信息的cookie名

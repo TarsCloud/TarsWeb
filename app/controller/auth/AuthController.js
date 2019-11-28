@@ -33,6 +33,7 @@ AuthController.isEnableAuth = async (ctx) => {
 };
 
 AuthController.userCenter = async(ctx) => {
+	logger.info('redirect:', loginConf.userCenterUrl);
 	await ctx.redirect(loginConf.userCenterUrl);
 }
 
