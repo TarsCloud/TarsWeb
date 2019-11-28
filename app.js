@@ -68,10 +68,31 @@ preMidware.forEach((midware) => {
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/static', '/tarsnode.tar.gz', '/favicon.ico', '/pages/server/api/get_locale']);
 
+//web和demo的cookie写在同一个域名下
+if(process.env.COOKIE_DOMAIN) {
+	loginConf.cookieDomain = process.env.COOKIE_DOMAIN
+}
+
+if(process.env.USER_CENTER_HOST) {
+	//存在外部host, 使用外部host代替 
+	loginConf.userCenterUrl = process.env.USER_CENTER_HOST;
+} 
+
+loginConf.loginUrl = loginConf.baseLoginUrl.replace("http://localhost:3001", loginConf.userCenterUrl);
+
+logger.info('loginUrl:', loginConf.loginUrl, 'userCenterUrl:', loginConf.userCenterUrl, 'cookieDomain', loginConf.cookieDomain);
+
 app.use(async (ctx, next) => {
-	let host = ctx.host.split(':')[0];
-	loginConf.loginUrl = loginConf.loginUrl.replace("localhost", host);
-	loginConf.userCenterUrl = loginConf.userCenterUrl.replace("localhost", host);
+
+	if(!process.env.USER_CENTER_HOST) {
+		//直接用当前host代替, 端口还是保留
+		let userCenterIp = ctx.host.split(':')[0];
+
+		loginConf.userCenterUrl = loginConf.baseUserCenterUrl.replace("localhost", userCenterIp);
+
+		loginConf.loginUrl = loginConf.baseLoginUrl.replace("localhost", userCenterIp);
+
+	}
 
 	await next();
   });
@@ -79,7 +100,6 @@ app.use(async (ctx, next) => {
 
 app.use(loginMidware(loginConf));
 
-// 是否启动 DCache
 let dcacheConf = require('./config/dcacheConf.js');
 if (dcacheConf.enableDcache) {
 	app.use(async (ctx, next) => {

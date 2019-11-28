@@ -17,6 +17,7 @@ const helmet = require("koa-helmet");
 const loginMidware = require('yami-sso-client').koa;
 const AuthService = require('./app/service/auth/AuthService');
 // const authMidware = require('./app/midware/authMidware');
+const logger = require('./app/logger');
 
 const upload = multer({dest: './uploads/'});
 
@@ -50,20 +51,33 @@ preMidware.forEach((midware)=>{
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore =loginConf.ignore.concat(['/static', '/adminPass.html', '/api/adminModifyPass', '/login.html', '/register.html', '/favicon.ico', '/api/get_locale', '/api/login']);
 
+//写入cookie的domain, 方便和web, cookie互通
+if(process.env.COOKIE_DOMAIN) {
+	loginConf.cookieDomain = process.env.COOKIE_DOMAIN;
+}
+
 app.use(async (ctx, next) => {
-    loginConf.loginUrl = loginConf.loginUrl.replace("localhost", ctx.host.split(':')[0]);
+
+    // console.log(ctx);
+
+    //优先环境变量的host
+    let userCenterHost = process.env.USER_CENTER_HOST || ctx.host;
+
+    loginConf.loginUrl = loginConf.baseLoginUrl.replace("${user-center-host}", userCenterHost);
+
+    logger.info('userCenterHost:', userCenterHost, 'host:', ctx.host, 'loginUrl:', loginConf.loginUrl);
 
     var myurl = url.parse(ctx.url);
 
     if(await AuthService.isInit()) {
 
         if((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
-            ctx.redirect('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
+            ctx.redirect(userCenterHost + '/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
             return;
         }
         
     } else if(myurl.pathname == '/adminPass.html') {
-        ctx.redirect('/');
+        ctx.redirect(userCenterHost);
         return;
     }
 

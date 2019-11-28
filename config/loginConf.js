@@ -14,6 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 let request = require('request-promise-any');
+const logger = require('../app/logger');
 
 /**
  * 登录配置
@@ -22,9 +23,11 @@ module.exports = {
     enableLogin: true,                     //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
     redirectUrlParamName: 'redirect_url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
-    loginUrl: 'http://localhost:3001/login.html',   //登录跳转url(代码中要替换localhost)
+    baseUserCenterUrl: 'http://localhost:3001',   //登录跳转url(代码中要替换localhost)
+    baseLoginUrl: 'http://localhost:3001/login.html',                 //登录跳转url(userCenterUrl + loginUrl)
+    userCenterUrl: '',                      //登录跳转url(代码中要替换baseUserCenterUrl:localhost)
+    loginUrl: '',                           //登录跳转url(baseLoginUrl:localhost)
     logoutUrl: '',
-    userCenterUrl: 'http://localhost:3001/',   //登录跳转url(代码中要替换localhost)
     logoutredirectUrlParamName: 'url',
     ticketCookieName: 'ticket',             //cookie中保存ticket信息的cookie名
     uidCookieName: 'uid',                   //cookie中保存用户信息的cookie名
@@ -54,6 +57,8 @@ async function getUidByTicket(ctx, ticket){
     return new Promise((resolve, reject)=>{
         try{
             request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
+                logger.info(ctx.url, 'getUidByTicket', ticket, uidInfo);
+
                 uidInfo = JSON.parse(uidInfo);
                 resolve(uidInfo.data.uid);
             }).catch(err=>{
@@ -74,7 +79,11 @@ async function validate(ctx, uid, ticket){
     return new Promise((resolve, reject)=>{
         try{
             request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
+
+                logger.info(ctx.url, 'validate', ticket, uidInfo);
+
                 uidInfo = JSON.parse(uidInfo);
+
                 resolve(uidInfo.data.uid === uid);
             }).catch(err=>{
                 reject(err);
