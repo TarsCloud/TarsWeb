@@ -14,6 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 let request = require('request-promise-any');
+const logger = require('../app/logger');
 
 /**
  * 登录配置
@@ -56,6 +57,8 @@ async function getUidByTicket(ctx, ticket){
     return new Promise((resolve, reject)=>{
         try{
             request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
+                logger.info(ctx.url, 'getUidByTicket', ticket, uidInfo);
+
                 uidInfo = JSON.parse(uidInfo);
                 resolve(uidInfo.data.uid);
             }).catch(err=>{
@@ -76,12 +79,10 @@ async function validate(ctx, uid, ticket){
     return new Promise((resolve, reject)=>{
         try{
             request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
-                uidInfo = JSON.parse(uidInfo);
 
-                // ticket也保存下来
-                if(uidInfo.data.uid === uid) {
-                    ctx.ticket = ticket;
-                }
+                logger.info(ctx.url, 'validate', ticket, uidInfo);
+
+                uidInfo = JSON.parse(uidInfo);
 
                 resolve(uidInfo.data.uid === uid);
             }).catch(err=>{
