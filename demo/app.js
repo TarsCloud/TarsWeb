@@ -61,7 +61,7 @@ app.use(async (ctx, next) => {
     // console.log(ctx);
 
     //优先环境变量的host
-    let userCenterHost = process.env.USER_CENTER_HOST || ctx.host;
+    let userCenterHost = process.env.USER_CENTER_HOST || 'http://' + ctx.host;
 
     loginConf.loginUrl = loginConf.baseLoginUrl.replace("${user-center-host}", userCenterHost);
 
@@ -72,11 +72,15 @@ app.use(async (ctx, next) => {
     if(await AuthService.isInit()) {
 
         if((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
+
+            logger.info(userCenterHost + '/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
             ctx.redirect(userCenterHost + '/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
             return;
         }
         
     } else if(myurl.pathname == '/adminPass.html') {
+        logger.info(userCenterHost);
+
         ctx.redirect(userCenterHost);
         return;
     }
