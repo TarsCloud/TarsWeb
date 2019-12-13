@@ -113,11 +113,7 @@
         <let-table-column :title="$t('historyList.dlg.th.c4')" prop="node_name"></let-table-column>
         <let-table-column :title="$t('deployService.table.th.endpoint')">
           <template slot-scope="scope">
-            <let-input
-              v-model="scope.row.bind_ip"
-              :pattern="scope.row.isChecked ? ipReg : null"
-              :pattern-tip="$t('serviceExpand.form.preExpand')"
-            ></let-input>
+            <let-input v-model="scope.row.bind_ip"></let-input>
           </template>
         </let-table-column>
         <let-table-column :title="$t('deployService.table.th.port')">
@@ -270,12 +266,27 @@
           this.$tip.error(`${prefix}: ${err.message || err.err_msg}`);
         });
       },
+      indexOf(array, val) { 
+          for (var i = 0; i < array.length; i++) { 
+              if (array[i] == val) return i; 
+          } 
+          return -1; 
+      },
       previewExpand() {
         // 预扩容
         if (this.$refs.configForm.validate()) {
           const model = Object.assign({}, this.model);
           model.set = parseInt(model.set, 10) === -1 ? '' : model.set;
           model.expand_nodes = this.expandIpStr.trim().split(/[,;\n]/);
+
+          const index = this.indexOf(model.expand_nodes, this.model.node_name);
+          if(index !=-1) {
+            this.$tip.error(`${this.$t('serviceExpand.exists')}`);
+            return;
+          } 
+
+          //把空的都去掉
+          model.expand_nodes = model.expand_nodes.filter(item => item.trim() != '');
 
           const loading = this.$Loading.show();
           this.$ajax.postJSON('/server/api/expand_server_preview', model).then((data) => {
@@ -294,8 +305,15 @@
         }
       },
       getAutoPort() {
-        const loading = this.$Loading.show();
         var adapters = this.previewItems.filter(item => item.status === this.$t('serviceExpand.form.noExpand') && item.isChecked);
+
+        if(adapters.length == 0) {
+          this.$tip.error(this.$t('serviceExpand.form.errTips.nodeCheck'));
+          return;
+        }
+
+        const loading = this.$Loading.show();
+
         var bindIps = [];
         adapters.forEach((adapter) => {
           bindIps.push(adapter.bind_ip);
@@ -333,6 +351,8 @@
               copy_node_config: this.model.copy_node_config,
               expand_preview_servers: previewServers,
             };
+
+            // console.log(params);
 
             const loading = this.$Loading.show();
             this.$ajax.postJSON('/server/api/expand_server', params).then((data) => {

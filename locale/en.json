@@ -323,6 +323,7 @@
     "type": "Type",
     "cancel": "cancel",
     "submit": "ok",
+    "choose": "choose",
     "status": "status",
     "result": "result",
     "error": "Error!!!",
@@ -414,6 +415,7 @@
       "servant": {
         "title": "Servants",
         "adress": "endpoint",
+        "nodeName": "node name",
         "thread": "threads count",
         "maxConnecttions": "Max connections",
         "maxQueue": "Max queue",
@@ -472,7 +474,7 @@
       "notStart": "not start",
       "running": "running",
       "success": "success",
-      "failed": "failed",
+      "failed": "failed (go manage page see reason)",
       "cancel": "cancel",
       "parial": "partial success",
       "restartFailed": "restart failed",
@@ -486,7 +488,7 @@
     "servant": {
       "obj": "OBJ name can only contains english letters",
       "thread": "threads must be numeric and greater than 0",
-      "error": "Error!!!  <br>address：To tcp or udp at the beginning, there-h-t-p three parameters, -p 0-65535-t greater than 0 -h ip",
+      "error": "Error!!!  address：To tcp or udp or ssl at the beginning, there-h-t-p three parameters, -p 0-65535, -t greater than 0, -h ip",
       "ip": "IP format is wrong, please re-fill.",
       "servantAddFailed": "Servant added failed",
       "servantUpdateFailed": "Servant updated failed",
@@ -739,10 +741,12 @@
         "tarIP": "tarIP can not be empty",
         "preExpand": "expansion failed! Please contact the administrator",
         "noneNodes": "Please check the object to be expanded",
+        "nodeCheck": "Please check the nodes",
         "ipFormat": "Please fill in the correct IP address",
         "success": "Expansion success"
       }
     },
+    "exists": "node has exists, no need expand, please check input",
     "newGroup": "Add a group",
     "removeGroup": "Remove last group"
   },
