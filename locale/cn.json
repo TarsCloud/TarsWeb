@@ -349,6 +349,7 @@
     "type": "类型",
     "cancel": "取消",
     "submit": "确定",
+    "choose": "选择",
     "status": "状态",
     "result": "结果",
     "error": "错误",
@@ -440,6 +441,7 @@
       "servant": {
         "title": "Servants管理",
         "adress": "绑定地址",
+        "nodeName": "节点",
         "thread": "线程数",
         "maxConnecttions": "最大连接数",
         "maxQueue": "队列最大长度",
@@ -498,7 +500,7 @@
       "notStart": "未开始",
       "running": "运行中",
       "success": "成功",
-      "failed": "失败",
+      "failed": "失败 (服务管理界面查看原因) ",
       "cancel": "取消",
       "parial": "部分成功",
       "restartFailed": "重启失败",
@@ -512,7 +514,7 @@
     "servant": {
       "obj": "OBJ名必须为全英文",
       "thread": "线程数必须为数字,且大于0",
-      "error": "绑定地址填写错误!!!  <br>绑定地址格式：以tcp 或者 udp开头，有 -h -t -p 三个参数， -p 0-65535  -t 大于 0  -h ip格式",
+      "error": "绑定地址填写错误!!! 绑定地址格式：以tcp/udp/ssl 开头, 有 -h -t -p 三个参数, -p 0-65535, -t 大于 0, -h ip格式",
       "ip": "IP格式错误，请重新填写。",
       "servantAddFailed": "Servant添加失败",
       "servantUpdateFailed": "Servant更新失败",
@@ -765,10 +767,12 @@
         "tarIP": "目标IP不能为空",
         "preExpand": "扩容失败！请联系管理员",
         "noneNodes": "请先勾选要扩容的对象",
+        "nodeCheck": "请先勾选节点",
         "ipFormat": "请正确填写IP地址",
         "success": "扩容成功"
       }
     },
+    "exists": "节点已经存在服务, 无需扩容, 请检查输入的节点",
     "newGroup": "增加一组",
     "removeGroup": "删除最后一组"
   },

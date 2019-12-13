@@ -65,13 +65,16 @@
               <let-form-item :label="$t('serverList.servant.comment')">
                 <let-input v-model="publishModal.model.update_text"></let-input>
               </let-form-item>
+
               <let-form-item :label="$t('pub.dlg.patchType')" v-if="patchRadioData.length>1">
                 <let-radio-group type="button" size="small" @change="patchChange" v-model="patchType" :data="patchRadioData">
                 </let-radio-group>
               </let-form-item>
-              <let-form-item :label="$t('pub.dlg.releaseVersion')" v-if="publishModal.model.show">
+              <let-form-item :label="$t('pub.dlg.releaseVersion')" v-if="publishModal.model.show" >
+                <div>
                 <let-select
                   size="small"
+                  style="width:50%"
                   v-model="publishModal.model.patch_id"
                   required
                   :required-tip="$t('pub.dlg.ab')"
@@ -80,10 +83,12 @@
                     {{d.id}} | {{d.posttime}} | {{d.comment}}
                   </let-option>
                 </let-select>
-                <let-button theme="primary" size="small" class="mt10" @click="showUploadModal">{{$t('pub.dlg.upload')}}</let-button>
-                <br>
+                <let-button theme="primary" size="small" @click="showUploadModal">{{$t('pub.dlg.upload')}}</let-button>
+              </div>
+              <br/>
                 <let-button theme="primary" size="small" class="mt10" @click="savePublishServer">{{$t('common.patch')}}</let-button>
               </let-form-item>
+
               <let-form-item :label="$t('serverList.table.th.version')" v-else>
                 <let-select size="small" required :required-tip="$t('deployService.table.tips.empty')"
                   v-model="tagVersion"
@@ -111,7 +116,7 @@
             <let-form-item :label="$t('pub.dlg.releasePkg')" itemWidth="400px">
                <let-uploader
                 :placeholder="$t('pub.dlg.defaultValue')"
-                @upload="uploadFile">{{$t('common.submit')}}
+                @upload="uploadFile">{{$t('common.choose')}}
                 </let-uploader>
                 <span v-if="uploadModal.model.file">{{uploadModal.model.file.name}}</span>
             </let-form-item>
@@ -721,9 +726,9 @@ export default {
 
 .page_server_publish {
   padding-bottom: 32px;
-  .mt10 {
+  /* .mt10 {
     margin-top: 10px;
-  }
+  } */
   .running {
     color:#3f5ae0
   }

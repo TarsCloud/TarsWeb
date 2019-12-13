@@ -2,7 +2,9 @@
   <div class="page_server_manage">
 
     <!-- 服务列表 -->
-    <let-table v-if="serverList" :data="serverList" :title="$t('serverList.title.serverList')" :empty-msg="$t('common.nodata')" ref="serverListLoading">
+    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont" @click="getServerList">&#xec08;</i></h4>
+    
+    <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.enableSet')">
@@ -44,8 +46,9 @@
     </let-table>
 
     <!-- 服务实时状态 -->
+    <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
     <let-table v-if="serverNotifyList && showOthers"
-      :data="serverNotifyList" :title="$t('serverList.title.serverStatus')" :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
+      :data="serverNotifyList" stripe :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
       <let-table-column :title="$t('common.time')" prop="notifytime"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
@@ -246,7 +249,7 @@
             :pattern-tip="$t('serverList.servant.thread')"
           ></let-input>
         </let-form-item>
-        <let-form-item :label="$t('serverList.table.servant.adress')" required itemWidth="724px">
+        <let-form-item :label="$t('serverList.table.servant.adress')" required>
           <let-input
             ref="endpoint"
             size="small"
@@ -256,6 +259,15 @@
             :extraTip="isEndpointValid ? '' :
               $t('serverList.servant.error')"
           ></let-input>
+        </let-form-item>
+          <let-form-item :label="$t('serverList.table.servant.nodeName')" required>
+              <let-input
+                ref="node_name"
+                size="small"
+                v-model="servantDetailModal.model.node_name"
+                placeholder="127.0.0.1"
+                required
+              ></let-input>
         </let-form-item>
         <let-form-item :label="$t('serverList.servant.maxConnecttions')" labelWidth="150px">
           <let-input
@@ -449,6 +461,10 @@ export default {
       if (!this.showOthers) return;
       const loading = this.$refs.serverNotifyListLoading.$loading.show();
 
+      if(!curr_page) {
+        curr_page = this.pageNum || 1; 
+      }
+
       this.$ajax.getJSON('/server/api/server_notify_list', {
         tree_node_id: this.$route.params.treeid,
         page_size: this.pageSize,
@@ -614,14 +630,20 @@ export default {
       });
     },
     // 下线服务
-    undeployServer(id) {
-      this.$confirm(this.$t('serverList.dlg.msg.undeploy'), this.$t('common.alert')).then(() => {
-        this.addTask(id, 'undeploy_tars', {
-          success: this.$t('serverList.restart.success'),
-          error: this.$t('serverList.restart.failed'),
+    undeployServer(server) {
+
+      // console.log(server)
+      if(server.present_state === "active") {
+        this.$tip.error(`${this.$t('serverList.tips.undeploy')}`); 
+      } else {
+        this.$confirm(this.$t('serverList.dlg.msg.undeploy'), this.$t('common.alert')).then(() => {
+          this.addTask(server.id, 'undeploy_tars', {
+            success: this.$t('serverList.restart.success'),
+            error: this.$t('serverList.restart.failed'),
+          });
+          this.closeMoreCmdModal();
         });
-        this.closeMoreCmdModal();
-      });
+      }
     },
 
     // 管理Servant弹窗
@@ -684,27 +706,34 @@ export default {
     // 检查绑定地址
     checkServantEndpoint(endpoint) {
       const tmp = endpoint.split(/\s-/);
-      const regProtocol = /^tcp|udp$/i;
-      let regHost = /^h\s(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/i;
+      const regProtocol = /^tcp|udp|ssl$/i;
+      let regIP = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/i;
+      let regHost = /^h\s[^\s]+/i;
       let regT = /^t\s([1-9]|[1-9]\d+)$/i;
-      let regPort = /^p\s\d{4,5}$/i;
+      let regPort = /^p\s\d{2,5}$/i;
 
       let check = true;
       if (regProtocol.test(tmp[0])) {
         let flag = 0;
+
         for (let i = 1; i < tmp.length; i++) {  // eslint-disable-line
           // 验证 -h
-          if (regHost && regHost.test(tmp[i])) {
+          if ((regHost && regHost.test(tmp[i]))) {
             flag++;  // eslint-disable-line
             // 提取参数
-            this.servantDetailModal.model.node_name = tmp[i].split(/\s/)[1];
+            var ip = tmp[i].split(/\s/)[1];
+            if(regIP.test(ip)) {
+              this.servantDetailModal.model.node_name = ip;
+            }
             regHost = null;
           }
+
           // 验证 -t
           if (regT && regT.test(tmp[i])) {
             flag++;  // eslint-disable-line
             regT = null;
           }
+
           // 验证 -p
           if (regPort && regPort.test(tmp[i])) {
             const port = tmp[i].substring(2);
@@ -830,7 +859,7 @@ export default {
       const server = this.moreCmdModal.currentServer;
       // 下线服务
       if (model.selected === 'undeploy_tars') {
-        this.undeployServer(server.id);
+        this.undeployServer(server);
       // 设置日志等级
       } else if (model.selected === 'setloglevel') {
         this.sendCommand(server.id, `tars.setloglevel ${model.setloglevel}`);
@@ -879,6 +908,12 @@ export default {
   }
   .danger {
     color: var(--off-color);
+  }
+
+  .icon.iconfont {
+    font-size:10px;
+    cursor: pointer;
+    vertical-align: 0em  
   }
 
   .more-cmd {

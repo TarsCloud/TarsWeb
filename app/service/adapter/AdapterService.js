@@ -78,6 +78,10 @@ AdapterService.updateAdapterConf = async (params) => {
 	return await AdapterDao.updateAdapterConf(params);
 };
 
+AdapterService.randPort = () => {
+	return parseInt((10000 + Math.random() * 20000));
+}
+
 AdapterService.getAvaliablePort = async (nodeNames) => {
 	if (_.isEmpty(nodeNames)) {
 		return [];
@@ -99,16 +103,18 @@ AdapterService.getAvaliablePort = async (nodeNames) => {
 	});
 	let portRst = [];
 	nodeNames.forEach(function (nodeName) {
+		let port = AdapterService.randPort();
+
 		if (!nodeName) {
-			portRst.push({node_name: '', port: 10000});
+			portRst.push({node_name: '', port: port});
 			return;
 		}
 		let portList = portMap[nodeName];
-		//默认port从10000开始分配
-		let port = 10000;
+		//随机分配端口(从10000~30000之间)
 		while (port <= 65536) {
 			if (_.indexOf(portList, port) > -1) {
-				port++;
+				port = AdapterService.randPort();
+				// port++;
 			} else {
 				portList.push(port);
 				portRst.push({node_name: nodeName, port: port});
