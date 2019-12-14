@@ -1,3 +1,6 @@
+
+[变更历史](ChangeList.zh.md)
+
 ## 高效运营的 Tars web 管理平台
  [Tars](https://github.com/TarsCloud/Tars) 是腾讯从2008年到今天一直在使用的后台逻辑层的统一应用框架TAF（Total Application Framework）的开源版本，
  目前支持 C++、Java、go、Nodejs、PHP 语言。该框架为用户提供了涉及到开发、运维、以及测试的一整套解决方案。而 Tars 天然比单纯的RPC框架更强大一些，是因为
@@ -19,8 +22,12 @@
   Tars web 提供可视化的操作来运维 Tars 服务，可以快速用微服务的方式构建自己的稳定可靠的分布式应用，并实现完整有效的服务治理。具有以下功能：
   
 ### 服务部署
-  Tars web 提供了 `Tars` 服务部署功能，现支持的语言有 [C++](https://github.com/TarsCloud/TarsCpp)、[Java](https://github.com/TarsCloud/TarsJava)、
- [go](https://github.com/TarsCloud/TarsGo)、[nodejs](https://github.com/tars-node/Tars.js)、[php](https://github.com/TarsPHP/TarsPHP)。
+  Tars web 提供了 `Tars` 服务部署功能，现支持的语言有 
+  - [C++](https://github.com/TarsCloud/TarsCpp)
+  - [Java](https://github.com/TarsCloud/TarsJava) 
+  - [go](https://github.com/TarsCloud/TarsGo)
+  - [nodejs](https://github.com/tars-node/Tars.js)
+  - [php](https://github.com/TarsPHP/TarsPHP)
   在平台上，可以很简单的部署服务。填好应用名、服务名、obj 名、节点地址，选好服务类型、模版即可部署一个服务。
   
 ### 发布管理
@@ -52,14 +59,11 @@
  支持 `tars`  服务上传 `tars` 协议文件调试接口。
  
 
-
-
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## 开源模块
 基于 Tars 和 Tars web 开源的模块，现已开源模块有：
 * [DCache](https://github.com/Tencent/DCache)：DCache是一个基于TARS框架开发的分布式NoSQL存储系统，数据采用内存存储，支持连接后端DB实现数据持久化。
 * [@tars/dcache](https://www.npmjs.com/package/@tars/dcache)：Tars web 的扩展模块，用于管理 DCache 服务的管理平台。
-
 
 ## License
 Tars的开源协议为BSD-3-Clause，详情参见[LICENSE.TXT](https://github.com/TarsCloud/Tars/blob/master/LICENSE.TXT)。
