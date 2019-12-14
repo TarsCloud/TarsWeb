@@ -15,7 +15,7 @@
  */
 
 const {tNodeInfo} = require('./db').db_tars;
-
+const Sequelize = require('sequelize');
 const NodeInfoDao = {};
 
 NodeInfoDao.getNodeInfo = async (endpointIps) => {
@@ -31,5 +31,28 @@ NodeInfoDao.deleteNodeInfo = async (nodeName) => {
 		where: {node_name: nodeName}
 	});
 };
+
+
+NodeInfoDao.getNodeInfoList = async (nodeName, curPage, pageSize) => {
+	let where = {
+		node_name: {
+			//$like: '%' + templateName + '%'
+			//syntax breaking changes after V5, should be:
+			[Sequelize.Op.like]: '%' + nodeName + '%'
+		}
+	}
+	// let where = {};
+	let options = {
+		raw: true,
+		where,
+		order: [['node_name', 'DESC']]
+	};
+	if (curPage && pageSize) {
+		options.limit = pageSize;
+		options.offset = pageSize * (curPage - 1);
+	}
+	return await tNodeInfo.findAndCountAll(options);
+};
+
 
 module.exports = NodeInfoDao;

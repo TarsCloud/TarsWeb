@@ -28,29 +28,33 @@ const resourceConf = require('../../../config/resourceConf');
 const Util = require('../../tools/util');
 const logger = require('../../logger');
 
+ResourceService.listTarsNode = async(nodeName, curPage, pageSize) =>{
+	return await NodeInfoDao.getNodeInfoList(nodeName, curPage, pageSize);
+}
+
 /**
  * 批量检测并安装Tars node
  * @param ips
  * @returns {Array}
  */
-ResourceService.installTarsNodes = async (ips) => {
+ResourceService.installTarsNodes = async (paramsObj) => {
 	//若该ip已经存在表中，则不安装tars node。
 	let rst = [];
-	let nodeInfos = await NodeInfoDao.getNodeInfo(ips);
+	// let nodeInfos = await NodeInfoDao.getNodeInfo(paramsObj.ips);
 	let installedIps = [];
-	nodeInfos.forEach((nodeInfo) => {
-		nodeInfo = nodeInfo.dataValues;
-		installedIps.push(nodeInfo.endpoint_ip);
-		rst.push({
-			ip: nodeInfo.endpoint_ip,
-			rst: true,
-			msg: '#api.resource.tarsNodeExist#'
-		});
-	});
-	let needInstallIps = _.difference(ips, installedIps);
+	// nodeInfos.forEach((nodeInfo) => {
+	// 	nodeInfo = nodeInfo.dataValues;
+	// 	installedIps.push(nodeInfo.endpoint_ip);
+	// 	rst.push({
+	// 		ip: nodeInfo.endpoint_ip,
+	// 		rst: true,
+	// 		msg: '#api.resource.tarsNodeExist#'
+	// 	});
+	// });
+	let needInstallIps = _.difference(paramsObj.ips, installedIps);
 	let installTask = [];
 	needInstallIps.forEach((ip) => {
-		installTask.push(ResourceService.doInstallTarsNode(ip));
+		installTask.push(ResourceService.doInstallTarsNode(ip, paramsObj));
 	});
 	let installRst = await Promise.all(installTask);
 	rst = rst.concat(installRst);
@@ -62,13 +66,16 @@ ResourceService.installTarsNodes = async (ips) => {
  * @param ip
  * @returns {*}
  */
-ResourceService.doInstallTarsNode = async (ip) => {
+ResourceService.doInstallTarsNode = async (ip, paramsObj) => {
 	try {
 		let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
 		let thisIp = internalIp.v4.sync();
+		// let thisIp = ip;
 		let port = process.env.PORT || webConf.port || '3000';
-		shell = shell.replace('${ip}', thisIp).replace('${port}', port).replace('${machine_ip}', ip);
-		let rst = await ResourceService.doSSHTask(ip, shell);
+		shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser).replace(/\$\{ip\}/g, thisIp).replace(/\$\{port\}/g, port).replace(/\$\{machine_ip\}/g, ip);
+		console.log(shell);
+		
+		let rst = await ResourceService.doSSHTask(ip, shell, paramsObj);
 		if (rst.rst) {
 			if (rst.msg.indexOf('Tars node has installed') > -1) {
 				rst.rst = false;
@@ -160,9 +167,12 @@ ResourceService.doUninstallTarsNode = async (ip) => {
  * @param shell
  * @returns {*}
  */
-ResourceService.doSSHTask = async (ip, shell) => {
+ResourceService.doSSHTask = async (ip, shell, paramsObj) => {
+	// console.log('doSSHTask', ip, paramsObj);
+	
 	try {
-		let sshConf = await ResourceService.getSSHConfig(ip);
+		// let sshConf = await ResourceService.getSSHConfig(ip);
+		let sshConf = paramsObj;
 		if (!sshConf) {
 			return {
 				ip: ip,
@@ -181,45 +191,45 @@ ResourceService.doSSHTask = async (ip, shell) => {
 	}
 };
 
-/**
- * 获取ssh配置
- * @param ip
- * @returns {*}
- */
-ResourceService.getSSHConfig = async (ip) => {
-	try {
-		let sshConf = false;
-		if (resourceConf.getMachineConf) {
-			let conf = false;
-			try {
-				conf = await Util.jsonRequest.get(resourceConf.getMachineConf, {ip: ip});
-			} catch (e) {
-				logger.error('getSSHConfig', e);
-				conf = false;
-			}
-			if (_.isPlainObject(conf) && conf.ret_code == 200 && conf.data && conf.data.port != undefined && conf.data.username != undefined && conf.data.password != undefined) {
-				sshConf = conf.data
-				sshConf.ip = ip;
-			} else {
-				sshConf = false;
-			}
-		}
-		if (!sshConf) {
-			let sshConfs = await fs.readJson(path.join(__dirname, '../../../config/sshConf.json'));
-			let index = _.findIndex(sshConfs || [], (o) => {
-				return o.ip === ip
-			});
-			if (index > -1) {
-				sshConf = sshConfs[index];
-			} else {
-				sshConf = false;
-			}
-		}
-		return sshConf;
-	} catch (e) {
-		return false;
-	}
-};
+// /**
+//  * 获取ssh配置
+//  * @param ip
+//  * @returns {*}
+//  */
+// ResourceService.getSSHConfig = async (ip) => {
+// 	try {
+// 		let sshConf = false;
+// 		if (resourceConf.getMachineConf) {
+// 			let conf = false;
+// 			try {
+// 				conf = await Util.jsonRequest.get(resourceConf.getMachineConf, {ip: ip});
+// 			} catch (e) {
+// 				logger.error('getSSHConfig', e);
+// 				conf = false;
+// 			}
+// 			if (_.isPlainObject(conf) && conf.ret_code == 200 && conf.data && conf.data.port != undefined && conf.data.username != undefined && conf.data.password != undefined) {
+// 				sshConf = conf.data
+// 				sshConf.ip = ip;
+// 			} else {
+// 				sshConf = false;
+// 			}
+// 		}
+// 		if (!sshConf) {
+// 			let sshConfs = await fs.readJson(path.join(__dirname, '../../../config/sshConf.json'));
+// 			let index = _.findIndex(sshConfs || [], (o) => {
+// 				return o.ip === ip
+// 			});
+// 			if (index > -1) {
+// 				sshConf = sshConfs[index];
+// 			} else {
+// 				sshConf = false;
+// 			}
+// 		}
+// 		return sshConf;
+// 	} catch (e) {
+// 		return false;
+// 	}
+// };
 
 /**
  * 远程登录机器并执行ssh
@@ -232,18 +242,21 @@ ResourceService.execSSH = async (ip, shell, sshConf) => {
 	try {
 		let ssh = new nodeSsh();
 		await ssh.connect({
-			host: sshConf.ip,
+			host: ip,
 			port: sshConf.port,
-			username: sshConf.username,
+			username: sshConf.user,
 			password: sshConf.password
 		});
 		let result = await ssh.execCommand(shell);
+		console.log(result);
+
 		return {
 			ip: ip,
 			rst: result.code == 0,
 			msg: result.code == 0 ? result.stdout : result.stderr
 		};
 	} catch (e) {
+		console.log(e);
 		return {
 			ip: ip,
 			rst: false,

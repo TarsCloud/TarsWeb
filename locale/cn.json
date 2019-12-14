@@ -417,6 +417,17 @@
       }
     }
   },
+  "nodeList": {
+    "table": {
+      "th": {
+        "node_name": "节点",
+        "last_heartbeat": "最后心跳",
+        "present_state": "当前状态",
+        "tars_version": "版本",
+        "load_avg5": "负载"
+      }
+    }
+  },
   "serverList": {
     "title": {
       "serverList": "服务列表",
@@ -674,7 +685,8 @@
       "deploy": "服务部署",
       "expand": "扩容",
       "template": "模板管理",
-      "apply": "部署申请"
+      "apply": "部署申请",
+      "nodes": "节点管理"
     },
     "form": {
       "app": "应用",
@@ -682,6 +694,7 @@
       "serviceType": "服务类型",
       "serviceName": "服务名称",
       "template": "模板",
+      "node_name": "节点",
       "set": "Set分组",
       "obj": "OBJ绑定IP",
       "port": "端口",
@@ -723,6 +736,23 @@
         "ipFormat": "IP格式有误",
         "empty": "参数不能为空"
       }
+    }
+  },
+  "nodes": {
+    "node_name": "节点",
+    "nodeNameTips": "节点不能为空",
+    "port": "SSH PORT",
+    "portTips": "SSH端口不能为空",
+    "user": "用户",
+    "password": "密码",
+    "runuser": "运行用户",
+    "runuserTips": "运行用户不能为空",
+    "btn": {
+      "addNode": "安装节点"
+    },
+    "add": {
+      "nodeNameTips": "节点名不能为空",
+      "title": "安装节点"
     }
   },
   "template": {

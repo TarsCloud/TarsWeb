@@ -179,7 +179,9 @@ const apiConf = [
 	}],
 
 	//资源管理
-	['get', '/install_tars_node', ResourceController.installTarsNode, {ips: 'notEmpty'}],
+	['get', '/list_tars_node', ResourceController.listTarsNode],
+	// ['get', '/install_tars_node', ResourceController.installTarsNode],
+	['post', '/install_tars_node', ResourceController.installTarsNode],
 	['get', '/uninstall_tars_node', ResourceController.uninstallTarsNode, {ips: 'notEmpty'}],
 
 	//权限管理

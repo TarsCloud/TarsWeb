@@ -25,6 +25,7 @@
 </script>
 
 <style>
+  /* @import "./static/icon-font/iconfont.css"; */
   @import "./assets/font/lato/Lato.css";
   @import './assets/css/reset.css';
   @import './assets/css/variable.css';

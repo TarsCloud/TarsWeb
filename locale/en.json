@@ -391,6 +391,17 @@
       }
     }
   },
+  "nodeList": {
+    "table": {
+      "th": {
+        "node_name": "NodeName",
+        "last_heartbeat": "Last Heartbeat",
+        "present_state": "Present State",
+        "tars_version": "Version",
+        "load_avg5": "Load"
+      }
+    }
+  },
   "serverList": {
     "title": {
       "serverList": "Services",
@@ -648,7 +659,8 @@
       "deploy": "Deploy service",
       "expand": "Expand service",
       "template": "Manage template",
-      "apply": "Apply for deployment"
+      "apply": "Apply for deployment",
+      "nodes": "Node service"
     },
     "form": {
       "app": "APP",
@@ -656,6 +668,7 @@
       "serviceType": "Service type",
       "serviceName": "Service name",
       "template": "Template",
+      "node_name": "Node",
       "set": "Set grouping",
       "obj": "OBJ binds IP",
       "port": "port",
@@ -697,6 +710,23 @@
         "ipFormat": "IP format error",
         "empty": "cannot be empty"
       }
+    }
+  },
+  "nodes": {
+    "node_name": "Node(Input IP)",
+    "nodeNameTips": "Node cannot be empty",
+    "port": "SSH PORT",
+    "portTips": "SSH Port cannot be empty",
+    "user": "User",
+    "password": "Password",
+    "runuser": "Run User",
+    "runuserTips": "Run User cannot be empty",
+    "btn": {
+      "addNode": "Install node"
+    },
+    "add": {
+      "nodeNameTips": "node name cannot be empty",
+      "title": "Install Node"
     }
   },
   "template": {
