@@ -180,9 +180,9 @@ const apiConf = [
 
 	//资源管理
 	['get', '/list_tars_node', ResourceController.listTarsNode],
-	// ['get', '/install_tars_node', ResourceController.installTarsNode],
-	['post', '/install_tars_node', ResourceController.installTarsNode],
-	['get', '/uninstall_tars_node', ResourceController.uninstallTarsNode, {ips: 'notEmpty'}],
+	['post', '/connect_tars_node', ResourceController.connectTarsNode],
+	['post', '/install_tars_nodes', ResourceController.installTarsNodes],
+	['get', '/uninstall_tars_nodes', ResourceController.uninstallTarsNodes, {ips: 'notEmpty'}],
 
 	//权限管理
 	['get', '/is_enable_auth', AuthController.isEnableAuth],

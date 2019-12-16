@@ -84,7 +84,7 @@ module.exports = {
             },
           },
         ],
-        include: [resolve('src/assets/icon')],
+        include: [resolve('src/assets/icon'), resolve('src/assets/icon-font')],
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

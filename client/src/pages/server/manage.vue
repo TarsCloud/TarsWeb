@@ -2,7 +2,7 @@
   <div class="page_server_manage">
 
     <!-- 服务列表 -->
-    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont" @click="getServerList">&#xec08;</i></h4>
+    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
     
     <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>

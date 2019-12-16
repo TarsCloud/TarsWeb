@@ -755,6 +755,40 @@
       "title": "安装节点"
     }
   },
+  "connectNodeList": {
+    "title": "连通性测试以及安装节点",
+    "btnInstall": "安装",
+    "btnConnect": "测试联通性",
+    "btnInstalling": "正在安装",
+    "btnInstalled": "安装完毕点击再次安装",
+    "btnClose": "关闭",
+    "execute": "正在执行, 无法关闭, 请稍后",
+    "executeConnect": "正在执行联通性测试, 请稍后",
+    "executeInstall": "正在执行安装, 请稍后",
+    "table": {
+      "th": {
+        "node_name": "节点",
+        "connect": "连通性",
+        "exists": "是否安装过",
+        "install": "安装状态"
+      }
+    },
+    "connect": {
+      "succ": "连接成功",
+      "failed": "SSH连接失败"
+    },
+    "exists": {
+      "yes": "是",
+      "no": "否"
+    },
+    "install": {
+      "connect": "正在连接",
+      "waitNew": "新安装",
+      "waitOverwrite": "覆盖安装",
+      "invalid": "无法安装",
+      "installing": "正在安装"
+    }
+  },  
   "template": {
     "search": {
       "parentTemplate": "父模板名"

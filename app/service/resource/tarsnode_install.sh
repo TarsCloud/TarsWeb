@@ -18,7 +18,6 @@
 
 echo "runuser: ${runuser}, ip:${ip}, port:${port}, machine_ip:${machine_ip}, registryAddress:${registryAddress}"
 
-
 if [ ! -d "/usr/local/app" ]
 then
     echo "create tars base path: "
@@ -26,12 +25,25 @@ then
     ln -s /data/app /usr/local/app
 fi
 
-
 mkdir -p /usr/local/app/tars
 
 cd /tmp; rm -rf tarsnode.tgz
 
 wget http://${ip}:${port}/static/tarsnode.tgz
+
+if [ ! -f "tarsnode.tgz" ]
+then
+    echo "Tars node download error: http://${ip}:${port}/static/tarsnode.tgz"
+    exit
+fi
+
+if [ '${registryAddress}' == ''] then
+    echo "registryAddress is empty."
+fi
+
+if [ '${machine_ip}' == ''] then
+    echo "machine_ip is empty."
+fi
 
 tar zxf tarsnode.tgz
 
@@ -40,8 +52,6 @@ cp -rf tarsnode /usr/local/app/tars/
 cd /usr/local/app/tars
 
 echo "local machine ip:[${machine_ip}] succ"
-
-registryAddress="tcp -h 172.16.0.7 -p 17890"
 
 echo "all tars registry:" $registryAddress
 

@@ -729,6 +729,40 @@
       "title": "Install Node"
     }
   },
+  "connectNodeList": {
+    "title": "Connect And Install",
+    "btnInstall": "Install",
+    "btnConnect": "Test Connect",
+    "btnInstalling": "Installing",
+    "btnInstalled": "Installed, Install Again",
+    "btnClose": "Close",
+    "execute": "Running, please wait",
+    "executeConnect": "Execute connecting test, please wait",
+    "executeInstall": "Execute installing, please wait",
+    "table": {
+      "th": {
+        "node_name": "Node",
+        "connect": "Connection",
+        "exists": "Overwrite",
+        "install": "Intall Status"
+      }
+    },
+    "connect": {
+      "succ": "Connected",
+      "failed": "SSH Connect Failed"
+    },
+    "exists": {
+      "yes": "TarsNode exists",
+      "no": "TarsNode not exists"
+    },
+    "install": {
+      "connect": "Connecting",
+      "waitNew": "New Install",
+      "waitOverwrite": "Overwrite Install",
+      "invalid": "Can not Install",
+      "installing": "Installing"
+    }
+  }, 
   "template": {
     "search": {
       "parentTemplate": "Parent template"

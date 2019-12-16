@@ -1,6 +1,6 @@
 <template>
   <div class="page_operation_templates">
-    <!-- <let-button size="small" theme="primary" style="float: right" @click="addItem">{{$t('nodes.btn.addNode')}}</let-button> -->
+    <let-button size="small" theme="primary" style="float: right" @click="addItem">{{$t('nodes.btn.addNode')}}</let-button>
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
       <let-form-item :label="$t('nodes.node_name')">
         <let-input size="small" v-model="query.node_name"></let-input>
@@ -24,13 +24,32 @@
     </let-pagination>
 
     <let-modal
+      v-model="connectModal.show"
+      :title="this.$t('connectNodeList.title')"
+      width="650px"
+      :footShow="false"
+      :showClose="false"
+    >
+      <let-table :data="connectNodeList" stripe :empty-msg="$t('common.nodata')" ref="connectNodeListLoading" style="margin-top: 20px;"> 
+        <let-table-column :title="$t('connectNodeList.table.th.node_name')" prop="ip"></let-table-column>
+        <let-table-column :title="$t('connectNodeList.table.th.connect')" prop="connectInfo"></let-table-column>
+        <let-table-column :title="$t('connectNodeList.table.th.exists')" prop="existsInfo"></let-table-column>
+        <let-table-column :title="$t('connectNodeList.table.th.install')" prop="installInfo"></let-table-column>
+      </let-table>
+
+      <let-button theme="primary" @click="connectNode">{{btnConnectText}}</let-button>
+      <let-button theme="primary" @click="installNode">{{btnInstallText}}</let-button>
+      <let-button theme="primary" @click="closeConnectModal" style="float:right">{{$t('connectNodeList.btnClose')}}</let-button>
+    </let-modal>
+
+    <let-modal
       v-model="detailModal.show"
       :title="this.$t('nodes.add.title')"
-      width="450px"
-      @on-confirm="saveItem"
+      width="500px"
+      @on-confirm="showConnectNode"
       @on-cancel="closeDetailModal"
     >
-      <let-form ref="detailForm" v-if="detailModal.model" itemWidth="400px">
+      <let-form ref="detailForm" v-if="detailModal.model" itemWidth="450px">
         <let-form-item :label="$t('nodes.node_name')" required>
           <let-input
             type="textarea"
@@ -39,8 +58,6 @@
             :placeholder="$t('nodes.nodeNameTips')"
             required
             :required-tip="$t('nodes.nodeNameTips')"
-            pattern="^[^\s]+$"
-            :pattern-tip="$t('nodes.nodeNameTips')"
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('nodes.user')" required>
@@ -61,7 +78,7 @@
             :pattern-tip="$t('nodes.portTips')"
           ></let-input>
         </let-form-item>
-        <let-form-item :label="$t('nodes.password')" required>
+        <let-form-item :label="$t('nodes.password')">
           <let-input
             size="small"
             v-model="detailModal.model.password"
@@ -98,6 +115,17 @@ export default {
       pageNum: 1,
       pageSize: 20,
       total:1,
+
+      executeInstall: false,
+      executeConnect: false,
+      btnConnectText: '',
+      btnInstallText: '',
+      isCheckedAll: false,
+      connectNodeList: [],
+      connectModal: {
+        show: false
+      },
+      // canInstall: false,
 
       detailModal: {
         show: false,
@@ -136,7 +164,6 @@ export default {
         this.nodeList.forEach(x => {
           x.last_heartbeat = moment(x.last_heartbeat).format("YYYY-MM-DD HH:mm:ss");
           x.last_reg_time = moment(x.last_reg_time).format("YYYY-MM-DD HH:mm:ss")
-
         })
       }).catch((err) => {
         loading.hide();
@@ -150,39 +177,159 @@ export default {
     search() {
       this.getNodeList(1);
     },
-
     closeDetailModal() {
       this.$refs.detailForm.resetValid();
       this.detailModal.show = false;
     },
+    closeConnectModal() {
 
+      if(this.executeConnect || this.executeInstall) {
+        alert(this.$t('connectNodeList.execute'));
+        return;
+      }
+
+      this.btnConnectText = this.$t('connectNodeList.btnConnect');
+      this.btnInstallText = this.$t('connectNodeList.btnInstall');
+
+      this.connectModal.show = false;
+
+    },
     addItem() {
       this.detailModal.show = true;
     },
-    saveItem() {
+    showConnectNode() {
       if (this.$refs.detailForm.validate()) {
+
+        // if(this.connectNodeList.length == 0) {
+          this.btnConnectText = this.$t('connectNodeList.btnConnect');
+          this.btnInstallText = this.$t('connectNodeList.btnInstall');
+          this.connectNodeList = [];
+
+          const model = this.detailModal.model;
+          
+          model.node_name.split(/[,;\n]/).forEach(x=>{
+
+            if(x.trim() === '') {
+              return;
+            }
+
+            var connect = {ip: x,
+              connect: false,
+              connectInfo: '',
+              exists: false,
+              existsInfo: '',
+              installInfo: '',
+            };
+
+            this.connectNodeList.push(connect);
+
+          });
+        // }
+
+        this.connectModal.show = true;
+      }
+    },
+    connectNode($event) {
+      if(this.executeInstall) {
+        alert(this.$t('connectNodeList.executeInstall'));
+        return;
+      }
+
+      if(this.connectNodeList.length == 0) {
+        return;
+      }
+
+      this.btnConnectText = this.$t('connectNodeList.install.connect');
+      //let-ui有bug, 只能改dom了!!!
+      $event.target.disabled = true;
+
+      let count = this.connectNodeList.length;
+      this.executeConnect = true;
+      this.connectNodeList.forEach(connect=>{
+
+        var obj = Object.assign({}, this.detailModal.model);
+
+        obj.node_name = connect.ip;
+
+        connect.connectInfo = '';
+        connect.existsInfo  = '';
+        connect.installInfo = this.$t('connectNodeList.install.connect');
+
+        //一个一个请求, 体验更好一些
+        this.$ajax.postJSON('/server/api/connect_tars_node', obj).then((data) => {
+
+            connect.connectInfo = data.connectInfo;
+            connect.existsInfo  = data.existsInfo;
+            connect.installInfo = data.installInfo;
+            connect.connect     = data.connect;
+
+            if((--count) == 0) {
+              this.btnConnectText = this.$t('connectNodeList.btnConnect');
+              $event.target.disabled = false;
+              this.executeConnect = false;
+            }
+
+          }).catch((err) => {
+
+            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            connect.installInfo = this.$t('common.error');
+            if((--count) == 0) {
+              this.btnConnectText = this.$t('connectNodeList.btnConnect');
+              $event.target.disabled = false;
+              this.executeConnect = false;
+            }
+          })
+      });
+    },
+    installNode($event) {
+
+      if(this.executeConnect) {
+        alert(this.$t('connectNodeList.executeConnect'));
+        return;
+      }
+
+      var nodes = [];
+      this.connectNodeList.forEach(x=>nodes.push(x.ip));
+
         const model = this.detailModal.model;
 
-        const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/install_tars_node', model).then((data) => {
-          loading.hide();
+        var obj = Object.assign({}, model);
+        obj.node_name = nodes.join(';');
+
+        // console.log('installNode', obj);
+
+        this.btnInstallText = this.$t('connectNodeList.btnInstalling');
+
+        this.executeInstall = false;
+        this.$ajax.postJSON('/server/api/install_tars_nodes', obj).then((data) => {
+
+          // console.log(data);
 
           data.forEach(n => {
-            if(n.rst) {
-              this.$tip.success(n.ip + ":" + n.msg);
-            } else {
+            
+            let node = this.connectNodeList.filter(x=>x.ip == n.ip);
+            
+            if(node.length > 0) {
+              node[0].installInfo = n.msg;
+            }
+
+            if(!n.rst) {
               this.$tip.error(n.ip + ":" + n.msg);
             }
 
           })
-          this.closeDetailModal();
           this.getNodeList(1);
+
+          this.btnInstallText = this.$t('connectNodeList.btnInstalled');
+          $event.target.disabled = false;
+          this.executeInstall = false;
+
         }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+          this.btnInstallText = this.$t('connectNodeList.btnInstalled');
+          $event.target.disabled = false;
+          this.executeInstall = false;
         });
-      }
-    },
+    }
   },
 };
 </script>

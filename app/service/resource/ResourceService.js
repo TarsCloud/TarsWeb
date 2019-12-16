@@ -16,6 +16,7 @@
 
 const nodeSsh = require('node-ssh')
 const NodeInfoDao = require('../../dao/NodeInfoDao');
+const ResourceDao = require('../../dao/ResourceDao');
 const ServerDao = require('../../dao/ServerDao');
 const _ = require('lodash');
 const fs = require('fs-extra');
@@ -37,45 +38,139 @@ ResourceService.listTarsNode = async(nodeName, curPage, pageSize) =>{
  * @param ips
  * @returns {Array}
  */
-ResourceService.installTarsNodes = async (paramsObj) => {
-	//若该ip已经存在表中，则不安装tars node。
-	let rst = [];
-	// let nodeInfos = await NodeInfoDao.getNodeInfo(paramsObj.ips);
-	let installedIps = [];
-	// nodeInfos.forEach((nodeInfo) => {
-	// 	nodeInfo = nodeInfo.dataValues;
-	// 	installedIps.push(nodeInfo.endpoint_ip);
-	// 	rst.push({
-	// 		ip: nodeInfo.endpoint_ip,
-	// 		rst: true,
-	// 		msg: '#api.resource.tarsNodeExist#'
-	// 	});
+ResourceService.connectTarsNode = async (paramsObj) => {
+	// let rst = [];
+	// let installTask = [];
+	// paramsObj.ips.forEach((ip) => {
+	// 	installTask.push(ResourceService.doConnectTarsNode(ip, paramsObj));
 	// });
-	let needInstallIps = _.difference(paramsObj.ips, installedIps);
+	// let installRst = await Promise.all(installTask);
+
+	return await ResourceService.doConnectTarsNode(paramsObj)
+
+	// rst = rst.concat(installRst);
+	// return rst;
+};
+
+/**
+ * 批量检测并安装Tars node
+ * @param ips
+ * @returns {Array}
+ */
+ResourceService.installTarsNodes = async (paramsObj) => {
+
+	let registryAddress = await ResourceService.getRegistryAddress();
+	let rst = [];
 	let installTask = [];
-	needInstallIps.forEach((ip) => {
-		installTask.push(ResourceService.doInstallTarsNode(ip, paramsObj));
+	paramsObj.ips.forEach((ip) => {
+		installTask.push(ResourceService.doInstallTarsNode(ip, registryAddress, paramsObj));
 	});
 	let installRst = await Promise.all(installTask);
 	rst = rst.concat(installRst);
 	return rst;
 };
 
+ResourceService.doConnectTarsNode = async (paramsObj) => {
+	let ip = paramsObj.node_name;
+	// try {
+		let shell = await fs.readFile(__dirname + '/tarsnode_connect.sh', 'utf8');
+		// let thisIp = internalIp.v4.sync();
+		// let thisIp = ip;
+		// let port = process.env.PORT || webConf.port || '3000';
+		// shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser).replace(/\$\{ip\}/g, thisIp).replace(/\$\{port\}/g, port).replace(/\$\{machine_ip\}/g, ip);
+		// console.log(shell);
+		
+		let rst = await ResourceService.execSSH(ip, shell, paramsObj);
+		rst.installInfo = '';
+		rst.node_name = ip;
+
+		// console.log(rst);
+		
+		if (rst.rst) {
+			if (rst.msg.indexOf('exists') > -1) {
+				rst.connect = true;
+				rst.exists = true;
+			} else if (rst.msg.indexOf('none') > -1) {
+				rst.connect = true;
+				rst.exists = false;
+			} else {
+				rst.connect = false;
+				rst.exists = false;
+			}
+		} else {
+			rst.connect = false;
+			rst.exists = false;
+		}
+
+		rst.connectInfo = rst.connect ? "#connectNodeList.connect.succ#": "#connectNodeList.connect.failed#";
+		rst.existsInfo = rst.exists ? "#connectNodeList.exists.yes#": "#connectNodeList.exists.no#";
+
+		if(rst.connect) {
+			if(rst.exists) {
+				rst.installInfo = "#connectNodeList.install.waitOverwrite#";
+			} else {
+				rst.installInfo = "#connectNodeList.install.waitNew#";
+			}
+		} else {
+			rst.installInfo = "#connectNodeList.install.invalid#";
+		}
+
+		return rst;
+	// } catch (e) {
+	// 	return {
+	// 		ip: ip,
+	// 		rst: false,
+	// 		msg: '#api.resource.installFailed#'
+	// 	}
+	// }
+};
+
+ResourceService.getRegistryAddress = async () => {
+	let registryAddress = [];
+
+	if(process.env.TARS_PROXY) {
+		let proxy = process.env.TARS_PROXY.split(',');
+
+		for(var index in proxy) {
+			let host = proxy[index].split(':');
+	
+			registryAddress.push('tcp -h ' + host[0] + ' -p ' + host[1]);			
+		}
+	}
+	else {
+		const registryInfo = await ResourceDao.getRegistryAddress();
+
+		for(var index in registryInfo) {
+			let host = registryInfo[index].locator_id.split(':');
+	
+			registryAddress.push('tcp -h ' + host[0] + ' -p ' + host[1]);
+		}
+	
+	}
+
+	return registryAddress.join(':');
+}
+
 /**
  * 安装单个Tars node
  * @param ip
  * @returns {*}
  */
-ResourceService.doInstallTarsNode = async (ip, paramsObj) => {
+ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 	try {
 		let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
 		let thisIp = internalIp.v4.sync();
 		// let thisIp = ip;
 		let port = process.env.PORT || webConf.port || '3000';
-		shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser).replace(/\$\{ip\}/g, thisIp).replace(/\$\{port\}/g, port).replace(/\$\{machine_ip\}/g, ip);
+		shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser)
+			.replace(/\$\{ip\}/g, thisIp)
+			.replace(/\$\{port\}/g, port)
+			.replace(/\$\{machine_ip\}/g, ip)
+			.replace(/\$\{registryAddress\}/, registryAddress);
+	
 		console.log(shell);
-		
-		let rst = await ResourceService.doSSHTask(ip, shell, paramsObj);
+
+		let rst = await ResourceService.execSSH(ip, shell, paramsObj);
 		if (rst.rst) {
 			if (rst.msg.indexOf('Tars node has installed') > -1) {
 				rst.rst = false;
@@ -102,7 +197,7 @@ ResourceService.doInstallTarsNode = async (ip, paramsObj) => {
  * @param ips
  * @returns {Array.<*>}
  */
-ResourceService.uninstallTarsNode = async (ips) => {
+ResourceService.uninstallTarsNodes = async (ips) => {
 	//若该ip对应的机器中还有服务，则不允许下线
 	let rst = [];
 	let promiseList = [];
@@ -162,34 +257,34 @@ ResourceService.doUninstallTarsNode = async (ip) => {
 };
 
 /**
- * 获取ssh配置并执行ssh任务
- * @param ip
- * @param shell
- * @returns {*}
- */
-ResourceService.doSSHTask = async (ip, shell, paramsObj) => {
-	// console.log('doSSHTask', ip, paramsObj);
+//  * 获取ssh配置并执行ssh任务
+//  * @param ip
+//  * @param shell
+//  * @returns {*}
+//  */
+// ResourceService.doSSHTask = async (ip, shell, paramsObj) => {
+// 	// console.log('doSSHTask', ip, paramsObj);
 	
-	try {
-		// let sshConf = await ResourceService.getSSHConfig(ip);
-		let sshConf = paramsObj;
-		if (!sshConf) {
-			return {
-				ip: ip,
-				rst: false,
-				msg: '#api.resource.notConfig#'
-			}
-		} else {
-			return await ResourceService.execSSH(ip, shell, sshConf);
-		}
-	} catch (e) {
-		return {
-			ip: ip,
-			rst: false,
-			msg: '#api.resource.sshFailed#'
-		}
-	}
-};
+// 	try {
+// 		// let sshConf = await ResourceService.getSSHConfig(ip);
+// 		let sshConf = paramsObj;
+// 		if (!sshConf) {
+// 			return {
+// 				ip: ip,
+// 				rst: false,
+// 				msg: '#api.resource.notConfig#'
+// 			}
+// 		} else {
+// 			return await ResourceService.execSSH(ip, shell, sshConf);
+// 		}
+// 	} catch (e) {
+// 		return {
+// 			ip: ip,
+// 			rst: false,
+// 			msg: '#api.resource.sshFailed#'
+// 		}
+// 	}
+// };
 
 // /**
 //  * 获取ssh配置

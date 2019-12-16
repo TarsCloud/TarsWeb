@@ -15,6 +15,7 @@
  */
 
 const {tNodeInfo} = require('./db').db_tars;
+const {tRegistryInfo} = require('./db').db_tars;
 
 const ResourceDao = {};
 
@@ -25,5 +26,14 @@ ResourceDao.getNodeInfo = async (endpointIps) => {
 		}
 	})
 };
+
+ResourceDao.getRegistryAddress = async () => {
+	return await tRegistryInfo.findAll({
+		where: {
+			servant: 'tars.tarsregistry.QueryObj'
+		}
+	})
+};
+
 
 module.exports = ResourceDao;

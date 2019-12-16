@@ -37,10 +37,22 @@ ResourceController.listTarsNode = async(ctx) => {
 	}
 }
 
-ResourceController.installTarsNode = async (ctx) => {
+ResourceController.connectTarsNode = async (ctx) => {
 	try {
 		// let ips = ctx.paramsObj.node_name;
-		ctx.paramsObj.ips = _.trim(ctx.paramsObj.node_name, /;|,/).split(';');
+		// ctx.paramsObj.ips = _.trim(ctx.paramsObj.node_name, /;|,/).split(';');
+		let rst = await ResourceService.connectTarsNode(ctx.paramsObj);
+		ctx.makeResObj(200, '', rst);
+	} catch (e) {
+		logger.error('[connectTarsNode]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}; 
+
+ResourceController.installTarsNodes = async (ctx) => {
+	try {
+		// let ips = ctx.paramsObj.node_name;
+		ctx.paramsObj.ips = _.trim(ctx.paramsObj.node_name, /;|,/).split(/[,;\n]/);
 		let rst = await ResourceService.installTarsNodes(ctx.paramsObj);
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
@@ -49,11 +61,11 @@ ResourceController.installTarsNode = async (ctx) => {
 	}
 };
 
-ResourceController.uninstallTarsNode = async (ctx) => {
+ResourceController.uninstallTarsNodes = async (ctx) => {
 	try {
 		let ips = ctx.paramsObj.ips;
-		ips = _.trim(ips, /;|,/).split(';');
-		let rst = await ResourceService.uninstallTarsNode(ips);
+		ips = _.trim(ips, /;|,/).split(/[,;\n]/);
+		let rst = await ResourceService.uninstallTarsNodes(ips);
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
 		logger.error('[installTarsNode]', e, ctx);
