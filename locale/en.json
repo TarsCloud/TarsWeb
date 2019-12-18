@@ -660,7 +660,8 @@
       "expand": "Expand service",
       "template": "Manage template",
       "apply": "Apply for deployment",
-      "nodes": "Node service"
+      "nodes": "Node service",
+      "log": "Tars log deploy"
     },
     "form": {
       "app": "APP",
@@ -739,6 +740,7 @@
     "execute": "Running, please wait",
     "executeConnect": "Execute connecting test, please wait",
     "executeInstall": "Execute installing, please wait",
+    "installTgzNotExists": "Tarnode install file not exits, check file: /usr/local/app/web/client/dist/static/tarsnode.tgz",
     "table": {
       "th": {
         "node_name": "Node",

@@ -16,10 +16,12 @@
 
 const logger = require('../../logger');
 const ResourceService = require('../../service/resource/ResourceService');
-const AdminService = require('../../service/admin/AdminService');
+// const AdminService = require('../../service/admin/AdminService');
 const _ = require('lodash');
-const util = require('../../tools/util');
-const send = require('koa-send');
+const path = require('path');
+// const util = require('../../tools/util');
+// const send = require('koa-send');
+var fs = require('fs');
 
 
 const ResourceController = {};
@@ -42,6 +44,7 @@ ResourceController.connectTarsNode = async (ctx) => {
 		// let ips = ctx.paramsObj.node_name;
 		// ctx.paramsObj.ips = _.trim(ctx.paramsObj.node_name, /;|,/).split(';');
 		let rst = await ResourceService.connectTarsNode(ctx.paramsObj);
+
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
 		logger.error('[connectTarsNode]', e, ctx);
@@ -51,6 +54,12 @@ ResourceController.connectTarsNode = async (ctx) => {
 
 ResourceController.installTarsNodes = async (ctx) => {
 	try {
+		let exists = fs.existsSync(path.join(__dirname, '../../client/dist/static/tarsnode.tgz'))
+		if(!exists) {
+			ctx.makeResObj(500, '#connectNodeList.installTgzNotExists#');
+			return
+		}
+
 		// let ips = ctx.paramsObj.node_name;
 		ctx.paramsObj.ips = _.trim(ctx.paramsObj.node_name, /;|,/).split(/[,;\n]/);
 		let rst = await ResourceService.installTarsNodes(ctx.paramsObj);

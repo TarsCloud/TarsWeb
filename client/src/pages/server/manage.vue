@@ -267,6 +267,7 @@
                 v-model="servantDetailModal.model.node_name"
                 placeholder="127.0.0.1"
                 required
+                :disabled="!servantDetailModal.isNew"
               ></let-input>
         </let-form-item>
         <let-form-item :label="$t('serverList.servant.maxConnecttions')" labelWidth="150px">
