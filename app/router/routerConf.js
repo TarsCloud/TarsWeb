@@ -69,6 +69,11 @@ const apiConf = [
 	['get', '/send_command', ServerController.sendCommand, {server_ids: 'notEmpty', command: 'notEmpty'}],
 	['get', '/server_nodes', ServerController.getServerNodes, {application: 'notEmpty', server_name: 'notEmpty'}],
 
+	//log server 部署
+	['get', '/need_deploy_log', ServerController.needDeployLog],
+	['get', '/check_deploy_log', ServerController.checkDeployLog],
+
+	
 	//notify日志接口
 	['get', '/server_notify_list', NotifyController.getServerNotifyList, {tree_node_id: 'notEmpty'}],
 

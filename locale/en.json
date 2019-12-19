@@ -15,6 +15,12 @@
     "logout": "Logout",
     "userCenter": "User Center"
   },
+  "deployLog": {
+    "installNode": "Please install TarsNode first",
+    "failed:": "Server deploy failed",
+    "sameWithRegistry": "Can not deploy tarslog in same machine with tars framework",
+    "info":"Please deploy tarslog in seperate machine with huge disk"
+  },
   "releasePackage": {
     "proxyList": "Proxy Service List",
     "routerList": "Router Service List",
@@ -379,6 +385,7 @@
     "rightView": {
       "title": "choose a service",
       "tips": "if you want to check the service list or the Real-time service status ,<br>please choose a service on the left menu.",
+      "log": "deploy tarslog",
       "tab": {
         "patch": "Publish",
         "serviceConfig": "Service Configuration",
@@ -660,8 +667,7 @@
       "expand": "Expand service",
       "template": "Manage template",
       "apply": "Apply for deployment",
-      "nodes": "Node service",
-      "log": "Tars log deploy"
+      "nodes": "Node service"
     },
     "form": {
       "app": "APP",

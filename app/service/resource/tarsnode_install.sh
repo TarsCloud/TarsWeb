@@ -29,11 +29,11 @@ mkdir -p /usr/local/app/tars
 
 cd /tmp; rm -rf tarsnode.tgz
 
-wget http://${ip}:${port}/static/tarsnode.tgz
+wget http://${ip}:${port}/tarsnode.tgz
 
 if [ ! -f "tarsnode.tgz" ]
 then
-    echo "Tars node download error: http://${ip}:${port}/static/tarsnode.tgz"
+    echo "Tars node download error: http://${ip}:${port}/tarsnode.tgz"
     exit
 fi
 

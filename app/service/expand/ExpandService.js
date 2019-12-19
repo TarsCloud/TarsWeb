@@ -23,8 +23,8 @@ const AuthService = require('../auth/AuthService');
 const _ = require('lodash');
 const util = require('../../tools/util');
 const Sequelize = require('sequelize');
-const resourceConf = require('../../../config/resourceConf');
-const ResourceService = require('../resource/ResourceService');
+// const resourceConf = require('../../../config/resourceConf');
+// const ResourceService = require('../resource/ResourceService');
 
 /**
  * 将Date对象变成字符串
@@ -211,10 +211,10 @@ ExpandService.expand = async (params) => {
 		await transaction.commit();
 
 		let rst = {server_conf: addServers, tars_node_rst: []};
-		let addNodeName = _.keys(addNodeNameMap);
-		if (resourceConf.enableAutoInstall && addNodeName && addNodeName.length) {
-			rst.tars_node_rst = await ResourceService.installTarsNodes(addNodeName);
-		}
+		// let addNodeName = _.keys(addNodeNameMap);
+		// if (resourceConf.enableAutoInstall && addNodeName && addNodeName.length) {
+		// 	rst.tars_node_rst = await ResourceService.installTarsNodes(addNodeName);
+		// }
 		return rst;
 	} catch (e) {
 		await transaction.rollback();

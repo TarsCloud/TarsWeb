@@ -29,6 +29,15 @@ ServerDao.getServerConfById = async (id) => {
 	});
 };
 
+ServerDao.getServerConfList = async (application, serverName) => {
+	return await tServerConf.findAll({
+		where: {
+			application: application,
+			server_name: serverName
+		}
+	});
+};
+
 ServerDao.getServerConfByName = async (application, serverName, nodeName) => {
 	return await tServerConf.findOne({
 		where: {

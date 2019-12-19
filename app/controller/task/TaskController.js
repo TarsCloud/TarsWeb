@@ -41,6 +41,7 @@ TaskController.getTasks = async (ctx) => {
 			ctx.makeNotAuthResObj();
 		} else {
 			let ret = [];
+
 			let tasks = await TaskService.getTasks({
 				application,
 				server_name,
@@ -53,6 +54,9 @@ TaskController.getTasks = async (ctx) => {
 				logger.error('[getTasks]:', e);
 				return e;
 			});
+
+			// console.log(tasks);
+
 			for (let i = 0, len = tasks.rows.length; i < len; i++) {
 				let task = tasks.rows[i];
 

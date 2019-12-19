@@ -18,10 +18,41 @@
 
     <div class="right-view" v-if="!this.$route.params.treeid">
       <div class="empty">
+
         <img class="package" src="@/assets/img/package.png">
         <p class="title">{{$t('index.rightView.title')}}</p>
         <p class="notice" v-html="$t('index.rightView.tips')"></p>
+        <!-- <!-- <p class="title" v-show="deployLog"><let-button @click="showDeployLog">{{$t('index.rightView.log')}}</let-button></p> --> 
       </div>
+
+      <let-modal :title="$t('index.rightView.log')" v-model="deployModal.show" @on-confirm="doDeployLog" width="500px">
+        <let-form ref="deployForm" itemWidth="400px">
+            <let-form-item :label="$t('nodes.node_name')" required>
+              <let-input
+                v-model="deployModal.node_name"
+                :placeholder="$t('nodes.nodeNameTips')"
+                required
+                :required-tip="$t('nodes.nodeNameTips')"
+              ></let-input>
+            </let-form-item>
+
+        <let-form-item :label="$t('pub.dlg.releaseVersion')">
+          <let-select
+            v-model="deployModal.model.patch_id"
+            required
+            :required-tip="$t('pub.dlg.ab')"
+          >
+            <let-option v-for="d in deployModal.model.patchList" :key="d.id" :value="d.id">
+              {{d.id}} | {{d.posttime}} | {{d.comment}}
+            </let-option>
+          </let-select>
+        </let-form-item>
+        <br>
+        <let-tag>{{$t('deployLog.info')}}</let-tag>
+        </let-form> 
+      </let-modal>  
+
+      <PublishStatus ref="publishStatus"></PublishStatus>
     </div>
 
     <div class="right-view" v-else>
@@ -46,18 +77,32 @@
 
       <router-view ref="childView" class="page_server_child" :key="$route.params.treeid"></router-view>
     </div>
-
+    
   </div>
 </template>
 
 <script>
+  import PublishStatus from './publish/status';
 export default {
   name: 'Server',
+  components: {
+      PublishStatus,
+    },
   data() {
     return {
       treeErrMsg: '加载失败',
       treeData: null,
       enableAuth: false,
+      deployLog: false,
+      deployModal: {
+        show: false,
+        node_name: '',
+        model: {
+          patch_id: '',
+          patchList: [],
+          serverList: [], 
+        }
+      },
       // 当前页面信息
       serverData: {
         level: 5,
@@ -199,6 +244,50 @@ export default {
         this.$router.replace('manage');
       }
     },
+    checkDeployLog() {
+      this.$ajax.getJSON('/server/api/need_deploy_log').then((data) => {
+        // console.log(data);
+        this.deployLog = data.need;
+          }).catch((err) => {
+          });
+    },  
+    getPatchList(application, serverName, currPage, pageSize) {
+      return this.$ajax.getJSON('/server/api/server_patch_list', {
+        application,
+        module_name: serverName,
+        curr_page : currPage,
+        page_size : pageSize
+      });
+    },
+    showDeployLog() {
+      let application = 'tars';
+      let server_name = 'tarslog';
+      this.deployModal.model = {
+        application: application,
+        server_name: server_name,
+        patch_id: '',
+        patchList: [],
+      };
+      this.getPatchList(application, server_name, 1, 10).then((data) => {
+        this.deployModal.model.patchList = data.rows;
+        this.deployModal.show = true;
+        // window.setTimeout(() => this.deployModal.show = true, 300)
+      });      
+    },
+    doDeployLog() {
+      if (this.$refs.deployForm.validate()) {
+        this.$ajax.getJSON('/server/api/check_deploy_log', {node_name:this.deployModal.node_name}).then((data) => {
+          // console.log(data);
+
+          this.deployModal.model.serverList = data.server;
+
+          this.$refs.publishStatus.savePublishServer(this.deployModal);
+
+        }).catch((err) => {
+          this.$tip.error(`${this.$t('deployLog.failed')}: ${err.err_msg || err.message}`);
+        });
+      }
+    },
   },
   created() {
     this.serverData = this.getServerData();
@@ -206,6 +295,7 @@ export default {
   },
   mounted() {
     this.getTreeData();
+    this.checkDeployLog();
     this.$ajax.getJSON('/server/api/is_enable_auth').then((data) => {
       this.enableAuth = data.enableAuth || false;
      }).catch((err)=>{
@@ -214,6 +304,7 @@ export default {
   },
 };
 </script>
+
 
 <style>
 @import '../../assets/css/variable.css';

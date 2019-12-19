@@ -1,7 +1,7 @@
 <template>
   <div class="page_server_publish">
     <!-- 服务列表 -->
-    <div v-if="!showHistory">
+    <div>
       <let-table ref="table" v-if="serverList && serverList.length > 0" :data="serverList" :title="$t('serverList.title.serverList')" :empty-msg="$t('common.noService')">
         <let-table-column>
           <template slot="head" slot-scope="props">
@@ -11,7 +11,7 @@
             <let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"></let-table-column>
+        <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"> </let-table-column>
         <let-table-column :title="$t('serverList.table.th.enableSet')">
           <template slot-scope="scope">
             <span>{{ scope.row.enable_set ? $t('common.enable') : $t('common.disable') }}</span>
@@ -157,16 +157,18 @@
     </div>
 
     <!-- 发布历史 -->
-    <div v-if="showHistory">
-      <let-form inline itemWidth="300px" @submit.native.prevent="getHistoryList">
-        <let-form-item :label="$t('pub.date')">
+    <let-modal v-model="showHistory" 
+      width="1200px"
+      :footShow="false"
+      :title="$t('pub.btn.history')"
+    >
+      <let-form @submit.native.prevent="getHistoryList">
+        <let-form-item itemWidth="100%" :label="$t('pub.date')">
           <let-date-range-picker :start.sync="startTime" :end.sync="endTime"></let-date-range-picker>
-        </let-form-item>
-        <let-form-item>
-          <let-button type="submit" theme="primary">{{$t('operate.search')}}</let-button>
+          <let-button type="submit" theme="primary" style="margin-left:20px">{{$t('operate.search')}}</let-button>
         </let-form-item>
       </let-form>
-      <let-table ref="historyTable" v-if="totalHistoryList && totalHistoryList.length > 0" :data="totalHistoryList" :title="$t('historyList.title')" :empty-msg="$t('common.nodata')">
+      <let-table ref="historyTable" :data="totalHistoryList" :title="$t('historyList.title')" :empty-msg="$t('common.nodata')">
         <let-table-column :title="$t('serverList.servant.taskID')" prop="task_no"></let-table-column>
         <let-table-column :title="$t('historyList.table.th.c2')">
           <template slot-scope="scope">
@@ -190,13 +192,14 @@
           <let-button theme="primary" size="small" @click="showHistory=false">{{$t('operate.goback')}}</let-button>
         </div>
       </let-table>
+    </let-modal>
 
 
       <!-- 子任务详情弹出框 -->
       <let-modal
         v-model="taskModal.show"
         :title="$t('historyList.table.th.c4')"
-        width="880px"
+        width="1200px"
         :footShow="false"
         @on-cancel="taskModal.show = false">
         <let-table
@@ -213,7 +216,7 @@
           <let-table-column :title="$t('historyList.dlg.th.c7')" prop="execute_info"></let-table-column>
         </let-table>
       </let-modal>
-   </div>
+   <!-- </let-modal> -->
 
   <!-- 配置编译接口 -->
    <let-modal

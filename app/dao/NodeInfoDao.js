@@ -26,6 +26,14 @@ NodeInfoDao.getNodeInfo = async (endpointIps) => {
 	})
 };
 
+NodeInfoDao.hasNodeNode = async (nodeName) => {
+	return await tNodeInfo.findOne({
+		where: {
+			node_name: nodeName
+		}
+	})
+};
+
 NodeInfoDao.deleteNodeInfo = async (nodeName) => {
 	return await tNodeInfo.destroy({
 		where: {node_name: nodeName}

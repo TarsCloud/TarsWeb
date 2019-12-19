@@ -15,6 +15,12 @@
     "logout": "退出登录",
     "userCenter": "用户中心"
   },
+  "deployLog": {
+    "installNode": "请先安装TarsNode",
+    "failed": "服务部署失败",
+    "sameWithRegistry": "不能和tarsregistry部署在相同服务器上",
+    "info":"tarslog请独立部署(该服务用于收集远程日志, 建议使用大硬盘机器)"
+  },
   "releasePackage": {
     "proxyList": "Proxy服务列表",
     "routerList": "Router服务列表",
@@ -405,6 +411,7 @@
     "rightView": {
       "title": "选择服务",
       "tips": "如需查看服务列表或服务实时状态<br>请先从左边菜单选择一个服务",
+      "log": "部署tarslog",
       "tab": {
         "patch": "发布管理",
         "serviceConfig": "服务配置",
@@ -686,8 +693,7 @@
       "expand": "扩容",
       "template": "模板管理",
       "apply": "部署申请",
-      "nodes": "节点管理",
-      "log": "日志服务部署"
+      "nodes": "节点管理"
     },
     "form": {
       "app": "应用",

@@ -24,10 +24,9 @@ const ResourceService = {};
 const os = require('os');
 const internalIp = require('internal-ip')
 const webConf = require('../../../config/webConf').webConf;
-const path = require('path');
-const resourceConf = require('../../../config/resourceConf');
-const Util = require('../../tools/util');
-const logger = require('../../logger');
+// const path = require('path');
+// const Util = require('../../tools/util');
+// const logger = require('../../logger');
 
 ResourceService.listTarsNode = async(nodeName, curPage, pageSize) =>{
 	return await NodeInfoDao.getNodeInfoList(nodeName, curPage, pageSize);

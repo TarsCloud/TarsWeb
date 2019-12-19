@@ -16,13 +16,14 @@
 
 const ServerDao = require('../../dao/ServerDao');
 const AdapterDao = require('../../dao/AdapterDao');
+const ResourceDao = require('../../dao/ResourceDao');
 const logger = require('../../logger');
 const util = require('../../tools/util');
 const ConfigService = require('../config/ConfigService');
 const AdapterService = require('../adapter/AdapterService');
 const AuthService = require('../auth/AuthService');
-const ResourceService = require('../resource/ResourceService');
-const resourceConf = require('../../../config/resourceConf');
+// const ResourceService = require('../resource/ResourceService');
+// const resourceConf = require('../../../config/resourceConf');
 const _ = require('lodash');
 const ServerService = {};
 
@@ -101,6 +102,22 @@ ServerService.getInactiveServerConfList = async (application, serverName, nodeNa
 	);
 };
 
+//是否需要再部署logserver(如果和主控在同一台机器上, 就需要重新部署)
+ServerService.isDeployWithRegistry = async (nodeNames) => {
+
+	let registry = await ResourceDao.getRegistryAddress();
+
+	for(var index in nodeNames) {
+		for(var i in registry) {
+			if(registry[i].locator_id.indexOf(nodeNames[index]) == 0)
+				return true;
+		}
+	}
+	
+	return false;
+
+}; 
+
 ServerService.updateServerConf = async (params) => {
 	return await ServerDao.updateServerConf(params);
 };
@@ -157,9 +174,9 @@ ServerService.addServerConf = async (params) => {
 			server_conf: await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name),
 			tars_node_rst: []
 		};
-		if (resourceConf.enableAutoInstall) {
-			rst.tars_node_rst = await ResourceService.installTarsNodes([params.node_name]);
-		}
+		// if (resourceConf.enableAutoInstall) {
+		// 	rst.tars_node_rst = await ResourceService.installTarsNodes([params.node_name]);
+		// }
 		return rst;
 	} catch (e) {
 		await transaction.rollback();

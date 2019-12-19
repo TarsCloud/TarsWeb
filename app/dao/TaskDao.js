@@ -15,6 +15,10 @@
  */
 
 const {tTask, tTaskItem} = require('./db').db_tars;
+const Sequelize = require('sequelize');
+const moment = require('moment');
+const Op = Sequelize.Op;
+
 tTask.belongsTo(tTaskItem, {foreignKey: 'task_no', as: 'taskItem', targetKey: 'task_no'});
 
 module.exports = {
@@ -24,10 +28,16 @@ module.exports = {
 		params.server_name && Object.assign(whereObj, {'$taskItem.server_name$': params.server_name});
 		params.command && Object.assign(whereObj, {'$taskItem.command$': params.command});
 		if (params.from) {
-			whereObj.create_time['$gte'] = params.from
+			whereObj.create_time = {
+				[Op.gte] : params.from
+				// ['$gte'] = params.from
+			};
 		}
 		if (params.to) {
-			whereObj.create_time['$lte'] = params.to
+			whereObj.create_time = {
+				[Op.lte] : moment(params.to + " 23:59:59", "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm:ss")
+			};
+			// whereObj.create_time['$lte'] = params.to
 		}
 		let opts = {
 			attribute: ['task_no', 'serial', 'create_time'],
