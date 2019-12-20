@@ -54,7 +54,9 @@ ResourceController.connectTarsNode = async (ctx) => {
 
 ResourceController.installTarsNodes = async (ctx) => {
 	try {
-		let exists = fs.existsSync(path.join(__dirname, '../files/tarsnode.tgz'))
+		let tgzPath = path.join(__dirname, '../../../files/tarsnode.tgz');
+		console.log(tgzPath);
+		let exists = fs.existsSync(tgzPath);
 		if(!exists) {
 			ctx.makeResObj(500, '#connectNodeList.installTgzNotExists#');
 			return

@@ -37,12 +37,14 @@ then
     exit
 fi
 
-if [ '${registryAddress}' == ''] then
+if [ '${registryAddress}' == '' ]; then
     echo "registryAddress is empty."
+    exit
 fi
 
-if [ '${machine_ip}' == ''] then
+if [ '${machine_ip}' == '' ]; then
     echo "machine_ip is empty."
+    exit
 fi
 
 tar zxf tarsnode.tgz

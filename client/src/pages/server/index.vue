@@ -22,7 +22,7 @@
         <img class="package" src="@/assets/img/package.png">
         <p class="title">{{$t('index.rightView.title')}}</p>
         <p class="notice" v-html="$t('index.rightView.tips')"></p>
-        <!-- <!-- <p class="title" v-show="deployLog"><let-button @click="showDeployLog">{{$t('index.rightView.log')}}</let-button></p> --> 
+        <!-- <p class="title" v-show="deployLog"><let-button @click="showDeployLog">{{$t('index.rightView.log')}}</let-button></p>  -->
       </div>
 
       <let-modal :title="$t('index.rightView.log')" v-model="deployModal.show" @on-confirm="doDeployLog" width="500px">

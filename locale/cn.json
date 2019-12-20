@@ -337,6 +337,7 @@
     "labelTips": "例如：sz"
   },
   "common": {
+    "reTry": "请检查数据库连接是否正常",
     "createPerson": "创建人",
     "baseInfo": "基本信息",
     "nextStep": "下一步",

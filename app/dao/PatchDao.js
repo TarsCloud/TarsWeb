@@ -18,8 +18,8 @@ const {tServerPatchs} = require('./db').db_tars;
 const {tCodeInterfaceConf, tPatchTask} = require('./db').db_tars_web;
 
 module.exports = {
-	find: async ({where}) => {
-		return tServerPatchs.find({
+	find: async (where) => {
+		return await tServerPatchs.find({
 			where
 		})
 	},

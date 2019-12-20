@@ -311,6 +311,7 @@
     "labelTips": "For example: sz"
   },
   "common": {
+    "reTry": "Please check database connection",
     "createPerson": "createPerson",
     "baseInfo": "baseInfo",
     "nextStep": "nextStep",
