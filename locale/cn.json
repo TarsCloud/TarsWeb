@@ -773,7 +773,7 @@
     "execute": "正在执行, 无法关闭, 请稍后",
     "executeConnect": "正在执行联通性测试, 请稍后",
     "executeInstall": "正在执行安装, 请稍后",
-    "installTgzNotExists": "安装包不存在, 请检查web服务器上安装包: /usr/local/app/web/client/dist/static/tarsnode.tgz",
+    "installTgzNotExists": "安装包不存在, 请检查web服务器上安装包: /usr/local/app/web/files/tarsnode.tgz",
     "table": {
       "th": {
         "node_name": "节点",

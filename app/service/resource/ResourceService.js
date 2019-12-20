@@ -156,6 +156,8 @@ ResourceService.getRegistryAddress = async () => {
  * @returns {*}
  */
 ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
+	// console.log('doInstallTarsNode:', ip, registryAddress, paramsObj);
+
 	try {
 		let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
 		let thisIp = internalIp.v4.sync();
@@ -165,7 +167,7 @@ ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 			.replace(/\$\{ip\}/g, thisIp)
 			.replace(/\$\{port\}/g, port)
 			.replace(/\$\{machine_ip\}/g, ip)
-			.replace(/\$\{registryAddress\}/, registryAddress);
+			.replace(/\$\{registryAddress\}/g, registryAddress);
 	
 		console.log(shell);
 

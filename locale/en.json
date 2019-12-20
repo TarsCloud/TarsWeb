@@ -747,7 +747,7 @@
     "execute": "Running, please wait",
     "executeConnect": "Execute connecting test, please wait",
     "executeInstall": "Execute installing, please wait",
-    "installTgzNotExists": "Tarnode install file not exits, check file: /usr/local/app/web/client/dist/static/tarsnode.tgz",
+    "installTgzNotExists": "Tarnode install file not exits, check file: /usr/local/app/web/files/tarsnode.tgz",
     "table": {
       "th": {
         "node_name": "Node",
