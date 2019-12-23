@@ -31,7 +31,6 @@ const helmet = require("koa-helmet");
 const loginMidware = require('yami-sso-client').koa;
 const limitMidware = require('./app/midware/limitMidware');
 const WebConf = require('./config/webConf');
-// const tarsInit = require('./app/init/tars');
 // const static = require('koa-static-router');
 // const { AwesomeStatic } = require('awesome-static');
 const upload = multer({dest: WebConf.pkgUploadPath.path + '/'});
@@ -60,9 +59,6 @@ app.use(upload.array('suse',5)); //这里决定了上传包的name只能叫suse�
 
 //国际化多语言中间件
 app.use(localeMidware);
-
-//加载发布包
-// tarsInit.loadPatch();
 
 //前置中间件
 preMidware.forEach((midware) => {
@@ -129,18 +125,7 @@ const {pageRouter, apiRouter} = require('./app/router');
 app.use(pageRouter.routes(), pageRouter.allowedMethods());
 app.use(apiRouter.routes(), apiRouter.allowedMethods());
 
-// //激活静态资源中间件
-// //多个路由
-// app.use(static([
-//     {
-//     dir: './client/dist/',    //静态资源目录对于相对入口文件index.js的路径
-//     router: '/static/'   //路由命名   路由长度 =2
-// },{
-//     dir: 'files',   //静态资源目录对于相对入口文件index.js的路径
-//     router: path.join(__dirname, './files')    //路由命名  路由长度 =2
-// }
-// ]))
-
+//激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
 app.use(static(path.join(__dirname, './files'), {maxage: 7 * 24 * 60 * 60 * 1000}));
 

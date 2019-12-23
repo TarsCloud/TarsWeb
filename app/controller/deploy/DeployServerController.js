@@ -16,6 +16,7 @@
 
 const logger = require('../../logger');
 const ServerService = require('../../service/server/ServerService');
+const webConf = require('../../../config/webConf').webConf;
 const DeployServerController = {};
 const util = require('../../tools/util');
 
@@ -56,12 +57,19 @@ const serverConfStruct = {
 
 DeployServerController.deployServer = async (ctx) => {
 	var params = ctx.paramsObj;
+
+	if(webConf.strict && await ServerService.isDeployWithRegistry([params.node_name])) {
+		//tarsregistry节点上, 无法部署其他任何服务
+		ctx.makeResObj(500, '#common.deploy#');
+		return
+	}
+
 	try {
 		let rst = await ServerService.addServerConf(params);
 		rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
-		logger.error('[getServerNotifyList]', e, ctx);
+		logger.error('[deployServer]', e, ctx);
 		ctx.makeErrResObj();
 	}
 };

@@ -132,8 +132,9 @@
         </let-form>
       </let-modal>
 
+      <PublishStatus ref="publishStatus"></PublishStatus>
      <!-- 发布结果弹出框 -->
-     <let-modal
+     <!-- <let-modal
         v-model="finishModal.show"
         :title="$t('serverList.table.th.result')"
         width="880px"
@@ -153,7 +154,7 @@
             </template>
           </let-table-column>
         </let-table>
-      </let-modal>
+      </let-modal> -->
     </div>
 
     <!-- 发布历史 -->
@@ -268,9 +269,13 @@
 </template>
 
 <script>
+import PublishStatus from '../publish/status';
 
 export default {
   name: 'ServerPublish',
+  components: {
+      PublishStatus,
+    },
   data() {
     return {
       activeKey: '',
@@ -285,29 +290,29 @@ export default {
         show: false,
         model: null,
       },
-      finishModal: {
-        show: false,
-        model: {
-          task_no : '',
-          items : []
-        },
-      },
-      statusConfig: {
-        0: this.$t('serverList.restart.notStart'),
-        1: this.$t('serverList.restart.running'),
-        2: this.$t('serverList.restart.success'),
-        3: this.$t('serverList.restart.failed'),
-        4: this.$t('serverList.restart.cancel'),
-        5: this.$t('serverList.restart.parial'),
-      },
-      statusMap: {
-        0: 'EM_T_NOT_START',
-        1: 'EM_T_RUNNING',
-        2: 'EM_T_SUCCESS',
-        3: 'EM_T_FAILED',
-        4: 'EM_T_CANCEL',
-        5: 'EM_T_PARIAL',
-      },
+      // finishModal: {
+      //   show: false,
+      //   model: {
+      //     task_no : '',
+      //     items : []
+      //   },
+      // },
+      // statusConfig: {
+      //   0: this.$t('serverList.restart.notStart'),
+      //   1: this.$t('serverList.restart.running'),
+      //   2: this.$t('serverList.restart.success'),
+      //   3: this.$t('serverList.restart.failed'),
+      //   4: this.$t('serverList.restart.cancel'),
+      //   5: this.$t('serverList.restart.parial'),
+      // },
+      // statusMap: {
+      //   0: 'EM_T_NOT_START',
+      //   1: 'EM_T_RUNNING',
+      //   2: 'EM_T_SUCCESS',
+      //   3: 'EM_T_FAILED',
+      //   4: 'EM_T_CANCEL',
+      //   5: 'EM_T_PARIAL',
+      // },
       showHistory: false,
       startTime: '',
       endTime: '',
@@ -419,63 +424,66 @@ export default {
     savePublishServer() {
       // 发布
       if (this.$refs.publishForm.validate()) {
-        const items = [];
-        this.publishModal.model.serverList.forEach((item) => {
-          items.push({
-            server_id: item.id.toString(),
-            command: 'patch_tars',
-            parameters: {
-              patch_id: this.publishModal.model.patch_id.toString(),
-              bak_flag: item.bak_flag,
-              update_text: this.publishModal.model.update_text,
-            },
-          });
-        });
-        const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/add_task', {
-          serial: true,
-          items,
-        }).then((data) => {
-          loading.hide();
-          this.closePublishModal();
-          this.finishModal.model.task_no = data;
-          this.finishModal.show = true;
-          // 实时更新状态
-          this.getTaskRepeat(data);
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
+
+        this.$refs.publishStatus.savePublishServer(this.publishModal, this.closePublishModal);
+
+        // const items = [];
+        // this.publishModal.model.serverList.forEach((item) => {
+        //   items.push({
+        //     server_id: item.id.toString(),
+        //     command: 'patch_tars',
+        //     parameters: {
+        //       patch_id: this.publishModal.model.patch_id.toString(),
+        //       bak_flag: item.bak_flag,
+        //       update_text: this.publishModal.model.update_text,
+        //     },
+        //   });
+        // });
+        // const loading = this.$Loading.show();
+        // this.$ajax.postJSON('/server/api/add_task', {
+        //   serial: true,
+        //   items,
+        // }).then((data) => {
+        //   loading.hide();
+        //   this.closePublishModal();
+        //   this.finishModal.model.task_no = data;
+        //   this.finishModal.show = true;
+        //   // 实时更新状态
+        //   this.getTaskRepeat(data);
+        // }).catch((err) => {
+        //   loading.hide();
+        //   this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        // });
       }
     },
     closeFinishModal() {
       // 关闭发布结果弹出框
-      this.finishModal.show = false;
-      this.finishModal.modal = null;
+      // this.finishModal.show = false;
+      // this.finishModal.modal = null;
       this.$refs.finishForm.resetValid();
     },
-    getTaskRepeat(taskId) {
-      let timerId;
-      timerId && clearTimeout(timerId);
-      const getTask = () => {
-        this.$ajax.getJSON('/server/api/task', {
-          task_no: taskId,
-        }).then((data) => {
-          let done = true;
-          data.items.forEach((item) => {
-            if (![2, 3].includes(item.status)) {
-              done = false;
-            }
-          });
-          done ? clearTimeout(timerId) : timerId = setTimeout(getTask, 2000);
-          this.finishModal.model.items = data.items;
-        }).catch((err) => {
-          clearTimeout(timerId);
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
-      };
-      getTask();
-    },
+    // getTaskRepeat(taskId) {
+    //   let timerId;
+    //   timerId && clearTimeout(timerId);
+    //   const getTask = () => {
+    //     this.$ajax.getJSON('/server/api/task', {
+    //       task_no: taskId,
+    //     }).then((data) => {
+    //       let done = true;
+    //       data.items.forEach((item) => {
+    //         if (![2, 3].includes(item.status)) {
+    //           done = false;
+    //         }
+    //       });
+    //       done ? clearTimeout(timerId) : timerId = setTimeout(getTask, 2000);
+    //       this.finishModal.model.items = data.items;
+    //     }).catch((err) => {
+    //       clearTimeout(timerId);
+    //       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+    //     });
+    //   };
+    //   getTask();
+    // },
     updateServerList() {
       // 更新服务列表
       const start = (this.page - 1) * this.pageSize;

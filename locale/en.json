@@ -16,10 +16,12 @@
     "userCenter": "User Center"
   },
   "deployLog": {
+    "log": "Deploy tarslog first",
     "installNode": "Please install TarsNode first",
     "failed:": "Server deploy failed",
     "sameWithRegistry": "Can not deploy tarslog in same machine with tars framework",
-    "info":"Please deploy tarslog in seperate machine with huge disk"
+    "info":"Please deploy tarslog in machine(not tars framework machine)",
+    "install": "Deploy"
   },
   "releasePackage": {
     "proxyList": "Proxy Service List",
@@ -31,6 +33,11 @@
     "default": "default",
     "confirmDeleteTip": "Are you sure you want to delete this release package?",
     "cacheType": "cache type"
+  },
+  "task": {
+    "params": "parameters error",
+    "serverLimit": "tars server must keep one at least",
+    "framework": "servers deploy in tars framework can not be undeployed"
   },
   "api": {
     "blank": {
@@ -312,6 +319,7 @@
   },
   "common": {
     "reTry": "Please check database connection",
+    "deploy": "You can not deploy server in tars framework node",
     "createPerson": "createPerson",
     "baseInfo": "baseInfo",
     "nextStep": "nextStep",
@@ -386,7 +394,6 @@
     "rightView": {
       "title": "choose a service",
       "tips": "if you want to check the service list or the Real-time service status ,<br>please choose a service on the left menu.",
-      "log": "deploy tarslog",
       "tab": {
         "patch": "Publish",
         "serviceConfig": "Service Configuration",
@@ -488,6 +495,10 @@
       "paramsError": "params error",
       "systemError": "system error",
       "undeploy": "can`t undeploy running service"
+    },
+    "undeploy": {
+      "failed": "undeploy failed",
+      "success": "undeploy success"
     },
     "restart": {
       "notStart": "not start",

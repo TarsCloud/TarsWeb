@@ -20,8 +20,8 @@ const http = require('http');
 const logger = require('../app/logger')
 const webConf = require('../config/webConf').webConf;
 const cluster = require('cluster');
-// const httpProxy = require('http-proxy');
 const os = require('os');
+const tarsInit = require('../app/init/tars');
 
 //获取端口
 const port = normalizePort(process.env.PORT || webConf.port || '3000');
@@ -29,6 +29,15 @@ const enableMultiProcess = false;
 
 //创建服务
 try {
+	//加载发布包
+	tarsInit.preparePatch();
+
+	//优先环境变量生效
+	if(process.env.TARS_WEB_STRICT) {
+		webConf.strict = (process.env.TARS_WEB_STRICT == "true");
+	}
+	// webConf.strict = process.env.TARS_WEB_STRICT || webConf.strict;
+
 	let numCpus = os.cpus().length;
 	if (cluster.isMaster && enableMultiProcess) {
 		for (let i = 0; i < numCpus; i++) {

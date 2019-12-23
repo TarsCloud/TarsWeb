@@ -23,8 +23,16 @@ registry.setLocator(client.getProperty('locator'));
 
 const logger = require('../../logger');
 
-
 const AdminService = {};
+
+AdminService.undeploy = async (application, server, nodeName, user, info) => {
+	let ret = await adminRegPrx.undeploy(application, server, nodeName, user, info);
+	if (ret.__return === 0) {
+		return ret.result;
+	} else {
+		throw new Error(__return);
+	}
+};
 
 AdminService.loadServer = async (application, server, nodeName) => {
 	let ret = await adminRegPrx.loadServer(application, server, nodeName);

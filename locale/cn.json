@@ -16,10 +16,17 @@
     "userCenter": "用户中心"
   },
   "deployLog": {
+    "log": "优先部署tarslog",
     "installNode": "请先安装TarsNode",
     "failed": "服务部署失败",
-    "sameWithRegistry": "不能和tarsregistry部署在相同服务器上",
-    "info":"tarslog请独立部署(该服务用于收集远程日志, 建议使用大硬盘机器)"
+    "sameWithRegistry": "tarslog不能和基础框架部署在相同服务器上",
+    "info":"请求优先迁移部署tarslog, 不能和基础框架部署同一台机器上",
+    "install": "迁移部署"
+  },
+  "task": {
+    "params": "参数错误",
+    "serverLimit": "tars服务, 必须要保留一个, 不能都下线",
+    "framework": "框架上部署的公共tars服务不能下线"
   },
   "releasePackage": {
     "proxyList": "Proxy服务列表",
@@ -338,6 +345,7 @@
   },
   "common": {
     "reTry": "请检查数据库连接是否正常",
+    "deploy": "基础框架上无法部署其他服务",
     "createPerson": "创建人",
     "baseInfo": "基本信息",
     "nextStep": "下一步",
@@ -412,7 +420,6 @@
     "rightView": {
       "title": "选择服务",
       "tips": "如需查看服务列表或服务实时状态<br>请先从左边菜单选择一个服务",
-      "log": "部署tarslog",
       "tab": {
         "patch": "发布管理",
         "serviceConfig": "服务配置",
@@ -514,6 +521,10 @@
       "paramsError": "参数错误",
       "systemError": "系统错误",
       "undeploy": "运行中的服务无法下线"
+    },
+    "undeploy": {
+      "failed": "下线失败",
+      "success": "下线成功"
     },
     "restart": {
       "notStart": "未开始",

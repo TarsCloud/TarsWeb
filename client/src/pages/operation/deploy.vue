@@ -5,6 +5,7 @@
       inline
       label-position="top"
       itemWidth="480px"
+      v-show="deployShow"
       @submit.native.prevent="save"
     >
       <let-form-item :label="$t('deployService.form.app')" required>
@@ -223,7 +224,6 @@
 
       <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}</let-button>
       <let-button type="submit" theme="primary">{{$t('common.submit')}}</let-button>
-
     </let-form>
 
 
@@ -233,6 +233,7 @@
       class="more-cmd"
       :footShow="false"
       @close="closeResultModal"
+      style="text-align: center;"
       @on-cancel="closeResultModal">
       <p class="result-text">{{$t('deployService.form.ret.success')}}{{$t('resource.installRstMsg')}}</p>
       <let-table :data="resultModal.resultList" :empty-msg="$t('common.nodata')" :row-class-name="resultModal.rowClassName">
@@ -247,11 +248,43 @@
       </let-table>
     </let-modal>
 
+    <div style="width:400px;margin:0 auto;" v-show="deployModal.show">
+      <let-form ref="deployForm" itemWidth="400px">
+          <let-form-item :label="$t('nodes.node_name')" required>
+            <let-input
+              v-model="deployModal.node_name"
+              :placeholder="$t('nodes.nodeNameTips')"
+              required
+              :required-tip="$t('nodes.nodeNameTips')"
+            ></let-input>
+          </let-form-item>
 
+        <let-form-item :label="$t('pub.dlg.releaseVersion')">
+          <let-select
+            v-model="deployModal.model.patch_id"
+            required
+            :required-tip="$t('pub.dlg.ab')"
+          >
+            <let-option v-for="d in deployModal.model.patchList" :key="d.id" :value="d.id">
+              {{d.id}} | {{d.posttime}} | {{d.comment}}
+            </let-option>
+          </let-select>
+
+        </let-form-item>
+      </let-form> 
+      <div style="width:100%;text-align: center;">
+        <let-tag>{{$t('deployLog.info')}}</let-tag>
+        <let-button type="submit" theme="primary" style="margin:20px auto" @click="doDeployLog">{{$t('deployLog.install')}}</let-button>
+      </div>
+    </div>
+
+    <PublishStatus ref="publishStatus"></PublishStatus>
   </div>
 </template>
 
 <script>
+import PublishStatus from '../publish/status';
+
 import SetInputer from '@/components/set-inputer';
 
 const types = [
@@ -290,9 +323,9 @@ const getInitialModel = () => ({
 
 export default {
   name: 'OperationDeploy',
-
   components: {
     SetInputer,
+    PublishStatus,
   },
 
   data() {
@@ -301,6 +334,17 @@ export default {
       templates: [],
       model: getInitialModel(),
       enableAuth: false,
+      deployShow: false,
+      deployModal: {
+        show: false,
+        // close: true,
+        node_name: '',
+        model: {
+          patch_id: '',
+          patchList: [],
+          serverList: [], 
+        }
+      },
       resultModal: {
         show: false,
         resultList: [],
@@ -337,6 +381,8 @@ export default {
         d.bind_ip = val; // eslint-disable-line no-param-reassign
       });
     });
+   
+    this.checkDeployLog();
   },
 
   methods: {
@@ -409,6 +455,67 @@ export default {
     closeResultModal(){
       this.resultModal.show = false;
       this.resultModal.resultList = [];
+    },
+    checkDeployLog() {
+      this.$ajax.getJSON('/server/api/need_deploy_log').then((data) => {
+        this.deployModal.show = data.need;
+        this.deployShow = !data.need; 
+        if(data.need) {
+          this.showDeployLog();
+        }
+      }).catch((err) => {
+        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+      });
+    },  
+    getPatchList(application, serverName, currPage, pageSize) {
+      return this.$ajax.getJSON('/server/api/server_patch_list', {
+        application,
+        module_name: serverName,
+        curr_page : currPage,
+        page_size : pageSize
+      });
+    },
+    showDeployLog() {
+      let application = 'tars';
+      let server_name = 'tarslog';
+      this.deployModal.model = {
+        application: application,
+        server_name: server_name,
+        patch_id: '',
+        patchList: [],
+      };
+      this.getPatchList(application, server_name, 1, 10).then((data) => {
+        this.deployModal.model.patchList = data.rows;
+      });      
+    },
+    doDeployLog() {
+      if (this.$refs.deployForm.validate()) {
+        this.$ajax.getJSON('/server/api/expand_deploy_log', {node_name:this.deployModal.node_name}).then((data) => {
+
+          this.deployModal.model.serverList = data.server;
+
+          this.$refs.publishStatus.savePublishServer(this.deployModal, this.onCancel);
+
+        }).catch((err) => {
+          this.$tip.error(`${this.$t('deployLog.failed')}: ${err.err_msg || err.message}`);
+        });
+      }
+    },
+    onCancel() {
+      this.checkDeployLog();
+      // alert('oncancel');
+      //检查tarslog是否有独立部署了, 如果有则把框架部署的tarslog卸载掉
+      // this.$ajax.getJSON('/server/api/undeploy_tars_log').then((data) => {
+
+      //   //卸载成功了
+      //   this.deployModal.show = false;
+      //   // location.href="/";
+
+      //   }).catch((err) => {
+      //     this.$tip.error(`${this.$t('deployLog.failed')}: ${err.err_msg || err.message}`);
+      //   });
+
+      // location.href="/";
     }
   },
 };

@@ -16,6 +16,8 @@
 
 const logger = require('../../logger');
 const ExpandService = require('../../service/expand/ExpandService');
+const ServerService = require('../../service/server/ServerService');
+const webConf = require('../../../config/webConf').webConf;
 const util = require('../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
 
@@ -104,6 +106,13 @@ ExpandServerController.selectAppServer = async (ctx) => {
 
 ExpandServerController.expandServerPreview = async (ctx) => {
 	var params = ctx.paramsObj;
+
+	if(webConf.strict && await ServerService.isDeployWithRegistry([params.expand_nodes])) {
+		//tarsregistry节点上, 无法部署其他任何服务
+		ctx.makeResObj(500, '#common.deploy#');
+		return
+	}
+
 	try {
 		if (!await AuthService.hasDevAuth(params.application, params.server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
@@ -119,6 +128,12 @@ ExpandServerController.expandServerPreview = async (ctx) => {
 
 ExpandServerController.expandServer = async (ctx) => {
 	var params = ctx.paramsObj;
+	if(webConf.strict && await ServerService.isDeployWithRegistry([params.expand_nodes])) {
+		//tarsregistry节点上, 无法部署其他任何服务
+		ctx.makeResObj(500, '#common.deploy#');
+		return
+	}
+
 	try {
 		if (!await AuthService.hasDevAuth(params.application, params.server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();

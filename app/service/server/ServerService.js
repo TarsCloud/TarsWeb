@@ -17,11 +17,13 @@
 const ServerDao = require('../../dao/ServerDao');
 const AdapterDao = require('../../dao/AdapterDao');
 const ResourceDao = require('../../dao/ResourceDao');
-const logger = require('../../logger');
+// const logger = require('../../logger');
 const util = require('../../tools/util');
-const ConfigService = require('../config/ConfigService');
+// const ConfigService = require('../config/ConfigService');
 const AdapterService = require('../adapter/AdapterService');
 const AuthService = require('../auth/AuthService');
+const AdminService = require('../admin/AdminService');
+// const webConf = require('../../../config/webConf').webConf;
 // const ResourceService = require('../resource/ResourceService');
 // const resourceConf = require('../../../config/resourceConf');
 const _ = require('lodash');
@@ -81,6 +83,12 @@ ServerService.getServerConf = async (application, serverName, nodeName) => {
 	});
 };
 
+//通过ID获取服务信息
+ServerService.getServerConfList = async (application, serverName) => {
+	return await ServerDao.getServerConfList(application, serverName);
+};
+
+
 //通过模板名获取获取服务信息
 ServerService.getServerConfByTemplate = async (templateName) => {
 	return await ServerDao.getServerConfByTemplate(templateName);
@@ -102,20 +110,51 @@ ServerService.getInactiveServerConfList = async (application, serverName, nodeNa
 	);
 };
 
-//是否需要再部署logserver(如果和主控在同一台机器上, 就需要重新部署)
+//是否和tarsregistry同一个节点
 ServerService.isDeployWithRegistry = async (nodeNames) => {
 
+	// console.log('isDeployWithRegistry', nodeNames, registry);
 	let registry = await ResourceDao.getRegistryAddress();
+	// console.log('isDeployWithRegistry', nodeNames, registry);
 
 	for(var index in nodeNames) {
 		for(var i in registry) {
-			if(registry[i].locator_id.indexOf(nodeNames[index]) == 0)
+			if(registry[i].locator_id.indexOf(nodeNames[index] + ':') == 0)
 				return true;
 		}
 	}
-	
-	return false;
 
+	// console.log('-------------------');
+	return false;
+}; 
+
+//卸载框架上部署的log
+ServerService.undeployTarsLog = async (uid) => {
+
+	let log = await ServerDao.getServerConfList('tars', 'tarslog');
+
+	let tarslogIp = log.map(x=>{return x.node_name});
+
+	let registry = await ResourceDao.getRegistryAddress();
+
+	let registryIp = registry.map(x=>{return x.locator_id.split(':')[0]});
+
+	// 差集
+	let difference = tarslogIp.concat(registryIp).filter(v => tarslogIp.includes(v) && !registryIp.includes(v))
+
+	//不存在差集, 不能卸载(至少保留一个tarslog), 可能之前迁移安装没有成功
+	if(difference.length == 0) {
+		return;
+	}
+
+	// 交集
+	let intersection = tarslogIp.filter(v => registryIp.includes(v));
+
+	// 交集全部卸载掉
+	for(var index in intersection) {
+		let info = '';
+		AdminService.undeploy('tars', 'tarslog', intersection[index], uid, info);
+	}
 }; 
 
 ServerService.updateServerConf = async (params) => {

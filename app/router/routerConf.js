@@ -71,9 +71,8 @@ const apiConf = [
 
 	//log server 部署
 	['get', '/need_deploy_log', ServerController.needDeployLog],
-	['get', '/check_deploy_log', ServerController.checkDeployLog],
+	['get', '/expand_deploy_log', ServerController.expandDeployLog],
 
-	
 	//notify日志接口
 	['get', '/server_notify_list', NotifyController.getServerNotifyList, {tree_node_id: 'notEmpty'}],
 

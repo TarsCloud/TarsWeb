@@ -6,6 +6,8 @@
      v-model="finishModal.show"
      :title="$t('serverList.table.th.result')"
      width="880px"
+     @on-cancel="onClose"
+     @close="onClose"
      :footShow="false">
    <let-table
        v-if="finishModal.model"
@@ -32,12 +34,10 @@
 
 export default {
   name: 'PublishStatus',
+
   data() {
     return {
-    //   publishModal: {
-    //     show: false,
-    //     model: null,
-    //   },
+      closeCallback: null,
       finishModal: {
         show: false,
         model: {
@@ -64,7 +64,13 @@ export default {
     }
   },
   methods: {
-    savePublishServer(publishModal) {
+    onClose() {
+      if(this.closeCallback) {
+        this.closeCallback();
+      }
+    },
+    savePublishServer(publishModal, callback) {
+      this.closeCallback = callback;
       // 发布
       var items = [];
       publishModal.model.serverList.forEach((item) => {

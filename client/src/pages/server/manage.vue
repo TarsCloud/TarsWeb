@@ -639,8 +639,8 @@ export default {
       } else {
         this.$confirm(this.$t('serverList.dlg.msg.undeploy'), this.$t('common.alert')).then(() => {
           this.addTask(server.id, 'undeploy_tars', {
-            success: this.$t('serverList.restart.success'),
-            error: this.$t('serverList.restart.failed'),
+            success: this.$t('serverList.undeploy.success'),
+            error: this.$t('serverList.undeploy.failed'),
           });
           this.closeMoreCmdModal();
         });

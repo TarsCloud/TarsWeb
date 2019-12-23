@@ -16,31 +16,94 @@
 
 
 const PatchDao = require('../dao/PatchDao');
+const webConf = require('../../config/webConf');
+const exec = require('child_process').execSync;
 // const Sequelize = require('sequelize');
+const compressing = require('compressing');
 var fs = require("fs")
 var path = require("path")
 const md5Sum = require('md5-file').sync;
 
 const TarsInit = {};
 
-TarsInit.insert = async(filePath, file)=> {
+TarsInit.deleteDirectory = (dir) => {
+    try {
+        if (fs.existsSync(dir) == true) {
+            var files = fs.readdirSync(dir);
+            files.forEach(function(item){
+                var item_path = path.join(dir, item);
+                if (fs.statSync(item_path).isDirectory()) {
+                    TarsInit.deleteDirectory(item_path);
+                }
+                else {
+                    fs.unlinkSync(item_path);
+                }
+            });
+            fs.rmdirSync(dir);
+        }
+    }catch(e) {
+        console.log('deleteDirectory error:', e);
+    }
+}
+ 
+TarsInit.insert = async(patchTmp, patchPath, filePath, file)=> {
 
     let name = file.split('.');
     if(name.length != 2 || name[1] != 'tgz' || name[0].indexOf('tars') != 0) {
         return;
     }
 
-    let hash = md5Sum(`${filePath}/${file}`);
+    let src = filePath + '/' + file;
+
+    let hash = md5Sum(src);
 
     let patch = await PatchDao.find({
         server: "tars." + name[0],
-        md5: hash 
+        version: hash 
     });
 
     if(!patch) {
+
+        let dstTmp = patchTmp + '/' + name[0] + '.tar';
+        console.log("uncompress tgz -> tar:", src, dstTmp)
+        await compressing.gzip.uncompress(src, dstTmp);
+
+        console.log("uncompress tar -> dir:", dstTmp, patchTmp)
+        await compressing.tar.uncompress(dstTmp, patchTmp);
+
+        //移动可执行文件到上一层目录
+        let newPatchPath = patchPath +'/' + name[0];
+
+        console.log("mkdir :", newPatchPath);
+        fs.mkdirSync(newPatchPath, {recursive: true});
+
+        console.log("rename :", patchTmp + '/' + name[0] + '/bin/' + name[0], ' -> ', newPatchPath + '/' + name[0]);
+        fs.renameSync(patchTmp + '/' + name[0] + '/bin/' + name[0], newPatchPath + '/' + name[0]);
+
+        console.log("compress to tar :", newPatchPath, ' -> ', newPatchPath + '.tar');
+        await compressing.tar.compressDir(newPatchPath, newPatchPath + '.tar');
+        console.log("compress to tgz :", newPatchPath + '.tar', ' -> ', newPatchPath + '.tgz');
+        await compressing.gzip.compressFile(newPatchPath + '.tar', newPatchPath + '.tgz');
+
+        console.log('delete dir:', newPatchPath);
+        TarsInit.deleteDirectory(newPatchPath); 
+
+        console.log('delete file:', newPatchPath + '.tar');
+        fs.unlinkSync(newPatchPath + '.tar');
+
+        //copy 到tars.upload目录下
+        let dst = webConf.pkgUploadPath.path + '/tars/' + name[0] + '/';
+
+        fs.mkdirSync(dst, {recursive: true});
+
+        let dstFile = dst + '/' + name[0] + ".tgz";
+        fs.copyFileSync(newPatchPath + '.tgz', dstFile);
+
+        let md5hash = md5Sum(dstFile);
+
         var params = {
             server: "tars." + name[0],
-            version: 'init',
+            version: hash,
             tgz: file,
             update_text: 'system install',
             publish: 0,
@@ -48,34 +111,44 @@ TarsInit.insert = async(filePath, file)=> {
             postuser: 'user',
             upload_time: new Date(),
             upload_user: 'admin',
-            md5: hash
+            md5: md5hash
         }
-
-        // console.log(patch);
-
-        console.log(params);
 
         await PatchDao.insertServerPatch(params);
     }
 
 };
 
-TarsInit.loadPatch = async() => {
+TarsInit.preparePatch = async() => {
 
-    var filePath = path.join(__dirname, "../../files");
+    var dir = path.join(__dirname, "../../files");
 
-    fs.readdir(filePath,function(err,menu){	
-		if(!menu)
-            return;
+    let files = fs.readdirSync(dir);
+    // let result;
 
-        menu.forEach(function(ele){
-            fs.stat(filePath + "/" + ele, function(err,info){
-				if(info.isFile()) {
-                    TarsInit.insert(filePath, ele);
-				}
-			})
+    if (files) {
+
+        let patchTmp = dir + '/patchTmp';
+        let patchPath = dir + '/patch';
+    
+        console.log("mkdir :", patchTmp);
+        fs.mkdirSync(patchTmp, {recursive: true});
+        console.log("mkdir :", patchPath);
+        fs.mkdirSync(patchPath, {recursive: true});
+
+        files.map(async(file) => {
+            let filePath = path.join(dir, file);
+            console.log(dir, file);
+
+            if (fs.statSync(filePath).isFile()) {
+                await TarsInit.insert(patchTmp, patchPath, dir, file);
+            }
         });
-    });
+
+        //删除临时文件
+        // console.log('delete dir:', patchTmp);
+        // TarsInit.deleteDirectory(patchTmp);
+    }
 };
 
 module.exports = TarsInit;

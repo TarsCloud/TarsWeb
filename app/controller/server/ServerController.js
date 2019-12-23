@@ -23,6 +23,7 @@ const ServerDao = require('../../dao/ServerDao');
 const _ = require('lodash');
 const util = require('../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
+const webConf = require('../../../config/webConf').webConf;
 
 const serverConfStruct = {
 	id: '',
@@ -322,13 +323,19 @@ ServerController.getServerNodes = async (ctx) => {
 
 ServerController.needDeployLog = async (ctx) => {
 	try {
-		let need = true;
-		//tarslog没有部署或者和主控部署在同一台机器上, 则要求重新部署
-		let log = await ServerDao.getServerConfList('tars', 'tarslog');
-		if(log) {
-			let node_names = log.map(x=>{return x.node_name});
 
-			need = await ServerService.isDeployWithRegistry(node_names);
+		let need = true;
+
+		if(!webConf.strict) {
+			need = false;
+		} else {
+			//严格模式下, tarslog和主控部署在同一台机器上, 则要求重新部署
+			let log = await ServerDao.getServerConfList('tars', 'tarslog');
+			if(log) {
+				let node_names = log.map(x=>{return x.node_name});
+
+				need = await ServerService.isDeployWithRegistry(node_names);
+			}
 		}
 		ctx.makeResObj(200, '', {need: need});
 	} catch (e) {
@@ -337,7 +344,7 @@ ServerController.needDeployLog = async (ctx) => {
 	}
 }
 
-ServerController.checkDeployLog = async (ctx) => {
+ServerController.expandDeployLog = async (ctx) => {
 	let node_name = ctx.paramsObj.node_name;
 
 	try {
@@ -367,36 +374,16 @@ ServerController.checkDeployLog = async (ctx) => {
 
 		await ExpandService.expand(params);
 
+		// console.log('uid:', ctx.uid);
+		
+		//remove和框架上部署在一起的tarslog
+		await ServerService.undeployTarsLog(ctx.uid);
+
 		let rst = await ServerService.getServerConf('tars', 'tarslog', node_name);
 
-		// if(!rst) {
-		// 	//部署logserver(插入server_conf)
-
-		// 	//部署logserver(插入adapter_conf)
-		// 	var addAdapter = {
-		// 		application: 'tars',
-		// 		server_name: 'tarslog',
-		// 		node_name: node_name,
-		// 		adapter_name: 'tars.tarslog.LogObjAdapter',
-		// 		thread_num: 5,
-		// 		endpoint: 'tcp -h ' + node_name + ' -t 60000 -p 18993',
-		// 		max_connections: 200000,
-		// 		servant: 'tars.tarslog.LogObj',
-		// 		queuetimeout: '60000',
-		// 		protocol: 'tars',
-		// 		queuecap: 10000,
-		// 		posttime: new Date()
-		// 	}
-
-		// 	rst = await AdapterService.addAdapterConf(addAdapter);
-		// }
-
-		//删除registry的logserver记录
-
-		// let need = await ServerService.doDeployLog();
 		ctx.makeResObj(200, '', {server: rst});
 	} catch (e) {
-		logger.error('[doDeployLog]', e, ctx);
+		logger.error('[expandDeployLog]', e, ctx);
 		ctx.makeErrResObj();
 	}
 } 

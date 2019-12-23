@@ -19,7 +19,8 @@ const TaskService = require('../../service/task/TaskService');
 const util = require('../../tools/util');
 const kafkaConf = require('../../../config/webConf').kafkaConf;
 const AuthService = require('../../service/auth/AuthService');
-
+const webConf = require('../../../config/webConf').webConf;
+const ServerService = require('../../service/server/ServerService');
 const TaskController = {};
 
 let kafkaProducer;
@@ -84,7 +85,7 @@ TaskController.getTask = async (ctx) => {
 		let ret;
 		if (kafkaConf.enable) {
 			let task = await TaskService.getTaskStatus(ctx.paramsObj.task_no);
-			logger.info(task);
+			// logger.info(task);
 			if (task.status == 'waiting') {
 				ret = {status: 0};
 			} else {
@@ -100,14 +101,45 @@ TaskController.getTask = async (ctx) => {
 	}
 };
 
+TaskController.checkTask = async(item) => {
+
+	if(item.command == 'undeploy_tars') {
+		let server = await ServerService.getServerConfById(item.server_id);
+		if(server.application == 'tars') {
+			//tars服务, 必须要保留一个, 不能都下线
+			let serverList = await ServerService.getServerConfList(server.application, server.server_name);
+			if(serverList.length <= 1) {
+				return false;
+			}
+
+			//部署在框架上的tars公共服务不能下线
+			if(await ServerService.isDeployWithRegistry([server.node_name])) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 TaskController.addTask = async (ctx) => {
 	let {serial, items} = ctx.paramsObj;
 	if (!items.length) {
 		return ctx.makeResObj(500, '#task.params#');
 	}
 	try {
-		let task_no = util.getUUID().toString();
 
+		if(webConf.strict) {
+			for(var index in items) {
+				if(!await TaskController.checkTask(items[index]))
+				{
+					ctx.makeResObj(500, "#task.serverLimit#");
+					return;
+				}
+			}
+		}
+		let task_no = util.getUUID().toString();
+	
 		if (kafkaConf.enable) {
 			await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
 				logger.info('task produce success!');
