@@ -38,17 +38,7 @@ ResourceService.listTarsNode = async(nodeName, curPage, pageSize) =>{
  * @returns {Array}
  */
 ResourceService.connectTarsNode = async (paramsObj) => {
-	// let rst = [];
-	// let installTask = [];
-	// paramsObj.ips.forEach((ip) => {
-	// 	installTask.push(ResourceService.doConnectTarsNode(ip, paramsObj));
-	// });
-	// let installRst = await Promise.all(installTask);
-
 	return await ResourceService.doConnectTarsNode(paramsObj)
-
-	// rst = rst.concat(installRst);
-	// return rst;
 };
 
 ResourceService.getTarsNode = async(paramsObj) => {
@@ -59,7 +49,10 @@ ResourceService.getTarsNode = async(paramsObj) => {
 
 	let thisIp = webConf.host;
 
-	// let thisIp = internalIp.v4.sync();
+	if(thisIp == 'localip.tars.com') {
+		thisIp = internalIp.v4.sync();
+	}
+
 	// let thisIp = ip;
 	let port = process.env.PORT || webConf.port || '3000';
 	shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser || 'tars')
@@ -92,57 +85,46 @@ ResourceService.installTarsNodes = async (paramsObj) => {
 
 ResourceService.doConnectTarsNode = async (paramsObj) => {
 	let ip = paramsObj.node_name;
-	// try {
-		let shell = await fs.readFile(__dirname + '/tarsnode_connect.sh', 'utf8');
-		// let thisIp = internalIp.v4.sync();
-		// let thisIp = ip;
-		// let port = process.env.PORT || webConf.port || '3000';
-		// shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser).replace(/\$\{ip\}/g, thisIp).replace(/\$\{port\}/g, port).replace(/\$\{machine_ip\}/g, ip);
-		// console.log(shell);
-		
-		let rst = await ResourceService.execSSH(ip, shell, paramsObj);
-		rst.installInfo = '';
-		rst.node_name = ip;
+	let shell = await fs.readFile(__dirname + '/tarsnode_connect.sh', 'utf8');
 
-		// console.log(rst);
-		
-		if (rst.rst) {
-			if (rst.msg.indexOf('exists') > -1) {
-				rst.connect = true;
-				rst.exists = true;
-			} else if (rst.msg.indexOf('none') > -1) {
-				rst.connect = true;
-				rst.exists = false;
-			} else {
-				rst.connect = false;
-				rst.exists = false;
-			}
+	// console.log('doConnectTarsNode1:', paramsObj);
+
+	let rst = await ResourceService.execSSH(ip, shell, paramsObj);
+	rst.installInfo = '';
+	rst.node_name = ip;
+
+	// console.log('doConnectTarsNode2:', rst);
+	
+	if (rst.rst) {
+		if (rst.msg.indexOf('exists') > -1) {
+			rst.connect = true;
+			rst.exists = true;
+		} else if (rst.msg.indexOf('none') > -1) {
+			rst.connect = true;
+			rst.exists = false;
 		} else {
 			rst.connect = false;
 			rst.exists = false;
 		}
+	} else {
+		rst.connect = false;
+		rst.exists = false;
+	}
 
-		rst.connectInfo = rst.connect ? "#connectNodeList.connect.succ#": "#connectNodeList.connect.failed#";
-		rst.existsInfo = rst.exists ? "#connectNodeList.exists.yes#": "#connectNodeList.exists.no#";
+	rst.connectInfo = rst.connect ? "#connectNodeList.connect.succ#": "#connectNodeList.connect.failed#";
+	rst.existsInfo = rst.exists ? "#connectNodeList.exists.yes#": "#connectNodeList.exists.no#";
 
-		if(rst.connect) {
-			if(rst.exists) {
-				rst.installInfo = "#connectNodeList.install.waitOverwrite#";
-			} else {
-				rst.installInfo = "#connectNodeList.install.waitNew#";
-			}
+	if(rst.connect) {
+		if(rst.exists) {
+			rst.installInfo = "#connectNodeList.install.waitOverwrite#";
 		} else {
-			rst.installInfo = "#connectNodeList.install.invalid#";
+			rst.installInfo = "#connectNodeList.install.waitNew#";
 		}
+	} else {
+		rst.installInfo = "#connectNodeList.install.invalid#";
+	}
 
-		return rst;
-	// } catch (e) {
-	// 	return {
-	// 		ip: ip,
-	// 		rst: false,
-	// 		msg: '#api.resource.installFailed#'
-	// 	}
-	// }
+	return rst;
 };
 
 ResourceService.getRegistryAddress = async () => {
@@ -183,6 +165,10 @@ ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 		let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
 		// let thisIp = internalIp.v4.sync();
 		let thisIp = webConf.host;
+		if(thisIp == 'localip.tars.com') {
+			thisIp = internalIp.v4.sync();
+		}
+
 		// let thisIp = ip;
 		let port = process.env.PORT || webConf.port || '3000';
 		shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser)
@@ -366,7 +352,7 @@ ResourceService.execSSH = async (ip, shell, sshConf) => {
 			password: sshConf.password
 		});
 		let result = await ssh.execCommand(shell);
-		console.log(result);
+		// console.log(result);
 
 		return {
 			ip: ip,
@@ -374,7 +360,7 @@ ResourceService.execSSH = async (ip, shell, sshConf) => {
 			msg: result.code == 0 ? result.stdout : result.stderr
 		};
 	} catch (e) {
-		console.log(e);
+		// console.log(e);
 		return {
 			ip: ip,
 			rst: false,

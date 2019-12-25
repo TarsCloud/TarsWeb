@@ -41,10 +41,9 @@ ResourceController.listTarsNode = async(ctx) => {
 
 ResourceController.connectTarsNode = async (ctx) => {
 	try {
-		// let ips = ctx.paramsObj.node_name;
-		// ctx.paramsObj.ips = _.trim(ctx.paramsObj.node_name, /;|,/).split(';');
 		let rst = await ResourceService.connectTarsNode(ctx.paramsObj);
 
+		// console.log(rst);
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
 		logger.error('[connectTarsNode]', e, ctx);

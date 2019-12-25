@@ -49,8 +49,9 @@ const apiRouter = new Router();
 apiRouter.prefix('/pages/server/api');
 getRouter(apiRouter, apiConf);
 
-//页面类型路由
+//节点服务器过来的请求, 获取安装tarsnode的脚本
 const clientRouter = new Router();
+// apiRouter.prefix('/client');
 getRouter(clientRouter, clientConf);
 
 module.exports = {pageRouter, apiRouter, clientRouter};
