@@ -55,7 +55,6 @@ ResourceController.connectTarsNode = async (ctx) => {
 ResourceController.installTarsNodes = async (ctx) => {
 	try {
 		let tgzPath = path.join(__dirname, '../../../files/tarsnode.tgz');
-		console.log(tgzPath);
 		let exists = fs.existsSync(tgzPath);
 		if(!exists) {
 			ctx.makeResObj(500, '#connectNodeList.installTgzNotExists#');
@@ -83,5 +82,21 @@ ResourceController.uninstallTarsNodes = async (ctx) => {
 		ctx.makeErrResObj();
 	}
 };
+
+ResourceController.getTarsNode = async(ctx) => {
+	// console.log('getTarsNode', ctx.paramsObj);
+
+	let tgzPath = path.join(__dirname, '../../../files/tarsnode.tgz');
+	let exists = fs.existsSync(tgzPath);
+	if(!exists) {
+		ctx.body = "#!/bin/bash \n echo 'not tarsnode.tgz exists'";
+	}
+
+	ctx.paramsObj.ip = ctx.paramsObj.ip || ctx.req.headers['x-forwarded-for'] || ctx.req.connection.remoteAddress || ctx.req.socket.remoteAddress || ctx.req.connection.socket.remoteAddress;
+
+	let rst = await ResourceService.getTarsNode(ctx.paramsObj);
+
+	ctx.body = rst;
+}
 
 module.exports = ResourceController;

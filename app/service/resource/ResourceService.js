@@ -51,6 +51,27 @@ ResourceService.connectTarsNode = async (paramsObj) => {
 	// return rst;
 };
 
+ResourceService.getTarsNode = async(paramsObj) => {
+
+	let registryAddress = await ResourceService.getRegistryAddress();
+
+	let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
+
+	let thisIp = webConf.host;
+
+	// let thisIp = internalIp.v4.sync();
+	// let thisIp = ip;
+	let port = process.env.PORT || webConf.port || '3000';
+	shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser || 'tars')
+		.replace(/\$\{ip\}/g, thisIp)
+		.replace(/\$\{port\}/g, port)
+		.replace(/\$\{machine_ip\}/g, paramsObj.ip)
+		.replace(/\$\{registryAddress\}/g, registryAddress);
+
+	return shell;
+
+}
+
 /**
  * 批量检测并安装Tars node
  * @param ips
@@ -160,7 +181,8 @@ ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 
 	try {
 		let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
-		let thisIp = internalIp.v4.sync();
+		// let thisIp = internalIp.v4.sync();
+		let thisIp = webConf.host;
 		// let thisIp = ip;
 		let port = process.env.PORT || webConf.port || '3000';
 		shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser)
@@ -169,7 +191,7 @@ ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 			.replace(/\$\{machine_ip\}/g, ip)
 			.replace(/\$\{registryAddress\}/g, registryAddress);
 	
-		console.log(shell);
+		// console.log(shell);
 
 		let rst = await ResourceService.execSSH(ip, shell, paramsObj);
 		if (rst.rst) {

@@ -230,4 +230,9 @@ const apiConf = [
 	['get', '/get_structs', InfTestController.getStructs, {id: 'notEmpty', module_name: 'notEmpty'}],
 ];
 
-module.exports = {pageConf, apiConf};
+const clientConf = [
+
+	['get', '/get_tarsnode', ResourceController.getTarsNode]
+];
+
+module.exports = {pageConf, apiConf, clientConf};

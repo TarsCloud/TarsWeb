@@ -29,6 +29,7 @@ module.exports = {
         }
     },
     webConf: {
+        host: 'localip.tars.com',
         port: 3000,              //服务启动端口
         loggerPath: path.join(__dirname, '../log'),    //本地日志的目录
         logFileKeepDays: '1',         //日志保留时间
