@@ -231,8 +231,7 @@ const apiConf = [
 ];
 
 const clientConf = [
-
-	['get', '/get_tarsnode', ResourceController.getTarsNode]
+	['get', '/get_tarsnode', ResourceController.getTarsNode],
 ];
 
 module.exports = {pageConf, apiConf, clientConf};
