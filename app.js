@@ -31,9 +31,11 @@ const helmet = require("koa-helmet");
 const loginMidware = require('yami-sso-client').koa;
 const limitMidware = require('./app/midware/limitMidware');
 const WebConf = require('./config/webConf');
+// const Router = require('koa-router');
 // const static = require('koa-static-router');
 // const { AwesomeStatic } = require('awesome-static');
 const upload = multer({dest: WebConf.pkgUploadPath.path + '/'});
+const ResourceController = require('./app/controller/resource/ResourceController');
 const logger = require('./app/logger');
 
 //信任proxy头部，支持 X-Forwarded-Host
@@ -67,7 +69,7 @@ preMidware.forEach((midware) => {
 
 //登录校验
 let loginConf = require('./config/loginConf.js');
-loginConf.ignore = loginConf.ignore.concat(['/static', '/*.tgz', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
+loginConf.ignore = loginConf.ignore.concat(['/static', '/*.tgz', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
 
 //web和demo的cookie写在同一个域名下
 if(process.env.COOKIE_DOMAIN) {
@@ -119,11 +121,24 @@ if (dcacheConf.enableDcache) {
 	})
 }
 
+// //获取tarsnode安装脚本
+// const router = new Router({
+// 	prefix:'/api'
+// });
+
+// app.use(router.routes(),router.allowedMethods());
+
+// router.get('/get_tarsnode', function (ctx, next) {
+// 	ResourceController.getTarsNode(ctx);
+// });
+	
 //激活router
 // dcache 会添加新的 page、api router， 不能提前
-const {pageRouter, apiRouter} = require('./app/router');
+const {pageRouter, apiRouter, clientRouter} = require('./app/router');
 app.use(pageRouter.routes(), pageRouter.allowedMethods());
 app.use(apiRouter.routes(), apiRouter.allowedMethods());
+app.use(clientRouter.routes(), clientRouter.allowedMethods());
+
 
 //激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
