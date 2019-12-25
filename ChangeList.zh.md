@@ -35,3 +35,8 @@
 >- 框架节点, 不让发布其他业务服务
 >- tars的基础服务, 必须有一个节点, 不允许都下线
 >- tarslog增加迁移部署功能, 在部署其他服务前, tarslog必须迁移部署在非框架节点上
+
+## 20191225(1.4.1)
+- 修复在docker环境下, 在线安装tarsnode时的bug
+- webConf增加host, 安装时替换成本机ip
+- 增加/get_tarsnode url, 获取安装tarsnode的脚本
