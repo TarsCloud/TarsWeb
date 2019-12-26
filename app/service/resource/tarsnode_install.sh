@@ -67,7 +67,10 @@ sed -i "s/registryAddress/${registryAddress}/g" /usr/local/app/tars/tarsnode/uti
 
 echo "install tarsnode succ, start tarsnode"
 
-useradd ${runuser}
+id -u ${runuser} &>/dev/null
+if [ $? != 0 ]; then
+    useradd ${runuser}
+fi
 
 chown -R ${runuser}:${runuser} /usr/local/app/*;
 

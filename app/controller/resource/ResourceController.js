@@ -83,7 +83,7 @@ ResourceController.uninstallTarsNodes = async (ctx) => {
 };
 
 ResourceController.getTarsNode = async(ctx) => {
-	// console.log('getTarsNode', ctx.paramsObj);
+	console.log('getTarsNode', ctx.paramsObj);
 
 	let tgzPath = path.join(__dirname, '../../../files/tarsnode.tgz');
 	let exists = fs.existsSync(tgzPath);
