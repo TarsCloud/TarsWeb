@@ -55,6 +55,9 @@ ResourceService.getTarsNode = async(paramsObj) => {
 
 	// let thisIp = ip;
 	let port = process.env.PORT || webConf.port || '3000';
+
+	console.log('getTarsNode:', thisIp, port, registryAddress, paramsObj);
+
 	shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser || 'tars')
 		.replace(/\$\{ip\}/g, thisIp)
 		.replace(/\$\{port\}/g, port)

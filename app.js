@@ -105,10 +105,8 @@ app.use(staticRouter([
     router: '/files'    //路由命名
 }]));
 
-
 //激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
-
 
 app.use(loginMidware(loginConf));
 

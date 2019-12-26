@@ -51,7 +51,6 @@ getRouter(apiRouter, apiConf);
 
 //节点服务器过来的请求, 获取安装tarsnode的脚本
 const clientRouter = new Router();
-// apiRouter.prefix('/client');
 getRouter(clientRouter, clientConf);
 
 module.exports = {pageRouter, apiRouter, clientRouter};
