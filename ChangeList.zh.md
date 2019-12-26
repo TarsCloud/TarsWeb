@@ -40,3 +40,6 @@
 - 修复在docker环境下, 在线安装tarsnode时的bug
 - webConf增加host, 安装时替换成本机ip
 - 增加/get_tarsnode url, 获取安装tarsnode的脚本
+
+## 20191226(1.4.2)
+- tarsnode.tgz获取增加路由路径: http://xxx/files/tarsnode.tgz
