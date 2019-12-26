@@ -48,11 +48,6 @@ app.use(limitMidware());
 //安全防护
 app.use(helmet());
 
-//设置ejs模板
-// app.use(views(__dirname + '/views', {
-//     extension: 'ejs'
-// }));
-
 app.use(bodyparser());
 
 app.use(upload.array('suse',5)); //这里决定了上传包的name只能叫suse。
@@ -98,17 +93,14 @@ app.use(async (ctx, next) => {
 	await next();
   });
 
+app.use(loginMidware(loginConf));
+
 //安装包资源中间件
 app.use(staticRouter([
     {
     dir: './files',     //静态资源目录对于相对入口文件index.js的路径
     router: '/files'    //路由命名
 }]));
-
-//激活静态资源中间件
-app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
-
-app.use(loginMidware(loginConf));
 
 let dcacheConf = require('./config/dcacheConf.js');
 if (dcacheConf.enableDcache) {
@@ -134,6 +126,9 @@ const {pageRouter, apiRouter, clientRouter} = require('./app/router');
 app.use(pageRouter.routes(), pageRouter.allowedMethods());
 app.use(apiRouter.routes(), apiRouter.allowedMethods());
 app.use(clientRouter.routes(), clientRouter.allowedMethods());
+
+//激活静态资源中间件
+app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
 
 //后置中间件
 postMidware.forEach((midware) => {
