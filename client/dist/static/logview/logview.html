@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+
+    <title>Logview本地日志</title>
+    <link rel="stylesheet" href="./Logview_files/wsd.css">
+    <link rel="stylesheet" href="./Logview_files/localLogView.css">
+    <link rel="stylesheet" href="./Logview_files/font-awesome.min.css">
+    <script src="./Logview_files/jquery.min.js"></script>
+    <script src="./Logview_files/cloudjs.js"></script>
+    <style id="style-1-cropbar-clipper">
+        .en-markup-crop-options {
+            top: 18px !important;
+            left: 50% !important;
+            margin-left: -100px !important;
+            width: 200px !important;
+            border: 2px rgba(255, 255, 255, .38) solid !important;
+            border-radius: 4px !important;
+        }
+        
+        .en-markup-crop-options div div:first-of-type {
+            margin-left: 0px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="hidden" name="user_name" value="">
+    <input type="hidden" name="path" value="10.242.132.231:/usr/local/app/taf/app_log/TRom/AppGroupServer">
+
+    <div class="log_left" style="height: 955px; width: 500px;">
+        <div class="inner_log_left">
+            <h2 class="log_title">Logview本地日志查询</h2>
+            <div class="panel">
+                <h3>查询参数选择</h3>
+                <div class="row">
+                    <p style="margin-bottom:5px;">在下面下拉框中选择要打印的日志文件：</p>
+                    <span class="combo_container" style="z-index: 1020;">
+                    <select name="file_name" style="width: 430px; display: none;">
+
+                    </select>
+                    <input type="text" class="combo_text" placeholder="" style="width: 402px;">
+                    <span class="combo_arrow cloudjs_icon">
+                        <span></span>
+                    </span>
+                    <div class="combo_panel" style="width: 428px; max-height: 200px; top: 25px; left: -1px; bottom: auto; display: none;">
+
+                    </div>
+                    </span>
+                    <i class="refresh_btn ctip icon-refresh" title="点此实时刷新日志文件列表" data-tips-obj-id="_2016110417404243379427"></i>
+                    <p class="intro">(此处显示日志文件列表，若无日志文件，请刷新按钮实时刷新文件列表)</p>
+                </div>
+                <div class="row">
+                    <span>查找范围：</span>
+                    <input type="text" name="search_lines" class="cloudjs_input" style="width:5em;" value="5000">
+                    <span style="margin-left:20px;">查找方向</span>
+                    <span class="combo_container" style="z-index: 1022;">
+                    <select name="search_sign" >
+                        <option value="from_end" selected="selected">从下往上截取查找</option>
+                        <option value="from_head">从上往下截取查找</option>
+                    </select>
+
+
+                    <div class="combo_panel" style="width: 129px; max-height: 200px; top: 25px; left: -1px; bottom: auto; display: none;">
+                        <div class="combo_item  combo_item_selected" combo-value="from_end">从下往上截取查找</div>
+                        <div class="combo_item" combo-value="from_head">从上往下截取查找</div>
+                    </div>
+                </span>
+                </div>
+                <div class="row">
+                    <span>查询关键字：</span>
+                    <input type="text" name="keyword" value="" class="input_text"><br>
+                    <input id="D" type="checkbox" name="ignoreCase" style="margin:8px 0px 0px 75px;">&nbsp;&nbsp;<label for="D" style="color:#222">(忽略大小写)</label>
+                </div>
+                <div class="row">
+                    <input id="A" type="radio" name="view_direction" value="from_end" checked="checked"><label for="A">：从日志末尾开始打印</label>
+                    <input id="B" type="radio" name="view_direction" value="from_head" style="margin-left:15px;"><label for="B">：从日志头开始打印</label>
+                    <span style="margin-left:20px;">打印行数：</span>
+                    <span class="combo_container" style="z-index: 1001;">
+                    <select name="lines">
+                        <option value="50">50</option>
+                        <option value="100" selected>100</option>
+                        <option value="300">300</option>
+                        <option value="1000">1000</option>
+                    </select>
+
+                </span>
+                </div>
+                <div class="row ta_c" style="border-bottom:0;">
+                    <button id="search_btn" class="cloudjs_btn">提交查询</button>&nbsp;&nbsp;&nbsp;&nbsp; <label>启动自动刷新功能：</label>
+                    <input id="auto_btn" type="checkbox">
+                </div>
+                <div id="cmd_row" class="row ta_c" style="display:none;border-bottom:0;text-align:left;color:#888;">
+                    <span>执行语句：</span>
+                    <span class="cmd">tail -n50000 a.log |grep "tag"|tail -n300</span>
+                </div>
+            </div>
+            <div class="panel file_list">
+                <h3>可查看日志列表<i class="refresh_btn ctip icon-refresh" title="点此实时刷新日志文件列表" data-tips-obj-id="_2016110417404243488202"></i></h3>
+                <span class="intro">(点击以下项目在上面下拉框中将自动选中。默认显示前100条，点击刷新按钮可实时刷新日志列表)</span>
+                <p style="padding: 10px 0px; color: rgb(255, 0, 0); display: none;" class="empty_notice_p">可查看日志列表为空，不允许查询</p>
+                <ul style="margin-top:10px;"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="log_win ui-resizable" id="log_win" style="width: 1420px; height: 955px; right: 0px; left: 500px;">
+        <div class="log_win_wrap" style="height:100%;">
+            <div id="log_win_content" style="margin:0px;">
+                <table class="code_table">
+                    <tbody>
+                        <tr>
+                            <td>$&gt;Authentication successful.</td>
+                        </tr>
+                        <tr>
+                            <td>$&gt;Welcome to TARS Linux</td>
+                        </tr>
+                        <tr>
+                            <td>$&gt;Version Beta1.0</td>
+                        </tr>
+                        <tr>
+                            <td>$&gt;Copyright © 2017 - 2020 TARS-Team. All Rights Reserved.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="ui-resizable-handle ui-resizable-w" style="z-index: 1000;"></div>
+    </div>
+    <script src="./Logview_files/json2.js"></script>
+    <script src="./Logview_files/localLogView.js"></script>
+
+
+
+
+    <div class="tips_div" style="display: none; left: 378.047px; top: 131px; z-index: 1012;"><span class="tips_content">点此实时刷新日志文件列表</span><span class="tips_arrow tips_arrow_down"><i></i></span></div>
+</body>
+<link href="./Logview_files/cloudjs.css" rel="stylesheet" type="text/css">
+
+</html>

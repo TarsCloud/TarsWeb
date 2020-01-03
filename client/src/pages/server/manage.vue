@@ -5,7 +5,11 @@
     <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
     
     <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
-      <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
+        <template slot-scope="scope">
+          <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.enableSet')">
         <template slot-scope="scope">
@@ -897,7 +901,13 @@ export default {
     this.getServerList();
     this.getServerNotifyList(1);
   },
+
+  linkDownload (url) {
+      window.open(url,'_blank') // 新窗口打开外链接
+  }
 };
+
+
 </script>
 
 <style>
