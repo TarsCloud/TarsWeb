@@ -458,6 +458,31 @@ module tars
     * @return 0-成功 others-失败
     */
 //    int getServerInfo(srvRequestInfo info,out vector<serverInfo> vServerInfo);
+    /**
+         *  获取日志文件列表
+         *
+         * @param application: 应用
+         * @param serverName : server名
+         * @param nodeName   : node id
+         * @param out result : 结果描述
+         *
+         * @return : 返回值详见tarsErrCode枚举值
+         */
+        int getLogFileList(string application, string serverName, string nodeName, out vector<string> logFileList);
+
+        /**
+         *  获取日志文件内容
+         *
+         * @param application: 应用
+         * @param serverName : server名
+         * @param nodeName   : node id
+         * @param logFile   : 日志文件
+         * @param cmd   : 命令信息
+         * @param out fileData : 结果描述
+         *
+         * @return : 返回值详见tarsErrCode枚举值
+         */
+        int getLogData(string application, string serverName, string nodeName, string logFile, string cmd, out string fileData);
         
     };
 };

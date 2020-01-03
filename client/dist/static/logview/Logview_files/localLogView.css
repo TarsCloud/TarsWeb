@@ -1,0 +1,142 @@
+* {
+    padding: 0;
+    margin: 0;
+
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    font-family: "Microsoft YaHei",tahoma,arial,sans-serif;
+}
+
+.log_left {
+    height: 500px;
+    width: 500px;
+    overflow: scroll;
+    position: absolute;
+    left: 0px;
+    border: 0;
+}
+
+.inner_log_left {
+    width: 480px;
+}
+
+.log_left .log_title {
+    background: #FFF;
+    padding: 2px 5px;
+    margin: 2px 0px 2px 0px;
+    text-align: left;
+}
+
+.log_left .log_title a {
+    font-size: 12px;
+    display: inline;
+    margin-left: 8px;
+}
+
+.log_left .panel {
+    width: 460px;
+    margin: 10px 0px;
+    padding: 5px 10px;
+    border: 1px dotted #d2d2d2;
+}
+
+.log_left .row {
+    border-bottom: 1px dotted #d2d2d2;
+    padding: 10px 0px;
+}
+
+.log_left .col.r_line {
+    border-right: 1px solid #d2d2d2;
+}
+
+.log_left input[type="checkbox"],
+.log_left input[type="radio"] {
+    position: relative;
+    top: 2px;
+}
+
+.log_left .input_text {
+    width: 358px;
+    height: 14px;
+    padding: 5px 8px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.log_left .file_list li {
+    margin: 8px 0px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.log_left .file_list li:hover {
+    text-decoration: underline;
+}
+
+.log_left .intro {
+    font-size: 12px;
+    color: #999;
+    font-weight: normal;
+}
+
+.log_left .refresh_btn {
+    font-size: 14px;
+    color: green;
+    cursor: pointer;
+    margin-left:8px;
+}
+
+.log_win {
+    background: #000;
+    color: #FFF;
+    height: 100%;
+    font-size: 14px;
+    line-height: 1.2em;
+    height: 300px;
+    font-family: "Courier New", Courier, monospace;
+    overflow: hidden;
+    position: absolute;
+    right: 0px;
+    z-index: 10;
+    word-break: break-all;
+}
+
+.log_win .log_win_wrap {
+    margin: 0px;
+    height: 100%;
+    overflow: auto;
+}
+
+.log_win .code_table {
+    border: 0px;
+    margin: 10px
+}
+
+.log_win .code_table .line_td {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    vertical-align: top;
+    text-align: right;
+    color: #999;
+    padding-right: 1em;
+    white-space: nowrap;
+    white-space: nowrap;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.line_td:before {
+    content: attr(data-line-num);
+}
+
+#search_btn:disabled:hover{
+    cursor: not-allowed;
+}
