@@ -15,7 +15,8 @@
  */
 
 const { tConfigFiles, tConfigHistoryFiles, tConfigReferences } = require('./db').db_tars;
-
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 let ConfigDao = {};
 
 ConfigDao.getUnusedApplicationConfigFile = async(application, configId) => {
@@ -37,7 +38,7 @@ ConfigDao.getUnusedApplicationConfigFile = async(application, configId) => {
             set_area: '',
             set_group: '',
             id: {
-                '$notIn': arr
+                [Op.notIn]: arr
             }
         }
     });
@@ -102,7 +103,7 @@ ConfigDao.getConfigFileByRefTableId = async(id) => {
 
 
 ConfigDao.getConfigFileList = async(ids) => {
-    console.log("ids 3===>", ids);
+    // console.log("ids 3===>", ids);
     return await tConfigFiles.findAll({
         where: {
             // id: {
