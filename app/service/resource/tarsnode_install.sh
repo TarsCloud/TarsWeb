@@ -16,7 +16,7 @@
 # * specific language governing permissions and limitations under the License.
 # */
 
-echo "runuser: ${runuser}, ip:${ip}, port:${port}, machine_ip:${machine_ip}, registryAddress:${registryAddress}"
+echo "runuser: ${runuser}, webHost:${webHost}, machine_ip:${machine_ip}, registryAddress:${registryAddress}"
 
 if [ ! -d "/usr/local/app" ]
 then
@@ -29,11 +29,14 @@ mkdir -p /usr/local/app/tars
 
 cd /tmp; rm -rf tarsnode.tgz
 
-wget http://${ip}:${port}/files/tarsnode.tgz
+wget ${webHost}/files/tarsnode.tgz
+
+#休息1s, 避免下载的文件没有写成功
+sleep 1
 
 if [ ! -f "tarsnode.tgz" ]
 then
-    echo "Tars node download error: http://${ip}:${port}/files/tarsnode.tgz"
+    echo "Tars node download error: ${webHost}/files/tarsnode.tgz"
     exit
 fi
 
@@ -47,6 +50,7 @@ if [ '${machine_ip}' == '' ]; then
     exit
 fi
 
+
 tar zxf tarsnode.tgz
 
 cp -rf tarsnode /usr/local/app/tars/
@@ -55,15 +59,15 @@ cd /usr/local/app/tars
 
 echo "local machine ip:[${machine_ip}] succ"
 
-echo "all tars registry:" $registryAddress
-
-echo "update tarsnode conf"
+echo "tars registry:" ${registryAddress}
 
 sed -i "s/localip.tars.com/${machine_ip}/g" /usr/local/app/tars/tarsnode/conf/tars.tarsnode.config.conf 
 
 sed -i "s/registryAddress/${registryAddress}/g" /usr/local/app/tars/tarsnode/conf/tars.tarsnode.config.conf
 
 sed -i "s/registryAddress/${registryAddress}/g" /usr/local/app/tars/tarsnode/util/execute.sh
+
+sed -i "s/localip.tars.com/${machine_ip}/g" /usr/local/app/tars/tarsnode/util/execute.sh
 
 echo "install tarsnode succ, start tarsnode"
 

@@ -83,7 +83,7 @@ ResourceController.uninstallTarsNodes = async (ctx) => {
 };
 
 ResourceController.getTarsNode = async(ctx) => {
-	console.log('getTarsNode', ctx.paramsObj);
+	// console.log('getTarsNode', ctx);
 
 	let tgzPath = path.join(__dirname, '../../../files/tarsnode.tgz');
 	let exists = fs.existsSync(tgzPath);
@@ -93,9 +93,8 @@ ResourceController.getTarsNode = async(ctx) => {
 
 	ctx.paramsObj.ip = ctx.paramsObj.ip || ctx.req.headers['x-forwarded-for'] || ctx.req.connection.remoteAddress || ctx.req.socket.remoteAddress || ctx.req.connection.socket.remoteAddress;
 
-	let rst = await ResourceService.getTarsNode(ctx.paramsObj);
-
-	ctx.body = rst;
+	//都是从web过来的请求, 用web host替换安装node脚本
+	ctx.body = await ResourceService.getTarsNode(ctx.origin || ctx.request.origin, ctx.paramsObj);
 }
 
 module.exports = ResourceController;

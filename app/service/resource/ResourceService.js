@@ -26,7 +26,7 @@ const internalIp = require('internal-ip')
 const webConf = require('../../../config/webConf').webConf;
 // const path = require('path');
 // const Util = require('../../tools/util');
-// const logger = require('../../logger');
+const logger = require('../../logger');
 
 ResourceService.listTarsNode = async(nodeName, curPage, pageSize) =>{
 	return await NodeInfoDao.getNodeInfoList(nodeName, curPage, pageSize);
@@ -41,26 +41,14 @@ ResourceService.connectTarsNode = async (paramsObj) => {
 	return await ResourceService.doConnectTarsNode(paramsObj)
 };
 
-ResourceService.getTarsNode = async(paramsObj) => {
+ResourceService.getTarsNode = async(webHost, paramsObj) => {
 
 	let registryAddress = await ResourceService.getRegistryAddress();
 
 	let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
 
-	let thisIp = webConf.host;
-
-	if(thisIp == 'localip.tars.com') {
-		thisIp = internalIp.v4.sync();
-	}
-
-	// let thisIp = ip;
-	let port = process.env.PORT || webConf.port || '3000';
-
-	console.log('getTarsNode:', thisIp, port, registryAddress, paramsObj);
-
 	shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser || 'tars')
-		.replace(/\$\{ip\}/g, thisIp)
-		.replace(/\$\{port\}/g, port)
+		.replace(/\$\{webHost\}/g, webHost)
 		.replace(/\$\{machine_ip\}/g, paramsObj.ip)
 		.replace(/\$\{registryAddress\}/g, registryAddress);
 
@@ -166,23 +154,27 @@ ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 
 	try {
 		let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
-		// let thisIp = internalIp.v4.sync();
+
 		let thisIp = webConf.host;
 		if(thisIp == 'localip.tars.com') {
 			thisIp = internalIp.v4.sync();
 		}
 
-		// let thisIp = ip;
 		let port = process.env.PORT || webConf.port || '3000';
+
+		let webHost = "http://" + thisIp + ":" + port;
+
 		shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser)
-			.replace(/\$\{ip\}/g, thisIp)
-			.replace(/\$\{port\}/g, port)
+			.replace(/\$\{webHost\}/g, webHost)
 			.replace(/\$\{machine_ip\}/g, ip)
 			.replace(/\$\{registryAddress\}/g, registryAddress);
 	
-		// console.log(shell);
+		logger.info(shell);
 
 		let rst = await ResourceService.execSSH(ip, shell, paramsObj);
+
+		logger.info(rst);
+
 		if (rst.rst) {
 			if (rst.msg.indexOf('Tars node has installed') > -1) {
 				rst.rst = false;
