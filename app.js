@@ -64,6 +64,11 @@ preMidware.forEach((midware) => {
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/static', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
 
+//上传文件不需要登录
+if(!webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
+	loginConf.ignore.push('/pages/server/api/upload_patch_package');
+}
+
 //web和demo的cookie写在同一个域名下
 if(process.env.COOKIE_DOMAIN) {
 	loginConf.cookieDomain = process.env.COOKIE_DOMAIN
