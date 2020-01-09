@@ -52,3 +52,5 @@
 ## 20200105(1.5.1)
 - 修改节点不用ip, 使用域名情况下, tars-node docker拉取tarsnode.tgz的bug
 - 修复引用配置文件的bug
+- 修复sequelize升级到5.0版本引起的权限bug
+- webConf增加一个配置, 使得上传包不验证登录(测试环境开发下需要, 可以自动上传安装包)
