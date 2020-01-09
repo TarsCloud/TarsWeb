@@ -106,9 +106,6 @@ ConfigDao.getConfigFileList = async(ids) => {
     // console.log("ids 3===>", ids);
     return await tConfigFiles.findAll({
         where: {
-            // id: {
-            //     '$in': ids
-            // }
             id: ids
         }
     });
