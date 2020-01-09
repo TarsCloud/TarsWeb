@@ -16,7 +16,7 @@
 
 const {tServerConf, sequelize} = require('./db').db_tars;
 const Sequelize = require('sequelize');
-
+const Op = Sequelize.Op;
 const ServerDao = {};
 
 ServerDao.sequelize = sequelize;
@@ -90,17 +90,17 @@ ServerDao.getServerConfByTemplate = async (templateName) => {
 };
 
 ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr) => {
-	let where = {$or: []};
-	if (!!applicationList) {
-		where.$or.push({application: applicationList});
+	let or = {};
+	if (!!applicationList && applicationList > 0) {
+		or['application'] = applicationList;
 	}
-	if (!!serverNameList) {
-		where.$or.push(Sequelize.where(Sequelize.fn('concat', Sequelize.col('application'), '.', Sequelize.col('server_name')), {in: serverNameList}));
+	if (!!serverNameList && serverNameList.length > 0) {
+		or.push(Sequelize.where(Sequelize.fn('concat', Sequelize.col('application'), '.', Sequelize.col('server_name')), {in: serverNameList}));
 	}
-	if (!applicationList && !serverNameList) {
-		where = {};
-	}
-
+	// if (!applicationList && !serverNameList) {
+	// 	where = {};
+	// }
+	let where = {[Op.or]: or};
 
 	let option = {};
 
