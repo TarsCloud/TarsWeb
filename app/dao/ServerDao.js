@@ -90,6 +90,7 @@ ServerDao.getServerConfByTemplate = async (templateName) => {
 };
 
 ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr) => {
+	let where = {};
 	let or = {};
 	if (!!applicationList && applicationList > 0) {
 		or['application'] = applicationList;
@@ -97,10 +98,12 @@ ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr) 
 	if (!!serverNameList && serverNameList.length > 0) {
 		or.push(Sequelize.where(Sequelize.fn('concat', Sequelize.col('application'), '.', Sequelize.col('server_name')), {in: serverNameList}));
 	}
-	// if (!applicationList && !serverNameList) {
-	// 	where = {};
-	// }
-	let where = {[Op.or]: or};
+	if (!applicationList && !serverNameList) {
+		where = {};
+	}
+	else {
+		where = {[Op.or]: or};
+	}
 
 	let option = {};
 
