@@ -91,12 +91,12 @@ ServerDao.getServerConfByTemplate = async (templateName) => {
 
 ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr) => {
 	let where = {};
-	let or = {};
-	if (!!applicationList && applicationList > 0) {
-		or['application'] = applicationList;
+	let or = [];
+	if (!!applicationList && applicationList.length > 0) {
+		or.push({application: {[Op.in]: applicationList}})
 	}
 	if (!!serverNameList && serverNameList.length > 0) {
-		or.push(Sequelize.where(Sequelize.fn('concat', Sequelize.col('application'), '.', Sequelize.col('server_name')), {in: serverNameList}));
+		or.push(Sequelize.where(Sequelize.fn('concat', Sequelize.col('application'), '.', Sequelize.col('server_name')), {[Op.in]: serverNameList}));
 	}
 	if (!applicationList && !serverNameList) {
 		where = {};
