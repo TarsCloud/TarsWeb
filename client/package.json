@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.19.1",
     "echarts": "^4.0.4",
     "let-ui": "^0.1.23",
     "lodash": "^4.17.14",

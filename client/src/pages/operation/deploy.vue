@@ -57,8 +57,6 @@
           :placeholder="$t('serverList.table.th.ip')"
           required
           :required-tip="$t('deployService.form.nodeTips')"
-          pattern="^[0-9]{1,3}(?:\.[0-9]{1,3}){3}$"
-          :pattern-tip="$t('deployService.form.nodeFormatTips')"
         ></let-input>
       </let-form-item>
       <let-form-item label="SET">
@@ -104,7 +102,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('deployService.table.th.endpoint')">
+        <let-table-column :title="$t('deployService.table.th.endpoint')"  width="200px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -115,8 +113,6 @@
               placeholder="IP"
               required
               :required-tip="$t('deployService.table.tips.ip')"
-              pattern="^[0-9]{1,3}(?:\.[0-9]{1,3}){3}$"
-              :pattern-tip="$t('deployService.table.tips.ipFormat')"
             ></let-input>
           </template>
         </let-table-column>
@@ -170,7 +166,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" width="100px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -185,7 +181,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxQueue')" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.maxQueue')" width="100px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -200,7 +196,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.timeout')" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.timeout')" width="100px">
           <template slot-scope="props">
             <let-input
               size="small"
@@ -210,7 +206,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('operate.operates')" width="120px">
+        <let-table-column :title="$t('operate.operates')" width="100px">
           <template slot-scope="props">
             <let-table-operation @click="addAdapter(props.row)">{{$t('operate.add')}}</let-table-operation>
             <let-table-operation
