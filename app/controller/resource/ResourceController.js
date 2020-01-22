@@ -52,17 +52,38 @@ ResourceController.connectTarsNode = async (ctx) => {
 }; 
 
 ResourceController.installTarsNodes = async (ctx) => {
+	//step: 
+	//1. check install tgz package 
+	//2. ssh connect 
+	//3. download install package on node machine 
+	//4. check params on node machine
+	//5. install
 	try {
 		let tgzPath = path.join(__dirname, '../../../files/tarsnode.tgz');
 		let exists = fs.existsSync(tgzPath);
 		if(!exists) {
-			ctx.makeResObj(500, '#connectNodeList.installTgzNotExists#');
+			ctx.makeResObj(500, '#connectNodeList.installTgzNotExists#', [{step: 1, installState: "fail"}]);
 			return
 		}
 
 		// let ips = ctx.paramsObj.node_name;
 		ctx.paramsObj.ips = _.trim(ctx.paramsObj.node_name, /;|,/).split(/[,;\n]/);
 		let rst = await ResourceService.installTarsNodes(ctx.paramsObj);
+		//set fail step
+		rst.forEach((item)=>{
+			item.step = 5
+			item.installState = "fail"
+			if(item.msg == "#api.resource.sshFailed#"){
+				item.step = 2
+			} else if (item.msg == "#api.resource.downloadFail#"){
+				item.step = 3
+			} else if (item.msg == "#api.resource.registryAddressIsEmpty#" || item.msg == "#api.resource.machineIpIsEmpty#" ){
+				item.step = 4
+			} else if (item.msg == "#api.resource.installSuccess#"){
+				item.installState = "success"
+			}
+		})
+		
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
 		logger.error('[installTarsNode]', e, ctx);
