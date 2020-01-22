@@ -107,6 +107,9 @@
     },
     "resource": {
       "tarsNodeExist": "Tars Node is already exist",
+      "downloadFail": "download tarsnode.tgz package failed",
+      "registryAddressIsEmpty": "registry address is empty",
+      "machineIpIsEmpty": "machine ip is empty",
       "installFailed": "Install Tars Node failed",
       "uninstallFailed": "Uninstall Tars Node failed",
       "notConfig": "No machine configuration was found",
@@ -759,6 +762,11 @@
     "executeConnect": "Execute connecting test, please wait",
     "executeInstall": "Execute installing, please wait",
     "installTgzNotExists": "Tarnode install file not exits, check file: /usr/local/app/web/files/tarsnode.tgz",
+    "step1":"check package",
+    "step2":"ssh link",
+    "step3":"download package",
+    "step4":"check params",
+    "step5":"install node",
     "table": {
       "th": {
         "node_name": "Node",

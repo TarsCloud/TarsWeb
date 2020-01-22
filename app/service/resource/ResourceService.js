@@ -179,9 +179,18 @@ ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 			if (rst.msg.indexOf('Tars node has installed') > -1) {
 				rst.rst = false;
 				rst.msg = '#api.resource.tarsNodeExist#';
+			} else if (rst.msg.indexOf('Tars node download error') > -1) {
+				rst.msg = '#api.resource.downloadFail#';
+				rst.rst = false;
+			} else if (rst.msg.indexOf('registryAddress is empty') > -1) {
+				rst.msg = '#api.resource.registryAddressIsEmpty#';
+				rst.rst = false;
+			} else if (rst.msg.indexOf('machine_ip is empty') > -1) {
+				rst.msg = '#api.resource.machineIpIsEmpty#';
+				rst.rst = false;
 			} else if (rst.msg.indexOf('Tars node installed success') > -1) {
 				rst.msg = '#api.resource.installSuccess#';
-			} else {
+			}else {
 				rst.rst = false;
 				rst.msg = '#api.resource.installFailed#';
 			}
