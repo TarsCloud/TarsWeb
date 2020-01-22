@@ -26,15 +26,37 @@
     <let-modal
       v-model="connectModal.show"
       :title="this.$t('connectNodeList.title')"
-      width="650px"
+      width="750px"
       :footShow="false"
       :showClose="false"
     >
       <let-table :data="connectNodeList" stripe :empty-msg="$t('common.nodata')" ref="connectNodeListLoading" style="margin-top: 20px;"> 
+        <let-table-column type="expand" width="40px">
+          <template slot-scope="scope">
+              <div class="install_step">
+                <let-steps :current="scope.row.step || 0">
+                  <let-step :title="$t('connectNodeList.step1')"></let-step>
+                  <let-step :title="$t('connectNodeList.step2')"></let-step>
+                  <let-step :title="$t('connectNodeList.step3')"></let-step>
+                  <let-step :title="$t('connectNodeList.step4')"></let-step>
+                  <let-step :title="$t('connectNodeList.step5')"></let-step>
+                </let-steps>
+                <p v-if="scope.row.installState == 'fail' && scope.row.step == 1" class="fail_txt">Error: please check file /usr/local/app/web/files/tarsnode.tgz</p>
+                <p v-if="scope.row.installState == 'fail' && scope.row.step == 2" class="fail_txt">Error: please ensure the ssh service is enabled, and the ip/port/user/password config is right</p>
+                <p v-if="scope.row.installState == 'fail' && scope.row.step == 3" class="fail_txt">Error: please install wget on the node</p>
+                <p v-if="scope.row.installState == 'fail' && scope.row.step == 4" class="fail_txt">Error: please ensure the registry is available</p>
+                <p v-if="scope.row.installState == 'fail' && scope.row.step == 5" class="fail_txt">Error: some unknown error, please check log</p>
+              </div>
+          </template>
+        </let-table-column>
         <let-table-column :title="$t('connectNodeList.table.th.node_name')" prop="ip"></let-table-column>
         <let-table-column :title="$t('connectNodeList.table.th.connect')" prop="connectInfo"></let-table-column>
         <let-table-column :title="$t('connectNodeList.table.th.exists')" prop="existsInfo"></let-table-column>
-        <let-table-column :title="$t('connectNodeList.table.th.install')" prop="installInfo"></let-table-column>
+        <let-table-column :title="$t('connectNodeList.table.th.install')">
+          <template slot-scope="scope">
+            <span :class="{'success_txt':scope.row.installState=='success', 'fail_txt':scope.row.installState=='fail'}">{{scope.row.installInfo}}</span>
+          </template>
+        </let-table-column>
       </let-table>
 
       <let-button theme="primary" @click="connectNode" :disabled="executeConnect">{{btnConnectText}}</let-button>
@@ -218,7 +240,9 @@ export default {
               connectInfo: '',
               exists: false,
               existsInfo: '',
-              installInfo: '',
+              step:0,
+              installState:'',
+              installInfo: ''
             };
 
             this.connectNodeList.push(connect);
@@ -248,7 +272,7 @@ export default {
         var obj = Object.assign({}, this.detailModal.model);
 
         obj.node_name = connect.ip;
-
+        connect.installState = '';
         connect.connectInfo = '';
         connect.existsInfo  = '';
         connect.installInfo = this.$t('connectNodeList.install.connect');
@@ -279,39 +303,40 @@ export default {
     },
     installNode($event) {
 
-      if(this.executeConnect) {
-        alert(this.$t('connectNodeList.executeConnect'));
-        return;
-      }
+        if(this.executeConnect) {
+          alert(this.$t('connectNodeList.executeConnect'));
+          return;
+        }
 
-      var nodes = [];
-      this.connectNodeList.forEach(x=>nodes.push(x.ip));
-
+        var nodes = [];
+        this.connectNodeList.forEach(x=>{
+          nodes.push(x.ip);
+          x.installState = '';
+        });
+        
         const model = this.detailModal.model;
 
         var obj = Object.assign({}, model);
         obj.node_name = nodes.join(';');
 
-        // console.log('installNode', obj);
-
         this.btnInstallText = this.$t('connectNodeList.btnInstalling');
 
         this.executeInstall = false;
         this.$ajax.postJSON('/server/api/install_tars_nodes', obj).then((data) => {
-
           // console.log(data);
-
           data.forEach(n => {
             
-            let node = this.connectNodeList.filter(x=>x.ip == n.ip);
-            
-            if(node.length > 0) {
-              node[0].installInfo = n.msg;
-            }
+          let node = this.connectNodeList.filter(x=>x.ip == n.ip);
+          
+          if(node.length > 0) {
+            node[0].installInfo = n.msg;
+            node[0].installState = n.installState;
+            node[0].step = n.step;
+          }
 
-            if(!n.rst) {
-              this.$tip.error(n.ip + ":" + n.msg);
-            }
+          if(!n.rst) {
+            this.$tip.error(n.ip + ":" + n.msg);
+          }
 
           })
           this.getNodeList(1);
@@ -331,12 +356,20 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .page_operation_templates {
   pre {
     color: #909FA3;
     margin-top: 32px;
   }
-
+}
+.install_step{
+  margin:10px;
+}
+.success_txt{
+  color:#6accab;
+}
+.fail_txt{
+  color:#f56c77;
 }
 </style>

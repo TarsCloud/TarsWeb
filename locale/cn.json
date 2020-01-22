@@ -107,6 +107,9 @@
     },
     "resource": {
       "tarsNodeExist": "Tars Node 已存在",
+      "downloadFail": "下载tarsnode.tgz发布包失败",
+      "registryAddressIsEmpty": "主控地址为空",
+      "machineIpIsEmpty": "节点ip为空",
       "installFailed": "安装Tars Node失败",
       "uninstallFailed": "卸载Tars Node失败",
       "notConfig": "未找到机器配置",
@@ -785,6 +788,11 @@
     "executeConnect": "正在执行联通性测试, 请稍后",
     "executeInstall": "正在执行安装, 请稍后",
     "installTgzNotExists": "安装包不存在, 请检查web服务器上安装包: /usr/local/app/web/files/tarsnode.tgz",
+    "step1":"检查安装包",
+    "step2":"ssh链接",
+    "step3":"下载安装包",
+    "step4":"检查参数",
+    "step5":"安装节点",
     "table": {
       "th": {
         "node_name": "节点",
