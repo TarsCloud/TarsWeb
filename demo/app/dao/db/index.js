@@ -46,8 +46,8 @@ databases.forEach((database)=>{
             idle: pool.idle || 10000
         },
         timezone: (()=> {
-            let timezone = String(0 - new Date().getTimezoneOffset() / 60);
-            return '+' + (timezone.length < 2 ? ('0' + timezone) : timezone) + ':00';
+            let offset = 0 - new Date().getTimezoneOffset();
+			return (offset >= 0 ? '+' : '-') + (Math.abs(offset/60) + '').padStart(2, '0') + ':00';
         })()  //获取当前时区并做转换
     });
 
