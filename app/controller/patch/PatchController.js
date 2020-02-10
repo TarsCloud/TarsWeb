@@ -227,7 +227,7 @@ PatchController.hasDcahcePatchPackage = async (ctx) => {
 		let ret = await PatchService.hasDcahcePatchPackage();
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
-		logger.error('[PatchController.setPatchPackageDefault]:', e, ctx);
+		logger.error('[PatchController.hasDcahcePatchPackage]:', e, ctx);
 		ctx.makeErrResObj(500, e.toString());
 	}
 };

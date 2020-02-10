@@ -27,9 +27,7 @@ PatchService.getServerPatch = async (application, server_name, curPage, pageSize
 };
 
 PatchService.deleteServerPatchById = async (id) => {
-	return await PatchDao.destroyServePatch({
-		where: {id}
-	})
+	return await PatchDao.destroyServePatch({id})
 };
 
 PatchService.setPatchPackageDefault = async ({id, application, module_name, package_type}) => {
@@ -37,38 +35,30 @@ PatchService.setPatchPackageDefault = async ({id, application, module_name, pack
 };
 
 PatchService.find = async ({where}) => {
-	return await PatchDao.find({where})
+	return await PatchDao.find(where)
 };
 
 PatchService.hasDcahcePatchPackage = async () => {
 	let has = true;
 	let proxyDefaultPackage = await PatchDao.find({
-		where: {
-			server: 'DCache.RouterServer',
-			default_version: 1,
-			package_type: 0
-		}
+		server: 'DCache.RouterServer',
+		default_version: 1,
+		package_type: 0
 	});
 	let routerDefaultPackage = await PatchDao.find({
-		where: {
-			server: 'DCache.RouterServer',
-			default_version: 1,
-			package_type: 0
-		}
+		server: 'DCache.RouterServer',
+		default_version: 1,
+		package_type: 0
 	})
 	let cacheDefaultPackage = await PatchDao.find({
-		where: {
-			server: 'DCache.DCacheServerGroup',
-			default_version: 1,
-			package_type: 1
-		}
+		server: 'DCache.DCacheServerGroup',
+		default_version: 1,
+		package_type: 1
 	})
 	let McacheDefaultPackage = await PatchDao.find({
-		where: {
-			server: 'DCache.DCacheServerGroup',
-			default_version: 1,
-			package_type: 2
-		}
+		server: 'DCache.DCacheServerGroup',
+		default_version: 1,
+		package_type: 2
 	})
 
 	return !!proxyDefaultPackage && !!routerDefaultPackage && !!cacheDefaultPackage && !!McacheDefaultPackage
