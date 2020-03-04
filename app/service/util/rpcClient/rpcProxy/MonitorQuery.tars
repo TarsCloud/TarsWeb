@@ -1,0 +1,79 @@
+/**
+ * Tencent is pleased to support the open source community by making Tars available.
+ *
+ * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except 
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/BSD-3-Clause
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed 
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+ * specific language governing permissions and limitations under the License.
+ */
+ 
+module tars
+{
+    enum OP{
+        EQ,
+        GT,
+        GTE,
+        LT,
+        LTE,
+        LIKE
+    };
+
+    struct Condition{
+        0 require string field;
+        1 require OP op;
+        2 require string val;
+    };
+
+    struct MonitorQueryReq
+    {
+        0 require string method = "query";
+        
+        //查询表 
+        //tars_stat / tars_property
+        1 require string dataid;
+
+        //查询条件
+        //f_date、f_tflag最小、f_tflag最大，为必传条件，组合关系为and
+        2 require vector<Condition> conditions;
+
+        //统计项
+        //tars_stat     ["succ_count", "timeout_count", 'exce_count", "total_time"]
+        //tars_property ["value"]
+        3 require vector<string> indexs;
+
+        //group字段
+        //tars_stat     [f_date、master_name/interface_name/master_ip/slave_ip] 或者 [f_tflag]
+        //tars_property [f_date、master_name/master_ip/property_name/policy] 或者 [f_tflag]
+        4 require vector<string> groupby;
+    };
+
+    struct MonitorItem{
+        //group字段值
+        0 require vector<string> groupFields;
+        //统计项的值
+        1 require vector<string> indexFields;
+    };
+
+    struct MonitorQueryRsp{
+        //0正常 -1异常
+        0 require int ret; 
+        1 optional vector<MonitorItem> resultItems;
+        2 optional string msg;
+    };
+
+    interface MonitorQuery
+    {
+        /**
+         * 查询调用统计数据
+         **/
+        int query(MonitorQueryReq req, out MonitorQueryRsp rsp);
+    };
+};
+
