@@ -94,7 +94,7 @@
   };
 </script>
 
-<style lang="">
+<style lang="postcss">
   @import '../../assets/css/variable.css';
 
   .app_index__header {
