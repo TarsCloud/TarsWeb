@@ -14,16 +14,24 @@
  * specific language governing permissions and limitations under the License.
  */
 
+const uuid = require("uuid");
 const logger = require('../../logger');
 const AdminService = require('../../service/admin/AdminService');
+const { propertyQueryPrx, monitorQueryStruct} = require('../util/rpcClient');
 const TCPClient = require('./TCPClient');
 const Mysql = require('mysql');
 
 const MonitorPropertyService = {};
 
 MonitorPropertyService.getTARSPropertyMonitorData = async (params) => {
-	let theData = await call(params, true),
-		preData = await call(params, false);
+	let theData = new Map(), preData = new Map()
+	if(params.userpc == "1"){
+		theData = await callRpc(params, true)
+		preData = await callRpc(params, false)
+	} else {
+		theData = await call(params, true)
+		preData = await call(params, false)
+	}
 	return merge(params, theData, preData);
 };
 
@@ -68,6 +76,45 @@ async function call(params, the) {
 	let addr0 = addrs[0];
 	logger.info(`tars.tarsqueryproperty.NoTarsObj, use ${addr0.host}:${addr0.port}`);
 	return await TCPClient(addr0.host, addr0.port, requestObj);
+}
+
+async function callRpc(params, the) {
+	let date = the ? params.thedate : params.predate,
+		conditions = [],
+		startshowtime = params.startshowtime || '0000',
+		endshowtime = params.endshowtime || '2360';
+	let req = new monitorQueryStruct.MonitorQueryReq();
+	req.uid = uuid.v1()
+	req.dataid = "tars_property"
+	req.indexs.readFromObject(['value'])
+	
+	conditions.push({ field: "f_date", op: monitorQueryStruct.OP.EQ, val:Mysql.escape(date) })
+	conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.GTE, val:Mysql.escape(startshowtime) })
+	conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.LTE, val:Mysql.escape(endshowtime) })
+
+	if (params.master_name) {
+		conditions.push({ field: "master_name", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.master_name) })
+	}
+	if (params.master_ip) {
+		conditions.push({ field: "master_ip", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.master_ip) })
+	}
+	if (params.property_name) {
+		conditions.push({ field: "property_name", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.property_name) })
+	}
+	if (params.policy) {
+		conditions.push({ field: "policy", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.policy) })
+	}
+
+	req.conditions.readFromObject(conditions)
+	req.groupby.readFromObject(params.group_by ? ['f_date', params.group_by] : ['f_tflag'])
+	let data = await propertyQueryPrx.query(req)
+	let rsp = data.rsp
+	if(data.__return !=0 ||  rsp.ret != 0) throw new Error(`query property info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
+	let map = new Map()
+	for(let key in rsp.result){
+		map.set(key, rsp[key])
+	}
+	return map
 }
 
 function merge(params, theData, preData) {

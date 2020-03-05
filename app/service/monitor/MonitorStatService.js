@@ -13,20 +13,26 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-
+const uuid = require("uuid");
 const logger = require('../../logger');
 const AdminService = require('../../service/admin/AdminService');
+const { statQueryPrx, monitorQueryStruct} = require('../util/rpcClient');
 const TCPClient = require('./TCPClient');
 const Mysql = require('mysql');
 
 const MonitorStatService = {};
 
 MonitorStatService.getTARSStatMonitorData = async (params) => {
-	let theData = await call(params, true),
-		preData = await call(params, false);
+	let theData = new Map(), preData = new Map()
+	if(params.userpc == "1"){
+		theData = await callRpc(params, true)
+		preData = await callRpc(params, false)
+	} else {
+		theData = await call(params, true)
+		preData = await call(params, false)
+	}
 	return merge(params, theData, preData);
 };
-
 
 /**
  * 处理显示日期和对比日期查询条件
@@ -74,6 +80,47 @@ async function call(params, the) {
 	let addr0 = addrs[0];
 	logger.info(`tars.tarsquerystat.NoTarsObj, use ${addr0.host}:${addr0.port}`);
 	return await TCPClient(addr0.host, addr0.port, requestObj);
+}
+
+async function callRpc(params, the) {
+	let date = the ? params.thedate : params.predate,
+		conditions = [],
+		startshowtime = params.startshowtime || '0000',
+		endshowtime = params.endshowtime || '2360';
+	let req = new monitorQueryStruct.MonitorQueryReq();
+	req.uid = uuid.v1()
+	req.dataid = "tars_stat"
+	req.indexs.readFromObject(['succ_count', 'timeout_count', 'exce_count', 'total_time'])
+	
+	conditions.push({ field: "f_date", op: monitorQueryStruct.OP.EQ, val:Mysql.escape(date) })
+	conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.GTE, val:Mysql.escape(startshowtime) })
+	conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.LTE, val:Mysql.escape(endshowtime) })
+
+	if (params.master_name) {
+		conditions.push({ field: "master_name", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.master_name) })
+	}
+	if (params.slave_name) {
+		conditions.push({ field: "slave_name", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.slave_name) })
+	}
+	if (params.interface_name) {
+		conditions.push({ field: "interface_name", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.interface_name) })
+	}
+	if (params.master_ip) {
+		conditions.push({ field: "master_ip", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.master_ip) })
+	}
+	if (params.slave_ip) {
+		conditions.push({ field: "slave_ip", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.slave_ip) })
+	}
+	req.conditions.readFromObject(conditions)
+	req.groupby.readFromObject(params.group_by ? ['f_date', params.group_by] : ['f_tflag'])
+	let data = await statQueryPrx.query(req)
+	let rsp = data.rsp
+	if(data.__return !=0 ||  rsp.ret != 0) throw new Error(`query stat info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
+	let map = new Map()
+	for(let key in rsp.result){
+		map.set(key, rsp[key])
+	}
+	return map
 }
 
 function merge(params, theData, preData) {

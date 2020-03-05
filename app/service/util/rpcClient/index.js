@@ -18,6 +18,7 @@ const client  = require("@tars/rpc/protal.js").client;
 const AdminRegProxy = require("./rpcProxy/AdminRegProxy");
 const ConfigFProxy = require("./rpcProxy/ConfigFProxy");
 const DCacheOptProxy = require("./rpcProxy/DCacheOptProxy");
+const MonitorQueryProxy = require("./rpcProxy/MonitorQueryProxy");
 const path = require('path');
 const logger = require('./../../../logger');
 client.initialize(path.join(__dirname, '../../../../config/tars.conf'));
@@ -82,7 +83,6 @@ const RPCStruct = function(proxy, moduleName){
     return rpcStruct;
 };
 
-
 //输出TARS RPC代理和组件
 module.exports = {
 
@@ -91,6 +91,10 @@ module.exports = {
 
     configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
     configFStruct : RPCStruct(ConfigFProxy, 'tars'),
+
+    statQueryPrx : RPCClientPrx(MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj'),
+    propertyQueryPrx : RPCClientPrx(MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj'),
+    monitorQueryStruct : RPCStruct(MonitorQueryProxy, 'tars'),
 
     DCacheOptPrx: RPCClientPrx(DCacheOptProxy, 'DCache', 'DCacheOpt', 'DCache.DCacheOptServer.DCacheOptObj'),
     DCacheOptStruct: RPCStruct(DCacheOptProxy, 'DCache'),

@@ -49,6 +49,7 @@
         "request-promise-any": "^1.0.5",
         "sequelize": "^5.21.2",
         "url": "^0.11.0",
+	"uuid": "^7.0.2",
         "validator": "^9.4.1",
         "winston": "^2.4.2",
         "winston-daily-rotate-file": "^1.7.2",

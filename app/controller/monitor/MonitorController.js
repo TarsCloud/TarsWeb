@@ -22,7 +22,7 @@ const MonitorPropertyService = require('../../service/monitor/MonitorPropertySer
 const MonitorController = {};
 
 MonitorController.tarsstat = async (ctx) => {
-	let {thedate, predate, startshowtime, endshowtime, master_name, slave_name, interface_name, master_ip, slave_ip, group_by} = ctx.paramsObj;
+	let {thedate, predate, startshowtime, endshowtime, master_name, slave_name, interface_name, master_ip, slave_ip, group_by,userpc} = ctx.paramsObj;
 	try {
 		let list = await MonitorStatService.getTARSStatMonitorData({
 			thedate,
@@ -34,7 +34,8 @@ MonitorController.tarsstat = async (ctx) => {
 			interface_name,
 			master_ip,
 			slave_ip,
-			group_by
+			group_by,
+			userpc
 		});
 		ctx.makeResObj(200, '', util.viewFilter(list, {
 			show_date: '',
@@ -61,7 +62,7 @@ MonitorController.tarsstat = async (ctx) => {
 };
 
 MonitorController.tarsproperty = async (ctx) => {
-	let {thedate, predate, startshowtime, endshowtime, master_name, master_ip, property_name, policy, group_by} = ctx.paramsObj;
+	let {thedate, predate, startshowtime, endshowtime, master_name, master_ip, property_name, policy, group_by,userpc} = ctx.paramsObj;
 	try {
 		let list = await MonitorPropertyService.getTARSPropertyMonitorData({
 			thedate,
@@ -72,7 +73,8 @@ MonitorController.tarsproperty = async (ctx) => {
 			master_ip,
 			property_name,
 			policy,
-			group_by
+			group_by,
+			userpc
 		});
 		ctx.makeResObj(200, '', util.viewFilter(list, {
 			show_date: '',
