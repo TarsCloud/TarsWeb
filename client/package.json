@@ -71,7 +71,12 @@
     "vue-template-compiler": "^2.5.2",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^3.3.2",
+<<<<<<< HEAD
     "webpack-dev-server": "^2.9.1",
+=======
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1",
+>>>>>>> update webpack tool
     "webpack-merge": "^4.1.0",
     "y-server": "0.0.9",
     "y-server-plugin-mock": "0.0.8",
