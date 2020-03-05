@@ -34,6 +34,15 @@ AdminService.undeploy = async(application, server, nodeName, user, info) => {
     }
 };
 
+AdminService.pingNode = async(nodeName) => {
+    let ret = await adminRegPrx.pingNode(nodeName);
+    if (ret.__return) {
+        return ret.result;
+    } else {
+        throw new Error(__return);
+    }
+};
+
 AdminService.loadServer = async(application, server, nodeName) => {
     let ret = await adminRegPrx.loadServer(application, server, nodeName);
     if (ret.__return === 0) {

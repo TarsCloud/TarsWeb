@@ -442,9 +442,11 @@
         "last_heartbeat": "最后心跳",
         "present_state": "当前状态",
         "tars_version": "版本",
-        "load_avg5": "负载"
+        "load_avg5": "负载",
+        "check": "检查"
       }
-    }
+    },
+    "checkNode": "检查节点联通性"
   },
   "serverList": {
     "title": {

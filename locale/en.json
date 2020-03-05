@@ -416,9 +416,11 @@
         "last_heartbeat": "Last Heartbeat",
         "present_state": "Present State",
         "tars_version": "Version",
-        "load_avg5": "Load"
+        "load_avg5": "Load",
+        "check": "Check"
       }
-    }
+    },
+    "checkNode": "Check Node Connection"
   },
   "serverList": {
     "title": {
