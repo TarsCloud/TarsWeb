@@ -42,19 +42,23 @@ module tars
         //tars_stat / tars_property
         2 require string dataid;
 
+        3 require string date;
+
+        4 require string tflag1;
+        5 require string tflag2;
+
         //query conditions
-        //must has: f_date、f_tflag(max)、f_tflag(min)
-        3 require vector<Condition> conditions;
+        6 require vector<Condition> conditions;
 
         //stat item
         //tars_stat     ["succ_count", "timeout_count", 'exce_count", "total_time"]
         //tars_property ["value"]
-        4 require vector<string> indexs;
+        7 require vector<string> indexs;
 
         //group field
         //tars_stat     [f_date、master_name/interface_name/master_ip/slave_ip] or [f_tflag]
         //tars_property [f_date、master_name/master_ip/property_name/policy] or [f_tflag]
-        5 require vector<string> groupby;
+        8 require vector<string> groupby;
     };
 
     struct MonitorQueryRsp

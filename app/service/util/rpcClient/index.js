@@ -35,7 +35,7 @@ const RPCClientPrx = (proxy, moduleName, interfaceName, servantName, setInfo) =>
                             var _args = args;
                             var rst = await (async ()=>{
                                 var result = await fun.apply(rpcClient, _args);
-                                logger.info( 'method: ',fnName, ' request: ', _args, ' response: ', JSON.stringify(result.response));
+                                // logger.info( 'method: ',fnName, ' request: ', _args, ' response: ', JSON.stringify(result.response));
                                 var args = result.response.arguments;
                                 var rst = {__return: result.response.return};
                                 for(var p in args){
@@ -45,6 +45,8 @@ const RPCClientPrx = (proxy, moduleName, interfaceName, servantName, setInfo) =>
                                         rst[p] = args[p];
                                     }
                                 }
+
+                                logger.info( 'method: ',fnName, ' request: ', _args, ' response: ', rst);
                                 return rst;
                             })();
                             return rst;

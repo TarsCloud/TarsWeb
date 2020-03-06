@@ -1,7 +1,7 @@
 <template>
   <div class="page_server_property_monitor">
-    <let-radio v-model="query.userpc" :label="0">JSON查询</let-radio>
-    <let-radio v-model="query.userpc" :label="1">RPC查询</let-radio>
+    <!-- <let-radio v-model="query.userpc" :label="0">JSON查询</let-radio>
+    <let-radio v-model="query.userpc" :label="1">RPC查询</let-radio> -->
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
       <let-form-group>
         <let-form-item :label="$t('monitor.search.a')">
@@ -127,7 +127,7 @@ export default {
 
     return {
       query: {
-        userpc: 0,
+        // userpc: 0,
         thedate: formatDate(new Date(), formatter),
         predate: formatDate(Date.now() - ONE_DAY, formatter),
         startshowtime: '0000',

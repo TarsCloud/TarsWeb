@@ -18,65 +18,65 @@ const uuid = require("uuid");
 const logger = require('../../logger');
 const AdminService = require('../../service/admin/AdminService');
 const { propertyQueryPrx, monitorQueryStruct} = require('../util/rpcClient');
-const TCPClient = require('./TCPClient');
-const Mysql = require('mysql');
+// const TCPClient = require('./TCPClient');
+// const Mysql = require('mysql');
 
 const MonitorPropertyService = {};
 
 MonitorPropertyService.getData = async (params) => {
 	let theData = new Map(), preData = new Map()
-	if(params.userpc == "1"){
+	// if(params.userpc == "1"){
 		theData = await callRpc(params, true)
 		preData = await callRpc(params, false)
-	} else {
-		theData = await call(params, true)
-		preData = await call(params, false)
-	}
+	// } else {
+	// 	theData = await call(params, true)
+	// 	preData = await call(params, false)
+	// }
 	return merge(params, theData, preData);
 };
 
 
-/**
- * 处理显示日期和对比日期查询条件
- * @param params
- * @param the 是否当前日期
- */
-async function call(params, the) {
-	let date = the ? params.thedate : params.predate,
-		conditions = [],
-		startshowtime = params.startshowtime || '0000',
-		endshowtime = params.endshowtime || '2360';
-	conditions.push(`f_date=${Mysql.escape(date)}`);
-	conditions.push(`f_tflag>=${Mysql.escape(startshowtime)}`);
-	conditions.push(`f_tflag<=${Mysql.escape(endshowtime)}`);
-	if (params.master_name) {
-		conditions.push(`master_name like ${Mysql.escape(params.master_name)}`);
-	}
-	if (params.property_name) {
-		conditions.push(`property_name like ${Mysql.escape(params.property_name)}`);
-	}
-	if (params.policy) {
-		conditions.push(`policy like ${Mysql.escape(params.policy)}`);
-	}
-	if (params.master_ip) {
-		conditions.push(`master_ip like ${Mysql.escape(params.master_ip)}`);
-	}
-	let requestObj = {
-		groupby: params.group_by ? ['f_date', params.group_by] : ['f_tflag'],
-		method: 'query',
-		dataid: 'tars_property',
-		filter: conditions,
-		indexs: ['value']
-	};
-	let addrs = await AdminService.getEndpoints("tars.tarsqueryproperty.NoTarsObj");
-	if (!addrs || !addrs.length) {
-		logger.error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
-		throw new Error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
-	}
-	let addr0 = addrs[0];
-	logger.info(`tars.tarsqueryproperty.NoTarsObj, use ${addr0.host}:${addr0.port}`);
-	return await TCPClient(addr0.host, addr0.port, requestObj);
-}
+// /**
+//  * 处理显示日期和对比日期查询条件
+//  * @param params
+//  * @param the 是否当前日期
+//  */
+// async function call(params, the) {
+// 	let date = the ? params.thedate : params.predate,
+// 		conditions = [],
+// 		startshowtime = params.startshowtime || '0000',
+// 		endshowtime = params.endshowtime || '2360';
+// 	conditions.push(`f_date=${Mysql.escape(date)}`);
+// 	conditions.push(`f_tflag>=${Mysql.escape(startshowtime)}`);
+// 	conditions.push(`f_tflag<=${Mysql.escape(endshowtime)}`);
+// 	if (params.master_name) {
+// 		conditions.push(`master_name like ${Mysql.escape(params.master_name)}`);
+// 	}
+// 	if (params.property_name) {
+// 		conditions.push(`property_name like ${Mysql.escape(params.property_name)}`);
+// 	}
+// 	if (params.policy) {
+// 		conditions.push(`policy like ${Mysql.escape(params.policy)}`);
+// 	}
+// 	if (params.master_ip) {
+// 		conditions.push(`master_ip like ${Mysql.escape(params.master_ip)}`);
+// 	}
+// 	let requestObj = {
+// 		groupby: params.group_by ? ['f_date', params.group_by] : ['f_tflag'],
+// 		method: 'query',
+// 		dataid: 'tars_property',
+// 		filter: conditions,
+// 		indexs: ['value']
+// 	};
+// 	let addrs = await AdminService.getEndpoints("tars.tarsqueryproperty.NoTarsObj");
+// 	if (!addrs || !addrs.length) {
+// 		logger.error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
+// 		throw new Error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
+// 	}
+// 	let addr0 = addrs[0];
+// 	logger.info(`tars.tarsqueryproperty.NoTarsObj, use ${addr0.host}:${addr0.port}`);
+// 	return await TCPClient(addr0.host, addr0.port, requestObj);
+// }
 
 async function callRpc(params, the) {
 	let date = the ? params.thedate : params.predate,
@@ -87,22 +87,26 @@ async function callRpc(params, the) {
 	req.uid = uuid.v1()
 	req.dataid = "tars_property"
 	req.indexs.readFromObject(['value'])
-	
-	conditions.push({ field: "f_date", op: monitorQueryStruct.OP.EQ, val:Mysql.escape(date) })
-	conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.GTE, val:Mysql.escape(startshowtime) })
-	conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.LTE, val:Mysql.escape(endshowtime) })
+
+	req.date = date;
+	req.tflag1 = startshowtime;
+	req.tflag2 = endshowtime;
+
+	// conditions.push({ field: "f_date", op: monitorQueryStruct.OP.EQ, val:Mysql.escape(date) })
+	// conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.GTE, val:Mysql.escape(startshowtime) })
+	// conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.LTE, val:Mysql.escape(endshowtime) })
 
 	if (params.master_name) {
-		conditions.push({ field: "master_name", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.master_name) })
+		conditions.push({ field: "master_name", op: monitorQueryStruct.OP.LIKE, val:params.master_name })
 	}
 	if (params.master_ip) {
-		conditions.push({ field: "master_ip", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.master_ip) })
+		conditions.push({ field: "master_ip", op: monitorQueryStruct.OP.LIKE, val:params.master_ip })
 	}
 	if (params.property_name) {
-		conditions.push({ field: "property_name", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.property_name) })
+		conditions.push({ field: "property_name", op: monitorQueryStruct.OP.LIKE, val:params.property_name })
 	}
 	if (params.policy) {
-		conditions.push({ field: "policy", op: monitorQueryStruct.OP.LIKE, val:Mysql.escape(params.policy) })
+		conditions.push({ field: "policy", op: monitorQueryStruct.OP.LIKE, val:params.policy })
 	}
 
 	req.conditions.readFromObject(conditions)
