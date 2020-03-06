@@ -193,7 +193,7 @@ function formatValue(data) {
 		return ['--'];
 	}
 	let ret = [];
-	ret[0] = data[0] < 0 ? '--' : parseInt(data[0]).toFixed(3);
+	ret[0] = data[0] < 0 ? '--' : parseFloat(data[0]).toFixed(3);
 	ret[0] = ret[0].replace(/[\\.]*[0]+$/, '');
 	return ret;
 }
