@@ -117,7 +117,6 @@ async function callRpc(params, the) {
 	req.conditions.readFromObject(conditions)
 	req.groupby.readFromObject(params.group_by ? ['f_date', params.group_by] : ['f_tflag'])
 	let data = await statQueryPrx.query(req)
-	// console.log(data.rsp);
 	let rsp = data.rsp
 	if(data.__return !=0 ||  rsp.ret != 0) throw new Error(`query stat info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
 	let map = new Map()
