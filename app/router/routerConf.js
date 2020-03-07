@@ -48,6 +48,7 @@ const apiConf = [
         server_name: 'notEmpty',
         node_name: 'notEmpty'
     }],
+    ['get', '/application_list', ServerController.getApplicationList],
     ['get', '/server_list', ServerController.getServerConfList4Tree, { tree_node_id: 'notEmpty' }],
     ['get', '/inactive_server_list', ServerController.getInactiveServerConfList],
     ['get', '/get_realtime_state', ServerController.getRealtimeState, { id: 'notEmpty' }],
@@ -64,6 +65,10 @@ const apiConf = [
     ['get', '/send_command', ServerController.sendCommand, { server_ids: 'notEmpty', command: 'notEmpty' }],
     ['get', '/server_nodes', ServerController.getServerNodes, { application: 'notEmpty', server_name: 'notEmpty' }],
 
+    //检查框架
+    ['get', '/get_framework_list', ServerController.getFrameworkList],
+    ['post', '/check_framework_server', ServerController.checkFrameworkServer],
+    
     //log server 部署
     ['get', '/need_deploy_log', ServerController.needDeployLog],
     ['get', '/expand_deploy_log', ServerController.expandDeployLog],
@@ -104,6 +109,7 @@ const apiConf = [
     ],
     ['post', '/expand_server', ExpandServerController.expandServer],
     ['get', '/cascade_select_server', ExpandServerController.selectAppServer],
+
 
     // 服务配置接口
     ['get', '/unused_config_file_list', ConfigController.getUnusedApplicationConfigFile],
@@ -178,6 +184,7 @@ const apiConf = [
         parents_name: 'notEmpty',
         profile: 'notEmpty'
     }],
+
 
     //资源管理
     ['get', '/list_tars_node', ResourceController.listTarsNode],

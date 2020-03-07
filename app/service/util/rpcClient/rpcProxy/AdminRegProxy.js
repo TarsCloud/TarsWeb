@@ -431,6 +431,60 @@ tars.TaskRsp.create = function (is) {
     return tars.TaskRsp._readFrom(is);
 };
 
+tars.FrameworkServer = function() {
+    this.serverName = "";
+    this.nodeName = "";
+    this.objName = "";
+    this._classname = "tars.FrameworkServer";
+};
+tars.FrameworkServer._classname = "tars.FrameworkServer";
+tars.FrameworkServer._write = function (os, tag, value) { os.writeStruct(tag, value); };
+tars.FrameworkServer._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+tars.FrameworkServer._readFrom = function (is) {
+    var tmp = new tars.FrameworkServer();
+    tmp.serverName = is.readString(0, true, "");
+    tmp.nodeName = is.readString(1, true, "");
+    tmp.objName = is.readString(2, true, "");
+    return tmp;
+};
+tars.FrameworkServer.prototype._writeTo = function (os) {
+    os.writeString(0, this.serverName);
+    os.writeString(1, this.nodeName);
+    os.writeString(2, this.objName);
+};
+tars.FrameworkServer.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+tars.FrameworkServer.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+tars.FrameworkServer.prototype.toObject = function() { 
+    return {
+        "serverName" : this.serverName,
+        "nodeName" : this.nodeName,
+        "objName" : this.objName
+    };
+};
+tars.FrameworkServer.prototype.readFromObject = function(json) { 
+    json.hasOwnProperty("serverName") && (this.serverName = json.serverName);
+    json.hasOwnProperty("nodeName") && (this.nodeName = json.nodeName);
+    json.hasOwnProperty("objName") && (this.objName = json.objName);
+};
+tars.FrameworkServer.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+tars.FrameworkServer.new = function () {
+    return new tars.FrameworkServer();
+};
+tars.FrameworkServer.create = function (is) {
+    return tars.FrameworkServer._readFrom(is);
+};
+
 
 var __tars_AdminReg$addTaskReq$EN = function (taskReq) {
     var os = new TarsStream.TarsOutputStream();
@@ -521,6 +575,50 @@ var __tars_AdminReg$batchPatch$ER = function (data) {
 
 tars.AdminRegProxy.prototype.batchPatch = function (req) {
     return this._worker.tars_invoke("batchPatch", __tars_AdminReg$batchPatch$EN(req), arguments[arguments.length - 1]).then(__tars_AdminReg$batchPatch$DE, __tars_AdminReg$batchPatch$ER);
+};
+
+var __tars_AdminReg$checkServer$EN = function (server) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeStruct(1, server);
+    return os.getBinBuffer();
+};
+
+var __tars_AdminReg$checkServer$DE = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0)
+            }
+        };
+    } catch (e) {
+        throw {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "error" : {
+                    "code" : TarsError.CLIENT.DECODE_ERROR,
+                    "message" : e.message
+                }
+            }
+        };
+    }
+};
+
+var __tars_AdminReg$checkServer$ER = function (data) {
+    throw {
+        "request" : data.request,
+        "response" : {
+            "costtime" : data.request.costtime,
+            "error" : data.error
+        }
+    }
+};
+
+tars.AdminRegProxy.prototype.checkServer = function (server) {
+    return this._worker.tars_invoke("checkServer", __tars_AdminReg$checkServer$EN(server), arguments[arguments.length - 1]).then(__tars_AdminReg$checkServer$DE, __tars_AdminReg$checkServer$ER);
 };
 
 var __tars_AdminReg$deletePatchFile$EN = function (application, serverName, patchFile) {
@@ -1144,6 +1242,52 @@ var __tars_AdminReg$getServerState$ER = function (data) {
 
 tars.AdminRegProxy.prototype.getServerState = function (application, serverName, nodeName) {
     return this._worker.tars_invoke("getServerState", __tars_AdminReg$getServerState$EN(application, serverName, nodeName), arguments[arguments.length - 1]).then(__tars_AdminReg$getServerState$DE, __tars_AdminReg$getServerState$ER);
+};
+
+var __tars_AdminReg$getServers$EN = function () {
+    var os = new TarsStream.TarsOutputStream();
+    return os.getBinBuffer();
+};
+
+var __tars_AdminReg$getServers$DE = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "servers" : is.readList(1, true, TarsStream.List(tars.FrameworkServer))
+                }
+            }
+        };
+    } catch (e) {
+        throw {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "error" : {
+                    "code" : TarsError.CLIENT.DECODE_ERROR,
+                    "message" : e.message
+                }
+            }
+        };
+    }
+};
+
+var __tars_AdminReg$getServers$ER = function (data) {
+    throw {
+        "request" : data.request,
+        "response" : {
+            "costtime" : data.request.costtime,
+            "error" : data.error
+        }
+    }
+};
+
+tars.AdminRegProxy.prototype.getServers = function () {
+    return this._worker.tars_invoke("getServers", __tars_AdminReg$getServers$EN(), arguments[arguments.length - 1]).then(__tars_AdminReg$getServers$DE, __tars_AdminReg$getServers$ER);
 };
 
 var __tars_AdminReg$getTaskHistory$EN = function (application, serverName, command) {

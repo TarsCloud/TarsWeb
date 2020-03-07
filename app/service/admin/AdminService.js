@@ -148,14 +148,39 @@ AdminService.getLogData = async(application, server, nodeName, logFile, cmd) => 
 
 AdminService.deletePatchFile = async(application, server, patchFile) => {
     await adminRegPrx.deletePatchFile(application, server, patchFile);
-    // console.log('deletePatchFile:', ret);
     return 0;
-    // if (ret.__return === 0) {
-    //     return ret.__return;
-    // } else {
-    //     throw new Error(__return);
-    // }
 };
 
+AdminService.getFrameworkList = async() => {
+ 
+    let timeout = adminRegPrx.getTimeout();
+
+    adminRegPrx.setTimeout(3000);
+
+    let ret = await adminRegPrx.getServers();
+
+    adminRegPrx.setTimeout(timeout);
+
+    if (ret.__return === 0) {
+        return ret.servers;
+    } else {
+        console.log("getFrameworkList", ret);
+        throw new Error(__return);
+    }
+};
+
+AdminService.checkServer = async(server) => {
+
+    let s = new adminRegStruct.FrameworkServer();
+    s.readFromObject(server);
+
+    let ret = await adminRegPrx.checkServer(s);
+
+    if (ret.__return === 0) {
+        return 0;
+    } else {
+        throw new Error(__return);
+    }
+};
 
 module.exports = AdminService;

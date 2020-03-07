@@ -161,6 +161,13 @@ module tars
 		3 require ServerGridStatus		status;
     };
 */
+    struct FrameworkServer
+    {
+        0 require string serverName;
+        1 require string nodeName;
+        2 require string objName;
+    };
+
     /**
      * admin 管理接口
      */
@@ -461,6 +468,19 @@ module tars
         */
         int deletePatchFile(string application,string serverName, string patchFile);
 
+        /**
+        * get server need check
+        *
+        * @return : 0-成功 others-失败
+        */
+        int getServers(out vector<FrameworkServer> servers);
+
+        /**
+        * 检查框架的联通性
+        *
+        * @return : 0-成功 others-失败
+        */
+        int checkServer(FrameworkServer server);
     };
 };
 

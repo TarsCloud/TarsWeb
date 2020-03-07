@@ -467,9 +467,14 @@ export default {
         loading.hide();
         this.packageList = data.rows;
         this.packageTotalPage = Math.ceil(data.count / this.packagePageSize);
+
       }).catch((err)=>{
         loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);        
+      });
+
+      this.getPatchList(first.application, first.server_name, 1, 50).then((data) => {
+        this.publishModal.model.patchList = data.rows;
       });
     },
     changePackagePage(page) {

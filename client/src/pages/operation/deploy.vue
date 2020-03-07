@@ -18,6 +18,13 @@
           pattern="^[a-zA-Z]+$"
           :pattern-tip="$t('deployService.form.placeholder')"
         ></let-input>
+<!-- 
+        <let-select v-model="model.application" size="small" filterable>
+          <let-option v-for="d in model.applicationList" :key="d" :value="d">
+            {{d}}
+          </let-option>
+        </let-select> -->
+
       </let-form-item>
       <let-form-item :label="$t('deployService.form.serviceName')" required>
         <let-input
@@ -219,6 +226,7 @@
       </let-table>
 
       <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}</let-button>
+      &nbsp;&nbsp;
       <let-button type="submit" theme="primary">{{$t('common.submit')}}</let-button>
     </let-form>
 
@@ -293,6 +301,7 @@ const types = [
 ];
 
 const getInitialModel = () => ({
+  applicationList: [],
   application: '',
   server_name: '',
   server_type: types[0],
@@ -359,6 +368,12 @@ export default {
       this.enableAuth = data.enableAuth || false;
     }).catch((err)=>{
 
+    });
+
+    this.$ajax.getJSON('/server/api/application_list').then((data) => {
+      this.model.applicationList = data;
+    }).catch((err) => {
+      this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
     });
 
     this.$ajax.getJSON('/server/api/template_name_list').then((data) => {

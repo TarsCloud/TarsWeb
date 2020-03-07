@@ -1,6 +1,7 @@
 {
   "localeCode": "en",
   "localeName": "English",
+  "version": "2.0.0",
   "header": {
     "tab": {
       "tab1": "Services",
@@ -684,7 +685,8 @@
       "expand": "Expand service",
       "template": "Manage template",
       "apply": "Apply for deployment",
-      "nodes": "Node service"
+      "nodes": "Node service",
+      "check": "Check Framework"
     },
     "form": {
       "app": "APP",
@@ -746,7 +748,8 @@
     "runuser": "Run User",
     "runuserTips": "Run User cannot be empty",
     "btn": {
-      "addNode": "Install node"
+      "addNode": "Install node",
+      "check": "Click to check framework"
     },
     "add": {
       "nodeNameTips": "node name cannot be empty",
@@ -793,6 +796,27 @@
       "installing": "Installing"
     }
   }, 
+  "checkTable": {
+    "table": {
+      "th": {
+        "server_name": "Server Name",
+        "node_name": "Node Name",
+        "obj_name": "Obj Name",
+        "status": "Check Status"
+      }
+    },
+    "restartAdminRegistry": "Please check tarsAdminRegsitry is work fine or restart tars framework!",
+    "adminRegistryFailed": "Call tarsAdminRegistry failed!",
+    "failed": "Please check server is start successfully",
+    "problem": "Problem?",
+    "problemDialog": {
+      "title": "Problem",
+      "info": "In case of service exception, you can log in to the corresponding server and execute the following relevant commands as required",
+      "restartFramework": "restart framework: /usr/local/app/tars/tars-start.sh",
+      "stopFramework": "stop framework: /usr/local/app/tars/tars-stop.sh",
+      "restartServer": "restart tars server: /usr/local/app/tars/tarsxxxx/util/start.sh"
+    }
+  },
   "template": {
     "search": {
       "parentTemplate": "Parent template"
