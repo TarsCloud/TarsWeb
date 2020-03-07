@@ -16,7 +16,7 @@
 
 const uuid = require("uuid");
 const logger = require('../../logger');
-const AdminService = require('../../service/admin/AdminService');
+// const AdminService = require('../../service/admin/AdminService');
 const { propertyQueryPrx, monitorQueryStruct} = require('../util/rpcClient');
 // const TCPClient = require('./TCPClient');
 // const Mysql = require('mysql');
@@ -113,7 +113,11 @@ async function callRpc(params, the) {
 	req.groupby.readFromObject(params.group_by ? ['f_date', params.group_by] : ['f_tflag'])
 	let data = await propertyQueryPrx.query(req)
 	let rsp = data.rsp
-	if(data.__return !=0 ||  rsp.ret != 0) throw new Error(`query property info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
+	if(data.__return !=0 ||  rsp.ret != 0) 
+	{
+		throw new Error(`query ${date} property info code:${data.__return}, ret: ${rsp.ret}, msg: ${rsp.msg}`)
+	}
+	// console.log(data.rsp);
 	let map = new Map()
 	for(let key in rsp.result){
 		map.set(key, rsp.result[key])
@@ -175,6 +179,7 @@ function merge(params, theData, preData) {
 
 function mergeKey(params, theData, preData) {
 	let set = new Set();
+	
 	for (let key of theData.keys()) {
 		set.add(key);
 	}

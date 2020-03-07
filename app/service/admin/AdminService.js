@@ -146,5 +146,16 @@ AdminService.getLogData = async(application, server, nodeName, logFile, cmd) => 
     }
 };
 
+AdminService.deletePatchFile = async(application, server, patchFile) => {
+    await adminRegPrx.deletePatchFile(application, server, patchFile);
+    // console.log('deletePatchFile:', ret);
+    return 0;
+    // if (ret.__return === 0) {
+    //     return ret.__return;
+    // } else {
+    //     throw new Error(__return);
+    // }
+};
+
 
 module.exports = AdminService;

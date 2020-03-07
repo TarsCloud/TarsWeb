@@ -34,12 +34,6 @@ const LoginController = require('../controller/login/LoginController');
 const LocaleController = require('../controller/locale/LocaleController');
 const InfTestController = require('../controller/infTest/InfTestController');
 const LogviewController = require('../controller/logview/LogviewController');
-// const proxyConf = [
-// 	['get', '/login.html', HttpController.proxy],
-// 	['post', '/login.html', HttpController.proxy],
-// 	['get', '/api', HttpController.proxy],
-// 	['post', '/api', HttpController.proxy]
-// ];
 
 const pageConf = [
     //首页
@@ -143,8 +137,10 @@ const apiConf = [
     ['get', '/task_list', TaskController.getTasks],
     ['get', '/task', TaskController.getTask, { task_no: 'notEmpty' }],
     ['post', '/add_task', TaskController.addTask],
+    ['get', '/del_task', TaskController.delTask],
 
     // 发布包
+    ['post', '/upload_and_publish', PatchController.uploadAndPublish, { application: 'notEmpty', module_name: 'notEmpty' }],
     ['post', '/upload_patch_package', PatchController.uploadPatchPackage, { application: 'notEmpty' }],
     ['get', '/server_patch_list', PatchController.serverPatchList, { application: 'notEmpty' }],
     ['get', '/get_server_patch', PatchController.getServerPatchByTaskId, { task_id: 'notEmpty' }],

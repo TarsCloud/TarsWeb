@@ -578,7 +578,7 @@
       "compileProgress": "Compilation progress",
       "uploadPkg": "Uploading package, please wait",
       "hasModule": "We need to log off all the modules under this application to log off the unique router and proxy services",
-      "cantUseApply": "下线的是仅有的节点,下线后该应用将无用"
+      "cantUseApply": "Offline is the only node. After offline, the application will be useless"
     },
     "tips": {
       "default": "Release management management service level, please first in the left tree selection service business.",
@@ -844,8 +844,22 @@
     "newGroup": "Add a group",
     "removeGroup": "Remove last group"
   },
+  "managePackage": {
+    "title": "Manage Publish Package",
+    "table": {
+      "th": {
+        "c1": "id",
+        "c2": "Server Name",
+        "c3": "Upload Time",
+        "c4": "Update Text",
+        "c5": "Publish Time",
+        "c6": "Operator"
+      }
+    }
+  },
   "historyList": {
     "title": "Release History",
+    "delete": "Confirm to delete release history?",
     "table": {
       "th": {
         "c2": "serial",

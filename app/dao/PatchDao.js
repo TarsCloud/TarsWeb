@@ -51,8 +51,8 @@ PatchDao.getServerPatch = async (server, curPage, pageSize, package_type) => {
 	return await tServerPatchs.findAndCountAll(opts);
 },
 
-PatchDao.destroyServePatch = async ({where}) => {
-	return await tServerPatchs.destroy({where})
+PatchDao.destroyServePatch = async (id) => {
+	return await tServerPatchs.destroy({where: {id: id}});
 },
 
 PatchDao.setPatchPackageDefault = async ({id, application, module_name, package_type}) => {
