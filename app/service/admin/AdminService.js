@@ -188,4 +188,15 @@ AdminService.checkServer = async(server) => {
     }
 };
 
+AdminService.getProfileTemplate = async(profileName) => {
+
+    let ret = await adminRegPrx.getProfileTemplate(profileName);
+
+    if (ret.__return === 0) {
+        return ret.profileTemplate;
+    } else {
+        throw new Error(__return);
+    }
+};
+
 module.exports = AdminService;

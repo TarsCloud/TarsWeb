@@ -17,8 +17,9 @@
       <let-table-column :title="$t('deployService.form.template')" prop="template_name" width="25%"></let-table-column>
       <let-table-column :title="$t('template.search.parentTemplate')" prop="parents_name" width="25%"></let-table-column>
       <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="posttime"></let-table-column>
-      <let-table-column :title="$t('operate.operates')" width="180px">
+      <let-table-column :title="$t('operate.operates')" width="300px">
         <template slot-scope="scope">
+          <let-table-operation @click="mergeItem(scope.row)">{{$t('operate.merge')}}</let-table-operation>
           <let-table-operation @click="viewItem(scope.row)">{{$t('operate.view')}}</let-table-operation>
           <let-table-operation @click="editItem(scope.row)">{{$t('operate.update')}}</let-table-operation>
           <let-table-operation @click="removeItem(scope.row)">{{$t('operate.delete')}}</let-table-operation>
@@ -146,7 +147,19 @@ export default {
       this.detailModal.show = true;
       this.detailModal.isNew = false;
     },
-
+    mergeItem(model) {
+      const loading = this.$Loading.show();
+        this.$ajax.getJSON('/server/api/get_merge_profile_template', {template_name:model.template_name}).then((data) => {
+          loading.hide();
+          // console.log(data);
+          model.profile = data.template;
+          this.viewModal.model = model;
+          this.viewModal.show = true;
+        }).catch((err) => {
+          loading.hide();
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        });
+    },
     saveItem() {
       if (this.$refs.detailForm.validate()) {
         const model = this.detailModal.model;

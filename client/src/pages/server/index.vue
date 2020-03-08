@@ -204,36 +204,6 @@ export default {
         this.$router.replace('manage');
       }
     },
-
-    // showDeployLog() {
-    //   let application = 'tars';
-    //   let server_name = 'tarslog';
-    //   this.deployModal.model = {
-    //     application: application,
-    //     server_name: server_name,
-    //     patch_id: '',
-    //     patchList: [],
-    //   };
-    //   this.getPatchList(application, server_name, 1, 10).then((data) => {
-    //     this.deployModal.model.patchList = data.rows;
-    //     this.deployModal.show = true;
-    //     // window.setTimeout(() => this.deployModal.show = true, 300)
-    //   });      
-    // },
-    // doDeployLog() {
-    //   if (this.$refs.deployForm.validate()) {
-    //     this.$ajax.getJSON('/server/api/check_deploy_log', {node_name:this.deployModal.node_name}).then((data) => {
-    //       // console.log(data);
-
-    //       this.deployModal.model.serverList = data.server;
-
-    //       this.$refs.publishStatus.savePublishServer(this.deployModal);
-
-    //     }).catch((err) => {
-    //       this.$tip.error(`${this.$t('deployLog.failed')}: ${err.err_msg || err.message}`);
-    //     });
-    //   }
-    // },
   },
   created() {
     this.serverData = this.getServerData();

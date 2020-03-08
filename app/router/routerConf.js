@@ -177,6 +177,7 @@ const apiConf = [
         parents_name: 'notEmpty',
         profile: 'notEmpty'
     }],
+    ['get', '/get_merge_profile_template', TemplateController.getMergeTemplate, { template_name: 'notEmpty' }],
     ['get', '/delete_profile_template', TemplateController.deleteTemplate, { id: 'notEmpty' }],
     ['post', '/update_profile_template', TemplateController.updateTemplate, {
         id: 'notEmpty',
