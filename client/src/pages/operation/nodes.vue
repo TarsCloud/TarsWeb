@@ -174,17 +174,18 @@ export default {
 
   methods: {
     checkNode(node_name) {
+      const loading = this.$refs.nodeListLoading.$loading.show();
       this.$ajax.getJSON('/server/api/check_tars_node', {
         node_name: node_name,
       }).then((data) => {
-        console.log(data);
+        loading.hide();
         this.$tip.success(`${this.$t('nodeList.checkNode')}: ${data}` );
       }).catch((err) => {
+        loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       });
     },
     tableRowClassName({row, rowIndex}) {
-      console.log(row);
         if (row.present_state === "active") {
           return 'red-row';
         }

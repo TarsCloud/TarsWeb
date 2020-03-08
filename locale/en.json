@@ -690,6 +690,7 @@
     },
     "form": {
       "app": "APP",
+      "appAdd": "Input New App",
       "tips": "No need to add applications and services, such as MTT.HttpProxyServer.HttpProxyObj, where only fill HttpProxyObj",
       "serviceType": "Service type",
       "serviceName": "Service name",

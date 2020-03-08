@@ -9,7 +9,7 @@
       @submit.native.prevent="save"
     >
       <let-form-item :label="$t('deployService.form.app')" required>
-        <let-input
+        <!-- <let-input
           size="small"
           v-model="model.application"
           :placeholder="$t('deployService.form.placeholder')"
@@ -17,13 +17,13 @@
           :required-tip="$t('deployService.form.appTips')"
           pattern="^[a-zA-Z]+$"
           :pattern-tip="$t('deployService.form.placeholder')"
-        ></let-input>
-<!-- 
-        <let-select v-model="model.application" size="small" filterable>
+        ></let-input> -->
+
+        <let-select id="inputApplication" v-model="model.application" size="small" filterable :notFoundText="$t('deployService.form.appAdd')">
           <let-option v-for="d in model.applicationList" :key="d" :value="d">
             {{d}}
           </let-option>
-        </let-select> -->
+        </let-select>
 
       </let-form-item>
       <let-form-item :label="$t('deployService.form.serviceName')" required>
@@ -320,9 +320,9 @@ const getInitialModel = () => ({
     port_type: 'tcp',
     protocol: 'tars',
     thread_num: 5,
-    max_connections: 200000,
-    queuecap: 10000,
-    queuetimeout: 60000,
+    max_connections: 100000,
+    queuecap: 50000,
+    queuetimeout: 20000,
   }],
 });
 
@@ -401,8 +401,10 @@ export default {
       this.model.adapters.push(Object.assign({}, template));
     },
     deploy() {
+
       this.$confirm(this.$t('deployService.form.deployServiceTip'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
+
         this.$ajax.postJSON('/server/api/deploy_server', this.model).then((data) => {
           loading.hide();
           if(data.tars_node_rst && data.tars_node_rst.length){
@@ -436,6 +438,12 @@ export default {
         });
     },
     save() {
+      var application = document.querySelector("#inputApplication .let-select__filter__input").value.trim();
+
+      if(this.model.application == '') {
+        this.model.application = application;
+      }
+
       if (this.$refs.form.validate()) {
         const model = this.model;
 

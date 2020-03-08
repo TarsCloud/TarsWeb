@@ -716,6 +716,7 @@
     },
     "form": {
       "app": "应用",
+      "appAdd": "输入新的应用名称",
       "tips": "无需加应用和服务，如MTT.HttpProxyServer.HttpProxyObj，这里只填HttpProxyObj",
       "serviceType": "服务类型",
       "serviceName": "服务名称",
