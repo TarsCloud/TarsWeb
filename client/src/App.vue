@@ -31,8 +31,8 @@
       Axios.create({baseURL: '/'})({
         method: 'get',
         url: '/web_version'
-      }).then((data)=>{
-        this.web_version = data.body
+      }).then((response)=>{
+        this.web_version = response.data
       })
     }
   };
