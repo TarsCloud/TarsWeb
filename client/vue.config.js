@@ -26,7 +26,7 @@ module.exports = {
         //是否自动在浏览器中打开
         open: true,
         //web-dev-server地址
-        //port: 8088,
+        port: 8088,
         //ajax请求代理
         proxy: {
             "/pages/server/api": {
