@@ -43,3 +43,8 @@
 - Fix bug referencing configuration file
 - Fix the permission bug caused by sequenize upgrade to version 5.0
 - Webconf adds a configuration so that the upload package does not verify the login (the installation package can be uploaded automatically if required under the development of test environment)
+## 20200311(1.5.2)
+- Fix bug referencing reading config of left menu tree
+- Add progrees of add node in operation module
+- Fix bug referencing timezone setting when init sequelize
+- Fix bug referencing dcache managmant model
