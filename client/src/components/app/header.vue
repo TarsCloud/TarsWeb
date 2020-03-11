@@ -5,8 +5,8 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <a :class="{active: dcache === 'true'}" href="/"><img class="logo" src="@/assets/img/tars_logo.png"></a>
-        <a v-if="dcache === 'true'" href="/dcache.html"><img class="logo" alt="dcache" src="@/assets/img/dcache-logo.png"></a>
+        <a :class="{active: dcache === 'true'}" href="/"><img class="logo" src="/static/img/tars-logo.png"></a>
+        <a v-if="dcache === 'true'" href="/dcache.html"><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"></a>
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
