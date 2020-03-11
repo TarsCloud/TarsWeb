@@ -55,6 +55,9 @@
         // 图标
         serverIcon,
         opaIcon,
+        releaseIcon,
+        cacheIcon,
+        operatorIcon,
         locale: this.$cookie.get('locale') || 'cn',
         uid: '--',
         userOptOpen: false,
