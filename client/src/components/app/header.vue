@@ -10,8 +10,8 @@
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
-        <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" src="/static/img/server-icon.png"></let-tab-pane>
-        <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" src="/static/img/opa-icon.png"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
       </let-tabs>
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
@@ -39,8 +39,8 @@
 </template>
 
 <script>
-  // import serverIcon from '@/assets/img/server-icon.png';
-  // import opaIcon from '@/assets/img/opa-icon.png';
+  import serverIcon from '@/assets/img/server-icon.png';
+  import opaIcon from '@/assets/img/opa-icon.png';
   import {localeMessages} from '@/locale/i18n';
 
 

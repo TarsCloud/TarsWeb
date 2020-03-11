@@ -25,16 +25,17 @@ module.exports = {
     devServer:{
         //是否自动在浏览器中打开
         open: true,
+        host: '127.0.0.1',
         //web-dev-server地址
-        //port: 8088,
+        port: 8088,
         //ajax请求代理
         proxy: {
             "/pages/server/api": {
-              target: `http://localhost:${server_port}`,
+              target: `http://127.0.0.1:${server_port}`,
               changeOrigin: false
             },
             "/auth": {
-              target: `http://localhost:${server_port}`,
+              target: `http://127.0.0.1:${server_port}`,
               changeOrigin: false
             }
           }

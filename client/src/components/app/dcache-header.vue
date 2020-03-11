@@ -13,7 +13,7 @@
                 :activekey="$route.matched[0]? $route.matched[0].path : '/server'">
         <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.dcache.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
-        <let-tab-pane :tab="$t('header.tab.tab3')" tabkey="/releasePackage" src="/static/img/package-l.png"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab3')" tabkey="/releasePackage" :icon="releaseIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab4')" tabkey="/config" :icon="cacheIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab5')" tabkey="/operationManage" :icon="operatorIcon"></let-tab-pane>
       </let-tabs>
@@ -43,7 +43,7 @@
 <script>
   import serverIcon from '@/assets/img/server-icon.png';
   import opaIcon from '@/assets/img/opa-icon.png';
-  import packageIcon from '@/assets/img/package-l.png';
+  import releaseIcon from '@/assets/img/release-icon.png';
   import cacheIcon from '@/assets/img/cache-l.png';
   import operatorIcon from '@/assets/img/operator-l.png';
 
