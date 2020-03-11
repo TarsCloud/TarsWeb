@@ -36,6 +36,10 @@ module.exports = {
             "/auth": {
               target: `http://localhost:${server_port}`,
               changeOrigin: false
+            },
+            "/web_version":{
+              target: `http://localhost:${server_port}`,
+              changeOrigin: false
             }
           }
     }
