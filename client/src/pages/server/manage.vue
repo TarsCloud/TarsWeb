@@ -53,9 +53,9 @@
     <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
     <let-table v-if="serverNotifyList && showOthers"
       :data="serverNotifyList" stripe :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
-      <let-table-column :title="$t('common.time')" prop="notifytime"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
+      <let-table-column width="20%" :title="$t('common.time')" prop="notifytime"></let-table-column>
+      <let-table-column width="20%" :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
+      <let-table-column width="15%" :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.result')" prop="result"></let-table-column>
     </let-table>
     <let-pagination

@@ -96,6 +96,22 @@ ServerController.serverExist = async (ctx) => {
 	}
 };
 
+ServerController.getApplicationList = async (ctx) => {
+	try {
+		let application = [];
+		let data = await ServerService.getApplicationList();
+
+		data.forEach((x,y)=>{
+			application.push(x.application);
+		});
+
+		ctx.makeResObj(200, '', application);
+	} catch (e) {
+		logger.error('[getApplicationList]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
 ServerController.getServerConfList4Tree = async (ctx) => {
 	let treeNodeId = ctx.paramsObj.tree_node_id;
 	let curPage = parseInt(ctx.paramsObj.cur_page) || 0;
@@ -388,5 +404,34 @@ ServerController.expandDeployLog = async (ctx) => {
 	}
 } 
 
+ServerController.getFrameworkList = async (ctx) => {
+	try {
+		if (!await AuthService.hasAdminAuth(ctx.uid)) {
+			ctx.makeNotAuthResObj();
+		} else {
+			let ret = await AdminService.getFrameworkList();
+			// console.log('getFrameworkList:', ret);
+			ctx.makeResObj(200, '', {servers:ret});
+		}
+	} catch (e) {
+		logger.error('[getFrameworkList]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+ServerController.checkFrameworkServer = async (ctx) => {
+	try {
+		if (!await AuthService.hasAdminAuth(ctx.uid)) {
+			ctx.makeNotAuthResObj();
+		} else {
+			let ret = await AdminService.checkServer(ctx.paramsObj.server);
+			ctx.makeResObj(200, '', ret);
+		}
+	} catch (e) {
+		logger.error('[checkFrameworkServer]', e, ctx);
+		ctx.makeErrResObj();
+	}
+	
+}
 
 module.exports = ServerController;

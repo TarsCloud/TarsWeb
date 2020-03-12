@@ -29,6 +29,14 @@ ServerDao.getServerConfById = async (id) => {
 	});
 };
 
+ServerDao.getApplicationList = async () => {
+	let option = {};
+
+	option.attributes = [[Sequelize.literal('distinct `application`'), 'application']]
+
+	return await tServerConf.findAll(option);
+};
+
 ServerDao.getServerConfList = async (application, serverName) => {
 	return await tServerConf.findAll({
 		where: {

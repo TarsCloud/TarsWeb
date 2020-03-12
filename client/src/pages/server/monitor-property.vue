@@ -1,5 +1,7 @@
 <template>
   <div class="page_server_property_monitor">
+    <!-- <let-radio v-model="query.userpc" :label="0">JSON查询</let-radio>
+    <let-radio v-model="query.userpc" :label="1">RPC查询</let-radio> -->
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
       <let-form-group>
         <let-form-item :label="$t('monitor.search.a')">
@@ -36,14 +38,36 @@
 
     <compare-chart ref="chart" class="chart" v-bind="chartOptions" v-if="showChart"></compare-chart>
 
-    <hours-filter v-model="hour"></hours-filter>
+    <hours-filter v-if="enableHourFilter" v-model="hour"></hours-filter>
 
     <let-table ref="table" :data="pagedItems" :empty-msg="$t('common.nodata')">
-      <let-table-column :title="$t('common.time')" prop="show_time" width="80px"></let-table-column>
-      <let-table-column :title="$t('monitor.search.master')" prop="master_name" width=""></let-table-column>
-      <let-table-column :title="$t('monitor.search.masterIP')" prop="master_ip" width="150px"></let-table-column>
-      <let-table-column :title="$t('monitor.select.property')" prop="property_name" width="150px"></let-table-column>
-      <let-table-column :title="$t('monitor.select.strategy')" prop="policy" width="150px"></let-table-column>
+      <let-table-column :title="$t('common.time')" width="90px">
+        <template slot-scope="props">{{props.row.show_time || props.row.show_date}}</template>
+      </let-table-column>
+      <let-table-column :title="$t('monitor.search.master')">
+        <template slot-scope="props">
+          <span v-if="props.row.master_name != '%'">{{props.row.master_name}}</span>
+          <span class="btn-link" v-if="props.row.master_name == '%'" @click="groupBy('master_name', props.row)" >{{props.row.master_name}}</span>
+        </template>
+      </let-table-column>
+      <let-table-column :title="$t('monitor.search.masterIP')" width="150px">
+        <template slot-scope="props">
+          <span v-if="props.row.master_ip != '%'">{{props.row.master_ip}}</span>
+          <span class="btn-link" v-if="props.row.master_ip == '%'" @click="groupBy('master_ip', props.row)" >{{props.row.master_ip}}</span>
+        </template>
+      </let-table-column>
+      <let-table-column :title="$t('monitor.select.property')" width="150px">
+         <template slot-scope="props">
+          <span v-if="props.row.property_name != '%'">{{props.row.property_name}}</span>
+          <span class="btn-link" v-if="props.row.property_name == '%'" @click="groupBy('property_name', props.row)" >{{props.row.property_name}}</span>
+        </template>
+      </let-table-column>
+      <let-table-column :title="$t('monitor.select.strategy')" width="150px">
+        <template slot-scope="props">
+          <span v-if="props.row.policy != '%'">{{props.row.policy}}</span>
+          <span class="btn-link" v-if="props.row.policy == '%'" @click="groupBy('policy', props.row)" >{{props.row.policy}}</span>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('monitor.property.property')" prop="the_value" align="right" width="200px"></let-table-column>
       <let-table-column :title="$t('monitor.property.propertyC')" prop="pre_value" align="right" width="230px"></let-table-column>
 
@@ -103,6 +127,7 @@ export default {
 
     return {
       query: {
+        // userpc: 0,
         thedate: formatDate(new Date(), formatter),
         predate: formatDate(Date.now() - ONE_DAY, formatter),
         startshowtime: '0000',
@@ -122,9 +147,12 @@ export default {
   },
 
   computed: {
+    enableHourFilter(){
+      return this.allItems.length && this.allItems[0].show_time
+    },
     filteredItems() {
       const hour = this.hour;
-      return hour >= 0
+      return (hour >= 0 && this.enableHourFilter)
         ? this.allItems.filter(d => +d.show_time.slice(0, 2) === hour)
         : this.allItems;
     },
@@ -169,9 +197,19 @@ export default {
       });
     },
 
-    groupBy(name) {
+    groupBy(name, row) {
       this.query.group_by = name;
       this.showChart = false;
+      if(row){
+        if(row.show_time){
+          this.query.startshowtime = row.show_time
+          this.query.endshowtime = row.show_time
+        }
+        if(row.master_name && row.master_name!="%") this.query.master_name = row.master_name
+        if(row.master_ip && row.master_ip!="%") this.query.master_ip = row.master_ip
+        if(row.property_name && row.property_name!="%") this.query.property_name = row.property_name
+        if(row.policy && row.policy!="%") this.query.policy = row.policy
+      }
       this.fetchData();
     },
 

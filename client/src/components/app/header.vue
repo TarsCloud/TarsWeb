@@ -5,9 +5,8 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <a :class="{active: dcache === 'true'}" href="/"><img class="logo" src="@/assets/img/tars_logo.png"></a>
-        <a v-if="dcache === 'true'" class="" href="/dcache.html"><img class="logo" alt="dcache"
-                                                             src="@/assets/img/dcache-logo.png"></a>
+        <a :class="{active: dcache === 'true'}" href="/"><img class="logo" src="/static/img/tars-logo.png"></a>
+        <a v-if="dcache === 'true'" href="/dcache.html"><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"></a>
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
@@ -21,7 +20,7 @@
           </template>
         </let-select>
       </div>
-
+      
       <div class="user-wrap">
         <p class="user-info" @click="userOptOpen = !userOptOpen">
           <span class="name toe">{{uid}} </span>
@@ -116,114 +115,112 @@
     height: 80px;
     border-bottom: 1px solid var(--border-color);
 
-  .main-width {
-    position: relative;
-  }
+    .main-width {
+      position: relative;
+    }
 
-  .tabs .let-tabs__header {
-    border-bottom: none;
-  }
+    .tabs .let-tabs__header {
+      border-bottom: none;
+    }
 
-  .logo-wrap, .user-wrap, .language-wrap {
-    position: absolute;
-    top: 0;
-    height: 80px;
-    width: 300px;
-    padding: 26px var(--gap-small);
-  }
+    .logo-wrap, .user-wrap, .language-wrap {
+      position: absolute;
+      top: 0;
+      height: 80px;
+      width: 300px;
+      padding: 26px var(--gap-small);
+    }
 
-  .logo-wrap {
-    left: 0;
-    width: auto;
-    z-index: 100;
-    padding: 0px;
+    .logo-wrap {
+      left: 0;
+      width: auto;
+      z-index: 100;
+      padding: 0px;
 
-  a {
-    display: inline-block;
-    height: 80px;
-    padding: 20px 20px 0;
-    position: relative;
-  &.active {
-  &::after {
-     content: "";
-     display: inline-block;
-     height: 3px;
-     width: 100%;
-     background: #457FF5;
-     position: absolute;
-     top: 76px;
-     left: 0px;
+      a {
+        display: inline-block;
+        height: 80px;
+        padding: 30px 20px 0;
+        position: relative;
+        &.active {
+          &::after {
+            content: "";
+            display: inline-block;
+            height: 3px;
+            width: 100%;
+            background: #457FF5;
+            position: absolute;
+            top: 76px;
+            left: 0px;
 
-     }
-  }
+          }
+        }
+        .logo {
+          height: 25px;
+        }
+      }
+      .logo {
+        height: 28px;
+      }
 
-  .logo {
-    height: 31px;
-  }
+    }
+    .language-wrap {
+      right: 150px;
+      width: 150px;
+      padding-top: 20px;
+    }
 
-  }
-  .logo {
-    height: 28px;
-  }
+    .user-wrap {
+      right: 0;
+      width: 150px;
+      text-align: right;
 
-  }
-  .language-wrap {
-    right: 150px;
-    width: 150px;
-    padding-top: 20px;
-  }
+      .user-info {
+        max-width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        height: 28px;
+        cursor: pointer;
 
-  .user-wrap {
-    right: 0;
-    width: 150px;
-    text-align: right;
+        .avatar {
+          height: 100%;
+          border-radius: 50%;
+        }
 
-  .user-info {
-    max-width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 28px;
-    cursor: pointer;
+        .name {
+          margin: 0 8px;
+        }
 
-  .avatar {
-    height: 100%;
-    border-radius: 50%;
-  }
+        .let-icon-caret-down {
+          position: relative;
+          right: auto;
+          top: auto;
+          padding-left: 0;
+          margin-top: 0;
+        }
 
-  .name {
-    margin: 0 8px;
-  }
+      }
+    }
 
-  .let-icon-caret-down {
-    position: relative;
-    right: auto;
-    top: auto;
-    padding-left: 0;
-    margin-top: 0;
-  }
+    .user-pop-wrap {
+      position: absolute;
+      right: 20px;
+      top: 55px;
+      border: 1px solid #d7dae0;
+      border-radius: 4px;
+      padding: 10px;
+      background: #FFF;
+      font-size: 12px;
+    }
 
-  }
-  }
+    .fade-enter-active, .fade-leave-active {
+      transition: opacity .4s;
+    }
 
-  .user-pop-wrap {
-    position: absolute;
-    right: 20px;
-    top: 55px;
-    border: 1px solid #d7dae0;
-    border-radius: 4px;
-    padding: 10px;
-    background: #FFF;
-    font-size: 12px;
-  }
-
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .4s;
-  }
-
-  .fade-enter, .fade-leave-to {
-    opacity: 0;
-  }
+    .fade-enter, .fade-leave-to {
+      opacity: 0;
+    }
 
   }
 </style>

@@ -22,6 +22,15 @@ const Op = Sequelize.Op;
 tTask.belongsTo(tTaskItem, {foreignKey: 'task_no', as: 'taskItem', targetKey: 'task_no'});
 
 module.exports = {
+	delTask: async (task_no) => {
+		await tTask.destroy({
+			where: {task_no: task_no}
+		});
+
+		await tTaskItem.destroy({
+			where: {task_no: task_no}
+		})
+	},
 	getTask: async (params) => {
 		let whereObj = {};
 		params.application && Object.assign(whereObj, {'$taskItem.application$': params.application});
@@ -40,7 +49,7 @@ module.exports = {
 			// whereObj.create_time['$lte'] = params.to
 		}
 		let opts = {
-			attribute: ['task_no', 'serial', 'create_time'],
+			attribute: ['task_no', 'serial', 'create_time', 'user_name'],
 			order: [['create_time', 'desc']],
 			where: whereObj,
 			include: {

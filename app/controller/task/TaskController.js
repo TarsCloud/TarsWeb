@@ -36,6 +36,7 @@ if (kafkaConf.enable) {
 
 
 TaskController.getTasks = async (ctx) => {
+	console.log(ctx);
 	try {
 		let {application, server_name, command, from, to, curr_page = 0, page_size = 0} = ctx.paramsObj;
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
@@ -56,7 +57,7 @@ TaskController.getTasks = async (ctx) => {
 				return e;
 			});
 
-			// console.log(tasks);
+			// console.log('--------', tasks);
 
 			for (let i = 0, len = tasks.rows.length; i < len; i++) {
 				let task = tasks.rows[i];
@@ -65,7 +66,9 @@ TaskController.getTasks = async (ctx) => {
 					ret.push(await TaskService.getTaskRsp(task.task_no));
 				} catch (e) {
 					ret.push({
+						create_time: task.create_time,
 						task_no: task.task_no,
+						user_name: task.user_name,
 						serial: !!task.serial,
 						status: -1,
 						items: [{}]
@@ -85,7 +88,6 @@ TaskController.getTask = async (ctx) => {
 		let ret;
 		if (kafkaConf.enable) {
 			let task = await TaskService.getTaskStatus(ctx.paramsObj.task_no);
-			// logger.info(task);
 			if (task.status == 'waiting') {
 				ret = {status: 0};
 			} else {
@@ -123,6 +125,7 @@ TaskController.checkTask = async(item) => {
 }
 
 TaskController.addTask = async (ctx) => {
+	let user_name = ctx.uid;
 	let {serial, items} = ctx.paramsObj;
 	if (!items.length) {
 		return ctx.makeResObj(500, '#task.params#');
@@ -145,11 +148,29 @@ TaskController.addTask = async (ctx) => {
 				logger.info('task produce success!');
 			});
 		} else {
-			await TaskService.addTask({serial, items, task_no});
+			await TaskService.addTask({serial, items, task_no, user_name});
 		}
 		ctx.makeResObj(200, '', task_no);
 	} catch (e) {
 		logger.error('[TaskController.addTask]:', e, ctx);
+		ctx.makeErrResObj(500, e.toString());
+	}
+};
+
+TaskController.delTask = async (ctx) => {
+	let {task_no} = ctx.paramsObj;
+
+	try 
+	{
+		if (!await AuthService.hasAdminAuth(ctx.uid)) {
+			ctx.makeNotAuthResObj();
+		} else {	
+			await TaskService.delTask(task_no);
+
+			ctx.makeResObj(200, '', task_no);
+		}
+	} catch (e) {
+		logger.error('[TaskController.delTask]:', e, ctx);
 		ctx.makeErrResObj(500, e.toString());
 	}
 };

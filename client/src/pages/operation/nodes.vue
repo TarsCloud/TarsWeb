@@ -10,13 +10,20 @@
       </let-form-item>
     </let-form>
 
-    <let-table :data="nodeList" stripe :empty-msg="$t('common.nodata')" ref="nodeListLoading">
+    <let-table :data="nodeList" stripe :empty-msg="$t('common.nodata')" :row-class-name="tableRowClassName" ref="nodeListLoading">
       <let-table-column :title="$t('nodeList.table.th.node_name')" prop="node_name"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.present_state')" prop="present_state"></let-table-column>
       <let-table-column :title="$t('common.time')" prop="last_reg_time"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.last_heartbeat')" prop="last_heartbeat"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.tars_version')" prop="tars_version"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.load_avg5')" prop="load_avg5"></let-table-column>
+      <let-table-column :title="$t('nodeList.table.th.check')">
+
+        <template slot-scope="scope">
+          <let-table-operation @click="checkNode(scope.row.node_name)">{{$t('nodeList.table.th.check')}}</let-table-operation>
+        </template>
+      </let-table-column>
+      </let-table-column>
     </let-table>
     <let-pagination
       :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
@@ -166,6 +173,24 @@ export default {
   },
 
   methods: {
+    checkNode(node_name) {
+      const loading = this.$refs.nodeListLoading.$loading.show();
+      this.$ajax.getJSON('/server/api/check_tars_node', {
+        node_name: node_name,
+      }).then((data) => {
+        loading.hide();
+        this.$tip.success(`${this.$t('nodeList.checkNode')}: ${data}` );
+      }).catch((err) => {
+        loading.hide();
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+      });
+    },
+    tableRowClassName({row, rowIndex}) {
+        if (row.present_state === "active") {
+          return 'red-row';
+        }
+        return '';
+      },
     getNodeList(curr_page) {
       const loading = this.$refs.nodeListLoading.$loading.show();
 
@@ -301,6 +326,7 @@ export default {
           })
       });
     },
+
     installNode($event) {
 
         if(this.executeConnect) {
@@ -372,4 +398,8 @@ export default {
 .fail_txt{
   color:#f56c77;
 }
+.let-table tr.red-row td {
+    background: #F56C77 !important;
+    color: #FFF;
+  }
 </style>

@@ -13,7 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
- 
+
 #include "NodeDescriptor.tars"
 
 module tars
@@ -138,7 +138,34 @@ module tars
         1 optional string taskNo;
         2 optional bool   serial;
         3 optional string userName;
-        4 optional EMTaskStatus status; 
+        4 optional EMTaskStatus status;
+        5 optional string createTime;
+    };
+
+/*
+	enum ServerGridStatus
+    {
+    	//正常发布服务
+		NORMAL	= 0,
+		//自动扩容时，灰度服务，即部分流量分到灰度节点上
+		GRID	= 1,
+		//发布服务，但是发布后，没用流量过来
+		NO_FLOW = 2	
+    };
+	
+    struct ServerGridDesc
+    {
+    	0 require string			application;
+		1 require string			servername;
+		2 require string			nodename;
+		3 require ServerGridStatus		status;
+    };
+*/
+    struct FrameworkServer
+    {
+        0 require string serverName;
+        1 require string nodeName;
+        2 require string objName;
     };
 
     /**
@@ -324,21 +351,6 @@ module tars
         int notifyServer(string application,string serverName, string nodeName, string command, out string result);
 
         /**
-         * 发布特定server
-         *
-         * @param application: 应用
-         * @param serverName : server名
-         * @param nodeName   : node id
-         * @param shutdown   : 是否需要停止服务
-         * @param version    : patch的版本
-         * @param user       : 发布者
-         * @param out result : 结果描述
-         *
-         * @return : 返回值详见tarsErrCode枚举值
-         */
-//        int patchServer(string application, string serverName, string nodeName, bool shutdown, string version, string user, out string result);
-
-        /**
         * 卸载服务
         * @param application
         * @param serverName
@@ -364,36 +376,6 @@ module tars
          * @return : 返回值详见tarsErrCode枚举值
          */
         int updatePatchLog(string application, string serverName, string nodeName, string patchId, string user, string patchType, bool succ);
-
-        /**
-         * 预发布接口，将指定版本的二进制文件下载到node
-         *
-         * @param PreparePatchRequest: 预发布
-         * @param out nodeList :已经提交预发布任务的node列表 
-         *
-         * @return : 0
-         */
-//        int prepareBatchPatch(PreparePatchRequest req, out vector<string> nodeList, out string result);
-        
-        /**
-        * 获取预发布的进度信息
-        * specialNodeList:如果为空，管理服务根据application+serverName查询node列表，如果不为空，直接使用
-        */
-//        int getPreparePatchPercent(string application, string serverName, vector<string> specialNodeList, out map<string, PreparePatchInfo> patchInfos, out string result);
-        
-        /**
-         * 发布特定文件
-         *
-         * @param application: 应用
-         * @param serverName : server名
-         * @param nodeName   : node id
-         * @param sSrcFile   : patch服务器上的路径
-         * @param sDstFile   : node服务器上的目标路径
-         * @param out result : 结果描述
-         *
-         * @return : 返回值详见tarsErrCode枚举值
-         */
-//        int patchSubborn(string application, string serverName, string nodeName, string sSrcFile, string sDstFile, out string result);
 
         /**
         * 获取服务发布进度
@@ -450,15 +432,7 @@ module tars
          */
         int getClientIp(out string sClientIp);
     
-    /**
-    * 获取某个或则所有服务的setd和idc名字
-    * @param info: 根据输入参数获取信息
-    * @param out vServerInfo 服务信息
-    *
-    * @return 0-成功 others-失败
-    */
-//    int getServerInfo(srvRequestInfo info,out vector<serverInfo> vServerInfo);
-    /**
+        /**
          *  获取日志文件列表
          *
          * @param application: 应用
@@ -483,7 +457,30 @@ module tars
          * @return : 返回值详见tarsErrCode枚举值
          */
         int getLogData(string application, string serverName, string nodeName, string logFile, string cmd, out string fileData);
-        
+
+        /**
+        * 删除发布包
+        * @param application  : 服务所属应用名
+        * @param serverName   : 服务名
+        * @param patchFile: patchFile
+        *
+        * @return : 0-成功 others-失败
+        */
+        int deletePatchFile(string application,string serverName, string patchFile);
+
+        /**
+        * get server need check
+        *
+        * @return : 0-成功 others-失败
+        */
+        int getServers(out vector<FrameworkServer> servers);
+
+        /**
+        * 检查框架的联通性
+        *
+        * @return : 0-成功 others-失败
+        */
+        int checkServer(FrameworkServer server);
     };
 };
 

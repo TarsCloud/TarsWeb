@@ -5,18 +5,17 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <a href="/"><img class="logo" src="@/assets/img/logo.png"></a>
-        <a class="active" href="/dcache.html"><img class="logo" alt="dcache"
-                                                             src="@/assets/img/dcache-logo.png"></a>
+        <a href="/"><img class="logo" src="/static/img/tars-logo.png"></a>
+        <a class="active" href="/dcache.html"><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"></a>
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab"
                 :activekey="$route.matched[0]? $route.matched[0].path : '/server'">
         <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.dcache.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
-        <let-tab-pane :tab="$t('header.tab.tab3')" tabkey="/releasePackage" :icon="opaIcon"></let-tab-pane>
-        <let-tab-pane :tab="$t('header.tab.tab4')" tabkey="/config" :icon="opaIcon"></let-tab-pane>
-        <let-tab-pane :tab="$t('header.tab.tab5')" tabkey="/operationManage" :icon="opaIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab3')" tabkey="/releasePackage" :icon="releaseIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab4')" tabkey="/config" :icon="cacheIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab5')" tabkey="/operationManage" :icon="operatorIcon"></let-tab-pane>
       </let-tabs>
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
@@ -44,6 +43,10 @@
 <script>
   import serverIcon from '@/assets/img/server-icon.png';
   import opaIcon from '@/assets/img/opa-icon.png';
+  import releaseIcon from '@/assets/img/package-l.png';
+  import cacheIcon from '@/assets/img/cache-l.png';
+  import operatorIcon from '@/assets/img/operator-l.png';
+
   import {localeMessages} from '@/locale/i18n';
 
   export default {
@@ -52,6 +55,9 @@
         // 图标
         serverIcon,
         opaIcon,
+        releaseIcon,
+        cacheIcon,
+        operatorIcon,
         locale: this.$cookie.get('locale') || 'cn',
         uid: '--',
         userOptOpen: false,
@@ -94,7 +100,7 @@
   };
 </script>
 
-<style lang="">
+<style lang="postcss">
   @import '../../assets/css/variable.css';
 
   .app_index__header {

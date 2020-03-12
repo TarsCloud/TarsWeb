@@ -16,7 +16,7 @@
 
 const logger = require('../../logger');
 const ResourceService = require('../../service/resource/ResourceService');
-// const AdminService = require('../../service/admin/AdminService');
+const AdminService = require('../../service/admin/AdminService');
 const _ = require('lodash');
 const path = require('path');
 // const util = require('../../tools/util');
@@ -117,5 +117,15 @@ ResourceController.getTarsNode = async(ctx) => {
 	//都是从web过来的请求, 用web host替换安装node脚本
 	ctx.body = await ResourceService.getTarsNode(ctx.origin || ctx.request.origin, ctx.paramsObj);
 }
+
+ResourceController.checkTarsNode = async (ctx) => {
+	let nodeName = ctx.paramsObj.node_name;
+	try {
+		ctx.makeResObj(200, '', await AdminService.pingNode(nodeName));
+	} catch (e) {
+		logger.error('[checkTarsNode]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
 
 module.exports = ResourceController;

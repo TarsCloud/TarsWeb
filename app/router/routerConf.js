@@ -34,16 +34,12 @@ const LoginController = require('../controller/login/LoginController');
 const LocaleController = require('../controller/locale/LocaleController');
 const InfTestController = require('../controller/infTest/InfTestController');
 const LogviewController = require('../controller/logview/LogviewController');
-// const proxyConf = [
-// 	['get', '/login.html', HttpController.proxy],
-// 	['post', '/login.html', HttpController.proxy],
-// 	['get', '/api', HttpController.proxy],
-// 	['post', '/api', HttpController.proxy]
-// ];
 
 const pageConf = [
     //首页
-    ['get', '/', PageController.index]
+    ['get', '/', PageController.index],
+    ['get', '/web_version', PageController.version]
+    
 ];
 
 const apiConf = [
@@ -54,6 +50,7 @@ const apiConf = [
         server_name: 'notEmpty',
         node_name: 'notEmpty'
     }],
+    ['get', '/application_list', ServerController.getApplicationList],
     ['get', '/server_list', ServerController.getServerConfList4Tree, { tree_node_id: 'notEmpty' }],
     ['get', '/inactive_server_list', ServerController.getInactiveServerConfList],
     ['get', '/get_realtime_state', ServerController.getRealtimeState, { id: 'notEmpty' }],
@@ -70,6 +67,10 @@ const apiConf = [
     ['get', '/send_command', ServerController.sendCommand, { server_ids: 'notEmpty', command: 'notEmpty' }],
     ['get', '/server_nodes', ServerController.getServerNodes, { application: 'notEmpty', server_name: 'notEmpty' }],
 
+    //检查框架
+    ['get', '/get_framework_list', ServerController.getFrameworkList],
+    ['post', '/check_framework_server', ServerController.checkFrameworkServer],
+    
     //log server 部署
     ['get', '/need_deploy_log', ServerController.needDeployLog],
     ['get', '/expand_deploy_log', ServerController.expandDeployLog],
@@ -111,6 +112,7 @@ const apiConf = [
     ['post', '/expand_server', ExpandServerController.expandServer],
     ['get', '/cascade_select_server', ExpandServerController.selectAppServer],
 
+
     // 服务配置接口
     ['get', '/unused_config_file_list', ConfigController.getUnusedApplicationConfigFile],
     ['get', '/config_file_list', ConfigController.configFileList, { level: 'number', application: 'notEmpty' }],
@@ -143,8 +145,10 @@ const apiConf = [
     ['get', '/task_list', TaskController.getTasks],
     ['get', '/task', TaskController.getTask, { task_no: 'notEmpty' }],
     ['post', '/add_task', TaskController.addTask],
+    ['get', '/del_task', TaskController.delTask],
 
     // 发布包
+    ['post', '/upload_and_publish', PatchController.uploadAndPublish, { application: 'notEmpty', module_name: 'notEmpty' }],
     ['post', '/upload_patch_package', PatchController.uploadPatchPackage, { application: 'notEmpty' }],
     ['get', '/server_patch_list', PatchController.serverPatchList, { application: 'notEmpty' }],
     ['get', '/get_server_patch', PatchController.getServerPatchByTaskId, { task_id: 'notEmpty' }],
@@ -175,6 +179,7 @@ const apiConf = [
         parents_name: 'notEmpty',
         profile: 'notEmpty'
     }],
+    ['get', '/get_merge_profile_template', TemplateController.getMergeTemplate, { template_name: 'notEmpty' }],
     ['get', '/delete_profile_template', TemplateController.deleteTemplate, { id: 'notEmpty' }],
     ['post', '/update_profile_template', TemplateController.updateTemplate, {
         id: 'notEmpty',
@@ -183,11 +188,13 @@ const apiConf = [
         profile: 'notEmpty'
     }],
 
+
     //资源管理
     ['get', '/list_tars_node', ResourceController.listTarsNode],
     ['post', '/connect_tars_node', ResourceController.connectTarsNode],
     ['post', '/install_tars_nodes', ResourceController.installTarsNodes],
     ['get', '/uninstall_tars_nodes', ResourceController.uninstallTarsNodes, { ips: 'notEmpty' }],
+    ['get', '/check_tars_node', ResourceController.checkTarsNode, { node_name: 'notEmpty' }],
 
     //权限管理
     ['get', '/is_enable_auth', AuthController.isEnableAuth],

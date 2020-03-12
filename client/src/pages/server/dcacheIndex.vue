@@ -17,10 +17,11 @@
     </div>
 
     <div class="right-view" v-if="!this.$route.params.treeid">
-      <div class="empty">
+      <div class="empty" style="width: 300px;">
         <img class="package" src="@/assets/img/package.png">
         <p class="title">{{$t('index.rightView.title')}}</p>
         <p class="notice" v-html="$t('index.rightView.tips')"></p>
+        <p class="notice">https://github.com/TarsCloud/DCache</p>
       </div>
     </div>
 

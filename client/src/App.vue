@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <app-header></app-header>
-
+    <p id="web_version">Version:{{web_version}}</p>
     <!-- 切换 tab 缓存接口（主要为左侧目录树） -->
     <keep-alive>
       <router-view class="main-width"></router-view>
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import Axios from 'axios'
   import AppHeader from './components/app/header';
   import AppFooter from './components/app/footer';
 
@@ -21,14 +22,34 @@
       AppHeader,
       AppFooter,
     },
+    data(){
+      return {
+        web_version:" loading··"
+      }
+    },
+    mounted(){
+      Axios.create({baseURL: '/'})({
+        method: 'get',
+        url: '/web_version'
+      }).then((response)=>{
+        this.web_version = response.data
+      })
+    }
   };
 </script>
 
-<style>
+<style lang="postcss">
   @import "./assets/font/lato/Lato.css";
   @import './assets/css/reset.css';
   @import './assets/css/variable.css';
 
+  #web_version{
+    position: absolute;
+    top:10px;
+    right:10px;
+    color:#888;
+    font-size: 12px;
+  }
   .clearfix {
     *zoom: 1;
 

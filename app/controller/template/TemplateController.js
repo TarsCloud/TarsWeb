@@ -16,6 +16,7 @@
 
 const logger = require('../../logger');
 const TemplateService = require('../../service/template/TemplateService');
+const AdminService = require('../../service/admin/AdminService');
 const _ = require('lodash');
 const util = require('../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
@@ -70,6 +71,16 @@ TemplateController.getTemplate = async (ctx) => {
 		ctx.makeResObj(200, '', util.viewFilter(await TemplateService.getTemplateByName(templateName), templateStruct));
 	} catch (e) {
 		logger.error('[getTemplate]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
+TemplateController.getMergeTemplate = async (ctx) => {
+	try {
+		let templateName = ctx.paramsObj.template_name;
+		ctx.makeResObj(200, '', {template: await AdminService.getProfileTemplate(templateName)});
+	} catch (e) {
+		logger.error('[getMergeTemplate]', e, ctx);
 		ctx.makeErrResObj();
 	}
 };

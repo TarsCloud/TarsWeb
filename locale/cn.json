@@ -1,6 +1,7 @@
 {
   "localeCode": "cn",
   "localeName": "中文",
+  "version": "2.0.0",
   "header": {
     "tab": {
       "tab1": "服务管理",
@@ -407,6 +408,7 @@
     "more": "更多命令",
     "operates": "操作",
     "view": "查看",
+    "merge": "合并后",
     "search": "查询",
     "servant": "管理Servant",
     "goback": "返回",
@@ -442,9 +444,11 @@
         "last_heartbeat": "最后心跳",
         "present_state": "当前状态",
         "tars_version": "版本",
-        "load_avg5": "负载"
+        "load_avg5": "负载",
+        "check": "检查"
       }
-    }
+    },
+    "checkNode": "检查节点联通性"
   },
   "serverList": {
     "title": {
@@ -708,10 +712,12 @@
       "expand": "扩容",
       "template": "模板管理",
       "apply": "部署申请",
-      "nodes": "节点管理"
+      "nodes": "节点管理",
+      "check": "框架检查"
     },
     "form": {
       "app": "应用",
+      "appAdd": "输入新的应用名称",
       "tips": "无需加应用和服务，如MTT.HttpProxyServer.HttpProxyObj，这里只填HttpProxyObj",
       "serviceType": "服务类型",
       "serviceName": "服务名称",
@@ -770,7 +776,8 @@
     "runuser": "运行用户",
     "runuserTips": "运行用户不能为空",
     "btn": {
-      "addNode": "安装节点"
+      "addNode": "安装节点",
+      "check": "点击开始检查框架状态"
     },
     "add": {
       "nodeNameTips": "节点名不能为空",
@@ -817,6 +824,27 @@
       "installing": "正在安装"
     }
   },  
+  "checkTable": {
+    "table": {
+      "th": {
+        "server_name": "服务名",
+        "node_name": "节点名",
+        "obj_name": "Obj名称",
+        "status": "检查状态"
+      }
+    },
+    "restartAdminRegistry": "请检查tarsAdminRegsitry是否正常工作, 或者重启框架服务!",
+    "adminRegistryFailed": "调用tarsAdminRegistry异常",
+    "failed": "请检查服务是否正常启动",
+    "problem": "有问题怎么办?",
+    "problemDialog": {
+      "title": "常见问题",
+      "info": "当碰到服务异常, 你可以登录对应服务器, 根据需要执行以下相关命令",
+      "restartFramework": "重启框架服务: /usr/local/app/tars/tars-start.sh",
+      "stopFramework": "停止框架服务: /usr/local/app/tars/tars-stop.sh",
+      "restartServer": "重启某个组件: /usr/local/app/tars/tarsxxxx/util/start.sh"
+    }
+  },
   "template": {
     "search": {
       "parentTemplate": "父模板名"
@@ -868,11 +896,27 @@
     "newGroup": "增加一组",
     "removeGroup": "删除最后一组"
   },
-  "historyList": {
-    "title": "发布历史",
+  "managePackage": {
+    "title": "管理发布包",
     "table": {
       "th": {
+        "c1": "id",
+        "c2": "服务名称",
+        "c3": "上传时间",
+        "c4": "发布备注",
+        "c5": "发布时间",
+        "c6": "操作"
+      }
+    }
+  },
+  "historyList": {
+    "title": "发布历史",
+    "delete": "确定删除发布历史么?",
+    "table": {
+      "th": {
+        "c1": "时间",
         "c2": "是否串行",
+        "c3": "用户",
         "c4": "子任务详情"
       }
     },

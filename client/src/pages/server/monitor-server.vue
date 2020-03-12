@@ -1,5 +1,7 @@
 <template>
   <div class="page_server_server_monitor">
+    <!-- <let-radio v-model="query.userpc" :label="0">JSON查询</let-radio>
+    <let-radio v-model="query.userpc" :label="1">RPC查询</let-radio> -->
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
       <let-form-item :label="$t('monitor.search.a')">
         <let-date-picker size="small" v-model="query.thedate" :formatter="formatter"></let-date-picker>
@@ -39,15 +41,42 @@
       </let-col>
     </let-row>
 
-    <hours-filter v-model="hour"></hours-filter>
+    <hours-filter v-if="showCenableHourFilterhart" v-model="hour"></hours-filter>
 
     <let-table ref="table" :data="pagedItems" :empty-msg="$t('common.nodata')">
-      <let-table-column :title="$t('common.time')" prop="show_time" width="80px"></let-table-column>
-      <let-table-column :title="$t('monitor.search.master')" prop="master_name" width=""></let-table-column>
-      <let-table-column :title="$t('monitor.search.slave')" prop="slave_name" width=""></let-table-column>
-      <let-table-column :title="$t('monitor.search.interfaceName')" prop="interface_name" width=""></let-table-column>
-      <let-table-column :title="$t('monitor.search.masterIP')" prop="master_ip" width=""></let-table-column>
-      <let-table-column :title="$t('monitor.search.slaveIP')" prop="slave_ip" width=""></let-table-column>
+      <let-table-column :title="$t('common.time')" width="90px">
+        <template slot-scope="props">{{props.row.show_time || props.row.show_date}}</template>
+      </let-table-column>
+      <let-table-column :title="$t('monitor.search.master')">
+        <template slot-scope="props">
+          <span v-if="props.row.master_name != '%'">{{props.row.master_name}}</span>
+          <span class="btn-link" v-if="props.row.master_name == '%'" @click="groupBy('master_name', props.row)" >{{props.row.master_name}}</span>
+        </template>
+      </let-table-column>
+      <let-table-column :title="$t('monitor.search.slave')">
+         <template slot-scope="props">
+          <span v-if="props.row.slave_name != '%'">{{props.row.slave_name}}</span>
+          <span class="btn-link" v-if="props.row.slave_name == '%'" @click="groupBy('slave_name', props.row)" >{{props.row.slave_name}}</span>
+        </template>
+      </let-table-column>
+      <let-table-column :title="$t('monitor.search.interfaceName')">
+        <template slot-scope="props">
+          <span v-if="props.row.interface_name != '%'">{{props.row.interface_name}}</span>
+          <span class="btn-link" v-if="props.row.interface_name == '%'" @click="groupBy('interface_name', props.row)" >{{props.row.interface_name}}</span>
+        </template>
+      </let-table-column>
+      <let-table-column :title="$t('monitor.search.masterIP')">
+         <template slot-scope="props">
+          <span v-if="props.row.master_ip != '%'">{{props.row.master_ip}}</span>
+          <span class="btn-link" v-if="props.row.master_ip == '%'" @click="groupBy('master_ip', props.row)" >{{props.row.master_ip}}</span>
+        </template>
+      </let-table-column>
+      <let-table-column :title="$t('monitor.search.slaveIP')">
+        <template slot-scope="props">
+          <span v-if="props.row.slave_ip != '%'">{{props.row.slave_ip}}</span>
+          <span class="btn-link" v-if="props.row.slave_ip == '%'" @click="groupBy('slave_ip', props.row)" >{{props.row.slave_ip}}</span>
+        </template>
+      </let-table-column>
       <let-table-column prop="the_total_count" align="right">
         <span slot="head" slot-scope="props">{{$t('monitor.table.curr')}}<br>{{$t('monitor.table.total')}}</span>
       </let-table-column>
@@ -133,6 +162,7 @@ export default {
 
     return {
       query: {
+        // userpc:0,
         thedate: formatDate(new Date(), 'YYYYMMDD'),
         predate: formatDate(Date.now() - ONE_DAY, 'YYYYMMDD'),
         startshowtime: '0000',
@@ -153,10 +183,13 @@ export default {
   },
 
   computed: {
+    enableHourFilter(){
+      return this.allItems.length && this.allItems[0].show_time
+    },
     filteredItems() {
       const hour = this.hour;
-      return hour >= 0
-        ? this.allItems.filter(d => +d.show_time.slice(0, 2) === hour)
+      return (hour >= 0 && this.enableHourFilter)
+        ? this.allItems.filter((d) => {+d.show_time.slice(0, 2) === hour})
         : this.allItems;
     },
     itemsCount() {
@@ -255,9 +288,20 @@ export default {
       });
     },
 
-    groupBy(name) {
+    groupBy(name, row) {
       this.query.group_by = name;
       this.showChart = false;
+      if(row){
+        if(row.show_time){
+          this.query.startshowtime = row.show_time
+          this.query.endshowtime = row.show_time
+        }
+        if(row.interface_name && row.interface_name!="%") this.query.interface_name = row.interface_name
+        if(row.master_ip && row.master_ip!="%") this.query.master_ip = row.master_ip
+        if(row.master_name && row.master_name!="%") this.query.master_name = row.master_name
+        if(row.slave_ip && row.slave_ip!="%") this.query.slave_ip = row.slave_ip
+        if(row.slave_name && row.slave_name!="%") this.query.slave_name = row.slave_name
+      }
       this.fetchData();
     },
 
@@ -275,6 +319,10 @@ export default {
 </script>
 
 <style lang="postcss">
+.btn-link{
+  color:#3f5ae0;
+  cursor:pointer;
+}
 .page_server_server_monitor {
   padding-bottom: 20px;
 

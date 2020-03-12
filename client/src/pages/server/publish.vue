@@ -83,7 +83,11 @@
                     {{d.id}} | {{d.posttime}} | {{d.comment}}
                   </let-option>
                 </let-select>
+                &nbsp;&nbsp;
                 <let-button theme="primary" size="small" @click="showUploadModal">{{$t('pub.dlg.upload')}}</let-button>
+                &nbsp;&nbsp;
+                <let-button size="small" @click="gotoPackage">{{$t('managePackage.title')}}</let-button>
+
               </div>
               <br/>
                 <let-button theme="primary" size="small" class="mt10" @click="savePublishServer">{{$t('common.patch')}}</let-button>
@@ -131,31 +135,35 @@
             <let-button type="submit" theme="primary">{{$t('serverList.servant.upload')}}</let-button>
         </let-form>
       </let-modal>
-
       <PublishStatus ref="publishStatus"></PublishStatus>
-     <!-- 发布结果弹出框 -->
-     <!-- <let-modal
-        v-model="finishModal.show"
-        :title="$t('serverList.table.th.result')"
-        width="880px"
-        :footShow="false"
-        @on-cancel="closeFinishModal">
-        <let-table
-          v-if="finishModal.model"
-          :title="$t('serverList.servant.taskID') + finishModal.model.task_no"
-          :data="finishModal.model.items">
-          <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"></let-table-column>
-          <let-table-column :title="$t('common.status')">
-            <template slot-scope="scope">
-              <let-tag
-                :theme="scope.row.status == 2 ? 'success' : (scope.row.status == 3 ? 'danger' : '')" checked>
-                {{statusConfig[scope.row.status] + (scope.row.status != 2 && scope.row.status != 3 ? '...' : '')}}
-              </let-tag>
-            </template>
-          </let-table-column>
-        </let-table>
-      </let-modal> -->
     </div>
+
+    <!-- 管理发布包 -->
+    <let-modal v-model="showPackage" 
+    width="1000px"
+    :footShow="false"
+    :title="$t('managePackage.title')"
+    >
+    <let-table ref="packageTable" :data="packageList" :empty-msg="$t('common.nodata')">
+      <let-table-column :title="$t('managePackage.table.th.c1')" prop="id"></let-table-column>
+      <let-table-column :title="$t('managePackage.table.th.c2')" prop="server"></let-table-column>
+      <let-table-column :title="$t('managePackage.table.th.c3')" prop="posttime"></let-table-column>
+      <let-table-column :title="$t('managePackage.table.th.c4')" prop="comment"></let-table-column>
+      <let-table-column :title="$t('managePackage.table.th.c5')" prop="publish_time"></let-table-column>
+      <let-table-column :title="$t('managePackage.table.th.c6')">
+        <template slot-scope="scope">
+          <let-table-operation @click="deletePackage(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
+        </template>
+      </let-table-column>
+      <let-pagination slot="pagination" align="right"
+        :total="packageTotalPage" :page="packagePage" @change="changePackagePage">
+      </let-pagination>
+      <div slot="operations" style="margin-left: -15px;">
+        <let-button theme="primary" size="small" @click="showPackage=false">{{$t('operate.goback')}}</let-button>
+      </div>
+    </let-table>
+  </let-modal>
+
 
     <!-- 发布历史 -->
     <let-modal v-model="showHistory" 
@@ -170,12 +178,14 @@
         </let-form-item>
       </let-form>
       <let-table ref="historyTable" :data="totalHistoryList" :title="$t('historyList.title')" :empty-msg="$t('common.nodata')">
+        <let-table-column :title="$t('historyList.table.th.c1')" prop="create_time"></let-table-column>
         <let-table-column :title="$t('serverList.servant.taskID')" prop="task_no"></let-table-column>
         <let-table-column :title="$t('historyList.table.th.c2')">
           <template slot-scope="scope">
             <span>{{scope.row.serial ? $t('common.yes'): $t('common.no')}}</span>
           </template>
         </let-table-column>
+        <let-table-column :title="$t('historyList.table.th.c3')" prop="userName"></let-table-column>
         <let-table-column :title="$t('serverList.dlg.title.taskStatus')">
           <template slot-scope="scope">
             <span>{{ statusMap[scope.row.status] || '-'}}</span>
@@ -184,6 +194,7 @@
         <let-table-column :title="$t('historyList.table.th.c4')">
           <template slot-scope="scope">
             <let-table-operation @click="viewTask(scope.row.task_no)">{{$t('operate.view')}}</let-table-operation>
+            <let-table-operation @click="deleteTask(scope.row.task_no)">{{$t('operate.delete')}}</let-table-operation>
           </template>
         </let-table-column>
         <let-pagination slot="pagination" align="right"
@@ -286,17 +297,15 @@ export default {
       totalPage: 0,
       pageSize: 20,
       page: 1,
+      showPackage: false,
+      packageList: [],
+      packageTotalPage: 0,
+      packagePage: 1,
+      packagePageSize: 20,
       publishModal: {
         show: false,
         model: null,
       },
-      // finishModal: {
-      //   show: false,
-      //   model: {
-      //     task_no : '',
-      //     items : []
-      //   },
-      // },
       statusConfig: {
         0: this.$t('serverList.restart.notStart'),
         1: this.$t('serverList.restart.running'),
@@ -402,6 +411,7 @@ export default {
         show: true
       };
       this.getPatchList(first.application, first.server_name, 1, 50).then((data) => {
+        // this.packageList = data.rows;
         this.publishModal.model.patchList = data.rows;
         window.setTimeout(() => this.publishModal.show = true, 300)
       });
@@ -424,71 +434,60 @@ export default {
     savePublishServer() {
       // 发布
       if (this.$refs.publishForm.validate()) {
-
         this.$refs.publishStatus.savePublishServer(this.publishModal, this.closePublishModal);
-
-        // const items = [];
-        // this.publishModal.model.serverList.forEach((item) => {
-        //   items.push({
-        //     server_id: item.id.toString(),
-        //     command: 'patch_tars',
-        //     parameters: {
-        //       patch_id: this.publishModal.model.patch_id.toString(),
-        //       bak_flag: item.bak_flag,
-        //       update_text: this.publishModal.model.update_text,
-        //     },
-        //   });
-        // });
-        // const loading = this.$Loading.show();
-        // this.$ajax.postJSON('/server/api/add_task', {
-        //   serial: true,
-        //   items,
-        // }).then((data) => {
-        //   loading.hide();
-        //   this.closePublishModal();
-        //   this.finishModal.model.task_no = data;
-        //   this.finishModal.show = true;
-        //   // 实时更新状态
-        //   this.getTaskRepeat(data);
-        // }).catch((err) => {
-        //   loading.hide();
-        //   this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        // });
       }
     },
     closeFinishModal() {
       // 关闭发布结果弹出框
-      // this.finishModal.show = false;
-      // this.finishModal.modal = null;
       this.$refs.finishForm.resetValid();
     },
-    // getTaskRepeat(taskId) {
-    //   let timerId;
-    //   timerId && clearTimeout(timerId);
-    //   const getTask = () => {
-    //     this.$ajax.getJSON('/server/api/task', {
-    //       task_no: taskId,
-    //     }).then((data) => {
-    //       let done = true;
-    //       data.items.forEach((item) => {
-    //         if (![2, 3].includes(item.status)) {
-    //           done = false;
-    //         }
-    //       });
-    //       done ? clearTimeout(timerId) : timerId = setTimeout(getTask, 2000);
-    //       this.finishModal.model.items = data.items;
-    //     }).catch((err) => {
-    //       clearTimeout(timerId);
-    //       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-    //     });
-    //   };
-    //   getTask();
-    // },
     updateServerList() {
       // 更新服务列表
       const start = (this.page - 1) * this.pageSize;
       const end = this.page * this.pageSize;
       this.serverList = this.totalServerList.slice(start, end);
+    },
+    gotoPackage() {
+      this.showPackage = true;
+      this.getPackageList(1);
+    },
+    getPackageList(curr_page) {
+      if(typeof curr_page != 'number'){
+        curr_page = 1;
+      }
+
+      const checkedServerList = this.serverList.filter(item => item.isChecked);
+      if (checkedServerList.length <= 0) {
+        this.$tip.warning(this.$t('pub.dlg.a'));
+        return;
+      }
+      const loading = this.$Loading.show();
+      const first = checkedServerList[0];
+      this.getPatchList(first.application, first.server_name, curr_page, this.packagePageSize).then((data) => {
+        loading.hide();
+        this.packageList = data.rows;
+        this.packageTotalPage = Math.ceil(data.count / this.packagePageSize);
+
+      }).catch((err)=>{
+        loading.hide();
+        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);        
+      });
+
+      this.getPatchList(first.application, first.server_name, 1, 50).then((data) => {
+        this.publishModal.model.patchList = data.rows;
+      });
+    },
+    changePackagePage(page) {
+      this.getPackageList(page);
+    },    
+    deletePackage(id) {
+      this.$confirm(this.$t('releasePackage.confirmDeleteTip'), this.$t('common.alert')).then(() => {
+          this.$ajax.postJSON('/server/api/delete_patch_package', {id}).then((data) => {
+            this.getPackageList(this.packagePage);
+          }).catch((err) => {
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        });
+      });
     },
     gotoHistory() {
       // 切换到发布历史
@@ -525,6 +524,18 @@ export default {
       }).then((data) => {
         this.taskModal.model = data;
         this.taskModal.show = true;
+      });
+    },
+    deleteTask(taskId) {
+      this.$confirm(this.$t('historyList.delete')).then(() => {
+        this.$ajax.getJSON('/server/api/del_task', {
+          task_no: taskId,
+        }).then((data) => {
+            this.getHistoryList(this.page);
+        }).catch((err) => {
+          
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`); 
+        });
       });
     },
     changeHistoryPage(page) {
@@ -564,6 +575,7 @@ export default {
         this.$ajax.postForm('/server/api/upload_patch_package', formdata).then(() => {
           this.getPatchList(this.uploadModal.model.application, this.uploadModal.model.server_name,1,50).then((data) => {
             loading.hide();
+            // this.packageList = data.rows;
             this.publishModal.model.patchList = data.rows;
             this.closeUploadModal();
           });

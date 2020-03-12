@@ -1,0 +1,80 @@
+/**
+ * Tencent is pleased to support the open source community by making Tars available.
+ *
+ * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/BSD-3-Clause
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
+module tars
+{
+    enum OP
+    {
+        EQ,
+        GT,
+        GTE,
+        LT,
+        LTE,
+        LIKE
+    };
+
+    struct Condition
+    {
+        0 require string field;
+        1 require OP op;
+        2 require string val;
+    };
+
+    struct MonitorQueryReq
+    {
+        0 require string uid;
+        1 require string method = "query";
+
+        //query table
+        //tars_stat / tars_property
+        2 require string dataid;
+
+        3 require string date;
+
+        4 require string tflag1;
+        5 require string tflag2;
+
+        //query conditions
+        6 require vector<Condition> conditions;
+
+        //stat item
+        //tars_stat     ["succ_count", "timeout_count", 'exce_count", "total_time"]
+        //tars_property ["value"]
+        7 require vector<string> indexs;
+
+        //group field
+        //tars_stat     [f_date、master_name/interface_name/master_ip/slave_ip] or [f_tflag]
+        //tars_property [f_date、master_name/master_ip/property_name/policy] or [f_tflag]
+        8 require vector<string> groupby;
+    };
+
+    struct MonitorQueryRsp
+    {
+
+        0 require int ret;                              //0: succ, -1: error
+        1 optional string msg;
+        2 require string lastTime;
+        3 require int activeDb;
+        4 require int totalDb;
+        5 require vector<int> retThreads;
+        6 optional map<string, vector<double>> result;    //key: group1,group2,group3...
+    };
+
+    interface MonitorQuery
+    {
+        int query(MonitorQueryReq req, out MonitorQueryRsp rsp);
+    };
+};

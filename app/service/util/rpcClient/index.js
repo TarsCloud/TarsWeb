@@ -18,6 +18,7 @@ const client  = require("@tars/rpc/protal.js").client;
 const AdminRegProxy = require("./rpcProxy/AdminRegProxy");
 const ConfigFProxy = require("./rpcProxy/ConfigFProxy");
 const DCacheOptProxy = require("./rpcProxy/DCacheOptProxy");
+const MonitorQueryProxy = require("./rpcProxy/MonitorQueryProxy");
 const path = require('path');
 const logger = require('./../../../logger');
 client.initialize(path.join(__dirname, '../../../../config/tars.conf'));
@@ -34,7 +35,7 @@ const RPCClientPrx = (proxy, moduleName, interfaceName, servantName, setInfo) =>
                             var _args = args;
                             var rst = await (async ()=>{
                                 var result = await fun.apply(rpcClient, _args);
-                                logger.info( 'method: ',fnName, ' request: ', _args, ' response: ', JSON.stringify(result.response));
+                                // logger.info( 'method: ',fnName, ' request: ', _args, ' response: ', JSON.stringify(result.response));
                                 var args = result.response.arguments;
                                 var rst = {__return: result.response.return};
                                 for(var p in args){
@@ -44,6 +45,8 @@ const RPCClientPrx = (proxy, moduleName, interfaceName, servantName, setInfo) =>
                                         rst[p] = args[p];
                                     }
                                 }
+
+                                logger.info( 'method: ',fnName, ' request: ', _args, ' response: ', rst);
                                 return rst;
                             })();
                             return rst;
@@ -82,7 +85,6 @@ const RPCStruct = function(proxy, moduleName){
     return rpcStruct;
 };
 
-
 //输出TARS RPC代理和组件
 module.exports = {
 
@@ -92,8 +94,15 @@ module.exports = {
     configFPrx : RPCClientPrx(ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
     configFStruct : RPCStruct(ConfigFProxy, 'tars'),
 
+    statQueryPrx : RPCClientPrx(MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj'),
+    propertyQueryPrx : RPCClientPrx(MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj'),
+    monitorQueryStruct : RPCStruct(MonitorQueryProxy, 'tars'),
+
     DCacheOptPrx: RPCClientPrx(DCacheOptProxy, 'DCache', 'DCacheOpt', 'DCache.DCacheOptServer.DCacheOptObj'),
     DCacheOptStruct: RPCStruct(DCacheOptProxy, 'DCache'),
+
+    // nodePrx: RPCClientPrx(NodeProxy, 'tars', 'Node', 'tars.tarsnode.NodeObj'),
+    // nodeStruct: RPCStruct(NodeProxy, 'tars'),
 
     client: client
 };

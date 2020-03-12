@@ -14,60 +14,115 @@
  * specific language governing permissions and limitations under the License.
  */
 
+const uuid = require("uuid");
 const logger = require('../../logger');
-const AdminService = require('../../service/admin/AdminService');
-const TCPClient = require('./TCPClient');
-const Mysql = require('mysql');
+// const AdminService = require('../../service/admin/AdminService');
+const { propertyQueryPrx, monitorQueryStruct} = require('../util/rpcClient');
+// const TCPClient = require('./TCPClient');
+// const Mysql = require('mysql');
 
 const MonitorPropertyService = {};
 
-MonitorPropertyService.getTARSPropertyMonitorData = async (params) => {
-	let theData = await call(params, true),
-		preData = await call(params, false);
+MonitorPropertyService.getData = async (params) => {
+	let theData = new Map(), preData = new Map()
+	// if(params.userpc == "1"){
+		theData = await callRpc(params, true)
+		preData = await callRpc(params, false)
+	// } else {
+	// 	theData = await call(params, true)
+	// 	preData = await call(params, false)
+	// }
 	return merge(params, theData, preData);
 };
 
 
-/**
- * 处理显示日期和对比日期查询条件
- * @param params
- * @param the 是否当前日期
- */
-async function call(params, the) {
+// /**
+//  * 处理显示日期和对比日期查询条件
+//  * @param params
+//  * @param the 是否当前日期
+//  */
+// async function call(params, the) {
+// 	let date = the ? params.thedate : params.predate,
+// 		conditions = [],
+// 		startshowtime = params.startshowtime || '0000',
+// 		endshowtime = params.endshowtime || '2360';
+// 	conditions.push(`f_date=${Mysql.escape(date)}`);
+// 	conditions.push(`f_tflag>=${Mysql.escape(startshowtime)}`);
+// 	conditions.push(`f_tflag<=${Mysql.escape(endshowtime)}`);
+// 	if (params.master_name) {
+// 		conditions.push(`master_name like ${Mysql.escape(params.master_name)}`);
+// 	}
+// 	if (params.property_name) {
+// 		conditions.push(`property_name like ${Mysql.escape(params.property_name)}`);
+// 	}
+// 	if (params.policy) {
+// 		conditions.push(`policy like ${Mysql.escape(params.policy)}`);
+// 	}
+// 	if (params.master_ip) {
+// 		conditions.push(`master_ip like ${Mysql.escape(params.master_ip)}`);
+// 	}
+// 	let requestObj = {
+// 		groupby: params.group_by ? ['f_date', params.group_by] : ['f_tflag'],
+// 		method: 'query',
+// 		dataid: 'tars_property',
+// 		filter: conditions,
+// 		indexs: ['value']
+// 	};
+// 	let addrs = await AdminService.getEndpoints("tars.tarsqueryproperty.NoTarsObj");
+// 	if (!addrs || !addrs.length) {
+// 		logger.error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
+// 		throw new Error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
+// 	}
+// 	let addr0 = addrs[0];
+// 	logger.info(`tars.tarsqueryproperty.NoTarsObj, use ${addr0.host}:${addr0.port}`);
+// 	return await TCPClient(addr0.host, addr0.port, requestObj);
+// }
+
+async function callRpc(params, the) {
 	let date = the ? params.thedate : params.predate,
 		conditions = [],
 		startshowtime = params.startshowtime || '0000',
 		endshowtime = params.endshowtime || '2360';
-	conditions.push(`f_date=${Mysql.escape(date)}`);
-	conditions.push(`f_tflag>=${Mysql.escape(startshowtime)}`);
-	conditions.push(`f_tflag<=${Mysql.escape(endshowtime)}`);
+	let req = new monitorQueryStruct.MonitorQueryReq();
+	req.uid = uuid.v1()
+	req.dataid = "tars_property"
+	req.indexs.readFromObject(['value'])
+
+	req.date = date;
+	req.tflag1 = startshowtime;
+	req.tflag2 = endshowtime;
+
+	// conditions.push({ field: "f_date", op: monitorQueryStruct.OP.EQ, val:Mysql.escape(date) })
+	// conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.GTE, val:Mysql.escape(startshowtime) })
+	// conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.LTE, val:Mysql.escape(endshowtime) })
+
 	if (params.master_name) {
-		conditions.push(`master_name like ${Mysql.escape(params.master_name)}`);
-	}
-	if (params.property_name) {
-		conditions.push(`property_name like ${Mysql.escape(params.property_name)}`);
-	}
-	if (params.policy) {
-		conditions.push(`policy like ${Mysql.escape(params.policy)}`);
+		conditions.push({ field: "master_name", op: monitorQueryStruct.OP.LIKE, val:params.master_name })
 	}
 	if (params.master_ip) {
-		conditions.push(`master_ip like ${Mysql.escape(params.master_ip)}`);
+		conditions.push({ field: "master_ip", op: monitorQueryStruct.OP.LIKE, val:params.master_ip })
 	}
-	let requestObj = {
-		groupby: params.group_by ? ['f_date', params.group_by] : ['f_tflag'],
-		method: 'query',
-		dataid: 'tars_property',
-		filter: conditions,
-		indexs: ['value']
-	};
-	let addrs = await AdminService.getEndpoints("tars.tarsqueryproperty.NoTarsObj");
-	if (!addrs || !addrs.length) {
-		logger.error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
-		throw new Error('[AdminService.getEndpoints]:', 'tars.tarsqueryproperty.NoTarsObj not found');
+	if (params.property_name) {
+		conditions.push({ field: "property_name", op: monitorQueryStruct.OP.LIKE, val:params.property_name })
 	}
-	let addr0 = addrs[0];
-	logger.info(`tars.tarsqueryproperty.NoTarsObj, use ${addr0.host}:${addr0.port}`);
-	return await TCPClient(addr0.host, addr0.port, requestObj);
+	if (params.policy) {
+		conditions.push({ field: "policy", op: monitorQueryStruct.OP.LIKE, val:params.policy })
+	}
+
+	req.conditions.readFromObject(conditions)
+	req.groupby.readFromObject(params.group_by ? ['f_date', params.group_by] : ['f_tflag'])
+	let data = await propertyQueryPrx.query(req)
+	let rsp = data.rsp
+	if(data.__return !=0 ||  rsp.ret != 0) 
+	{
+		throw new Error(`query ${date} property info code:${data.__return}, ret: ${rsp.ret}, msg: ${rsp.msg}`)
+	}
+	// console.log(data.rsp);
+	let map = new Map()
+	for(let key in rsp.result){
+		map.set(key, rsp.result[key])
+	}
+	return map
 }
 
 function merge(params, theData, preData) {
@@ -124,6 +179,7 @@ function merge(params, theData, preData) {
 
 function mergeKey(params, theData, preData) {
 	let set = new Set();
+	
 	for (let key of theData.keys()) {
 		set.add(key);
 	}
@@ -142,7 +198,7 @@ function formatValue(data) {
 		return ['--'];
 	}
 	let ret = [];
-	ret[0] = data[0] < 0 ? '--' : parseInt(data[0]).toFixed(3);
+	ret[0] = data[0] < 0 ? '--' : parseFloat(data[0]).toFixed(3);
 	ret[0] = ret[0].replace(/[\\.]*[0]+$/, '');
 	return ret;
 }

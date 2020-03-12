@@ -13,67 +13,117 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-
+const uuid = require("uuid");
 const logger = require('../../logger');
 const AdminService = require('../../service/admin/AdminService');
-const TCPClient = require('./TCPClient');
-const Mysql = require('mysql');
+const { statQueryPrx, monitorQueryStruct} = require('../util/rpcClient');
+// const TCPClient = require('./TCPClient');
+// const Mysql = require('mysql');
 
 const MonitorStatService = {};
 
-MonitorStatService.getTARSStatMonitorData = async (params) => {
-	let theData = await call(params, true),
-		preData = await call(params, false);
+MonitorStatService.getData = async (params) => {
+	let theData = new Map(), preData = new Map()
+	// if(params.userpc == "1"){
+		theData = await callRpc(params, true)
+		preData = await callRpc(params, false)
+	// } else {
+	// 	theData = await call(params, true)
+	// 	preData = await call(params, false)
+	// }
 	return merge(params, theData, preData);
 };
 
+// /**
+//  * 处理显示日期和对比日期查询条件
+//  * @param params
+//  * @param the 是否当前日期
+//  */
+// async function call(params, the) {
+// 	let date = the ? params.thedate : params.predate,
+// 		conditions = [],
+// 		startshowtime = params.startshowtime || '0000',
+// 		endshowtime = params.endshowtime || '2360';
+// 	conditions.push(`f_date=${Mysql.escape(date)}`);
+// 	conditions.push(`f_tflag>=${Mysql.escape(startshowtime)}`);
+// 	conditions.push(`f_tflag<=${Mysql.escape(endshowtime)}`);
+// 	if (params.master_name) {
+// 		conditions.push(`master_name like ${Mysql.escape(params.master_name)}`);
+// 	}
+// 	if (params.slave_name) {
+// 		conditions.push(`slave_name like ${Mysql.escape(params.slave_name)}`);
+// 	}
+// 	if (params.interface_name) {
+// 		conditions.push(`interface_name like ${Mysql.escape(params.interface_name)}`);
+// 	}
+// 	if (params.master_ip) {
+// 		conditions.push(`master_ip like ${Mysql.escape(params.master_ip)}`);
+// 	}
+// 	if (params.slave_ip) {
+// 		conditions.push(`slave_ip like ${Mysql.escape(params.slave_ip)}`);
+// 	}
+// 	let requestObj = {
+// 		groupby: params.group_by ? ['f_date', params.group_by] : ['f_tflag'],
+// 		method: 'query',
+// 		dataid: 'tars_stat',
+// 		filter: conditions,
+// 		indexs: ['succ_count', 'timeout_count', 'exce_count', 'total_time']
+// 	};
+// 	let addrs = await AdminService.getEndpoints("tars.tarsquerystat.NoTarsObj").catch(err => {
+// 		logger.error('[AdminService.getEndpoints]:', err.toString());
+// 		console.error(err);
+// 	});
+// 	if (!addrs || !addrs.length) {
+// 		logger.error('[AdminService.getEndpoints]:', 'tars.tarsquerystat.NoTarsObj not found');
+// 		return;
+// 	}
+// 	let addr0 = addrs[0];
+// 	logger.info(`tars.tarsquerystat.NoTarsObj, use ${addr0.host}:${addr0.port}`);
+// 	return await TCPClient(addr0.host, addr0.port, requestObj);
+// }
 
-/**
- * 处理显示日期和对比日期查询条件
- * @param params
- * @param the 是否当前日期
- */
-async function call(params, the) {
+async function callRpc(params, the) {
 	let date = the ? params.thedate : params.predate,
 		conditions = [],
 		startshowtime = params.startshowtime || '0000',
 		endshowtime = params.endshowtime || '2360';
-	conditions.push(`f_date=${Mysql.escape(date)}`);
-	conditions.push(`f_tflag>=${Mysql.escape(startshowtime)}`);
-	conditions.push(`f_tflag<=${Mysql.escape(endshowtime)}`);
+	let req = new monitorQueryStruct.MonitorQueryReq();
+	req.uid = uuid.v1()
+	req.dataid = "tars_stat"
+	req.indexs.readFromObject(['succ_count', 'timeout_count', 'exce_count', 'total_time'])
+	req.date = date;
+	req.tflag1 = startshowtime;
+	req.tflag2 = endshowtime;
+
+	// conditions.push({ field: "f_date", op: monitorQueryStruct.OP.EQ, val:Mysql.escape(date) })
+	// conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.GTE, val:Mysql.escape(startshowtime) })
+	// conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.LTE, val:Mysql.escape(endshowtime) })
+
 	if (params.master_name) {
-		conditions.push(`master_name like ${Mysql.escape(params.master_name)}`);
+		conditions.push({ field: "master_name", op: monitorQueryStruct.OP.LIKE, val:params.master_name })
 	}
 	if (params.slave_name) {
-		conditions.push(`slave_name like ${Mysql.escape(params.slave_name)}`);
+		conditions.push({ field: "slave_name", op: monitorQueryStruct.OP.LIKE, val:params.slave_name })
 	}
 	if (params.interface_name) {
-		conditions.push(`interface_name like ${Mysql.escape(params.interface_name)}`);
+		conditions.push({ field: "interface_name", op: monitorQueryStruct.OP.LIKE, val:params.interface_name})
 	}
 	if (params.master_ip) {
-		conditions.push(`master_ip like ${Mysql.escape(params.master_ip)}`);
+		conditions.push({ field: "master_ip", op: monitorQueryStruct.OP.LIKE, val:params.master_ip })
 	}
 	if (params.slave_ip) {
-		conditions.push(`slave_ip like ${Mysql.escape(params.slave_ip)}`);
+		conditions.push({ field: "slave_ip", op: monitorQueryStruct.OP.LIKE, val:params.slave_ip })
 	}
-	let requestObj = {
-		groupby: params.group_by ? ['f_date', params.group_by] : ['f_tflag'],
-		method: 'query',
-		dataid: 'tars_stat',
-		filter: conditions,
-		indexs: ['succ_count', 'timeout_count', 'exce_count', 'total_time']
-	};
-	let addrs = await AdminService.getEndpoints("tars.tarsquerystat.NoTarsObj").catch(err => {
-		logger.error('[AdminService.getEndpoints]:', err.toString());
-		console.error(err);
-	});
-	if (!addrs || !addrs.length) {
-		logger.error('[AdminService.getEndpoints]:', 'tars.tarsquerystat.NoTarsObj not found');
-		return;
+	req.conditions.readFromObject(conditions)
+	req.groupby.readFromObject(params.group_by ? ['f_date', params.group_by] : ['f_tflag'])
+	let data = await statQueryPrx.query(req)
+	let rsp = data.rsp
+	if(data.__return !=0 ||  rsp.ret != 0) throw new Error(`query stat info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
+	let map = new Map()
+	for(let key in rsp.result){
+		map.set(key, rsp.result[key])
 	}
-	let addr0 = addrs[0];
-	logger.info(`tars.tarsquerystat.NoTarsObj, use ${addr0.host}:${addr0.port}`);
-	return await TCPClient(addr0.host, addr0.port, requestObj);
+	return map
 }
 
 function merge(params, theData, preData) {

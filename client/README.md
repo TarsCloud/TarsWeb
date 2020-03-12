@@ -1,21 +1,32 @@
-# tars-web
+# TarsNodeWeb
 
-> Tars web project
+## Project setup
+`npm install`
 
-## Build Setup
+### Compiles and hot-reloads for development
+- start tars-node-server (cd ../ && npm run dev)
+- config devServer proxy and webpack-dev-server port in vue.config.js
+- npm run dev  
+```js
+{
+    //是否自动在浏览器中打开
+    open: true,
+    //web-dev-server地址
+    //port: 8088,
+    //ajax请求代理
+    proxy: {
+        "/pages/server/api": {
+            target: `http://0.0.0.0:${server_port}`,
+            changeOrigin: false
+        },
+        "/auth": {
+            target: `http://0.0.0.0:${server_port}`,
+            changeOrigin: false
+        }
+    }
+}
 
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
+### Compiles and minifies for production
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+npm run build
+```

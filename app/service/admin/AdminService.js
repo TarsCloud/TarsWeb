@@ -15,19 +15,40 @@
  */
 
 const { configFPrx, configFStruct, adminRegPrx, adminRegStruct, client } = require('../util/rpcClient');
-var registry = require("@tars/registry");
+const registry = require("@tars/registry");
 const TarsStream = require('@tars/stream');
+const crypto = require("crypto")
 const _ = require('lodash')
 
 registry.setLocator(client.getProperty('locator'));
 
 const logger = require('../../logger');
 
+//hash number计算(不直接用taskNo前几位，不耦合)
+function getHashNumber(taskNo){
+    let buf = crypto.createHash("md5").update(taskNo +"").digest();
+    return ((buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0]) >>> 0
+}
+
 const AdminService = {};
 
 AdminService.undeploy = async(application, server, nodeName, user, info) => {
     let ret = await adminRegPrx.undeploy(application, server, nodeName, user, info);
     if (ret.__return === 0) {
+        return ret.result;
+    } else {
+        throw new Error(__return);
+    }
+};
+
+AdminService.pingNode = async(nodeName) => {
+    
+    let timeout = adminRegPrx.getTimeout();
+    adminRegPrx.setTimeout(1000);
+    let ret = await adminRegPrx.pingNode(nodeName);
+    adminRegPrx.setTimeout(timeout);
+
+    if (ret.__return) {
         return ret.result;
     } else {
         throw new Error(__return);
@@ -78,7 +99,9 @@ AdminService.doCommand = async(targets, command) => {
 };
 
 AdminService.getTaskRsp = async(taskNo) => {
-    let ret = await adminRegPrx.getTaskRsp(taskNo);
+    let ret = await adminRegPrx.getTaskRsp(taskNo,{
+        hashCode: getHashNumber(taskNo)
+    });
     if (ret.__return == 0) {
         return ret.taskRsp;
     } else {
@@ -108,7 +131,9 @@ AdminService.addTask = async(req) => {
         });
         taskReq.taskItemReq.push(taskItemReq)
     });
-    let ret = await adminRegPrx.addTaskReq(taskReq);
+    let ret = await adminRegPrx.addTaskReq(taskReq,{
+        hashCode: getHashNumber(taskReq.taskNo)
+    });
 
     return ret.__return;
 };
@@ -137,5 +162,52 @@ AdminService.getLogData = async(application, server, nodeName, logFile, cmd) => 
     }
 };
 
+AdminService.deletePatchFile = async(application, server, patchFile) => {
+    await adminRegPrx.deletePatchFile(application, server, patchFile);
+    return 0;
+};
+
+AdminService.getFrameworkList = async() => {
+ 
+    let timeout = adminRegPrx.getTimeout();
+
+    adminRegPrx.setTimeout(3000);
+
+    let ret = await adminRegPrx.getServers();
+
+    adminRegPrx.setTimeout(timeout);
+
+    if (ret.__return === 0) {
+        return ret.servers;
+    } else {
+        console.log("getFrameworkList", ret);
+        throw new Error(__return);
+    }
+};
+
+AdminService.checkServer = async(server) => {
+
+    let s = new adminRegStruct.FrameworkServer();
+    s.readFromObject(server);
+
+    let ret = await adminRegPrx.checkServer(s);
+
+    if (ret.__return === 0) {
+        return 0;
+    } else {
+        throw new Error(__return);
+    }
+};
+
+AdminService.getProfileTemplate = async(profileName) => {
+
+    let ret = await adminRegPrx.getProfileTemplate(profileName);
+
+    if (ret.__return === 0) {
+        return ret.profileTemplate;
+    } else {
+        throw new Error(__return);
+    }
+};
 
 module.exports = AdminService;

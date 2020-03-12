@@ -1,6 +1,7 @@
 {
   "localeCode": "en",
   "localeName": "English",
+  "version": "2.0.0",
   "header": {
     "tab": {
       "tab1": "Services",
@@ -381,6 +382,7 @@
     "more": "more",
     "operates": "Operates",
     "view": "view",
+    "merge": "merge",
     "search": "search",
     "servant": "servant",
     "goback": "go back",
@@ -416,9 +418,11 @@
         "last_heartbeat": "Last Heartbeat",
         "present_state": "Present State",
         "tars_version": "Version",
-        "load_avg5": "Load"
+        "load_avg5": "Load",
+        "check": "Check"
       }
-    }
+    },
+    "checkNode": "Check Node Connection"
   },
   "serverList": {
     "title": {
@@ -576,7 +580,7 @@
       "compileProgress": "Compilation progress",
       "uploadPkg": "Uploading package, please wait",
       "hasModule": "We need to log off all the modules under this application to log off the unique router and proxy services",
-      "cantUseApply": "下线的是仅有的节点,下线后该应用将无用"
+      "cantUseApply": "Offline is the only node. After offline, the application will be useless"
     },
     "tips": {
       "default": "Release management management service level, please first in the left tree selection service business.",
@@ -682,10 +686,12 @@
       "expand": "Expand service",
       "template": "Manage template",
       "apply": "Apply for deployment",
-      "nodes": "Node service"
+      "nodes": "Node service",
+      "check": "Check Framework"
     },
     "form": {
       "app": "APP",
+      "appAdd": "Input New App",
       "tips": "No need to add applications and services, such as MTT.HttpProxyServer.HttpProxyObj, where only fill HttpProxyObj",
       "serviceType": "Service type",
       "serviceName": "Service name",
@@ -744,7 +750,8 @@
     "runuser": "Run User",
     "runuserTips": "Run User cannot be empty",
     "btn": {
-      "addNode": "Install node"
+      "addNode": "Install node",
+      "check": "Click to check framework"
     },
     "add": {
       "nodeNameTips": "node name cannot be empty",
@@ -791,6 +798,27 @@
       "installing": "Installing"
     }
   }, 
+  "checkTable": {
+    "table": {
+      "th": {
+        "server_name": "Server Name",
+        "node_name": "Node Name",
+        "obj_name": "Obj Name",
+        "status": "Check Status"
+      }
+    },
+    "restartAdminRegistry": "Please check tarsAdminRegsitry is work fine or restart tars framework!",
+    "adminRegistryFailed": "Call tarsAdminRegistry failed!",
+    "failed": "Please check server is start successfully",
+    "problem": "Problem?",
+    "problemDialog": {
+      "title": "Problem",
+      "info": "In case of service exception, you can log in to the corresponding server and execute the following relevant commands as required",
+      "restartFramework": "restart framework: /usr/local/app/tars/tars-start.sh",
+      "stopFramework": "stop framework: /usr/local/app/tars/tars-stop.sh",
+      "restartServer": "restart tars server: /usr/local/app/tars/tarsxxxx/util/start.sh"
+    }
+  },
   "template": {
     "search": {
       "parentTemplate": "Parent template"
@@ -842,8 +870,22 @@
     "newGroup": "Add a group",
     "removeGroup": "Remove last group"
   },
+  "managePackage": {
+    "title": "Manage Publish Package",
+    "table": {
+      "th": {
+        "c1": "id",
+        "c2": "Server Name",
+        "c3": "Upload Time",
+        "c4": "Update Text",
+        "c5": "Publish Time",
+        "c6": "Operator"
+      }
+    }
+  },
   "historyList": {
     "title": "Release History",
+    "delete": "Confirm to delete release history?",
     "table": {
       "th": {
         "c2": "serial",

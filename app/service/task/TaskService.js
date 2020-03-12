@@ -32,6 +32,8 @@ TaskService.getTaskRsp = async (taskNo) => {
 		task_no: rsp.taskNo,
 		serial: rsp.serial,
 		status: rsp.status,
+		create_time: rsp.createTime,
+		userName: rsp.userName,
 		items: rsp.taskItemRsp.map(item => {
 			return {
 				task_no: item.req.taskNo,
@@ -51,6 +53,9 @@ TaskService.getTaskRsp = async (taskNo) => {
 	};
 };
 
+TaskService.delTask = async (task_no) => {
+	return await TaskDao.delTask(task_no);
+};
 
 TaskService.getTasks = async (params) => {
 	return await TaskDao.getTask(params);
@@ -95,7 +100,8 @@ TaskService.addTask = async (params) => {
 		taskNo: params.task_no,
 		taskItemReq: items,
 		serial: params.serial,
-		userName: params.user_name || ''
+		create_time: new Date(),
+		userName: params.userName || ''
 	};
 	await AdminService.addTask(req);
 	return params.task_no;

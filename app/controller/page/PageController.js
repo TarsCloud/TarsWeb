@@ -15,9 +15,15 @@
  */
 
 const PageController = {};
+var fs = require("fs")
+const package = require("../../../package.json")
 
 PageController.index = async (ctx) => {
 	await ctx.redirect('/index.html');
+};
+
+PageController.version = async (ctx) => {
+	ctx.body = package.version
 };
 
 module.exports = PageController;

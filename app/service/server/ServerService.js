@@ -74,6 +74,10 @@ ServerService.getServerConfById = async(id) => {
     return await ServerDao.getServerConfById(id);
 };
 
+ServerService.getApplicationList= async() => {
+    return await ServerDao.getApplicationList();
+};
+
 //通过应用，服务，节点获取获取服务信息
 ServerService.getServerConf = async(application, serverName, nodeName) => {
     return await ServerDao.getServerConf({
@@ -113,9 +117,7 @@ ServerService.getInactiveServerConfList = async(application, serverName, nodeNam
 //是否和tarsregistry同一个节点
 ServerService.isDeployWithRegistry = async(nodeNames) => {
 
-    // console.log('isDeployWithRegistry', nodeNames, registry);
     let registry = await ResourceDao.getRegistryAddress();
-    // console.log('isDeployWithRegistry', nodeNames, registry);
 
     for (var index in nodeNames) {
         for (var i in registry) {
@@ -123,8 +125,6 @@ ServerService.isDeployWithRegistry = async(nodeNames) => {
                 return true;
         }
     }
-
-    // console.log('-------------------');
     return false;
 };
 
