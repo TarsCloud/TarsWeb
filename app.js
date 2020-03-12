@@ -62,7 +62,7 @@ preMidware.forEach((midware) => {
 
 //登录校验
 let loginConf = require('./config/loginConf.js');
-loginConf.ignore = loginConf.ignore.concat(['/static', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
+loginConf.ignore = loginConf.ignore.concat(['/web_version','/static', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
 
 //上传文件不需要登录
 if(!WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {

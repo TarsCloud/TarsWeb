@@ -27,7 +27,7 @@
     </div>
 
     <div class="right-view" v-else>
-      <let-tabs @click="clickTab" :activekey="$route.path" class="right-tab">
+      <let-tabs @click="clickTab" :activekey="$route.path">
         <let-tab-pane :tabkey="base + '/manage'" :tab="$t('header.tab.tab1')"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/publish'" :tab="$t('index.rightView.tab.patch')"
           v-if="serverData.level === 5"></let-tab-pane>
@@ -222,7 +222,7 @@ export default {
 </script>
 
 
-<style lang="postcss">
+<style>
 @import '../../assets/css/variable.css';
 
 .page_server {
@@ -324,107 +324,6 @@ export default {
     }
   }
 
-  .right-tab{
-    .let-tabs__tabitem{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      &:nth-child(1){
-        &:after{
-          background-image: url("../../assets/icon/icon_inactive.png");
-        }
-      }
-      &:nth-child(2){
-        &:after{
-          background-image: url("../../assets/icon/icon_inactive.png");
-        }
-      }
-      &:nth-child(3){
-        &:after{
-          background-image: url("../../assets/icon/icon_inactive.png");
-        }
-      }
-      &:nth-child(4){
-        &:after{
-          background-image: url("../../assets/icon/icon_inactive.png");
-        }
-      }
-      &:nth-child(5){
-        &:after{
-          background-image: url("../../assets/icon/icon_inactive.png");
-        }
-      }
-      &:nth-child(6){
-        &:after{
-          background-image: url("../../assets/icon/icon_inactive.png");
-        }
-      }
-      &:nth-child(7){
-        &:after{
-          background-image: url("../../assets/icon/icon_inactive.png");
-        }
-      }
-      &:after{
-        display: inline-block;
-        width: 30px;
-        height:30px;
-        content: " ";
-        margin-left: 10px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
-    }
-    .let-tabs__tabitem.let-tabs__tabitem_cur{
-          &:nth-child(1){
-            &:after{
-              background-image: url("../../assets/icon/icon_active.png");
-            }
-          }
-    }
-    .let-tabs__tabitem.let-tabs__tabitem_cur{
-          &:nth-child(2){
-            &:after{
-              background-image: url("../../assets/icon/icon_active.png");
-            }
-          }
-    }
-    .let-tabs__tabitem.let-tabs__tabitem_cur{
-          &:nth-child(3){
-            &:after{
-              background-image: url("../../assets/icon/icon_active.png");
-            }
-          }
-    }
-    .let-tabs__tabitem.let-tabs__tabitem_cur{
-          &:nth-child(4){
-            &:after{
-              background-image: url("../../assets/icon/icon_active.png");
-            }
-          }
-    }
-    .let-tabs__tabitem.let-tabs__tabitem_cur{
-          &:nth-child(5){
-            &:after{
-              background-image: url("../../assets/icon/icon_active.png");
-            }
-          }
-    }
-    .let-tabs__tabitem.let-tabs__tabitem_cur{
-          &:nth-child(6){
-            &:after{
-              background-image: url("../../assets/icon/icon_active.png");
-            }
-          }
-    }
-    .let-tabs__tabitem.let-tabs__tabitem_cur{
-          &:nth-child(7){
-            &:after{
-              background-image: url("../../assets/icon/icon_active.png");
-            }
-          }
-    }
-  }
   .page_server_child {
     margin-top: 20px;
     position: relative;

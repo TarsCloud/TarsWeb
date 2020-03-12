@@ -39,6 +39,7 @@ const pageConf = [
     //首页
     ['get', '/', PageController.index],
     ['get', '/web_version', PageController.version]
+    
 ];
 
 const apiConf = [
