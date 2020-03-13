@@ -2,6 +2,7 @@
   <div style="margin: 20px auto;">
     <div style="float:center">
       <let-button size="small" theme="primary"  @click="addItem">{{$t('auth.addPrivilege')}}</let-button>
+      &nbsp;&nbsp;
       <let-button size="small" theme="danger"  @click="delItem">{{$t('auth.delPrivilege')}}</let-button>
     </div>
     <let-form inline itemWidth="200px" @submit.native.prevent="search">

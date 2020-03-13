@@ -1,6 +1,7 @@
 const LoginController = require('../controller/login/LoginController');
 const AuthController = require('../controller/auth/AuthController');
 const UserController = require('../controller/user/UserController');
+const TokenController = require('../controller/token/TokenController');
 const LocaleController = require('../controller/locale/LocaleController');
 
 const pageConf = [
@@ -35,6 +36,11 @@ const apiConf = [
     ['get', '/auth/getAuth', AuthController.getAuth],
     ['get', '/auth/getAuthListByFlag', AuthController.getAuthListByFlag],
 
+    ['get', '/auth/getTokenList', TokenController.getTokenList],
+    ['post', '/auth/addToken', TokenController.addToken],
+    ['post', '/auth/deleteToken', TokenController.deleteToken],
+    ['post', '/auth/setTokenValid', TokenController.setTokenValid],
+    
     //登录且权限本地页面相关接口(必须是admin权限才可以操作, authMiddleware里面限制了)
     ['get', '/auth/page/getUserIdList', UserController.getUserIdList],
     ['get', '/auth/page/getAuthList', AuthController.getAuthList],
@@ -42,6 +48,7 @@ const apiConf = [
     ['post', '/auth/page/pageDeleteAuth', AuthController.pageDeleteAuth],
     ['post', '/auth/page/addUser', UserController.addUser],
     ['post', '/auth/page/pageDeleteUser', UserController.pageDeleteUser],
+
 
     //语言包接口
     ['get', '/get_locale', LocaleController.getLocale]

@@ -1,6 +1,5 @@
 
 const LoginService = require('../app/service/login/LoginService');
-const AuthDao = require('../app/dao/AuthDao');
 
 /**
  * 登录配置
@@ -38,6 +37,9 @@ module.exports = {
  * @param ctx
  */
 async function getUidByTicket(ctx, ticket){
+    if(ctx.query["token"]) {
+        ticket = ctx.query["token"];
+    }
     return await LoginService.getUidByTicket(ticket);
 }
 
@@ -46,14 +48,16 @@ async function getUidByTicket(ctx, ticket){
  * @param ctx
  */
 async function validate(ctx, uid, ticket){
-    // console.log("validate1", ctx, uid, ticket);
-    // return false;
+
+    if(ctx.query["token"]) {
+        ticket = ctx.query["token"];
+    }
+
     if(!ticket) {
         return false;
     }
 
     uid = await LoginService.getUidByTicket(ticket);
 
-    // console.log("validate2", ctx, uid, ticket);
     return uid != null;
 }

@@ -1,4 +1,5 @@
 let LoginDao = require('../../dao/LoginDao');
+let TokenDao = require('../../dao/TokenDao');
 let logger = require('../../logger');
 let cache = require('memory-cache');
 let uuidV1 = require('uuid/v1');
@@ -56,21 +57,34 @@ LoginServer.initLoginTgtCache = async() => {
         tgt = tgt.dataValues;
         tgtMap[tgt.ticket] = {uid: tgt.uid, expireTime: tgt.expire_time};
     });
+
+    tgts = await TokenDao.getAllToken();
+    tgts.forEach((tgt)=> {
+        tgt = tgt.dataValues;
+        tgtMap[tgt.ticket] = {uid: tgt.uid, expireTime: tgt.expire_time};
+    });
     cache.clear();
-    cache.put('tgtMap', tgtMap, 5 * 60 * 1000, ()=> {
+    cache.put('tgtMap', tgtMap, 1 * 60 * 1000, ()=> {
         LoginServer.removeExpiresTgt();
         LoginServer.initLoginTgtCache();
     });
 };
 
 LoginServer.getUidByTicket = async(ticket) => {
+
     let tgtMap = cache.get('tgtMap') || {};
     let tgt = tgtMap[ticket];
     if (!tgt) {
         let tgtInDb = await LoginDao.getTgtByTicket(ticket);
+        console.log(tgtInDb);
         if (tgtInDb) {
             tgtInDb = tgtInDb.dataValues;
             tgt = tgtMap[ticket] = {uid: tgtInDb.uid, expireTime: tgtInDb.expire_time};
+        } else {
+            let token = await TokenDao.getToken(ticket);
+            if(token) {
+                tgt = tgtMap[ticket] = {uid: token.uid, expireTime: token.expire_time}; 
+            }
         }
     }
     if (tgt) {

@@ -6,7 +6,8 @@
     "tab": {
       "tab1": "My Privilege List",
       "tab2": "Manage User",
-      "tab3": "Manage Privilege"
+      "tab3": "Manage Privilege",
+      "tab4": "Token Manage"
     },
     "modifyPass": "Modify Password"
   },
@@ -58,7 +59,24 @@
     "delUser": "Delete User",
     "userManageTitle": "User List",
     "userTime": "Create Time",
-    "adminDelError": "admin Can not be deleted"
+    "adminDelError": "admin Can not be deleted",
+    "token": "TOKEN",
+    "addToken": "Add Token",
+    "delToken": "Delete Token",
+    "tokenManageTitle": "Token List",
+    "tokenExpireTime": "Token Expire Time",
+    "tokenTime": "Token Create Time",
+    "loadTokenError": "Load Token failed",
+    "confirmTokenDelete": "Confirm to delete the token?",
+    "confirmTokenTitle": "Delete Token",
+    "status": "Status",
+    "operator": "Operator",
+    "tokenValid": "valid",
+    "valid": "Enable",
+    "notValid": "Disable",
+    "setTokenValid": "Confirmm to Modify Token Status?",
+    "setTokenError": "Set Token Status Failed",
+    "setTokenSucc": "Modify Token Status Success"
   },
   "pass":{
     "title": "Modify Password",

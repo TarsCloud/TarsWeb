@@ -4,6 +4,7 @@
 
     <div style="float:center">
       <let-button size="small" theme="primary" @click="addUser">{{$t('auth.addUser')}}</let-button>
+      &nbsp;&nbsp;
       <let-button size="small" theme="danger"  @click="delUser">{{$t('auth.delUser')}}</let-button>
     </div>
     <let-table :data="userListShow" stripe :empty-msg="$t('common.nodata')" :title="$t('auth.userManageTitle')">

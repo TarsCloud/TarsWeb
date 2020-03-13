@@ -6,7 +6,8 @@
     "tab": {
       "tab1": "权限列表",
       "tab2": "用户管理",
-      "tab3": "权限管理"
+      "tab3": "权限管理",
+      "tab4": "Token管理"
     },
     "modifyPass": "修改密码"
   },
@@ -42,6 +43,7 @@
     "flagTips": "标志不能为空",
     "roleTips": "角色不能为空",
     "uidTips": "用户不能为空",
+    "tokenTips": "token不能为空",
     "uidPlaceholder": "可填入多个uid，用分号隔开",
     "addPrivilege": "新增权限",
     "delPrivilege": "删除权限",
@@ -57,7 +59,24 @@
     "delUser": "删除用户",
     "userManageTitle": "用户列表",
     "userTime": "创建时间",
-    "adminDelError": "admin用户不允许删除"
+    "adminDelError": "admin用户不允许删除",
+    "token": "TOKEN",
+    "addToken": "新增Token",
+    "delToken": "删除Token",
+    "tokenManageTitle": "Token列表",
+    "tokenExpireTime": "过期时间",
+    "tokenTime": "创建时间",
+    "loadTokenError": "加载Token失败",
+    "confirmTokenDelete": "确定要删除选中的token吗?",
+    "confirmTokenTitle": "删除Token",
+    "status": "状态",
+    "operator": "操作",
+    "tokenValid": "生效",
+    "valid": "生效",
+    "notValid": "失效",
+    "setTokenValid": "确定修改Token状态吗?",
+    "setTokenError": "设置token状态失败",
+    "setTokenSucc": "修改Token状态成功"
   },
   "pass":{
     "title": "修改密码",

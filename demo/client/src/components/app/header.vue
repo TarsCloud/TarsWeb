@@ -13,6 +13,7 @@
           <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/" :icon="serverIcon"></let-tab-pane>
           <let-tab-pane v-if="isAdmin" :tab="$t('header.tab.tab2')" tabkey="/user" :icon="opaIcon"></let-tab-pane>
           <let-tab-pane v-if="isAdmin" :tab="$t('header.tab.tab3')" tabkey="/auth" :icon="packageIcon"></let-tab-pane>
+          <let-tab-pane :tab="$t('header.tab.tab4')" tabkey="/token" :icon="tokenIcon"></let-tab-pane>
         </let-tabs>
 
         <div class="language-wrap">
@@ -46,6 +47,7 @@
 <script>
 import serverIcon from '@/assets/img/server-icon.png';
 import opaIcon from '@/assets/img/opa-icon.png';
+import tokenIcon from '@/assets/img/token-icon.png';
 import packageIcon from '@/assets/img/package.png'
 import {localeMessages} from '@/locale/i18n';
 
@@ -56,6 +58,7 @@ export default {
        serverIcon,
        opaIcon,
        packageIcon,
+       tokenIcon, 
        locale: this.$cookie.get('locale') || 'cn',
        localeMessages: localeMessages,
        enableLogin: true,
