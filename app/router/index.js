@@ -44,13 +44,19 @@ const getRouter = (router, routerConf) => {
 const pageRouter = new Router();
 getRouter(pageRouter, pageConf);
 
-//接口类型路由
-const apiRouter = new Router();
-apiRouter.prefix('/pages/server/api');
-getRouter(apiRouter, apiConf);
+//页面接口类型路由
+const paegApiRouter = new Router();
+paegApiRouter.prefix('/pages/server/api');
+getRouter(paegApiRouter, apiConf);
 
 //节点服务器过来的请求, 获取安装tarsnode的脚本
 const clientRouter = new Router();
 getRouter(clientRouter, clientConf);
 
-module.exports = {pageRouter, apiRouter, clientRouter};
+//接口类型路由
+const apiRouter = new Router();
+apiRouter.prefix('/api');
+getRouter(apiRouter, apiConf);
+
+
+module.exports = {pageRouter, paegApiRouter, clientRouter, apiRouter};

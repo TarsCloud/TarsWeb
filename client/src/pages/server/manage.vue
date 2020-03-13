@@ -899,9 +899,11 @@ export default {
   },
   mounted() {
     this.getServerList();
-    this.getServerNotifyList(1);
+    var that = this;
+    setInterval(function() {
+      that.getServerNotifyList();
+    }, 1000);
   },
-
   linkDownload (url) {
       window.open(url,'_blank') // 新窗口打开外链接
   }

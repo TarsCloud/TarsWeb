@@ -40,6 +40,11 @@ NodeInfoDao.deleteNodeInfo = async (nodeName) => {
 	});
 };
 
+NodeInfoDao.getNodeList = async () => {
+	return await tNodeInfo.findAll({
+		attributes: [[Sequelize.literal('distinct `node_name`'), 'node_name']],
+	})
+};
 
 NodeInfoDao.getNodeInfoList = async (nodeName, curPage, pageSize) => {
 	let where = {

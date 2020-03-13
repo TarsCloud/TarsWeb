@@ -17,12 +17,13 @@
 const Koa = require('koa');
 const app = new Koa();
 const path = require('path');
-const views = require('koa-views');
-const json = require('koa-json');
+// const views = require('koa-views');
+// const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
 const multer = require('koa-multer');
 const static = require('koa-static');
+const apiMidware = require('./app/midware/apiMidware');
 const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
 const localeMidware = require('./app/midware/localeMidware');
@@ -128,10 +129,14 @@ if (dcacheConf.enableDcache) {
 
 //激活router
 // dcache 会添加新的 page、api router， 不能提前
-const {pageRouter, apiRouter, clientRouter} = require('./app/router');
+const {pageRouter, paegApiRouter, clientRouter, apiRouter} = require('./app/router');
+
+app.use(apiMidware(apiRouter));
+
 app.use(pageRouter.routes(), pageRouter.allowedMethods());
-app.use(apiRouter.routes(), apiRouter.allowedMethods());
+app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods());
 app.use(clientRouter.routes(), clientRouter.allowedMethods());
+app.use(apiRouter.routes(), apiRouter.allowedMethods());
 
 //激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));

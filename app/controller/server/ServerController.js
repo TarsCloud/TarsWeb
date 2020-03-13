@@ -112,6 +112,22 @@ ServerController.getApplicationList = async (ctx) => {
 	}
 }
 
+ServerController.getNodeList = async (ctx) => {
+	try {
+		let nodes = [];
+		let data = await ServerService.getNodeList();
+
+		data.forEach((x,y)=>{
+			nodes.push(x.node_name);
+		});
+
+		ctx.makeResObj(200, '', nodes);
+	} catch (e) {
+		logger.error('[getNodeList]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
 ServerController.getServerConfList4Tree = async (ctx) => {
 	let treeNodeId = ctx.paramsObj.tree_node_id;
 	let curPage = parseInt(ctx.paramsObj.cur_page) || 0;

@@ -9,17 +9,7 @@
       @submit.native.prevent="save"
     >
       <let-form-item :label="$t('deployService.form.app')" required>
-        <!-- <let-input
-          size="small"
-          v-model="model.application"
-          :placeholder="$t('deployService.form.placeholder')"
-          required
-          :required-tip="$t('deployService.form.appTips')"
-          pattern="^[a-zA-Z]+$"
-          :pattern-tip="$t('deployService.form.placeholder')"
-        ></let-input> -->
-
-        <let-select id="inputApplication" v-model="model.application" size="small" filterable :notFoundText="$t('deployService.form.appAdd')">
+        <let-select id="inputApplication" v-model="model.application" size="small"  @change="changeApplication" filterable :notFoundText="$t('deployService.form.appAdd')">
           <let-option v-for="d in model.applicationList" :key="d" :value="d">
             {{d}}
           </let-option>
@@ -47,6 +37,7 @@
           <let-option v-for="d in types" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
+
       <let-form-item :label="$t('deployService.form.template')" required>
         <let-select
           size="small"
@@ -57,14 +48,22 @@
           <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
+
       <let-form-item :label="$t('serverList.table.th.ip')" required>
-        <let-input
+        <let-select v-model="model.node_name" size="small" filterable>
+          <let-option v-for="d in model.nodeList" :key="d" :value="d">
+            {{d}}
+          </let-option>
+        </let-select>
+
+        <!-- <let-input
           size="small"
           v-model="model.node_name"
           :placeholder="$t('serverList.table.th.ip')"
           required
           :required-tip="$t('deployService.form.nodeTips')"
-        ></let-input>
+        ></let-input> -->
+
       </let-form-item>
       <let-form-item label="SET">
         <SetInputer
@@ -230,7 +229,6 @@
       <let-button type="submit" theme="primary">{{$t('common.submit')}}</let-button>
     </let-form>
 
-
     <let-modal
       v-model="resultModal.show"
       width="700px"
@@ -300,8 +298,24 @@ const types = [
   'tars_go'
 ];
 
+const tars_templates = [
+  'tars.tarsregistry',
+  'tars.tarsAdminRegistry',
+  'tars.tarspatch',
+  'tars.tarsnode',
+  'tars.tarsconfig',
+  'tars.tarsnotify',
+  'tars.tarsstat',
+  'tars.tarsquerystat',
+  'tars.tarsproperty',
+  'tars.tarsqueryproperty',
+  'tars.framework-db',
+  'tars.tarslog',
+];
+
 const getInitialModel = () => ({
   applicationList: [],
+  nodeList:[],
   application: '',
   server_name: '',
   server_type: types[0],
@@ -336,6 +350,9 @@ export default {
   data() {
     return {
       types,
+      tars_templates,
+      all_templates: [],
+      notars_templates: [],
       templates: [],
       model: getInitialModel(),
       enableAuth: false,
@@ -362,7 +379,6 @@ export default {
       }
     };
   },
-
   mounted() {
     this.$ajax.getJSON('/server/api/is_enable_auth').then((data) => {
       this.enableAuth = data.enableAuth || false;
@@ -376,9 +392,36 @@ export default {
       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
     });
 
+    this.$ajax.getJSON('/server/api/node_list').then((data) => {
+      console.log(data);
+      this.model.nodeList = data;
+    }).catch((err) => {
+      this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+    });
+
     this.$ajax.getJSON('/server/api/template_name_list').then((data) => {
       this.templates = data;
+      this.all_templates = data;
+      this.notars_templates = [];
+      
+      this.all_templates.forEach((e) => {
+        var index;
+        for(index = 0; index < this.tars_templates.length; index++) {
+          if(this.tars_templates[index] == e)
+            return;
+        }
+        this.notars_templates.push(e);
+      });
+
       this.model.template_name = data[0];
+
+      var application = document.querySelector("#inputApplication .let-select__filter__input");
+      var that = this;
+
+      application.onblur=function(){
+        that.changeApplication(this.value);
+      }
+
     }).catch((err) => {
       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
     });
@@ -397,6 +440,13 @@ export default {
   },
 
   methods: {
+    changeApplication(app) {
+      if(app == 'tars') {
+        this.templates = this.tars_templates;
+      } else {
+        this.templates = this.notars_templates;
+      }
+    },
     addAdapter(template) {
       this.model.adapters.push(Object.assign({}, template));
     },
@@ -522,19 +572,6 @@ export default {
     },
     onCancel() {
       this.checkDeployLog();
-      // alert('oncancel');
-      //检查tarslog是否有独立部署了, 如果有则把框架部署的tarslog卸载掉
-      // this.$ajax.getJSON('/server/api/undeploy_tars_log').then((data) => {
-
-      //   //卸载成功了
-      //   this.deployModal.show = false;
-      //   // location.href="/";
-
-      //   }).catch((err) => {
-      //     this.$tip.error(`${this.$t('deployLog.failed')}: ${err.err_msg || err.message}`);
-      //   });
-
-      // location.href="/";
     }
   },
 };

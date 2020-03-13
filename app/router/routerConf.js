@@ -51,6 +51,7 @@ const apiConf = [
         node_name: 'notEmpty'
     }],
     ['get', '/application_list', ServerController.getApplicationList],
+    ['get', '/node_list', ServerController.getNodeList],
     ['get', '/server_list', ServerController.getServerConfList4Tree, { tree_node_id: 'notEmpty' }],
     ['get', '/inactive_server_list', ServerController.getInactiveServerConfList],
     ['get', '/get_realtime_state', ServerController.getRealtimeState, { id: 'notEmpty' }],

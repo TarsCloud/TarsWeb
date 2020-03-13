@@ -14,6 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
+const NodeInfoDao = require('../../dao/NodeInfoDao');
 const ServerDao = require('../../dao/ServerDao');
 const AdapterDao = require('../../dao/AdapterDao');
 const ResourceDao = require('../../dao/ResourceDao');
@@ -68,14 +69,17 @@ ServerService.serverConfFields = () => {
     };
 };
 
-
 //通过ID获取服务信息
 ServerService.getServerConfById = async(id) => {
     return await ServerDao.getServerConfById(id);
 };
 
 ServerService.getApplicationList= async() => {
-    return await ServerDao.getApplicationList();
+    return await ServerDao.getApplication();
+};
+
+ServerService.getNodeList= async() => {
+    return await NodeInfoDao.getNodeList();
 };
 
 //通过应用，服务，节点获取获取服务信息
