@@ -11,6 +11,8 @@
 - 服务部署界面, 应用可以选择也可以输入
 - 在首页显示web的版本
 - 默认开启dcache
+- 增加token支持
+- 部署时支持node节点选择
 
 ## 20200105(1.5.1)
 - 修改节点不用ip, 使用域名情况下, tars-node docker拉取tarsnode.tgz的bug

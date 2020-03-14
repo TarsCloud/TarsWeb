@@ -11,6 +11,8 @@
 - deploy: input application can select
 - show version in index page
 - open dcache default
+- add token support
+- node list choose in deploy
 
 ## 20200105(1.5.1)
 - When modifying nodes without IP and using domain names, the tar node docker pulls the bug of tarsnode.tgz
