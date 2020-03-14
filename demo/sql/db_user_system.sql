@@ -70,7 +70,19 @@ VALUES (1,'admin','',now());
 /*!40000 ALTER TABLE `t_user_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
+DROP TABLE IF EXISTS `t_token`;
 
+CREATE TABLE `t_token` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(128) DEFAULT NULL,
+  `token` varchar(128) DEFAULT NULL,
+  `valid` int(11) DEFAULT NULL,
+  `expire_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `token` (`token`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
