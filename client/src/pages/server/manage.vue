@@ -464,7 +464,7 @@ export default {
     // 获取服务实时状态
     getServerNotifyList(curr_page) {
       if (!this.showOthers) return;
-      const loading = this.$refs.serverNotifyListLoading.$loading.show();
+      // const loading = this.$refs.serverNotifyListLoading.$loading.show();
 
       if(!curr_page) {
         curr_page = this.pageNum || 1; 
@@ -475,7 +475,7 @@ export default {
         page_size: this.pageSize,
         curr_page: curr_page,
       }).then((data) => {
-        loading.hide();
+        // loading.hide();
         this.pageNum = curr_page;
         this.total = Math.ceil(data.count/this.pageSize);
         this.serverNotifyList = data.rows;
@@ -486,7 +486,7 @@ export default {
         }, 1000);
 
       }).catch((err) => {
-        loading.hide();
+        // loading.hide();
         this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
     },
