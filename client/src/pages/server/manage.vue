@@ -385,6 +385,7 @@ export default {
 
       // 操作历史列表
       serverNotifyList: [],
+      getServerNotifyListTimer:0,
       pageNum: 1,
       pageSize: 20,
       total:1,
@@ -465,11 +466,9 @@ export default {
     getServerNotifyList(curr_page) {
       if (!this.showOthers) return;
       // const loading = this.$refs.serverNotifyListLoading.$loading.show();
-
       if(!curr_page) {
         curr_page = this.pageNum || 1; 
       }
-
       this.$ajax.getJSON('/server/api/server_notify_list', {
         tree_node_id: this.$route.params.treeid,
         page_size: this.pageSize,
@@ -479,11 +478,7 @@ export default {
         this.pageNum = curr_page;
         this.total = Math.ceil(data.count/this.pageSize);
         this.serverNotifyList = data.rows;
-
         var that = this;
-        setTimeout(function() {
-          that.getServerNotifyList();
-        }, 1000);
 
       }).catch((err) => {
         // loading.hide();
@@ -906,6 +901,13 @@ export default {
   mounted() {
     this.getServerList();
     this.getServerNotifyList(1);
+    //同时只更新一个
+    if(window.__GET_NOTIFY_TIMER){
+      clearTimeout(window.__GET_NOTIFY_TIMER)
+    }
+    window.__GET_NOTIFY_TIMER = setInterval(()=>{
+      this.getServerNotifyList();
+    }, 1000);
   },
   linkDownload (url) {
       window.open(url,'_blank') // 新窗口打开外链接
@@ -915,7 +917,7 @@ export default {
 
 </script>
 
-<style>
+<style lang="postcss">
 @import '../../assets/css/variable.css';
 
 .page_server_manage {
