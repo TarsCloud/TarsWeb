@@ -12,7 +12,11 @@
 
     <let-table :data="nodeList" stripe :empty-msg="$t('common.nodata')" :row-class-name="tableRowClassName" ref="nodeListLoading">
       <let-table-column :title="$t('nodeList.table.th.node_name')" prop="node_name"></let-table-column>
-      <let-table-column :title="$t('nodeList.table.th.present_state')" prop="present_state"></let-table-column>
+      <let-table-column :title="$t('nodeList.table.th.present_state')">
+        <template slot-scope="scope">
+          <span :class="scope.row.present_state === 'active' ? 'active' : 'inactive'">{{scope.row.present_state}}</span>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('common.time')" prop="last_reg_time"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.last_heartbeat')" prop="last_heartbeat"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.tars_version')" prop="tars_version"></let-table-column>
@@ -382,7 +386,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .page_operation_templates {
   pre {
     color: #909FA3;
@@ -399,7 +403,29 @@ export default {
   color:#f56c77;
 }
 .let-table tr.red-row td {
-    background: #F56C77 !important;
-    color: #FFF;
+  background: #F56C77 !important;
+  color: #FFF;
+}
+.active, .inactive{
+  &:before{
+    content: ' ';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 100%;
+    margin-right: 5px;
   }
+}
+.active{
+  color:green;
+  &:before{
+    background: green;
+  }
+}
+.inactive{
+  color:red;
+  &:before{
+    background: red;
+  }
+}
 </style>

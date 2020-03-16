@@ -8,7 +8,7 @@
       <let-table :data="configList" :title="$t('cfg.title.a')" :empty-msg="$t('common.nodata')">
         <let-table-column width="40px">
           <template slot-scope="scope">
-            <let-radio v-model="checkedConfigId" :label="scope.row.id">&nbsp;</let-radio>
+            <let-radio v-model="checkedConfigId" :label="scope.row.id"><span>&nbsp;</span></let-radio>
           </template>
         </let-table-column>
         <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
