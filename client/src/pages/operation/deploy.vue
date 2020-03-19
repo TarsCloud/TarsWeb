@@ -50,7 +50,7 @@
       </let-form-item>
 
       <let-form-item :label="$t('serverList.table.th.ip')" required>
-        <let-select v-model="model.node_name" size="small" filterable>
+        <let-select v-model="model.node_name" size="small">
           <let-option v-for="d in model.nodeList" :key="d" :value="d">
             {{d}}
           </let-option>
