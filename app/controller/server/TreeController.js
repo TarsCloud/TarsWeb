@@ -24,8 +24,6 @@ const AuthService = require('../../service/auth/AuthService');
 const TreeController = {};
 
 TreeController.listTree = async (ctx) => {
-	console.log('getTreeNodes', ctx);
-
 	try {
 		ctx.makeResObj(200, '', await TreeService.getTreeNodes(ctx.uid));
 	} catch (e) {
