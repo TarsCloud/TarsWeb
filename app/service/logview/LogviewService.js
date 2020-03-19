@@ -66,6 +66,7 @@ LogviewService.getQueryParam = function(paramStr) {
     } else {
         cmd += "|head -" + showLine;
     }
+	cmd += " | cat -v "
     console.log("=============>getQueryParam cmd:" + cmd);
     return cmd;
 }
