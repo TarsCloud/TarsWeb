@@ -63,7 +63,7 @@ CREATE TABLE `t_tars_files` (
   `application` varchar(64) NOT NULL DEFAULT '' COMMENT '应用名',
   `server_name` varchar(128) NOT NULL DEFAULT '' COMMENT '服务名',
   `file_name` varchar(64) NOT NULL DEFAULT '' COMMENT '文件名',
-  `posttime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `posttime` datetime DEFAULT NULL COMMENT '更新时间',
   `context` text COMMENT '解析后的JSON对象',
   PRIMARY KEY (`server_name`,`file_name`),
   UNIQUE KEY `f_id` (`f_id`)

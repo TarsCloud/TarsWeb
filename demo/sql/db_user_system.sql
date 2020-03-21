@@ -14,11 +14,11 @@ DROP TABLE IF EXISTS `t_auth`;
 
 CREATE TABLE `t_auth` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `flag` varchar(256) CHARACTER SET latin1 DEFAULT NULL,
-  `role` varchar(256) CHARACTER SET latin1 DEFAULT NULL,
-  `uid` varchar(256) CHARACTER SET latin1 DEFAULT NULL,
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `flag` varchar(256) DEFAULT NULL,
+  `role` varchar(256) DEFAULT NULL,
+  `uid` varchar(256) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -39,9 +39,9 @@ DROP TABLE IF EXISTS `t_login_temp_info`;
 
 CREATE TABLE `t_login_temp_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ticket` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
-  `uid` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
-  `expire_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ticket` varchar(256) DEFAULT NULL,
+  `uid` varchar(256) DEFAULT NULL,
+  `expire_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -54,9 +54,9 @@ DROP TABLE IF EXISTS `t_user_info`;
 
 CREATE TABLE `t_user_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
-  `password` varchar(256) CHARACTER SET utf8 NOT NULL,
-  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `uid` varchar(128) DEFAULT NULL,
+  `password` varchar(256) NOT NULL,
+  `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_name` (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -82,7 +82,7 @@ CREATE TABLE `t_token` (
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   KEY `token` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
