@@ -168,6 +168,26 @@ CREATE TABLE `t_apply_cache_server_conf` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `t_module_operation`
+--
+
+DROP TABLE IF EXISTS `t_module_operation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_module_operation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(50) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `appName` varchar(256) NOT NULL,
+  `moduleName` varchar(256) NOT NULL,
+  `cache_version` int(4) DEFAULT '0',
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `t_expand_server`
 --
 
@@ -198,26 +218,6 @@ CREATE TABLE `t_expand_server` (
   KEY `t_expand_server_operation_id_foreign_idx` (`operation_id`),
   CONSTRAINT `t_expand_server_operation_id_foreign_idx` FOREIGN KEY (`operation_id`) REFERENCES `t_module_operation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `t_module_operation`
---
-
-DROP TABLE IF EXISTS `t_module_operation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `t_module_operation` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(50) NOT NULL,
-  `status` varchar(50) NOT NULL,
-  `appName` varchar(256) NOT NULL,
-  `moduleName` varchar(256) NOT NULL,
-  `cache_version` int(4) DEFAULT '0',
-  `createdAt` datetime DEFAULT NULL,
-  `updatedAt` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
