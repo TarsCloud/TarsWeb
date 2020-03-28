@@ -511,7 +511,7 @@
       "notStart": "not start",
       "running": "running",
       "success": "success",
-      "failed": "failed (go manage page see reason)",
+      "failed": "failed",
       "cancel": "cancel",
       "parial": "partial success",
       "restartFailed": "restart failed",

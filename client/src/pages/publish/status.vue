@@ -22,6 +22,7 @@
            </let-tag>
          </template>
        </let-table-column>
+       <let-table-column width="70%" :title="$t('serverList.table.th.result')"  prop="execute_info"> </let-table-column>
    </let-table>
  </let-modal>
 
