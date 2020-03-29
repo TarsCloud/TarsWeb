@@ -28,7 +28,7 @@ const logger = require('../../logger');
 
 let Db = {};
 
-let databases = ['db_tars', 'db_tars_web'];
+let databases = ['db_tars', 'db_tars_web', 'db_base'];
 
 databases.forEach((database) => {
 	let {
@@ -41,6 +41,7 @@ databases.forEach((database) => {
 	} = dbConf;
 
 	//初始化sequelize
+
 	const sequelize = new Sequelize(database, user, password, {
 		host,
 		port,
@@ -48,10 +49,11 @@ databases.forEach((database) => {
 		dialectOptions: {
 			charset: charset
 		},
-		logging(sqlText){
-			console.log(sqlText);
-			logger.sql(sqlText);
-		},
+		// logging(sqlText){
+		// 	console.log(sqlText);
+		// 	logger.sql(sqlText)
+		// },
+		logging:false,
 		pool: {
 			max: pool.max || 10,
 			min: pool.min || 0,

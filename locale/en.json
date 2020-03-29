@@ -687,7 +687,8 @@
       "template": "Manage template",
       "apply": "Apply for deployment",
       "nodes": "Node service",
-      "check": "Check Framework"
+      "check": "Check Framework",
+      "gateway": "Gateway Config"
     },
     "form": {
       "app": "APP",
