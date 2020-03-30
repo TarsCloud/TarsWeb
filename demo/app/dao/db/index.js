@@ -37,8 +37,8 @@ databases.forEach((database)=>{
             charset: charset
         },
         logging(sqlText){
-            console.log(sqlText);
-            logger.sql(sqlText);
+            // console.log(sqlText);
+            // logger.sql(sqlText);
         },
         pool: {
             max: pool.max || 10,

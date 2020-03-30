@@ -97,7 +97,6 @@
             <let-input
               size="small"
               v-model="detailModal.model.user"
-              disabled
             ></let-input>
         </let-form-item>
         <let-form-item :label="$t('nodes.port')" required>

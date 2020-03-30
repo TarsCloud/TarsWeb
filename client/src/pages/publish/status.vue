@@ -18,7 +18,7 @@
          <template slot-scope="scope">
            <let-tag
              :theme="scope.row.status == 2 ? 'success' : (scope.row.status == 3 ? 'danger' : '')" checked>
-             {{statusConfig[scope.row.status] + (scope.row.status != 2 && scope.row.status != 3 ? '...' : '')}}
+             {{statusConfig[scope.row.status] + (scope.row.status != 2 && scope.row.status != 3 ? scope.row.desc: '')}}
            </let-tag>
          </template>
        </let-table-column>
@@ -112,6 +112,12 @@ export default {
           data.items.forEach((item) => {
             if (![2, 3].includes(item.status)) {
               done = false;
+            }
+
+            if(item.percent) {
+              item.desc = "(" + item.percent + "%)" 
+            } else {
+              item.desc = "...";
             }
           });
           done ? clearTimeout(timerId) : timerId = setTimeout(getTask, 2000);

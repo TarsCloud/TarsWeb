@@ -28,6 +28,10 @@ const md5Sum = require('md5-file').sync;
 
 const PatchController = {};
 
+PatchController.sleep = (timeountMS) => new Promise((resolve) => {
+	setTimeout(resolve, timeountMS);
+  });
+
 PatchController.uploadAndPublish = async (ctx) => {
 	try {
 
@@ -83,6 +87,14 @@ PatchController.uploadAndPublish = async (ctx) => {
 		}
 
 		await TaskService.addTask({serial, items, task_no, userName: 'auto-developer'});
+
+		while(true) {
+			await PatchController.sleep(2000);
+			ret = await TaskService.getTaskRsp(task_no);
+			if(ret.status != 1) {
+				break;
+			}
+		}
 
 		ctx.body += "upload & publish succ!\n";
 
