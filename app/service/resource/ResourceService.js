@@ -204,7 +204,6 @@ ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 		}
 	}
 };
-
 /**
  * 批量卸载Tars node
  * @param ips

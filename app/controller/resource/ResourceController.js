@@ -98,7 +98,22 @@ ResourceController.uninstallTarsNodes = async (ctx) => {
 		let rst = await ResourceService.uninstallTarsNodes(ips);
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
-		logger.error('[installTarsNode]', e, ctx);
+		logger.error('[uninstallTarsNodes]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
+ResourceController.uninstallTarsNode = async (ctx) => {
+	try {
+		let node_name = ctx.paramsObj.node_name;
+		let rst = await ResourceService.uninstallTarsNodes([node_name]);
+		console.log(rst);
+		if(rst && rst.length > 0) {
+			rst = rst[0];
+		}
+		ctx.makeResObj(200, '', rst);
+	} catch (e) {
+		logger.error('[uninstallTarsNode]', e, ctx);
 		ctx.makeErrResObj();
 	}
 };

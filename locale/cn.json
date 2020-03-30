@@ -445,10 +445,13 @@
         "present_state": "当前状态",
         "tars_version": "版本",
         "load_avg5": "负载",
-        "check": "检查"
-      }
+        "check": "操作"
+      },
+      "check": "检查",
+      "delete": "删除"
     },
-    "checkNode": "检查节点联通性"
+    "checkNode": "检查节点联通性",
+    "deleteNode": "删除节点"
   },
   "serverList": {
     "title": {
@@ -776,12 +779,35 @@
     "runuser": "运行用户",
     "runuserTips": "运行用户不能为空",
     "btn": {
-      "addNode": "安装节点",
+      "manualAddNode": "手工安装节点",
+      "autoAddNode": "自动安装节点",
       "check": "点击开始检查框架状态"
+    },
+    "manualAddNode": {
+      "title": "操作步骤",
+      "info1": "注意1: ${webhost}是web平台地址, ${localip}是节点机ip",
+      "info2": "注意2: web平台上只有框架对应编译平台的安装包, 其他OS的安装包需要自己手工编译",
+      "OS1" : {
+        "title" : "Linux/Mac",
+        "step1": "在节点机上运行: wget http://${webhost}/get_tarsnode?ip=${localip} -O install_tarsnode.sh",
+        "step2": "mkdir -p /usr/local/app/tars/tarsnode",
+        "step3": "运行: sh install_tarsnode.sh",
+        "step4": "crontab中增加监控: * * * * * /usr/local/app/tars/tarsnode/util/monitor.sh",
+        "step5": "完成安装, 安装目录: /usr/local/app/tars/"
+      },
+      "OS2": {
+        "title": "Windows",
+        "step1": "在节点机上打开浏览器: http://${webhost}/get_tarsnode?ip=${localip}",
+        "step2": "将输出保存为: install_tarsnode.sh",
+        "step3": "在节点机上下载busybox: http://${webhost}/files/busybox.exe",
+        "step4": "window命令行运行: busybox.exe install_tarsnode.sh",
+        "step5": "windows计划任务中增加监控:  c:\\tars-install\\tars\\tarsnode\\util\\monitor.bat",
+        "step6": "完成安装, 缺省目录: c:\\tars-install\\tars"
+      } 
     },
     "add": {
       "nodeNameTips": "节点名不能为空",
-      "title": "安装节点"
+      "title": "安装节点(暂不支持Windows)"
     }
   },
   "connectNodeList": {

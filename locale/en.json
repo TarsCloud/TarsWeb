@@ -419,10 +419,13 @@
         "present_state": "Present State",
         "tars_version": "Version",
         "load_avg5": "Load",
-        "check": "Check"
-      }
+        "check": "Operator"
+      },
+      "check": "Check",
+      "delete": "Delete"
     },
-    "checkNode": "Check Node Connection"
+    "checkNode": "Check Node Connection",
+    "deleteNode": "Delete Node"
   },
   "serverList": {
     "title": {
@@ -750,12 +753,35 @@
     "runuser": "Run User",
     "runuserTips": "Run User cannot be empty",
     "btn": {
-      "addNode": "Install node",
+      "manualAddNode": "Manual Install node",
+      "autoAddNode": "Auto Install node",
       "check": "Click to check framework"
+    },
+    "manualAddNode": {
+      "title": "Step",
+      "info1": "Note 1: ${webhost} is address of web platform, ${localip} is ip of node machine",
+      "info2": "Note 2: On the web platform, only the framework corresponds to the installation package of the compilation platform. Other OS installation packages need to be compiled manually by yourselves",
+      "OS1" : {
+        "title" : "Linux/Mac",
+        "step1": "In node machine: wget http://${webhost}/get_tarsnode?ip=${localip} -O install_tarsnode.sh",
+        "step2": "Run: mkdir -p /usr/local/app/tars/tarsnode",
+        "step3": "Run: sh install_tarsnode.sh",
+        "step4": "In crontab, add: * * * * * /usr/local/app/tars/tarsnode/util/monitor.sh",
+        "step5": "Finish, install directory: /usr/local/app/tars/" 
+      },
+      "OS2": {
+        "title": "Windows",
+        "step1": "In node machine open: http://${webhost}/get_tarsnode?ip=${localip}",
+        "step2": "Save output to: install_tarsnode.sh",
+        "step3": "Download busybox: http://${webhost}/files/busybox.exe",
+        "step4": "In window console, run: busybox.exe install_tarsnode.sh",
+        "step5": "In windows scheduled tasks add: c:\\tars-install\\tars\\tarsnode\\util\\monitor.bat",
+        "step6": "Finish, install directory: c:\\tars-install\\tars"
+      }
     },
     "add": {
       "nodeNameTips": "node name cannot be empty",
-      "title": "Install Node"
+      "title": "Install Node(Windows not support)"
     }
   },
   "connectNodeList": {

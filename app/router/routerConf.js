@@ -195,6 +195,7 @@ const apiConf = [
     ['post', '/connect_tars_node', ResourceController.connectTarsNode],
     ['post', '/install_tars_nodes', ResourceController.installTarsNodes],
     ['get', '/uninstall_tars_nodes', ResourceController.uninstallTarsNodes, { ips: 'notEmpty' }],
+    ['get', '/uninstall_tars_node', ResourceController.uninstallTarsNode, { node_name: 'notEmpty' }],
     ['get', '/check_tars_node', ResourceController.checkTarsNode, { node_name: 'notEmpty' }],
 
     //权限管理

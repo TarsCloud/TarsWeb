@@ -96,7 +96,14 @@ PatchController.uploadAndPublish = async (ctx) => {
 			}
 		}
 
-		ctx.body += "upload & publish succ!\n";
+		let info = "-----------------------------------------------------------------\n";
+		info += "task no:  [" + ret.task_no + "]\n\n";
+		for(var index = 0; index < ret.items.length; ++index)
+		{
+			let node = ret.items[index];
+			info += node.node_name + " " + node.status_info + " " + node.execute_info + "\n";
+		}
+		ctx.body += info;
 
 	} catch (e) {
 		ctx.body = "upload and patch err:" + e;

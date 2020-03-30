@@ -1,6 +1,6 @@
 <template>
   <div class="page_operation_templates">
-    <let-button size="small" theme="primary" style="float: right" @click="addItem">{{$t('nodes.btn.addNode')}}</let-button>
+
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
       <let-form-item :label="$t('nodes.node_name')">
         <let-input size="small" v-model="query.node_name"></let-input>
@@ -8,7 +8,36 @@
       <let-form-item>
         <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
       </let-form-item>
+      <div style="float: right">
+      <let-button size="small" theme="primary" @click="manualAddItem">{{$t('nodes.btn.manualAddNode')}}</let-button>
+      &nbsp;&nbsp;&nbsp;
+      <let-button size="small" theme="primary" @click="autoAddItem">{{$t('nodes.btn.autoAddNode')}}</let-button>
+      </div>
     </let-form>
+
+    <let-modal :title="$t('nodes.btn.manualAddNode')" v-model="showManualAddItem" :footShow="false"  width="800px">
+      <div>
+        <br>
+        <br>
+        <let-tag>{{$t('nodes.manualAddNode.OS1.title')}}</let-tag>
+        <p>1 {{$t('nodes.manualAddNode.OS1.step1')}}</p>
+        <p>2 {{$t('nodes.manualAddNode.OS1.step2')}}</p>
+        <p>3 {{$t('nodes.manualAddNode.OS1.step3')}}</p>
+        <p>4 {{$t('nodes.manualAddNode.OS1.step4')}}</p>
+        <p>5 {{$t('nodes.manualAddNode.OS1.step5')}}</p>
+        <br>
+        <let-tag>{{$t('nodes.manualAddNode.OS2.title')}}</let-tag>
+        <p>1 {{$t('nodes.manualAddNode.OS2.step1')}}</p>
+        <p>2 {{$t('nodes.manualAddNode.OS2.step2')}}</p>
+        <p>3 {{$t('nodes.manualAddNode.OS2.step3')}}</p>
+        <p>4 {{$t('nodes.manualAddNode.OS2.step4')}}</p>
+        <p>5 {{$t('nodes.manualAddNode.OS2.step5')}}</p>
+        <p>6 {{$t('nodes.manualAddNode.OS2.step6')}}</p>
+        <br>
+        <let-tag theme="success" checked>{{$t('nodes.manualAddNode.info1')}}</let-tag><br><br>
+        <let-tag theme="success" checked>{{$t('nodes.manualAddNode.info2')}}</let-tag>
+      </div>
+    </let-modal>
 
     <let-table :data="nodeList" stripe :empty-msg="$t('common.nodata')" :row-class-name="tableRowClassName" ref="nodeListLoading">
       <let-table-column :title="$t('nodeList.table.th.node_name')" prop="node_name"></let-table-column>
@@ -24,9 +53,10 @@
       <let-table-column :title="$t('nodeList.table.th.check')">
 
         <template slot-scope="scope">
-          <let-table-operation @click="checkNode(scope.row.node_name)">{{$t('nodeList.table.th.check')}}</let-table-operation>
+          <let-table-operation @click="checkNode(scope.row.node_name)">{{$t('nodeList.table.check')}}</let-table-operation>
+          &nbsp;&nbsp;
+          <let-table-operation @click="deleteNode(scope.row.node_name)">{{$t('nodeList.table.delete')}}</let-table-operation>
         </template>
-      </let-table-column>
       </let-table-column>
     </let-table>
     <let-pagination
@@ -71,7 +101,9 @@
       </let-table>
 
       <let-button theme="primary" @click="connectNode" :disabled="executeConnect">{{btnConnectText}}</let-button>
+      &nbsp;&nbsp;
       <let-button theme="primary" @click="installNode" :disabled="executeInstall">{{btnInstallText}}</let-button>
+      &nbsp;&nbsp;
       <let-button theme="primary" @click="closeConnectModal" style="float:right">{{$t('connectNodeList.btnClose')}}</let-button>
     </let-modal>
 
@@ -157,8 +189,7 @@ export default {
       connectModal: {
         show: false
       },
-      // canInstall: false,
-
+      showManualAddItem: false,
       detailModal: {
         show: false,
         model: {
@@ -183,6 +214,22 @@ export default {
       }).then((data) => {
         loading.hide();
         this.$tip.success(`${this.$t('nodeList.checkNode')}: ${data}` );
+      }).catch((err) => {
+        loading.hide();
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+      });
+    },
+    deleteNode(node_name) {
+      const loading = this.$refs.nodeListLoading.$loading.show();
+      this.$ajax.getJSON('/server/api/uninstall_tars_node', {
+        node_name: node_name,
+      }).then((data) => {
+        loading.hide();
+        if(data.rst) {
+          this.$tip.success(`${this.$t('nodeList.deleteNode')}: ${data.msg}` );
+        } else {
+          this.$tip.error(`${this.$t('nodeList.deleteNode')}: ${data.msg}` );
+        }
       }).catch((err) => {
         loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
@@ -244,7 +291,10 @@ export default {
       this.connectModal.show = false;
 
     },
-    addItem() {
+    manualAddItem() {
+      this.showManualAddItem = true;
+    },
+    autoAddItem() {
       this.detailModal.show = true;
     },
     showConnectNode() {

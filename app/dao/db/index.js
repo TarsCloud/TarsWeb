@@ -50,7 +50,7 @@ databases.forEach((database) => {
 		},
 		logging(sqlText){
 			// console.log(sqlText);
-			// logger.sql(sqlText);
+			logger.sql(sqlText);
 		},
 		pool: {
 			max: pool.max || 10,
