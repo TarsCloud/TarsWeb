@@ -1,4 +1,12 @@
 
+## 20200331(2.1.0)
+- 修改token生成的问题, 增加随机数
+- 增加删除节点的功能
+- 自动发布, 增加阻塞逻辑, 直到有发布结果了才返回
+- 发布增加结果显示
+- fix db_cache_web.sql, 修复sql语句顺序, 避免外键的错误提示
+- logview支持特殊字符的显示
+- node check界面增加状态显示
 
 ## 20200312(2.0.0)
 - querystat & queryproperty 修改为tars服务, 需配合tars-framework(v2.1.0)

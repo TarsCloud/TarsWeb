@@ -105,7 +105,13 @@ if [ $OS != 3 ]; then
 
     ${TARS_PATH}/tarsnode/util/stop.sh
 
-    su - ${runuser} -c "sh ${TARS_PATH}/tarsnode/util/start.sh"
+    uid=`whoami`
+    if [ "$uid" != "${runuser}" ] && [ "${runuser}" != "" ]; then
+        echo "su $runuser: now uid:$uid, runuser:$runuser"
+        su - $runuser -c "sh ${TARS_PATH}/tarsnode/util/start.sh"
+    else
+        sh ${TARS_PATH}/tarsnode/util/start.sh
+    fi
 else
     ${TARS_PATH}/tarsnode/util/start.bat
 fi

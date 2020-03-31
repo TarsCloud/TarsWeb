@@ -451,7 +451,8 @@
       "delete": "删除"
     },
     "checkNode": "检查节点联通性",
-    "deleteNode": "删除节点"
+    "deleteNode": "删除节点",
+    "confirmDeleteNode": "确认删除节点吗? <br>请先在节点机上停止节点, 并下线节点上的服务"
   },
   "serverList": {
     "title": {

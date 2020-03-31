@@ -213,26 +213,33 @@ export default {
         node_name: node_name,
       }).then((data) => {
         loading.hide();
-        this.$tip.success(`${this.$t('nodeList.checkNode')}: ${data}` );
+        if(data) {
+          this.$tip.success(`${this.$t('nodeList.checkNode')}: ${data}` );
+        } else {
+          this.$tip.error(`${this.$t('nodeList.checkNode')}: ${data}` );
+        }
       }).catch((err) => {
         loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       });
     },
     deleteNode(node_name) {
-      const loading = this.$refs.nodeListLoading.$loading.show();
-      this.$ajax.getJSON('/server/api/uninstall_tars_node', {
-        node_name: node_name,
-      }).then((data) => {
-        loading.hide();
-        if(data.rst) {
-          this.$tip.success(`${this.$t('nodeList.deleteNode')}: ${data.msg}` );
-        } else {
-          this.$tip.error(`${this.$t('nodeList.deleteNode')}: ${data.msg}` );
-        }
-      }).catch((err) => {
-        loading.hide();
-        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+
+      this.$confirm(this.$t('nodeList.confirmDeleteNode'), this.$t('common.alert')).then(() => {
+        const loading = this.$refs.nodeListLoading.$loading.show();
+        this.$ajax.getJSON('/server/api/uninstall_tars_node', {
+          node_name: node_name,
+        }).then((data) => {
+          loading.hide();
+          if(data.rst) {
+            this.$tip.success(`${this.$t('nodeList.deleteNode')}: ${data.msg}` );
+          } else {
+            this.$tip.error(`${this.$t('nodeList.deleteNode')}: ${data.msg}` );
+          }
+        }).catch((err) => {
+          loading.hide();
+          this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+        });
       });
     },
     tableRowClassName({row, rowIndex}) {

@@ -37,7 +37,7 @@ AdminService.undeploy = async(application, server, nodeName, user, info) => {
     if (ret.__return === 0) {
         return ret.result;
     } else {
-        throw new Error(__return);
+        throw new Error(ret.__return);
     }
 };
 
@@ -48,10 +48,13 @@ AdminService.pingNode = async(nodeName) => {
     let ret = await adminRegPrx.pingNode(nodeName);
     adminRegPrx.setTimeout(timeout);
 
+    console.log(ret);
+
     if (ret.__return) {
         return ret.result;
     } else {
-        throw new Error(__return);
+        return false;
+        // throw new Error(ret.__return);
     }
 };
 
@@ -60,7 +63,7 @@ AdminService.loadServer = async(application, server, nodeName) => {
     if (ret.__return === 0) {
         return ret.result;
     } else {
-        throw new Error(__return);
+        throw new Error(ret.__return);
     }
 };
 
@@ -149,7 +152,7 @@ AdminService.getLogFileList = async(application, server, nodeName) => {
     if (ret.__return === 0) {
         return ret.logFileList;
     } else {
-        throw new Error(__return);
+        throw new Error(ret.__return);
     }
 };
 
@@ -158,7 +161,7 @@ AdminService.getLogData = async(application, server, nodeName, logFile, cmd) => 
     if (ret.__return === 0) {
         return ret.fileData;
     } else {
-        throw new Error(__return);
+        throw new Error(ret.__return);
     }
 };
 

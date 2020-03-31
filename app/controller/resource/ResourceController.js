@@ -106,8 +106,7 @@ ResourceController.uninstallTarsNodes = async (ctx) => {
 ResourceController.uninstallTarsNode = async (ctx) => {
 	try {
 		let node_name = ctx.paramsObj.node_name;
-		let rst = await ResourceService.uninstallTarsNodes([node_name]);
-		console.log(rst);
+		let rst = await ResourceService.uninstallTarsNode([node_name]);
 		if(rst && rst.length > 0) {
 			rst = rst[0];
 		}

@@ -1,4 +1,13 @@
 
+## 20200331(2.1.0)
+- Modify the problem of token generation and increase the random number
+- Add the function of deleting nodes
+- Automatically publish, add blocking logic, and do not return until there are publishing results
+- Publish add result display
+- fix db_cache_web.sql, Fix SQL statement order to avoid foreign key error prompt
+- logview Support the display of special characters
+- add status display in node check
+
 ## 20200312(2.0.0)
 - querystat & queryproperty change protocol to tars
 - tarsadmin multi machine alive

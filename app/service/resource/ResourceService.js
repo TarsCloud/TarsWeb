@@ -204,16 +204,19 @@ ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 		}
 	}
 };
+
+
 /**
- * 批量卸载Tars node
+ * 批量卸载Tars node(不删除机器上文件)
  * @param ips
  * @returns {Array.<*>}
  */
-ResourceService.uninstallTarsNodes = async (ips) => {
+ResourceService.uninstallTarsNode = async (ips) => {
 	//若该ip对应的机器中还有服务，则不允许下线
 	let rst = [];
-	let promiseList = [];
+	// let promiseList = [];
 	let serverConfs = await ServerDao.getServerConfByNodeName(ips);
+
 	for (let i = 0; i < ips.length; i++) {
 		let ip = ips[i];
 		let idx = _.findIndex(serverConfs, (serverConf) => {
@@ -226,20 +229,55 @@ ResourceService.uninstallTarsNodes = async (ips) => {
 				rst: false,
 				msg: '#api.resource.serverExist#'
 			});
-		} else {
-			promiseList.push(ResourceService.doUninstallTarsNode(ip));
 		}
 	}
-	let uninstallRst = await Promise.all(promiseList);
 	let deleteIps = [];
-	uninstallRst.forEach((uninstallRstItem) => {
-		if (uninstallRstItem.rst === true) {
-			deleteIps.push(uninstallRstItem.ip);
+	rst.forEach((r) => {
+		if (r.rst === true) {
+			deleteIps.push(r.ip);
 		}
 	});
 	await NodeInfoDao.deleteNodeInfo(deleteIps);
-	return rst.concat(uninstallRst);
+	return rst;
 };
+
+
+// /**
+//  * 批量卸载Tars node
+//  * @param ips
+//  * @returns {Array.<*>}
+//  */
+// ResourceService.uninstallTarsNodes = async (ips) => {
+// 	//若该ip对应的机器中还有服务，则不允许下线
+// 	let rst = [];
+// 	let promiseList = [];
+// 	let serverConfs = await ServerDao.getServerConfByNodeName(ips);
+// 	for (let i = 0; i < ips.length; i++) {
+// 		let ip = ips[i];
+// 		let idx = _.findIndex(serverConfs, (serverConf) => {
+// 			serverConf = serverConf.dataValues;
+// 			return serverConf.node_name == ip;
+// 		});
+// 		if (idx != -1) {
+// 			rst.push({
+// 				ip: ip,
+// 				rst: false,
+// 				msg: '#api.resource.serverExist#'
+// 			});
+// 		} else {
+// 			promiseList.push(ResourceService.doUninstallTarsNode(ip));
+// 		}
+// 	}
+// 	let uninstallRst = await Promise.all(promiseList);
+// 	let deleteIps = [];
+// 	uninstallRst.forEach((uninstallRstItem) => {
+// 		if (uninstallRstItem.rst === true) {
+// 			deleteIps.push(uninstallRstItem.ip);
+// 		}
+// 	});
+// 	await NodeInfoDao.deleteNodeInfo(deleteIps);
+// 	return rst.concat(uninstallRst);
+// };
 
 /**
  * 卸载单个机器上的Tarsnode
