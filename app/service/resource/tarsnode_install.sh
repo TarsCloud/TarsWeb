@@ -70,9 +70,13 @@ fi
 tar zxf tarsnode.tgz
 
 if [ $OS != 3 ]; then
-    ${TARS_PATH}/tarsnode/util/stop.sh
+    if [ -f ${TARS_PATH}/tarsnode/util/stop.sh ]; then
+        ${TARS_PATH}/tarsnode/util/stop.sh
+    fi
 else
-    ${TARS_PATH}/tarsnode/util/stop.bat
+    if [ -f ${TARS_PATH}/tarsnode/util/stop.bat ]; then
+        ${TARS_PATH}/tarsnode/util/stop.bat
+    fi
 fi
 
 cp -rf tarsnode ${TARS_PATH}/

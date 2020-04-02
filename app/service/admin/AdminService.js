@@ -48,8 +48,6 @@ AdminService.pingNode = async(nodeName) => {
     let ret = await adminRegPrx.pingNode(nodeName);
     adminRegPrx.setTimeout(timeout);
 
-    console.log(ret);
-
     if (ret.__return) {
         return ret.result;
     } else {
