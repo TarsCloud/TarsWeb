@@ -138,7 +138,8 @@ ResourceController.checkTarsNode = async (ctx) => {
 		ctx.makeResObj(200, '', await AdminService.pingNode(nodeName));
 	} catch (e) {
 		logger.error('[checkTarsNode]', e, ctx);
-		ctx.makeErrResObj();
+		ctx.makeResObj(200, '', false);
+		// ctx.makeErrResObj();
 	}
 };
 
