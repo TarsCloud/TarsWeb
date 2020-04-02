@@ -40,6 +40,11 @@ databases.forEach((database) => {
 		pool,
 	} = dbConf;
 
+	const logging = process.env.NODE_ENV == "dev" ? (sqlText)=>{
+		console.log(sqlText);
+		logger.sql(sqlText)
+	} : false
+
 	//初始化sequelize
 	const sequelize = new Sequelize(database, user, password, {
 		host,
@@ -48,10 +53,7 @@ databases.forEach((database) => {
 		dialectOptions: {
 			charset: charset
 		},
-		logging(sqlText){
-			// console.log(sqlText);
-			logger.sql(sqlText);
-		},
+		logging,
 		pool: {
 			max: pool.max || 10,
 			min: pool.min || 0,

@@ -7,7 +7,11 @@
       <let-table-column :title="$t('checkTable.table.th.server_name')" prop="serverName"></let-table-column>
       <let-table-column :title="$t('checkTable.table.th.node_name')" prop="nodeName"></let-table-column>
       <let-table-column :title="$t('checkTable.table.th.obj_name')" prop="objName"></let-table-column>
-      <let-table-column :title="$t('checkTable.table.th.status')" prop="status"></let-table-column>
+      <let-table-column :title="$t('checkTable.table.th.status')" width="100px">
+        <template slot-scope="scope">
+          <span class="status">{{scope.row.status}}</span>
+        </template>
+      </let-table-column>
     </let-table>
     <let-modal :title="$t('checkTable.problemDialog.title')" v-model="showProblem"  width="600px">
       <div>
@@ -106,7 +110,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .page_operation_templates {
   pre {
     color: #909FA3;
@@ -134,5 +138,33 @@ export default {
 }
 .let-table tr.success-row td .let-table__operation {
   color: #FFF;
+}
+.checking-row .status, .success-row .status, .warning-row .status{
+  &:before{
+    content: ' ';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 100%;
+    margin-right: 5px;
+  }
+}
+.success-row .status{
+  color:green;
+  &:before{
+    background: green;
+  }
+}
+.warning-row .status{
+  color:red;
+  &:before{
+    background: red;
+  }
+}
+.checking-row .status{
+  color:orange;
+  &:before{
+    background: orange;
+  }
 }
 </style>

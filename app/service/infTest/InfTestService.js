@@ -40,7 +40,8 @@ InfTestService.debug = async (paramObj) => {
 	let interface = context[paramObj.moduleName].interfaces[paramObj.interfaceName];
 	let client = new TarsClient(context, interface, paramObj.objName);
 	let ret = await client.invoke(paramObj.functionName, JSON.parse(paramObj.params));
-	return ret.response;
+	if(ret && ret.response) return ret.response;
+	return ret;
 }
 
 /**

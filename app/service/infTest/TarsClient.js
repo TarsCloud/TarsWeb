@@ -46,14 +46,17 @@ TarsClient.prototype.invoke = function (method, params) {
 	const self = this;
 	const context = this._context,
 		interface = this._interface;
+	let sMsg = ""
 	if (!method) {
-		console.error('please specify the parameter value for function name');
-		return;
+		sMsg = "please specify the parameter value for function name"
+		console.error(sMsg);
+		return {error: sMsg};
 	}
 	const func = interface.functions[method];
 	if (!func) {
-		console.error('no function named' + method + ' for ' + interface.fullName);
-		return;
+		sMsg = 'no function named' + method + ' for ' + interface.fullName
+		console.error(sMsg);
+		return {error: sMsg};
 	}
 	if (func['return'] !== 'void') {
 		this.readParams.push({
@@ -112,6 +115,7 @@ TarsClient.prototype.invoke = function (method, params) {
 			}
 		} catch (e) {
 			console.error(e);
+			return {error: "decode error: " + e.message};
 		}
 	}
 
@@ -120,7 +124,7 @@ TarsClient.prototype.invoke = function (method, params) {
 			costtime: data.request.costtime,
 			error: data.error
 		}
-		return response;
+		return {response};
 	}
 
 	return this._worker.tars_invoke(method, _encode(), arguments[arguments.length - 1]).then(_decode, _error)

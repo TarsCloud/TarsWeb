@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "start": "node bin/www",
-        "dev": "./node_modules/.bin/nodemon bin/www",
+        "dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon bin/www",
         "dcache": "./node_modules/.bin/nodemon --watch ./../tars-dcache --watch ./ bin/www",
         "prd": "pm2 start bin/www --name=tars-node-web",
         "test": "echo \"Error: no test specified\" && exit 1"
@@ -56,6 +56,7 @@
         "yami-sso-client": "^1.0.1"
     },
     "devDependencies": {
+        "cross-env": "^7.0.2",
         "nodemon": "^1.17.5"
     }
 }
