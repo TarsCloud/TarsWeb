@@ -68,7 +68,9 @@ loginConf.ignore = loginConf.ignore.concat(['/web_version','/static', '/files', 
 //上传文件不需要登录
 if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
 	loginConf.ignore.push('/pages/server/api/upload_patch_package');
+	loginConf.ignore.push('/api/upload_patch_package');
 	loginConf.ignore.push('/pages/server/api/upload_and_publish');
+	loginConf.ignore.push('/api/upload_and_publish');
 }
 
 //web和demo的cookie写在同一个域名下
