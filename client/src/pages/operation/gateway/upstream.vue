@@ -28,7 +28,7 @@
 
     <let-modal
       v-model="detailModal.show"
-      :title="detailModal.isNew ? this.$t('gateway.add.addUpstream') : this.$t('gateway.update.upstream')"
+      :title="detailModal.isNew ? this.$t('gateway.btn.addUpstream') : this.$t('gateway.update.upstream')"
       width="800px"
       @on-confirm="saveItem"
       @on-cancel="closeDetailModal"

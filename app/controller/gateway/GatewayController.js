@@ -218,6 +218,7 @@ GatewayController.addBWList = async (ctx) => {
 	try {
 		let params = ctx.paramsObj;
 		params.uid = ctx.uid
+		params.f_station_id = params.f_station_id || ''
 		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.addBWList(params, params.type), bwListStruct));
 	} catch (e) {
 		logger.error('[addBWList]', e, ctx);

@@ -236,11 +236,9 @@ const apiConf = [
     ['post', '/delete_httprouter', GatewayController.deleteHttpRouter, { f_id: 'notEmpty' }],
     
     ['get', '/bwlist', GatewayController.getBWList, { 
-        f_station_id: 'notEmpty',
         type: 'notEmpty' 
     }], 
     ['post', '/add_bwlist', GatewayController.addBWList,{
-        f_station_id: 'notEmpty',
         f_ip: 'notEmpty',
         type: 'notEmpty'
     }],

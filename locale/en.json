@@ -352,6 +352,7 @@
     "systemError": "system error",
     "noPrivilage": "no privilage",
     "notEmpty": " is required",
+    "mustUnique": "already exist",
     "needNumber": " must be numeric type",
     "needArray": " must be array type",
     "needObject": " must be object type",
@@ -378,6 +379,8 @@
     "stop": "stop",
     "add": "add",
     "manage": "management",
+    "config": "config",
+    "modify": "modify",
     "delete": "delete",
     "more": "more",
     "operates": "Operates",
@@ -846,6 +849,74 @@
     "delete": {
       "confirmTips": "Are you sure to delete this template",
       "title": "Delete template"
+    }
+  },
+  "gateway":{
+    "station":"Station Config",
+    "upstream":"Upstream Config",
+    "globalblack":"Global Black List",
+    "stationId":"Station ID",
+    "stationName":"Station Name",
+    "monitorUrl":"Monitor Url",
+    "serverName":"Server Name",
+    "pathRule":"Path Rule",
+    "proxyPass":"ProxyPass",
+    "addr":"Addr",
+    "weight":"Weight",
+    "fusing":"Fusing",
+    "fusingOn":"FusingOn",
+    "fusingOff":"FusingOff",
+    "lastUpdate":"Update Time",
+    "btn":{
+      "addGateway": "Add Gateway",
+      "addUpstream": "Add Upstream",
+      "addHttpRouter": "Add Router"
+    },
+    "add": {
+      "stationNameTips": "please input station name",
+      "idFormatTips": "station id can only contain letters, numbers, dots, underscores, start with a letter, and cannot end with Obj",
+      "monitorUrlTips": "please input monitor tips",
+      "upstreamFormatTips":"upstream can only contain letters, numbers, underscores, start with a letter, and cannot end with Obj",
+      "addrFormatTips":"please input ip:port",
+      "weightFormatTips":"please input weight",
+      "serverNameTip":"support wildcards or regular expressions. if empty, matchs all",
+      "pathRuleTip":"please input path rule",
+      "proxyPassTip":"please input ProxyPass，support ip:port, upstream, tars obj",
+      "title": "add station",
+      "upstream": "add upstream"
+    },
+    "update": {
+      "title": "edit station",
+      "upstream": "edit upstream",
+      "errTips": "edit fail"
+    },
+    "delete": {
+      "confirmTips": "are you sure to delete this station?",
+      "upstreamConfirmTips": "are you sure to delete this upstream?",
+      "bwListConfirmTips": "are you sure to delete this black/whitelist?",
+      "deleteUpstreamErrorTip":"detete fail，there are still associated routers, or upstream is not exsit",
+      "title": "Delete Station"
+    },
+    "config":{
+      "title":"Gateway Config"
+    },
+    "bwlist":{
+      "title":{
+        "black":"Blacklist",
+        "white":"Whitelist"
+      },
+      "ipTip":"please input ip（support wildcards）"
+    },
+    "flowControl":{
+      "title":"flow control",
+      "duration":"time window(s)",
+      "durationTip":"please input seconds of time window",
+      "maxFlow":"max flow",
+      "maxFlowTip":"please input max flow in time window",
+      "tip":"that is, during the 'time window', when reached 'max flow', the excess flow will be rejected"
+    },
+    "router":{
+      "title":"Router Config"
     }
   },
   "serviceExpand": {

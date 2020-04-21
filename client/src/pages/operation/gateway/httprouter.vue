@@ -8,7 +8,7 @@
       <let-table-column :title="$t('gateway.pathRule')" prop="f_path_rule" width="20%"></let-table-column>
       <let-table-column :title="$t('gateway.proxyPass')" prop="f_proxy_pass" width="25%"></let-table-column>
       <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="f_update_time" width="160px"></let-table-column>
-      <let-table-column :title="$t('operate.operates')"  width="80px">
+      <let-table-column :title="$t('operate.operates')"  width="100px">
         <template slot-scope="scope">
           <let-table-operation @click="editItem(scope.row)">{{$t('operate.update')}}</let-table-operation>
           <let-table-operation @click="removeItem(scope.row)">{{$t('operate.delete')}}</let-table-operation>
@@ -19,7 +19,7 @@
     <let-modal
       v-model="detailModal.show"
       :title="detailModal.isNew ? this.$t('gateway.add.title') : this.$t('gateway.update.title')"
-      width="800px"
+      width="900px"
       @on-confirm="saveItem"
       @on-cancel="closeDetailModal"
     >
@@ -54,9 +54,18 @@
             :required-tip="$t('gateway.add.proxyPassTip')"
             :pattern-tip="$t('gateway.add.proxyPassTip')"
           ></let-input>
-          <let-select v-if="proxypassMode=='upstream'" size="small" v-model="detailModal.model.f_proxy_pass" filterable>
-            <let-option v-for="d in upstreams" :key="d" :value="d"> {{d}} </let-option>
-          </let-select>
+          <div v-if="proxypassMode=='upstream'" class="set_upstream">
+            <let-select size="small" v-model="detailModal.model.f_proxy_pass_upstream" filterable>
+              <let-option v-for="d in upstreams" :key="d" :value="d"> {{d}} </let-option>
+            </let-select>
+            <let-input
+              size="small"
+              v-model="detailModal.model.f_proxy_pass_path"
+              placeholder="/some/path"
+              pattern="^\/"
+              pattern-tip="/some/path"
+            ></let-input>
+          </div>
           <ServantSelector  v-if="proxypassMode=='tars' && detailModal.model" v-model="detailModal.model.f_proxy_pass"></ServantSelector>
         </let-form-item>
       </let-form>
@@ -69,6 +78,7 @@ import ServantSelector from "./components/ServantSelector"
 
 const TARS_REG = /(obj|Obj)$/
 const IP_PORT = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d):\d+$/
+const HTTP_PREFIX = /^http:\/\//
 export default {
   name: 'HttpRouter',
   components:{ServantSelector},
@@ -134,10 +144,23 @@ export default {
     },
 
     editItem(d) {
+      d = Object.assign({},d);//编辑时，处理副本
       this.detailModal.model = d;
       this.detailModal.show = true;
       this.detailModal.isNew = false;
+      //编辑之前，先去掉前缀
+      d.f_proxy_pass = d.f_proxy_pass.replace(HTTP_PREFIX, "")
+      //去掉前缀后再判断proxypass种类
       this.setProxypassMode(d);
+      //如果是upstream模式，设置分开的字段
+      if(this.proxypassMode == "upstream"){
+        d.f_proxy_pass_upstream = d.f_proxy_pass.split("/")[0]
+        d.f_proxy_pass_path = "/" + (d.f_proxy_pass.split("/")[1] || "")
+        //可能是选项中没有的，给设置上
+        this.$nextTick(()=>{
+          document.querySelector(".set_upstream .let-select__filter__input").value = d.f_proxy_pass_upstream
+        })
+      }
     },
     setProxypassMode(d){
       if(TARS_REG.test(d.f_proxy_pass)){
@@ -153,9 +176,20 @@ export default {
         const model = this.detailModal.model;
         model.f_station_id = this.station.f_station_id
         const url = model.f_id ? '/server/api/update_httprouter' : '/server/api/add_httprouter';
-
         const loading = this.$Loading.show();
-        this.$ajax.postJSON(url, model).then(() => {
+        let params = Object.assign({}, model);
+        //组装upstream
+        if(this.proxypassMode == "upstream"){
+          //let-ui不支持select输入，一个trick
+          let iptValue = document.querySelector(".set_upstream .let-select__filter__input").value.trim()
+          params.f_proxy_pass_upstream = iptValue
+          params.f_proxy_pass = `${params.f_proxy_pass_upstream}${params.f_proxy_pass_path}`
+        }
+        //添加http前缀
+        if(!HTTP_PREFIX.test(params.f_proxy_pass)){
+          params.f_proxy_pass = "http://" + params.f_proxy_pass
+        }
+        this.$ajax.postJSON(url, params).then(() => {
           loading.hide();
           this.$tip.success(this.$t('common.success'));
           this.closeDetailModal();
@@ -207,5 +241,11 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.set_upstream{
+  display:flex;
+  div{
+    margin-right: 10px;
+  }
 }
 </style>

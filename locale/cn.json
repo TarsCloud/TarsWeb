@@ -880,6 +880,7 @@
   "gateway":{
     "station":"站点配置",
     "upstream":"upstream配置",
+    "globalblack":"全局黑名单配置",
     "stationId":"站点ID",
     "stationName":"站点名",
     "monitorUrl":"监控URL",
