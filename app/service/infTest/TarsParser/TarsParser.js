@@ -209,6 +209,7 @@ class TarsParser {
             throw Error(`Illegal field name[${name}] of ${struct.fullName}`);
         }
         if(token === '='){
+            if(type === "string") tokenizer.readingString = true
             defaultValue = this.checkDef(context, type, tokenizer.next());
             token = tokenizer.next();
         }
