@@ -87,6 +87,7 @@
                 <p v-if="scope.row.installState == 'fail' && scope.row.step == 3" class="fail_txt">Error: please install wget on the node</p>
                 <p v-if="scope.row.installState == 'fail' && scope.row.step == 4" class="fail_txt">Error: please ensure the registry is available</p>
                 <p v-if="scope.row.installState == 'fail' && scope.row.step == 5" class="fail_txt">Error: some unknown error, please check log</p>
+                <pre class="stdout">{{scope.row.stdout}}</pre>
               </div>
           </template>
         </let-table-column>
@@ -326,6 +327,7 @@ export default {
               exists: false,
               existsInfo: '',
               step:0,
+              stdout:'',
               installState:'',
               installInfo: ''
             };
@@ -418,6 +420,7 @@ export default {
             node[0].installInfo = n.msg;
             node[0].installState = n.installState;
             node[0].step = n.step;
+            node[0].stdout = n.stdout;
           }
 
           if(!n.rst) {
@@ -483,5 +486,10 @@ export default {
   &:before{
     background: red;
   }
+}
+.stdout{
+  width: 650px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 </style>

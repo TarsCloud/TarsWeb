@@ -174,7 +174,7 @@ ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
 		let rst = await ResourceService.execSSH(ip, shell, paramsObj);
 
 		logger.info(rst);
-
+		rst.stdout = rst.msg || "";
 		if (rst.rst) {
 			if (rst.msg.indexOf('Tars node has installed') > -1) {
 				rst.rst = false;

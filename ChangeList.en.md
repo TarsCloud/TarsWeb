@@ -1,3 +1,12 @@
+## 20200505(2.4.0)
+- fix interface test bug when the server returns result of exception
+- fix protocal parse error when it has some special default value in interface test
+- fix bug of time order in monitor result
+- fix bug of tarsnode_install.sh
+- fix bug of timeout in pingNode 
+- add houer filter of monitor query
+- add output info of tarsnode auto install 
+- unified version with TarsFramework to improve git workflow
 
 ## 20200331(2.1.0)
 - Modify the problem of token generation and increase the random number
