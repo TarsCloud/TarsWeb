@@ -1,0 +1,141 @@
+/**
+* Tencent is pleased to support the open source community by making DCache available.
+* Copyright (C) 2019 THL A29 Limited, a Tencent company. All rights reserved.
+* Licensed under the BSD 3-Clause License (the "License"); you may not use this file
+* except in compliance with the License. You may obtain a copy of the License at
+*
+* https://opensource.org/licenses/BSD-3-Clause
+*
+* Unless required by applicable law or agreed to in writing, software distributed under
+* the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+* either express or implied. See the License for the specific language governing permissions
+* and limitations under the License.
+*/
+module bm
+{
+	// 接口查询结果
+    struct ResultStat
+    {
+        0 optional  long                 time_stamp;
+        1 optional  map<int, int>        ret_map;
+        2 optional  map<int, int>        cost_map;
+        3 optional  long                 total_request;
+        4 optional  long                 succ_request;
+        5 optional  long                 fail_request;
+        6 optional  double               max_time = 0.0;
+        7 optional  double               min_time = 1000.0;
+        8 optional  double               total_time = 0.0;
+        9 optional  double               p999_time = 0.0;
+       10 optional  double               p99_time  = 0.0;
+       11 optional  double               p90_time  = 0.0;
+       12 optional  long                 send_bytes;
+       13 optional  long                 recv_bytes;
+       14 optional  int                  avg_speed; 
+    };
+
+    // 最小值形体结构
+    struct ExecItem
+    {
+        0 optional string           servant;
+        1 optional string           rpcfunc;  
+        2 optional int              threads;  // 占用压测进程单元
+        3 optional int              links;    // 当前压测链接数
+        4 optional int              speed;    // 当前压测速率
+    };
+
+    // capacity接口结构体
+    struct NodeStat
+    {
+        0 optional string               ipaddr;
+        1 optional int                  max_speed;
+        2 optional int                  max_threads;
+        3 optional int                  left_speed;
+        4 optional int                  left_threads;
+        5 optional vector<ExecItem>     executors;
+    };
+    key[NodeStat, ipaddr];
+
+    // query接口结构体
+    struct QueryRsp 
+    {
+        0 optional ResultStat           stat;
+        1 optional string               ipaddr;
+    };
+
+    // startup/shutdown接口结构体
+    struct TaskConf
+    {
+        0 optional string           servant;        // 压测服务的servant
+        1 optional string           rpcfunc;        // 压测服务的接口
+        2 optional vector<string>   paralist;       // 压测的入参配置
+        3 optional vector<string>   paravals;       // 压测的入参值
+        4 optional vector<string>   endpoints;      // 压测目标服务器
+        5 optional int              links;          // 单个endpoint的链接数
+        6 optional int              speed;          // 单个endpoint的速率，最好是links的倍数
+        7 optional int              runflag;        // 是否正在运行(0, 表示停止，1: 正在压测)
+    };
+    key[TaskConf, servant, rpcfunc];
+
+    // 任务状态
+    struct TaskStat
+    {
+        0 optional TaskConf   conf;                 // 接口配置       
+        1 optional int        state;                // 状态
+        2 optional long       start_time;           // 开始时间
+        3 optional long       fetch_time;           // 获取结果时间
+        4 optional long       duration;             // 压测周期时间
+        5 optional map<string, int>  speed_quota;   // 速率配额，key为机器IP
+    };
+
+    // 压测信息汇总
+    struct BenchmarkSummary
+    {
+        0 optional map<string, NodeStat>     nodes;         // 机器状态，key为机器IP
+        1 optional map<string, ResultStat>   result;        // 压测周期结果，key为servant.rpcfunc
+        2 optional map<string, ResultStat>   total_result;  // 压测汇总结果，key为servant.rpcfunc
+        3 optional map<string, TaskStat>     task;          // 压测接口状态，key为servant.rpcfunc
+    };
+
+    // startup/shutdown接口结构体
+    struct BenchmarkUnit
+    {
+        0 optional string           owner;          // 压测启动人
+        1 optional string           servant;        // 压测服务的servant
+        2 optional string           rpcfunc;        // 压测服务的接口
+        3 optional string           para_input;     // 压测的入参配置
+        4 optional string           para_value;     // 压测的入参值
+        5 optional string           para_output;    // 压测的出参配置
+        6 optional vector<string>   endpoints;      // 压测目标服务器
+        7 optional int              links;          // 单个endpoint的链接数
+        8 optional int              speed;          // 单个endpoint的速率，最好是links的倍数
+        9 optional int              duration;       // 压测持续时间，单位为秒
+    };
+    key[BenchmarkUnit, servant, rpcfunc];
+
+    interface Proxy
+    {
+        /**
+         * @brief  启动压测接口
+         *
+         */
+        int startup(BenchmarkUnit req);
+
+        /**
+         * @brief  查询压测接口
+         *
+         */
+        int query(BenchmarkUnit req, out ResultStat stat);
+
+        /**
+         * @brief  关停压测接口
+         *
+         */
+        int shutdown(BenchmarkUnit req, out ResultStat stat);
+
+        /**
+         * @brief  测试接口
+         *
+         */
+        int test(BenchmarkUnit req, out string rsp, out string errmsg);
+    };
+}; 

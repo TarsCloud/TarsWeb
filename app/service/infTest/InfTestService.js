@@ -15,6 +15,8 @@
  */
 const TarsClient = require('./TarsClient');
 const TarsParser = require('./TarsParser/TarsParser');
+const { benchmarkPrx, benchmarkStruct} = require('../util/rpcClient');
+const {BenchmarkRunner} = require("./BenchmarkRunner");
 const InfTestDao = require('../../dao/InfTestDao');
 
 const fs = require('fs-extra');
@@ -201,6 +203,90 @@ InfTestService.getParams = async (id, moduleName, interfaceName, functionName) =
  */
 InfTestService.deleteTarsFile = async (id) => {
 	return await InfTestDao.deleteTarsFile(id);
+}
+
+function genFieldDes(context, field){
+	let type = field.type
+	if(typeof type == "string") return type
+	//enum
+	if(type.isEnum) return "int"
+	//结构体
+	if(type.isStruct){
+		let fielddes = []
+		let fields = context[type.module].structs[type.name].fields
+		for(let fieldName in fields){
+			fielddes.push(genFieldDes(context, fields[fieldName]))
+		}
+		return `struct<${fielddes.join(", ")}>`
+	}
+	//map
+	if(type.map){
+		return `map<${genFieldDes(context, {type: type.key})}, ${genFieldDes(context, {type: type.value})}>`
+	}
+	//list
+	if(type.vector){
+		return `vector<${genFieldDes(context, {type: type.type})}>`
+	}
+	throw new Error(`unknown field type:${JSON.stringify(field)}`)
+	
+}
+/**
+ * 获取所有的benchmark描述数据
+ * @param {String} id tars文件ID
+ * @returns {Array} benchmark函数描述
+ */
+InfTestService.getBenchmarkDes = async (id)=>{
+	let context = (await getContextFromDB(id)).context
+	context = JSON.parse(context)
+	let fnlist = []
+	for(let moduleName in context){
+		let moduleObj = context[moduleName]
+		for(let interfaceName in moduleObj.interfaces){
+			let interfaceObj = moduleObj.interfaces[interfaceName]
+			for(let fnName in interfaceObj.functions){
+				let fnObj = interfaceObj.functions[fnName]
+				fnlist.push({
+					module: moduleName,
+					interface: interfaceName,
+					name: fnName,
+					return: genFieldDes(context, {type: fnObj.return}),
+					inParams: fnObj.params.filter((param)=>{
+						return !param.out
+					}).map((param)=>{
+						return genFieldDes(context, param)
+					}).join("|"),
+					outParams:fnObj.params.filter((param)=>{
+						return param.out
+					}).map((param)=>{
+						return genFieldDes(context, param)
+					}).join("|")
+				})
+			}
+		}
+	}
+	return fnlist
+}
+InfTestService.getBmCaseList = async(servant, fn)=>{
+	return await InfTestDao.getBmCaseList(servant, fn)
+} 
+InfTestService.getBmResultById = async(id)=>{
+	return await InfTestDao.getBmResultById(id)
+} 
+InfTestService.upsertBmCase = async(caseInfo)=>{
+	//状态更新为停止时，调用代理服务停止压测
+	if(("status" in caseInfo) && caseInfo.status == 0){
+
+	}
+	return await InfTestDao.upsertBmCase(caseInfo)
+} 
+InfTestService.startBencmark = async(runParams)=>{
+	return await new BenchmarkRunner(runParams).start()
+}
+InfTestService.stopBencmark = async(runParams)=>{
+	return await new BenchmarkRunner(runParams).stop()
+}
+InfTestService.testBencmark = async(runParams)=>{
+	return await new BenchmarkRunner(runParams).test()
 }
 
 module.exports = InfTestService;

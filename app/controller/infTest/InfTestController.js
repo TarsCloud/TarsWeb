@@ -20,6 +20,7 @@ const AuthService = require('../../service/auth/AuthService');
 const WebConf = require('../../../config/webConf');
 const util = require('../../tools/util');
 const fs = require('fs-extra');
+const AdminService = require('../../service/admin/AdminService');
 
 const InfTestController = {};
 
@@ -175,5 +176,133 @@ InfTestController.getStructs = async (ctx) => {
 		ctx.makeErrResObj();
 	}
 }
+
+InfTestController.getBenchmarkDes = async (ctx) => {
+	try {
+		let {id} = ctx.paramsObj;
+		let ret = await InfTestService.getBenchmarkDes(id);
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[getBenchmarkDes]:', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+InfTestController.getBmCaseList = async (ctx) => {
+	try {
+		let {servant, fn} = ctx.paramsObj;
+		let [application, server_name] = servant.split(".")
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+			return;
+		}
+		let ret = await InfTestService.getBmCaseList(servant, fn);
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[getBmCaseList]:', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+InfTestController.getBmResultById = async (ctx) => {
+	try {
+		let {id} = ctx.paramsObj;
+		let ret = await InfTestService.getBmResultById(id);
+		let [application, server_name] = ret.servant.split(".")
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+			return;
+		}
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[getBmResultById]:', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+InfTestController.upsertBmCase = async (ctx) => {
+	try {
+		let fields = ["id","servant","fn","des","in_values","endpoints","links","speed","duration","is_deleted"], caseInfo = {}
+		fields.forEach((field)=>{
+			if(field in ctx.paramsObj) caseInfo[field] = ctx.paramsObj[field]
+		})
+		let [application, server_name] = caseInfo.servant.split(".")
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+			return;
+		}
+		let ret = await InfTestService.upsertBmCase(caseInfo);
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[upsertBmCase]:', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+InfTestController.startBencmark = async (ctx) => {
+	try {
+		let {servant} = ctx.paramsObj
+		let [application, server_name] = servant.split(".")
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+			return;
+		}
+		ctx.paramsObj.owner = ctx.uid
+		let ret = await InfTestService.startBencmark(ctx.paramsObj);
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[startBencmark]:', e, ctx);
+		ctx.makeResObj(400, e.message);
+	}
+}
+
+InfTestController.stopBencmark = async (ctx) => {
+	try {
+		let {servant} = ctx.paramsObj
+		let [application, server_name] = servant.split(".")
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+			return;
+		}
+		ctx.paramsObj.owner = ctx.uid
+		let ret = await InfTestService.stopBencmark(ctx.paramsObj);
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[stopBencmark]:', e, ctx);
+		ctx.makeResObj(400, e.message);
+	}
+}
+
+InfTestController.testBencmark = async (ctx) => {
+	try {
+		let {servant} = ctx.paramsObj
+		let [application, server_name] = servant.split(".")
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+			return;
+		}
+		ctx.paramsObj.owner = ctx.uid
+		let ret = await InfTestService.testBencmark(ctx.paramsObj);
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[stopBencmark]:', e, ctx);
+		ctx.makeResObj(400, e.message);
+	}
+}
+
+InfTestController.getEndpoints = async (ctx)=>{
+	try {
+		let {servant} = ctx.paramsObj
+		let [application, server_name] = servant.split(".")
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+			return;
+		}
+		let ret = await AdminService.getEndpoints(servant);
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[stopBencmark]:', e, ctx);
+		ctx.makeResObj(400, e.message);
+	}
+}
+
 
 module.exports = InfTestController;
