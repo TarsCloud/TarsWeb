@@ -974,6 +974,9 @@
     "list": {
       "debug": "调试"
     },
+    "error":{
+      "parseFail":"协议解析失败"
+    },
     "title": {
       "listTitle": "tars文件列表",
       "dlgTitle": "上传Tars文件"

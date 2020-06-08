@@ -18,7 +18,7 @@ module.exports = {
 	sequelize: sequelize,
 	addTarsFile: async (params) => {
 		return tTarsFiles.upsert(params, {
-			fields: ['server_name', 'file_name', 'posttime', 'context']
+			fields: ['server_name', 'file_name', 'posttime', 'context', 'benchmark_context']
 		})
 	},
 
@@ -39,7 +39,7 @@ module.exports = {
 			where: {
 				f_id: id
 			},
-			attributes: ['context']
+			attributes: ['context','benchmark_context']
 		})
 	},
 

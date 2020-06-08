@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
 			autoIncrement: true,
-			unique: true
+			unique: "column"
 		},
 		servant: {
 			type: DataTypes.STRING(128),
@@ -85,6 +85,12 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_bm_case',
-		timestamps: false
+		timestamps: false,
+		indexes: [
+			{
+				unique: false,
+				fields: ['servant', 'fn']
+			}
+		]
 	});
 };

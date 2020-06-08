@@ -13,6 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
+const { exec } = require('child_process');
 const TarsClient = require('./TarsClient');
 const TarsParser = require('./TarsParser/TarsParser');
 const { benchmarkPrx, benchmarkStruct} = require('../util/rpcClient');
@@ -54,6 +55,7 @@ InfTestService.debug = async (paramObj) => {
 InfTestService.addTarsFile = async (params) => {
 	await InfTestDao.addTarsFile(params);
 	delete params.context;
+	delete params.benchmark_context;
 	delete params.posttime;
 	return (await InfTestService.getTarsFile(params, ['f_id', 'application', 'server_name', 'file_name', 'posttime']))[0];
 }
@@ -77,6 +79,15 @@ InfTestService.getContext = (tarsFilePath) => {
 	return getContext(tarsFilePath);
 }
 
+/**
+ * @name getBenchmarkContext 根据tars文件解析压测上下文
+ * @param {String} tarsFilePath
+ * @returns {Object} context上下文
+ */
+InfTestService.getBenchmarkContext = async (tarsFilePath)=>{
+	return await getBenchmarkContext(tarsFilePath)
+}
+
 async function getContext(tarsFilePath) {
 	const content = await fs.readFile(tarsFilePath);
 	const fileDir = tarsFilePath.split(/[/\\]/).slice(0, -1).join('/');
@@ -84,6 +95,20 @@ async function getContext(tarsFilePath) {
 	let context = {};
 	parser.parseFile(context, content.toString());
 	return context;
+}
+exec("chmod +x ./tars2case", { cwd: __dirname})
+async function getBenchmarkContext(tarsFilePath){
+	return await new Promise((resolve, reject)=>{
+		exec(`./tars2case --web ${tarsFilePath}`,{
+			cwd: __dirname
+		},(error, stdout)=>{
+			if(error){
+				reject(error)
+				return
+			}
+			resolve(stdout)
+		})
+	})
 }
 
 async function getContextFromDB(id) {
@@ -236,8 +261,10 @@ function genFieldDes(context, field){
  * @returns {Array} benchmark函数描述
  */
 InfTestService.getBenchmarkDes = async (id)=>{
-	let context = (await getContextFromDB(id)).context
+	let tarsfile = await getContextFromDB(id)
+	let context = tarsfile.context, benchmark_context = tarsfile.benchmark_context
 	context = JSON.parse(context)
+	benchmark_context = JSON.parse(benchmark_context || "{}")
 	let fnlist = []
 	for(let moduleName in context){
 		let moduleObj = context[moduleName]
@@ -245,21 +272,23 @@ InfTestService.getBenchmarkDes = async (id)=>{
 			let interfaceObj = moduleObj.interfaces[interfaceName]
 			for(let fnName in interfaceObj.functions){
 				let fnObj = interfaceObj.functions[fnName]
+				let fnBmContext = benchmark_context[fnName]
 				fnlist.push({
 					module: moduleName,
 					interface: interfaceName,
 					name: fnName,
-					return: genFieldDes(context, {type: fnObj.return}),
-					inParams: fnObj.params.filter((param)=>{
+					return: fnBmContext?fnBmContext.rettype : genFieldDes(context, {type: fnObj.return}),
+					inParams: fnBmContext? JSON.stringify(fnBmContext.descinput) : fnObj.params.filter((param)=>{
 						return !param.out
 					}).map((param)=>{
 						return genFieldDes(context, param)
 					}).join("|"),
-					outParams:fnObj.params.filter((param)=>{
+					outParams: fnBmContext? JSON.stringify(fnBmContext.descoutput) : fnObj.params.filter((param)=>{
 						return param.out
 					}).map((param)=>{
 						return genFieldDes(context, param)
-					}).join("|")
+					}).join("|"),
+					funInput: fnBmContext?JSON.stringify(fnBmContext.funinput, null, 2):""
 				})
 			}
 		}
@@ -269,8 +298,54 @@ InfTestService.getBenchmarkDes = async (id)=>{
 InfTestService.getBmCaseList = async(servant, fn)=>{
 	return await InfTestDao.getBmCaseList(servant, fn)
 } 
+
+//resultMap  
+const RET_MAP = {
+	"0": "SUCCESS",
+	"-1": "EXCEPTION",
+	"-101": "INIT_PARAM_ERROR",
+	"-102": "URL_ERROR",
+	"-1001": "PACKET_ENCODE_ERROR",
+	"-1002": "PACKET_DECODE_ERROR",
+	"-1003": "PACKET_PARAM_ERROR",
+	"-2000": "SOCK_ERROR",
+	"-2001": "SOCK_INVALID",
+	"-2003": "SOCK_CONN_ERROR",
+	"-2004": "SOCK_CONN_TIMEOUT",
+	"-2005": "SOCK_SEND_ERROR",
+	"-2006": "SOCK_RECV_ERROR",
+	"-2007": "SOCK_RECV_TIMEOUT"
+}
+const COST_MAP = {
+	"0": "10ms",
+	"1": "30ms",
+	"2": "50ms",
+	"3": "100ms",
+	"4": "50ms",
+	"5": "3s",
+	"6": "5s",
+	"7": "100s"
+}
+
 InfTestService.getBmResultById = async(id)=>{
-	return await InfTestDao.getBmResultById(id)
+	let row = await InfTestDao.getBmResultById(id)
+	if(row.results){
+		let results = JSON.parse(row.results)
+		results.map((item)=>{
+			let mappedCost = {}, mappedRet = {}
+			for(let key in item.cost_map){
+				mappedCost[COST_MAP[key] || key] = item.cost_map[key]
+			}
+			for(let key in item.ret_map){
+				mappedRet[RET_MAP[key] || key] = item.ret_map[key]
+			}
+			item.cost_map = mappedCost
+			item.ret_map = mappedRet
+			return item
+		})
+		row.results = JSON.stringify(results)
+	}
+	return row
 } 
 InfTestService.upsertBmCase = async(caseInfo)=>{
 	//状态更新为停止时，调用代理服务停止压测

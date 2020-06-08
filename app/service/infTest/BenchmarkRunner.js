@@ -56,12 +56,12 @@ class BenchmarkRunner{
                 servant:this._servant,
                 rpcfunc:this._fn,
                 para_input:this._fnInfo.para_input,
-                para_value:this._fnInfo.para_value.split(/\n|\r\n|<br>|<br\/>/).join("\n"),
-                para_output:this._fnInfo.para_output,
+                para_value: this._fnInfo.para_value,
                 endpoints:this._fnInfo.endpoints.split(/\n|,|\r\n|<br>/),
                 links:this._fnInfo.links,
                 speed:this._fnInfo.speed,
-                duration: this._fnInfo.duration
+                duration: this._fnInfo.duration,
+                proto:"tars"
             })
             let data = await benchmarkPrx.startup(stReq)
             let ret = data.__return
@@ -142,12 +142,14 @@ class BenchmarkRunner{
             servant:this._servant,
             rpcfunc:this._fn,
             para_input:this._fnInfo.para_input,
-            para_value:this._fnInfo.para_value.split(/\n|\r\n|<br>|<br\/>/).join("\n"),
-            para_output:this._fnInfo.para_output,
-            endpoints:this._fnInfo.endpoints.split(/\n|,|\r\n|<br>/)
+            para_value:this._fnInfo.para_value,
+            paralist: [this._fnInfo.para_output],
+            endpoints:this._fnInfo.endpoints.split(/\n|,|\r\n|<br>/),
+            proto:"tars"
         })
         let data = await benchmarkPrx.test(stReq)
         let ret = data.__return
+        console.log("test response data:", stReq.toObject(), data)
         if(ret!=0){
             throw new Error(`failed: ${RetMap[ret]}`)
         }

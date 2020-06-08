@@ -74,11 +74,13 @@ InfTestController.uploadTarsFile = async (ctx) => {
 			let ret = [];
 			for (let file of files) {
 				const context = await InfTestService.getContext(`${tarsFilePath}/${file.originalname}`);
+				const benchmark_context = await InfTestService.getBenchmarkContext(`${tarsFilePath}/${file.originalname}`);
 				ret.push(await InfTestService.addTarsFile({
 					application: application,
 					server_name: server_name,
 					file_name: file.originalname,
 					context: JSON.stringify(context),
+					benchmark_context: benchmark_context,
 					posttime: new Date()
 				}));
 			}
@@ -86,10 +88,10 @@ InfTestController.uploadTarsFile = async (ctx) => {
 		}
 	} catch (e) {
 		logger.error('[uploadTarsFile]:', e, ctx);
-		ctx.makeErrResObj();
+		ctx.makeResObj(500, "#inf.error.parseFail#");
 	} finally {
 		// 删除重命名后的文件
-		fs.remove(`${tarsFilePath}`);
+		//fs.remove(`${tarsFilePath}`);
 	}
 }
 

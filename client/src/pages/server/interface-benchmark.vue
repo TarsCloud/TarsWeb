@@ -10,15 +10,23 @@
     </let-form>
     <!-- 2.压测函数列表 -->
     <let-table :data="fnList" title="函数列表" empty-msg="无函数记录" :row-class-name="fnRowClassName">
-        <let-table-column title="接口" prop="interface" width="60px"></let-table-column>
+        <let-table-column title="接口" prop="interface" width="100px"></let-table-column>
         <let-table-column title="函数名称" prop="name" width="120px"></let-table-column>
         <let-table-column title="返回类型" prop="return" width="120px"></let-table-column>
-        <let-table-column title="输入参数" prop="inParams"></let-table-column>
-        <let-table-column title="输出参数" prop="outParams"></let-table-column>
+        <let-table-column title="输入参数">
+            <template slot-scope="scope">
+              <json-view colorScheme="dark" :data="JSON.parse(scope.row.inParams)" />
+            </template>
+        </let-table-column>
+        <let-table-column title="输出参数">
+           <template slot-scope="scope">
+              <json-view colorScheme="dark" :data="JSON.parse(scope.row.outParams)" />
+            </template>
+        </let-table-column>
         <let-table-column :title="$t('operate.operates')" width="60px">
-        <template slot-scope="scope">
-            <let-table-operation @click="queryCase(scope.row)">用例</let-table-operation>
-        </template>
+          <template slot-scope="scope">
+              <let-table-operation @click="queryCase(scope.row)">用例</let-table-operation>
+          </template>
         </let-table-column>
     </let-table>
     <!-- 3. 压测函数的用例列表 -->
@@ -52,10 +60,10 @@
           <let-input size="small" v-model="caseModel.des"></let-input>
         </let-form-item>
         <let-form-item label="输入参数">
-          {{currentFn.inParams}}
+          <json-view :data="JSON.parse(currentFn.inParams||'{}')" />
         </let-form-item>
         <let-form-item label="输入参数值">
-          <let-input size="small" type="textarea" v-model="caseModel.in_values"></let-input>
+          <let-input size="small" :rows="10" type="textarea" v-model="caseModel.in_values"></let-input>
           <a target="_blank" href="https://github.com/TarsCloud/TarsDocs/blob/master/benchmark/tars-guide.md">
             <let-table-operation>参数生成说明</let-table-operation>
           </a>
@@ -156,8 +164,8 @@
           <let-table-column title="接收字节" prop="recv_bytes" width="80px" align="center"></let-table-column>
         </let-table>
         <div v-if="resultMode=='chart'" class="return_chart">
-          <ve-pie :legend="returnChartOptions.legend" :title="returnChartOptions.title" :data="returnChartOptions" width="50%"></ve-pie>
-          <ve-pie :legend="costChartOptions.legend" :title="costChartOptions.title" :data="costChartOptions" width="50%"></ve-pie>
+          <ve-pie :legend="returnChartOptions.legend" :title="returnChartOptions.title" :data="returnChartOptions" width="500px"></ve-pie>
+          <ve-pie :legend="costChartOptions.legend" :title="costChartOptions.title" :data="costChartOptions" width="500px"></ve-pie>
         </div>
       </wrapper>
 
@@ -167,6 +175,7 @@
 
 <script>
   import VePie from 'v-charts/lib/pie';
+  import { JSONView } from 'vue-json-component';
   import wrapper from '@/components/section-wrappper';
   import { formatDate } from '@/lib/date';
   const CASE_CONTENT = { id:-1, des:"", in_values:"" }
@@ -176,7 +185,7 @@
   export default {
     name: 'InterfaceBenchmark',
     components: {
-      wrapper,VePie
+      wrapper,VePie,"json-view":JSONView
     },
     data(){
         return {
@@ -226,10 +235,11 @@
         },
         //init edit form value of content
         initCaseContentForm(row){
-          if(row){
+          if(row && row.id){
             this.caseModel = Object.assign({}, row)
           } else {
             this.caseModel = Object.assign({}, CASE_CONTENT)
+            this.caseModel.in_values = this.currentFn.funInput
           }
           this.upsertCaseContentModal = true
         },
@@ -450,6 +460,7 @@
             },
             legend: {
               orient: 'vertical',
+              top:50,
               right: 0
             },
             columns: [field1, field2],
@@ -500,12 +511,17 @@
 </script>
 
 <style lang="postcss">
-.let-table tr.current_fn td {
+/* .let-table tr.current_fn td {
     background: #778cf5 !important;
     color: #fff !important;
 }
 .let-table tr.current_fn td .let-table__operation{
   color: #fff;
+} */
+.let-table tr.current_fn {
+  border: solid thin #778cf5;
+  box-sizing: border-box;
+  border-style: double;
 }
 .start_bm,.cancel_bm{
   width:96px;
@@ -526,8 +542,12 @@
 }
 .return_chart{
   display: flex;
+  justify-content:space-around;
 }
 .checkbox_endpoint_item{
   display: block;
+}
+.json-view-item.root-item.dark{
+  background: #555555;
 }
 </style>

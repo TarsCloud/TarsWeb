@@ -946,6 +946,9 @@
     "list": {
       "debug": "debug"
     },
+    "error":{
+      "parseFail":"proto parse fail"
+    },
     "title": {
       "listTitle": "Tars Files",
       "dlgTitle": "Upload Tars File"
