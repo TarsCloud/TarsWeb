@@ -334,7 +334,7 @@ InfTestService.getBmResultById = async(id)=>{
 		results.map((item)=>{
 			let mappedCost = {}, mappedRet = {}
 			for(let key in item.cost_map){
-				mappedCost[COST_MAP[key] || key] = item.cost_map[key]
+				if(COST_MAP[key]) mappedCost[COST_MAP[key]] = item.cost_map[key]
 			}
 			for(let key in item.ret_map){
 				mappedRet[RET_MAP[key] || key] = item.ret_map[key]

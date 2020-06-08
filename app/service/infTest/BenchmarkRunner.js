@@ -61,10 +61,11 @@ class BenchmarkRunner{
                 links:this._fnInfo.links,
                 speed:this._fnInfo.speed,
                 duration: this._fnInfo.duration,
-                proto:"tars"
+                proto:"json"
             })
             let data = await benchmarkPrx.startup(stReq)
             let ret = data.__return
+            console.log(" start response data:", stReq.toObject(), data)
             if(ret!=0){
                 await InfTestDao.stopBenchmark(this._caseId)
                 throw new Error(`failed: ${RetMap[ret]}`)
@@ -99,9 +100,11 @@ class BenchmarkRunner{
             let stReq = new benchmarkStruct.BenchmarkUnit()
             stReq.readFromObject({
                 servant: this._servant,
-                rpcfunc: this._fn
+                rpcfunc: this._fn,
+                proto: "json"
             })
             let data = await benchmarkPrx.query(stReq)
+            console.log(" query response data:", stReq.toObject(), data)
             let ret = data.__return
             //更新结果或者设置状态为停止
             if(ret == 0){
@@ -145,11 +148,10 @@ class BenchmarkRunner{
             para_value:this._fnInfo.para_value,
             paralist: [this._fnInfo.para_output],
             endpoints:this._fnInfo.endpoints.split(/\n|,|\r\n|<br>/),
-            proto:"tars"
+            proto:"json"
         })
         let data = await benchmarkPrx.test(stReq)
         let ret = data.__return
-        console.log("test response data:", stReq.toObject(), data)
         if(ret!=0){
             throw new Error(`failed: ${RetMap[ret]}`)
         }

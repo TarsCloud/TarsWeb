@@ -135,14 +135,14 @@
           <let-table-column title="失败" prop="fail_request" width="70px" align="center"></let-table-column>
           <let-table-column title="成功率" width="80px" align="center">
             <template slot-scope="{row}">
-                <span>{{(100*row.succ_request/row.total_request).toFixed(2)}}%</span>
+                <span>{{row.total_request == 0?0:(100*row.succ_request/row.total_request).toFixed(2)}}%</span>
             </template>
           </let-table-column>
           <let-table-column title="最大耗时(ms)" prop="max_time" width="80px" align="center"></let-table-column>
           <let-table-column title="最小耗时(ms)" prop="min_time" width="80px" align="center"></let-table-column>
           <let-table-column title="平均耗时(ms)" width="80px" align="center">
             <template slot-scope="{row}">
-                <span>{{(row.total_time/row.total_request).toFixed(2)}}</span>
+                <span>{{row.total_request==0?0:(row.total_time/row.total_request).toFixed(2)}}</span>
             </template>
           </let-table-column>
           <let-table-column title="p90" width="70px" align="center">

@@ -86,7 +86,7 @@ module.exports = {
 			where:{id: id}
 		}
 		if(transaction) options.transaction = transaction
-		return await tBmCase.update({status:1},options)
+		return await tBmCase.update({status:1, posttime:new Date()},options)
 	},
 	stopBenchmark: async(id, transaction)=>{
 		let options = {
@@ -111,10 +111,10 @@ module.exports = {
 		let currentLengh = bmCase.results.length
 		let oldResults = JSON.parse(bmCase.results || "[]")
 		//最大只存1m，超过则开始丢弃头部的
-		if(oldResults >= 1024*1024) {
+		if(currentLengh >= 1024*1024) {
 			oldResults.shift()
 		}
 		oldResults.push(result)
-		return await tBmCase.update({results:JSON.stringify(oldResults)},options)
+		return await tBmCase.update({results:JSON.stringify(oldResults), posttime:new Date()},options)
 	}
 };
