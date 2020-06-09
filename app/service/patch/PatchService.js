@@ -38,7 +38,7 @@ PatchService.find = async ({where}) => {
 	return await PatchDao.find(where)
 };
 
-PatchService.hasDcahcePatchPackage = async () => {
+PatchService.hasDcachePatchPackage = async () => {
 	let has = true;
 	let proxyDefaultPackage = await PatchDao.find({
 		server: 'DCache.RouterServer',

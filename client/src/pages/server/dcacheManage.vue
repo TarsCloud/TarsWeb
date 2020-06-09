@@ -2,8 +2,14 @@
   <div class="page_server_manage">
 
     <!-- 服务列表 -->
-    <let-table v-if="serverList" :data="serverList" :title="$t('serverList.title.serverList')" :empty-msg="$t('common.nodata')" ref="serverListLoading">
-      <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
+    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    
+    <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
+      <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
+        <template slot-scope="scope">
+          <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" title="点击查看服务日志(view server logs)" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.enableSet')">
         <template slot-scope="scope">
@@ -45,8 +51,8 @@
     </let-table>
 
     <!-- 服务实时状态 -->
-    <let-table v-if="serverNotifyList && showOthers"
-      :data="serverNotifyList" :title="$t('serverList.title.serverStatus')" :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
+    <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
+    <let-table v-if="serverNotifyList && showOthers" :data="serverNotifyList" ref="serverNotifyListLoading">
       <let-table-column :title="$t('common.time')" prop="notifytime"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>

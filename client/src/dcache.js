@@ -23,6 +23,7 @@ import App from './dcacheApp';
 import router from './router/dcache';
 import {i18n, loadLang} from './locale/i18n'
 
+import './assets/icon-font/iconfont.css'
 
 Vue.config.productionTip = false;
 
