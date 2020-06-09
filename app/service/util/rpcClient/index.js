@@ -20,6 +20,7 @@ const ConfigFProxy = require("./rpcProxy/ConfigFProxy");
 const DCacheOptProxy = require("./rpcProxy/DCacheOptProxy");
 const MonitorQueryProxy = require("./rpcProxy/MonitorQueryProxy");
 const BenchmarkAdminProxy = require("./rpcProxy/BenchmarkAdminProxy");
+const BenchmarkNode = require("./rpcProxy/BenchmarkNodeTars");
 const path = require('path');
 const logger = require('./../../../logger');
 client.initialize(path.join(__dirname, '../../../../config/tars.conf'));
@@ -104,8 +105,9 @@ module.exports = {
 
     // nodePrx: RPCClientPrx(NodeProxy, 'tars', 'Node', 'tars.tarsnode.NodeObj'),
     // nodeStruct: RPCStruct(NodeProxy, 'tars'),
-    benchmarkPrx : RPCClientPrx(BenchmarkAdminProxy, 'bm', 'Admin', 'bm.AdminServer.AdminObj'),
+    benchmarkPrx : RPCClientPrx(BenchmarkAdminProxy, 'bm', 'Admin', 'benchmark.AdminServer.AdminObj'),
     benchmarkStruct : RPCStruct(BenchmarkAdminProxy, 'bm'),
+    benchmarkNodeStruct : RPCStruct(BenchmarkNode, 'bm'),
 
     client: client
 };

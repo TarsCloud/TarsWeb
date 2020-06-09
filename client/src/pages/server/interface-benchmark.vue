@@ -15,12 +15,12 @@
         <let-table-column title="返回类型" prop="return" width="120px"></let-table-column>
         <let-table-column title="输入参数">
             <template slot-scope="scope">
-              <json-view colorScheme="dark" :data="JSON.parse(scope.row.inParams)" />
+              <json-view :maxDepth="0" rootKey="view" colorScheme="dark" :data="JSON.parse(scope.row.inParams)" />
             </template>
         </let-table-column>
         <let-table-column title="输出参数">
            <template slot-scope="scope">
-              <json-view colorScheme="dark" :data="JSON.parse(scope.row.outParams)" />
+              <json-view :maxDepth="0" rootKey="view" colorScheme="dark" :data="JSON.parse(scope.row.outParams)" />
             </template>
         </let-table-column>
         <let-table-column :title="$t('operate.operates')" width="60px">
@@ -38,8 +38,8 @@
             <let-table-column :title="$t('operate.operates')" width="240px">
               <template slot-scope="scope">
                   <let-table-operation @click="initCaseContentForm(scope.row)">修改</let-table-operation>
-                  <let-table-operation @click="initCaseConfigForm(scope.row)">测试</let-table-operation>
-                  <let-table-operation @click="initCaseConfigForm(scope.row)">压测</let-table-operation>
+                  <let-table-operation @click="initCaseConfigForm(scope.row, 'test')">测试</let-table-operation>
+                  <let-table-operation @click="initCaseConfigForm(scope.row, 'start')">压测</let-table-operation>
                   <let-table-operation @click="queryResult(scope.row)">查看结果</let-table-operation>
                   <let-table-operation @click="deleteBmCase(scope.row)">删除</let-table-operation>
               </template>
@@ -60,7 +60,7 @@
           <let-input size="small" v-model="caseModel.des"></let-input>
         </let-form-item>
         <let-form-item label="输入参数">
-          <json-view :data="JSON.parse(currentFn.inParams||'{}')" />
+          <json-view :maxDepth="0" rootKey="view" :data="JSON.parse(currentFn.inParams||'{}')" />
         </let-form-item>
         <let-form-item label="输入参数值">
           <let-input size="small" :rows="10" type="textarea" v-model="caseModel.in_values"></let-input>
@@ -86,22 +86,22 @@
           <let-input size="small" type="textarea" placeholder="其它(例如：tcp -h 192.168.10.4 -t 60000 -p 3031，多个以换行分隔)" v-model="caseModel.endpoints"></let-input>
         </let-form-item>
         <let-form-group inline label-position="top">
-           <let-form-item label="单endpoint连接数" :size="5">
+           <let-form-item v-if="upsertCaseConfigModal == 'start'" label="单endpoint连接数" :size="5">
             <let-input type="number" size="small" v-model="caseModel.links" required></let-input>
           </let-form-item>
-          <let-form-item label="单endpoint速率" :size="5">
+          <let-form-item v-if="upsertCaseConfigModal == 'start'" label="单endpoint速率" :size="5">
             <let-input  type="number" size="small" v-model="caseModel.speed" required></let-input>
           </let-form-item>
-          <let-form-item label="压测时长(s)" :size="5">
+          <let-form-item v-if="upsertCaseConfigModal == 'start'" label="压测时长(s)" :size="5">
             <let-input  type="number" size="small" v-model="caseModel.duration" required></let-input>
-          </let-form-item>
-           <let-form-item :size="5">
-            <let-button @click="execBenchmark('test')" theme="primary" class="start_bm">接口测试</let-button>
-            <let-button @click="upsertCaseConfig" theme="primary" class="start_bm">开始压测</let-button>
-            <let-button @click="upsertCaseConfigModal = false" class="cancel_bm">取消</let-button>
           </let-form-item>
           <let-form-item v-if="testResultModal" label="测试结果" :size="5">
             <div> {{testResult.errmsg || testResultRsp}} </div>
+          </let-form-item>
+           <let-form-item :size="5">
+            <let-button  v-if="upsertCaseConfigModal == 'test'" @click="execBenchmark('test')" theme="primary" class="start_bm">接口测试</let-button>
+            <let-button v-if="upsertCaseConfigModal == 'start'" @click="upsertCaseConfig" theme="primary" class="start_bm">开始压测</let-button>
+            <let-button @click="upsertCaseConfigModal = false" class="cancel_bm">取消</let-button>
           </let-form-item>
         </let-form-group>
       </let-form>
@@ -114,7 +114,7 @@
       width="1300px">
       <wrapper>
         <div class="result_op">
-          <let-button v-if="result.status == 0" @click="initCaseConfigForm(currentCase)" size="small" theme="success"  class="bmop-btn">启动压测</let-button>
+          <let-button v-if="result.status == 0" @click="initCaseConfigForm(currentCase, 'start')" size="small" theme="success"  class="bmop-btn">启动压测</let-button>
           <let-button  v-if="result.status == 1" @click="execBenchmark('stop')" size="small" theme="danger"  class="bmop-btn">停止压测</let-button>
           <let-button size="small" theme="sub-primary" class="bmop-btn" @click="getResultById(result.id)">刷新<span v-if="result.status == 1">({{nextRefresh}}s)</span></let-button>
         </div>
@@ -194,6 +194,7 @@
             upsertCaseConfigModal:false,
             resultModal:false,
             testResultModal:false,
+
             servant:"",
             currentFn:{},
             currentCase:{},
@@ -244,7 +245,7 @@
           this.upsertCaseContentModal = true
         },
         //init edit form value of config
-        initCaseConfigForm(row){
+        initCaseConfigForm(row, mode){
           if(!row){
             return
           }
@@ -268,7 +269,7 @@
           }
           //set the custom endpoints
           this.caseModel.endpoints = endpoints.join("\n")
-          this.upsertCaseConfigModal = true
+          this.upsertCaseConfigModal = mode
           this.resultModal = false
         },
         //run update or init case

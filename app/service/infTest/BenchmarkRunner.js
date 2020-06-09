@@ -1,5 +1,5 @@
 const InfTestDao = require('../../dao/InfTestDao');
-const { benchmarkPrx, benchmarkStruct} = require('../util/rpcClient');
+const { benchmarkPrx, benchmarkStruct, benchmarkNodeStruct} = require('../util/rpcClient');
 
 //TODO:协议中增加返回值枚举，替换此处硬编码
 const RetMap = {
@@ -65,7 +65,6 @@ class BenchmarkRunner{
             })
             let data = await benchmarkPrx.startup(stReq)
             let ret = data.__return
-            console.log(" start response data:", stReq.toObject(), data)
             if(ret!=0){
                 await InfTestDao.stopBenchmark(this._caseId)
                 throw new Error(`failed: ${RetMap[ret]}`)
@@ -109,7 +108,7 @@ class BenchmarkRunner{
             //更新结果或者设置状态为停止
             if(ret == 0){
                 await InfTestDao.addBenchmarkResult(this._caseId, data.stat)
-            } else if(ret == -10001){
+            } else if(ret == benchmarkNodeStruct.BMErrCode.BM_ADMIN_ERR_NOTFIND || ret == benchmarkNodeStruct.BMErrCode.BM_ADMIN_ERR_RUNNING){
                 clearInterval(this._timer)
                 clearInterval(this._endTimer)
                 await InfTestDao.stopBenchmark(this._caseId)
@@ -124,7 +123,8 @@ class BenchmarkRunner{
             let stReq = new benchmarkStruct.BenchmarkUnit()
             stReq.readFromObject({
                 servant: this._servant,
-                rpcfunc: this._fn
+                rpcfunc: this._fn,
+                proto: "json"
             })
             let data = await benchmarkPrx.shutdown(stReq)
             let ret = data.__return
