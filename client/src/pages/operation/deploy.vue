@@ -10,7 +10,7 @@
     >
       <let-form-item :label="$t('deployService.form.app')" required>
         <let-select id="inputApplication" v-model="model.application" size="small"  @change="changeApplication" filterable :notFoundText="$t('deployService.form.appAdd')">
-          <let-option v-for="d in model.applicationList" :key="d" :value="d">
+          <let-option v-for="d in applicationList" :key="d" :value="d">
             {{d}}
           </let-option>
         </let-select>
@@ -51,7 +51,7 @@
 
       <let-form-item :label="$t('serverList.table.th.ip')" required>
         <let-select v-model="model.node_name" size="small">
-          <let-option v-for="d in model.nodeList" :key="d" :value="d">
+          <let-option v-for="d in nodeList" :key="d" :value="d">
             {{d}}
           </let-option>
         </let-select>
@@ -314,8 +314,6 @@ const tars_templates = [
 ];
 
 const getInitialModel = () => ({
-  applicationList: [],
-  nodeList:[],
   application: '',
   server_name: '',
   server_type: types[0],
@@ -351,6 +349,8 @@ export default {
     return {
       types,
       tars_templates,
+      applicationList: [],
+      nodeList:[],
       all_templates: [],
       notars_templates: [],
       templates: [],
@@ -387,14 +387,14 @@ export default {
     });
 
     this.$ajax.getJSON('/server/api/application_list').then((data) => {
-      this.model.applicationList = data;
+      this.applicationList = data;
     }).catch((err) => {
       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
     });
 
     this.$ajax.getJSON('/server/api/node_list').then((data) => {
-      console.log(data);
-      this.model.nodeList = data;
+      //console.log(data);
+      this.nodeList = data;
     }).catch((err) => {
       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
     });
@@ -501,7 +501,7 @@ export default {
         this.$ajax.getJSON('/server/api/server_exist', {
           application: model.application,
           server_name: model.server_name,
-          node_name: model.server_name,
+          node_name: model.node_name,
         }).then((isExists) => {
           loading.hide();
           if (isExists) {

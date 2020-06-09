@@ -13,8 +13,8 @@
        v-if="finishModal.model"
        :title="$t('serverList.servant.taskID') + finishModal.model.task_no"
        :data="finishModal.model.items">
-       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"></let-table-column>
-       <let-table-column :title="$t('common.status')">
+       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"  width="200px"></let-table-column>
+       <let-table-column :title="$t('common.status')" width="120px">
          <template slot-scope="scope">
            <let-tag
              :theme="scope.row.status == 2 ? 'success' : (scope.row.status == 3 ? 'danger' : '')" checked>
@@ -22,7 +22,7 @@
            </let-tag>
          </template>
        </let-table-column>
-       <let-table-column width="70%" :title="$t('serverList.table.th.result')"  prop="execute_info"> </let-table-column>
+       <let-table-column :title="$t('serverList.table.th.result')"  prop="execute_info"> </let-table-column>
    </let-table>
  </let-modal>
 
