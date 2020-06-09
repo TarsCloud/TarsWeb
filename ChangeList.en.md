@@ -1,3 +1,9 @@
+## 20200506(2.4.2)
+- remove the space characters at the beginning and end of the file name when adding config file
+- fix bug of duplicate judgment when deploying a service
+- fixed bug of the application list and node list were emptied after the service was successfully deployed
+- fix bug of line wrap in modal of publish server
+
 ## 20200505(2.4.1)
 - add dcache module to tars web
 
