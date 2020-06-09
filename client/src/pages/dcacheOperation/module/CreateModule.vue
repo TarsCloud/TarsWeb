@@ -57,8 +57,8 @@
   const types = [
     {key: "1-0", value: 'key-value(KVCache)'},
     {key: "2-1", value: 'k-k-row(MKVCache)'},
-    {key: "2-2", value: 'Set(MKVCache)'},
-    {key: "2-3", value: 'List(MKVCache)'},
+    {key: "2-3", value: 'Set(MKVCache)'},
+    {key: "2-2", value: 'List(MKVCache)'},
     {key: "2-4", value: 'Zset(MKVCache)'},
   ];
   export default {

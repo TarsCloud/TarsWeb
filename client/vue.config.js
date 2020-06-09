@@ -24,8 +24,9 @@ module.exports = {
     },
     devServer:{
         //是否自动在浏览器中打开
+        disableHostCheck: true,
         open: true,
-        host: '127.0.0.1',
+        host: '0.0.0.0',
         //web-dev-server地址
         port: 8088,
         //ajax请求代理
@@ -39,11 +40,11 @@ module.exports = {
               changeOrigin: false
             },
             "/web_version":{
-              target: `http://localhost:${server_port}`,
+              target: `http://127.0.0.1:${server_port}`,
               changeOrigin: false
             },
             "/favicon.ico":{
-              target: `http://localhost:${server_port}`,
+              target: `http://127.0.0.1:${server_port}`,
               changeOrigin: false
             }
           }

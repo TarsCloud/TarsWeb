@@ -107,11 +107,10 @@
     },
     beforeRouteEnter(to, from, next) {
 
-      Ajax.getJSON('/server/api/has_dcahce_patch_package').then((hasDefaultPackage) => {
+      Ajax.getJSON('/server/api/has_dcache_patch_package').then((hasDefaultPackage) => {
         if (!hasDefaultPackage) {
-          console.log(hasDefaultPackage);
+          // console.log(hasDefaultPackage);
           next(vm => {
-            console.log('aaaaa')
             vm.$tip.warning(`${vm.$t('common.warning')}: ${vm.$t('apply.uploadPatchPackage')}`);
             vm.$router.push('/releasePackage/proxyList')
           })
