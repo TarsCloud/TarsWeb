@@ -50,7 +50,7 @@ ConfigService.addConfigFile = async (params) => {
 		set_name: params.set_name || '',
 		set_area: params.set_area || '',
 		set_group: params.set_group || '',
-		filename: params.filename,
+		filename: params.filename.replace(/(^\s*)|(\s*$)/g, ''),
 		config: params.config.replace(/^\s|\s$/g, ''),
 		posttime: formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss')
 	});

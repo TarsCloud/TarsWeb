@@ -335,6 +335,7 @@ export default {
     updateConfigFile() {
       if (this.$refs.configForm.validate()) {
         const loading = this.$Loading.show();
+        this.configModal.model.filename = this.configModal.model.filename.replace(/(^\s*)|(\s*$)/g, '')
         const model = this.configModal.model;
         // 新增
         if (this.configModal.isNew) {
