@@ -9,39 +9,39 @@
         </let-form-item>
     </let-form>
     <!-- 2.压测函数列表 -->
-    <let-table :data="fnList" title="函数列表" empty-msg="无函数记录" :row-class-name="fnRowClassName">
-        <let-table-column title="接口" prop="interface" width="100px"></let-table-column>
-        <let-table-column title="函数名称" prop="name" width="120px"></let-table-column>
-        <let-table-column title="返回类型" prop="return" width="120px"></let-table-column>
-        <let-table-column title="输入参数">
+    <let-table :data="fnList" :title="$t('inf.benchmark.fnlist')" :empty-msg="$t('inf.benchmark.nofn')" :row-class-name="fnRowClassName">
+        <let-table-column :title="$t('inf.benchmark.interface')" prop="interface" width="100px"></let-table-column>
+        <let-table-column :title="$t('inf.benchmark.fnname')" prop="name" width="120px"></let-table-column>
+        <let-table-column :title="$t('inf.benchmark.returnType')" prop="return" width="120px"></let-table-column>
+        <let-table-column :title="$t('inf.benchmark.inParam')">
             <template slot-scope="scope">
               <json-view :maxDepth="0" rootKey="view" colorScheme="dark" :data="JSON.parse(scope.row.inParams)" />
             </template>
         </let-table-column>
-        <let-table-column title="输出参数">
+        <let-table-column :title="$t('inf.benchmark.outParam')">
            <template slot-scope="scope">
               <json-view :maxDepth="0" rootKey="view" colorScheme="dark" :data="JSON.parse(scope.row.outParams)" />
             </template>
         </let-table-column>
-        <let-table-column :title="$t('operate.operates')" width="60px">
+        <let-table-column :title="$t('operate.operates')" width="80px">
           <template slot-scope="scope">
-              <let-table-operation @click="queryCase(scope.row)">用例</let-table-operation>
+              <let-table-operation @click="queryCase(scope.row)">{{$t('inf.benchmark.case')}}</let-table-operation>
           </template>
         </let-table-column>
     </let-table>
     <!-- 3. 压测函数的用例列表 -->
     <wrapper  v-if="showCase">
-        <let-button size="small" theme="primary" class="add-btn" @click="initCaseContentForm">添加用例</let-button>
-        <let-table :data="bmCaseList" :title="currentFn.interface+'.'+currentFn.name+' 用例列表'" empty-msg="无用例记录">
-            <let-table-column title="描述" prop="des"></let-table-column>
-            <let-table-column title="参数" prop="in_values"></let-table-column>
+        <let-button size="small" theme="primary" class="add-btn" @click="initCaseContentForm">{{$t('inf.benchmark.addCase')}}</let-button>
+        <let-table :data="bmCaseList" :title="currentFn.interface+'.'+currentFn.name+' '+$t('inf.benchmark.caselist')" :empty-msg="$t('inf.benchmark.nocase')">
+            <let-table-column :title="$t('inf.benchmark.des')" prop="des"></let-table-column>
+            <let-table-column :title="$t('inf.benchmark.inputValue')" prop="in_values"></let-table-column>
             <let-table-column :title="$t('operate.operates')" width="240px">
               <template slot-scope="scope">
-                  <let-table-operation @click="initCaseContentForm(scope.row)">修改</let-table-operation>
-                  <let-table-operation @click="initCaseConfigForm(scope.row, 'test')">测试</let-table-operation>
-                  <let-table-operation @click="initCaseConfigForm(scope.row, 'start')">压测</let-table-operation>
-                  <let-table-operation @click="queryResult(scope.row)">查看结果</let-table-operation>
-                  <let-table-operation @click="deleteBmCase(scope.row)">删除</let-table-operation>
+                  <let-table-operation @click="initCaseContentForm(scope.row)">{{$t('inf.benchmark.modifyCase')}}</let-table-operation>
+                  <let-table-operation @click="initCaseConfigForm(scope.row, 'test')">{{$t('inf.benchmark.testCase')}}</let-table-operation>
+                  <let-table-operation @click="initCaseConfigForm(scope.row, 'start')">{{$t('inf.benchmark.runCase')}}</let-table-operation>
+                  <let-table-operation @click="queryResult(scope.row)">{{$t('inf.benchmark.viewResult')}}</let-table-operation>
+                  <let-table-operation @click="deleteBmCase(scope.row)">{{$t('inf.benchmark.deleteCase')}}</let-table-operation>
               </template>
             </let-table-column>
         </let-table>
@@ -52,20 +52,20 @@
     <!-- 4.添加、修改用例弹窗 -->
     <let-modal
       v-model="upsertCaseContentModal"
-      title="压测用例"
+      :title="$t('inf.benchmark.case')"
       width="700px"
       @on-confirm="upsertCaseContent">
       <let-form itemWidth="100%">
-        <let-form-item label="用例描述">
+        <let-form-item :label="$t('inf.benchmark.des')">
           <let-input size="small" v-model="caseModel.des"></let-input>
         </let-form-item>
-        <let-form-item label="输入参数">
+        <let-form-item :label="$t('inf.benchmark.inParam')">
           <json-view :maxDepth="0" rootKey="view" :data="JSON.parse(currentFn.inParams||'{}')" />
         </let-form-item>
-        <let-form-item label="输入参数值">
+        <let-form-item :label="$t('inf.benchmark.inputValue')">
           <let-input size="small" :rows="10" type="textarea" v-model="caseModel.in_values"></let-input>
           <a target="_blank" href="https://github.com/TarsCloud/TarsDocs/blob/master/benchmark/tars-guide.md">
-            <let-table-operation>参数生成说明</let-table-operation>
+            <let-table-operation>{{$t('inf.benchmark.inputValueDes')}}</let-table-operation>
           </a>
         </let-form-item>
       </let-form>
@@ -75,33 +75,33 @@
       :footShow = "false"
       v-model="upsertCaseConfigModal"
       ref="startBm"
-      title="压测参数"
+      :title="$t('inf.benchmark.bmParams')"
       width="700px">
-      <let-form itemWidth="100%">
+      <let-form itemWidth="100%" class="start-bm">
         <let-form-item label="servant">
           <let-input disabled size="small" v-model="caseModel.servant"></let-input>
         </let-form-item>
-        <let-form-item label="节点列表">
+        <let-form-item :label="$t('inf.benchmark.endpoints')">
           <let-checkbox v-for="(value, name) in endpoints" v-model="endpoints[name]" :key="name" class="checkbox_endpoint_item">{{name}}</let-checkbox>
-          <let-input size="small" type="textarea" placeholder="其它(例如：tcp -h 192.168.10.4 -t 60000 -p 3031，多个以换行分隔)" v-model="caseModel.endpoints"></let-input>
+          <let-input size="small" type="textarea" :placeholder="$t('inf.benchmark.endpointsTip')" v-model="caseModel.endpoints"></let-input>
         </let-form-item>
         <let-form-group inline label-position="top">
-           <let-form-item v-if="upsertCaseConfigModal == 'start'" label="单endpoint连接数" :size="5">
+           <let-form-item v-if="upsertCaseConfigModal == 'start'" :label="$t('inf.benchmark.links')" :size="5">
             <let-input type="number" size="small" v-model="caseModel.links" required></let-input>
           </let-form-item>
-          <let-form-item v-if="upsertCaseConfigModal == 'start'" label="单endpoint速率" :size="5">
+          <let-form-item v-if="upsertCaseConfigModal == 'start'" :label="$t('inf.benchmark.speed')" :size="5">
             <let-input  type="number" size="small" v-model="caseModel.speed" required></let-input>
           </let-form-item>
-          <let-form-item v-if="upsertCaseConfigModal == 'start'" label="压测时长(s)" :size="5">
+          <let-form-item v-if="upsertCaseConfigModal == 'start'" :label="$t('inf.benchmark.duration')" :size="5">
             <let-input  type="number" size="small" v-model="caseModel.duration" required></let-input>
           </let-form-item>
-          <let-form-item v-if="testResultModal" label="测试结果" :size="5">
+          <let-form-item v-if="testResultModal" :label="$t('inf.benchmark.testResult')" :size="5">
             <div> {{testResult.errmsg || testResultRsp}} </div>
           </let-form-item>
            <let-form-item :size="5">
-            <let-button  v-if="upsertCaseConfigModal == 'test'" @click="execBenchmark('test')" theme="primary" class="start_bm">接口测试</let-button>
-            <let-button v-if="upsertCaseConfigModal == 'start'" @click="upsertCaseConfig" theme="primary" class="start_bm">开始压测</let-button>
-            <let-button @click="upsertCaseConfigModal = false" class="cancel_bm">取消</let-button>
+            <let-button  v-if="upsertCaseConfigModal == 'test'" @click="execBenchmark('test')" theme="primary" class="start_bm">{{$t('inf.benchmark.infTest')}}</let-button>
+            <let-button v-if="upsertCaseConfigModal == 'start'" @click="upsertCaseConfig" theme="primary" class="start_bm">{{$t('inf.benchmark.startBenchmark')}}</let-button>
+            <let-button @click="upsertCaseConfigModal = false" class="cancel_bm">{{$t('inf.benchmark.cancelTest')}}</let-button>
           </let-form-item>
         </let-form-group>
       </let-form>
@@ -110,37 +110,37 @@
     <let-modal
       :footShow = "false"
       v-model="resultModal"
-      :title="result.fn+'压测结果'"
+      :title="result.fn + ' - ' + $t('inf.benchmark.testResult')"
       width="1300px">
       <wrapper>
         <div class="result_op">
-          <let-button v-if="result.status == 0" @click="initCaseConfigForm(currentCase, 'start')" size="small" theme="success"  class="bmop-btn">启动压测</let-button>
-          <let-button  v-if="result.status == 1" @click="execBenchmark('stop')" size="small" theme="danger"  class="bmop-btn">停止压测</let-button>
-          <let-button size="small" theme="sub-primary" class="bmop-btn" @click="getResultById(result.id)">刷新<span v-if="result.status == 1">({{nextRefresh}}s)</span></let-button>
+          <let-button v-if="result.status == 0" @click="initCaseConfigForm(currentCase, 'start')" size="small" theme="success"  class="bmop-btn">{{$t('inf.benchmark.startBenchmark')}}</let-button>
+          <let-button  v-if="result.status == 1" @click="execBenchmark('stop')" size="small" theme="danger"  class="bmop-btn">{{$t('inf.benchmark.stopBenchmark')}}</let-button>
+          <let-button size="small" theme="sub-primary" class="bmop-btn" @click="getResultById(result.id)">{{$t('inf.benchmark.refresh')}}<span v-if="result.status == 1">({{nextRefresh}}s)</span></let-button>
         </div>
         <div class="result_select">
-          <let-radio v-model="resultMode" label="detail">详细指标</let-radio>
-          <let-radio v-model="resultMode" label="chart">区间分布</let-radio>
+          <let-radio v-model="resultMode" label="detail">{{$t('inf.benchmark.detail')}}</let-radio>
+          <let-radio v-model="resultMode" label="chart">{{$t('inf.benchmark.stat')}}</let-radio>
         </div>
-        <let-table v-if="resultMode=='detail'" :data="result.results" empty-msg="暂无压测结果" style="height:500px;overflow:auto">
-          <let-table-column title="时间" prop="time_stamp" width="150px" align="center">
+        <let-table v-if="resultMode=='detail'" :data="result.results" empty-msg="data is empty" style="height:500px;overflow:auto">
+          <let-table-column :title="$t('inf.benchmark.time')" prop="time_stamp" width="150px" align="center">
               <template slot-scope="{row}">
                 <span>{{formatDate(row.time_stamp*1000)}}</span>
               </template>
           </let-table-column>
           <!-- <let-table-column title="时间点(s)" prop="total_time" width="60px" align="center"></let-table-column> -->
           <let-table-column title="qps" prop="avg_speed" width="70px" align="center"></let-table-column>
-          <let-table-column title="总量" prop="total_request" width="70px" align="center"></let-table-column>
-          <let-table-column title="成功" prop="succ_request" width="70px" align="center"></let-table-column>
-          <let-table-column title="失败" prop="fail_request" width="70px" align="center"></let-table-column>
-          <let-table-column title="成功率" width="80px" align="center">
+          <let-table-column :title="$t('inf.benchmark.total')" prop="total_request" width="70px" align="center"></let-table-column>
+          <let-table-column :title="$t('inf.benchmark.success')" prop="succ_request" width="70px" align="center"></let-table-column>
+          <let-table-column :title="$t('inf.benchmark.fail')" prop="fail_request" width="70px" align="center"></let-table-column>
+          <let-table-column :title="$t('inf.benchmark.successRate')" width="80px" align="center">
             <template slot-scope="{row}">
-                <span>{{row.total_request == 0?0:(100*row.succ_request/row.total_request).toFixed(2)}}%</span>
+                <span>{{getSuccessRate(row)}}</span>
             </template>
           </let-table-column>
-          <let-table-column title="最大耗时(ms)" prop="max_time" width="80px" align="center"></let-table-column>
-          <let-table-column title="最小耗时(ms)" prop="min_time" width="80px" align="center"></let-table-column>
-          <let-table-column title="平均耗时(ms)" width="80px" align="center">
+          <let-table-column :title="$t('inf.benchmark.maxCost')" prop="max_time" width="80px" align="center"></let-table-column>
+          <let-table-column :title="$t('inf.benchmark.minCost')" prop="min_time" width="80px" align="center"></let-table-column>
+          <let-table-column :title="$t('inf.benchmark.avgCost')" width="80px" align="center">
             <template slot-scope="{row}">
                 <span>{{row.total_request==0?0:(row.total_time/row.total_request).toFixed(2)}}</span>
             </template>
@@ -160,8 +160,8 @@
                 <span>{{(row.p999_time).toFixed(2)}}</span>
             </template>
           </let-table-column>
-          <let-table-column title="发送字节" prop="send_bytes" width="80px" align="center"></let-table-column>
-          <let-table-column title="接收字节" prop="recv_bytes" width="80px" align="center"></let-table-column>
+          <let-table-column :title="$t('inf.benchmark.sendBytes')" prop="send_bytes" width="80px" align="center"></let-table-column>
+          <let-table-column :title="$t('inf.benchmark.recvBytes')" prop="recv_bytes" width="80px" align="center"></let-table-column>
         </let-table>
         <div v-if="resultMode=='chart'" class="return_chart">
           <ve-pie :legend="returnChartOptions.legend" :title="returnChartOptions.title" :data="returnChartOptions" width="500px"></ve-pie>
@@ -217,6 +217,11 @@
             return "current_fn"
           }
           return ""
+        },
+        getSuccessRate(row){
+          let total = row.succ_request+row.fail_request
+          if(!total) return '0%'
+          return (100*row.succ_request/total).toFixed(2)+'%'
         },
         upsertBmCase(caseInfo){
           const loading = this.$Loading.show();
@@ -291,7 +296,7 @@
           this.upsertBmCase(caseInfo)
           //let-ui文档缺乏，此处手动检查参数
           if(!caseInfo.endpoints || !this.caseModel.links || !this.caseModel.speed || !this.caseModel.duration){
-             this.$Notice({ title: "缺少参数", type: "error" })
+             this.$Notice({ title: "missing params", type: "error" })
              return
           }
           this.execBenchmark()
@@ -404,7 +409,7 @@
             });
         },
         deleteBmCase(row){
-          this.$confirm("确认删除此用例？", this.$t('common.alert')).then(() => {
+          this.$confirm(this.$t('inf.benchmark.deleteCaseConfirm'), this.$t('common.alert')).then(() => {
             const loading = this.$Loading.show();
             let caseInfo = {}
             caseInfo.id = row.id
@@ -474,10 +479,10 @@
         return (this.testResult.rsp || "").replace(/<br>/g, "\n")
       },
       costChartOptions(){
-        return this.pieFromResult("耗时区间分布", "返回值","数量","cost_map")
+        return this.pieFromResult(this.$t('inf.benchmark.costStat'), "返回值","数量","cost_map")
       },
       returnChartOptions(){
-        return this.pieFromResult("返回值分布", "返回值","数量","ret_map")
+        return this.pieFromResult(this.$t('inf.benchmark.retStat'), "返回值","数量","ret_map")
       }
     },
     props: {
@@ -550,5 +555,8 @@
 }
 .json-view-item.root-item.dark{
   background: #555555;
+}
+.start-bm .let-form-item label.let-form-item__label{
+  width:200px !important;
 }
 </style>

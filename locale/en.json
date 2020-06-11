@@ -944,7 +944,8 @@
   },
   "inf": {
     "list": {
-      "debug": "debug"
+      "debug": "debug",
+      "benchmark":"benchmark"
     },
     "error":{
       "parseFail":"proto parse fail"
@@ -960,6 +961,55 @@
       "tarsFile": "tars file",
       "deleteMsg": "are you sure to delete this file?",
       "objName": "Servant Name"
+    },
+    "benchmark":{
+      "inParam": "in params struct",
+      "outParam": "out params struct",
+      "fnlist":"Function List",
+      "nofn":"no function record",
+      "interface":"interface",
+      "fnname":"function name",
+      "returnType":"return type",
+      "case":"case",
+      "addCase":"add case",
+      "caselist":"case list",
+      "nocase":"no case record",
+      "des":"description",
+      "inputValue":"input value",
+      "modifyCase":"modify",
+      "testCase":"test",
+      "runCase":"run",
+      "viewResult":"view result",
+      "deleteCase":"delete",
+      "inputValueDes":"input value generation description",
+      "bmParams":"benchmark params",
+      "endpoints":"endpoints",
+      "endpointsTip":"other(eg：tcp -h 192.168.10.4 -t 60000 -p 3031，separate by newline)",
+      "infTest":"run test",
+      "cancelTest":"cancel",
+      "links":"links in one endpoint",
+      "speed":"speed in one endpoint",
+      "duration":"duration(s)",
+      "testResult":"benchmark result",
+      "startBenchmark":"start",
+      "stopBenchmark":"stop",
+      "refresh":"refresh",
+      "detail":"detail",
+      "stat":"stat charts",
+      "retStat":"return stat",
+      "costStat":"cost time stat",
+      "time":"time",
+      "total":"total",
+      "success":"success",
+      "fail":"fail",
+      "successRate":"success rate",
+      "maxCost":"max cost(s)",
+      "minCost":"min cost(s)",
+      "avgCost":"avg cost(s)",
+      "sendBytes":"send bytes",
+      "recvBytes":"recv bytes",
+      "deleteCaseConfirm":"are you sure to delete this case?"
+
     }
   },
   "publishLog": {

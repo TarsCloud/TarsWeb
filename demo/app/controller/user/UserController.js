@@ -38,6 +38,10 @@ UserController.adminModifyPass = async(ctx)=> {
 
     try{
         let rst = await UserService.modifyPass('admin', password);
+        if(rst && rst.updated == 0){
+            ctx.makeResObj(500, "please add admin user to db", {});
+            return;
+        }
         if(rst && rst.errMsg){
             ctx.makeResObj(500, rst.errMsg, {});
         }else{

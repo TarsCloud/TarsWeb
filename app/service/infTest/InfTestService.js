@@ -316,15 +316,16 @@ const RET_MAP = {
 	"-2006": "SOCK_RECV_ERROR",
 	"-2007": "SOCK_RECV_TIMEOUT"
 }
+
 const COST_MAP = {
-	"0": "10ms",
-	"1": "30ms",
-	"2": "50ms",
-	"3": "100ms",
-	"4": "50ms",
-	"5": "3s",
-	"6": "5s",
-	"7": "100s"
+	"0": "0~10ms",
+	"1": "10~30ms",
+	"2": "30~50ms",
+	"3": "50~100ms",
+	"4": "100~500ms",
+	"5": "0.5~3s",
+	"6": "3~5s",
+	"7": "5~100s"
 }
 
 InfTestService.getBmResultById = async(id)=>{

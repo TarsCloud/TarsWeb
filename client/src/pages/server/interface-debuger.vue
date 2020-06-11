@@ -12,7 +12,7 @@
             <let-table-column :title="$t('operate.operates')" width="260px">
             <template slot-scope="scope">
                 <let-table-operation @click="showDebuger(scope.row)">{{$t('inf.list.debug')}}</let-table-operation>
-                <let-table-operation @click="showBenchmark(scope.row)">压测</let-table-operation>  
+                <let-table-operation @click="showBenchmark(scope.row)">{{$t('inf.list.benchmark')}}</let-table-operation>  
                 <let-table-operation @click="deleteTarsFile(scope.row.f_id)">{{$t('operate.delete')}}</let-table-operation>
             </template>
             </let-table-column>
