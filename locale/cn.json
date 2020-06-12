@@ -972,7 +972,11 @@
   },
   "inf": {
     "list": {
-      "debug": "调试"
+      "debug": "调试",
+      "benchmark":"压测"
+    },
+    "error":{
+      "parseFail":"协议解析失败"
     },
     "title": {
       "listTitle": "tars文件列表",
@@ -985,6 +989,55 @@
       "tarsFile": "tars文件",
       "deleteMsg": "您确定要删除吗？",
       "objName": "Servant名"
+    },
+    "benchmark":{
+      "inParam": "入参结构",
+      "outParam": "出参结构",
+      "fnlist":"函数列表",
+      "nofn":"无函数记录",
+      "interface":"接口",
+      "fnname":"函数名",
+      "returnType":"返回类型",
+      "case":"用例",
+      "addCase":"添加用例",
+      "caselist":"用例列表",
+      "nocase":"无用例记录",
+      "des":"描述",
+      "inputValue":"输入参数",
+      "modifyCase":"修改",
+      "testCase":"测试",
+      "runCase":"压测",
+      "viewResult":"查看结果",
+      "deleteCase":"删除",
+      "inputValueDes":"输入参数生成说明",
+      "bmParams":"压测参数",
+      "endpoints":"endpoints",
+      "endpointsTip":"其它(例如：tcp -h 192.168.10.4 -t 60000 -p 3031，多个以换行分隔)",
+      "infTest":"接口测试",
+      "cancelTest":"取消",
+      "links":"单endpoint连接数",
+      "speed":"单endpoint速率",
+      "duration":"压测时长(s)",
+      "testResult":"压测结果",
+      "startBenchmark":"开始压测",
+      "stopBenchmark":"停止压测",
+      "refresh":"刷新",
+      "detail":"详细指标",
+      "stat":"区间分布",
+      "retStat":"返回值分布",
+      "costStat":"耗时区间分布",
+      "time":"时间",
+      "total":"总量",
+      "success":"成功",
+      "fail":"失败",
+      "successRate":"成功率",
+      "maxCost":"最大耗时(s)",
+      "minCost":"最小耗时(s)",
+      "avgCost":"平均耗时(s)",
+      "sendBytes":"发送字节",
+      "recvBytes":"接收字节",
+      "deleteCaseConfirm":"确认删除此用例？"
+
     }
   },
   "publishLog": {

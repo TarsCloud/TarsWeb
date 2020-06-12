@@ -17,45 +17,80 @@
 /* jshint indent: 1 */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('t_tars_files', {
-		f_id: {
+	return sequelize.define('t_bm_case', {
+		id: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
 			autoIncrement: true,
 			unique: "column"
 		},
-		application: {
-			type: DataTypes.STRING(64),
-			allowNull: false,
-			defaultValue: ''
-		},
-		server_name: {
+		servant: {
 			type: DataTypes.STRING(128),
 			allowNull: false,
 			defaultValue: '',
 			primaryKey: true
 		},
-		file_name: {
-			type: DataTypes.STRING(64),
+		fn: {
+			type: DataTypes.STRING(54),
 			allowNull: false,
 			defaultValue: '',
 			primaryKey: true
+		},
+		des: {
+			type: DataTypes.STRING(256),
+			allowNull: true,
+			defaultValue: ''
+		},
+		in_values: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+			defaultValue: ''
+		},
+		endpoints: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+			defaultValue: ''
+		},
+		links: {
+			type: DataTypes.INTEGER,
+			allowNull: true
+		},
+		speed: {
+			type: DataTypes.INTEGER,
+			allowNull: true
+		},
+		duration: {
+			type: DataTypes.INTEGER,
+			allowNull: true
 		},
 		posttime: {
 			type: DataTypes.DATE,
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		context: {
-			type: DataTypes.TEXT,
-			allowNull: true
+		status: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue:0
 		},
-		benchmark_context: {
+		results: {
 			type: DataTypes.TEXT,
-			allowNull: true
+			allowNull: true,
+			defaultValue: ''
+		},
+		is_deleted: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 0
 		}
 	}, {
-		tableName: 't_tars_files',
-		timestamps: false
+		tableName: 't_bm_case',
+		timestamps: false,
+		indexes: [
+			{
+				unique: false,
+				fields: ['servant', 'fn']
+			}
+		]
 	});
 };

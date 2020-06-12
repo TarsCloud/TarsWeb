@@ -1,0 +1,133 @@
+/**
+* Tencent is pleased to support the open source community by making DCache available.
+* Copyright (C) 2019 THL A29 Limited, a Tencent company. All rights reserved.
+* Licensed under the BSD 3-Clause License (the "License"); you may not use this file
+* except in compliance with the License. You may obtain a copy of the License at
+*
+* https://opensource.org/licenses/BSD-3-Clause
+*
+* Unless required by applicable law or agreed to in writing, software distributed under
+* the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+* either express or implied. See the License for the specific language governing permissions
+* and limitations under the License.
+*/
+module bm
+{
+    enum BMErrCode
+    {
+        BM_SERVER_ERR_PARAM     = -10000,
+        BM_ADMIN_ERR_NOTFIND    = -10001,   // 未找到此链接
+        BM_ADMIN_ERR_RUNNING    = -10002,   // 服务未运行
+        BM_ADMIN_ERR_STARTUP    = -10003,   // 启动失败
+        BM_ADMIN_ERR_SHUTDOWN   = -10004,   // 关闭失败
+        BM_ADMIN_ERR_ENCODE     = -10005,   // 编码失败
+        BM_ADMIN_ERR_DECODE     = -10006,   // 编码失败
+        BM_ADMIN_ERR_SOCKET     = -10007,   // 网络失败
+        BM_ADMIN_ERR_TASK       = -10008,   // 服务不在运行中
+        BM_ADMIN_ERR_PROTO      = -10009,   // 未找到此协议
+
+        BM_NODE_ERR_RUNNING     = -20001,   // 正在运行
+        BM_NODE_ERR_RESOURCE    = -20002,   // 资源不足
+        BM_NODE_ERR_CASEMATCH   = -20003,   // 用例参数和内容不匹配
+        BM_NODE_ERR_CONNECTION  = -20004,   // 链接数设置不合理(整数倍，且不要超过500倍)
+        BM_NODE_ERR_ENDPOINT    = -20005,   // 目标服务器配置不正确
+        BM_NODE_ERR_RPCCALL     = -20006,   // 目标服务器调用失败
+    };
+
+    enum TaskState
+    {
+        TS_IDLE                 = 0,
+        TS_RUNNING              = 1,
+        TS_FINISHED             = 2,
+    };
+
+    // 接口查询结果
+    struct ResultStat
+    {
+        0 optional  long                 time_stamp;
+        1 optional  map<int, long>       ret_map;
+        2 optional  map<int, long>       cost_map;
+        3 optional  long                 total_request;
+        4 optional  long                 succ_request;
+        5 optional  long                 fail_request;
+        6 optional  double               max_time = 0.0;
+        7 optional  double               min_time = 1000.0;
+        8 optional  double               total_time = 0.0;
+        9 optional  double               p999_time = 0.0;
+       10 optional  double               p99_time  = 0.0;
+       11 optional  double               p90_time  = 0.0;
+       12 optional  long                 send_bytes;
+       13 optional  long                 recv_bytes;
+       14 optional  int                  avg_speed;
+    };
+
+    // 最小值形体结构
+    struct ExecItem
+    {
+        0 optional string           proto;     // 压测协议名称
+        1 optional string           service;   // 压测服务的标记
+        2 optional int              threads;   // 占用压测进程单元
+        3 optional int              links;     // 当前压测链接数
+        4 optional int              speed;     // 当前压测速率
+    };
+
+    // capacity接口结构体
+    struct NodeStat
+    {
+        0 optional string               ipaddr;
+        1 optional int                  max_speed;
+        2 optional int                  max_threads;
+        3 optional int                  left_speed;
+        4 optional int                  left_threads;
+        5 optional vector<ExecItem>     executors;
+    };
+    key[NodeStat, ipaddr];
+
+    // query接口结构体
+    struct QueryRsp
+    {
+        0 optional ResultStat           stat;
+        1 optional string               ipaddr;
+    };
+
+    // startup/shutdown接口结构体
+    struct TaskConf
+    {
+        0 optional string           proto;          // 压测协议名称
+        1 optional string           service;        // 压测服务的标记
+        2 optional vector<string>   paralist;       // 压测的入参配置
+        3 optional vector<string>   endpoints;      // 压测目标服务器
+        4 optional int              links;          // 单个endpoint的链接数
+        5 optional int              speed;          // 单个endpoint的速率，最好是links的倍数
+        6 optional int              runflag;        // 是否正在运行(0, 表示停止，1: 正在压测)
+    };
+    key[TaskConf, proto, service];
+
+
+    interface Node
+    {
+        /**
+         * @brief  启动压测接口
+         *
+         */
+        int startup(TaskConf req);
+
+        /**
+         * @brief  查询压测接口
+         *
+         */
+        int query(TaskConf req, out QueryRsp rsp);
+
+        /**
+         * @brief  关停压测接口
+         *
+         */
+        int shutdown(TaskConf req, out QueryRsp rsp);
+
+        /**
+         * @brief  查询正在当前压测的接口
+         *
+         */
+        int capacity(out NodeStat stats);
+    };
+};
