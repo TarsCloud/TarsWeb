@@ -1036,7 +1036,11 @@
       "avgCost":"平均耗时(s)",
       "sendBytes":"发送字节",
       "recvBytes":"接收字节",
-      "deleteCaseConfirm":"确认删除此用例？"
+      "deleteCaseConfirm":"确认删除此用例？",
+      "installBenchmark":"请安装压测服务",
+      "installTip":"使用压测工具前，需要先安装压测服务组件",
+      "installTutorial":"安装教程",
+      "installScript":"一键安装"
 
     }
   },

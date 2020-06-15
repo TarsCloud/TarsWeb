@@ -54,5 +54,8 @@ module.exports = {
         interval: 1000 * 60 * 10,     //限制的时间间隔，单位为ms，如：1小时内限制访问5000次
         whilteList: [],               //白名单IP
         blackList: []                 //黑名单IP
+    },
+    infTestConf:{
+        benchmarkAdmin:"benchmark.AdminServer.AdminObj"
     }
 };

@@ -246,6 +246,7 @@ const apiConf = [
     ['post', '/stop_bencmark', InfTestController.stopBencmark, { servant: 'notEmpty', fn: 'notEmpty'}],
     ['post', '/test_bencmark', InfTestController.testBencmark, { servant: 'notEmpty', fn: 'notEmpty'}],
     ['get', '/get_endpoints', InfTestController.getEndpoints, { servant: 'notEmpty'}],
+    ['get', '/is_benchmark_installed', InfTestController.isBenchmarkInstalled],
     ['get', '/logview_list', LogviewController.getLogFileList, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty' }],
     ['get', '/logview_data', LogviewController.getLogData, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', log_file: 'notEmpty', interface_params: 'notEmpty' }],
 ];
