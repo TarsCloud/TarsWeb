@@ -301,8 +301,23 @@ InfTestController.getEndpoints = async (ctx)=>{
 		let ret = await AdminService.getEndpoints(servant);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
-		logger.error('[stopBencmark]:', e, ctx);
-		ctx.makeResObj(400, e.message);
+		logger.error('[getEndpoints]:', e, ctx);
+		ctx.makeResObj(500, "get endpoints error");
+	}
+}
+
+InfTestController.isBenchmarkInstalled = async (ctx) =>{
+	try{
+		let adminObj = WebConf.infTestConf.benchmarkAdmin
+		let ret = await AdminService.getEndpoints(adminObj)
+		if(ret && ret.length){
+			ctx.makeResObj(200, '', true);
+		} else {
+			ctx.makeResObj(200, '', false);
+		}
+	} catch(e){
+		logger.error('[isBenchmarkInstalled]:', e, ctx);
+		ctx.makeResObj(500, 'get benchmark admin status error', false);
 	}
 }
 

@@ -1008,7 +1008,10 @@
       "avgCost":"avg cost(s)",
       "sendBytes":"send bytes",
       "recvBytes":"recv bytes",
-      "deleteCaseConfirm":"are you sure to delete this case?"
+      "deleteCaseConfirm":"are you sure to delete this case?",
+      "installTip":"please install benchmark server before you use benchmark tool",
+      "installTutorial":"install tutorial",
+      "installScript":"install script"
 
     }
   },

@@ -1,3 +1,11 @@
+## 20200612(2.4.4)
+- add install tutorial when benchmark admin is not installed
+- optimize the error message in benchmark tool when framework server exception
+- fix bug of not redirecting to login page when the uid and ticket in cookies are timeout
+
+## 20200612(2.4.3)
+- add benchmark tool to infTest
+
 ## 20200506(2.4.2)
 - remove the space characters at the beginning and end of the file name when adding config file
 - fix bug of duplicate judgment when deploying a service

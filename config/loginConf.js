@@ -75,6 +75,9 @@ async function getUidByTicket(ctx, ticket){
  * @param ctx
  */
 async function validate(ctx, uid, ticket){
+    if(!uid && !ticket){
+        return false
+    }
     //TODO
     return new Promise((resolve, reject)=>{
         try{
