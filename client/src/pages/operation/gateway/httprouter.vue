@@ -18,7 +18,7 @@
 
     <let-modal
       v-model="detailModal.show"
-      :title="detailModal.isNew ? this.$t('gateway.add.title') : this.$t('gateway.update.title')"
+      :title="detailModal.isNew ? this.$t('gateway.btn.addHttpRouter') : this.$t('gateway.update.routerTitle')"
       width="900px"
       @on-confirm="saveItem"
       @on-cancel="closeDetailModal"
@@ -120,9 +120,11 @@ export default {
     },
     fetchUpstreams(){
       return this.$ajax.getJSON('/server/api/upstream_list').then((data) => {
-        this.upstreams = data.map((item)=>{
+        let upstreams = data.map((item)=>{
           return item.f_upstream
         })
+        upstreams = Array.from(new Set(upstreams))
+        this.upstreams = upstreams
       }).catch((err) => {
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       });
@@ -138,12 +140,14 @@ export default {
     },
 
     addItem() {
+      this.fetchUpstreams()
       this.detailModal.model = {};
       this.detailModal.show = true;
       this.detailModal.isNew = true;
     },
 
     editItem(d) {
+      this.fetchUpstreams()
       d = Object.assign({},d);//编辑时，处理副本
       this.detailModal.model = d;
       this.detailModal.show = true;
@@ -183,7 +187,7 @@ export default {
           //let-ui不支持select输入，一个trick
           let iptValue = document.querySelector(".set_upstream .let-select__filter__input").value.trim()
           params.f_proxy_pass_upstream = iptValue
-          params.f_proxy_pass = `${params.f_proxy_pass_upstream}${params.f_proxy_pass_path}`
+          params.f_proxy_pass = `${params.f_proxy_pass_upstream}${params.f_proxy_pass_path || ""}`
         }
         //添加http前缀
         if(!HTTP_PREFIX.test(params.f_proxy_pass)){

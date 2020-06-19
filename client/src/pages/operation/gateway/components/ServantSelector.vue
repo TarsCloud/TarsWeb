@@ -81,7 +81,7 @@ export default {
             });
         },
         initData(){
-            if(this.servant){
+            if(this.servant && /^[^.]+.[^.]+.[^.]+obj$/i.test(this.servant)){
                 let arr = this.servant.split(".")
                 this.application = arr[0] || ''
                 this.server_name = arr[1] || ''

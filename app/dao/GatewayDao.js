@@ -218,10 +218,11 @@ GatewayDao.getHttpRouterList = async (f_station_id) => {
 
 GatewayDao.addBWList = async(params, type) => {
 	let model = type == "black" ? tBlacklist : tWhitelist
-	return await model.create({
+	return await model.upsert({
 		f_station_id: params.f_station_id,
 		f_ip: params.f_ip,
-		f_update_person: params.uid
+		f_update_person: params.uid,
+		f_valid:1
 	});
 }
 

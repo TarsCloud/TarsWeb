@@ -56,9 +56,11 @@ GatewayService.getHttpRouterList = async (f_station_id) => {
 	return await GatewayDao.getHttpRouterList(f_station_id);
 };
 GatewayService.addHttpRouter = async (params) => {
+	params.f_server_name = params.f_server_name || "";
 	return await GatewayDao.addHttpRouter(params);
 };
 GatewayService.updateHttpRouter = async (params) => {
+	params.f_server_name = params.f_server_name || "";
 	return await GatewayDao.updateHttpRouter(params);
 };
 GatewayService.deleteHttpRouter = async (f_id) => {

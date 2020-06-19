@@ -16,7 +16,11 @@
       <let-table-column title="upstream" prop="f_upstream" width="20%"></let-table-column>
       <let-table-column :title="$t('gateway.addr')" prop="f_addr" width="20%"></let-table-column>
       <let-table-column :title="$t('gateway.weight')" prop="f_weight"></let-table-column>
-      <let-table-column :title="$t('gateway.fusing')" prop="f_fusing_onoff"></let-table-column>
+      <let-table-column :title="$t('gateway.fusing')" prop="f_fusing_onoff">
+         <template slot-scope="scope">
+          <span>{{scope.row.f_fusing_onoff == 1 ? $t('gateway.fusingOn') : $t('gateway.fusingOff')}}</span>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="f_update_time"></let-table-column>
       <let-table-column :title="$t('operate.operates')" width="200px">
         <template slot-scope="scope">

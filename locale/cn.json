@@ -913,6 +913,7 @@
     },
     "update": {
       "title": "编辑站点",
+      "routerTitle": "编辑路由",
       "upstream": "编辑Upstream",
       "errTips": "编辑失败"
     },

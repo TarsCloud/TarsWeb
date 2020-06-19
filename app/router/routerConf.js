@@ -222,14 +222,12 @@ const apiConf = [
     ['get', '/httprouter_list', GatewayController.getHttpRouterList, { f_id: 'f_station_id' }], 
     ['post', '/add_httprouter', GatewayController.addHttpRouter,{
         f_station_id: 'notEmpty',
-        f_server_name: 'notEmpty',
         f_path_rule: 'notEmpty',
         f_proxy_pass: 'notEmpty'
     }],
     ['post', '/update_httprouter', GatewayController.updateHttpRouter,{
         f_id: 'notEmpty',
         f_station_id: 'notEmpty',
-        f_server_name: 'notEmpty',
         f_path_rule: 'notEmpty',
         f_proxy_pass: 'notEmpty'
     }],
