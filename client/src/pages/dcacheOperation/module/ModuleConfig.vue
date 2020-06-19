@@ -234,6 +234,7 @@
           this.model.module_id = data.id;
           this.module = data;
           this.getAppName(data.apply_id);
+
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
@@ -242,6 +243,11 @@
         this.$ajax.getJSON('/server/api/get_apply_and_router_and_proxy', { applyId }).then((apply) => {
           this.app_name = apply.name || '';
           this.model.module_name = this.app_name;
+
+          console.log(this.app_name);
+
+          this.model.dbAccessServant =  this.app_name + "." + this.app_name + "DbAccessServer.DbAccessObj";
+
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });

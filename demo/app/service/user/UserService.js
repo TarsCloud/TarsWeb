@@ -10,8 +10,8 @@ UserService.getUserIdList = async() => {
 
 //注册操作
 UserService.modifyPass = async(uid, password) => {
-    await UserDao.modifyPass(uid, sha1(password));
-    return {};
+    let updated = await UserDao.modifyPass(uid, sha1(password));
+    return {updated: updated[0]};
 };
 
 UserService.addUser = async(userList) => {

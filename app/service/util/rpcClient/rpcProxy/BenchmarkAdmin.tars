@@ -1,0 +1,83 @@
+/**
+* Tencent is pleased to support the open source community by making DCache available.
+* Copyright (C) 2019 THL A29 Limited, a Tencent company. All rights reserved.
+* Licensed under the BSD 3-Clause License (the "License"); you may not use this file
+* except in compliance with the License. You may obtain a copy of the License at
+*
+* https://opensource.org/licenses/BSD-3-Clause
+*
+* Unless required by applicable law or agreed to in writing, software distributed under
+* the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+* either express or implied. See the License for the specific language governing permissions
+* and limitations under the License.
+*/
+#include "BenchmarkNode.tars"
+module bm
+{
+
+    // 任务状态
+    struct TaskStat
+    {
+        0 optional TaskConf   conf;                 // 接口配置       
+        1 optional int        state;                // 状态
+        2 optional long       start_time;           // 开始时间
+        3 optional long       fetch_time;           // 获取结果时间
+        4 optional long       duration;             // 压测周期时间
+        5 optional map<string, int>  speed_quota;   // 速率配额，key为机器IP
+    };
+
+    // 压测信息汇总
+    struct BenchmarkSummary
+    {
+        0 optional map<string, NodeStat>     nodes;         // 机器状态，key为机器IP
+        1 optional map<string, ResultStat>   result;        // 压测周期结果，key为proto.service
+        2 optional map<string, ResultStat>   total_result;  // 压测汇总结果，key为proto.service
+        3 optional map<string, TaskStat>     task;          // 压测接口状态，key为proto.service
+    };
+
+    // 压测接口请求结构
+    struct BenchmarkUnit
+    {
+        0 optional string           owner;          // 压测启动人
+        1 optional string           servant;        // 压测服务的servant
+        2 optional string           rpcfunc;        // 压测服务的接口
+        3 optional string           para_input;     // 压测的入参配置
+        4 optional string           para_value;     // 压测的入参值
+        5 optional vector<string>   paralist;       // 压测的入/出参配置
+                                                    // 如果proto=tars|json, paralist表示输出配置
+                                                    // 如果proto=http, paralist[0:url,1:header,2:cookie,3:postbody]
+        6 optional vector<string>   endpoints;      // 压测目标服务器
+        7 optional int              links;          // 单个endpoint的链接数
+        8 optional int              speed;          // 单个endpoint的速率，最好是links的倍数
+        9 optional int              duration;       // 压测持续时间，单位为秒
+       10 optional string           proto;          // 协议名称(支持tars|json|http 3类协议)
+    };
+    key[BenchmarkUnit, servant, rpcfunc];
+
+    interface Admin
+    {
+        /**
+         * @brief  启动压测接口
+         *
+         */
+        int startup(BenchmarkUnit req);
+
+        /**
+         * @brief  查询压测接口
+         *
+         */
+        int query(BenchmarkUnit req, out ResultStat stat);
+
+        /**
+         * @brief  关停压测接口
+         *
+         */
+        int shutdown(BenchmarkUnit req, out ResultStat stat);
+
+        /**
+         * @brief  测试接口
+         *
+         */
+        int test(BenchmarkUnit req, out string rsp, out string errmsg);
+    };
+}; 

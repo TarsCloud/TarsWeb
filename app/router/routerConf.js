@@ -166,7 +166,7 @@ const apiConf = [
     ['get', '/get_compile_conf', PatchController.getCompilerConf],
     ['post', '/delete_patch_package', PatchController.deletePatchPackage],
     ['post', '/set_patch_package_default', PatchController.setPatchPackageDefault],
-    ['get', '/has_dcahce_patch_package', PatchController.hasDcahcePatchPackage],
+    ['get', '/has_dcache_patch_package', PatchController.hasDcachePatchPackage],
 
     // 监控
     ['get', '/tarsstat_monitor_data', MonitorController.tarsstat],
@@ -253,6 +253,7 @@ const apiConf = [
     ['post', '/connect_tars_node', ResourceController.connectTarsNode],
     ['post', '/install_tars_nodes', ResourceController.installTarsNodes],
     ['get', '/uninstall_tars_nodes', ResourceController.uninstallTarsNodes, { ips: 'notEmpty' }],
+    ['get', '/uninstall_tars_node', ResourceController.uninstallTarsNode, { node_name: 'notEmpty' }],
     ['get', '/check_tars_node', ResourceController.checkTarsNode, { node_name: 'notEmpty' }],
 
     //权限管理
@@ -295,6 +296,15 @@ const apiConf = [
     }],
     ['get', '/delete_tars_file', InfTestController.deleteTarsFile, { id: 'notEmpty' }],
     ['get', '/get_structs', InfTestController.getStructs, { id: 'notEmpty', module_name: 'notEmpty' }],
+    ['get', '/get_benchmark_des', InfTestController.getBenchmarkDes, { id: 'notEmpty'}],
+    ['get', '/get_bm_case_list', InfTestController.getBmCaseList, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['get', '/get_bm_result_by_id', InfTestController.getBmResultById, { id: 'notEmpty'}],
+    ['post', '/upsert_bm_case', InfTestController.upsertBmCase, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['post', '/start_bencmark', InfTestController.startBencmark, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['post', '/stop_bencmark', InfTestController.stopBencmark, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['post', '/test_bencmark', InfTestController.testBencmark, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['get', '/get_endpoints', InfTestController.getEndpoints, { servant: 'notEmpty'}],
+    ['get', '/is_benchmark_installed', InfTestController.isBenchmarkInstalled],
     ['get', '/logview_list', LogviewController.getLogFileList, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty' }],
     ['get', '/logview_data', LogviewController.getLogData, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', log_file: 'notEmpty', interface_params: 'notEmpty' }],
 ];

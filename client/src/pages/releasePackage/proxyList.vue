@@ -10,10 +10,11 @@
     <let-table :data="packages.rows" :title="$t('serverList.title.serverList')" :empty-msg="$t('common.nodata')">
       <let-table-column title="ID" prop="id">
         <template slot-scope="scope">
-          <span :title="$t('releasePackage.default')" style="color: green; display: inline-block;width:1em;height:1em;">
-            <icon v-if="scope.row.default_version == 1" name="default"/>
+          <span :title="$t('releasePackage.default')">
+            <i v-if="scope.row.default_version == 1" class="icon iconfont" style="color: green">&#xec46;</i>
           </span>
           {{scope.row.id}}
+         
         </template>
       </let-table-column>
       <let-table-column :title="$t('releasePackage.moduleName')" prop="server"></let-table-column>
@@ -139,6 +140,7 @@
           application: this.uploadModal.model.application,
           module_name: this.uploadModal.model.module_name
         }).then((data) => {
+          this.$tip.success(`${this.$t('common.success')}`);
           this.getPatchPackage();
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

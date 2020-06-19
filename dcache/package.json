@@ -1,0 +1,102 @@
+{
+  "_from": "@tars/dcache@^1.0.1",
+  "_id": "@tars/dcache@1.0.2",
+  "_inBundle": false,
+  "_integrity": "sha512-BtKHUjCo3RgeEC0AlzrynqKtkczIwljE9BbkcPTzSEpS1tINt57NT5VLmEqzdKOYfVQCqxjEsVLlXqNL0cN3CQ==",
+  "_location": "/@tars/dcache",
+  "_phantomChildren": {
+    "bluebird": "3.7.2",
+    "cls-bluebird": "2.1.0",
+    "depd": "1.1.2",
+    "dottie": "2.0.2",
+    "generic-pool": "3.5.0",
+    "graceful-fs": "4.2.4",
+    "inflection": "1.12.0",
+    "jsonfile": "4.0.0",
+    "lodash": "4.17.15",
+    "moment": "2.26.0",
+    "moment-timezone": "0.5.31",
+    "ms": "2.1.2",
+    "retry-as-promised": "2.3.2",
+    "semver": "5.7.1",
+    "terraformer-wkt-parser": "1.2.1",
+    "toposort-class": "1.0.1",
+    "universalify": "0.1.2",
+    "wkx": "0.4.8"
+  },
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@tars/dcache@^1.0.1",
+    "name": "@tars/dcache",
+    "escapedName": "@tars%2fdcache",
+    "scope": "@tars",
+    "rawSpec": "^1.0.1",
+    "saveSpec": null,
+    "fetchSpec": "^1.0.1"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "http://mirrors.cloud.tencent.com/npm/@tars%2fdcache/-/dcache-1.0.2.tgz",
+  "_shasum": "3dcc97499cb1e494269330676cb59103b6340c90",
+  "_spec": "@tars/dcache@^1.0.1",
+  "_where": "/root/TarsWeb",
+  "author": {
+    "name": "combineli",
+    "email": "combineli@tencent.com"
+  },
+  "bugs": {
+    "url": "https://github.com/JSFiend/Tars-DCache/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@tars/stream": "^2.0.1",
+    "@tars/utils": "^2.0.0",
+    "fs-extra": "^7.0.1",
+    "lodash": "^4.17.11",
+    "mysql": "^2.16.0",
+    "mysql2": "^1.6.4",
+    "node-schedule": "^1.3.2",
+    "sequelize": "^4.42.0"
+  },
+  "deprecated": false,
+  "description": "`@tars/dcache` 模块， 是 Tars web 的扩展，用于管理 DCache 服务。",
+  "devDependencies": {
+    "coveralls": "^3.0.4",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.1",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "pre-commit": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=8.16.0"
+  },
+  "homepage": "https://github.com/JSFiend/Tars-DCache",
+  "keywords": [
+    "Tars",
+    "DCache"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "index.js",
+  "name": "@tars/dcache",
+  "pre-commit": [
+    "precommit-msg",
+    "lint"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JSFiend/Tars-DCache.git"
+  },
+  "scripts": {
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "lint": "eslint --ext .js ./",
+    "lint-fix": "eslint --fix --ext .js ./",
+    "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
+    "pretest": "eslint --ext .js ./",
+    "test": "nyc --reporter=html --reporter=text mocha"
+  },
+  "version": "1.0.2"
+}

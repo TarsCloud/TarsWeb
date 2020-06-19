@@ -47,7 +47,8 @@ TaskService.getTaskRsp = async (taskNo) => {
 				end_time: item.endTime,
 				status: item.status,
 				status_info: item.statusInfo,
-				execute_info: item.executeLog
+				execute_info: item.executeLog,
+				percent: item.percent
 			}
 		})
 	};

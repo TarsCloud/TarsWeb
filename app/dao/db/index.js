@@ -40,6 +40,11 @@ databases.forEach((database) => {
 		pool,
 	} = dbConf;
 
+	const logging = process.env.NODE_ENV == "dev" ? (sqlText)=>{
+		console.log(sqlText);
+		logger.sql(sqlText)
+	} : false
+
 	//初始化sequelize
 
 	const sequelize = new Sequelize(database, user, password, {
@@ -49,11 +54,7 @@ databases.forEach((database) => {
 		dialectOptions: {
 			charset: charset
 		},
-		// logging(sqlText){
-		// 	console.log(sqlText);
-		// 	logger.sql(sqlText)
-		// },
-		logging:false,
+		logging,
 		pool: {
 			max: pool.max || 10,
 			min: pool.min || 0,
@@ -79,11 +80,11 @@ databases.forEach((database) => {
 	let tableObj = {};
 	let dbModelsPath = __dirname + '/' + database + '_models';
 	let dbModels = fs.readdirSync(dbModelsPath);
+	let alter = database == "db_tars_web"
 	dbModels.forEach(function (dbModel) {
 		let tableName = dbModel.replace(/\.js$/g, '');
 		tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
-		// tableObj[_.camelCase(tableName)].sync({ alter: true });
-		tableObj[_.camelCase(tableName)].sync();
+		tableObj[_.camelCase(tableName)].sync({ alter: alter });
 	});
 	Db[database] = tableObj;
 	Db[database].sequelize = sequelize;

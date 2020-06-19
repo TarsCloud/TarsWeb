@@ -1,3 +1,38 @@
+## 20200612(2.4.4)
+- add install tutorial when benchmark admin is not installed
+- optimize the error message in benchmark tool when framework server exception
+- fix bug of not redirecting to login page when the uid and ticket in cookies are timeout
+
+## 20200612(2.4.3)
+- add benchmark tool to infTest
+
+## 20200506(2.4.2)
+- remove the space characters at the beginning and end of the file name when adding config file
+- fix bug of duplicate judgment when deploying a service
+- fixed bug of the application list and node list were emptied after the service was successfully deployed
+- fix bug of line wrap in modal of publish server
+
+## 20200505(2.4.1)
+- add dcache module to tars web
+
+## 20200505(2.4.0)
+- fix interface test bug when the server returns result of exception
+- fix protocal parse error when it has some special default value in interface test
+- fix bug of time order in monitor result
+- fix bug of tarsnode_install.sh
+- fix bug of timeout in pingNode 
+- add houer filter of monitor query
+- add output info of tarsnode auto install 
+- unified version with TarsFramework to improve git workflow
+
+## 20200331(2.1.0)
+- Modify the problem of token generation and increase the random number
+- Add the function of deleting nodes
+- Automatically publish, add blocking logic, and do not return until there are publishing results
+- Publish add result display
+- fix db_cache_web.sql, Fix SQL statement order to avoid foreign key error prompt
+- logview Support the display of special characters
+- add status display in node check
 
 ## 20200312(2.0.0)
 - querystat & queryproperty change protocol to tars

@@ -125,8 +125,8 @@
         <let-table-column :title="$t('historyList.dlg.th.c8')" prop="status"></let-table-column>
       </let-table>
 
-      <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}
-      </let-button>
+      <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}} </let-button>
+      &nbsp;&nbsp;
       <let-button type="sumbit" theme="primary">{{$t('deployService.title.expand')}}</let-button>
     </let-form>
 

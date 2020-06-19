@@ -36,7 +36,7 @@ class Tokenizer  {
         if ((match = STRING.exec(this.content)) !== null) {
             const s = typeof match[1] !== 'undefined' ? match[1] : match[2];
             this.index = STRING.lastIndex;
-            this.stack.push(this.stringEndsWith);
+            //this.stack.push(this.stringEndsWith);
             return s;
         }
     }
@@ -65,9 +65,9 @@ class Tokenizer  {
             end ++;
         }
         let token = this.content.substring(this.index, this.index = end);
-        if(token == this.stringEndsWith) {
-            this.readingString = true;
-        }
+        // if(token == this.stringEndsWith) {
+        //     this.readingString = true;
+        // }
         return token;
     }
 

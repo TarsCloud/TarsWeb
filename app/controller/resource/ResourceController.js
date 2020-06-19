@@ -98,7 +98,21 @@ ResourceController.uninstallTarsNodes = async (ctx) => {
 		let rst = await ResourceService.uninstallTarsNodes(ips);
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
-		logger.error('[installTarsNode]', e, ctx);
+		logger.error('[uninstallTarsNodes]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
+ResourceController.uninstallTarsNode = async (ctx) => {
+	try {
+		let node_name = ctx.paramsObj.node_name;
+		let rst = await ResourceService.uninstallTarsNode([node_name]);
+		if(rst && rst.length > 0) {
+			rst = rst[0];
+		}
+		ctx.makeResObj(200, '', rst);
+	} catch (e) {
+		logger.error('[uninstallTarsNode]', e, ctx);
 		ctx.makeErrResObj();
 	}
 };
@@ -124,7 +138,8 @@ ResourceController.checkTarsNode = async (ctx) => {
 		ctx.makeResObj(200, '', await AdminService.pingNode(nodeName));
 	} catch (e) {
 		logger.error('[checkTarsNode]', e, ctx);
-		ctx.makeErrResObj();
+		ctx.makeResObj(200, '', false);
+		// ctx.makeErrResObj();
 	}
 };
 

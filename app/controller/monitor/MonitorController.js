@@ -37,6 +37,9 @@ MonitorController.tarsstat = async (ctx) => {
 			group_by,
 			userpc
 		});
+		list.sort((a, b)=>{
+			return a.show_time > b.show_time ? 1 : -1
+		});
 		ctx.makeResObj(200, '', util.viewFilter(list, {
 			show_date: '',
 			show_time: '',
@@ -75,6 +78,9 @@ MonitorController.tarsproperty = async (ctx) => {
 			policy,
 			group_by,
 			userpc
+		});
+		list.sort((a, b)=>{
+			return a.show_time > b.show_time ? 1 : -1
 		});
 		ctx.makeResObj(200, '', util.viewFilter(list, {
 			show_date: '',

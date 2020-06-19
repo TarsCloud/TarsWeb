@@ -41,7 +41,7 @@
       </let-col>
     </let-row>
 
-    <hours-filter v-if="showCenableHourFilterhart" v-model="hour"></hours-filter>
+    <hours-filter v-if="enableHourFilter" v-model="hour"></hours-filter>
 
     <let-table ref="table" :data="pagedItems" :empty-msg="$t('common.nodata')">
       <let-table-column :title="$t('common.time')" width="90px">

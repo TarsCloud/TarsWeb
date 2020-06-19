@@ -119,6 +119,7 @@ module tars
         3 optional EMTaskItemStatus     status;
         4 optional string  statusInfo;
         5 optional string  executeLog;
+        6 optional int     percent;        
     };
 
     /**

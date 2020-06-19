@@ -28,6 +28,10 @@ const md5Sum = require('md5-file').sync;
 
 const PatchController = {};
 
+PatchController.sleep = (timeountMS) => new Promise((resolve) => {
+	setTimeout(resolve, timeountMS);
+  });
+
 PatchController.uploadAndPublish = async (ctx) => {
 	try {
 
@@ -84,7 +88,22 @@ PatchController.uploadAndPublish = async (ctx) => {
 
 		await TaskService.addTask({serial, items, task_no, userName: 'auto-developer'});
 
-		ctx.body += "upload & publish succ!\n";
+		while(true) {
+			await PatchController.sleep(2000);
+			ret = await TaskService.getTaskRsp(task_no);
+			if(ret.status != 1) {
+				break;
+			}
+		}
+
+		let info = "-----------------------------------------------------------------\n";
+		info += "task no:  [" + ret.task_no + "]\n\n";
+		for(var index = 0; index < ret.items.length; ++index)
+		{
+			let node = ret.items[index];
+			info += node.node_name + " " + node.status_info + " " + node.execute_info + "\n";
+		}
+		ctx.body += info;
 
 	} catch (e) {
 		ctx.body = "upload and patch err:" + e;
@@ -95,6 +114,9 @@ PatchController.uploadAndPublish = async (ctx) => {
 PatchController.uploadPatchPackage = async (ctx) => {
 	try {
 		let {application, module_name, md5, task_id, comment, package_type} = ctx.req.body;
+
+		package_type = package_type || 0;
+
 		if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
@@ -106,7 +128,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
 			let baseUploadPath = WebConf.pkgUploadPath.path;
 			// 发布包上传目录
 			let updateTgzPath = `${baseUploadPath}/${application}/${module_name}`;
-			console.info('updateTgzPath:', updateTgzPath);
+			// console.info('updateTgzPath:', updateTgzPath);
 			await fs.ensureDirSync(updateTgzPath);
 			let hash = md5Sum(`${baseUploadPath}/${file.filename}`);
 			if (md5 && md5 != hash) {
@@ -132,13 +154,31 @@ PatchController.uploadPatchPackage = async (ctx) => {
 				logger.error('[CompileService.addPatchTask]:', err);
 			});
 
-			ctx.makeResObj(200, '', util.viewFilter(ret, {
+			let data = util.viewFilter(ret, {
 				id: '',
 				server: '',
 				tgz: '',
-				update_text: {key: 'comment'},
-				posttime: {formatter: util.formatTimeStamp}
-			}));
+				update_text: { key: 'comment' },
+				posttime: { formatter: util.formatTimeStamp }
+			});
+
+			let id = data.id;
+			let package = { id, application, module_name, package_type };
+
+			let value = await PatchService.find({
+				where: {
+					server: application + "." + module_name,
+					default_version: 1,
+					package_type: 0
+				}
+			});
+
+			if (!value) {
+				//如果是第一条记录, 则设置为default
+				await PatchService.setPatchPackageDefault(package);
+			}
+
+			ctx.makeResObj(200, '', data);
 		}
 	} catch (e) {
 		logger.error('[PatchController.uploadPatchPackage]:', e, ctx);
@@ -302,12 +342,12 @@ PatchController.setPatchPackageDefault = async (ctx) => {
 	}
 };
 
-PatchController.hasDcahcePatchPackage = async (ctx) => {
+PatchController.hasDcachePatchPackage = async (ctx) => {
 	try {
-		let ret = await PatchService.hasDcahcePatchPackage();
+		let ret = await PatchService.hasDcachePatchPackage();
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
-		logger.error('[PatchController.hasDcahcePatchPackage]:', e, ctx);
+		logger.error('[PatchController.hasDcachePatchPackage]:', e, ctx);
 		ctx.makeErrResObj(500, e.toString());
 	}
 };

@@ -422,10 +422,14 @@
         "present_state": "Present State",
         "tars_version": "Version",
         "load_avg5": "Load",
-        "check": "Check"
-      }
+        "check": "Operator"
+      },
+      "check": "Check",
+      "delete": "Delete"
     },
-    "checkNode": "Check Node Connection"
+    "checkNode": "Check Node Connection",
+    "deleteNode": "Delete Node",
+    "confirmDeleteNode": "Confire delete node?<br>Please stop the node on the node machine and log off the service on the node."
   },
   "serverList": {
     "title": {
@@ -754,12 +758,35 @@
     "runuser": "Run User",
     "runuserTips": "Run User cannot be empty",
     "btn": {
-      "addNode": "Install node",
+      "manualAddNode": "Manual Install node",
+      "autoAddNode": "Auto Install node",
       "check": "Click to check framework"
+    },
+    "manualAddNode": {
+      "title": "Step",
+      "info1": "Note 1: ${webhost} is address of web platform, ${localip} is ip of node machine",
+      "info2": "Note 2: On the web platform, only the framework corresponds to the installation package of the compilation platform. Other OS installation packages need to be compiled manually by yourselves",
+      "OS1" : {
+        "title" : "Linux/Mac",
+        "step1": "In node machine: wget http://${webhost}/get_tarsnode?ip=${localip} -O install_tarsnode.sh",
+        "step2": "Run: mkdir -p /usr/local/app/tars/tarsnode",
+        "step3": "Run: sh install_tarsnode.sh",
+        "step4": "In crontab, add: * * * * * /usr/local/app/tars/tarsnode/util/monitor.sh",
+        "step5": "Finish, install directory: /usr/local/app/tars/" 
+      },
+      "OS2": {
+        "title": "Windows",
+        "step1": "In node machine open: http://${webhost}/get_tarsnode?ip=${localip}",
+        "step2": "Save output to: install_tarsnode.sh",
+        "step3": "Download busybox: http://${webhost}/files/busybox.exe",
+        "step4": "In window console, run: busybox.exe install_tarsnode.sh",
+        "step5": "In windows scheduled tasks add: c:\\tars-install\\tars\\tarsnode\\util\\monitor.bat",
+        "step6": "Finish, install directory: c:\\tars-install\\tars"
+      }
     },
     "add": {
       "nodeNameTips": "node name cannot be empty",
-      "title": "Install Node"
+      "title": "Install Node(Windows not support)"
     }
   },
   "connectNodeList": {
@@ -990,7 +1017,11 @@
   },
   "inf": {
     "list": {
-      "debug": "debug"
+      "debug": "debug",
+      "benchmark":"benchmark"
+    },
+    "error":{
+      "parseFail":"proto parse fail"
     },
     "title": {
       "listTitle": "Tars Files",
@@ -1003,6 +1034,58 @@
       "tarsFile": "tars file",
       "deleteMsg": "are you sure to delete this file?",
       "objName": "Servant Name"
+    },
+    "benchmark":{
+      "inParam": "in params struct",
+      "outParam": "out params struct",
+      "fnlist":"Function List",
+      "nofn":"no function record",
+      "interface":"interface",
+      "fnname":"function name",
+      "returnType":"return type",
+      "case":"case",
+      "addCase":"add case",
+      "caselist":"case list",
+      "nocase":"no case record",
+      "des":"description",
+      "inputValue":"input value",
+      "modifyCase":"modify",
+      "testCase":"test",
+      "runCase":"run",
+      "viewResult":"view result",
+      "deleteCase":"delete",
+      "inputValueDes":"input value generation description",
+      "bmParams":"benchmark params",
+      "endpoints":"endpoints",
+      "endpointsTip":"other(eg：tcp -h 192.168.10.4 -t 60000 -p 3031，separate by newline)",
+      "infTest":"run test",
+      "cancelTest":"cancel",
+      "links":"links in one endpoint",
+      "speed":"speed in one endpoint",
+      "duration":"duration(s)",
+      "testResult":"benchmark result",
+      "startBenchmark":"start",
+      "stopBenchmark":"stop",
+      "refresh":"refresh",
+      "detail":"detail",
+      "stat":"stat charts",
+      "retStat":"return stat",
+      "costStat":"cost time stat",
+      "time":"time",
+      "total":"total",
+      "success":"success",
+      "fail":"fail",
+      "successRate":"success rate",
+      "maxCost":"max cost(s)",
+      "minCost":"min cost(s)",
+      "avgCost":"avg cost(s)",
+      "sendBytes":"send bytes",
+      "recvBytes":"recv bytes",
+      "deleteCaseConfirm":"are you sure to delete this case?",
+      "installTip":"please install benchmark server before you use benchmark tool",
+      "installTutorial":"install tutorial",
+      "installScript":"install script"
+
     }
   },
   "publishLog": {

@@ -13,16 +13,16 @@
        v-if="finishModal.model"
        :title="$t('serverList.servant.taskID') + finishModal.model.task_no"
        :data="finishModal.model.items">
-       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"></let-table-column>
-       <let-table-column :title="$t('common.status')">
+       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"  width="200px"></let-table-column>
+       <let-table-column :title="$t('common.status')" width="120px">
          <template slot-scope="scope">
            <let-tag
              :theme="scope.row.status == 2 ? 'success' : (scope.row.status == 3 ? 'danger' : '')" checked>
-             {{statusConfig[scope.row.status] + (scope.row.status != 2 && scope.row.status != 3 ? '...' : '')}}
+             {{statusConfig[scope.row.status] + (scope.row.status != 2 && scope.row.status != 3 ? scope.row.desc: '')}}
            </let-tag>
          </template>
        </let-table-column>
-       <let-table-column width="70%" :title="$t('serverList.table.th.result')"  prop="execute_info"> </let-table-column>
+       <let-table-column :title="$t('serverList.table.th.result')"  prop="execute_info"> </let-table-column>
    </let-table>
  </let-modal>
 
@@ -112,6 +112,12 @@ export default {
           data.items.forEach((item) => {
             if (![2, 3].includes(item.status)) {
               done = false;
+            }
+
+            if(item.percent) {
+              item.desc = "(" + item.percent + "%)" 
+            } else {
+              item.desc = "...";
             }
           });
           done ? clearTimeout(timerId) : timerId = setTimeout(getTask, 2000);

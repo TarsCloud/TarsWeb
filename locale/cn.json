@@ -448,10 +448,14 @@
         "present_state": "当前状态",
         "tars_version": "版本",
         "load_avg5": "负载",
-        "check": "检查"
-      }
+        "check": "操作"
+      },
+      "check": "检查",
+      "delete": "删除"
     },
-    "checkNode": "检查节点联通性"
+    "checkNode": "检查节点联通性",
+    "deleteNode": "删除节点",
+    "confirmDeleteNode": "确认删除节点吗? <br>请先在节点机上停止节点, 并下线节点上的服务"
   },
   "serverList": {
     "title": {
@@ -780,12 +784,35 @@
     "runuser": "运行用户",
     "runuserTips": "运行用户不能为空",
     "btn": {
-      "addNode": "安装节点",
+      "manualAddNode": "手工安装节点",
+      "autoAddNode": "自动安装节点",
       "check": "点击开始检查框架状态"
+    },
+    "manualAddNode": {
+      "title": "操作步骤",
+      "info1": "注意1: ${webhost}是web平台地址, ${localip}是节点机ip",
+      "info2": "注意2: web平台上只有框架对应编译平台的安装包, 其他OS的安装包需要自己手工编译",
+      "OS1" : {
+        "title" : "Linux/Mac",
+        "step1": "在节点机上运行: wget http://${webhost}/get_tarsnode?ip=${localip} -O install_tarsnode.sh",
+        "step2": "mkdir -p /usr/local/app/tars/tarsnode",
+        "step3": "运行: sh install_tarsnode.sh",
+        "step4": "crontab中增加监控: * * * * * /usr/local/app/tars/tarsnode/util/monitor.sh",
+        "step5": "完成安装, 安装目录: /usr/local/app/tars/"
+      },
+      "OS2": {
+        "title": "Windows",
+        "step1": "在节点机上打开浏览器: http://${webhost}/get_tarsnode?ip=${localip}",
+        "step2": "将输出保存为: install_tarsnode.sh",
+        "step3": "在节点机上下载busybox: http://${webhost}/files/busybox.exe",
+        "step4": "window命令行运行: busybox.exe install_tarsnode.sh",
+        "step5": "windows计划任务中增加监控:  c:\\tars-install\\tars\\tarsnode\\util\\monitor.bat",
+        "step6": "完成安装, 缺省目录: c:\\tars-install\\tars"
+      } 
     },
     "add": {
       "nodeNameTips": "节点名不能为空",
-      "title": "安装节点"
+      "title": "安装节点(暂不支持Windows)"
     }
   },
   "connectNodeList": {
@@ -1018,7 +1045,11 @@
   },
   "inf": {
     "list": {
-      "debug": "调试"
+      "debug": "调试",
+      "benchmark":"压测"
+    },
+    "error":{
+      "parseFail":"协议解析失败"
     },
     "title": {
       "listTitle": "tars文件列表",
@@ -1031,6 +1062,59 @@
       "tarsFile": "tars文件",
       "deleteMsg": "您确定要删除吗？",
       "objName": "Servant名"
+    },
+    "benchmark":{
+      "inParam": "入参结构",
+      "outParam": "出参结构",
+      "fnlist":"函数列表",
+      "nofn":"无函数记录",
+      "interface":"接口",
+      "fnname":"函数名",
+      "returnType":"返回类型",
+      "case":"用例",
+      "addCase":"添加用例",
+      "caselist":"用例列表",
+      "nocase":"无用例记录",
+      "des":"描述",
+      "inputValue":"输入参数",
+      "modifyCase":"修改",
+      "testCase":"测试",
+      "runCase":"压测",
+      "viewResult":"查看结果",
+      "deleteCase":"删除",
+      "inputValueDes":"输入参数生成说明",
+      "bmParams":"压测参数",
+      "endpoints":"endpoints",
+      "endpointsTip":"其它(例如：tcp -h 192.168.10.4 -t 60000 -p 3031，多个以换行分隔)",
+      "infTest":"接口测试",
+      "cancelTest":"取消",
+      "links":"单endpoint连接数",
+      "speed":"单endpoint速率",
+      "duration":"压测时长(s)",
+      "testResult":"压测结果",
+      "startBenchmark":"开始压测",
+      "stopBenchmark":"停止压测",
+      "refresh":"刷新",
+      "detail":"详细指标",
+      "stat":"区间分布",
+      "retStat":"返回值分布",
+      "costStat":"耗时区间分布",
+      "time":"时间",
+      "total":"总量",
+      "success":"成功",
+      "fail":"失败",
+      "successRate":"成功率",
+      "maxCost":"最大耗时(s)",
+      "minCost":"最小耗时(s)",
+      "avgCost":"平均耗时(s)",
+      "sendBytes":"发送字节",
+      "recvBytes":"接收字节",
+      "deleteCaseConfirm":"确认删除此用例？",
+      "installBenchmark":"请安装压测服务",
+      "installTip":"使用压测工具前，需要先安装压测服务组件",
+      "installTutorial":"安装教程",
+      "installScript":"一键安装"
+
     }
   },
   "publishLog": {

@@ -1,7 +1,7 @@
 <template>
     <div class="page_server_debuger">
         <!-- tars文件列表 -->
-        <wrapper v-if="!showDebug" ref="tarsFileListLoading">
+        <wrapper v-if="!showDebug && !showBm" ref="tarsFileListLoading">
         <let-button size="small" theme="primary" class="add-btn" @click="openTarsUploadFileModal">{{$t('operate.add')}}</let-button>
 
         <let-table :data="tarsFileList" :title="$t('inf.title.listTitle')" :empty-msg="$t('common.nodata')">
@@ -11,7 +11,8 @@
             <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="posttime"></let-table-column>
             <let-table-column :title="$t('operate.operates')" width="260px">
             <template slot-scope="scope">
-                <let-table-operation @click="showDebuger(scope.row)">{{$t('inf.list.debug')}}</let-table-operation>  
+                <let-table-operation @click="showDebuger(scope.row)">{{$t('inf.list.debug')}}</let-table-operation>
+                <let-table-operation @click="showBenchmark(scope.row)">{{$t('inf.list.benchmark')}}</let-table-operation>  
                 <let-table-operation @click="deleteTarsFile(scope.row.f_id)">{{$t('operate.delete')}}</let-table-operation>
             </template>
             </let-table-column>
@@ -55,7 +56,7 @@
                 <let-button theme="primary" size="small" @click="showDebug=false">{{$t('operate.goback')}}</let-button>
             </div>
         </div>
-
+        <InterfaceBenchmark v-if="showBm" ref="bm" :servantList="objList"></InterfaceBenchmark>
         <!-- 上传tars文件弹出框 -->
         <let-modal
             v-model="uploadModal.show"
@@ -80,16 +81,24 @@
                 <let-button type="submit" theme="primary">{{$t('serverList.servant.upload')}}</let-button>
             </let-form>
         </let-modal>
+        <!-- 提示benchmark服务安装弹窗 -->
+        <let-modal :title="$t('inf.benchmark.installBenchmark')" v-model="showInstallBm"  width="400px" :headShow="false" >
+            <div>
+                <p>{{$t('inf.benchmark.installTip')}}</p>
+                <p>{{$t('inf.benchmark.installTutorial')}}：<a href="https://github.com/TarsCloud/TarsBenchmark/blob/master/README.zh.md#QuickStart" target="_blank">{{$t('inf.benchmark.installScript')}}</a></p>
+            </div>
+        </let-modal>
     </div>
 </template>
 
 
 <script>
 import wrapper from '@/components/section-wrappper';
+import InterfaceBenchmark from "./interface-benchmark"
 export default {
     name : 'InterfaceDebuger',
     components: {
-        wrapper,
+        wrapper,InterfaceBenchmark
     },
     data() {
         return {
@@ -110,6 +119,9 @@ export default {
                 fileList2Show: [],
             },
             showDebug : false,
+            showBm: false,
+            showInstallBm:false,
+            isBmInstalled: null,
             contextData : [],
 
             debuger_panel: false,
@@ -119,7 +131,7 @@ export default {
             selectedMethods: [],
             objName : '',
             objList : [],
-            selectedId : '',
+            selectedId : ''
         }
     },
     methods: {
@@ -134,6 +146,15 @@ export default {
             }).catch((err) => {
                 loading.hide();
                 this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+            });
+        },
+        getBmInstalled(){
+            this.$ajax.getJSON('/server/api/is_benchmark_installed').then(data => {
+                this.isBmInstalled = data
+            }).catch((e) => {
+                console.error("get bm installed status error", e)
+                this.$tip.error(`error:${e.err_msg || e.message}`);
+                this.isBmInstalled = false
             });
         },
         openTarsUploadFileModal() {
@@ -196,6 +217,19 @@ export default {
             this.objName = null;
             this.getContextData(row.f_id);
             this.getObjList();
+        },
+        showBenchmark(row){
+            if(this.isBmInstalled === null) return
+            if(this.isBmInstalled){
+                this.showBm = true;
+                this.showDebug = false;
+                this.$nextTick(()=>{
+                    this.$refs.bm.getBenchmarkDes(row.f_id);
+                })
+            } else {
+                this.showInstallBm = true
+            }
+            
         },
         deleteTarsFile(id) {
             this.$confirm(this.$t('inf.dlg.deleteMsg'), this.$t('common.alert')).then(()=>{
@@ -319,14 +353,16 @@ export default {
     },
     created() {
         this.serverData = this.$parent.getServerData();
+        this.getObjList();
     },
     mounted() {
         this.getFileList();
+        this.getBmInstalled();
     }
 }
 </script>
 
-<style>
+<style lang="postcss" scoped>
 @import '../../assets/css/variable.css';
     .page_server_debuger{
         .add-btn {

@@ -57,7 +57,7 @@ async function getUidByTicket(ctx, ticket){
     return new Promise((resolve, reject)=>{
         try{
             request.get('http://localhost:3001/api/getUidByTicket?ticket='+ticket).then(uidInfo=>{
-                logger.info(ctx.url, 'getUidByTicket', ticket, uidInfo);
+                // logger.info(ctx.url, 'getUidByTicket', ticket, uidInfo);
 
                 uidInfo = JSON.parse(uidInfo);
                 resolve(uidInfo.data.uid);
@@ -75,6 +75,9 @@ async function getUidByTicket(ctx, ticket){
  * @param ctx
  */
 async function validate(ctx, uid, ticket){
+    if(!uid && !ticket){
+        return false
+    }
     //TODO
     return new Promise((resolve, reject)=>{
         try{
@@ -82,13 +85,13 @@ async function validate(ctx, uid, ticket){
 
                 uidInfo = JSON.parse(uidInfo);
 
-                logger.info(ctx.url, 'validate uidInfo', uidInfo, uid);
+                // logger.info(ctx.url, 'validate uidInfo', uidInfo, uid);
 
                 uid = uidInfo.data.uid;
                 resolve(uidInfo.data.uid);
 
             }).catch(err=>{
-                logger.info(ctx.url, 'validate', err);
+                // logger.info(ctx.url, 'validate', err);
                 reject(err);
             })
         }catch(e){

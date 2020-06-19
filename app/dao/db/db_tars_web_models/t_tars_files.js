@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
 			autoIncrement: true,
-			unique: true
+			unique: "column"
 		},
 		application: {
 			type: DataTypes.STRING(64),
@@ -47,6 +47,10 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
 		context: {
+			type: DataTypes.TEXT,
+			allowNull: true
+		},
+		benchmark_context: {
 			type: DataTypes.TEXT,
 			allowNull: true
 		}

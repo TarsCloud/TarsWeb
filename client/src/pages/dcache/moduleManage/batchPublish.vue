@@ -131,7 +131,7 @@
             },
           });
         });
-        console.log(items);
+        // console.log(items);
 
         const releaseId = await addTask({ items });
         this.releaseIng = true;

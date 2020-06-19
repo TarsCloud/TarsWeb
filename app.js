@@ -68,7 +68,9 @@ loginConf.ignore = loginConf.ignore.concat(['/web_version','/static', '/files', 
 //上传文件不需要登录
 if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
 	loginConf.ignore.push('/pages/server/api/upload_patch_package');
+	loginConf.ignore.push('/api/upload_patch_package');
 	loginConf.ignore.push('/pages/server/api/upload_and_publish');
+	loginConf.ignore.push('/api/upload_and_publish');
 }
 
 //web和demo的cookie写在同一个域名下
@@ -109,6 +111,7 @@ app.use(staticRouter([
     router: '/files'    //路由命名
 }]));
 
+
 let dcacheConf = require('./config/dcacheConf.js');
 if (dcacheConf.enableDcache) {
 	app.use(async (ctx, next) => {
@@ -118,7 +121,8 @@ if (dcacheConf.enableDcache) {
 	//  tars-dcache 的包，依赖了很多tars的模块，引用路径是从根目录开始的，防止引用出错，先改后更
 	let cwd = process.cwd();
 	process.chdir(path.join(__dirname, './'));
-	let tarsDcache = require('@tars/dcache');
+	require('./dcache');
+	// let tarsDcache = require('@tars/dcache');
 	process.chdir(cwd);
 } else {
 	app.use(async (ctx, next) => {
