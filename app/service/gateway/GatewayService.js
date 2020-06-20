@@ -20,8 +20,8 @@ const util = require('../../tools/util');
 const GatewayService = {};
 
 
-GatewayService.getStationList = async (f_station_id, f_name_cn) => {
-	return await GatewayDao.getStationList(f_station_id, f_name_cn);
+GatewayService.getStationList = async (f_station_id, f_name_cn, filter_uid) => {
+	return await GatewayDao.getStationList(f_station_id, f_name_cn, filter_uid);
 };
 GatewayService.addStation = async (params) => {
 	return await GatewayDao.addStation(params);
@@ -29,15 +29,15 @@ GatewayService.addStation = async (params) => {
 GatewayService.updateStation = async (params) => {
 	return await GatewayDao.updateStation(params);
 };
-GatewayService.deleteStation = async (f_id) => {
-	return await GatewayDao.deleteStation(f_id);
+GatewayService.deleteStation = async (f_id, filter_uid) => {
+	return await GatewayDao.deleteStation(f_id, filter_uid);
 };
-GatewayService.getStationById = async (f_id) => {
-	return await GatewayDao.getStationById(f_id);
+GatewayService.getStationById = async (f_id, filter_uid) => {
+	return await GatewayDao.getStationById(f_id, filter_uid);
 };
 
-GatewayService.getUpstreamList = async (f_upstream) => {
-	return await GatewayDao.getUpstreamList(f_upstream);
+GatewayService.getUpstreamList = async (f_upstream, filter_uid) => {
+	return await GatewayDao.getUpstreamList(f_upstream, filter_uid);
 };
 GatewayService.addUpstream = async (params) => {
 	return await GatewayDao.addUpstream(params);
@@ -45,15 +45,15 @@ GatewayService.addUpstream = async (params) => {
 GatewayService.updateUpstream = async (params) => {
 	return await GatewayDao.updateUpstream(params);
 };
-GatewayService.deleteUpstream = async (f_id) => {
-	return await GatewayDao.deleteUpstream(f_id);
+GatewayService.deleteUpstream = async (f_id, filter_uid) => {
+	return await GatewayDao.deleteUpstream(f_id, filter_uid);
 };
-GatewayService.getUpstreamById = async (f_id) => {
-	return await GatewayDao.getUpstreamById(f_id);
+GatewayService.getUpstreamById = async (f_id, filter_uid) => {
+	return await GatewayDao.getUpstreamById(f_id, filter_uid);
 };
 
-GatewayService.getHttpRouterList = async (f_station_id) => {
-	return await GatewayDao.getHttpRouterList(f_station_id);
+GatewayService.getHttpRouterList = async (f_station_id, filter_uid) => {
+	return await GatewayDao.getHttpRouterList(f_station_id, filter_uid);
 };
 GatewayService.addHttpRouter = async (params) => {
 	params.f_server_name = params.f_server_name || "";
@@ -63,24 +63,24 @@ GatewayService.updateHttpRouter = async (params) => {
 	params.f_server_name = params.f_server_name || "";
 	return await GatewayDao.updateHttpRouter(params);
 };
-GatewayService.deleteHttpRouter = async (f_id) => {
-	return await GatewayDao.deleteHttpRouter(f_id);
+GatewayService.deleteHttpRouter = async (f_id, filter_uid) => {
+	return await GatewayDao.deleteHttpRouter(f_id, filter_uid);
 };
-GatewayService.getHttpRouterById = async (f_id) => {
-	return await GatewayDao.getHttpRouterById(f_id);
+GatewayService.getHttpRouterById = async (f_id, filter_uid) => {
+	return await GatewayDao.getHttpRouterById(f_id, filter_uid);
 };
 
-GatewayService.addBWList = async (params, type) => {
-	return await GatewayDao.addBWList(params, type);	
+GatewayService.addBWList = async (params, type, filter_uid) => {
+	return await GatewayDao.addBWList(params, type, filter_uid);	
 }
-GatewayService.getBWList = async (f_station_id, type) => {
-	return await GatewayDao.getBWList(f_station_id, type);
+GatewayService.getBWList = async (f_station_id, type, filter_uid) => {
+	return await GatewayDao.getBWList(f_station_id, type, filter_uid);
 };
-GatewayService.deleteBWList = async (f_id, type) => {
-	return await GatewayDao.deleteBWList(f_id, type);
+GatewayService.deleteBWList = async (f_id, type, filter_uid) => {
+	return await GatewayDao.deleteBWList(f_id, type, filter_uid);
 };
-GatewayService.getFlowControl = async (f_station_id) => {
-	return await GatewayDao.getFlowControl(f_station_id);
+GatewayService.getFlowControl = async (f_station_id, filter_uid) => {
+	return await GatewayDao.getFlowControl(f_station_id, filter_uid);
 };
 GatewayService.upsertFlowControl = async (params) => {
 	return await GatewayDao.upsertFlowControl(params);
