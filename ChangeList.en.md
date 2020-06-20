@@ -1,5 +1,6 @@
 ## 20200620(2.4.5)
 - add gateway config
+- add operator permissions to current user when current user don't has admin auth
 
 ## 20200612(2.4.4)
 - add install tutorial when benchmark admin is not installed
