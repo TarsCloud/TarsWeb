@@ -1,3 +1,6 @@
+## 20200620(2.4.5)
+- add gateway config
+
 ## 20200612(2.4.4)
 - add install tutorial when benchmark admin is not installed
 - optimize the error message in benchmark tool when framework server exception
