@@ -34,6 +34,7 @@ import OperationExpand from '@/pages/operation/expand';
 import OperationTemplates from '@/pages/operation/templates';
 import OperationNodes from '@/pages/operation/nodes';
 import OperationCheck from '@/pages/operation/check';
+import OperationGateway from '@/pages/operation/gateway/index';
 
 Vue.use(Router);
 
@@ -99,6 +100,10 @@ export default new Router({
         {
           path: 'check',
           component: OperationCheck,
+        },
+        {
+          path: 'gateway',
+          component: OperationGateway,
         }
       ],
     },

@@ -28,7 +28,7 @@ const logger = require('../../logger');
 
 let Db = {};
 
-let databases = ['db_tars', 'db_tars_web'];
+let databases = ['db_tars', 'db_tars_web', 'db_base'];
 
 databases.forEach((database) => {
 	let {
@@ -46,6 +46,7 @@ databases.forEach((database) => {
 	} : false
 
 	//初始化sequelize
+
 	const sequelize = new Sequelize(database, user, password, {
 		host,
 		port,
