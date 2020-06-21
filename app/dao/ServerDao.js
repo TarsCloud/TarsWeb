@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const {tServerConf, sequelize} = require('./db').db_tars;
+const {tServerConf, tAdapterConf, sequelize} = require('./db').db_tars;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const ServerDao = {};
@@ -185,6 +185,16 @@ ServerDao.getSet = async (application, serverName) => {
 	let rst = await tServerConf.sequelize.query('select distinct if(enable_set = \'Y\', CONCAT(set_name, \'.\', set_area, \'.\', set_group), \'\') as \'set\' from db_tars.t_server_conf where application = \'' + application + '\' and server_name = \'' + serverName + '\'');
 	return rst[0] || '';
 };
+
+ServerDao.getObj = async (application, serverName) => {
+	return await tAdapterConf.findAll({
+		attributes:[[Sequelize.fn('DISTINCT', Sequelize.col('servant')) ,'servant']],
+		where:{
+			application: application,
+			server_name: serverName
+		}
+	})
+}
 
 ServerDao.getNodeName = async (params) => {
 	let where = {

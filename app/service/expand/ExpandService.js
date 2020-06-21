@@ -277,6 +277,20 @@ ExpandService.getSet = async (application, serverName) => {
 	return ExpandService.formatToArray(await ServerDao.getSet(application, serverName), 'set');
 };
 
+ExpandService.getObj = async (application, serverName, uid) => {
+	if (await AuthService.hasAdminAuth(uid)) {
+		return ExpandService.formatToArray(await ServerDao.getObj(application, serverName), 'servant');
+	} else {
+		let authList = await AuthService.getAuthListByUid(uid);
+		for(let auth of authList){
+			if(auth.application == application || auth.serverName == serverName){
+				return ExpandService.formatToArray(await ServerDao.getObj(application, serverName), 'servant');
+			}
+		}
+	}
+	return []
+};
+
 ExpandService.getNodeName = async (application, serverName, set) => {
 	let params = {
 		application: application,

@@ -94,6 +94,9 @@ ExpandServerController.selectAppServer = async (ctx) => {
 			case 4:
 				rst = await ExpandService.getNodeName(application, serverName, set);
 				break;
+			case 5:
+				rst = await ExpandService.getObj(application, serverName, uid);
+				break;
 			default:
 				break;
 		}
