@@ -132,6 +132,23 @@ ServerService.isDeployWithRegistry = async(nodeNames) => {
     return false;
 };
 
+ServerService.getLogNodeNameWithRegistry = async () => {
+
+    let registry = await ResourceDao.getRegistryAddress();
+
+    let log = await ServerDao.getServerConfList('tars', 'tarslog');
+
+    let nodeNames = log.map(x => { return x.node_name });
+
+    for (var index in nodeNames) {
+        for (var i in registry) {
+            if (registry[i].locator_id.indexOf(nodeNames[index] + ':') == 0)
+                return nodeNames[index];
+        }
+    }
+    return '';
+};
+
 //卸载框架上部署的log
 ServerService.undeployTarsLog = async(uid) => {
 

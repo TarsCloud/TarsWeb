@@ -399,15 +399,13 @@ ServerController.expandDeployLog = async (ctx) => {
 			application: "tars",
 			copy_node_config: true,
 			expand_preview_servers: [{bind_ip: node_name, node_name: node_name, obj_name: "LogObj", port: 0, set: ""}],
-			node_name: "172.16.0.7",
+			node_name: await ServerService.getLogNodeNameWithRegistry(),
 			server_name: "tarslog",
 			set: ''
 		}
 
 		await ExpandService.expand(params);
 
-		// console.log('uid:', ctx.uid);
-		
 		//remove和框架上部署在一起的tarslog
 		await ServerService.undeployTarsLog(ctx.uid);
 
