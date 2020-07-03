@@ -1,3 +1,8 @@
+## 20200703(2.4.6)
+- fix strict mode, tarslog transfer deploy bug
+- edit servant obj, obj name can not has digit bug
+- Add TARS_WEB_SSO_PREFIX environment variable to identify the common prefix of web and demo, which is easy to deploy, for example: Web - > tars.com , demo-> sso.tars.com , export TARS_ WEB_ SSO_ PREFIX=sso
+
 ## 20200620(2.4.5)
 - add gateway config
 - add operator permissions to current user when current user don't has admin auth

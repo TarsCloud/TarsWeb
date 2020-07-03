@@ -88,8 +88,19 @@ loginConf.loginUrl = loginConf.baseLoginUrl.replace("http://localhost:3001", log
 logger.info('loginUrl:', loginConf.loginUrl, 'userCenterUrl:', loginConf.userCenterUrl, 'cookieDomain', loginConf.cookieDomain);
 
 app.use(async (ctx, next) => {
-	// logger.info('loginUrl:', loginConf.loginUrl, 'userCenterUrl:', loginConf.userCenterUrl, 'cookieDomain', loginConf.cookieDomain);
-	if(!process.env.USER_CENTER_HOST) {
+
+    //for tars cloud, prefix: TARS_WEB_SSO_PREFIX=auth, for example: xxx.test.tarsyun.com -> auth.xxx.test.tarsyun.com
+	if (process.env.TARS_WEB_SSO_PREFIX) {
+
+		let host = ctx.host;
+
+		loginConf.userCenterUrl = loginConf.baseUserCenterUrl.replace("localhost:3001", process.env.TARS_WEB_SSO_PREFIX + "." + host);
+
+		loginConf.loginUrl = loginConf.baseLoginUrl.replace("http://localhost:3001", loginConf.userCenterUrl);
+
+		loginConf.cookieDomain = "." + host.split(':')[0];
+	}
+	else if (!process.env.USER_CENTER_HOST) {
 		//直接用当前host代替, 端口还是保留
 		let userCenterIp = ctx.host.split(':')[0];
 
@@ -99,8 +110,10 @@ app.use(async (ctx, next) => {
 
 	}
 
+	logger.info('loginUrl:', loginConf.loginUrl, 'userCenterUrl:', loginConf.userCenterUrl, 'cookieDomain', loginConf.cookieDomain);
+
 	await next();
-  });
+});
 
 app.use(loginMidware(loginConf));
 

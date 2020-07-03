@@ -252,13 +252,21 @@
 
     <div style="width:400px;margin:0 auto;" v-show="deployModal.show">
       <let-form ref="deployForm" itemWidth="400px">
+
           <let-form-item :label="$t('nodes.node_name')" required>
+            <let-select v-model="deployModal.node_name">
+              <let-option v-for="d in nodeList" :key="d" :value="d">
+                {{d}}
+              </let-option>
+            </let-select>
+<!--
             <let-input
               v-model="deployModal.node_name"
               :placeholder="$t('nodes.nodeNameTips')"
               required
               :required-tip="$t('nodes.nodeNameTips')"
             ></let-input>
+-->
           </let-form-item>
 
         <let-form-item :label="$t('pub.dlg.releaseVersion')">
@@ -393,7 +401,6 @@ export default {
     });
 
     this.$ajax.getJSON('/server/api/node_list').then((data) => {
-      //console.log(data);
       this.nodeList = data;
     }).catch((err) => {
       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

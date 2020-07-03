@@ -1,3 +1,8 @@
+## 20200703(2.4.6)
+- 修复strict模式下, tarslog迁移部署的问题
+- 修改servant obj编辑时, obj名称不能带数字的问题
+- 增加TARS_WEB_SSO_PREFIX环境变量, 识别web和demo的共同前缀, 便于部署, 比如: web->tars.com, demo->sso.tars.com, export TARS_WEB_SSO_PREFIX=sso
+
 ## 20200620(2.4.5)
 - 合入网关配置功能
 - 非管理员用户部署服务时，默认给当前用户添加运维权限

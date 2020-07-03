@@ -58,7 +58,13 @@ if(process.env.COOKIE_DOMAIN) {
 
 app.use(async (ctx, next) => {
 
-    // console.log(ctx);
+    //for tars cloud, prefix: TARS_WEB_SSO_PREFIX=auth, for example: xxx.test.tarsyun.com -> auth.xxx.test.tarsyun.com
+    if (process.env.TARS_WEB_SSO_PREFIX) {
+
+        let host = ctx.host.split(':')[0];
+
+        loginConf.cookieDomain = host.substr(host.indexOf('.'));
+    }
 
     //优先环境变量的host
     let userCenterHost = process.env.USER_CENTER_HOST || 'http://' + ctx.host;
@@ -69,16 +75,16 @@ app.use(async (ctx, next) => {
 
     var myurl = url.parse(ctx.url);
 
-    if(await AuthService.isInit()) {
+    if (await AuthService.isInit()) {
 
-        if((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
+        if ((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
 
             logger.info(userCenterHost + '/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
             ctx.redirect(userCenterHost + '/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
             return;
         }
-        
-    } else if(myurl.pathname == '/adminPass.html') {
+
+    } else if (myurl.pathname == '/adminPass.html') {
         logger.info(userCenterHost);
 
         ctx.redirect(userCenterHost);
@@ -86,7 +92,7 @@ app.use(async (ctx, next) => {
     }
 
     await next();
-  })
+})
 
 app.use(loginMidware(loginConf));
 

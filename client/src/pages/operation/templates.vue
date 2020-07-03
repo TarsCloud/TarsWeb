@@ -47,7 +47,7 @@
             :placeholder="$t('template.add.templateFormatTips')"
             required
             :required-tip="$t('template.add.templateNameTips')"
-            pattern="^[a-zA-Z]([.a-zA-Z0-9]+)?$"
+            pattern="^[a-zA-Z-]([.a-zA-Z0-9-]+)?$"
             :pattern-tip="$t('template.add.templateFormatTips')"
           ></let-input>
         </let-form-item>
