@@ -50,7 +50,7 @@
         // 图标
         serverIcon,
         opaIcon,
-        locale: this.$cookie.get('locale') || 'cn',
+        locale: this.$cookie.get('locale') || 'en',
         uid: '--',
         userOptOpen: false,
         enableLogin: false,

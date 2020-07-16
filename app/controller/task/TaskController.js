@@ -17,22 +17,22 @@
 const logger = require('../../logger');
 const TaskService = require('../../service/task/TaskService');
 const util = require('../../tools/util');
-const kafkaConf = require('../../../config/webConf').kafkaConf;
+// const kafkaConf = require('../../../config/webConf').kafkaConf;
 const AuthService = require('../../service/auth/AuthService');
 const webConf = require('../../../config/webConf').webConf;
 const ServerService = require('../../service/server/ServerService');
 const TaskController = {};
 
 let kafkaProducer;
-let kafkaConsumer;
+// let kafkaConsumer;
 
-if (kafkaConf.enable) {
-	const kafka = require('kafka-node');
-	kafkaProducer = require('../../service/task/KafkaProducer');
-	kafkaConsumer = require('../../service/task/KafkaConsumer');
+// if (kafkaConf.enable) {
+// 	const kafka = require('kafka-node');
+// 	kafkaProducer = require('../../service/task/KafkaProducer');
+// 	kafkaConsumer = require('../../service/task/KafkaConsumer');
 
-	kafkaConsumer.consume();
-}
+// 	kafkaConsumer.consume();
+// }
 
 
 TaskController.getTasks = async (ctx) => {
@@ -143,13 +143,13 @@ TaskController.addTask = async (ctx) => {
 		}
 		let task_no = util.getUUID().toString();
 	
-		if (kafkaConf.enable) {
-			await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
-				logger.info('task produce success!');
-			});
-		} else {
+		// if (kafkaConf.enable) {
+		// 	await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
+		// 		logger.info('task produce success!');
+		// 	});
+		// } else {
 			await TaskService.addTask({serial, items, task_no, user_name});
-		}
+		// }
 		ctx.makeResObj(200, '', task_no);
 	} catch (e) {
 		logger.error('[TaskController.addTask]:', e, ctx);
