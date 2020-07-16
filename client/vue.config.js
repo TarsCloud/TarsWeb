@@ -1,6 +1,14 @@
 const path = require("path")
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const server_port = process.env.SERVER_PORT || '3000'
+
+let server_port;
+
+if (process.env.NODE_ENV == "dev") {
+  server_port = process.env.SERVER_PORT || '5001'
+} else {
+  server_port = process.env.SERVER_PORT || '3000'
+}
+
 module.exports = {
     outputDir: "./dist",
     productionSourceMap:false,
