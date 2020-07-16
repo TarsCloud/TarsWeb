@@ -85,7 +85,7 @@ DeployServerController.deployServer = async (ctx) => {
 
 DeployServerController.serverTypeList = async (ctx) => {
 	try {
-		let ServerTypeList = ['tars_cpp', 'tars_java', 'tars_nodejs', 'tars_php'];
+		let ServerTypeList = ['tars_cpp', 'tars_java', 'tars_nodejs', 'tars_php', 'tars_go'];
 		ctx.makeResObj(200, '', ServerTypeList);
 	} catch (e) {
 		logger.error('[serverTypeList]', e, ctx);

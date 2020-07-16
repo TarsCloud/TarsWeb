@@ -20,12 +20,11 @@
           </let-table-column>
           <let-table-column :title="$t('service.serverIp')" prop="server_ip">
             <template slot-scope="scope">
-              <let-input
-                size="small"
-                v-model="scope.row.server_ip"
-                required
-                :required-tip="$t('deployService.table.tips.empty')"
-              />
+              <let-select v-model="scope.row.server_ip" size="small" required>
+                <let-option v-for="d in nodeList" :key="d" :value="d">
+                  {{d}}
+                </let-option>
+              </let-select>
             </template>
           </let-table-column>
           <let-table-column :title="$t('module.deployArea')" prop="area" width="80px">
@@ -45,14 +44,12 @@
               {{row.memory}}
             </template>
           </let-table-column>
-          <let-table-column :title="$t('module.shmKey')" prop="shmKey">
+          <let-table-column :title="$t('module.shmKey')" prop="shmKey"  width="150px">
             <template slot-scope="scope">
               <let-input
                 size="small"
                 v-model="scope.row.shmKey"
                 :placeholder="$t('module.shmKeyRule')"
-                required
-                :required-tip="$t('deployService.table.tips.empty')"
               />
             </template>
           </let-table-column>
@@ -62,6 +59,7 @@
         <let-button size="small" theme="primary" @click="submitServerConfig">{{$t('common.submit')}}</let-button>
         <div class="alignRight">
           <let-button size="small" theme="primary" @click="addNewGroup">{{$t('serviceExpand.newGroup')}}</let-button>
+          &nbsp;&nbsp;
           <let-button size="small" theme="danger" @click="deleteGroup" :disabled="this.servers.length === this.expandServers.length">{{$t('serviceExpand.removeGroup')}}</let-button>
         </div>
       </div>
@@ -76,6 +74,7 @@
     mixins: [Mixin],
     data () {
       return {
+          nodeList:[],
       }
     },
     methods: {
@@ -97,6 +96,13 @@
           }
         }
       },
+    },
+    mounted() {
+      this.$ajax.getJSON('/server/api/node_list').then((data) => {
+        this.nodeList = data;
+      }).catch((err) => {
+        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+      });
     },
     created () {
       this.getServers();

@@ -88,7 +88,7 @@ export default {
     async ensureStop (row) {
       try {
         await this.$confirm(this.$t('dcache.operationManage.ensureStop'));
-        console.log('ensure stop', row)
+        // console.log('ensure stop', row)
         let {appName, moduleName, type, srcGroupName, dstGroupName} = row;
         await stopTransfer({appName, moduleName, type, srcGroupName, dstGroupName});
         this.getRouterChange();
@@ -103,7 +103,7 @@ export default {
     async ensureDelete (row) {
       try {
         await this.$confirm(this.$t('dcache.operationManage.ensureDelete'));
-        console.log('ensure delete', row)
+        // console.log('ensure delete', row)
         let {appName, moduleName, type, srcGroupName, dstGroupName} = row;
         await deleteTransfer({appName, moduleName, type, srcGroupName, dstGroupName});
         this.getRouterChange();

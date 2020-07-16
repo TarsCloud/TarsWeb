@@ -356,7 +356,7 @@
           let endpoints = []
           //from checkbox
           for(let endpoint in this.endpoints){
-            console.log("endpoint:",endpoint, " checked:", this.endpoints[endpoint])
+  //          console.log("endpoint:",endpoint, " checked:", this.endpoints[endpoint])
             if(this.endpoints[endpoint]) endpoints.push(endpoint)
           }
           //from textarea

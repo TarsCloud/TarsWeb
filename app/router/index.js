@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const {pageConf, apiConf, clientConf} = require('./routerConf');
+const {pageConf, apiConf, clientConf, demoConf} = require('./routerConf');
 const Router = require('koa-router');
 const _ = require('lodash');
 const noCacheMidware = require('../midware/noCacheMidware');
@@ -58,5 +58,8 @@ const apiRouter = new Router();
 apiRouter.prefix('/api');
 getRouter(apiRouter, apiConf);
 
+const demoRouter = new Router();
+demoRouter.prefix('/pages/sso/api');
+getRouter(demoRouter, demoConf);
 
-module.exports = {pageRouter, paegApiRouter, clientRouter, apiRouter};
+module.exports = {pageRouter, paegApiRouter, clientRouter, apiRouter, demoRouter};

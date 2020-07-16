@@ -14,6 +14,7 @@
       "tab2": "服务创建"
     },
     "logout": "退出登录",
+    "modifyPass": "修改密码",
     "userCenter": "用户中心"
   },
   "deployLog": {
@@ -32,6 +33,7 @@
   "releasePackage": {
     "proxyList": "Proxy服务列表",
     "routerList": "Router服务列表",
+    "accessList": "DbAccess服务列表",
     "cacheList": "Cache服务列表",
     "uploadPackage": "上传发布包",
     "moduleName": "模块名",
@@ -138,7 +140,9 @@
     "CacheManage": "Cache 管理",
     "noDefaultProxyPackage": "不存在默认的Proxy发布包",
     "noDefaultRouterPackage": "不存在默认的Router发布包",
-    "duplicateIp": "服务IP不允许重复， 请重新输入正确的服务IP"
+    "duplicateIp": "服务IP不允许重复， 请重新输入正确的服务IP",
+    "routerIp": "Router的IP不能为空",
+    "proxyIp": "Proxy的IP不能为空"
   },
   "module": {
     "title": "模块",
@@ -154,7 +158,7 @@
     "follower": "关注人",
     "serverConfig": "服务配置",
     "serverGroup": "服务组",
-    "memorySize": "内存大小（G）",
+    "memorySize": "内存大小（M）",
     "deployArea": "部署地区",
     "moduleId": "ID",
     "moduleInfo": "Cache模块信息",
@@ -162,12 +166,14 @@
     "mainServer": "主机",
     "backServer": "备机",
     "mirror": "镜像",
-    "shmKey": "共享内存key",
-    "shmKeyRule": "十进制共享内存key",
+    "shmKey": "共享内存key(十进制)",
+    "shmKeyRule": "不设置则自动分配",
     "MultiKeyConfig": "多字段配置",
     "hasExist": "模块已存在",
+    "dbAccessInfo": "DbAccess服务信息",
     "namingError": "模块名须以应用名开头，且只允许字母和数字",
-    "shmKeyError": "同一IP下不允许有相同的共享内存key"
+    "shmKeyError": "同一IP下不允许有相同的共享内存key",
+    "dbAccessIp": "DbAccess服务Ip"
   },
   "MKCache": {
     "mainKey": "主索引(mkey)",
@@ -191,7 +197,7 @@
     "cacheTypeTip1": "内存数据库(不淘汰)",
     "cacheTypeTip2": "临时缓存(过期淘汰)",
     "cacheTypeTip3": "热点缓存(容量淘汰)",
-    "perRecordAvg": "数据记录平均大小",
+    "perRecordAvg": "数据记录平均字节数(请评估准确)",
     "perRecordAvgUnit": "字节Byte",
     "totalRecord": "Cache中保存",
     "maxReadFlow": "预估峰值读流量",
@@ -203,6 +209,26 @@
     "mirror": "镜像",
     "add": "添加",
     "modification": "修改",
+    "sTypeTip1": "Value作为一个整体Buffer存储",
+    "sTypeTip2": "Value采用JCE结构体序列化, 并对应数据库表字段",
+    "accessDbName": "DbAccess Mysql实例信息",
+    "chooseAccessDb": "请选择DbAccess Mysql实例信息",
+    "inputAccessDb": "请输入DbAccess Mysql实例信息",
+    "dbaccessIp": "必须选择一个DbAccess服务的IP",
+    "db": {
+      "DBPrefix": "数据库前缀(建议不要修改)",
+      "dbNum": "分库数量",
+      "tableNum": "分表数量",
+      "tablePrefix": "表前缀(建议不要修改)",
+      "tableEngine": "表引擎",
+      "tableCharset": "表字符集",
+      "vDBInfo": "DB实例信息",
+      "dbHost": "数据库IP",
+      "dbUser": "用户名",
+      "dbPass": "密码",
+      "dbCharset": "字符集",
+      "dbPort": "端口"
+    },
     "config": {
       "tableTitle": "cache 配置列表",
       "addSuccess": "添加配置成功",
@@ -273,6 +299,8 @@
     "offlineMirrorServers": "选中的服务有镜像， 下线该模块所有的镜像服务",
     "offlineBackupMirrorServers": "选中的服务有备机和镜像，将下线所有备机和镜像",
     "sureOffline": "确定下线",
+    "moduleExists": "模块已经存在, 确定覆盖嘛?",
+    "applyExists": "DCache应用已经存在, 确定覆盖嘛?",
     "operationManage": {
       "expand": "扩容管理",
       "shrinkage": "缩容管理",
@@ -334,7 +362,10 @@
     "routerDbPort": "数据库端口",
     "routerDbUser": "用户名",
     "routerDbPass": "密码",
-    "multipleIp": "服务IP(多个IP用;分隔)"
+    "multipleIp": "服务IP(多个IP用;分隔)",
+    "isSerializated": "数据序列化",
+    "chooseRouterDb": "选择路由Mysql实例信息",
+    "inputRouterDb": "输入路由Mysql实例信息"
   },
   "region": {
     "title": "地区",
@@ -721,7 +752,10 @@
       "apply": "部署申请",
       "nodes": "节点管理",
       "check": "框架检查",
-      "gateway": "网关配置"
+      "gateway": "网关配置",
+      "application": "应用管理",
+      "business": "业务管理",
+      "businessRelation": "业务关系"
     },
     "form": {
       "app": "应用",
@@ -1121,6 +1155,202 @@
     "title": "发布日志",
     "sync": "同步PMS中...",
     "releaseId": "发布任务ID",
-    "releaseProgress": "发布进度（%）"
+    "releaseProgress": "发布进度（%）",
+    "publishInfo": "正在后台发布中, 请稍后..."
+  },
+  "application": {
+    "btn": {
+      "add": "新增应用"
+    },
+    "form": {
+      "application": "应用名",
+      "person": "创建人",
+      "time": "创建时间",
+      "content": "应用内容"
+    },
+    "view": {
+      "title": "查看应用"
+    },
+    "add": {
+      "nameTips": "应用名不能为空",
+      "formatTips": "应用名只能包含英文字母，数字，并以字母开头",
+      "parent": "请选择父应用",
+      "title": "新增应用"
+    },
+    "update": {
+      "title": "编辑应用",
+      "errTips": "编辑失败"
+    },
+    "delete": {
+      "confirmTips": "您确定要删除这个应用吗",
+      "title": "删除应用"
+    }
+  },
+  "business": {
+    "btn": {
+      "add": "新增业务"
+    },
+    "form": {
+      "business": "业务名",
+      "showName": "业务显示名",
+      "order": "排序",
+      "person": "创建人",
+      "time": "创建时间",
+      "content": "业务内容"
+    },
+    "view": {
+      "title": "查看业务"
+    },
+    "add": {
+      "nameTips": "业务名不能为空",
+      "formatTips": "业务名只能包含英文字母，数字，并以字母开头",
+      "parent": "请选择父业务",
+      "title": "新增业务"
+    },
+    "update": {
+      "title": "编辑业务",
+      "errTips": "编辑失败"
+    },
+    "delete": {
+      "confirmTips": "您确定要删除这个业务吗",
+      "title": "删除业务"
+    }
+  },
+  "businessRelation": {
+    "btn": {
+      "add": "新增业务关联"
+    },
+    "view": {
+      "title": "查看业务"
+    },
+    "form": {
+      "person": "创建人",
+      "time": "创建时间"
+    },
+    "add": {
+      "nameTips": "业务名不能为空",
+      "formatTips": "业务名只能包含英文字母，数字，并以字母开头",
+      "title": "新增业务"
+    },
+    "update": {
+      "title": "编辑业务关系",
+      "errTips": "编辑失败"
+    },
+    "delete": {
+      "confirmTips": "您确定要删除这个业务关系吗",
+      "title": "删除业务关系"
+    }
+  },
+  "ssoHeader": {
+    "tab": {
+      "tab1": "权限列表",
+      "tab2": "用户管理",
+      "tab3": "权限管理",
+      "tab4": "Token管理"
+    },
+    "modifyPass": "修改密码"
+  },
+  "login": {
+    "loginTitle": "请登录",
+    "userName": "用户名",
+    "password": "密码",
+    "repeatPassword": "二次确认密码",
+    "login": "登录",
+    "toRegisterPage": "没有账号？前往注册",
+    "toLoginPage": "直接前往登录",
+    "userNameTips": "用户名不能为空",
+    "userNameRegTips": "用户名只能包含英文字母，数字或下划线",
+    "passwordTips": "密码不能为空",
+    "passwordNoCorrect": "密码错误",
+    "userNoExist": "用户名不存在",
+    "loginFailed": "登录失败",
+    "registerTitle": "请注册",
+    "repeatPasswordTips": "二次确认密码不能为空",
+    "register": "注册",
+    "passwordDiff": "两次密码输入不一致，请修改",
+    "hasExist": "用户名已存在",
+    "registerSucc": "注册成功",
+    "registerFailed": "注册失败",
+    "getUidFailed": "获取用户信息失败",
+    "logout": "退出登录",
+    "noLogin": "您还没有登录"
+  },
+  "auth": {
+    "flag": "标志(应用名 或者 应用名.服务名)",
+    "role": "角色",
+    "uid": "用户名",
+    "flagTips": "标志不能为空",
+    "roleTips": "角色不能为空",
+    "uidTips": "用户不能为空",
+    "tokenTips": "token不能为空",
+    "uidPlaceholder": "可填入多个uid，用分号隔开",
+    "addPrivilege": "新增权限",
+    "delPrivilege": "删除权限",
+    "privilegeManageTitle": "权限管理",
+    "loadListError": "加载权限列表失败",
+    "selectRecord": "请选择要删除的权限",
+    "confirmDelete": "确定要删除选中的权限吗？",
+    "loadUserIdError": "加载用户列表失败",
+    "delSucc": "删除成功",
+    "delError": "删除失败",
+    "adminNotErase": "admin用户权限无法删除",
+    "addUser": "新增用户",
+    "delUser": "删除用户",
+    "userManageTitle": "用户列表",
+    "userTime": "创建时间",
+    "adminDelError": "admin用户不允许删除",
+    "token": "TOKEN",
+    "addToken": "新增Token",
+    "delToken": "删除Token",
+    "tokenManageTitle": "Token列表",
+    "tokenExpireTime": "过期时间",
+    "tokenTime": "创建时间",
+    "loadTokenError": "加载Token失败",
+    "confirmTokenDelete": "确定要删除选中的token吗?",
+    "confirmTokenTitle": "删除Token",
+    "status": "状态",
+    "operator": "操作",
+    "tokenValid": "生效",
+    "valid": "生效",
+    "notValid": "失效",
+    "setTokenValid": "确定修改Token状态吗?",
+    "setTokenError": "设置token状态失败",
+    "setTokenSucc": "修改Token状态成功"
+  },
+  "pass": {
+    "title": "修改密码",
+    "adminTitle": "第一次登录 -- 设置[admin]用户密码",
+    "userName": "用户名",
+    "password": "密码",
+    "repeatPassword": "二次确认密码",
+    "modify": "修改",
+    "passwordDiff": "两次密码输入不一致，请修改",
+    "modifySucc": "密码修改成功",
+    "modifyFailed": "密码修改失败",
+    "passwordTips": "密码不能为空",
+    "repeatPasswordTips": "二次确认密码不能为空",
+    "setAdminPasswordFailed": "不允许设置Admin用户密码",
+    "toIndexPage": "跳转到我的首页"
+  },
+  "ssoCommon": {
+    "search": "查询",
+    "nextPage": "下一页",
+    "prevPage": "上一页",
+    "nodata": "没有数据",
+    "admin": "admin用户, 拥有所有权限",
+    "success": "成功",
+    "failed": "失败",
+    "confirmTitle": "系统提示",
+    "systemError": "系统内部错误",
+    "noPrivilage": "没有权限",
+    "notEmpty": "不能为空",
+    "needNumber": "必须为数字",
+    "needArray": "必须为数组",
+    "needObject": "必须为对象",
+    "needBoolean": "必须为布尔值"
+  },
+  "localeSelect": {
+    "cn": "中文",
+    "en": "英文"
   }
 }

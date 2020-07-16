@@ -205,7 +205,7 @@ ExpandService.expand = async (params) => {
 				let portType = sourceAdapter.endpoint.substring(0, sourceAdapter.endpoint.indexOf(' '));
 				portType = _.indexOf(['tcp', 'udp'], portType) > -1 ? portType : 'tcp';
 				adapter.endpoint = portType + ' -h ' + preServer.bind_ip + ' -t ' + sourceAdapter.queuetimeout + ' -p ' + preServer.port + ' -e ' + (preServer.auth ? preServer.auth : 0);
-				console.log('adapter', adapter);
+				// console.log('adapter', adapter);
 				await AdapterDao.insertAdapterConf(adapter, transaction);
 			}
 		}

@@ -50,6 +50,7 @@ import Region from '@/pages/dcacheOperation/region';
 // 发布包管理
 import releasePackage from '@/pages/releasePackage/index';
 import proxyList from '@/pages/releasePackage/proxyList';
+import accessList from '@/pages/releasePackage/accessList';
 import routerList from '@/pages/releasePackage/routerList';
 import cacheList from '@/pages/releasePackage/cacheList';
 
@@ -184,6 +185,10 @@ export default new Router({
         {
           path: 'proxyList',
           component: proxyList,
+        },
+        {
+          path: 'accessList',
+          component: accessList,
         },
         {
           path: 'routerList',

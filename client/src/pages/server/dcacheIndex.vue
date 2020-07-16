@@ -1,6 +1,8 @@
 <template>
   <div class="page_server">
 
+    <div class="tree_wrap">
+      <a href="javascript:;" class="tree_icon iconfont el-icon-third-shuaxin" @click="getTreeData(1)"></a>
     <let-tree class="left-tree"
               v-if="treeData && treeData.length"
               :data="treeData"
@@ -14,6 +16,7 @@
         <p>{{treeErrMsg}}</p>
         <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
       </div>
+    </div>
     </div>
 
     <div class="right-view" v-if="!this.$route.params.treeid">
@@ -43,17 +46,27 @@
         ></let-tab-pane>
 
         <!--发布管理-->
-        <let-tab-pane
+        <!-- <let-tab-pane
           :tabkey="`${base}/publish/${serverType}`"
           :tab="$t('index.rightView.tab.patch')"
           v-if="(serverData.level === 5 && serverType !== 'dcache')"
+        ></let-tab-pane> -->
+        <let-tab-pane
+          :tabkey="`${base}/publish/${serverType}`"
+          :tab="$t('index.rightView.tab.patch')"
+          v-if="(serverData.level === 5)"
         ></let-tab-pane>
 
         <!--服务配置-->
-        <let-tab-pane
+        <!-- <let-tab-pane
           :tabkey="`${base}/config/${serverType}`"
           :tab="serverData.level === 5 ? $t('index.rightView.tab.serviceConfig') :serverData.level === 4 ? $t('index.rightView.tab.setConfig') :serverData.level === 1 ? $t('index.rightView.tab.appConfig') : ''"
           v-if="(serverData.level === 5 || serverData.level === 4 || serverData.level === 1) && serverType !== 'dcache'"
+        ></let-tab-pane> -->
+        <let-tab-pane
+          :tabkey="`${base}/config/${serverType}`"
+          :tab="serverData.level === 5 ? $t('index.rightView.tab.serviceConfig') :serverData.level === 4 ? $t('index.rightView.tab.setConfig') :serverData.level === 1 ? $t('index.rightView.tab.appConfig') : ''"
+          v-if="(serverData.level === 5 || serverData.level === 4 || serverData.level === 1)"
         ></let-tab-pane>
 
         <!--服务监控-->
@@ -64,10 +77,15 @@
         ></let-tab-pane>
 
         <!--特性监控-->
-        <let-tab-pane
+        <!-- <let-tab-pane
           :tabkey="`${base}/property-monitor/${serverType}`"
           :tab="$t('index.rightView.tab.propertyMonitor')"
           v-if="serverData.level === 5 && this.$route.params.serverType !== 'dcache'"
+        ></let-tab-pane> -->
+        <let-tab-pane
+          :tabkey="`${base}/property-monitor/${serverType}`"
+          :tab="$t('index.rightView.tab.propertyMonitor')"
+          v-if="serverData.level === 5"
         ></let-tab-pane>
 
 
@@ -129,7 +147,7 @@
     },
     watch: {
       '$route.params.treeid': function (treeid) { // eslint-disable-line
-        console.log('$route.params.treeid$route.params.treeid')
+        // console.log('$route.params.treeid$route.params.treeid')
         this.serverData = this.getServerData();
         // this.isTrueTreeLevel();
       },
@@ -141,7 +159,7 @@
     },
     methods: {
       selectTree(nodeKey, nodeInfo) {
-        console.log(nodeInfo);
+        // alert(nodeKey);
         if (nodeInfo.children && nodeInfo.children.length) {
           this.$set(nodeInfo, 'expand', !nodeInfo.expand);
           if (nodeInfo.moduleName) {
@@ -170,12 +188,16 @@
             node.expand = true;  //eslint-disable-line
           }
 
+          // 如果是当前菜单，则展开
+          if(this.$route.params.treeid === node.nodeKey) {
+            node.expand = true;  //eslint-disable-line
+          }
           if (node.children && node.children.length) {
             this.handleData(node.children);
           }
         });
       },
-      getTreeData() {
+      getTreeData(type) {
         this.treeData = null;
 
         this.$nextTick(() => {
@@ -183,13 +205,13 @@
             target: this.$refs.treeLoading,
           });
 
-          this.$ajax.getJSON('/server/api/dtree').then((res) => {
+          this.$ajax.getJSON('/server/api/dtree', { type }).then((res) => {
             loading.hide();
             this.treeData = res;
             this.handleData(this.treeData, true);
           }).catch((err) => {
             loading.hide();
-            console.error(err)
+            // console.error(err)
             this.treeErrMsg = err.err_msg || err.message || '加载失败';
             this.treeData = false;
           });
@@ -210,7 +232,7 @@
         };
 
         treeArr.forEach((item) => {
-          console.log('item', item);
+          // console.log('item', item);
           const level = +item.substr(0, 1);
           const name = item.substr(1);
           switch (level) {
@@ -293,6 +315,9 @@
     padding-bottom: var(--gap-big);
     padding-top: var(--gap-big);
     display: flex;
+    /**/
+    .tree_wrap{position:relative;}
+    .tree_icon{color:#565B66;position:absolute;right:5px;top:5px;}
     /*目录树*/
     .left-tree {
       flex: 0 0 auto;
@@ -308,12 +333,14 @@
       .let-icon-caret-right-small {
         margin-right: 2px;
         margin-left: 4px;
+        position: relative;
+        top: -1px;
       }
 
       ul.let-tree__node {
         font-size: 14px;
         line-height: var(--gap-small);
-        margin-left: 10px;
+        margin-left: 18px;
 
         li {
           text-overflow: ellipsis;
@@ -329,14 +356,14 @@
         margin-left: 0;
 
         & > li > ul.let-tree__node {
-          margin-left: 0;
+          /* margin-left: 0; */
 
           li .pointer:first-of-type {
-            margin-left: 3px;
+            /* margin-left: 20px; */
           }
 
           li .pointer:first-of-type:empty {
-            margin-left: 26px;
+            margin-left: 18px;
           }
         }
       }
@@ -348,7 +375,7 @@
         background-position: center;
         background-size: 100%;
         background-image: url('../../assets/img/tree-icon-2.png');
-        margin-right: 4px;
+        margin-right: 3px;
         margin-left: 0;
         vertical-align: middle;
 

@@ -1,6 +1,6 @@
 <template>
   <section style="display: inline" class="batch-publish">
-    <let-button theme="primary" :disabled="disabled" @click="init">{{$t(`dcache.batch.${type}`)}}</let-button>
+    <let-button :size="size" theme="primary" :disabled="disabled" @click="init">{{$t(`dcache.batch.${type}`)}}</let-button>
     <let-modal
       v-model="show"
       @on-confirm="confirm"
@@ -34,6 +34,7 @@
     components: { tarsReleaseProgress },
     mixins: [Mixin],
     props: {
+      size: String,
       disabled: Boolean,
       expandServers: {
         required: false,

@@ -21,6 +21,7 @@ const logger = require(path.join(cwd, './app/logger'));
 const TarsStream = require('@tars/stream');
 const ApplyService = require('./../apply/service.js');
 const ModuleConfigService = require('./service.js');
+const DbAccessService = require('../dbaccess/service.js');
 
 const PatchService = require(path.join(cwd, './app/service/patch/PatchService'));
 const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
@@ -33,7 +34,7 @@ function mapCacheType(key) {
 }
 
 const ModuleConfigController = {
-  addModuleConfig: async (ctx) => {
+  overwriteModuleConfig: async (ctx) => {
     try {
       const {
         admin,
@@ -52,7 +53,7 @@ const ModuleConfigController = {
         set_area,
         total_record,
       } = ctx.paramsObj;
-      const create_person = 'adminUser';
+      const create_person = ctx.uid;
       const option = {
         admin,
         cache_module_type: +cache_module_type || 0,
@@ -71,8 +72,61 @@ const ModuleConfigController = {
         total_record,
         create_person,
       };
-      const item = await ModuleConfigService.addModuleConfig(option);
+      const item = await ModuleConfigService.overwriteModuleConfig(option);
       ctx.makeResObj(200, '', item);
+    } catch (err) {
+      logger.error('[addModuleConfig]:', err);
+      ctx.makeResObj(500, err.message);
+    }
+  },
+  addModuleConfig: async (ctx) => {
+    try {
+      const {
+        admin,
+        cache_module_type,
+        cache_type,
+        dbAccessConf,
+        dbAccessServant,
+        idc_area,
+        key_type,
+        max_read_flow,
+        max_write_flow,
+        apply_id,
+        module_id,
+        module_name,
+        module_remark,
+        per_record_avg,
+        set_area,
+        total_record,
+      } = ctx.paramsObj;
+      const hasModule = await ModuleConfigService.hasModule({ module_name });
+      if (hasModule) {
+        ctx.makeResObj(200, '', { hasModule: true});
+      } else {
+        const create_person = ctx.uid;
+        const option = {
+          admin,
+          cache_module_type: +cache_module_type || 0,
+          cache_type,
+          dbAccessConf,
+          dbAccessServant,
+          idc_area,
+          key_type: +key_type || 0,
+          max_read_flow,
+          max_write_flow,
+          apply_id,
+          module_id,
+          module_name,
+          module_remark,
+          per_record_avg,
+          set_area,
+          total_record,
+          create_person,
+        };
+      const item = await ModuleConfigService.addModuleConfig(option);
+        item.hasModule = false;
+      ctx.makeResObj(200, '', item);
+      }
     } catch (err) {
       logger.error('[addModuleConfig]:', err);
       ctx.makeResObj(500, err.message);
@@ -96,7 +150,8 @@ const ModuleConfigController = {
       const queryServerConf = ['id', 'area', 'apply_id', 'module_name', 'group_name', 'server_name', 'server_ip', 'server_type', 'memory', 'shmKey', 'status', 'is_docker', 'template_name'];
 
       const item = await ModuleConfigService.getModuleConfigInfo({ moduleId, queryModuleBase, queryServerConf });
-      ctx.makeResObj(200, '', item);
+      const dbAccess = await DbAccessService.findByModuleId({ moduleId });
+      ctx.makeResObj(200, '', { item, dbAccess } );
     } catch (err) {
       logger.error('[getModuleConfigAndServerInfo]:', err);
       ctx.makeErrResObj();
@@ -128,6 +183,50 @@ const ModuleConfigController = {
       });
       if (!defaultCachePackage) throw new Error('#module.noDefaultCachePackage#');
 
+      const fieldParam = [];
+      if (mkCache) {
+        mkCache.mainKey.forEach((item) => {
+          const record = new DCacheOptStruct.RecordParam();
+          record.readFromObject({
+            fieldName: item.fieldName,
+            keyType: item.keyType,
+            dataType: item.dataType,
+            DBType: item.DBType,
+            property: item.property,
+            defaultValue: item.defaultValue,
+            maxLen: item.maxLen,
+          });
+          fieldParam.push(record);
+        });
+        if (isMKCache && ModuleBase.mkcache_struct === 1) {
+          mkCache.unionKey.forEach((item) => {
+            const record = new DCacheOptStruct.RecordParam();
+            record.readFromObject({
+              fieldName: item.fieldName,
+              keyType: item.keyType,
+              dataType: item.dataType,
+              DBType: item.DBType,
+              property: item.property,
+              defaultValue: item.defaultValue,
+              maxLen: item.maxLen,
+            });
+            fieldParam.push(record);
+          });
+        }
+        mkCache.value.forEach((item) => {
+          const record = new DCacheOptStruct.RecordParam();
+          record.readFromObject({
+            fieldName: item.fieldName,
+            keyType: item.keyType,
+            dataType: item.dataType,
+            DBType: item.DBType,
+            property: item.property,
+            defaultValue: item.defaultValue,
+            maxLen: item.maxLen,
+          });
+          fieldParam.push(record);
+        });
+      }
       // 主机、镜像、备机
       const optServerType = ['M', 'S', 'I'];
       ServerConf.forEach((item) => {
@@ -157,7 +256,7 @@ const ModuleConfigController = {
           nodeName: item.server_ip,
           groupName: 'DCacheServerGroup',
           version: defaultCachePackage.id.toString(),
-          user: 'adminUser',
+          user: ctx.uid,
           md5: '',
           status: 0,
           error: '',
@@ -172,7 +271,7 @@ const ModuleConfigController = {
           avgDataSize: per_record_avg.toString(),
           readDbFlag: 'Y',
           enableErase: key_type === 3 ? 'Y' : 'N',
-          eraseRadio: '95%',
+          eraseRadio: '85%',
           saveOnlyKey: 'N',
           dbFlag: cache_module_type === 2 ? 'Y' : 'N',
           dbAccessServant: cache_module_type === 2 ? dbAccessServant : '',
@@ -188,7 +287,8 @@ const ModuleConfigController = {
           kvCacheHost: CacheHost,
           kvCacheConf,
           version: ModuleBase.cache_version.toString(),
-          replace: moduleInfo.status === 2,
+          // replace: moduleInfo.status === 2,
+          replace: true,
         });
         args = await DCacheOptPrx.installKVCacheModule(option);
       } else {
@@ -198,7 +298,7 @@ const ModuleConfigController = {
           avgDataSize: per_record_avg.toString(),
           readDbFlag: 'Y',
           enableErase: key_type === 3 ? 'Y' : 'N',
-          eraseRadio: '95%',
+          eraseRadio: '85%',
           saveOnlyKey: 'N',
           dbFlag: cache_module_type === 2 ? 'Y' : 'N',
           dbAccessServant: cache_module_type === 2 ? dbAccessServant : '',
@@ -256,15 +356,81 @@ const ModuleConfigController = {
           mkvCacheConf,
           fieldParam,
           version: ModuleBase.cache_version.toString(),
-          replace: moduleInfo.status === 2,
+          replace: true,
+          // replace: moduleInfo.status === 2,
         });
         args = await DCacheOptPrx.installMKVCacheModule(option);
       }
       // 安装成功， 进入发布
       if (args.__return === 0) {
         // 应用进入目录树
-        await moduleInfo.update({ status: 2 });
+        if (cache_module_type == 2) {
+          const dbAccess = await DbAccessService.findByModuleId({ moduleId });
 
+          const dbAccessOption = new DCacheOptStruct.InstallDbAccessReq();
+          dbAccessOption.readFromObject({
+            appName: applyInfo.name,
+            serverName: 'DCache.' + dbAccess.servant.split(".")[1],
+            serverIp: dbAccess.dbaccess_ip.split(";"),
+            serverTemplate: "DCache.Cache",
+            isSerializated: dbAccess.isSerializated,
+            vtModuleRecord: fieldParam,
+            conf: {},
+            replace: true,
+            cacheType: ModuleBase.cache_version,
+          });
+
+          dbAccessOption.conf = new DCacheOptStruct.DBAccessConf();
+          dbAccessOption.conf.readFromObject({
+            isDigital: false,
+            DBNum: dbAccess.db_num,
+            DBPrefix: dbAccess.db_prefix,
+            tableNum: dbAccess.table_num,
+            tablePrefix: dbAccess.table_prefix,
+            tableEngine: 'InnoDB',
+            tableCharset: dbAccess.db_charset,
+            vDBInfo: [],
+          });
+          dbAccessOption.conf.vDBInfo = new TarsStream.List(DCacheOptStruct.DBInfo);
+          const dbInfo = new DCacheOptStruct.DBInfo();
+          dbInfo.readFromObject({
+            ip: dbAccess.db_host,
+            user: dbAccess.db_user,
+            pwd: dbAccess.db_pwd,
+            port: dbAccess.db_port,
+            charset: dbAccess.db_charset,
+          })
+          dbAccessOption.conf.vDBInfo.push(dbInfo);
+          argsDbAccess = await DCacheOptPrx.installDBAccess(dbAccessOption);
+          if (argsDbAccess.__return !== 0) {
+            throw new Error(argsDbAccess.rsp.errMsg);
+          }
+          const defaultDbAccessPackage = await PatchService.find({
+            where: {
+              package_type: 0,
+              server: 'DCache.CombinDbAccessServer',
+              default_version: 1,
+            },
+          });
+          if (!defaultDbAccessPackage) throw new Error('#module.noDefaultCachePackage#');
+          const serverIps = dbAccess.dbaccess_ip.split(";");
+          for (var i = 0; i < serverIps.length; i++) {
+            const dbAccessReleaseInfo = new DCacheOptStruct.ReleaseInfo();
+            dbAccessReleaseInfo.readFromObject({
+              appName: 'DCache',
+              serverName: dbAccess.servant.split(".")[1],
+              nodeName: serverIps[i],
+              groupName: 'DCacheServerGroup',
+              version: defaultDbAccessPackage.id.toString(),
+              user: ctx.uid,
+              md5: '',
+              status: 0,
+              error: '',
+              ostype: '',
+            });
+            releaseArr.push(dbAccessReleaseInfo);
+          }
+        }
         releaseInfoOption.readFromObject(releaseArr);
         const argsPublish = await DCacheOptPrx.releaseServer(releaseInfoOption);
         logger.info('[DCacheOptPrx.publishApp]:', argsPublish);
@@ -272,6 +438,7 @@ const ModuleConfigController = {
           // 发布失败
           throw new Error(argsPublish.releaseRsp.errMsg);
         }
+        await moduleInfo.update({ status: 2 });
         ctx.makeResObj(200, '', {
           releaseRsp: argsPublish.releaseRsp,
         });

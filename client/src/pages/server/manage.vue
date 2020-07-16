@@ -2,9 +2,19 @@
   <div class="page_server_manage">
 
     <!-- 服务列表 -->
+    <div class="table_head">
     <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    </div>
     
-    <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
+    <let-table class="dcache" v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
+      <let-table-column>
+        <template slot="head" slot-scope="props">
+          <let-checkbox v-model="isCheckedAll" :value="isCheckedAll"></let-checkbox>
+        </template>
+        <template slot-scope="scope">
+          <let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
         <template slot-scope="scope">
           <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" title="点击查看服务日志(view server logs)" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
@@ -47,10 +57,16 @@
           <let-table-operation @click="showMoreCmd(scope.row)">{{$t('operate.more')}}</let-table-operation>
         </template>
       </let-table-column>
+      <template slot="operations">
+        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="restart"></batch-operation>
+        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="stop"></batch-operation>
+      </template>
     </let-table>
 
     <!-- 服务实时状态 -->
+    <div class="table_head">
     <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
+    </div>
     <let-table v-if="serverNotifyList && showOthers"
       :data="serverNotifyList" stripe :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
       <let-table-column width="20%" :title="$t('common.time')" prop="notifytime"></let-table-column>
@@ -365,10 +381,14 @@
 </template>
 
 <script>
+import batchOperation from './../dcache/moduleManage/batchOperation.vue'
 export default {
+  components: { batchOperation },
   name: 'ServerManage',
   data() {
     return {
+      // 全选
+      isCheckedAll: false,
       // 当前页面信息
       serverData: {
         level: 5,
@@ -443,6 +463,20 @@ export default {
       }
       return this.checkServantEndpoint(this.servantDetailModal.model.endpoint);
     },
+    hasCheckedServer() {
+      return this.serverList.filter(item => item.isChecked === true).length !== 0;
+    },
+    checkedServers() {
+      return this.serverList.filter(item => item.isChecked === true);
+    },
+  },
+  watch: {
+    isCheckedAll() {
+      let isCheckedAll = this.isCheckedAll;
+      this.serverList.forEach((item) => {
+        item.isChecked = isCheckedAll;
+      });
+    },
   },
   methods: {
     // 获取服务列表
@@ -453,6 +487,9 @@ export default {
         tree_node_id: this.$route.params.treeid,
       }).then((data) => {
         loading.hide();
+        data.forEach(item => {
+          item.isChecked = false
+        })
         this.serverList = data;
       }).catch((err) => {
         loading.hide();
@@ -948,6 +985,8 @@ export default {
       width: 200px;
     }
   }
+  .table_head{padding:10px 0;}
+  .dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
 }
 
 </style>

@@ -70,6 +70,9 @@ ModuleService.queryProperptyData = async function ({ moduleName, serverName = ''
 ModuleService.normalFormat = function propertyMonitorNormalFormat(monitorData = [{ moduleName: '', serverName: '', date: '', data: [{ propData: {}, timeStamp: '0000' }] }]) {
   const data = [];
   let keys = [];
+  if (!monitorData.data || monitorData.data.length == 0) {
+    return {};
+  }
   const [{ moduleName, serverName, data: theData }, { data: preData }] = monitorData;
   for (let hour = 0; hour < 24; hour++) {
     for (let min = 0; min <= 60; min += 5) {

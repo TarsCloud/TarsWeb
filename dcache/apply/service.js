@@ -17,18 +17,22 @@
 const ApplyDao = require('./dao');
 const RouterService = require('../router/service');
 const ProxyService = require('../proxy/service');
+const DbAccessService = require('../dbaccess/service');
 const ModuleConfigService = require('../moduleConfig/service');
 
 const ApplyService = {};
 
-ApplyService.addApply = async function ({
+ApplyService.hasApply = async function ({ name }) {
+  const item = await ApplyDao.findOne({ where: { name } });
+  if (item && item.status == 2) {
+    return true;
+  }
+  return false;
+}
+ApplyService.overwriteApply = async function ({
   idc_area, set_area, admin, name, create_person,
 }) {
-  const item = await ApplyDao.findOne({ where: { name } });
-  if (item && item.status === 2) {
     // 如果是安装成功的， 提醒应用存在
-    throw new Error('#apply.hasExist#');
-  } else {
     // 如果注册过，但是没有安装成功， 就覆盖掉
     const data = await ApplyDao.createOrUpdate(['name'], {
       idc_area, set_area, admin, name, create_person, status: 1,
@@ -39,9 +43,9 @@ ApplyService.addApply = async function ({
       server_name: `${data.name}RouterServer`,
       server_ip: '',
       template_file: '',
-      router_db_name: '',
-      router_db_ip: '',
-      router_db_port: '',
+    router_db_name: `db_cache_${data.name}`,
+    router_db_ip: ``,
+    router_db_port: '3306',
       router_db_user: '',
       router_db_pass: '',
       create_person,
@@ -76,7 +80,22 @@ ApplyService.addApply = async function ({
     }
     await Promise.all(result);
     return data;
+};
+ApplyService.addApply = async function ({
+  idc_area, set_area, admin, name, create_person,
+}) {
+  const item = await ApplyDao.findOne({ where: { name } });
+  if (item && item.status === 2) {
+    throw new Error('#apply.hasExist#');
+  } else {
+    return await ApplyService.overwriteApply({ idc_area, set_area, admin, name, create_person });
   }
+};
+ApplyService.getRouterDb = async function () {
+  return await ApplyDao.findRouterDbAll();
+};
+ApplyService.getRouterDbById = async function (id) {
+  return await ApplyDao.findRouter(id);
 };
 
 ApplyService.getApply = function ({ applyId, queryRouter, queryProxy }) {

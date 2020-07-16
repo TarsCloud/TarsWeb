@@ -128,5 +128,11 @@ tApplyCacheServerConf.belongsTo(tApplyCacheModuleConf, {
   as: 'moduleBase',
 });
 
+const { tApplyAppDbaccessConf } = Db.db_cache_web;
+tApplyAppDbaccessConf.belongsTo(tApplyCacheModuleConf, {
+  foreignKey: 'module_id',
+  targetKey: 'id',
+  as: 'DbAccessModuleBase',
+});
 
 module.exports = Db;

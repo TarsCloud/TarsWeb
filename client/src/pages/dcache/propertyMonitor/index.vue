@@ -173,8 +173,9 @@
           let option = { ...query };
           if (group_by === 'serverName' && serverName === '' ) option = { ...option, serverName: '*' };
           const { data, keys } = await queryProperptyData(option);
-          this.allItems = data;
-          this.keys= keys;
+          // console.log(data, keys);
+          this.allItems = data || [];
+          this.keys= keys || [];
         } catch (err) {
           console.error(err);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

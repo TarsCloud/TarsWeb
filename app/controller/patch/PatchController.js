@@ -36,9 +36,9 @@ PatchController.uploadAndPublish = async (ctx) => {
 	try {
 
 		let task_id = util.getUUID().toString();
-		let package_type = 0;
+		// let package_type = 0;
 
-		let {application, module_name, comment} = ctx.req.body;
+		let { application, module_name, comment, package_type} = ctx.req.body;
 
 		let file = ctx.req.files[0];
 		if (!file) {
@@ -48,7 +48,7 @@ PatchController.uploadAndPublish = async (ctx) => {
 		let baseUploadPath = WebConf.pkgUploadPath.path;
 		// 发布包上传目录
 		let updateTgzPath = `${baseUploadPath}/${application}/${module_name}`;
-		console.info('updateTgzPath:', updateTgzPath);
+		// console.info('updateTgzPath:', updateTgzPath);
 		await fs.ensureDirSync(updateTgzPath);
 		let hash = md5Sum(`${baseUploadPath}/${file.filename}`);
 
@@ -313,7 +313,7 @@ PatchController.deletePatchPackage = async (ctx) => {
 	try {
 
 		let patch = await PatchService.find({where: {id:id}});
-		console.log(patch);
+		// console.log(patch);
 		if(patch)
 		{
 			logger.info('deletePatchPackage:' + id + ", " + patch.server.split('.')[0] + ", " + patch.server.split('.')[1] + ", " + patch.tgz);

@@ -23,7 +23,7 @@ const webConf = require('../../../config/webConf').webConf;
 const ServerService = require('../../service/server/ServerService');
 const TaskController = {};
 
-let kafkaProducer;
+// let kafkaProducer;
 // let kafkaConsumer;
 
 // if (kafkaConf.enable) {
@@ -36,7 +36,7 @@ let kafkaProducer;
 
 
 TaskController.getTasks = async (ctx) => {
-	console.log(ctx);
+	// console.log(ctx);
 	try {
 		let {application, server_name, command, from, to, curr_page = 0, page_size = 0} = ctx.paramsObj;
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
@@ -86,16 +86,16 @@ TaskController.getTasks = async (ctx) => {
 TaskController.getTask = async (ctx) => {
 	try {
 		let ret;
-		if (kafkaConf.enable) {
-			let task = await TaskService.getTaskStatus(ctx.paramsObj.task_no);
-			if (task.status == 'waiting') {
-				ret = {status: 0};
-			} else {
-				ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
-			}
-		} else {
+		// if (kafkaConf.enable) {
+		// 	let task = await TaskService.getTaskStatus(ctx.paramsObj.task_no);
+		// 	if (task.status == 'waiting') {
+		// 		ret = {status: 0};
+		// 	} else {
+		// 		ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
+		// 	}
+		// } else {
 			ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
-		}
+		// }
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
 		logger.error('[TaskController.getTask]:', e, ctx);

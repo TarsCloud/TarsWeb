@@ -1,6 +1,13 @@
 <template>
   <div class="page_server">
+    <div class="left-view">
+      <div class="tree_search">
+        <input v-model="treeSearchKey" class="tree_search_key" type="text" @keydown.enter="treeSearch()" placeholder="请输入内容…" />
+        <let-button  class="tree_search_btn" theme="primary" size="mini" @click="treeSearch()">查询</let-button>
+      </div>
 
+      <div class="tree_wrap">
+        <a href="javascript:;" class="tree_icon iconfont el-icon-third-shuaxin" @click="treeSearch(1)"></a>
     <let-tree class="left-tree"
       v-if="treeData && treeData.length"
       :data="treeData"
@@ -13,6 +20,8 @@
       <div class="loading" v-if="treeData === false">
         <p>{{treeErrMsg}}</p>
         <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
+      </div>
+    </div>
       </div>
     </div>
 
@@ -61,6 +70,7 @@ export default {
     return {
       treeErrMsg: 'load failed',
       treeData: null,
+      treeSearchKey: '',
       enableAuth: false,
       // deployLog: false,
 
@@ -92,6 +102,9 @@ export default {
     },
   },
   methods: {
+    treeSearch(type) {
+      this.getTreeData(this.treeSearchKey, type)
+    },
     selectTree(nodeKey) {
       if (this.$route.path === '/server') {
         this.$router.push(`/server/${nodeKey}/manage`);
@@ -108,8 +121,8 @@ export default {
 
         // 第一层特殊图标、展开
         if (isFirstLayer) {
-          node.iconClass = 'tree-icon';
-          node.expand = true;  //eslint-disable-line
+          // node.iconClass = 'tree-icon';
+          // node.expand = true;  //eslint-disable-line
         }
 
         if (node.children && node.children.length) {
@@ -117,7 +130,7 @@ export default {
         }
       });
     },
-    getTreeData() {
+    getTreeData(key, type) {
       this.treeData = null;
 
       this.$nextTick(() => {
@@ -125,7 +138,10 @@ export default {
           target: this.$refs.treeLoading,
         });
 
-        this.$ajax.getJSON('/server/api/tree').then((res) => {
+        this.$ajax.getJSON('/server/api/tree', {
+          searchKey: key || '',
+          type,
+        }).then((res) => {
           loading.hide();
           this.treeData = res;
           this.handleData(this.treeData, true);
@@ -231,6 +247,18 @@ export default {
   padding-top: var(--gap-big);
   display: flex;
 
+  /*left-view*/
+  .left-view{
+    display:flex;
+    flex-flow: column;
+  }
+  /*目录搜索框*/
+  .tree_search{display:block;margin-bottom:20px;position:relative;padding-right:42px;}
+  .tree_search_key{display:block;border:1px solid #c0c4cc;border-radius:4px 0 0 4px;color:#222329;font-size:14px;padding:6px 10px;box-sizing: border-box;width: 100%;}
+  .tree_search_btn{display:block;border-radius:0 4px 4px 0;position:absolute;right:0;top:0;}
+  /**/
+  .tree_wrap{position:relative;}
+  .tree_icon{color:#565B66;position:absolute;right:10px;top:10px;}
   /*目录树*/
   .left-tree {
     flex: 0 0 auto;
@@ -251,11 +279,13 @@ export default {
     ul.let-tree__node {
       font-size: 14px;
       line-height: var(--gap-small);
-      margin-left: 10px;
+        margin-left: 18px;
 
       li {
         text-overflow: ellipsis;
         overflow: hidden;
+          word-break: break-all;
+          white-space: pre;
       }
     }
 
@@ -268,11 +298,11 @@ export default {
         margin-left: 0;
 
         li .pointer:first-of-type {
-          margin-left: 3px;
+            margin-left: 20px;
         }
 
         li .pointer:first-of-type:empty {
-          margin-left: 26px;
+            margin-left: 20px;
         }
       }
     }
