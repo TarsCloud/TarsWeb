@@ -1,0 +1,8 @@
+module Base
+{
+    interface FlowControl
+    {
+        int report(map<string, int> flow, string ip);
+        int getGWDB(out map<string, string> dbConf);
+    };
+};
