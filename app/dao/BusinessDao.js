@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const dbTable = require('./db').db_taf_web.tBusiness;
+const dbTable = require('./db').db_tars_web.tBusiness;
 const Sequelize = require('sequelize');
 
 const Dao = {};
