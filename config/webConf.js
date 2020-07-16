@@ -17,6 +17,7 @@ var path = require('path');
 
 if (process.env.NODE_ENV == "dev") {
     module.exports = {
+        dbType: 1,
         dbConf: {
             host: '172.16.0.14',       // 数据库地址
             port: '3307',            // 数据库端口
@@ -51,11 +52,22 @@ if (process.env.NODE_ENV == "dev") {
         },
         infTestConf:{
             benchmarkAdmin:"benchmark.AdminServer.AdminObj"
-        }
+        },
+        ldapConf: {
+            enableLDAP: true,                            // 是否启用LDAP用户登录验证
+            url: 'ldap://ldap.whup.com:10389',           // LDAPServer地址
+            basedn: 'ou=staff,dc=upchina,dc=com',        // LDAP根目录|ou组织单位子目录|dc域名部分dc=upchina,dc=com为upchina.com
+            reconnect: true,
+            timeout: 30000,                              // LDAP创建client请求超时时间
+            timeLimit: 30,                               // LDAPsearch超时时间，秒为单位
+            syncAllUserSchedule: '*/5 * * * *',          // 全量同步LDAP用户,每5分钟同步一次
+            maxInCache: 10 * 60 * 1000                   // 全量LDAP用户数据在内存中最大时间,应大于同步任务的时间
+        }        
     };
     
 } else {
     module.exports = {
+        dbType: 1,
         dbConf: {
             host: 'db.tars.com',       // 数据库地址
             port: '3306',            // 数据库端口
@@ -97,7 +109,17 @@ if (process.env.NODE_ENV == "dev") {
         },
         infTestConf:{
             benchmarkAdmin:"benchmark.AdminServer.AdminObj"
-        }
+        },
+        ldapConf: {
+            enableLDAP: true,                            // 是否启用LDAP用户登录验证
+            url: 'ldap://ldap.whup.com:10389',           // LDAPServer地址
+            basedn: 'ou=staff,dc=upchina,dc=com',        // LDAP根目录|ou组织单位子目录|dc域名部分dc=upchina,dc=com为upchina.com
+            reconnect: true,
+            timeout: 30000,                              // LDAP创建client请求超时时间
+            timeLimit: 30,                               // LDAPsearch超时时间，秒为单位
+            syncAllUserSchedule: '*/5 * * * *',          // 全量同步LDAP用户,每5分钟同步一次
+            maxInCache: 10 * 60 * 1000                   // 全量LDAP用户数据在内存中最大时间,应大于同步任务的时间
+        }        
     };
 
 }
