@@ -33,27 +33,27 @@
       <!-- let-ui bug，无法动态隐藏一个tab -->
       <let-tabs  v-if="stationMode == 'http'">
         <let-tab-pane :tab="$t('gateway.router.title')">
-          <HttpRouter v-if="viewModal.model" :station="viewModal.model"></HttpRouter>
+          <HttpRouter v-if="viewModal.model" :gatewayObj="gatewayObj" :station="viewModal.model"></HttpRouter>
         </let-tab-pane>
         <let-tab-pane :tab="$t('gateway.flowControl.title')">
-          <FlowControl  v-if="viewModal.model" :station="viewModal.model"></FlowControl>
+          <FlowControl  v-if="viewModal.model" :gatewayObj="gatewayObj" :station="viewModal.model"></FlowControl>
         </let-tab-pane>
         <let-tab-pane :tab="$t('gateway.bwlist.title.black')">
-          <BwList v-if="viewModal.model" :station="viewModal.model" type="black"></BwList>
+          <BwList v-if="viewModal.model" :gatewayObj="gatewayObj" :station="viewModal.model" type="black"></BwList>
         </let-tab-pane>
         <let-tab-pane :tab="$t('gateway.bwlist.title.white')">
-          <BwList v-if="viewModal.model" :station="viewModal.model" type="white"></BwList>
+          <BwList v-if="viewModal.model" :gatewayObj="gatewayObj" :station="viewModal.model" type="white"></BwList>
         </let-tab-pane>
       </let-tabs>
       <let-tabs  v-if="stationMode == 'tars'">
           <let-tab-pane :tab="$t('gateway.flowControl.title')">
-            <FlowControl  v-if="viewModal.model" :station="viewModal.model"></FlowControl>
+            <FlowControl v-if="viewModal.model" :gatewayObj="gatewayObj" :station="viewModal.model"></FlowControl>
           </let-tab-pane>
           <let-tab-pane :tab="$t('gateway.bwlist.title.black')">
-            <BwList v-if="viewModal.model" :station="viewModal.model" type="black"></BwList>
+            <BwList v-if="viewModal.model" :gatewayObj="gatewayObj" :station="viewModal.model" type="black"></BwList>
           </let-tab-pane>
           <let-tab-pane :tab="$t('gateway.bwlist.title.white')">
-            <BwList v-if="viewModal.model" :station="viewModal.model" type="white"></BwList>
+            <BwList v-if="viewModal.model" :gatewayObj="gatewayObj" :station="viewModal.model" type="white"></BwList>
           </let-tab-pane>
       </let-tabs>
       <div slot="foot"></div>
@@ -79,7 +79,7 @@
             pattern="^[a-zA-Z](([a-zA-Z_0-9](?<!obj|Obj))+)?$"
             :pattern-tip="$t('gateway.add.idFormatTips')"
           ></let-input>
-          <ServantSelector  v-if="stationMode=='tars'" v-model="detailModal.model.f_station_id"></ServantSelector>
+          <ServantSelector v-if="stationMode=='tars'" :gatewayObj="gatewayObj" v-model="detailModal.model.f_station_id"></ServantSelector>
         </let-form-item>
         <let-form-item :label="$t('gateway.stationName')" required>
           <let-input
@@ -113,6 +113,12 @@ import ServantSelector from "./components/ServantSelector"
 export default {
   name: 'Station',
   components:{BwList, FlowControl, HttpRouter, ServantSelector},
+  props: {
+    gatewayObj: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       query: {
@@ -140,6 +146,7 @@ export default {
   methods: {
     fetchData() {
       const loading = this.$refs.table.$loading.show();
+      this.query.gatewayObj = this.gatewayObj
       return this.$ajax.getJSON('/server/api/station_list', this.query).then((data) => {
         loading.hide();
         this.items = data;
@@ -189,6 +196,7 @@ export default {
         const url = model.f_id ? '/server/api/update_station' : '/server/api/add_station';
 
         const loading = this.$Loading.show();
+        model.gatewayObj = this.gatewayObj
         this.$ajax.postJSON(url, model).then(() => {
           loading.hide();
           this.$tip.success(this.$t('common.success'));
@@ -202,9 +210,10 @@ export default {
     },
 
     removeItem(d) {
+
       this.$confirm(this.$t('gateway.delete.confirmTips'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/delete_station', { f_id: d.f_id }).then(() => {
+        this.$ajax.postJSON('/server/api/delete_station', { f_id: d.f_id, gatewayObj:this.gatewayObj }).then(() => {
           loading.hide();
           this.fetchData().then(() => {
             this.$tip.success(this.$t('common.success'));
@@ -213,7 +222,7 @@ export default {
           loading.hide();
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
-      }).catch(() => {});
+      }).catch((e) => {   console.error(e)});
     },
   },
 };

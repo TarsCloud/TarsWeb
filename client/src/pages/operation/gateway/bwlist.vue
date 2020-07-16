@@ -40,6 +40,10 @@ export default {
         type: String,
         required: true,
       },
+      gatewayObj: {
+        type: String,
+        required: true
+      }
     },
     data(){
         return {
@@ -52,7 +56,8 @@ export default {
             //const loading = this.$refs.table.$loading.show();
             return this.$ajax.getJSON('/server/api/bwlist', {
                 f_station_id: this.station.f_station_id,
-                type: this.type
+                type: this.type,
+                gatewayObj: this.gatewayObj
             }).then((data) => {
                 //loading.hide();
                 this.items = data;
@@ -69,6 +74,7 @@ export default {
 
                 const url ='/server/api/add_bwlist';
                 const loading = this.$Loading.show();
+                model.gatewayObj = this.gatewayObj
                 this.$ajax.postJSON(url, model).then(() => {
                 loading.hide();
 
@@ -84,7 +90,7 @@ export default {
         removeItem(d){
             this.$confirm(this.$t('gateway.delete.bwListConfirmTips'), this.$t('common.alert')).then(() => {
                 const loading = this.$Loading.show();
-                this.$ajax.postJSON('/server/api/delete_bwlist', { f_id: d.f_id, type: this.type }).then(() => {
+                this.$ajax.postJSON('/server/api/delete_bwlist', { f_id: d.f_id, type: this.type,gatewayObj:this.gatewayObj }).then(() => {
                     loading.hide();
                     this.fetchData().then(() => {
                         this.$tip.success(this.$t('common.success'));

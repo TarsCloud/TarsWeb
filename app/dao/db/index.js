@@ -28,7 +28,7 @@ const logger = require('../../logger');
 
 let Db = {};
 
-let databases = ['db_tars', 'db_tars_web', 'db_base'];
+let databases = ['db_tars', 'db_tars_web'];
 
 databases.forEach((database) => {
 	let {
@@ -89,6 +89,7 @@ databases.forEach((database) => {
 	Db[database] = tableObj;
 	Db[database].sequelize = sequelize;
 });
+
 
 
 module.exports = Db;

@@ -894,6 +894,8 @@
     "fusingOn":"FusingOn",
     "fusingOff":"FusingOff",
     "lastUpdate":"Update Time",
+    "gatewayObj":"GatewayFlowControlObj",
+    "switchGateway":"Switch Gateway",
     "btn":{
       "addGateway": "Add Gateway",
       "addUpstream": "Add Upstream",

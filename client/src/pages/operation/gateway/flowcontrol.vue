@@ -36,6 +36,10 @@ export default {
       station: {
         type: Object,
         required: true,
+      },
+      gatewayObj: {
+        type: String,
+        required: true
       }
     },
     data(){
@@ -48,7 +52,8 @@ export default {
         fetchData() {
             //const loading = this.$Loading.show();
             return this.$ajax.getJSON('/server/api/get_flowcontrol', {
-                f_station_id: this.station.f_station_id
+                f_station_id: this.station.f_station_id,
+                gatewayObj: this.gatewayObj
             }).then((data) => {
                 //loading.hide();
                 this.form = data.f_duration ? data: {f_duration: 60, f_max_flow: 0};
@@ -64,6 +69,7 @@ export default {
 
                 const url ='/server/api/upsert_flowcontrol';
                 const loading = this.$Loading.show();
+                model.gatewayObj = this.gatewayObj
                 this.$ajax.postJSON(url, model).then(() => {
                 loading.hide();
                 this.$tip.success(this.$t('common.success'));

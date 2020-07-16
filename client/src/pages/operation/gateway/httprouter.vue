@@ -45,15 +45,24 @@
           <let-radio v-model="proxypassMode" label="ipport">ip:port</let-radio>
           <let-radio v-model="proxypassMode" label="upstream">upstream</let-radio>
           <let-radio v-model="proxypassMode" label="tars">tars</let-radio>
-          <let-input v-if="proxypassMode == 'ipport'"
-            size="small"
-            v-model="detailModal.model.f_proxy_pass"
-            :placeholder="$t('gateway.add.proxyPassTip')"
-            pattern="^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d):\d+$"
-            required
-            :required-tip="$t('gateway.add.proxyPassTip')"
-            :pattern-tip="$t('gateway.add.proxyPassTip')"
-          ></let-input>
+          <div v-if="proxypassMode == 'ipport'" class="set_upstream">
+            <let-input
+              size="small"
+              v-model="detailModal.model.f_proxy_pass"
+              :placeholder="$t('gateway.add.proxyPassTip')"
+              pattern="^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d):\d+$"
+              required
+              :required-tip="$t('gateway.add.proxyPassTip')"
+              :pattern-tip="$t('gateway.add.proxyPassTip')"
+            ></let-input>
+            <let-input
+                size="small"
+                v-model="detailModal.model.f_proxy_pass_path"
+                placeholder="/some/path"
+                pattern="^\/"
+                pattern-tip="/some/path"
+              ></let-input>
+          </div>
           <div v-if="proxypassMode=='upstream'" class="set_upstream">
             <let-select size="small" v-model="detailModal.model.f_proxy_pass_upstream" filterable>
               <let-option v-for="d in upstreams" :key="d" :value="d"> {{d}} </let-option>
@@ -66,7 +75,7 @@
               pattern-tip="/some/path"
             ></let-input>
           </div>
-          <ServantSelector  v-if="proxypassMode=='tars' && detailModal.model" v-model="detailModal.model.f_proxy_pass"></ServantSelector>
+          <ServantSelector  v-if="proxypassMode=='tars' && detailModal.model" v-model="detailModal.model.f_proxy_pass" :gatewayObj="gatewayObj" ></ServantSelector>
         </let-form-item>
       </let-form>
     </let-modal>
@@ -77,7 +86,7 @@
 import ServantSelector from "./components/ServantSelector"
 
 const TARS_REG = /(obj|Obj)$/
-const IP_PORT = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d):\d+$/
+const IP_PORT = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d):\d+/
 const HTTP_PREFIX = /^http:\/\//
 export default {
   name: 'HttpRouter',
@@ -86,6 +95,10 @@ export default {
     station: {
       type: Object,
       required: true,
+    },
+    gatewayObj: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -110,7 +123,7 @@ export default {
   methods: {
     fetchData() {
       const loading = this.$refs.table.$loading.show();
-      return this.$ajax.getJSON('/server/api/httprouter_list', {f_station_id: this.station.f_station_id}).then((data) => {
+      return this.$ajax.getJSON('/server/api/httprouter_list', {f_station_id: this.station.f_station_id, gatewayObj: this.gatewayObj}).then((data) => {
         loading.hide();
         this.items = data;
       }).catch((err) => {
@@ -119,7 +132,7 @@ export default {
       });
     },
     fetchUpstreams(){
-      return this.$ajax.getJSON('/server/api/upstream_list').then((data) => {
+      return this.$ajax.getJSON('/server/api/upstream_list', {gatewayObj: this.gatewayObj}).then((data) => {
         let upstreams = data.map((item)=>{
           return item.f_upstream
         })
@@ -164,6 +177,10 @@ export default {
         this.$nextTick(()=>{
           document.querySelector(".set_upstream .let-select__filter__input").value = d.f_proxy_pass_upstream
         })
+      } else if(this.proxypassMode == "ipport"){
+        let [ipport, f_proxy_pass_path] = d.f_proxy_pass.split("/")
+        d.f_proxy_pass = ipport
+        d.f_proxy_pass_path = "/" + (f_proxy_pass_path||"")
       }
     },
     setProxypassMode(d){
@@ -188,11 +205,14 @@ export default {
           let iptValue = document.querySelector(".set_upstream .let-select__filter__input").value.trim()
           params.f_proxy_pass_upstream = iptValue
           params.f_proxy_pass = `${params.f_proxy_pass_upstream}${params.f_proxy_pass_path || ""}`
+        } else if(this.proxypassMode == "ipport"){
+          params.f_proxy_pass = `${params.f_proxy_pass}${params.f_proxy_pass_path || ""}`
         }
         //添加http前缀
         if(!HTTP_PREFIX.test(params.f_proxy_pass)){
           params.f_proxy_pass = "http://" + params.f_proxy_pass
         }
+        params.gatewayObj = this.gatewayObj
         this.$ajax.postJSON(url, params).then(() => {
           loading.hide();
           this.$tip.success(this.$t('common.success'));
@@ -208,7 +228,7 @@ export default {
     removeItem(d) {
       this.$confirm(this.$t('gateway.delete.confirmTips'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/delete_httprouter', { f_id: d.f_id }).then(() => {
+        this.$ajax.postJSON('/server/api/delete_httprouter', { f_id: d.f_id, gatewayObj: this.gatewayObj }).then(() => {
           loading.hide();
           this.fetchData().then(() => {
             this.$tip.success(this.$t('common.success'));

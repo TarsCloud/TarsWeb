@@ -94,6 +94,17 @@ CREATE TABLE `t_tars_files` (
   PRIMARY KEY (`server_name`,`file_name`),
   UNIQUE KEY `f_id` (`f_id`) USING BTREE
 ) ENGINE=InnoDB CHARSET=utf8 COMMENT='接口测试tars文件表';
+
+DROP TABLE IF EXISTS `t_gateway_obj`;
+CREATE TABLE `t_gateway_obj` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `update_person` varchar(64) NOT NULL DEFAULT '',
+  `posttime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `obj` varchar(128) NOT NULL DEFAULT '',
+  UNIQUE KEY `column` (`id`),
+  UNIQUE KEY `t_gateway_obj_obj` (`obj`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='网关控制obj记录表';
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

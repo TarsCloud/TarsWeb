@@ -83,6 +83,12 @@
 <script>
 export default {
   name: 'Upstream',
+  props: {
+    gatewayObj: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       query: {
@@ -104,6 +110,7 @@ export default {
   methods: {
     fetchData() {
       const loading = this.$refs.table.$loading.show();
+      this.query.gatewayObj = this.gatewayObj
       return this.$ajax.getJSON('/server/api/upstream_list', this.query).then((data) => {
         loading.hide();
         this.items = data;
@@ -148,6 +155,7 @@ export default {
         const url = model.f_id ? '/server/api/update_upstream' : '/server/api/add_upstream';
 
         const loading = this.$Loading.show();
+        model.gatewayObj = this.gatewayObj
         this.$ajax.postJSON(url, model).then(() => {
           loading.hide();
           this.$tip.success(this.$t('common.success'));
@@ -163,7 +171,7 @@ export default {
     removeItem(d) {
       this.$confirm(this.$t('gateway.delete.upstreamConfirmTips'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/delete_upstream', { f_id: d.f_id }).then(() => {
+        this.$ajax.postJSON('/server/api/delete_upstream', { f_id: d.f_id, gatewayObj: this.gatewayObj }).then(() => {
           loading.hide();
           this.fetchData().then(() => {
             this.$tip.success(this.$t('common.success'));

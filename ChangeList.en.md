@@ -1,3 +1,7 @@
+## 20200717(2.4.7)
+- add multi-gateway configuration feature
+- add path input when adding router in gateway station
+
 ## 20200703(2.4.6)
 - fix strict mode, tarslog transfer deploy bug
 - edit servant obj, obj name can not has digit bug

@@ -16,6 +16,7 @@
 
 const logger = require('../../logger');
 const GatewayService = require('../../service/gateway/GatewayService');
+const gatewayObjManager = require('../../service/gateway/GatewayObjManager');
 const AuthService = require('../../service/auth/AuthService');
 
 const _ = require('lodash');
@@ -85,12 +86,28 @@ async function getFilterUid(ctx){
 
 const GatewayController = {};
 
+//新增gatewayObj
+GatewayController.addGatewayObj = async(ctx)=>{
+	//此接口必须附带gatewayObj，中间件中会判断obj是否合法，合法则写入db，请求到达此处时已经新增成功
+	ctx.makeResObj(200, '')
+}
+//获取gatewayObj list
+GatewayController.getGatewayObjList = async(ctx)=>{
+	let objs = await gatewayObjManager.getGatewayObjList()
+	ctx.makeResObj(200, '', objs)
+}
+//删除gatewayObj
+GatewayController.deleteGatewayObj = async(ctx)=>{
+	let objs = await gatewayObjManager.deleteGatewayObj(ctx.uid, ctx.paramsObj.gatewayObj)
+	ctx.makeResObj(200, '', objs)
+}
+
 GatewayController.getStationList = async (ctx) => {
 	try {
 		let f_station_id = ctx.paramsObj.f_station_id || '';
 		let f_name_cn = ctx.paramsObj.f_name_cn || '';
 		let filter_uid = await getFilterUid(ctx)
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getStationList(f_station_id, f_name_cn, filter_uid), stationStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getStationList(ctx.dbObj, f_station_id, f_name_cn, filter_uid), stationStruct));
 	} catch (e) {
 		logger.error('[getStationList]', e, ctx);
 		ctx.makeErrResObj();
@@ -101,7 +118,7 @@ GatewayController.addStation = async (ctx) => {
 	try {
 		let params = ctx.paramsObj;
 		params.uid = ctx.uid
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.addStation(params), stationStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.addStation(ctx.dbObj, params), stationStruct));
 	} catch (e) {
 		logger.error('[addStation]', e, ctx);
 		if(e.name == "SequelizeUniqueConstraintError"){
@@ -118,8 +135,8 @@ GatewayController.updateStation = async (ctx) => {
 		params.uid = ctx.uid
 		let filter_uid = await getFilterUid(ctx)
 		params.filter_uid = filter_uid
-		await GatewayService.updateStation(params);
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getStationById(params.f_id), stationStruct));
+		await GatewayService.updateStation(ctx.dbObj, params);
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getStationById(ctx.dbObj, params.f_id), stationStruct));
 	} catch (e) {
 		logger.error('[updateStation]', e, ctx);
 		ctx.makeErrResObj();
@@ -130,7 +147,7 @@ GatewayController.deleteStation = async (ctx) => {
 	try {
 		let f_id = ctx.paramsObj.f_id;
 		let filter_uid = await getFilterUid(ctx)
-		await GatewayService.deleteStation(f_id, filter_uid);
+		await GatewayService.deleteStation(ctx.dbObj, f_id, filter_uid);
 		ctx.makeResObj(200, '', [f_id]);
 	} catch (e) {
 		logger.error('[deleteStation]', e, ctx);
@@ -142,7 +159,7 @@ GatewayController.getUpstreamList = async (ctx) => {
 	try {
 		let f_upstream = ctx.paramsObj.f_upstream || '';
 		let filter_uid = await getFilterUid(ctx)
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getUpstreamList(f_upstream, filter_uid), upstreamStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getUpstreamList(ctx.dbObj, f_upstream, filter_uid), upstreamStruct));
 	} catch (e) {
 		logger.error('[getUpstreamList]', e, ctx);
 		ctx.makeErrResObj();
@@ -153,7 +170,7 @@ GatewayController.addUpstream = async (ctx) => {
 	try {
 		let params = ctx.paramsObj;
 		params.uid = ctx.uid
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.addUpstream(params), upstreamStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.addUpstream(ctx.dbObj, params), upstreamStruct));
 	} catch (e) {
 		logger.error('[addUpstream]', e, ctx);
 		ctx.makeErrResObj();
@@ -166,8 +183,8 @@ GatewayController.updateUpstream = async (ctx) => {
 		params.uid = ctx.uid
 		let filter_uid = await getFilterUid(ctx)
 		params.filter_uid = filter_uid
-		await GatewayService.updateUpstream(params);
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getUpstreamById(params.f_id), upstreamStruct));
+		await GatewayService.updateUpstream(ctx.dbObj, params);
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getUpstreamById(ctx.dbObj, params.f_id), upstreamStruct));
 	} catch (e) {
 		logger.error('[updateUpstream]', e, ctx);
 		ctx.makeErrResObj();
@@ -178,7 +195,7 @@ GatewayController.deleteUpstream = async (ctx) => {
 	try {
 		let f_id = ctx.paramsObj.f_id;
 		let filter_uid = await getFilterUid(ctx)
-		let deleteNum = await GatewayService.deleteUpstream(f_id, filter_uid);
+		let deleteNum = await GatewayService.deleteUpstream(ctx.dbObj, f_id, filter_uid);
 		if(deleteNum == 1){
 			ctx.makeResObj(200, '', [f_id]);
 		} else {
@@ -194,7 +211,7 @@ GatewayController.getHttpRouterList = async (ctx) => {
 	try {
 		let f_station_id = ctx.paramsObj.f_station_id || '';
 		let filter_uid = await getFilterUid(ctx)
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getHttpRouterList(f_station_id, filter_uid), httpRouterStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getHttpRouterList(ctx.dbObj, f_station_id, filter_uid), httpRouterStruct));
 	} catch (e) {
 		logger.error('[getHttpRouterList]', e, ctx);
 		ctx.makeErrResObj();
@@ -207,10 +224,14 @@ GatewayController.addHttpRouter = async (ctx) => {
 		params.uid = ctx.uid
 		let filter_uid = await getFilterUid(ctx)
 		params.filter_uid = filter_uid
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.addHttpRouter(params), httpRouterStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.addHttpRouter(ctx.dbObj, params), httpRouterStruct));
 	} catch (e) {
 		logger.error('[addHttpRouter]', e, ctx);
-		ctx.makeErrResObj();
+		if(e.name == "SequelizeUniqueConstraintError"){
+			ctx.makeResObj(400, "#common.mustUnique#");
+		} else {
+			ctx.makeErrResObj();
+		}
 	}
 };
 
@@ -219,9 +240,9 @@ GatewayController.updateHttpRouter = async (ctx) => {
 		let params = ctx.paramsObj;
 		params.uid = ctx.uid
 		let filter_uid = await getFilterUid(ctx)
-		params.uid = filter_uid
-		await GatewayService.updateHttpRouter(params);
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getHttpRouterById(params.f_id), httpRouterStruct));
+		params.filter_uid = filter_uid
+		await GatewayService.updateHttpRouter(ctx.dbObj, params);
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getHttpRouterById(ctx.dbObj, params.f_id), httpRouterStruct));
 	} catch (e) {
 		logger.error('[updateHttpRouter]', e, ctx);
 		ctx.makeErrResObj();
@@ -232,7 +253,7 @@ GatewayController.deleteHttpRouter = async (ctx) => {
 	try {
 		let f_id = ctx.paramsObj.f_id;
 		let filter_uid = await getFilterUid(ctx)
-		await GatewayService.deleteHttpRouter(f_id, filter_uid);
+		await GatewayService.deleteHttpRouter(ctx.dbObj, f_id, filter_uid);
 		ctx.makeResObj(200, '', [f_id]);
 	} catch (e) {
 		logger.error('[deleteHttpRouter]', e, ctx);
@@ -247,7 +268,7 @@ GatewayController.addBWList = async (ctx) => {
 		params.f_station_id = params.f_station_id || ''
 		let filter_uid = await getFilterUid(ctx)
 		params.filter_uid = filter_uid
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.addBWList(params, params.type), bwListStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.addBWList(ctx.dbObj, params, params.type), bwListStruct));
 	} catch (e) {
 		logger.error('[addBWList]', e, ctx);
 		if(e.name == "SequelizeUniqueConstraintError"){
@@ -263,7 +284,7 @@ GatewayController.getBWList = async (ctx) => {
 		let f_station_id = ctx.paramsObj.f_station_id || '';
 		let type = ctx.paramsObj.type || '';
 		let filter_uid = await getFilterUid(ctx)
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getBWList(f_station_id, type, filter_uid), bwListStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getBWList(ctx.dbObj, f_station_id, type, filter_uid), bwListStruct));
 	} catch (e) {
 		logger.error('[getBWList]', e, ctx);
 		ctx.makeErrResObj();
@@ -275,7 +296,7 @@ GatewayController.deleteBWList = async (ctx) => {
 		let f_id = ctx.paramsObj.f_id;
 		let type = ctx.paramsObj.type || '';
 		let filter_uid = await getFilterUid(ctx)
-		await GatewayService.deleteBWList(f_id, type, filter_uid);
+		await GatewayService.deleteBWList(ctx.dbObj, f_id, type, filter_uid);
 		ctx.makeResObj(200, '', [f_id]);
 	} catch (e) {
 		logger.error('[deleteBWList]', e, ctx);
@@ -287,7 +308,7 @@ GatewayController.getFlowControl = async (ctx) => {
 	try {
 		let f_station_id = ctx.paramsObj.f_station_id || '';
 		let filter_uid = await getFilterUid(ctx)
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getFlowControl(f_station_id, filter_uid), flowControlStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.getFlowControl(ctx.dbObj, f_station_id, filter_uid), flowControlStruct));
 	} catch (e) {
 		logger.error('[getFlowControl]', e, ctx);
 		ctx.makeErrResObj();
@@ -300,7 +321,7 @@ GatewayController.upsertFlowControl = async (ctx) => {
 		params.uid = ctx.uid
 		let filter_uid = await getFilterUid(ctx)
 		params.filter_uid = filter_uid
-		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.upsertFlowControl(params), flowControlStruct));
+		ctx.makeResObj(200, '', util.viewFilter(await GatewayService.upsertFlowControl(ctx.dbObj, params), flowControlStruct));
 	} catch (e) {
 		logger.error('[upsertFlowControl]', e, ctx);
 		ctx.makeErrResObj();

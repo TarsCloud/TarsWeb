@@ -920,6 +920,8 @@
     "fusingOn":"开启",
     "fusingOff":"关闭",
     "lastUpdate":"更新时间",
+    "gatewayObj":"网关控制服务Obj",
+    "switchGateway":"切换网关",
     "btn":{
       "addGateway": "新增站点",
       "addUpstream": "新增Upstream",

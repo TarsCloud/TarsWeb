@@ -19,7 +19,11 @@ export default {
         event: "input"
     },
     props:{
-        servant: String
+        servant: String,
+        gatewayObj: {
+            type: String,
+            required: true
+        }
     },
     data(){
         return {
@@ -76,6 +80,7 @@ export default {
             }
         },
         getCascadeSelectServer(params, prefix = this.$t('common.error')) {
+            params.gatewayObj = this.gatewayObj
             return this.$ajax.getJSON('/server/api/cascade_select_server', params).then(data => data).catch((err) => {
                 this.$tip.error(`${prefix}: ${err.message || err.err_msg}`);
             });

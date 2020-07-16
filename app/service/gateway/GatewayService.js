@@ -20,69 +20,69 @@ const util = require('../../tools/util');
 const GatewayService = {};
 
 
-GatewayService.getStationList = async (f_station_id, f_name_cn, filter_uid) => {
-	return await GatewayDao.getStationList(f_station_id, f_name_cn, filter_uid);
+GatewayService.getStationList = async (dbObj, f_station_id, f_name_cn, filter_uid) => {
+	return await GatewayDao.getStationList(dbObj,f_station_id, f_name_cn, filter_uid);
 };
-GatewayService.addStation = async (params) => {
-	return await GatewayDao.addStation(params);
+GatewayService.addStation = async (dbObj,params) => {
+	return await GatewayDao.addStation(dbObj,params);
 };
-GatewayService.updateStation = async (params) => {
-	return await GatewayDao.updateStation(params);
+GatewayService.updateStation = async (dbObj,params) => {
+	return await GatewayDao.updateStation(dbObj,params);
 };
-GatewayService.deleteStation = async (f_id, filter_uid) => {
-	return await GatewayDao.deleteStation(f_id, filter_uid);
+GatewayService.deleteStation = async (dbObj,f_id, filter_uid) => {
+	return await GatewayDao.deleteStation(dbObj,f_id, filter_uid);
 };
-GatewayService.getStationById = async (f_id, filter_uid) => {
-	return await GatewayDao.getStationById(f_id, filter_uid);
-};
-
-GatewayService.getUpstreamList = async (f_upstream, filter_uid) => {
-	return await GatewayDao.getUpstreamList(f_upstream, filter_uid);
-};
-GatewayService.addUpstream = async (params) => {
-	return await GatewayDao.addUpstream(params);
-};
-GatewayService.updateUpstream = async (params) => {
-	return await GatewayDao.updateUpstream(params);
-};
-GatewayService.deleteUpstream = async (f_id, filter_uid) => {
-	return await GatewayDao.deleteUpstream(f_id, filter_uid);
-};
-GatewayService.getUpstreamById = async (f_id, filter_uid) => {
-	return await GatewayDao.getUpstreamById(f_id, filter_uid);
+GatewayService.getStationById = async (dbObj,f_id, filter_uid) => {
+	return await GatewayDao.getStationById(dbObj,f_id, filter_uid);
 };
 
-GatewayService.getHttpRouterList = async (f_station_id, filter_uid) => {
-	return await GatewayDao.getHttpRouterList(f_station_id, filter_uid);
+GatewayService.getUpstreamList = async (dbObj,f_upstream, filter_uid) => {
+	return await GatewayDao.getUpstreamList(dbObj,f_upstream, filter_uid);
 };
-GatewayService.addHttpRouter = async (params) => {
+GatewayService.addUpstream = async (dbObj,params) => {
+	return await GatewayDao.addUpstream(dbObj,params);
+};
+GatewayService.updateUpstream = async (dbObj,params) => {
+	return await GatewayDao.updateUpstream(dbObj,params);
+};
+GatewayService.deleteUpstream = async (dbObj,f_id, filter_uid) => {
+	return await GatewayDao.deleteUpstream(dbObj,f_id, filter_uid);
+};
+GatewayService.getUpstreamById = async (dbObj,f_id, filter_uid) => {
+	return await GatewayDao.getUpstreamById(dbObj,f_id, filter_uid);
+};
+
+GatewayService.getHttpRouterList = async (dbObj,f_station_id, filter_uid) => {
+	return await GatewayDao.getHttpRouterList(dbObj,f_station_id, filter_uid);
+};
+GatewayService.addHttpRouter = async (dbObj,params) => {
 	params.f_server_name = params.f_server_name || "";
-	return await GatewayDao.addHttpRouter(params);
+	return await GatewayDao.addHttpRouter(dbObj,params);
 };
-GatewayService.updateHttpRouter = async (params) => {
+GatewayService.updateHttpRouter = async (dbObj,params) => {
 	params.f_server_name = params.f_server_name || "";
-	return await GatewayDao.updateHttpRouter(params);
+	return await GatewayDao.updateHttpRouter(dbObj,params);
 };
-GatewayService.deleteHttpRouter = async (f_id, filter_uid) => {
-	return await GatewayDao.deleteHttpRouter(f_id, filter_uid);
+GatewayService.deleteHttpRouter = async (dbObj,f_id, filter_uid) => {
+	return await GatewayDao.deleteHttpRouter(dbObj,f_id, filter_uid);
 };
-GatewayService.getHttpRouterById = async (f_id, filter_uid) => {
-	return await GatewayDao.getHttpRouterById(f_id, filter_uid);
+GatewayService.getHttpRouterById = async (dbObj,f_id, filter_uid) => {
+	return await GatewayDao.getHttpRouterById(dbObj,f_id, filter_uid);
 };
 
-GatewayService.addBWList = async (params, type, filter_uid) => {
-	return await GatewayDao.addBWList(params, type, filter_uid);	
+GatewayService.addBWList = async (dbObj,params, type, filter_uid) => {
+	return await GatewayDao.addBWList(dbObj,params, type, filter_uid);	
 }
-GatewayService.getBWList = async (f_station_id, type, filter_uid) => {
-	return await GatewayDao.getBWList(f_station_id, type, filter_uid);
+GatewayService.getBWList = async (dbObj,f_station_id, type, filter_uid) => {
+	return await GatewayDao.getBWList(dbObj,f_station_id, type, filter_uid);
 };
-GatewayService.deleteBWList = async (f_id, type, filter_uid) => {
-	return await GatewayDao.deleteBWList(f_id, type, filter_uid);
+GatewayService.deleteBWList = async (dbObj,f_id, type, filter_uid) => {
+	return await GatewayDao.deleteBWList(dbObj,f_id, type, filter_uid);
 };
-GatewayService.getFlowControl = async (f_station_id, filter_uid) => {
-	return await GatewayDao.getFlowControl(f_station_id, filter_uid);
+GatewayService.getFlowControl = async (dbObj,f_station_id, filter_uid) => {
+	return await GatewayDao.getFlowControl(dbObj,f_station_id, filter_uid);
 };
-GatewayService.upsertFlowControl = async (params) => {
-	return await GatewayDao.upsertFlowControl(params);
+GatewayService.upsertFlowControl = async (dbObj,params) => {
+	return await GatewayDao.upsertFlowControl(dbObj,params);
 };
 module.exports = GatewayService;

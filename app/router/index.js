@@ -19,7 +19,7 @@ const Router = require('koa-router');
 const _ = require('lodash');
 const noCacheMidware = require('../midware/noCacheMidware');
 const {paramsDealMidware, paramsCheckMidware} = require('../midware/paramsMidware');
-const path = require('path');
+const gatewayDaoMidware = require('../midware/gatewayDaoMidware');
 
 //获取路由
 const getRouter = (router, routerConf) => {
@@ -30,7 +30,7 @@ const getRouter = (router, routerConf) => {
 		router[method](url, paramsDealMidware(validParams));    //上下文入参出参处理中间件
 		router[method](url, paramsCheckMidware(checkRule));   //参数校验中间件
 		router[method](url, noCacheMidware);       //禁用缓存中间件
-
+		router[method](url, gatewayDaoMidware);	   //网关配置db获取中间件，非网关路由不做任何事情
 		//业务逻辑控制器
 		router[method](url, async (ctx, next) => {
 			await controller.call({}, ctx);

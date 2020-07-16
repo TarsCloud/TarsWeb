@@ -14,7 +14,8 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const {tProfileTemplate, tStation, tUpstream, tHttpRouter, tFlowControl, tBlacklist, tWhitelist, sequelize:seq} = require('./db').db_base;
+//const {tStation, tUpstream, tHttpRouter, tFlowControl, tBlacklist, tWhitelist, sequelize:seq} = require('./db').db_base;
+const {tGatewayObj} = require('./db').db_tars_web;
 const Sequelize = require('sequelize');
 
 const GatewayDao = {};
@@ -39,8 +40,34 @@ class UidFilter{
 		return !!station
 	}
 }
+//添加/更新gatewayObj
+GatewayDao.upsertGatewayObj = async(user, gatewayObj)=>{
+	return await tGatewayObj.upsert({
+		obj: gatewayObj,
+		update_person: user
+	})
+}
+//删除gatewayObj
+GatewayDao.deleteGatewayObj = async(user, gatewayObj)=>{
+	return await tGatewayObj.destroy({
+		where:{
+			obj: gatewayObj,
+			update_person: user
+		}
+	})
+}
+//获取gatewayObj列表
+GatewayDao.getGatewayObjList = async ()=>{
+	let rows =  await tGatewayObj.findAll({
+		attributes:["obj"]
+	})
+	return rows.map((row)=>{
+		return row.obj
+	})
+}
 
-GatewayDao.addStation = async (params) => {
+GatewayDao.addStation = async (dbObj, params) => {
+	let {tStation} = dbObj
 	return await tStation.create({
 		f_station_id: params.f_station_id,
 		f_name_cn: params.f_name_cn,
@@ -49,7 +76,8 @@ GatewayDao.addStation = async (params) => {
 	});
 };
 
-GatewayDao.updateStation = async (params) => {
+GatewayDao.updateStation = async (dbObj, params) => {
+	let {tStation} = dbObj
 	let filter = new UidFilter(params.filter_uid)
 	return await tStation.update({
 		f_station_id: params.f_station_id,
@@ -63,7 +91,8 @@ GatewayDao.updateStation = async (params) => {
 	});
 };
 
-GatewayDao.deleteStation = async (f_id, filter_uid) => {
+GatewayDao.deleteStation = async (dbObj, f_id, filter_uid) => {
+	let {tStation, tHttpRouter, tFlowControl, tBlacklist, tWhitelist, seq} = dbObj
 	let transaction = await seq.transaction()
 	try{
 		let filter = new UidFilter(filter_uid)
@@ -94,7 +123,8 @@ GatewayDao.deleteStation = async (f_id, filter_uid) => {
 	}	
 };
 
-GatewayDao.getStationById = async (f_id, filter_uid) => {
+GatewayDao.getStationById = async (dbObj, f_id, filter_uid) => {
+	let {tStation} = dbObj
 	let filter = new UidFilter(filter_uid)
 	return await tStation.findOne({
 		where: filter.where({
@@ -104,7 +134,8 @@ GatewayDao.getStationById = async (f_id, filter_uid) => {
 	});
 };
 
-GatewayDao.getStationList = async (f_station_id, f_name_cn, filter_uid) => {
+GatewayDao.getStationList = async (dbObj, f_station_id, f_name_cn, filter_uid) => {
+	let {tStation} = dbObj
 	let filter = new UidFilter(filter_uid)
 	return await tStation.findAll({
 		where: filter.where({
@@ -119,7 +150,8 @@ GatewayDao.getStationList = async (f_station_id, f_name_cn, filter_uid) => {
 	});
 };
 
-GatewayDao.addUpstream = async (params) => {
+GatewayDao.addUpstream = async (dbObj, params) => {
+	let {tUpstream} = dbObj
 	return await tUpstream.create({
 		f_upstream: params.f_upstream,
 		f_addr: params.f_addr,
@@ -129,7 +161,8 @@ GatewayDao.addUpstream = async (params) => {
 	});
 };
 
-GatewayDao.updateUpstream = async (params) => {
+GatewayDao.updateUpstream = async (dbObj, params) => {
+	let {tUpstream} = dbObj
 	let filter = new UidFilter(params.filter_uid)
 	return await tUpstream.update({
 		f_upstream: params.f_upstream,
@@ -144,7 +177,8 @@ GatewayDao.updateUpstream = async (params) => {
 	});
 };
 
-GatewayDao.deleteUpstream = async (f_id, filter_uid) => {
+GatewayDao.deleteUpstream = async (dbObj, f_id, filter_uid) => {
+	let {tUpstream,  tHttpRouter} = dbObj
 	try{
 		let filter = new UidFilter(filter_uid)
 		let upstream = await tUpstream.findOne({where:filter.where({f_id: f_id, f_valid: 1})})
@@ -169,7 +203,8 @@ GatewayDao.deleteUpstream = async (f_id, filter_uid) => {
 	}	
 };
 
-GatewayDao.getUpstreamById = async (f_id, filter_uid) => {
+GatewayDao.getUpstreamById = async (dbObj, f_id, filter_uid) => {
+	let {tUpstream} = dbObj
 	let filter = new UidFilter(filter_uid)
 	return await tUpstream.findOne({
 		where: filter.where({
@@ -179,7 +214,8 @@ GatewayDao.getUpstreamById = async (f_id, filter_uid) => {
 	});
 };
 
-GatewayDao.getUpstreamList = async (f_upstream, filter_uid) => {
+GatewayDao.getUpstreamList = async (dbObj, f_upstream, filter_uid) => {
+	let {tUpstream} = dbObj
 	let filter = new UidFilter(filter_uid)
 	return await tUpstream.findAll({
 		where: filter.where({
@@ -191,7 +227,8 @@ GatewayDao.getUpstreamList = async (f_upstream, filter_uid) => {
 	});
 };
 
-GatewayDao.addHttpRouter = async (params) => {
+GatewayDao.addHttpRouter = async (dbObj, params) => {
+	let {tHttpRouter} = dbObj
 	//判断是否有权限操作站点
 	if(params.f_station_id){
 		let filter = new UidFilter(params.filter_uid)
@@ -207,7 +244,8 @@ GatewayDao.addHttpRouter = async (params) => {
 	});
 };
 
-GatewayDao.updateHttpRouter = async (params) => {
+GatewayDao.updateHttpRouter = async (dbObj, params) => {
+	let {tHttpRouter} = dbObj
 	let filter = new UidFilter(params.filter_uid)
 	return await tHttpRouter.update({
 		f_station_id: params.f_station_id,
@@ -222,7 +260,8 @@ GatewayDao.updateHttpRouter = async (params) => {
 	});
 };
 
-GatewayDao.deleteHttpRouter = async (f_id, filter_uid) => {
+GatewayDao.deleteHttpRouter = async (dbObj, f_id, filter_uid) => {
+	let {tHttpRouter} = dbObj
 	let filter = new UidFilter(filter_uid)
 	try{
 		await tHttpRouter.update({f_valid: 0},{
@@ -235,7 +274,8 @@ GatewayDao.deleteHttpRouter = async (f_id, filter_uid) => {
 		return 0
 	}	
 };
-GatewayDao.getHttpRouterById = async (f_id, filter_uid) => {
+GatewayDao.getHttpRouterById = async (dbObj, f_id, filter_uid) => {
+	let {tHttpRouter} = dbObj
 	let filter = new UidFilter(filter_uid)
 	return await tHttpRouter.findOne({
 		where: filter.where({
@@ -245,7 +285,8 @@ GatewayDao.getHttpRouterById = async (f_id, filter_uid) => {
 	});
 };
 
-GatewayDao.getHttpRouterList = async (f_station_id, filter_uid) => {
+GatewayDao.getHttpRouterList = async (dbObj, f_station_id, filter_uid) => {
+	let {tHttpRouter} = dbObj
 	let filter = new UidFilter(filter_uid)
 	return await tHttpRouter.findAll({
 		where: filter.where({
@@ -255,7 +296,8 @@ GatewayDao.getHttpRouterList = async (f_station_id, filter_uid) => {
 	});
 };
 
-GatewayDao.addBWList = async(params, type) => {
+GatewayDao.addBWList = async(dbObj, params, type) => {
+	let {tBlacklist, tWhitelist} = dbObj
 	let model = type == "black" ? tBlacklist : tWhitelist
 	//判断是否有权限操作站点
 	if(params.f_station_id){
@@ -271,7 +313,8 @@ GatewayDao.addBWList = async(params, type) => {
 	});
 }
 
-GatewayDao.getBWList = async(f_station_id, type, filter_uid) => {
+GatewayDao.getBWList = async(dbObj, f_station_id, type, filter_uid) => {
+	let {tBlacklist, tWhitelist} = dbObj
 	let filter = new UidFilter(filter_uid)
 	let model = type == "black" ? tBlacklist : tWhitelist
 	return await model.findAll({
@@ -282,7 +325,8 @@ GatewayDao.getBWList = async(f_station_id, type, filter_uid) => {
 	})
 }
 
-GatewayDao.deleteBWList = async(f_id, type, filter_uid) => {
+GatewayDao.deleteBWList = async(dbObj, f_id, type, filter_uid) => {
+	let {tBlacklist, tWhitelist} = dbObj
 	let filter = new UidFilter(filter_uid)
 	let model = type == "black" ? tBlacklist : tWhitelist
 	return await model.update({
@@ -293,7 +337,8 @@ GatewayDao.deleteBWList = async(f_id, type, filter_uid) => {
 	})})
 }
 
-GatewayDao.getFlowControl = async(f_station_id, filter_uid) => {
+GatewayDao.getFlowControl = async(dbObj, f_station_id, filter_uid) => {
+	let {tFlowControl} = dbObj
 	let filter = new UidFilter(filter_uid)
 	return await tFlowControl.findOne({
 		where:filter.where({
@@ -302,7 +347,8 @@ GatewayDao.getFlowControl = async(f_station_id, filter_uid) => {
 	})
 }
 
-GatewayDao.upsertFlowControl = async (params)=>{
+GatewayDao.upsertFlowControl = async (dbObj, params)=>{
+	let {tFlowControl} = dbObj
 	let filter = new UidFilter(params.filter_uid)
 	return await tFlowControl.upsert({
 		f_station_id: params.f_station_id,
