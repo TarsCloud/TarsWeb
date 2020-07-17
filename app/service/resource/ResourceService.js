@@ -229,6 +229,12 @@ ResourceService.uninstallTarsNode = async (ips) => {
 				rst: false,
 				msg: '#api.resource.serverExist#'
 			});
+		}else{
+			rst.push({
+				ip: ip,
+				rst: true,
+				msg: '#api.resource.uninstallSuccess#'
+			});
 		}
 	}
 	let deleteIps = [];
