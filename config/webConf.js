@@ -54,7 +54,7 @@ if (process.env.NODE_ENV == "dev") {
             benchmarkAdmin:"benchmark.AdminServer.AdminObj"
         },
         ldapConf: {
-            enableLDAP: true,                            // 是否启用LDAP用户登录验证
+            enableLDAP: false,                            // 是否启用LDAP用户登录验证
             url: 'ldap://ldap.dev.com:10389',           // LDAPServer地址
             basedn: 'ou=staff,dc=tars,dc=com',        // LDAP根目录|ou组织单位子目录|dc域名部分dc=upchina,dc=com为upchina.com
             reconnect: true,
@@ -111,7 +111,7 @@ if (process.env.NODE_ENV == "dev") {
             benchmarkAdmin:"benchmark.AdminServer.AdminObj"
         },
         ldapConf: {
-            enableLDAP: true,                            // 是否启用LDAP用户登录验证
+            enableLDAP: false,                            // 是否启用LDAP用户登录验证
             url: 'ldap://ldap.tars.com:10389',           // LDAPServer地址
             basedn: 'ou=staff,dc=tars,dc=com',        // LDAP根目录|ou组织单位子目录|dc域名部分dc=tars,dc=com为tars.com
             reconnect: true,
