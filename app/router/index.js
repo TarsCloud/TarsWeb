@@ -33,6 +33,7 @@ const getRouter = (router, routerConf) => {
 
 		//业务逻辑控制器
 		router[method](url, async (ctx, next) => {
+			
 			await controller.call({}, ctx);
 			await next();
 		});

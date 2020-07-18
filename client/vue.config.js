@@ -14,6 +14,7 @@ if (process.env.NODE_ENV == "development") {
 
 module.exports = {
     outputDir: "./dist",
+    assetsDir: "static",
     productionSourceMap:false,
     runtimeCompiler:true,
     pages: {
@@ -21,13 +22,43 @@ module.exports = {
         entry: 'src/main.js',
         template: 'public/index.html',
         filename: 'index.html',
-        title:"TarsNodeWeb",
+        title:"Tars",
       },
       dcache: {
         entry: 'src/dcache.js',
         template: 'public/index.html',
         filename: 'dcache.html',
         title:"DCache",
+      },
+      login: {
+        entry: 'src/sso/login/login.js',
+        template: 'src/sso/login/login.html',
+        filename: 'login.html',
+        title: "login",
+      },
+      auth: {
+        entry: 'src/sso/auth/auth.js',
+        template: 'src/sso/auth/auth.html',
+        filename: 'auth.html',
+        title: "auth",
+      },
+      adminPass: {
+        entry: 'src/sso/adminPass/adminPass.js',
+        template: 'src/sso/adminPass/adminPass.html',
+        filename: 'adminPass.html',
+        title: "adminPass",
+      },
+      pass: {
+        entry: 'src/sso/pass/pass.js',
+        template: 'src/sso/pass/pass.html',
+        filename: 'pass.html',
+        title: "pass",
+      },
+      register: {
+        entry: 'src/sso/register/register.js',
+        template: 'src/sso/register/register.html',
+        filename: 'register.html',
+        title: "register",
       }
     },
     configureWebpack: {
@@ -45,19 +76,27 @@ module.exports = {
             "/pages/server/api": {
               target: `http://127.0.0.1:${server_port}`,
               changeOrigin: false
-            },
-            "/auth": {
-              target: `http://127.0.0.1:${server_port}`,
-              changeOrigin: false
-            },
-            "/web_version":{
-              target: `http://127.0.0.1:${server_port}`,
-              changeOrigin: false
-            },
-            "/favicon.ico":{
-              target: `http://127.0.0.1:${server_port}`,
-              changeOrigin: false
-            }
+          },
+          "/pages/sso/api": {
+            target: `http://127.0.0.1:${server_port}`,
+            changeOrigin: false
+          },
+          "/api": {
+            target: `http://127.0.0.1:${server_port}`,
+            changeOrigin: false
+          },
+          "/auth": {
+            target: `http://127.0.0.1:${server_port}`,
+            changeOrigin: false
+          },
+          "/web_version":{
+            target: `http://127.0.0.1:${server_port}`,
+            changeOrigin: false
+          },
+          "/favicon.ico":{
+            target: `http://127.0.0.1:${server_port}`,
+            changeOrigin: false
           }
+        }
     }
 }

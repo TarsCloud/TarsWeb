@@ -82,26 +82,7 @@ if(process.env.COOKIE_DOMAIN) {
 	loginConf.cookieDomain = process.env.COOKIE_DOMAIN
 }
 
-// if(process.env.USER_CENTER_HOST) {
-	//存在外部host, 使用外部host代替 
-// 	loginConf.userCenterUrl = process.env.USER_CENTER_HOST;
-// } 
-
-// loginConf.loginUrl = loginConf.baseLoginUrl.replace("http://localhost:3001", loginConf.userCenterUrl);
-
-// logger.info('loginUrl:', loginConf.loginUrl, 'userCenterUrl:', loginConf.userCenterUrl, 'cookieDomain', loginConf.cookieDomain);
-
 app.use(async (ctx, next) => {
-
-    //for tars cloud, prefix: TARS_WEB_SSO_PREFIX=auth, for example: xxx.test.tarsyun.com -> auth.xxx.test.tarsyun.com
-	// if(!process.env.USER_CENTER_HOST) {
-
-	// 	let userCenterIp = ctx.host.split(':')[0];
-
-	// 	loginConf.userCenterUrl = loginConf.baseUserCenterUrl.replace("localhost", userCenterIp);
-
-	// 	loginConf.loginUrl = loginConf.baseLoginUrl.replace("localhost", userCenterIp);
-
 
 	var myurl = url.parse(ctx.url);
 	if (await AuthService.isInit()) {
@@ -131,6 +112,7 @@ app.use(staticRouter([
     router: '/files'    //路由命名
 }]));
 
+//激活router
 
 let dcacheConf = require('./config/dcacheConf.js');
 if (dcacheConf.enableDcache) {
@@ -151,12 +133,10 @@ if (dcacheConf.enableDcache) {
 	})
 }
 
-//激活router
 // dcache 会添加新的 page、api router， 不能提前
-const { pageRouter, paegApiRouter, clientRouter, apiRouter, demoRouter} = require('./app/router');
+const { pageRouter, paegApiRouter, clientRouter, apiRouter, demoRouter } = require('./app/router');
 
 app.use(apiMidware(apiRouter));
-
 app.use(pageRouter.routes(), pageRouter.allowedMethods());
 app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods());
 app.use(clientRouter.routes(), clientRouter.allowedMethods());

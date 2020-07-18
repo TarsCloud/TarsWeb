@@ -26,7 +26,7 @@ module.exports = {
     redirectUrlParamName: 'redirect_url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
     // baseUserCenterUrl: 'http://localhost:3000',   //登录跳转url(代码中要替换localhost)
     // baseLoginUrl: 'http://localhost:3000/login.html',                 //登录跳转url(userCenterUrl + loginUrl)
-    // userCenterUrl: 'http://localhost:3000/login.html',                      //登录跳转url(代码中要替换baseUserCenterUrl:localhost)
+    userCenterUrl: '/auth.html',                      //登录跳转url(代码中要替换baseUserCenterUrl:localhost)
     loginUrl: '/login.html',                           //登录跳转url(baseLoginUrl:localhost)
     logoutUrl: '',
     logoutredirectUrlParamName: 'url',

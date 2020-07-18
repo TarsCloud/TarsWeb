@@ -31,8 +31,7 @@ const ApplyService = require('./service');
 const { Console } = require('console');
 
 const ApplyController = {
-  getDCacheApp: async (ctx) => {
-  },
+
   dtree: async (ctx) => {
     try {
       if (ctx.paramsObj.type && ctx.paramsObj.type === '1') {
@@ -44,15 +43,25 @@ const ApplyController = {
       const treeNodeMap = {};
       const rootNode = [];
 
+      // console.log(tarsDcache.children);
+
       // 获取 dache 的router、proxy 服务
+      let timeout = DCacheOptPrx.getTimeout();
+      DCacheOptPrx.setTimeout(3000);
+    
       const args = await DCacheOptPrx.loadCacheApp();
+
+      DCacheOptPrx.setTimeout(timeout);
+
       logger.info('[DCacheOptPrx.loadCacheApp]:', args);
       const { __return, cacheApps } = args;
     
       if (__return != 0) {
+        ctx.makeResObj(500, "#common.dcacheSystem#", {});
         return;
-        // 如果没有 proxy、router 删除该应用
-        }
+      }
+
+      // 如果没有 proxy、router 删除该应用
       cacheApps.forEach((item) => {
 
         const applyServer = [];
@@ -76,8 +85,6 @@ const ApplyController = {
             children: [],
             serverType: 'proxy',
           });
-
-        // treeNodeMap[id] = server;
 
       // 获取 cache 服务
         Object.keys(item.cacheModules).forEach((key) => {
@@ -118,7 +125,7 @@ const ApplyController = {
               is_parent: false,
               open: false,
               children: [],
-              serverType: 'dcache',
+              serverType: 'dbaccess',
             })
           }
         });
@@ -131,14 +138,12 @@ const ApplyController = {
         TreeService.parents(treeNodeMap, server, rootNode);
       });
 
-
       tarsDcache = tarsDcache.concat(rootNode);
-
 
       ctx.makeResObj(200, '', tarsDcache);
     } catch (e) {
       logger.error('[dtree]', e, ctx);
-      ctx.makeResObj(500, e.message, {});
+      ctx.makeResObj(500, "#common.dcacheSystem#", {});
     }
   },
   async getPublishSuccessModuleConfig(ctx) {

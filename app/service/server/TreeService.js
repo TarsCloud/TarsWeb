@@ -183,7 +183,7 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 		let newData = []
 		data.forEach(item => {
 			if(item.name === 'DCache' && item.children){
-				let children = item.children.filter(jitem => jitem.name === 'DCacheOptServer' || jitem.name === 'DCacheConfigServer' || jitem.name === 'PropertyServer')
+				let children = item.children.filter(jitem => jitem.name === 'DCacheOptServer' || jitem.name === 'ConfigServer' || jitem.name === 'PropertyServer')
 				item.children = children
 				newData.push(item)
 			}

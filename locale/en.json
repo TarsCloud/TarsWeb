@@ -143,7 +143,8 @@
     "duplicateIp": "Duplicate service IP is not allowed, please input correct service IP",
     "routerIp": "Router IP can not be empty",
     "proxyIp": "Proxy IP can not be empty",
-    "dbAccessIp": "DbAccess IP can not be empty"
+    "dbAccessIp": "DbAccess IP can not be empty",
+    "dbMethod": "Please choose router database"
   },
   "module": {
     "title": "Module",
@@ -174,7 +175,8 @@
     "dbAccessInfo": "DbAccess Info",
     "namingError": "Module name must not be started with Application name, only digits and letters allowed",
     "shmKeyError": "Same share memory keys are not allowed under same IP",
-    "dbAccessIp": "DbAccess Ip"
+    "dbAccessIp": "DbAccess Ip",
+    "dbMethod": "Please choose DbAccess Mysql Instance"
   },
   "MKCache": {
     "mainKey": "Main key(mkey)",

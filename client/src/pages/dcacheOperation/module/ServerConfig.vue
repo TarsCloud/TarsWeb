@@ -564,6 +564,12 @@
     },
     methods: {
       submitServerConfig () {
+
+        if(this.dbAccess.dbMethod == undefined) {
+            this.$tip.error(`${this.$t('module.dbMethod')}`);
+            return;
+        }
+        
         if (this.$refs.detailForm.validate()) {
           if (this.isMkCache) {
             this.showMKModal = true;
@@ -578,10 +584,10 @@
         return this.$ajax.getJSON('/server/api/load_access_db').then((data) => {
           this.accessDb = data;
           if(data.length > 0) {
-            this.dbAccess.dbAccess = true;
+            this.dbAccess.dbMethod = true;
             this.dbAccess.accessDbId = data[0].id;
           } else {
-            this.dbAccess.dbAccess = false;
+            this.dbAccess.dbMethod = false;
           }
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -643,21 +649,22 @@
           // 设置 cache 服务默认 DCache.Cache 模版
           this.moduleData = this.moduleData.map(item => ({ ...item, 'template_name': templates.includes('DCache.Cache') ? 'DCache.Cache' : 'tars.default' }));
 
-          // 二期Cache 或者 一期 cache + 持久化 都需要填写数据结构。 一期暂时不用填写。
-          this.isMkCache = data.ModuleBase.cache_version === 2 //|| data.cache_module_type === 2;
+          // 二期Cache 或者 一期 cache + 持久化 都需要填写数据结构。
+          this.isMkCache = data.ModuleBase.cache_version === 2 || data.cache_module_type === 2;
           this.multiKey = data.ModuleBase.cache_version === 2 && data.ModuleBase.mkcache_struct === 1;
           this.cacheVersion = data.ModuleBase.cache_version;
           // console.log(this.cacheVersion);
-          if(this.multiKey)
-          {
+
+          if(this.multiKey) {
             this.dbAccess.isSerializated = true;
           }
+
           this.dbAccess.module_id = this.moduleId;
           this.dbAccess.db_prefix = "db_" + data.module_name + "_";
           this.dbAccess.table_prefix = "t_" + data.module_name + "_";
           this.dbAccess.servant = data.dbAccessServant;
         } catch (err) {
-          console.error(err);
+          // console.error(err);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
       },
@@ -703,6 +710,12 @@
         }
       },
       submitMKCache () {
+
+        if(this.dbAccess.dbMethod == undefined) {
+            this.$tip.error(`${this.$t('module.dbMethod')}`);
+            return;
+        }
+        
         if (this.$refs.multiKeyForm.validate()) {
           sessionStorage.setItem('mkCache', JSON.stringify(this.mkCacheStructure));
           this.showMKModal = false;

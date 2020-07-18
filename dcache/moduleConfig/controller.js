@@ -420,7 +420,7 @@ const ModuleConfigController = {
               appName: 'DCache',
               serverName: dbAccess.servant.split(".")[1],
               nodeName: serverIps[i],
-              groupName: 'DCacheServerGroup',
+              groupName: 'CombinDbAccessServer',
               version: defaultDbAccessPackage.id.toString(),
               user: ctx.uid,
               md5: '',

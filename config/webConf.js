@@ -55,8 +55,8 @@ if (process.env.NODE_ENV == "dev") {
         },
         ldapConf: {
             enableLDAP: true,                            // 是否启用LDAP用户登录验证
-            url: 'ldap://ldap.whup.com:10389',           // LDAPServer地址
-            basedn: 'ou=staff,dc=upchina,dc=com',        // LDAP根目录|ou组织单位子目录|dc域名部分dc=upchina,dc=com为upchina.com
+            url: 'ldap://ldap.dev.com:10389',           // LDAPServer地址
+            basedn: 'ou=staff,dc=tars,dc=com',        // LDAP根目录|ou组织单位子目录|dc域名部分dc=upchina,dc=com为upchina.com
             reconnect: true,
             timeout: 30000,                              // LDAP创建client请求超时时间
             timeLimit: 30,                               // LDAPsearch超时时间，秒为单位
@@ -89,13 +89,13 @@ if (process.env.NODE_ENV == "dev") {
             strict: false,              //true: tarslog模式(tarslog需要首先从框架上迁移走, 基础框架服务器上不能部署其他服务)
             uploadLogin: false,          //上传文件是否需要登录(开发或者调试时可以放开)
         },
-        kafkaConf : {
-            enable : false,
-            kafkaHost : 'localhost:9092',
-            zkHost : 'localhost:2181',
-            topic : 'tarsTask',
-            maxCount : 100              // 后台并行处理的最大任务数
-        },
+        // kafkaConf : {
+        //     enable : false,
+        //     kafkaHost : 'localhost:9092',
+        //     zkHost : 'localhost:2181',
+        //     topic : 'tarsTask',
+        //     maxCount : 100              // 后台并行处理的最大任务数
+        // },
         pkgUploadPath : {
             path : '/usr/local/app/patchs/tars.upload'
         },
@@ -112,8 +112,8 @@ if (process.env.NODE_ENV == "dev") {
         },
         ldapConf: {
             enableLDAP: true,                            // 是否启用LDAP用户登录验证
-            url: 'ldap://ldap.whup.com:10389',           // LDAPServer地址
-            basedn: 'ou=staff,dc=upchina,dc=com',        // LDAP根目录|ou组织单位子目录|dc域名部分dc=upchina,dc=com为upchina.com
+            url: 'ldap://ldap.tars.com:10389',           // LDAPServer地址
+            basedn: 'ou=staff,dc=tars,dc=com',        // LDAP根目录|ou组织单位子目录|dc域名部分dc=tars,dc=com为tars.com
             reconnect: true,
             timeout: 30000,                              // LDAP创建client请求超时时间
             timeLimit: 30,                               // LDAPsearch超时时间，秒为单位

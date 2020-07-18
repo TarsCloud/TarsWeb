@@ -55,7 +55,7 @@
         <let-form-item :label="$t('service.routerDbName')" itemWidth="240px" required>
           <let-radio v-model="apply.dbMethod" :label="false">{{$t('service.inputRouterDb')}}</let-radio>
         </let-form-item>
-        <span  v-if="!apply.dbMethod">
+        <span v-if="!apply.dbMethod">
         <let-form-item :label="$t('service.routerDbIp')" itemWidth="240px" required>
           <let-input
             size="small"
@@ -213,12 +213,18 @@ import { checkServerIdentity } from 'tls';
         let {applyId} = this;
         return this.$ajax.getJSON('/server/api/get_apply_and_router_and_proxy', {applyId}).then((apply) => {
           this.apply = apply || {}
-          // console.log(this.apply);
+          // this.apply.dbMethod = true;
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       },
       createService () {
+        // alert(this.apply.dbMethod);
+        if(this.apply.dbMethod == undefined) {
+            this.$tip.error(`${this.$t('apply.dbMethod')}`);
+            return;
+        }
+
         for(var i = 0; i < this.apply.Proxy.length; i++) {
           let item = this.apply.Proxy[i];
           if(item.server_ip.length == 0) {

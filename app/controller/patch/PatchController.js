@@ -165,20 +165,11 @@ PatchController.uploadPatchPackage = async (ctx) => {
 			let id = data.id;
 			let package = { id, application, module_name, package_type };
 
-			let value = await PatchService.find({
-				where: {
-					server: application + "." + module_name,
-					default_version: 1,
-					package_type: 0
-				}
-			});
+			//dcache的包, 设置为缺省包
+			await PatchService.setPatchPackageDefault(package);
 
-			if (!value) {
-				//如果是第一条记录, 则设置为default
-				await PatchService.setPatchPackageDefault(package);
-			}
-
-			ctx.makeResObj(200, '', data);
+			// ctx.body = "upload succ and set this package to default package!\r\n";
+			ctx.makeResObj(200, '', "upload succ and set this package to default package!");
 		}
 	} catch (e) {
 		logger.error('[PatchController.uploadPatchPackage]:', e, ctx);

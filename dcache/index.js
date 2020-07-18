@@ -46,7 +46,9 @@ const {
 const { apiConf } = require(path.join(cwd, './app/router/routerConf.js'));
 
 const dcacheApiConf = [
-
+  // 业务树
+  ['get', '/dtree', ApplyController.dtree],
+  
   // 地区
   ['get', '/get_region_list', RegionController.getRegionList],
   ['post', '/add_region', RegionController.addRegion],
@@ -167,8 +169,7 @@ const dcacheApiConf = [
   ['get', '/cache/updateServerConfigItem', updateServerConfigItem, { id: 'notEmpty', configValue: 'notEmpty' }],
   ['post', '/cache/updateServerConfigItemBatch', updateServerConfigItemBatch, { serverConfigList: 'notEmpty' }],
   ['post', '/cache/deleteServerConfigItemBatch', deleteServerConfigItemBatch, { serverConfigList: 'notEmpty' }],
-  // 业务树
-  ['get', '/dtree', ApplyController.dtree],
+
 
 ];
 

@@ -10,10 +10,9 @@
     <let-table :data="packages.rows" :title="$t('serverList.title.serverList')" :empty-msg="$t('common.nodata')">
       <let-table-column title="ID" prop="id">
         <template slot-scope="scope">
-          <!-- <span :title="$t('releasePackage.default')" style="color: green; display: inline-block;width:1em;height:1em;">
-            <icon v-if="scope.row.default_version == 1" name="default"/>
-          </span> -->
-          <i class="let-icon let-icon-gou let-tag_success" v-if="scope.row.default_version == 1"></i>
+          <span :title="$t('releasePackage.default')" style="color: green; display: inline-block;">
+            <i v-if="scope.row.default_version == 1" class="icon iconfont">&#xec46;</i>
+          </span>
           {{scope.row.id}}
         </template>
       </let-table-column>

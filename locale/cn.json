@@ -142,7 +142,8 @@
     "noDefaultRouterPackage": "不存在默认的Router发布包",
     "duplicateIp": "服务IP不允许重复， 请重新输入正确的服务IP",
     "routerIp": "Router的IP不能为空",
-    "proxyIp": "Proxy的IP不能为空"
+    "proxyIp": "Proxy的IP不能为空",
+    "dbMethod": "请选择路由数据库"
   },
   "module": {
     "title": "模块",
@@ -173,7 +174,8 @@
     "dbAccessInfo": "DbAccess服务信息",
     "namingError": "模块名须以应用名开头，且只允许字母和数字",
     "shmKeyError": "同一IP下不允许有相同的共享内存key",
-    "dbAccessIp": "DbAccess服务Ip"
+    "dbAccessIp": "DbAccess服务Ip",
+    "dbMethod": "请选择DbAccess Mysql实例"
   },
   "MKCache": {
     "mainKey": "主索引(mkey)",
@@ -417,6 +419,7 @@
     "noLogin": "您还没有登录",
     "nodata": "没有数据",
     "noService": "没有服务",
+    "dcacheSystem": "访问dcache失败, 请先安装dcache",
     "retry": "点击重试",
     "enable": "启用",
     "disable": "不启用",

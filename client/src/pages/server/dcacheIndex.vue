@@ -321,7 +321,7 @@
     /*目录树*/
     .left-tree {
       flex: 0 0 auto;
-      width: 152px;
+      width: 250px;
       min-height: 380px;
 
       .loading {
