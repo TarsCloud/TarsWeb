@@ -1,3 +1,8 @@
+## 20200718(2.4.7)
+- 完善dcache的支持, 全面支持dcache, 包括router, cache, router, dbaccess的自动部署
+- 合并demo到web下, 不再开启两个端口
+- 支持tars树的业务关系配置(暂时界面为对外开放)
+
 ## 20200703(2.4.6)
 - 修复strict模式下, tarslog迁移部署的问题
 - 修改servant obj编辑时, obj名称不能带数字的问题
