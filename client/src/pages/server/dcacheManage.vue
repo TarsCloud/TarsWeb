@@ -2,9 +2,20 @@
   <div class="page_server_manage">
 
     <!-- 服务列表 -->
+    <div class="table_head">
     <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    </div>
     
-    <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
+    <!-- 服务列表 -->
+    <let-table class="dcache" v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" ref="serverListLoading">
+     <let-table-column>
+        <template slot="head" slot-scope="props">
+          <let-checkbox v-model="isCheckedAll" :value="isCheckedAll"></let-checkbox>
+        </template>
+        <template slot-scope="scope">
+          <let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
         <template slot-scope="scope">
           <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" title="点击查看服务日志(view server logs)" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
@@ -390,6 +401,7 @@
 
 <script>
   import { expandServerPreview, autoPort, expandServer, addTask } from '@/dcache/interface.js'
+  import batchOperation from './../dcache/moduleManage/batchOperation.vue'
 const getInitialExpandModel = () => ({
   application: 'DCache',
   server_name: '',
@@ -404,10 +416,12 @@ const getInitialExpandModel = () => ({
 });
 export default {
   name: 'ServerManage',
+  components: { batchOperation },
   data() {
     return {
       // 当前页面信息
-      serverType: this.$route.params.serverType || 'tars',
+      isCheckedAll: false,
+      serverType: this.$route.params.serverType || 'taf',
       serverData: {
         level: 5,
         application: '',
@@ -487,8 +501,20 @@ export default {
       }
       return this.checkServantEndpoint(this.servantDetailModal.model.endpoint);
     },
+    hasCheckedServer() {
+      return this.serverList.filter(item => item.isChecked === true).length !== 0;
+    },
+    checkedServers() {
+      return this.serverList.filter(item => item.isChecked === true);
+    }
   },
   watch: {
+    isCheckedAll() {
+      let isCheckedAll = this.isCheckedAll;
+      this.serverList.forEach((item) => {
+        item.isChecked = isCheckedAll;
+      });
+    },
     '$route' (to, from) {
       this.getServerList();
       this.getServerNotifyList(1);
@@ -503,6 +529,9 @@ export default {
         tree_node_id: this.$route.params.treeid,
       }).then(async (data) => {
         loading.hide();
+        data.forEach(item => {
+          item.isChecked = false
+        });
         this.serverList = data;
 
 
@@ -1150,6 +1179,11 @@ export default {
   .danger {
     color: var(--off-color);
   }
+  .icon.iconfont {
+    font-size:10px;
+    cursor: pointer;
+    vertical-align: 0em  
+  }
 
   .more-cmd {
     .let-form-item__content {
@@ -1163,6 +1197,8 @@ export default {
       width: 200px;
     }
   }
+  .table_head{padding:10px 0;}
+  .dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
 }
 
 </style>

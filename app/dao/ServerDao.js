@@ -89,7 +89,7 @@ ServerDao.getServerConfByTemplate = async (templateName) => {
 	})
 };
 
-ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr) => {
+ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr, searchKey) => {
 	let where = {};
 	let or = [];
 	if (!!applicationList && applicationList.length > 0) {
@@ -103,6 +103,11 @@ ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr) 
 	}
 	else {
 		where = {[Op.or]: or};
+	}
+	if(searchKey){
+		where.server_name = {
+			[Sequelize.Op.like]: '%' + searchKey + '%'
+		}
 	}
 
 	let option = {};

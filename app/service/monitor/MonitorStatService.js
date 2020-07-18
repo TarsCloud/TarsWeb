@@ -25,8 +25,8 @@ const MonitorStatService = {};
 MonitorStatService.getData = async (params) => {
 	let theData = new Map(), preData = new Map()
 	// if(params.userpc == "1"){
-		theData = await callRpc(params, true)
-		preData = await callRpc(params, false)
+		theData = await callRpc(params, true);
+		preData = await callRpc(params, false);
 	// } else {
 	// 	theData = await call(params, true)
 	// 	preData = await call(params, false)

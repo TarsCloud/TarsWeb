@@ -27,10 +27,10 @@ const ProxyDao = {};
 //   idc_area: '异地镜像 例如: [sz, bj]',
 //   create_person: '创建人',
 // };
-ProxyDao.createProxy = function ({
+ProxyDao.createProxy = async function ({
   apply_id, server_name, server_ip, template_file, idc_area, create_person,
 }) {
-  return tApplyAppProxyConf.create({
+  return await tApplyAppProxyConf.create({
     apply_id,
     server_name,
     server_ip,
@@ -51,7 +51,7 @@ ProxyDao.createOrUpdate = async function (whereProperties, params) {
       record = await self.create(params);
     } else {
       // record.updateAttributes(params);
-      record.update(params);
+      await record.update(params);
     }
     return record;
   } catch (err) {
@@ -59,10 +59,10 @@ ProxyDao.createOrUpdate = async function (whereProperties, params) {
   }
 };
 
-ProxyDao.update = function ({
+ProxyDao.update = async function ({
   apply_id, server_name, server_ip, template_file, idc_area, create_person, id,
 }) {
-  return tApplyAppProxyConf.update({
+  return await tApplyAppProxyConf.update({
     apply_id,
     server_name,
     server_ip,
@@ -72,12 +72,12 @@ ProxyDao.update = function ({
   }, { where: { id } });
 };
 
-ProxyDao.destroy = function (option) {
-  return tApplyAppProxyConf.destroy(option);
+ProxyDao.destroy = async function (option) {
+  return await tApplyAppProxyConf.destroy(option);
 };
 
-ProxyDao.findOne = function ({ where }) {
-  return tApplyAppProxyConf.findOne({ where });
+ProxyDao.findOne = async function ({ where }) {
+  return await tApplyAppProxyConf.findOne({ where });
 };
 
 

@@ -1,6 +1,9 @@
 ## 20200717(2.4.7)
 - add multi-gateway configuration feature
 - add path input when adding router in gateway station
+- support dcache deploy, support router, cache, proxy, dbaccess auto deploy
+- merge demo to web, not open to ports
+- support tars tree set bussiness relation(now, now open web ui)
 
 ## 20200703(2.4.6)
 - fix strict mode, tarslog transfer deploy bug

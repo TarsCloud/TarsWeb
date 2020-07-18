@@ -41,12 +41,17 @@ PatchService.find = async ({where}) => {
 PatchService.hasDcachePatchPackage = async () => {
 	let has = true;
 	let proxyDefaultPackage = await PatchDao.find({
-		server: 'DCache.RouterServer',
+		server: 'DCache.ProxyServer',
 		default_version: 1,
 		package_type: 0
 	});
 	let routerDefaultPackage = await PatchDao.find({
 		server: 'DCache.RouterServer',
+		default_version: 1,
+		package_type: 0
+	})
+	let accessDefaultPackage = await PatchDao.find({
+		server: 'DCache.CombinDbAccessServer',
 		default_version: 1,
 		package_type: 0
 	})
@@ -61,7 +66,7 @@ PatchService.hasDcachePatchPackage = async () => {
 		package_type: 2
 	})
 
-	return !!proxyDefaultPackage && !!routerDefaultPackage && !!cacheDefaultPackage && !!McacheDefaultPackage
+	return !!proxyDefaultPackage && !!routerDefaultPackage && !!accessDefaultPackage && !!cacheDefaultPackage && !!McacheDefaultPackage
 
 
 };

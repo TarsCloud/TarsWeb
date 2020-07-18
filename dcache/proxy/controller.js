@@ -33,6 +33,16 @@ const Controller = {
       ctx.makeResObj(500, err.message);
     }
   },
+  removeProxyById: async (ctx) => {
+    try {
+      const { id } = ctx.paramsObj;
+      const item = await service.removeProxyById({ id });
+      ctx.makeResObj(200, '', item);
+    } catch (err) {
+      logger.error('[removeProxy]:', err);
+      ctx.makeResObj(500, err.message);
+    }
+  },
 };
 
 module.exports = Controller;

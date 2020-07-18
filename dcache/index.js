@@ -25,6 +25,7 @@ const ServerConfigController = require('./serverConfig/controller.js');
 const ProxyController = require('./proxy/controller.js');
 const RouterController = require('./router/controller.js');
 const ModuleOperation = require('./moduleOperation/controller');
+const DbAccessController = require('./dbaccess/controller.js');
 
 const {
   getConfig,
@@ -45,7 +46,9 @@ const {
 const { apiConf } = require(path.join(cwd, './app/router/routerConf.js'));
 
 const dcacheApiConf = [
-
+  // 业务树
+  ['get', '/dtree', ApplyController.dtree],
+  
   // 地区
   ['get', '/get_region_list', RegionController.getRegionList],
   ['post', '/add_region', RegionController.addRegion],
@@ -54,6 +57,8 @@ const dcacheApiConf = [
 
   // 应用
   ['post', '/add_apply', ApplyController.addApply],
+  ['post', '/overwrite_apply', ApplyController.overwriteApply],
+  ['get', '/load_router_db', ApplyController.loadRouterDb],
   ['get', '/get_apply_and_router_and_proxy', ApplyController.getApplyAndRouterAndProxy],
   ['post', '/save_router_proxy', ApplyController.saveRouterProxy],
   ['get', '/get_apply_list', ApplyController.getApplyList],
@@ -62,11 +67,13 @@ const dcacheApiConf = [
   ['get', '/cache/getPublishSuccessModuleConfig', ApplyController.getPublishSuccessModuleConfig],
 
   // proxy
+  ['post', '/delete_apply_proxy', ProxyController.removeProxyById],
   ['post', '/cache/removeProxy', ProxyController.removeProxy],
 
   // router
   ['post', '/cache/removeRouter', RouterController.removeRouter],
 
+  ['get', '/load_access_db', DbAccessController.loadAccessDb],
   // 模块
   ['post', '/add_module_base_info', ModuleController.addModuleBaseInfo],
   ['get', '/get_module_info', ModuleController.getModuleInfo],
@@ -76,6 +83,7 @@ const dcacheApiConf = [
   }],
   ['get', '/get_module_config_info', ModuleConfigController.getModuleConfigInfo],
   ['get', '/get_module_full_info', ModuleConfigController.getModuleConfigAndServerInfo],
+  ['post', '/overwrite_module_config', ModuleConfigController.overwriteModuleConfig],
   ['post', '/add_module_config', ModuleConfigController.addModuleConfig],
   ['post', '/add_server_config', ServerConfigController.addServerConfig],
   ['get', '/module_install_and_publish', ModuleConfigController.installAndPublish],
@@ -161,8 +169,7 @@ const dcacheApiConf = [
   ['get', '/cache/updateServerConfigItem', updateServerConfigItem, { id: 'notEmpty', configValue: 'notEmpty' }],
   ['post', '/cache/updateServerConfigItemBatch', updateServerConfigItemBatch, { serverConfigList: 'notEmpty' }],
   ['post', '/cache/deleteServerConfigItemBatch', deleteServerConfigItemBatch, { serverConfigList: 'notEmpty' }],
-  // 业务树
-  ['get', '/dtree', ApplyController.dtree],
+
 
 ];
 

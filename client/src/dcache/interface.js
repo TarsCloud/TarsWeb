@@ -314,11 +314,11 @@ export function getConfig() {
  * 安装发布应用的 router 和 proxy 服务
  * @param applyId
  */
-export function installAndPublish ({ applyId }) {
+export function installAndPublish ({ applyId, replace }) {
   return Axios({
     method: 'get',
     url: '/cache/install_and_publish',
-    params: { applyId }
+    params: { applyId, replace }
   })
 }
 

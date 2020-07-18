@@ -25,6 +25,19 @@ const serverConfigDao = require('./../serverConfig/dao.js');
 // const serverConfigDao = require(path.join(cwd, './app/dao/serverConfigDao.js'));
 const ModuleConfigService = {};
 
+ModuleConfigService.hasModule = async function ({ module_name }) {
+  const item = await moduleConfigDao.findOne({ where: { module_name } });
+  if (item && item.status == 2) {
+    return true;
+  }
+  return false;
+}
+ModuleConfigService.overwriteModuleConfig = async function (option) {
+  const { module_name } = option;
+    await moduleConfigDao.destroy({ where: { module_name }, force: true });
+    await serverConfigDao.destroy({ where: { module_name }, force: true });
+  return moduleConfigDao.add(option);
+};
 ModuleConfigService.addModuleConfig = async function (option) {
   const { module_name } = option;
   const item = await moduleConfigDao.findOne({ where: { module_name } });
@@ -75,7 +88,7 @@ ModuleConfigService.getReleaseProgress = async function (releaseId) {
       serverName: item.serverName,
       nodeName: item.nodeName,
       releaseId: progressRsp.releaseId,
-      percent,
+      percent: item.percent,
     });
   });
   return { progress, percent };

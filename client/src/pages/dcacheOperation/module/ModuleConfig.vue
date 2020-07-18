@@ -14,6 +14,7 @@
             :required-tip="$t('deployService.table.tips.empty')"
             pattern="^[a-zA-Z][a-zA-Z0-9]+$"
             :pattern-tip="$t('module.namingRule')"
+            @change="changeDbAccessServant"
           >
           </let-input>
         </let-poptip>
@@ -33,6 +34,7 @@
       <let-form-item :label="$t('module.deployArea')" itemWidth="240px">
         <let-select
           size="small"
+          required
           v-model="model.idc_area"
           @change="changeSelect"
         >
@@ -53,53 +55,13 @@
         </let-select>
       </let-form-item>
       <br>
-      <let-form-item :label="$t('cache.perRecordAvg')" itemWidth="240px" required>
-        <let-input
-          size="small"
-          v-model="model.per_record_avg"
-          :placeholder="$t('cache.perRecordAvgUnit')"
-          required
-          :required-tip="$t('deployService.table.tips.empty')"
-        >
-        </let-input>
-      </let-form-item>
-      <let-form-item :label="$t('cache.totalRecord')" itemWidth="240px" required>
-        <let-input
-          size="small"
-          v-model="model.total_record"
-          :placeholder="$t('cache.dbDataCountUnit')"
-          required
-          :required-tip="$t('deployService.table.tips.empty')"
-        >
-        </let-input>
-      </let-form-item>
-      <let-form-item :label="$t('cache.maxReadFlow')" itemWidth="240px" required>
-        <let-input
-          size="small"
-          v-model="model.max_read_flow"
-          :placeholder="$t('cache.flowUnit')"
-          required
-          :required-tip="$t('deployService.table.tips.empty')"
-        >
-        </let-input>
-      </let-form-item>
-      <let-form-item :label="$t('cache.maxWriteFlow')" itemWidth="240px" required>
-        <let-input
-          size="small"
-          v-model="model.max_write_flow"
-          :placeholder="$t('cache.flowUnit')"
-          required
-          :required-tip="$t('deployService.table.tips.empty')"
-        >
-        </let-input>
-      </let-form-item>
-      <br>
       <let-form-item :label="$t('module.scenario')" itemWidth="240px" required>
         <let-select
           size="small"
           v-model="model.cache_module_type"
           required
           :required-tip="$t('deployService.table.tips.empty')"
+          @change="changeDbAccessServant"
         >
           <let-option v-for="d in cacheModuleType" :key="d.key" :value="d.key">
             {{$t(d.value)}}
@@ -111,8 +73,20 @@
                          :data="cacheTypeOption">
         </let-radio-group>
       </let-form-item>
-      <let-form-item :label="$t('cache.dbAccessServantObj')" itemWidth="240px" v-if="model.cache_module_type == 2"
-                     required>
+      <br>
+      <let-form-item :label="$t('cache.perRecordAvg')" itemWidth="240px" required>
+        <let-input
+          size="small"
+          v-model="model.per_record_avg"
+          :placeholder="$t('cache.perRecordAvgUnit')"
+          required
+          :required-tip="$t('deployService.table.tips.empty')"
+        >
+        </let-input>
+      </let-form-item>
+      <br>
+      <div v-if="model.cache_module_type == 2">
+      <let-form-item :label="$t('cache.dbAccessServantObj')" itemWidth="400px" required>
         <let-input
           size="small"
           v-model="model.dbAccessServant"
@@ -122,6 +96,8 @@
         >
         </let-input>
       </let-form-item>
+      <br>
+      </div>
       <br>
       <let-form-item :label="$t('cache.moduleRemark')" itemWidth="516px" required>
         <let-input
@@ -150,10 +126,10 @@
     cache_module_type: '',  // 模块存储类型
     key_type: '',   // 存储类型
     dbAccessServant: '',  // 数据库servant obj
-    per_record_avg: '',
-    total_record: '',
-    max_read_flow: '',
-    max_write_flow: '',
+    per_record_avg: '100',
+    total_record: '1000',
+    max_read_flow: '100000',
+    max_write_flow: '100000',
     module_remark: '',
     set_area: [],
     module_id: '',
@@ -201,12 +177,35 @@
           const loading = this.$Loading.show();
           this.$ajax.postJSON(url, model).then((data) => {
             loading.hide();
+            if(data.hasModule) {
+              this.$confirm(this.$t('dcache.moduleExists'), this.$t('common.alert')).then(async () => {
+                  loading.show();
+                  this.$ajax.postJSON('/server/api/overwrite_module_config', model).then((data) => {
+                    loading.hide();
             this.$tip.success(this.$t('common.success'));
             this.$router.push('/operation/module/serverConfig/' + data.module_id)
+                  }).catch((err) => {
+                    loading.hide();
+                    this.$tip.success(this.$t('common.success'));
+                    this.$router.push('/operation/module/serverConfig/' + data.module_id)
+                  });
+              }).catch(()=>{});
+            } else {
+              loading.hide();
+              this.$tip.success(this.$t('common.success'));
+              this.$router.push('/operation/module/serverConfig/' + data.module_id)
+            }
           }).catch((err) => {
             loading.hide();
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           });
+        }
+      },
+      changeDbAccessServant() {
+        if(this.model.cache_module_type == 1) {
+          this.model.dbAccessServant = "";
+        } else {
+          this.model.dbAccessServant = "DCache." + this.model.module_name + "DbAccessServer.DbAccessObj";
         }
       },
       changeSelect() {
@@ -244,9 +243,7 @@
           this.app_name = apply.name || '';
           this.model.module_name = this.app_name;
 
-          console.log(this.app_name);
-
-          this.model.dbAccessServant =  this.app_name + "." + this.app_name + "DbAccessServer.DbAccessObj";
+          this.changeDbAccessServant();
 
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

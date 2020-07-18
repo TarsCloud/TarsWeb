@@ -86,6 +86,7 @@
           </template>
         </let-table-column>
       </let-table>
+      <let-tag theme="success" style="margin: auto" checked>{{$t('publishLog.publishInfo')}}</let-tag>
     </let-modal>
   </section>
 </template>
@@ -104,7 +105,7 @@
       router_db_port: "",
       router_db_user: "",
       server_ip: "",
-      server_name: "aswRouterServer",
+      server_name: "",
       template_file: ""
     }
   };
@@ -114,7 +115,7 @@
       create_person: "adminUser",
       idc_area: "sz",
       server_ip: "",
-      server_name: "aswRouterServer",
+      server_name: "",
       template_file: "",
     }
   };
@@ -143,6 +144,7 @@
         });
       },
       async installAndPublish() {
+        const loading = this.$loading.show();
         try {
           let { applyId } = this;
           const { proxy, router } = await installAndPublish({ applyId });
@@ -169,10 +171,11 @@
           // this.getTaskRepeat({proxyReleaseId, routerReleaseId});
           // this.$tip.success(proxy.errMsg)
         } catch (err) {
-          console.error(err);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
 
         }
+
+        loading.hide();
       },
       async repeatGetReleaseProgress(item) {
         clearTimeout(item.timer);
@@ -185,7 +188,7 @@
             item.timer = setTimeout(this.repeatGetReleaseProgress.bind(this, item), 1000);
           }
         } catch (err) {
-          console.error(err);
+          // console.error(err);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           item.errMsg = err;
           clearTimeout(item.timer);

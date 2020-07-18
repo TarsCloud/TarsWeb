@@ -14,6 +14,7 @@
       "tab2": "Create Service"
     },
     "logout": "Logout",
+    "modifyPass": "Modify Password",
     "userCenter": "User Center"
   },
   "deployLog": {
@@ -26,6 +27,7 @@
   },
   "releasePackage": {
     "proxyList": "Proxy Service List",
+    "accessList": "DbAccess Service List",
     "routerList": "Router Service List",
     "cacheList": "Cache Service List",
     "uploadPackage": "Upload publish package",
@@ -138,7 +140,11 @@
     "CacheManage": "The Cache Management",
     "noDefaultProxyPackage": "There is no default Proxy distribution package",
     "noDefaultRouterPackage": "There is no default Router distribution package",
-    "duplicateIp": "Duplicate service IP is not allowed, please input correct service IP"
+    "duplicateIp": "Duplicate service IP is not allowed, please input correct service IP",
+    "routerIp": "Router IP can not be empty",
+    "proxyIp": "Proxy IP can not be empty",
+    "dbAccessIp": "DbAccess IP can not be empty",
+    "dbMethod": "Please choose router database"
   },
   "module": {
     "title": "Module",
@@ -153,8 +159,35 @@
     "cacheType": "Cache Types",
     "follower": "Focus People",
     "serverConfig": "Server Config",
+    "serverGroup": "Server Group",
+    "memorySize": "Memory Size（M）",
+    "deployArea": "Deploy Area",
+    "moduleId": "ID",
+    "moduleInfo": "Cache Module Info",
+    "serverInfo": "Cache Server Info",
+    "mainServer": "Master",
+    "backServer": "Slave",
+    "mirror": "Mirror",
+    "shmKey": "Shared Memory Key",
+    "shmKeyRule": "Empty will be automatically allocated",
+    "MultiKeyConfig": "Muti Key Config",
+    "hasExist": "Module Exists",
+    "dbAccessInfo": "DbAccess Info",
     "namingError": "Module name must not be started with Application name, only digits and letters allowed",
-    "shmKeyError": "Same share memory keys are not allowed under same IP"
+    "shmKeyError": "Same share memory keys are not allowed under same IP",
+    "dbAccessIp": "DbAccess Ip",
+    "dbMethod": "Please choose DbAccess Mysql Instance"
+  },
+  "MKCache": {
+    "mainKey": "Main key(mkey)",
+    "unionKey": "Union Key(ukey)",
+    "dataValue": "Data Value(value)",
+    "fieldName": "Field Name",
+    "dataType": "Field Type",
+    "fieldProperty": "require/optional",
+    "defaultValue": "Default Value",
+    "maxLen": "Max Length(bytes)",
+    "error": "At less keep one item"
   },
   "cache": {
     "title": "cache",
@@ -165,7 +198,7 @@
     "cacheTypeTip1": "Memory database (not obsolete)",
     "cacheTypeTip2": "Temporary cache (expired)",
     "cacheTypeTip3": "Hot spot cache (expand elimination)",
-    "perRecordAvg": "Average size of data records",
+    "perRecordAvg": "Average bytes of data records",
     "perRecordAvgUnit": "Byte",
     "totalRecord": "Save in the Cache",
     "maxReadFlow": "Estimate peak read flow",
@@ -177,6 +210,10 @@
     "mirror": "mirror",
     "add": "add",
     "modification": "modification",
+    "accessDbName": "DbAccess Mysql Instance",
+    "chooseAccessDb": "Choose DbAccess Mysql Instance",
+    "inputAccessDb": "Input DbAccess Mysql Instance",
+    "dbaccessIp": "Must choose one DbAccess server ip",
     "config": {
       "tableTitle": "cache configuration list",
       "addSuccess": "add configuration success",
@@ -247,6 +284,8 @@
     "offlineMirrorServers": "The selected service has mirroring. Log off all the mirroring services of this module",
     "offlineBackupMirrorServers": "The selected service has backup and mirroring to offline all backup and mirroring",
     "sureOffline": "determine the offline",
+    "moduleExists": "The module already exists. Are you sure to cover it?",
+      "applyExists": "The dcache already exists. Are you sure to cover it?",
     "operationManage": {
       "expand": "expand manage",
       "shrinkage": "shrinkage manage",
@@ -308,7 +347,10 @@
     "routerDbPort": "Database port",
     "routerDbUser": "username",
     "routerDbPass": "password",
-    "multipleIp": "Service IP(multiple IP USES ; Separated)"
+    "multipleIp": "Service IP(multiple IP USES ; Separated)",
+    "isSerializated": "Data Serializate",
+    "chooseRouterDb": "Choose Mysql instance",
+    "inputRouterDb": "Input Mysql instance"
   },
   "region": {
     "title": "region",
@@ -695,7 +737,10 @@
       "apply": "Apply for deployment",
       "nodes": "Node service",
       "check": "Check Framework",
-      "gateway": "Gateway Config"
+      "gateway": "Gateway Config",
+      "application": "Manage application",
+      "business": "Manage business",
+      "businessRelation": "Business Relation"
     },
     "form": {
       "app": "APP",
@@ -1087,12 +1132,207 @@
       "installTip":"please install benchmark server before you use benchmark tool",
       "installTutorial":"install tutorial",
       "installScript":"install script"
-
     }
   },
   "publishLog": {
     "title": "Publish Log",
     "sync": "synchronizing PMS...",
-    "releaseId": "Release ID"
+    "releaseId": "Release ID",
+    "releaseProgress": "Publishing progress（%）",
+    "publishInfo": "Publishing, please wait..."
+  },
+  "application": {
+    "btn": {
+      "add": "add application"
+    },
+    "form": {
+      "application": "application",
+      "person": "person",
+      "time": "time",
+      "content": "content"
+    },
+    "view": {
+      "title": "View application"
+    },
+    "add": {
+      "nameTips": "The application name cannot be empty",
+      "formatTips": "The application name can only contain letters, Numbers, and begin with a letter",
+      "parent": "Please select the parent application",
+      "title": "Add application"
+    },
+    "update": {
+      "title": "Update application",
+      "errTips": "update failed"
+    },
+    "delete": {
+      "confirmTips": "Are you sure to delete this application",
+      "title": "Delete application"
+    }
+  },
+  "business": {
+    "btn": {
+      "add": "add business"
+    },
+    "form": {
+      "business": "business",
+      "showName": "show name",
+      "order": "order",
+      "person": "person",
+      "time": "time",
+      "content": "content"
+    },
+    "view": {
+      "title": "View business"
+    },
+    "add": {
+      "nameTips": "The business name cannot be empty",
+      "formatTips": "The business name can only contain letters, Numbers, and begin with a letter",
+      "parent": "Please select the parent business",
+      "title": "Add business"
+    },
+    "update": {
+      "title": "Update business",
+      "errTips": "update failed"
+    },
+    "delete": {
+      "confirmTips": "Are you sure to delete this business",
+      "title": "Delete business"
+    }
+  },
+  "businessRelation": {
+    "btn": {
+      "add": "add business relation"
+    },
+    "view": {
+      "title": "View business relation"
+    },
+    "form": {
+      "person": "person",
+      "time": "time"
+    },
+    "add": {
+      "nameTips": "The business name cannot be empty",
+      "formatTips": "The business name can only contain letters, Numbers, and begin with a letter",
+      "title": "Add business relation"
+    },
+    "update": {
+      "title": "Update business relation",
+      "errTips": "update failed"
+    },
+    "delete": {
+      "confirmTips": "Are you sure to delete this business relation",
+      "title": "Delete business relation"
+    }
+  },
+  "ssoHeader": {
+    "tab": {
+      "tab1": "My Privilege List",
+      "tab2": "Manage User",
+      "tab3": "Manage Privilege",
+      "tab4": "Token Manage"
+    },
+    "modifyPass": "Modify Password"
+  },
+  "login": {
+    "loginTitle": "Please Sign In",
+    "userName": "User name",
+    "password": "Password",
+    "repeatPassword": "Repeat password",
+    "login": "Sign in",
+    "toRegisterPage": "Create an account",
+    "toLoginPage": "Sign in",
+    "userNameTips": "User name is required",
+    "userNameRegTips": "The user name can contain only letters or Numbers, underscores",
+    "passwordTips": "Password is required",
+    "passwordNoCorrect": "Incorrect password",
+    "userNoExist": "User name does not exist",
+    "loginFailed": "Sign in failed",
+    "registerTitle": "Please Sign Up",
+    "repeatPasswordTips": "Repeat password is required",
+    "register": "Sign up",
+    "passwordDiff": "Two different input password, please re-entry",
+    "hasExist": "User name already exists",
+    "registerSucc": "Sign up successfully",
+    "registerFailed": "Sign up failed",
+    "getUidFailed": "Get user name failed",
+    "logout": "Sign out",
+    "noLogin": "You have not been sign in"
+  },
+  "auth": {
+    "flag": "Flag(Application or Application.ServerName)",
+    "role": "Role",
+    "uid": "Uid",
+    "flagTips": "Flag is required",
+    "roleTips": "Role is required",
+    "uidTips": "Uid is required",
+    "uidPlaceholder": "if multiple uid, with a semicolon (;) space",
+    "addPrivilege": "Add Privilege",
+    "delPrivilege": "Revoke Privilege",
+    "privilegeManageTitle": "Privilege Manage",
+    "loadListError": "Load privilege list failed",
+    "selectRecord": "Please select at least one record",
+    "confirmDelete": "Are you sure to delete this record?",
+    "loadUserIdError": "Load user list failed",
+    "delSucc": "Delete successfully",
+    "delError": "Delete error",
+    "adminNotErase": "Admin user privilege can not be delete",
+    "addUser": "Add User",
+    "delUser": "Delete User",
+    "userManageTitle": "User List",
+    "userTime": "Create Time",
+    "adminDelError": "admin Can not be deleted",
+    "token": "TOKEN",
+    "addToken": "Add Token",
+    "delToken": "Delete Token",
+    "tokenManageTitle": "Token List",
+    "tokenExpireTime": "Token Expire Time",
+    "tokenTime": "Token Create Time",
+    "loadTokenError": "Load Token failed",
+    "confirmTokenDelete": "Confirm to delete the token?",
+    "confirmTokenTitle": "Delete Token",
+    "status": "Status",
+    "operator": "Operator",
+    "tokenValid": "valid",
+    "valid": "Enable",
+    "notValid": "Disable",
+    "setTokenValid": "Confirmm to Modify Token Status?",
+    "setTokenError": "Set Token Status Failed",
+    "setTokenSucc": "Modify Token Status Success"
+  },
+  "pass": {
+    "title": "Modify Password",
+    "adminTitle": "First Login -- Set [admin] Password",
+    "userName": "Uid",
+    "password": "Password",
+    "repeatPassword": "Repeat password",
+    "modify": "Modify",
+    "passwordDiff": "Two different input password, please re-entry",
+    "modifySucc": "Modify Succ",
+    "modifyFailed": "Modify Failed",
+    "passwordTips": "Password is required",
+    "repeatPasswordTips": "Repeat password is required",
+    "setAdminPasswordFailed": "Can not set admin user password",
+    "toIndexPage": "Goto My Index Page"
+  },
+  "ssoCommon": {
+    "search": "search",
+    "nextPage": "next",
+    "prevPage": "back",
+    "nodata": "no data",
+    "admin": "admin user has all privileges",
+    "success": " successfully",
+    "failed": " failed",
+    "confirmTitle": "System Confirm",
+    "systemError": "system error",
+    "noPrivilage": "no privilage",
+    "notEmpty": " is required",
+    "needNumber": " must be numeric type",
+    "needArray": " must be array type",
+    "needObject": " must be object type",
+    "needBoolean": " must be boolean type"
+  },
+  "localeSelect": {
+    "cn": "Chinese",
+    "en": "English"
   }
 }

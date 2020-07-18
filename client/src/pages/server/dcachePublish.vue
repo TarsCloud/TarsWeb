@@ -169,8 +169,10 @@
           <let-button type="submit" theme="primary">{{$t('serverList.servant.upload')}}</let-button>
         </let-form>
       </let-modal>
-
       <!-- 发布结果弹出框 -->
+
+      <PublishStatus ref="publishStatus"></PublishStatus>
+      <!--
       <let-modal
         v-model="finishModal.show"
         :title="$t('serverList.table.th.result')"
@@ -192,6 +194,7 @@
           </let-table-column>
         </let-table>
       </let-modal>
+      -->
     </div>
 
     <!-- 发布历史 -->
@@ -305,8 +308,13 @@
 
 <script>
 
+  import PublishStatus from '../publish/status';
+
   export default {
     name: 'ServerPublish',
+    components: {
+      PublishStatus,
+    },
     data() {
       return {
         serverType: this.$route.params.serverType || 'tars',
@@ -425,6 +433,7 @@
       },
       openPublishModal() {
         const checkedServerList = this.serverList.filter(item => item.isChecked);
+
         if (checkedServerList.length <= 0) {
           this.$tip.warning(this.$t('pub.dlg.a'));
           return;
@@ -449,6 +458,8 @@
           module_name = 'RouterServer'
         } else if (serverType == 'proxy') {
           module_name = 'ProxyServer'
+        } else if (serverType == 'dbaccess') {
+          module_name = 'CombinDbAccessServer'
         } else if (serverType == 'dcache') {
           module_name = 'DCacheServerGroup'
         }
@@ -499,36 +510,41 @@
             group_name = 'RouterServer'
           } else if (serverType == 'proxy') {
             group_name = 'ProxyServer'
+          } else if (serverType == 'dbaccess') {
+            group_name = 'CombinDbAccessServer'
           } else if (serverType == 'dcache') {
             group_name = 'DCacheServerGroup'
           }
-          this.publishModal.model.serverList.forEach((item) => {
-            items.push({
-              server_id: item.id.toString(),
-              command: 'patch_tars',
-              parameters: {
-                patch_id: patch_id,
-                bak_flag: item.bak_flag,
-                update_text: this.publishModal.model.update_text,
-                group_name
-              },
-            });
-          });
-          const loading = this.$Loading.show();
-          this.$ajax.postJSON('/server/api/add_task', {
-            serial: true,
-            items,
-          }).then((data) => {
-            loading.hide();
-            this.closePublishModal();
-            this.finishModal.model.task_no = data;
-            this.finishModal.show = true;
-            // 实时更新状态
-            this.getTaskRepeat(data);
-          }).catch((err) => {
-            loading.hide();
-            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-          });
+
+          this.$refs.publishStatus.savePublishServer(this.publishModal, this.closePublishModal, group_name, patch_id);
+
+          // this.publishModal.model.serverList.forEach((item) => {
+          //   items.push({
+          //     server_id: item.id.toString(),
+          //     command: 'patch_tars',
+          //     parameters: {
+          //       patch_id: patch_id,
+          //       bak_flag: item.bak_flag,
+          //       update_text: this.publishModal.model.update_text,
+          //       group_name
+          //     },
+          //   });
+          // });
+          // const loading = this.$Loading.show();
+          // this.$ajax.postJSON('/server/api/add_task', {
+          //   serial: true,
+          //   items,
+          // }).then((data) => {
+          //   loading.hide();
+          //   this.closePublishModal();
+          //   this.finishModal.model.task_no = data;
+          //   this.finishModal.show = true;
+          //   // 实时更新状态
+          //   this.getTaskRepeat(data);
+          // }).catch((err) => {
+          //   loading.hide();
+          //   this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+          // });
         }
       },
       closeFinishModal() {
@@ -537,29 +553,29 @@
         this.finishModal.modal = null;
         this.$refs.finishForm.resetValid();
       },
-      getTaskRepeat(taskId) {
-        let timerId;
-        timerId && clearTimeout(timerId);
-        const getTask = () => {
-          this.$ajax.getJSON('/server/api/task', {
-            task_no: taskId,
-          }).then((data) => {
-            let done = true;
-            data.items.forEach((item) => {
-              // 2、3 成功，失败
-              if (![2, 3].includes(item.status)) {
-                done = false;
-              }
-            });
-            done ? clearTimeout(timerId) : timerId = setTimeout(getTask, 2000);
-            this.finishModal.model.items = data.items;
-          }).catch((err) => {
-            clearTimeout(timerId);
-            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-          });
-        };
-        getTask();
-      },
+      // getTaskRepeat(taskId) {
+      //   let timerId;
+      //   timerId && clearTimeout(timerId);
+      //   const getTask = () => {
+      //     this.$ajax.getJSON('/server/api/task', {
+      //       task_no: taskId,
+      //     }).then((data) => {
+      //       let done = true;
+      //       data.items.forEach((item) => {
+      //         // 2、3 成功，失败
+      //         if (![2, 3].includes(item.status)) {
+      //           done = false;
+      //         }
+      //       });
+      //       done ? clearTimeout(timerId) : timerId = setTimeout(getTask, 2000);
+      //       this.finishModal.model.items = data.items;
+      //     }).catch((err) => {
+      //       clearTimeout(timerId);
+      //       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+      //     });
+      //   };
+      //   getTask();
+      // },
       updateServerList() {
         // 更新服务列表
         const start = (this.page - 1) * this.pageSize;

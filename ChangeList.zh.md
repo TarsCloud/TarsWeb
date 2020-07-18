@@ -1,6 +1,9 @@
 ## 20200717(2.4.7)
 - 添加多网关配置功能
 - 添加网关路由ip port模式下配置path的功能
+- 完善dcache的支持, 全面支持dcache, 包括router, cache, router, dbaccess的自动部署
+- 合并demo到web下, 不再开启两个端口
+- 支持tars树的业务关系配置(暂时界面为对外开放)
 
 ## 20200703(2.4.6)
 - 修复strict模式下, tarslog迁移部署的问题

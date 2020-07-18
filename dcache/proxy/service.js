@@ -39,16 +39,19 @@ ProxyService.createOrUpdate = function (whereProperties, {
 };
 
 
-ProxyService.update = function (Proxy) {
-  return ProxyDao.update(Proxy);
+ProxyService.update = async function (Proxy) {
+  return await ProxyDao.update(Proxy);
 };
 
-ProxyService.removeProxy = function ({ server_name }) {
-  return ProxyDao.destroy({ where: { server_name } });
+ProxyService.removeProxy = async function ({ server_name }) {
+  return await ProxyDao.destroy({ where: { server_name } });
 };
 
-ProxyService.findByServerName = function ({ serverName }) {
-  return ProxyDao.findOne({ where: { server_name: serverName } });
+ProxyService.removeProxyById = async function ({ id }) {
+  return await ProxyDao.destroy({ where: { id } });
+};
+ProxyService.findByServerName = async function ({ serverName }) {
+  return await ProxyDao.findOne({ where: { server_name: serverName } });
 };
 
 module.exports = ProxyService;

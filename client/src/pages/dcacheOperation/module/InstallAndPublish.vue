@@ -90,6 +90,44 @@
           </let-table-column>
         </let-table>
       </let-form-group>
+      <let-form-group :title="$t('module.dbAccessInfo')" inline label-position="top" v-if="this.dbAccessData.servant != ''">
+        <let-form-item :label="$t('module.servant')" itemWidth="400px">
+          {{dbAccessData.servant}}
+        </let-form-item>
+        <let-form-item :label="$t('service.isSerializated')" itemWidth="350px">
+          {{mapSerializeType(dbAccessData.isSerializated)}}
+        </let-form-item>
+        <let-form-item :label="$t('module.dbAccessIp')" itemWidth="400px">
+          {{dbAccessData.dbaccess_ip}}
+        </let-form-item>
+        <br>
+        <let-form-item :label="$t('cache.db.dbNum')" itemWidth="240px" required>
+          {{dbAccessData.db_num}}
+        </let-form-item>
+        <let-form-item :label="$t('cache.db.DBPrefix')" itemWidth="240px" required>
+          {{dbAccessData.db_prefix}}
+        </let-form-item>
+        <br>
+        <let-form-item :label="$t('cache.db.tableNum')" itemWidth="240px" required>
+          {{dbAccessData.table_num}}
+        </let-form-item>
+        <let-form-item :label="$t('cache.db.tablePrefix')" itemWidth="240px" required>
+          {{dbAccessData.table_prefix}}
+        </let-form-item>
+        <br>
+        <let-form-item :label="$t('cache.db.dbHost')" itemWidth="240px" required>
+          {{dbAccessData.db_host}}
+        </let-form-item>
+        <let-form-item :label="$t('cache.db.dbPort')" itemWidth="240px" required>
+          {{dbAccessData.db_port}}
+        </let-form-item>
+        <let-form-item :label="$t('cache.db.dbUser')" itemWidth="240px" required>
+          {{dbAccessData.db_user}}
+        </let-form-item>
+        <let-form-item :label="$t('cache.db.tableCharset')" itemWidth="240px" required>
+          {{dbAccessData.db_charset}}
+        </let-form-item>
+      </let-form-group>
       <let-button size="small" theme="primary" @click="installAndPublish">{{$t('apply.installAndPublish')}}
       </let-button>
     </let-form>
@@ -118,6 +156,7 @@
       return {
         moduleId,
         moduleData: {},
+        dbAccessData: {},
         releaseProgress: [],
         showModal: false,
         timerId: null
@@ -127,19 +166,23 @@
       getModuleFullInfo () {
         let {moduleId} = this;
         this.$ajax.getJSON('/server/api/get_module_full_info', {moduleId}).then((data) => {
-          this.moduleData = data || {};
+          this.moduleData = data.item || {};
+          this.dbAccessData = data.dbAccess || {};
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       },
       installAndPublish () {
+        const loading = this.$loading.show();
         let {moduleId} = this;
         let mkCache = sessionStorage.getItem('mkCache');
         this.$ajax.getJSON('/server/api/module_install_and_publish', {moduleId, mkCache}).then(response => {
+          loading.hide();
           let releaseId = response.releaseRsp.releaseId;
           this.getTaskRepeat({releaseId});
           this.$tip.success(response.releaseRsp.errMsg)
         }).catch(err => {
+          loading.hide();
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       },
@@ -169,12 +212,16 @@
       },
       getReleaseProgress (releaseId) {
         this.$ajax.getJSON('/server/api/get_module_release_progress', {releaseId}).then(data => {
-          console.log(data);
+          // console.log(data);
           this.showModal = true;
           this.releaseProgress = data.progress;
         }).catch(err => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
+      },
+      mapSerializeType(isSerializated) {
+        if(!isSerializated) return this.$t('cache.sTypeTip1');
+        else return this.$t('cache.sTypeTip2');
       },
       mapServerType (key) {
         if (key === 0) return this.$t('module.mainServer');

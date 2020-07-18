@@ -2,6 +2,7 @@
   <div class="page_operation">
     <let-tabs @click="onTabClick" :activekey="$route.matched[1]? $route.matched[1].path : '/operation/apply'">
       <let-tab-pane :tab="$t('releasePackage.proxyList')" tabkey="/releasePackage/proxyList"></let-tab-pane>
+      <let-tab-pane :tab="$t('releasePackage.accessList')" tabkey="/releasePackage/accessList"></let-tab-pane>
       <let-tab-pane :tab="$t('releasePackage.routerList')" tabkey="/releasePackage/routerList"></let-tab-pane>
       <let-tab-pane :tab="$t('releasePackage.cacheList')" tabkey="/releasePackage/cacheList"></let-tab-pane>
     </let-tabs>

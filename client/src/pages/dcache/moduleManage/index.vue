@@ -1,9 +1,11 @@
 <template>
   <div class="page_server_manage">
 
+    <div class="table_head">
+      <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    </div>
     <!-- 服务列表 -->
-    <let-table v-if="serverList" :data="serverList" :title="$t('serverList.title.serverList')"
-               :empty-msg="$t('common.nodata')" ref="serverListLoading">
+    <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" ref="serverListLoading">
       <let-table-column>
         <template slot="head" slot-scope="props">
           <let-checkbox v-model="isCheckedAll" :value="isCheckedAll" :change="checkedAllChange"></let-checkbox>
@@ -15,7 +17,11 @@
       <let-table-column :title="$t('serverList.table.th.group')" prop="group_name">
         <template slot-scope="{row:{group_name}}">{{/.*?(\d+)$/.exec(group_name)[1]}}</template>
       </let-table-column>
-      <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
+        <template slot-scope="scope">
+          <a :href="'/static/logview/logview.html?app=DCache&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" title="点击查看服务日志(view server logs)" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
+        </template> 
+      </let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="125px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.zb')" width="45px">
         <template slot-scope="{row:{server_type}}">
@@ -48,17 +54,17 @@
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.processID')" prop="process_id" width="65px" ></let-table-column>
       <let-table-column :title="$t('serverList.table.th.version')" prop="patch_version" width="45px"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.time')">
+      <let-table-column :title="$t('serverList.table.th.time')"  width="50px">
         <template slot-scope="scope">
           <span style="white-space: nowrap">{{handleNoPublishedTime(scope.row.patch_time)}}</span>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('operate.operates')" width="260px">
+      <let-table-column :title="$t('operate.operates')" width="200px">
         <template slot-scope="scope">
           <let-table-operation @click="configServer(scope.row.id)">{{$t('operate.update')}}</let-table-operation>
           <let-table-operation @click="restartServer(scope.row.id)">{{$t('operate.restart')}}</let-table-operation>
-          <let-table-operation class="danger" @click="stopServer(scope.row.id)">{{$t('operate.stop')}}
-          </let-table-operation>
+          <let-table-operation class="danger" @click="stopServer(scope.row.id)">{{$t('operate.stop')}} </let-table-operation>
+          <br>
           <let-table-operation @click="manageServant(scope.row)">{{$t('operate.servant')}}</let-table-operation>
           <let-table-operation @click="showMoreCmd(scope.row)">{{$t('operate.more')}}</let-table-operation>
         </template>
@@ -235,8 +241,7 @@
         <let-table-column :title="$t('operate.servant')" prop="servant"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.adress')" prop="endpoint"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.thread')" prop="thread_num"></let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')"
-                          prop="max_connections"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" prop="max_connections"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.maxQueue')" prop="queuecap"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.timeout')" prop="queuetimeout"></let-table-column>
         <let-table-column :title="$t('operate.operates')" width="90px">
@@ -680,7 +685,7 @@
         return same
       },
       checkedAllChange() {
-        console.log(arguments);
+        // console.log(arguments);
       },
       // 获取服务列表
       async getServerList() {
@@ -694,7 +699,14 @@
             preItem ? item.isChecked = preItem.isChecked : item.isChecked = false;
           });
 
-          this.serverList = data;
+          this.serverList = data.sort((a, b)=>{
+            if(a.group_name < b.group_name)
+              return -1;
+            else if (a.group_name == b.group_name)
+              return 0;
+            else
+              return 1;
+          })
         } catch (err) {
           console.error(err);
           this.$tip.error(err.message)

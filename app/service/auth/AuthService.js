@@ -25,6 +25,7 @@ const {
 	getAuthListByFlagUrl,
 } = require('../../../config/authConf');
 const loginConf = require('../../../config/loginConf');
+const webConf = require('../../../config/webConf');
 
 const util = require('../../tools/util');
 const logger = require('../../logger');
@@ -78,9 +79,12 @@ AuthService.checkHasAuth = async (application, serverName, role, uid) => {
 	}
 };
 
+AuthService.getUrl = (path) => {
+	return "http://localhost:" + webConf.webConf.port + path;
+}
 AuthService.httpCallCheckAuth = async (flag, roles, uid) => {
 	
-	var rst = await util.jsonRequest.get(getAuthUrl, {
+	var rst = await util.jsonRequest.get(AuthService.getUrl(getAuthUrl), {
 		flag: flag,
 		role: roles,
 		uid: uid
@@ -97,7 +101,7 @@ AuthService.getRoles = async (uid) => {
 	if (!enableAuth) {
 		return [loginConf.defaultLoginUid];
 	}
-	var rst = await util.jsonRequest.get(getAuthListByUidUrl, {
+	var rst = await util.jsonRequest.get(AuthService.getUrl(getAuthListByUidUrl), {
 		uid: uid
 	});
 	if (rst && rst.ret_code == 200) {
@@ -121,7 +125,7 @@ AuthService.isAdmin = async (uid) => {
 	if (!enableAuth) {
 		return true;
 	}
-	var rst = await util.jsonRequest.get(isAdminUrl, {
+	var rst = await util.jsonRequest.get(AuthService.getUrl(isAdminUrl), {
 		uid: uid
 	});
 
@@ -136,7 +140,7 @@ AuthService.getAuthListByUid = async (uid) => {
 	if (!enableAuth) {
 		return [];
 	}
-	var rst = await util.jsonRequest.get(getAuthListByUidUrl, {
+	var rst = await util.jsonRequest.get(AuthService.getUrl(getAuthListByUidUrl), {
 		uid: uid
 	});
 	// console.log(rst);
@@ -190,7 +194,7 @@ AuthService.addAuth = async (application, serverName, operator, developer) => {
 	}
 	let flag = application + (serverName ? ('.' + serverName) : '');
 	let authList = _.concat(AuthService.formatAddAuthParams(flag, 'operator', operator), AuthService.formatAddAuthParams(flag, 'developer', developer))
-	let rst = await util.jsonRequest.post(addAuthUrl, {auth: authList});
+	let rst = await util.jsonRequest.post(AuthService.getUrl(addAuthUrl), { auth: authList});
 	if (rst && rst.ret_code == 200) {
 		return true;
 	} else {
@@ -206,8 +210,8 @@ AuthService.updateAuth = async (application, serverName, operator, developer) =>
 	operator = AuthService.formatUidToArray(operator);
 	developer = AuthService.formatUidToArray(developer);
 	let rst = await Promise.all([
-		util.jsonRequest.post(updateAuthUrl, {flag: flag, role: 'operator', uid: operator}),
-		util.jsonRequest.post(updateAuthUrl, {flag: flag, role: 'developer', uid: developer})
+		util.jsonRequest.post(AuthService.getUrl(updateAuthUrl), { flag: flag, role: 'operator', uid: operator}),
+		util.jsonRequest.post(AuthService.getUrl(updateAuthUrl), { flag: flag, role: 'developer', uid: developer})
 	]);
 	for (var i = 0; i < rst.length; i++) {
 		if (!rst[i] || rst[i].ret_code != 200) {
@@ -222,7 +226,7 @@ AuthService.getAuthList = async (application, serverName) => {
 	if (!enableAuth) {
 		return [];
 	}
-	let rst = await util.jsonRequest.get(getAuthListByFlagUrl, {flag: application + '.' + serverName});
+	let rst = await util.jsonRequest.get(AuthService.getUrl(getAuthListByFlagUrl), { flag: application + '.' + serverName});
 	let authList = {
 		operator: [],
 		developer: []
@@ -281,7 +285,7 @@ AuthService.deleteAuth = async (application, serverName) => {
 	if (!enableAuth) {
 		return true;
 	}
-	let rst = await util.jsonRequest.post(deleteAuthUrl, {flag: application + '.' + serverName});
+	let rst = await util.jsonRequest.post(AuthService.getUrl(deleteAuthUrl), {flag: application + '.' + serverName});
 	if (rst.ret_code == 200) {
 		return true;
 	} else {

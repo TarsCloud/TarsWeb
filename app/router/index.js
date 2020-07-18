@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const {pageConf, apiConf, clientConf} = require('./routerConf');
+const {pageConf, apiConf, clientConf, demoConf} = require('./routerConf');
 const Router = require('koa-router');
 const _ = require('lodash');
 const noCacheMidware = require('../midware/noCacheMidware');
@@ -33,6 +33,7 @@ const getRouter = (router, routerConf) => {
 		router[method](url, gatewayDaoMidware);	   //网关配置db获取中间件，非网关路由不做任何事情
 		//业务逻辑控制器
 		router[method](url, async (ctx, next) => {
+			
 			await controller.call({}, ctx);
 			await next();
 		});
@@ -58,5 +59,8 @@ const apiRouter = new Router();
 apiRouter.prefix('/api');
 getRouter(apiRouter, apiConf);
 
+const demoRouter = new Router();
+demoRouter.prefix('/pages/sso/api');
+getRouter(demoRouter, demoConf);
 
-module.exports = {pageRouter, paegApiRouter, clientRouter, apiRouter};
+module.exports = {pageRouter, paegApiRouter, clientRouter, apiRouter, demoRouter};

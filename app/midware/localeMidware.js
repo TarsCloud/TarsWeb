@@ -22,7 +22,7 @@ const path = require('path');
 let localeMap = {};
 
 let fileNames = fs.readdirSync(path.join(__dirname, '../../locale'));
-let locale = {};
+// let locale = {};
 fileNames.forEach((fileName) => {
 	let content = require(path.join(__dirname, '../../locale/', fileName));
 	localeMap[content.localeCode] = formatJson(content);
