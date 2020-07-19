@@ -45,19 +45,19 @@ CREATE TABLE `t_bm_case` (
 -- Table structure for table `t_kafka_queue`
 --
 
-DROP TABLE IF EXISTS `t_kafka_queue`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `t_kafka_queue` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `topic` varchar(16) NOT NULL DEFAULT '',
-  `partition` int(4) NOT NULL DEFAULT '0',
-  `offset` int(11) NOT NULL DEFAULT '0',
-  `task_no` varchar(64) NOT NULL DEFAULT '' COMMENT '任务ID',
-  `status` varchar(16) NOT NULL DEFAULT 'waiting' COMMENT '任务状态',
-  `message` varchar(256) DEFAULT '',
-  PRIMARY KEY (`id`,`task_no`,`status`)
-) ENGINE=InnoDB CHARSET=utf8;
+-- DROP TABLE IF EXISTS `t_kafka_queue`;
+-- /*!40101 SET @saved_cs_client     = @@character_set_client */;
+-- /*!40101 SET character_set_client = utf8 */;
+-- CREATE TABLE `t_kafka_queue` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `topic` varchar(16) NOT NULL DEFAULT '',
+--   `partition` int(4) NOT NULL DEFAULT '0',
+--   `offset` int(11) NOT NULL DEFAULT '0',
+--   `task_no` varchar(64) NOT NULL DEFAULT '' COMMENT '任务ID',
+--   `status` varchar(16) NOT NULL DEFAULT 'waiting' COMMENT '任务状态',
+--   `message` varchar(256) DEFAULT '',
+--   PRIMARY KEY (`id`,`task_no`,`status`)
+-- ) ENGINE=InnoDB CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,7 +89,7 @@ CREATE TABLE `t_tars_files` (
   `server_name` varchar(128) NOT NULL DEFAULT '' COMMENT '服务名',
   `file_name` varchar(64) NOT NULL DEFAULT '' COMMENT '文件名',
   `posttime` datetime DEFAULT NULL COMMENT '更新时间',
-  `context` text COMMENT '解析后的JSON对象',
+  `context` mediumtext COMMENT '解析后的JSON对象',
   `benchmark_context` text,
   PRIMARY KEY (`server_name`,`file_name`),
   UNIQUE KEY `f_id` (`f_id`) USING BTREE
