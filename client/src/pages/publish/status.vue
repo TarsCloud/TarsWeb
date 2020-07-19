@@ -77,7 +77,7 @@ export default {
       publishModal.model.serverList.forEach((item) => {
           items.push({
             server_id: item.id.toString(),
-            command: 'patch_tars',
+            command: publishModal.command || 'patch_tars',
             parameters: {
               patch_id: publishModal.model.patch_id.toString(),
               bak_flag: item.bak_flag || false,
@@ -115,7 +115,7 @@ export default {
             }
 
             if(item.percent) {
-              item.desc = "(" + item.percent + "%)" 
+              item.desc = "(" + item.percent + "%)"
             } else {
               item.desc = "...";
             }

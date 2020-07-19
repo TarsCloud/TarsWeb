@@ -331,6 +331,7 @@
     "serial": "serial",
     "config": "configuration",
     "patch": "publish",
+    "gracePatch": "grace publish",
     "service": "service",
     "time": "Time",
     "name": "name",
