@@ -390,6 +390,8 @@
     "serial": "序号",
     "config": "配置",
     "patch": "发布",
+    "gracePatch": "平滑发布",
+    "graceInfo": "(TarsFramework >= v2.4.4, TarsGo >= v1.1.4)",
     "service": "服务",
     "time": "时间",
     "name": "名",
@@ -845,7 +847,7 @@
         "step4": "window命令行运行: busybox.exe install_tarsnode.sh",
         "step5": "windows计划任务中增加监控:  c:\\tars-install\\tars\\tarsnode\\util\\monitor.bat",
         "step6": "完成安装, 缺省目录: c:\\tars-install\\tars"
-      } 
+      }
     },
     "add": {
       "nodeNameTips": "节点名不能为空",
@@ -891,7 +893,7 @@
       "invalid": "无法安装",
       "installing": "正在安装"
     }
-  },  
+  },
   "checkTable": {
     "table": {
       "th": {

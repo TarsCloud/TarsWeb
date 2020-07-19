@@ -91,6 +91,13 @@
               </div>
               <br/>
                 <let-button theme="primary" size="small" class="mt10" @click="savePublishServer">{{$t('common.patch')}}</let-button>
+                &nbsp;&nbsp;&nbsp;
+                <span v-if="serverList.length > 0 && serverList[0].server_type === 'tars_go'">
+                <let-button theme="sub-primary"  size="small" style="{margin-left: 5px}" class="mt10" @click="savePublishServer($event, 1)">
+                  {{$t('common.gracePatch')}}
+                </let-button>
+                  {{$t('common.graceInfo')}}
+                </span>
               </let-form-item>
 
               <let-form-item :label="$t('serverList.table.th.version')" v-else>
@@ -431,9 +438,10 @@ export default {
       this.patchType = 'patch';
       this.$refs.publishForm.resetValid();
     },
-    savePublishServer() {
+    savePublishServer(event, isGrace) {
       // 发布
       if (this.$refs.publishForm.validate()) {
+        this.publishModal.command = isGrace ? 'grace_patch_tars':"patch_tars"
         this.$refs.publishStatus.savePublishServer(this.publishModal, this.closePublishModal);
       }
     },

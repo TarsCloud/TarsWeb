@@ -183,10 +183,10 @@
           node.nodeKey = node.id;  //eslint-disable-line
 
           // 第一层特殊图标、展开
-          if (isFirstLayer) {
-            node.iconClass = 'tree-icon';
-            node.expand = true;  //eslint-disable-line
-          }
+          // if (isFirstLayer) {
+          //   node.iconClass = 'tree-icon';
+          //   node.expand = true;  //eslint-disable-line
+          // }
 
           // 如果是当前菜单，则展开
           if(this.$route.params.treeid === node.nodeKey) {
@@ -321,7 +321,7 @@
     /*目录树*/
     .left-tree {
       flex: 0 0 auto;
-      width: 250px;
+      width: 280px;
       min-height: 380px;
 
       .loading {
@@ -333,8 +333,6 @@
       .let-icon-caret-right-small {
         margin-right: 2px;
         margin-left: 4px;
-        position: relative;
-        top: -1px;
       }
 
       ul.let-tree__node {
@@ -352,7 +350,7 @@
 
       & > ul.let-tree__node {
         font-size: 16px;
-        margin-bottom: var(--gap-small);
+        margin-bottom: 10px;
         margin-left: 0;
 
         & > li > ul.let-tree__node {

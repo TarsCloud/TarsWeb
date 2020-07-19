@@ -43,8 +43,6 @@ const ApplyController = {
       const treeNodeMap = {};
       const rootNode = [];
 
-      // console.log(tarsDcache.children);
-
       // 获取 dache 的router、proxy 服务
       let timeout = DCacheOptPrx.getTimeout();
       DCacheOptPrx.setTimeout(3000);

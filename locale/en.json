@@ -373,6 +373,8 @@
     "serial": "serial",
     "config": "configuration",
     "patch": "publish",
+    "gracePatch": "grace publish",
+    "graceInfo": "(TarsFramework >= v2.4.4, TarsGo >= v1.1.4)",
     "service": "service",
     "time": "Time",
     "name": "name",

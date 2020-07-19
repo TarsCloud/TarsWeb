@@ -120,10 +120,10 @@ export default {
         node.nodeKey = node.id;  //eslint-disable-line
 
         // 第一层特殊图标、展开
-        if (isFirstLayer) {
+        // if (isFirstLayer) {
           // node.iconClass = 'tree-icon';
           // node.expand = true;  //eslint-disable-line
-        }
+        // }
 
         if (node.children && node.children.length) {
           this.handleData(node.children);
@@ -262,7 +262,7 @@ export default {
   /*目录树*/
   .left-tree {
     flex: 0 0 auto;
-    width: 250px;
+    width: 280px;
     min-height: 380px;
 
     .loading {
@@ -284,14 +284,14 @@ export default {
       li {
         text-overflow: ellipsis;
         overflow: hidden;
-          word-break: break-all;
-          white-space: pre;
+        word-break: break-all;
+        white-space: pre;
       }
     }
 
     & > ul.let-tree__node {
       font-size: 16px;
-      margin-bottom: var(--gap-small);
+      margin-bottom: 10px;
       margin-left: 0;
 
       & > li > ul.let-tree__node {
