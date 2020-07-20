@@ -59,11 +59,16 @@
           <let-table-operation @click="showMoreCmd(scope.row)">{{$t('operate.more')}}</let-table-operation>
         </template>
       </let-table-column>
+      <template slot="operations">
+        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="restart"></batch-operation>
+        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="stop"></batch-operation>
+      </template>
     </let-table>
 
     <!-- 服务实时状态 -->
     <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
-    <let-table v-if="serverNotifyList && showOthers" :data="serverNotifyList" ref="serverNotifyListLoading">
+    <let-table v-if="serverNotifyList && showOthers"
+      :data="serverNotifyList" :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
       <let-table-column :title="$t('common.time')" prop="notifytime"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>

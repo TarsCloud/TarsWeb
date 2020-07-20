@@ -333,6 +333,8 @@
       .let-icon-caret-right-small {
         margin-right: 2px;
         margin-left: 4px;
+        position: relative;
+        top: -1px;
       }
 
       ul.let-tree__node {

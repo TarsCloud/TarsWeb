@@ -276,7 +276,6 @@
             v-model="servantDetailModal.model.obj_name"
             :placeholder="$t('serverList.servant.c')"
             required
-            pattern="^[A-Za-z]+$"
             :pattern-tip="$t('serverList.servant.obj')"
           ></let-input>
         </let-form-item>

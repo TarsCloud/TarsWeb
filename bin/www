@@ -36,7 +36,6 @@ try {
 	if(process.env.TARS_WEB_STRICT) {
 		webConf.strict = (process.env.TARS_WEB_STRICT == "true");
 	}
-	// webConf.strict = process.env.TARS_WEB_STRICT || webConf.strict;
 
 	let numCpus = os.cpus().length;
 	if (cluster.isMaster && enableMultiProcess) {

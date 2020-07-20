@@ -35,6 +35,9 @@ import OperationTemplates from '@/pages/operation/templates';
 import OperationNodes from '@/pages/operation/nodes';
 import OperationCheck from '@/pages/operation/check';
 import OperationGateway from '@/pages/operation/gateway/index';
+import OperationApplication from '@/pages/operation/application';
+import OperationBusiness from '@/pages/operation/business';
+import OperationBusinessRelation from '@/pages/operation/businessRelation';
 
 Vue.use(Router);
 
@@ -104,6 +107,18 @@ export default new Router({
         {
           path: 'gateway',
           component: OperationGateway,
+        },       
+        {
+          path: 'application',
+          component: OperationApplication,
+        },
+        {
+          path: 'business',
+          component: OperationBusiness,
+        },
+        {
+          path: 'businessRelation',
+          component: OperationBusinessRelation,
         }
       ],
     },
