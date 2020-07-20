@@ -54,6 +54,10 @@ module.exports = {
  * @param ctx
  */
 async function getUidByTicket(ctx, ticket){
+    if (!ticket) {
+        return null;
+    }
+    
     let uid = await LoginService.getUidByTicket(ticket);
     return uid;
     //TODO
