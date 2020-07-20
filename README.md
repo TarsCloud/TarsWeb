@@ -11,7 +11,7 @@ Through the tars web management platform, users can easily complete the followin
 *Machine or service monitoring and reporting
 *Single or batch service configuration
 ## Installation 
-Because tars web relies on tars, please refer to [tars installation instruction document](https://tarscloud.github.io/TarsDocs/rumen/an-zhuang/) to install tars web.
+Because tars web relies on tars, please refer to [tars installation instruction document](https://tarscloud.github.io/TarsDocs/installation/) to install tars web.
 
 ## Functions
 Tars web provides visual operation to operate and maintain tars service. It can quickly build its own stable and reliable distributed application in the way of microservice, and realize complete and effective service governance. It has the following functions:
