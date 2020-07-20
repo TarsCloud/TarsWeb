@@ -136,7 +136,7 @@ if (dcacheConf.enableDcache) {
 // dcache 会添加新的 page、api router， 不能提前
 const { pageRouter, paegApiRouter, clientRouter, apiRouter, demoRouter } = require('./app/router');
 
-app.use(apiMidware(apiRouter));
+// app.use(apiMidware(apiRouter));
 app.use(pageRouter.routes(), pageRouter.allowedMethods());
 app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods());
 app.use(clientRouter.routes(), clientRouter.allowedMethods());

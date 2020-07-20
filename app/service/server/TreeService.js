@@ -178,7 +178,20 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 	let businessRelationList = cacheData.businessRelation || []
 	let data = cacheData.tree || []
 	if(type && type === '1'){
-		data = data.filter(item => item.name !== 'DCache')
+		let newData = []
+		data.forEach(item => {
+			if (item.name !== 'DCache') {
+				newData.push(item)
+			} else if (item.name === 'DCache' && item.children) {
+				let children = item.children.filter(jitem => jitem.name === 'DCacheOptServer' || jitem.name === 'ConfigServer' || jitem.name === 'PropertyServer')
+				item.children = children
+				newData.push(item)
+			}
+		})
+		data = newData
+		
+		// data = data.filter(item => item.name !== 'DCache')
+
 	}else if(type === '2'){
 		let newData = []
 		data.forEach(item => {

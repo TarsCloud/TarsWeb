@@ -45,7 +45,7 @@ const ApplyController = {
 
       // 获取 dache 的router、proxy 服务
       let timeout = DCacheOptPrx.getTimeout();
-      DCacheOptPrx.setTimeout(3000);
+      DCacheOptPrx.setTimeout(10000);
     
       const args = await DCacheOptPrx.loadCacheApp();
 
