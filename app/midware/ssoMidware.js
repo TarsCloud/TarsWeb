@@ -48,15 +48,15 @@ module.exports = (loginConf) => {
 
         if (await validate(ctx, uid, ticket)) {
           ctx.uid = uid;
-          if (ticketFromQuery) {
-            const urlObj = url.parse(ctx.request.url, true);
-            delete (urlObj.query[loginConf.ticketParamName || 'ticket']);
-            delete (urlObj.search);
-            const redirectUrl = url.format(urlObj);
-            ctx.redirect(redirectUrl);
-          } else {
+          //if (ticketFromQuery) {
+          //  const urlObj = url.parse(ctx.request.url, true);
+          //  delete (urlObj.query[loginConf.ticketParamName || 'ticket']);
+          //  delete (urlObj.search);
+          //  const redirectUrl = url.format(urlObj);
+          //  ctx.redirect(redirectUrl);
+          //} else {
             await next();
-          }
+          //}
         } else if (isInPath(ctx, loginConf.apiPrefix)) {
           ctx.body = { ret_code: 500, err_msg: loginConf.apiNotLoginMes, data: {} };
         } else {
