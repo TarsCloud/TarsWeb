@@ -1,7 +1,7 @@
 <template>
   <div class="page_operation_templates"  style="text-align: center;" >
     <let-button size="small" theme="primary" @click="checkFramework">{{$t('nodes.btn.check')}}</let-button>
-    <let-button theme="info" style="float:right" @click="openShowProblem">有问题怎么办?</let-button>
+    <let-button theme="info" style="float:right" @click="openShowProblem">{{$t('checkTable.problem')}}</let-button>
     <br><br>
     <let-table ref="checkLoading" :data="servers" stripe :row-class-name="tableRowClassName" :empty-msg="$t('common.nodata')">
       <let-table-column :title="$t('checkTable.table.th.server_name')" prop="serverName"></let-table-column>
