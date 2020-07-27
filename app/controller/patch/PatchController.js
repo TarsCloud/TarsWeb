@@ -169,7 +169,8 @@ PatchController.uploadPatchPackage = async (ctx) => {
 			await PatchService.setPatchPackageDefault(package);
 
 			// ctx.body = "upload succ and set this package to default package!\r\n";
-			ctx.makeResObj(200, '', "upload succ and set this package to default package!");
+			//ctx.makeResObj(200, '', "upload succ and set this package to default package!");
+			ctx.makeResObj(200, '', data);
 		}
 	} catch (e) {
 		logger.error('[PatchController.uploadPatchPackage]:', e, ctx);
