@@ -9,11 +9,12 @@
           <a :class="{active: false}" href="/"><img class="logo" src="@/assets/img/tars-logo.png"></a>
         </div>
 
-        <let-tabs class="tabs" :center="true" @click="clickTab">
+        <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
           <let-tab-pane :tab="$t('ssoHeader.tab.tab1')" tabkey="/" :icon="serverIcon"></let-tab-pane>
-          <let-tab-pane v-if="isAdmin" :tab="$t('ssoHeader.tab.tab2')" tabkey="/user" :icon="opaIcon"></let-tab-pane>
+          <let-tab-pane v-if="isAdmin" :tab="$t('ssoHeader.tab.tab2')" tabkey="/user" :icon="userIcon"></let-tab-pane>
           <let-tab-pane v-if="isAdmin" :tab="$t('ssoHeader.tab.tab3')" tabkey="/auth" :icon="packageIcon"></let-tab-pane>
           <let-tab-pane :tab="$t('ssoHeader.tab.tab4')" tabkey="/token" :icon="tokenIcon"></let-tab-pane>
+          <let-tab-pane  v-if="isAdmin" :tab="$t('ssoHeader.tab.tab5')" tabkey="/set" :icon="opaIcon"></let-tab-pane>
         </let-tabs>
 
         <div class="language-wrap">
@@ -33,7 +34,7 @@
             <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}" v-show="enableLogin"></i>
             <transition name="fade">
               <div class="user-pop-wrap" v-show="enableLogin && userOptOpen">
-              <div> <a href="/pass.html" >{{$t('ssoHeader.modifyPass')}}</a> </div>
+              <div> <a href="/pass.html" v-if="!enableLdap">{{$t('ssoHeader.modifyPass')}}</a> </div>
               <div> <a href="/logout">{{$t('login.logout')}}</a> </div>
               </div>
             </transition>
@@ -46,8 +47,9 @@
 
 <script>
 import serverIcon from '@/assets/img/server-icon.png';
+import userIcon from '@/assets/img/operator-l.png';
 import opaIcon from '@/assets/img/opa-icon.png';
-import tokenIcon from '@/assets/img/operator-l.png';
+import tokenIcon from '@/assets/img/create-l.png';
 import packageIcon from '@/assets/img/package.png'
 import {localeMessages} from '@/locale/i18n';
 
@@ -57,6 +59,7 @@ export default {
     return {
        serverIcon,
        opaIcon,
+       userIcon,
        packageIcon,
        tokenIcon, 
        locale: this.$cookie.get('locale') || 'cn',
@@ -65,47 +68,56 @@ export default {
        isAdmin: false,
        uid: '--',
        userOptOpen: false,
+       enableLdap: false,
     }
   },
   methods:{
-      clickTab(tabkey) {
-        this.$router.replace(tabkey);
-      },
-      changeLocale(){
-        this.$cookie.set('locale', this.locale, {expires: '1Y'});
-        location.reload();
-      },
-      getLoginUid(){
-        this.$ajax.getJSON('/sso/api/getLoginUid').then((data) => {
-          if(data && data.uid){
-            this.uid = data.uid;
-          }else{
-            this.uid = '***';
-          }
-        }).catch((err) => {
-            this.$tip.error(`${this.$t('login.getUidFailed')}: ${err.err_msg || err.message}`);
+    clickTab(tabkey) {
+      this.$router.replace(tabkey);
+    },
+    changeLocale(){
+      this.$cookie.set('locale', this.locale, {expires: '1Y'});
+      location.reload();
+    },
+    getLoginUid(){
+      this.$ajax.getJSON('/server/api/getLoginUid').then((data) => {
+        if(data && data.uid){
+          this.uid = data.uid;
+        }else{
+          this.uid = '***';
+        }
+      }).catch((err) => {
+          this.$tip.error(`${this.$t('login.getUidFailed')}: ${err.err_msg || err.message}`);
+      });
+    },
+    checkEnableLogin(){
+        this.$ajax.getJSON('/server/api/isEnableLogin').then((data) => {
+            this.enableLogin = data.enableLogin || false;
+        }).catch((err)=>{
+
         });
       },
-      checkEnableLogin(){
-          this.$ajax.getJSON('/sso/api/isEnableLogin').then((data) => {
-              this.enableLogin = data.enableLogin || false;
-          }).catch((err)=>{
+    checkEnableLdap(){
+        this.$ajax.getJSON('/server/api/isEnableLdap').then((data) => {
+            this.enableLdap = data.enableLdap || false;
+        }).catch((err)=>{
 
-          });
-        },
-    checkAdmin(){
+        });
+    },
+    async checkAdmin(){
         this.isAdmin = false; 
-        this.$ajax.getJSON('/sso/api/isAdmin').then((data) => {
+        return this.$ajax.getJSON('/server/api/isAdmin').then((data) => {
           this.isAdmin = data.admin;
           // alert(this.isAdmin);
         }).catch((err) => {
       });
     },   
   },
-  mounted(){
+  async mounted(){
      this.getLoginUid();
      this.checkEnableLogin();
-     this.checkAdmin();
+     await this.checkAdmin();
+     this.checkEnableLdap();
   }
 };
 </script>

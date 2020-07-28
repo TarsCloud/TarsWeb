@@ -19,7 +19,6 @@ const { tApplyAppBase, tApplyCacheServerConf, tApplyCacheModuleConf } = require(
 
 const serverConf = {};
 
-
 serverConf.add = async function (option) {
   if (toString.call(option) === '[object Array]') {
     const promiseArray = [];

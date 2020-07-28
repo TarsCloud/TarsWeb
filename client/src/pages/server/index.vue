@@ -8,20 +8,20 @@
 
       <div class="tree_wrap">
         <a href="javascript:;" class="tree_icon iconfont el-icon-third-shuaxin" @click="treeSearch(1)"></a>
-    <let-tree class="left-tree"
-      v-if="treeData && treeData.length"
-      :data="treeData"
-      :activeKey="$route.params.treeid"
-      @on-select="selectTree"/>
-    <div class="left-tree" v-if="treeData && !treeData.length">
-      <p class="loading">{{$t('common.noService')}}</p>
-    </div>
-    <div class="left-tree" v-if="!treeData" ref="treeLoading">
-      <div class="loading" v-if="treeData === false">
-        <p>{{treeErrMsg}}</p>
-        <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
-      </div>
-    </div>
+        <let-tree class="left-tree"
+          v-if="treeData && treeData.length"
+          :data="treeData"
+          :activeKey="$route.params.treeid"
+          @on-select="selectTree"/>
+        <div class="left-tree" v-if="treeData && !treeData.length">
+          <p class="loading">{{$t('common.noService')}}</p>
+        </div>
+        <div class="left-tree" v-if="!treeData" ref="treeLoading">
+          <div class="loading" v-if="treeData === false">
+            <p>{{treeErrMsg}}</p>
+            <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -209,7 +209,7 @@ export default {
       let shouldRedirect = false;
       // publish、server-monitor、property-monitor 只有 level 5 可访问
       if (this.serverData.level !== 5 &&
-        (route === 'publish' || route === 'server-monitor' || route === 'property-monitor' || route === 'user-manage')) {
+        (route === 'publish' || route === 'server-monitor' || route === 'property-monitor' || route === 'user-manage' || route === 'interface-debuger')) {
         shouldRedirect = true;
       }
       // config 有 level 5、4、1 可访问

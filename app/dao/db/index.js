@@ -18,6 +18,8 @@ const Sequelize = require('sequelize');
 
 const Mysql = require('mysql');
 
+const Update = require('./update');
+
 const fs = require('fs-extra');
 
 const _ = require('lodash');
@@ -28,7 +30,7 @@ const logger = require('../../logger');
 
 let Db = {};
 
-let databases = ['db_tars', 'db_tars_web'];
+let databases = ['db_taf', 'db_taf_web', 'db_base'];
 
 databases.forEach((database) => {
 	let {
@@ -43,10 +45,9 @@ databases.forEach((database) => {
 	const logging = process.env.NODE_ENV == "dev" ? (sqlText)=>{
 		console.log(sqlText);
 		logger.sql(sqlText)
-	} : false
+	} : true
 
 	//初始化sequelize
-
 	const sequelize = new Sequelize(database, user, password, {
 		host,
 		port,
@@ -90,6 +91,6 @@ databases.forEach((database) => {
 	Db[database].sequelize = sequelize;
 });
 
-
+Update.update(Db['db_tars'], Db['db_tars_web']);
 
 module.exports = Db;

@@ -15,11 +15,10 @@
  */
 
 const {
-  tApplyCacheModuleConf, tApplyCacheServerConf, tApplyCacheModuleBase, tApplyAppBase,
+  tApplyCacheModuleConf, tApplyCacheServerConf, tApplyCacheModuleBase, tApplyAppBase, 
 } = require('./../db').db_cache_web;
 
 const moduleConf = {};
-
 
 moduleConf.add = function (option) {
   return tApplyCacheModuleConf.create(option);
@@ -61,6 +60,7 @@ moduleConf.findOne = function ({
     };
     include.push(serverConfModelItem);
   }
+
   return tApplyCacheModuleConf.findOne({ where, attributes, include });
 };
 

@@ -4,8 +4,9 @@ let TokenDao = require('../../dao/TokenDao');
 let cache = require('memory-cache');
 let uuidV1 = require('uuid/v1');
 let sha1 = require('sha1');
-const ldapConf = require('../../../../config/webConf').ldapConf;
+// const ldapConf = require('../../../../config/webConf').ldapConf;
 const LdapService = require('../ldap/LdapService');
+const SetService = require('../../service/set/SetService');
 
 const exprireTime = 7 * 24 *60 * 60 * 1000;
 
@@ -16,6 +17,8 @@ LoginServer.login = async(uid, password)=> {
     // console.log(uid, password)
     // loginFailed
 
+    let ldapConf = await SetService.ldapConf();
+    
     if(ldapConf.enableLDAP && uid !== 'admin') {
         const LdapRet = await LdapService.authenticateLogin(uid, password);
         if(LdapRet.iRet !== 0) {

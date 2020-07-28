@@ -219,6 +219,7 @@
         } catch (err) {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
+
         loading.hide();
       },
       async saveConfig (row) {

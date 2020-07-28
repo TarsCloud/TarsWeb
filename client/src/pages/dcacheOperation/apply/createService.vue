@@ -27,7 +27,9 @@
               {{d}}
             </let-option>
           </let-select>
+
         </let-form-item>
+
         <br>
         <span style="margin-left:20px;">{{$t('service.routerDbNameTip')}}</span>
         <br>
@@ -40,6 +42,7 @@
           >
           </let-input>
         </let-form-item>
+
         <br>
         <let-form-item :label="$t('service.routerDbName')" itemWidth="240px" required>
           <let-radio v-model="apply.dbMethod" :label="true">{{$t('service.chooseRouterDb')}}</let-radio>
@@ -51,11 +54,13 @@
             </let-option>
           </let-select>
         </let-form-item>
+
         <br>
         <let-form-item :label="$t('service.routerDbName')" itemWidth="240px" required>
           <let-radio v-model="apply.dbMethod" :label="false">{{$t('service.inputRouterDb')}}</let-radio>
         </let-form-item>
-        <span v-if="!apply.dbMethod">
+
+        <span  v-if="!apply.dbMethod">
         <let-form-item :label="$t('service.routerDbIp')" itemWidth="240px" required>
           <let-input
             size="small"
@@ -141,6 +146,7 @@
         </let-table-column>
         </let-table>
       </let-form-group>
+
       <let-button size="small" theme="primary" @click="createService">{{$t('apply.createRouterProxyService')}}
       </let-button>
     </let-form>
@@ -159,7 +165,7 @@ import { checkServerIdentity } from 'tls';
       router_db_port: "3306",
       router_db_user: "",
       server_ip: "",
-      server_name: "aswRouterServer",
+      server_name: "",
       template_file: ""
     }
   };
@@ -167,7 +173,7 @@ import { checkServerIdentity } from 'tls';
     return {
       apply_id: 17,
       create_person: "adminUser",
-      idc_area: "sz",
+      idc_area: "SZ",
       server_ip: [],
       server_name: "",
       template_file: "",
@@ -203,11 +209,13 @@ import { checkServerIdentity } from 'tls';
           this.templates = data;
           this.apply.Router.template_file = "DCache.Cache";
           this.apply.Proxy.forEach(item => item.template_file = "DCache.Cache");
+
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       },
       changeStatus() {
+
       },
       getApplyInfo () {
         let {applyId} = this;
@@ -232,6 +240,7 @@ import { checkServerIdentity } from 'tls';
             return;          
           }
         };
+
         if (this.$refs.detailForm.validate()) {
           const model = this.apply;
           const url = '/server/api/save_router_proxy';
@@ -271,6 +280,7 @@ import { checkServerIdentity } from 'tls';
       async ensureDelete (row) {
         try {
           await this.$confirm(this.$t('dcache.operationManage.ensureDelete'));
+
           return this.$ajax.postJSON('/server/api/delete_apply_proxy', {id: row.id}).then((data) => {
             if(data == 1) {
               this.apply.Proxy.forEach((item, index, arr)=>{
@@ -278,13 +288,15 @@ import { checkServerIdentity } from 'tls';
                   arr.splice(index, 1);
                   this.apply.Proxy = arr;
                   return; 
-      }
+                }
               }) 
             }
+
             // this.apply.Proxy = proxy || {};
           }).catch((err) => {
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           });
+          
         } catch (err) {
           // console.error(err)
           this.$tip.error(err.message)

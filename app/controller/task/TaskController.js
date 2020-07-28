@@ -39,7 +39,7 @@ TaskController.getTasks = async (ctx) => {
 	// console.log(ctx);
 	try {
 		let {application, server_name, command, from, to, curr_page = 0, page_size = 0} = ctx.paramsObj;
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let ret = [];
@@ -142,6 +142,17 @@ TaskController.addTask = async (ctx) => {
 			}
 		}
 		let task_no = util.getUUID().toString();
+
+		for (let i = 0; i < items.length; i++) {
+			let item = items[i];
+
+			let server = await ServerService.getServerConfById(item.server_id);
+
+			if (!await AuthService.hasDevAuth(server.application, server.serverName, ctx.uid)) {
+				ctx.makeNotAuthResObj();
+				return;
+			}
+		}
 	
 		// if (kafkaConf.enable) {
 		// 	await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {

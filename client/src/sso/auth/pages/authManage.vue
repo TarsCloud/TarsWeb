@@ -130,7 +130,7 @@ export default {
     },
     getAuthList(flag, role, uid){
       const loading = this.$Loading.show();
-      this.$ajax.getJSON('/sso/api/auth/page/getAuthList', {flag: flag||'', role:role||'', uid: uid||''}).then((data)=>{
+      this.$ajax.getJSON('/server/api/auth/page/getAuthList', {flag: flag||'', role:role||'', uid: uid||''}).then((data)=>{
         loading.hide();
         data.forEach((auth)=>{
           auth.isChecked = false;
@@ -144,7 +144,7 @@ export default {
     },
     getIdList() {
       this.userIds = [];
-      this.$ajax.getJSON('/sso/api/auth/page/getUserIdList').then((data)=>{
+      this.$ajax.getJSON('/server/api/auth/page/getUserIdList').then((data)=>{
         this.userIds = data;
         // data.forEach((user)=>{
         //   this.userIds.push(user.uid);
@@ -180,7 +180,7 @@ export default {
         }
       });
       const loading = this.$Loading.show();
-      var url = '/sso/api/auth/page/addAuth';
+      var url = '/server/api/auth/page/addAuth';
       this.$ajax.postJSON(url, {auth: params}).then((data)=>{
           loading.hide();
           this.showDialog=false;
@@ -205,7 +205,7 @@ export default {
           return;
         }
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/sso/api/auth/page/pageDeleteAuth', {id: ids}).then((data)=>{
+        this.$ajax.postJSON('/server/api/auth/page/pageDeleteAuth', {id: ids}).then((data)=>{
             loading.hide();
             this.$tip.success(this.$t('auth.delSucc'));
             this.search();

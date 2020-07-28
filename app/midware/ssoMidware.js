@@ -14,7 +14,7 @@ module.exports = (loginConf) => {
 
     return async (ctx, next) => {
 
-      // console.log(ctx);
+      // console.log(ctx.request.path);
 
       if (ctx.request.path === '/logout') {
         ctx.cookies.set(loginConf.ticketCookieName || 'ticket', null, cookieDomainConfig);
@@ -44,7 +44,9 @@ module.exports = (loginConf) => {
           ticket = ctx.cookies.get(loginConf.ticketCookieName || 'ticket');
         }
 
-        ctx.ticket = ticket;
+        ticket = ticket || '';
+
+        // console.log("ticket:", ticket);
 
         if (await validate(ctx, uid, ticket)) {
           ctx.uid = uid;

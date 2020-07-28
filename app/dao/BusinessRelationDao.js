@@ -30,6 +30,17 @@ Dao.add = async (params) => {
 	});
 };
 
+Dao.replace = async (params) => {
+	return await dbTable.replace({
+		f_business_name: params.f_business_name,
+		f_application_name: params.f_application_name,
+		f_create_person: params.f_create_person,
+		f_create_time: params.f_create_time,
+		f_update_person: params.f_update_person,
+		f_update_time: params.f_update_time,
+	});
+};
+
 Dao.delete = async (id) => {
 	return await dbTable.destroy({
 		where: {
@@ -58,20 +69,20 @@ Dao.getById = async (id) => {
 };
 
 Dao.getList = async (business_name, application_name) => {
-	return await dbTable.findAll({
-		where: {
-			f_business_name: {
-				//$like: '%' + name + '%'
-				//syntax breaking changes after V5, should be:
-				[Sequelize.Op.like]: '%' + business_name + '%'
-			},
-			f_application_name: {
-				//$like: '%' + name + '%'
-				//syntax breaking changes after V5, should be:
-				[Sequelize.Op.like]: '%' + application_name+ '%'
-			},
-		},
-	});
+	const where = {}
+	if(business_name) {
+		where.f_business_name = {
+			[Sequelize.Op.like]: `%${business_name}%`
+		}
+	}
+	
+	if(application_name) {
+		where.f_application_name = {
+			[Sequelize.Op.like]: `%${application_name}%`
+		}
+	}
+
+	return await dbTable.findAll({ where });
 };
 
 module.exports = Dao;

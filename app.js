@@ -18,8 +18,6 @@ const Koa = require('koa');
 const app = new Koa();
 const path = require('path');
 const url = require('url');
-// const views = require('koa-views');
-// const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
 const multer = require('koa-multer');
@@ -29,12 +27,9 @@ const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
 const localeMidware = require('./app/midware/localeMidware');
 const helmet = require("koa-helmet");
-// const compress = require('koa-compress')
 const loginMidware = require('./app/midware/ssoMidware');
-// const loginMidware = require('yami-sso-client').koa;
 const limitMidware = require('./app/midware/limitMidware');
 const WebConf = require('./config/webConf');
-// const Router = require('koa-router');
 const staticRouter = require('koa-static-router');
 const upload = multer({dest: WebConf.pkgUploadPath.path + '/'});
 const logger = require('./app/logger');
@@ -67,7 +62,7 @@ preMidware.forEach((midware) => {
 //登录校验
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/web_version','/static', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
-loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/register.html', '/pages/sso/api/adminModifyPass', '/pages/sso/api/get_locale', '/pages/sso/api/login']);
+loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/register.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login']);
 
 //上传文件不需要登录
 if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
@@ -83,25 +78,25 @@ if(process.env.COOKIE_DOMAIN) {
 }
 
 app.use(async (ctx, next) => {
-
 	var myurl = url.parse(ctx.url);
+
 	if (await AuthService.isInit()) {
+
 		if ((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
+
 			logger.info('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
 			ctx.redirect('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
 			return;
-	}
+		}
 
-		//直接用当前host代替, 端口还是保留
 	} else if (myurl.pathname == '/adminPass.html') {
 
 		ctx.redirect(myurl.pathname);
 		return;
 	}
 
-
 	await next();
-});
+  });
 
 app.use(loginMidware(loginConf));
 
@@ -133,15 +128,18 @@ if (dcacheConf.enableDcache) {
 	})
 }
 
+require('./sso');
+
+//激活router
 // dcache 会添加新的 page、api router， 不能提前
-const { pageRouter, paegApiRouter, clientRouter, apiRouter, demoRouter } = require('./app/router');
+const { pageRouter, paegApiRouter, clientRouter, apiRouter} = require('./app/router');
 
 // app.use(apiMidware(apiRouter));
+
 app.use(pageRouter.routes(), pageRouter.allowedMethods());
 app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods());
 app.use(clientRouter.routes(), clientRouter.allowedMethods());
 app.use(apiRouter.routes(), apiRouter.allowedMethods());
-app.use(demoRouter.routes(), demoRouter.allowedMethods());
 
 //激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));

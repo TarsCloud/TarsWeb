@@ -50,6 +50,7 @@ ProxyService.removeProxy = async function ({ server_name }) {
 ProxyService.removeProxyById = async function ({ id }) {
   return await ProxyDao.destroy({ where: { id } });
 };
+
 ProxyService.findByServerName = async function ({ serverName }) {
   return await ProxyDao.findOne({ where: { server_name: serverName } });
 };

@@ -18,6 +18,7 @@ const {pageConf, apiConf, clientConf, demoConf} = require('./routerConf');
 const Router = require('koa-router');
 const _ = require('lodash');
 const noCacheMidware = require('../midware/noCacheMidware');
+const authMidware = require('../midware/authMidware');
 const {paramsDealMidware, paramsCheckMidware} = require('../midware/paramsMidware');
 const gatewayDaoMidware = require('../midware/gatewayDaoMidware');
 
@@ -29,8 +30,12 @@ const getRouter = (router, routerConf) => {
 		//前置参数合并校验相关中间件
 		router[method](url, paramsDealMidware(validParams));    //上下文入参出参处理中间件
 		router[method](url, paramsCheckMidware(checkRule));   //参数校验中间件
+
+		router[method](url, authMidware);    		//admin用户采访访问的接口
+
 		router[method](url, noCacheMidware);       //禁用缓存中间件
 		router[method](url, gatewayDaoMidware);	   //网关配置db获取中间件，非网关路由不做任何事情
+
 		//业务逻辑控制器
 		router[method](url, async (ctx, next) => {
 			
@@ -59,8 +64,4 @@ const apiRouter = new Router();
 apiRouter.prefix('/api');
 getRouter(apiRouter, apiConf);
 
-const demoRouter = new Router();
-demoRouter.prefix('/pages/sso/api');
-getRouter(demoRouter, demoConf);
-
-module.exports = {pageRouter, paegApiRouter, clientRouter, apiRouter, demoRouter};
+module.exports = {pageRouter, paegApiRouter, clientRouter, apiRouter};

@@ -55,8 +55,6 @@ AuthService.checkHasAuth = async (application, serverName, role, uid) => {
 
 	if (serverName) {
 		hasAuth = await AuthService.httpCallCheckAuth(application + '.' + serverName, role, uid);
-
-		// console.log('checkHasAuth1:', hasAuth);
 	}
 	if (!hasAuth) {
 		if (application) {
@@ -89,7 +87,6 @@ AuthService.httpCallCheckAuth = async (flag, roles, uid) => {
 		role: roles,
 		uid: uid
 	});
-	// console.log('httpCallCheckAuth', rst, flag, roles, uid);
 	if (rst && rst.ret_code == 200) {
 		return rst.data && rst.data.result || false;
 	} else {

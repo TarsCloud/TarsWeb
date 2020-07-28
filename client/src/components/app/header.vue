@@ -27,8 +27,9 @@
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}" v-show="enableLogin"></i>
           <transition name="fade">
             <div class="user-pop-wrap" v-show="enableLogin && userOptOpen">
-              <div> <a href="#" @click="userCenter" >{{$t('header.userCenter')}}</a> </div>
-              <div> <a href="/logout">{{$t('header.logout')}}</a> </div>
+            <div> <a href="/auth.html" >{{$t('header.userCenter')}}</a> </div>
+            <div> <a href="/pass.html" v-if="!enableLdap" >{{$t('header.modifyPass')}}</a> </div>
+            <div> <a href="/logout">{{$t('header.logout')}}</a> </div>
             </div>
           </transition>
         </p>
@@ -89,6 +90,13 @@
         }).catch((err) => {
         });
       },
+      checkEnableLdap(){
+          this.$ajax.getJSON('/server/api/isEnableLdap').then((data) => {
+              this.enableLdap = data.enableLdap || false;
+          }).catch((err)=>{
+
+          });
+      },
       checkAdmin(){
         this.isAdmin = false; 
         this.$ajax.getJSON('/server/api/is_admin').then((data) => {
@@ -102,6 +110,7 @@
       this.getLoginUid();
       this.checkEnableLogin();
       this.checkAdmin();
+      this.checkEnableLdap();
 
       window.header =this;
     }

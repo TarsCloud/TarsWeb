@@ -51,6 +51,7 @@
         <let-select
           size="small"
           v-model="model.node_name"
+          filterable
           required
           :required-tip="$t('deployService.table.tips.empty')"
         >

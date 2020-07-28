@@ -51,6 +51,7 @@ if (process.env.NODE_ENV == "dev") {
             blackList: []                 //黑名单IP
         },
         infTestConf:{
+            tool: "/usr/local/tars/cpp/tools/jce2case",
             benchmarkAdmin:"benchmark.AdminServer.AdminObj"
         },
         ldapConf: {
@@ -89,15 +90,8 @@ if (process.env.NODE_ENV == "dev") {
             strict: false,              //true: tarslog模式(tarslog需要首先从框架上迁移走, 基础框架服务器上不能部署其他服务)
             uploadLogin: false,          //上传文件是否需要登录(开发或者调试时可以放开)
         },
-        // kafkaConf : {
-        //     enable : false,
-        //     kafkaHost : 'localhost:9092',
-        //     zkHost : 'localhost:2181',
-        //     topic : 'tarsTask',
-        //     maxCount : 100              // 后台并行处理的最大任务数
-        // },
-        pkgUploadPath : {
-            path : '/usr/local/app/patchs/tars.upload'
+        pkgUploadPath: {
+            path: '/usr/local/app/patchs/tars.upload'
         },
         //防洪水攻击配置
         limitConf: {
@@ -108,6 +102,7 @@ if (process.env.NODE_ENV == "dev") {
             blackList: []                 //黑名单IP
         },
         infTestConf:{
+            tool: "/usr/local/tars/cpp/tools/jce2case",
             benchmarkAdmin:"benchmark.AdminServer.AdminObj"
         },
         ldapConf: {

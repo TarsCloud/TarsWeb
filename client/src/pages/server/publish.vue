@@ -429,6 +429,8 @@ export default {
         module_name: serverName,
         curr_page : currPage,
         page_size : pageSize
+      }).catch((err)=>{
+        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);        
       });
     },
     closePublishModal() {

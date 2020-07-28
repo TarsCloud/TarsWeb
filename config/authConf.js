@@ -34,7 +34,7 @@ module.exports = {
 	 * @param   {Number}    ret_code            返回码，200表示成功
 	 * @param   {String}    err_msg             错误信息
 	 */
-	isAdminUrl: '/pages/sso/api/auth/isAdmin',
+	isAdminUrl: '/pages/server/api/auth/isAdmin',
 
 	/**
 	 * addAuthUrl             新增权限url
@@ -46,7 +46,7 @@ module.exports = {
 	 * @param   {Number}    ret_code            返回码，200表示成功
 	 * @param   {String}    err_msg             错误信息
 	 */
-	addAuthUrl: '/pages/sso/api/auth/addAuth',
+	addAuthUrl: '/pages/server/api/auth/addAuth',
 
 	/**
 	 * deleteAuthUrl             删除权限url，用于服务下线时候删除权限
@@ -58,7 +58,7 @@ module.exports = {
 	 * @param   {Number}    ret_code            返回码，200表示成功
 	 * @param   {String}    err_msg             错误信息
 	 */
-	deleteAuthUrl: '/pages/sso/api/auth/deleteAuth',
+	deleteAuthUrl: '/pages/server/api/auth/deleteAuth',
 
 	/**
 	 * updateAuthUrl             更新权限url
@@ -72,7 +72,7 @@ module.exports = {
 	 * @param   {Number}    ret_code            返回码，200表示成功
 	 * @param   {String}    err_msg             错误信息
 	 */
-	updateAuthUrl: '/pages/sso/api/auth/updateAuth',
+	updateAuthUrl: '/pages/server/api/auth/updateAuth',
 
 	/**
 	 * getAuthListByUidUrl             通过用户名获取权限列表url
@@ -88,7 +88,7 @@ module.exports = {
 	 * @param   {Number}    ret_code            返回码，200表示成功
 	 * @param   {String}    err_msg             错误信息
 	 */
-	getAuthListByUidUrl: '/pages/sso/api/auth/getAuthListByUid',
+	getAuthListByUidUrl: '/pages/server/api/auth/getAuthListByUid',
 
 	/**
 	 * getAuthListByFlagUrl             通过应用名+服务名获取用户列表url
@@ -104,7 +104,7 @@ module.exports = {
 	 * @param   {Number}    ret_code            返回码，200表示成功
 	 * @param   {String}    err_msg             错误信息
 	 */
-	getAuthListByFlagUrl: '/pages/sso/api/auth/getAuthListByFlag',
+	getAuthListByFlagUrl: '/pages/server/api/auth/getAuthListByFlag',
 
 	/**
 	 * getAuthUrl             判断用户是否有相应角色的操作权限
@@ -120,5 +120,5 @@ module.exports = {
 	 * @param   {Number}    ret_code            返回码，200表示成功
 	 * @param   {String}    err_msg             错误信息
 	 */
-	getAuthUrl: '/pages/sso/api/auth/getAuth'
+	getAuthUrl: '/pages/server/api/auth/getAuth'
 };

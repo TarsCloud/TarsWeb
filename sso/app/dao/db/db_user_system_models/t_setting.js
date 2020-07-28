@@ -1,7 +1,7 @@
 /* jshint indent: 1 */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('t_user_info', {
+	return sequelize.define('t_setting', {
 		id: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
@@ -11,18 +11,34 @@ module.exports = function(sequelize, DataTypes) {
 		uid: {
 			type: DataTypes.STRING(128),
 			allowNull: true,
+		},
+		title: {
+			type: DataTypes.STRING(128),
+			allowNull: true,
 			unique: true
 		},
-		password: {
-			type: DataTypes.STRING(128),
+		info: {
+			type: DataTypes.TEXT,
+			allowNull: true
+		},
+		about_cn: {
+			type: DataTypes.TEXT,
+			allowNull: true
+		},
+		about_en: {
+			type: DataTypes.TEXT,
+			allowNull: true
+		},
+		valid: {
+			type: DataTypes.INTEGER(11),
 			allowNull: false
 		},
 		update_time: {
 			type: DataTypes.DATE,
-			allowNull: false			
+			allowNull: true
 		}
 	}, {
-		tableName: 't_user_info',
+		tableName: 't_setting',
 		timestamps: false
 	});
 };

@@ -1,13 +1,16 @@
 let AuthDao = require('../../dao/AuthDao');
 let UserDao = require('../../dao/UserDao');
-// let logger = require('../../logger');
+let SetService = require('../set/SetService');
 
 const AuthService = {}
 
 AuthService.isAdmin = async(uid) => {
-    // console.log('isAdmin', uid);
 
     if(uid == 'admin') {
+        return true;
+    }
+
+    if (await SetService.adminConf()) {
         return true;
     }
 

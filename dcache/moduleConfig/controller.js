@@ -34,6 +34,7 @@ function mapCacheType(key) {
 }
 
 const ModuleConfigController = {
+
   overwriteModuleConfig: async (ctx) => {
     try {
       const {
@@ -80,6 +81,7 @@ const ModuleConfigController = {
     }
   },
   addModuleConfig: async (ctx) => {
+
     try {
       const {
         admin,
@@ -99,10 +101,13 @@ const ModuleConfigController = {
         set_area,
         total_record,
       } = ctx.paramsObj;
+
       const hasModule = await ModuleConfigService.hasModule({ module_name });
+
       if (hasModule) {
         ctx.makeResObj(200, '', { hasModule: true});
       } else {
+
         const create_person = ctx.uid;
         const option = {
           admin,
@@ -123,9 +128,10 @@ const ModuleConfigController = {
           total_record,
           create_person,
         };
-      const item = await ModuleConfigService.addModuleConfig(option);
+        const item = await ModuleConfigService.addModuleConfig(option);
         item.hasModule = false;
-      ctx.makeResObj(200, '', item);
+
+        ctx.makeResObj(200, '', item);
       }
     } catch (err) {
       logger.error('[addModuleConfig]:', err);
@@ -148,8 +154,10 @@ const ModuleConfigController = {
       const { moduleId } = ctx.paramsObj;
       const queryModuleBase = ['cache_version', 'mkcache_struct', 'follower'];
       const queryServerConf = ['id', 'area', 'apply_id', 'module_name', 'group_name', 'server_name', 'server_ip', 'server_type', 'memory', 'shmKey', 'status', 'is_docker', 'template_name'];
+      // const queryDbAccess = ['module_id', 'servant', 'dbaccess_ip', 'db_num', 'db_prefix', 'table_num', 'table_prefix', 'db_host', 'db_port', 'db_pwd', 'db_user', 'db_charset'];
 
-      const item = await ModuleConfigService.getModuleConfigInfo({ moduleId, queryModuleBase, queryServerConf });
+      const item = await ModuleConfigService.getModuleConfigInfo({ moduleId, queryModuleBase, queryServerConf});
+
       const dbAccess = await DbAccessService.findByModuleId({ moduleId });
       ctx.makeResObj(200, '', { item, dbAccess } );
     } catch (err) {
@@ -184,6 +192,7 @@ const ModuleConfigController = {
       if (!defaultCachePackage) throw new Error('#module.noDefaultCachePackage#');
 
       const fieldParam = [];
+
       if (mkCache) {
         mkCache.mainKey.forEach((item) => {
           const record = new DCacheOptStruct.RecordParam();
@@ -308,7 +317,7 @@ const ModuleConfigController = {
           hotBackupDays: '3',
           coldBackupDays: '3',
         });
-        // map param vector<RecordParam> fieldParam
+
         const fieldParam = [];
         mkCache.mainKey.forEach((item) => {
           const record = new DCacheOptStruct.RecordParam();
@@ -363,10 +372,11 @@ const ModuleConfigController = {
       }
       // 安装成功， 进入发布
       if (args.__return === 0) {
-        // 应用进入目录树
+
         if (cache_module_type == 2) {
           const dbAccess = await DbAccessService.findByModuleId({ moduleId });
 
+          //安装DBAccess
           const dbAccessOption = new DCacheOptStruct.InstallDbAccessReq();
           dbAccessOption.readFromObject({
             appName: applyInfo.name,
@@ -391,6 +401,7 @@ const ModuleConfigController = {
             tableCharset: dbAccess.db_charset,
             vDBInfo: [],
           });
+
           dbAccessOption.conf.vDBInfo = new TarsStream.List(DCacheOptStruct.DBInfo);
           const dbInfo = new DCacheOptStruct.DBInfo();
           dbInfo.readFromObject({

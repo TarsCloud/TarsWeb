@@ -1,22 +1,23 @@
 // const extend = require('extend');
 // const Promise = require('bluebird');
 const ldapjs = require('ldapjs');
-const ldapConf = require('../../../../config/webConf').ldapConf;
+// const ldapConf = require('../../../../config/webConf').ldapConf;
+const SetService = require('../../service/set/SetService');
 const logger = require('../../../../app/logger');
 const cache = require('memory-cache');
 
 // 消息结果
 const RETURN_MSG = {
     SUCCESS: {iRet: 0, message:''},                     // 成功
-    LDAPKEY_ERROR: {iRet: -1001, message:'LDAPKEY错误'},
-    LDAPKEY_OUTDATE: {iRet: -1002, message:'LDAPKEY过期'},
-    PASSWORD_ERROR: {iRet: -1003, message:'密码错误'},
-    PASSWORD_EXPIRED: {iRet: -1004, message:'密码过期'},
-    PASSWORD_WILLEXPIRED: {iRet: -1005, message:'密码即将过期'},
-    PASSWORD_LOCKED: {iRet: -1006, message:'密码连续错误5次,已经被锁定'},
-    USER_ERROR: {iRet: -1008, message:'用户不存在'},
-    SERVER_ERROR: {iRet: -1007, message:'服务异常'},
-    UNKNOWN_ERROR: {iRet: -9999, message:'未知错误'}
+    LDAPKEY_ERROR: {iRet: -1001, message:'LDAPKEY error'},
+    LDAPKEY_OUTDATE: {iRet: -1002, message:'LDAPKEY expire'},
+    PASSWORD_ERROR: {iRet: -1003, message:'Password error'},
+    PASSWORD_EXPIRED: {iRet: -1004, message:'Password expire'},
+    PASSWORD_WILLEXPIRED: {iRet: -1005, message:'Password will expire'},
+    PASSWORD_LOCKED: {iRet: -1006, message:'Password continue error, User has been locked!'},
+    USER_ERROR: {iRet: -1008, message:'User not exists'},
+    SERVER_ERROR: {iRet: -1007, message:'System error'},
+    UNKNOWN_ERROR: {iRet: -9999, message:'Unknown error'}
 }
 
 // LDAP客户端对象
@@ -25,8 +26,8 @@ let ldapClient;
 // 查询基本属性
 const searchOpts = {
     scope: 'sub',
-    attributes: ['uid', 'cn', 'mail', 'telephoneNumber', 'sn', 'photo', 'title', 'departmentNumber','pwdChangedTime','pwdFailureTime','pwdAccountLockedTime'],
-    timeLimit: ldapConf.timeLimit                          // 查询接口超时时间，秒为单位
+    attributes: ['uid', 'cn', 'mail', 'telephoneNumber', 'sn', 'photo', 'title', 'departmentNumber','pwdChangedTime','pwdFailureTime','pwdAccountLockedTime']
+    // timeLimit: ldapConf.timeLimit                          // 查询接口超时时间，秒为单位
 };
 
 const LdapService = {};
@@ -36,13 +37,19 @@ LdapService.RETURN_MSG = RETURN_MSG;
  * 创建LDAPclient
  */
 LdapService.init = async()=> {
+
+    let ldapConf = await SetService.ldapConf();
+
+    logger.info(`LDAPClient init: ${ldapConf}`);
+    
     if(ldapConf.enableLDAP) {
-        try{
+        try {
             ldapClient = ldapjs.createClient({
                 url: ldapConf.url,
                 reconnect: ldapConf.reconnect,
                 timeout: ldapConf.timeout
-            })
+            });
+
             // bluebird模块转化非标准的异步接口
             // Promise.promisifyAll(ldapClient);
             logger.info(`LDAPClient init|url:${ldapConf.url}|baseDN:${ldapConf.basedn}`);
@@ -50,6 +57,8 @@ LdapService.init = async()=> {
             logger.info(`LDAPClient fail`, err.message);
         }
     }
+
+    return ldapConf;
 };
 
 /**
@@ -94,11 +103,22 @@ LdapService.getUserFromEntry = (entry)=> {
  * 查询用户信息,默认返回全部用户信息
  */
 LdapService.searchUserInfoByFilter = (filter = {filter:"(uid=*)"}) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
+
+            let ldapConf;
+
+            if (!ldapClient) {
+                ldapConf = await LdapService.init();
+            } else {
+                ldapConf = await SetService.ldapConf();
+            }
+
+            searchOpts.timeLimit = ldapConf.timeLimit;
+
             ldapClient.search(ldapConf.basedn, Object.assign({}, searchOpts, filter), function (err, res) {
                 if (err) {
-                    console.log(`LdapService searchUserInfoByFilter error:`, filter, err);
+                    logger.error(`LdapService searchUserInfoByFilter error:`, filter, err);
                     reject(err);
                 } else {
                     let userList = [];
@@ -106,17 +126,17 @@ LdapService.searchUserInfoByFilter = (filter = {filter:"(uid=*)"}) => {
                         userList.push(LdapService.getUserFromEntry(entry));
                     });
                     res.on('error', function (err) {
-                        console.log(`LdapService searchUserInfoByFilter error:`, filter, err);
+                        logger.error(`LdapService searchUserInfoByFilter error:`, filter, err);
                         reject(err);
                     });
                     res.on('end', function (result) {
-                        console.log(`LdapService searchUserInfoByFilter end`)
+                        logger.info(`LdapService searchUserInfoByFilter end`)
                         resolve({iRet:0, userList})
                     });
                 }
             });
         }catch(err) {
-            console.log(`LdapService searchUserInfoByFilter exception:`, filter, err);
+            logger.error(`LdapService searchUserInfoByFilter exception:`, filter, err);
             reject(err);
         }
     })
@@ -130,15 +150,15 @@ LdapService.bindPwd = (user, pwd) => {
         try {
             ldapClient.bind(user.dn, pwd, function (err) {
                 if (err) {
-                    console.log(`LdapService bindPwd error:`, user, err);
+                    logger.error(`LdapService bindPwd error:`, user, err);
                     resolve(RETURN_MSG.PASSWORD_ERROR);
                 } else {
-                    console.log(`uid:${user.uid}|LdapService bindPwd 认证成功Succ.`);
+                    logger.info(`uid:${user.uid}|LdapService bindPwd 认证成功Succ.`);
                     resolve({iRet:0});
                 }
             });
         }catch(err) {
-            console.log(`LdapService bindPwd exception`, user, err);
+            logger.error(`LdapService bindPwd exception`, user, err);
             reject(err);
         }
     })
@@ -179,7 +199,10 @@ LdapService.authenticateLogin = async(uid, pwd)=> {
  */
 LdapService.getAllUserList = async () => {
     let userRet = [];
-    if(ldapConf.syncAllUserSchedule){
+
+    let ldapConf = await SetService.ldapConf();
+
+    if (ldapConf.enableLDAP && ldapConf.syncAllUserSchedule){
         userRet = cache.get('ldapUserList') || [];
         console.log(`cache get ldapUserList succ.`)
     } else {

@@ -158,8 +158,8 @@ PatchController.uploadPatchPackage = async (ctx) => {
 				id: '',
 				server: '',
 				tgz: '',
-				update_text: { key: 'comment' },
-				posttime: { formatter: util.formatTimeStamp }
+				update_text: {key: 'comment'},
+				posttime: {formatter: util.formatTimeStamp}
 			});
 
 			let id = data.id;
@@ -181,9 +181,10 @@ PatchController.uploadPatchPackage = async (ctx) => {
 PatchController.serverPatchList = async (ctx) => {
 	let { application, module_name, curr_page = 0, page_size = 0, package_type } = ctx.paramsObj;
 	try {
-		if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, module_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
+
 			let ret = await PatchService.getServerPatch(application, module_name, parseInt(curr_page), parseInt(page_size), package_type);
 			// console.log(ret);
 			ctx.makeResObj(200, '', {
@@ -226,7 +227,7 @@ PatchController.getServerPatchByTaskId = async (ctx) => {
 PatchController.getTagList = async (ctx) => {
 	let {application, server_name} = ctx.paramsObj;
 	try {
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let list = await CompileService.getTagList(application, server_name);
@@ -250,7 +251,7 @@ PatchController.getCompilerConf = (ctx) => {
 PatchController.getCodeInfConf = async (ctx) => {
 	let {application, server_name} = ctx.paramsObj;
 	try {
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let ret = await CompileService.getCodeInfConf(application, server_name);

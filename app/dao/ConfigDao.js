@@ -71,6 +71,22 @@ ConfigDao.getServerConfigFile = async(params) => {
     });
 };
 
+
+ConfigDao.findServerConfigFile = async (params) => {
+    return await tConfigFiles.findOne({
+        where: params
+    });
+};
+
+
+ConfigDao.replaceConfigFile = async (params, transaction) => {
+    if (transaction) {
+        return await tConfigFiles.upsert(params, { transaction: transaction });
+    } else {
+        return await tConfigFiles.upsert(params);
+    }
+};
+
 ConfigDao.insertConfigFile = async(params, transaction) => {
     if (transaction) {
         return await tConfigFiles.create(params, { transaction: transaction });

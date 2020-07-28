@@ -15,6 +15,7 @@
  */
 
 const NodeInfoDao = require('../../dao/NodeInfoDao');
+const ApplicationDao = require('../../dao/ApplicationDao');
 const ServerDao = require('../../dao/ServerDao');
 const AdapterDao = require('../../dao/AdapterDao');
 const ResourceDao = require('../../dao/ResourceDao');
@@ -75,7 +76,8 @@ ServerService.getServerConfById = async(id) => {
 };
 
 ServerService.getApplicationList= async() => {
-    return await ServerDao.getApplication();
+    return await ApplicationDao.getAll();
+    // return await ServerDao.getApplication();
 };
 
 ServerService.getNodeList= async() => {

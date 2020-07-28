@@ -9,15 +9,15 @@ module.exports = function(sequelize, DataTypes) {
 			autoIncrement: true
 		},
 		flag: {
-			type: DataTypes.STRING(256),
+			type: DataTypes.STRING(128),
 			allowNull: true
 		},
 		role: {
-			type: DataTypes.STRING(256),
+			type: DataTypes.STRING(128),
 			allowNull: true
 		},
 		uid: {
-			type: DataTypes.STRING(256),
+			type: DataTypes.STRING(128),
 			allowNull: true
 		},
 		create_time: {

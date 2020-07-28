@@ -3,7 +3,7 @@
 
     <!-- 服务列表 -->
     <div class="table_head">
-    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+      <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
     </div>
     
     <!-- 服务列表 -->
@@ -17,9 +17,9 @@
         </template>
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
-        <template slot-scope="scope">
+       <template slot-scope="scope">
           <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" title="点击查看服务日志(view server logs)" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
-        </template>
+        </template>      
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.enableSet')">
@@ -72,7 +72,11 @@
       <let-table-column :title="$t('common.time')" prop="notifytime"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.result')" prop="result"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.result')">
+        <template slot-scope="scope">
+          <span :style="statusStyle(scope.row.result)">{{scope.row.result}}</span>
+        </template>         
+      </let-table-column>
     </let-table>
     <let-pagination
       :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
@@ -537,6 +541,7 @@ export default {
         data.forEach(item => {
           item.isChecked = false
         });
+
         this.serverList = data;
 
 
@@ -600,6 +605,16 @@ export default {
         loading.hide();
         this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
+    },
+    statusStyle(message) {
+      message = message || '';
+
+      if(message == "restart" || message.indexOf("[succ]") != -1) {
+        return "color: green";
+      } else if(message == "stop" || message.indexOf("[alarm]") != -1 || message.indexOf("error") != -1 || message.indexOf("ERROR") != -1 ){
+        return "color: red";
+      }
+      return "";
     },
     // 切换服务实时状态页码
     gotoPage(num) {
@@ -1174,6 +1189,7 @@ export default {
 };
 </script>
 
+
 <style lang="postcss">
 @import '../../assets/css/variable.css';
 
@@ -1184,6 +1200,7 @@ export default {
   .danger {
     color: var(--off-color);
   }
+
   .icon.iconfont {
     font-size:10px;
     cursor: pointer;
@@ -1202,6 +1219,7 @@ export default {
       width: 200px;
     }
   }
+
   .table_head{padding:10px 0;}
   .dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
 }

@@ -75,9 +75,9 @@ AdapterDao.getAdapterConfByNodeName = async (nodeNames) => {
 
 AdapterDao.insertAdapterConf = async (params, transaction) => {
 	if (transaction) {
-		return await tAdapterConf.create(params, {transaction: transaction});
+		return await tAdapterConf.upsert(params, {transaction: transaction});
 	} else {
-		return await tAdapterConf.create(params);
+		return await tAdapterConf.upsert(params);
 	}
 };
 

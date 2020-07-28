@@ -9,7 +9,7 @@
       @submit.native.prevent="save"
     >
       <let-form-item :label="$t('deployService.form.app')" required>
-        <let-select id="inputApplication" v-model="model.application" size="small"  @change="changeApplication" filterable :notFoundText="$t('deployService.form.appAdd')">
+        <let-select id="inputApplication" v-model="model.application" @change="changeApplication" size="small" filterable :notFoundText="$t('deployService.form.appAdd')">
           <let-option v-for="d in applicationList" :key="d" :value="d">
             {{d}}
           </let-option>
@@ -50,12 +50,11 @@
       </let-form-item>
 
       <let-form-item :label="$t('serverList.table.th.ip')" required>
-        <let-select v-model="model.node_name" size="small">
+        <let-select v-model="model.node_name" size="small" required filterable>
           <let-option v-for="d in nodeList" :key="d" :value="d">
             {{d}}
           </let-option>
         </let-select>
-
         <!-- <let-input
           size="small"
           v-model="model.node_name"
@@ -63,8 +62,8 @@
           required
           :required-tip="$t('deployService.form.nodeTips')"
         ></let-input> -->
-
       </let-form-item>
+
       <let-form-item label="SET">
         <SetInputer
           :enabled.sync="model.enable_set"
@@ -252,7 +251,6 @@
 
     <div style="width:400px;margin:0 auto;" v-show="deployModal.show">
       <let-form ref="deployForm" itemWidth="400px">
-
           <let-form-item :label="$t('nodes.node_name')" required>
             <let-select v-model="deployModal.node_name">
               <let-option v-for="d in nodeList" :key="d" :value="d">
@@ -422,12 +420,12 @@ export default {
 
       this.model.template_name = data[0];
 
-      var application = document.querySelector("#inputApplication .let-select__filter__input");
-      var that = this;
+      // var application = document.querySelector("#inputApplication .let-select__filter__input");
+      // var that = this;
 
-      application.onblur=function(){
-        that.changeApplication(this.value);
-      }
+      // application.onblur=function(){
+      //   that.changeApplication(this.value);
+      // }
 
     }).catch((err) => {
       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

@@ -64,25 +64,25 @@ const ApplyController = {
 
         const applyServer = [];
 
-          applyServer.push({
+        applyServer.push({
           name: item.routerName,
           id: `1DCache.5${item.routerName}`,
           pid: `1${item.name}`,
-            is_parent: false,
-            open: false,
-            children: [],
-            serverType: 'router',
-          });
+          is_parent: false,
+          open: false,
+          children: [],
+          serverType: 'router',
+        });
 
-          applyServer.push({
+        applyServer.push({
           name: item.proxyName,
           id: `1DCache.5${item.proxyName}`,
           pid: `1${item.name}`,
-            is_parent: false,
-            open: false,
-            children: [],
-            serverType: 'proxy',
-          });
+          is_parent: false,
+          open: false,
+          children: [],
+          serverType: 'proxy',
+        });
 
       // 获取 cache 服务
         Object.keys(item.cacheModules).forEach((key) => {
@@ -97,20 +97,19 @@ const ApplyController = {
             open: false,
             children: [],
             moduleName: key,
-          // 不需要等 await 返回
           };
           applyServer.push(cacheNodeFloder)
-        // 把 cache 节点附加上目录树节点
+
           if(value.cacheServer && value.cacheServer.length > 0) {
             value.cacheServer.forEach(server => {
               cacheNodeFloder.children.push({
                 name: server,
                 id: `1Dcache.5${server}`,
                 pid: `1${value.moduleName}`,
-            is_parent: false,
-            open: false,
-            children: [],
-            serverType: 'dcache',
+                is_parent: false,
+                open: false,
+                children: [],
+                serverType: 'dcache',
               })
             })
           }
@@ -129,8 +128,8 @@ const ApplyController = {
         });
 
         serverList = serverList.concat(applyServer);
-          return true;
-        });
+        return true;
+      });
 
       serverList.forEach((server) => {
         TreeService.parents(treeNodeMap, server, rootNode);
@@ -198,10 +197,12 @@ const ApplyController = {
   },
   installAndPublish: async (ctx) => {
     try {
-      const { applyId } = ctx.paramsObj;
+      const { applyId} = ctx.paramsObj;
+
       const queryRouter = ['id', 'apply_id', 'server_name', 'server_ip', 'template_file', 'router_db_name', 'router_db_ip', 'router_db_port', 'router_db_user', 'router_db_pass', 'create_person'];
       const queryProxy = ['id', 'apply_id', 'server_name', 'server_ip', 'template_file', 'idc_area', 'create_person'];
-      const apply = await ApplyService.getApply({ applyId, queryRouter, queryProxy });
+      const apply = await ApplyService.getApply({ applyId, queryRouter, queryProxy});
+
       const { name, Router, Proxy } = apply;
       const proxyServerIps = [];
       Proxy.forEach((proxy) => {
@@ -279,21 +280,24 @@ const ApplyController = {
         let releaseArr = [];
         Proxy.forEach((proxy) => {
           proxy.server_ip.split(";").forEach((serverIp) => {
-          const releaseInfo = new DCacheOptStruct.ReleaseInfo();
-          releaseInfo.readFromObject({
-            appName: 'DCache',
-            serverName: proxy.server_name,
+
+            const releaseInfo = new DCacheOptStruct.ReleaseInfo();
+
+            releaseInfo.readFromObject({
+              appName: 'DCache',
+              serverName: proxy.server_name,
               nodeName: serverIp,
-            groupName: 'ProxyServer',
-            version: `${defaultProxyPackage.id}`,
+              groupName: 'ProxyServer',
+              version: `${defaultProxyPackage.id}`,
               user: ctx.uid,
-            md5: '',
-            status: 0,
-            error: '',
-            ostype: '',
-          });
-          releaseArr.push(releaseInfo);
+              md5: '',
+              status: 0,
+              error: '',
+              ostype: '',
+            });
+            releaseArr.push(releaseInfo);
           })
+
         });
         releaseInfoOption.readFromObject(releaseArr);
         const argsProxy = await DCacheOptPrx.releaseServer(releaseInfoOption);
@@ -323,7 +327,7 @@ const ApplyController = {
         releaseInfoOption.readFromObject(releaseArr);
         const argsRouter = await DCacheOptPrx.releaseServer(releaseInfoOption);
         logger.info('[DCacheOptPrx.publishApp] argsRouter:', argsRouter);
-        // {"__return":0,"releaseRsp":{"releaseId":1,"errMsg":"sucess to release server"}}
+
         if (argsRouter.__return !== 0) {
           // 发布失败
           throw new Error(argsRouter.releaseRsp.errMsg);

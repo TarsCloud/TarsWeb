@@ -37,7 +37,7 @@ export default {
   methods: {
     checkHasAuth(){
         this.$ajax.getJSON('/server/api/has_auth', {application: this.serverData.application, server_name: this.serverData.server_name, role: 'developer'}).then((data)=>{
-//          console.log('checkHasAuth', data);
+          // console.log('checkHasAuth', data);
           this.hasAuth = data.has_auth || false;
         }).catch((err)=>{
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

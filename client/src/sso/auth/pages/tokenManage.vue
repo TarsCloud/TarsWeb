@@ -90,7 +90,7 @@ export default {
     getTokenList() {
       const loading = this.$Loading.show();
 
-      this.$ajax.getJSON('/sso/api/auth/getTokenList').then((data)=>{
+      this.$ajax.getJSON('/server/api/auth/getTokenList').then((data)=>{
         
         loading.hide();
 
@@ -110,7 +110,7 @@ export default {
 
         const loading = this.$Loading.show();
 
-        this.$ajax.postJSON('/sso/api/auth/setTokenValid', {id: token.id, valid: 1-token.valid}).then((data)=>{
+        this.$ajax.postJSON('/server/api/auth/setTokenValid', {id: token.id, valid: 1-token.valid}).then((data)=>{
           
           loading.hide();
 
@@ -141,7 +141,7 @@ export default {
         return;
       }
       const loading = this.$Loading.show();
-      var url = '/sso/api/auth/addToken';
+      var url = '/server/api/auth/addToken';
       this.$ajax.postJSON(url, {expire_time: this.dialog.expire_time}).then((data)=>{
           loading.hide();
           this.showDialog=false;
@@ -166,7 +166,7 @@ export default {
           return;
         }
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/sso/api/auth/deleteToken', {id: ids}).then((data)=>{
+        this.$ajax.postJSON('/server/api/auth/deleteToken', {id: ids}).then((data)=>{
             loading.hide();
             this.$tip.success(this.$t('auth.delSucc'));
             this.getTokenList();

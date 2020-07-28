@@ -76,23 +76,29 @@
           const loading = this.$Loading.show();
           this.$ajax.postJSON(url, model).then((data) => {
             loading.hide();
+
             if(data.hasApply) {
               this.$confirm(this.$t('dcache.applyExists'), this.$t('common.alert')).then(async () => {
                   loading.show();
+
                   this.$ajax.postJSON('/server/api/overwrite_apply', model).then((data) => {
                     loading.hide();
-            this.$tip.success(this.$t('common.success'));
-            this.$router.push('/operation/apply/createService/' + data.id)
+                    this.$tip.success(this.$t('common.success'));
+                    this.$router.push('/operation/apply/createService/' + data.id)
                   }).catch((err) => {
                     loading.hide();
                     this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
                   });
+
               }).catch(()=>{});
             } else {
+
               loading.hide();
+
               this.$tip.success(this.$t('common.success'));
               this.$router.push('/operation/apply/createService/' + data.id)
             }
+
           }).catch((err) => {
             loading.hide();
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -105,7 +111,6 @@
           this.regions = regions;
         } catch (err) {
           // console.error(err);
-
         }
       },
     },

@@ -17,14 +17,13 @@
 const ServerDao = require('../../dao/ServerDao');
 const BusinessDao = require('../../dao/BusinessDao');
 const BusinessRelationDao = require('../../dao/BusinessRelationDao');
-const AuthService = require('../auth/AuthService');
 
 const cacheData = {
 	timer: '',
-	tree: [],
+	serverData: [],
 	business: [],
 	businessRelation: [],
-		}
+}
 
 const TreeService = {
 };
@@ -35,7 +34,42 @@ TreeService.getTreeNodes = async (searchKey, uid, type) => {
 
 /**
  * 将应用服务转换成层级数据
- * @param treeList
+ * @param data
+ */
+
+TreeService.ArrayToTree = (data) => {
+	let treeNodeList = []
+	let treeNodeMap = {}
+	let rootNode = []
+	data.forEach(function (server) {
+		server = server.dataValues;
+		let id;
+		if (server.enable_set == 'Y') {
+			id = '1' + server.application + '.' + '2' + server.set_name + '.' + '3' + server.set_area + '.' + '4' + server.set_group + '.' + '5' + server.server_name;
+		} else {
+			id = '1' + server.application + '.' + '5' + server.server_name;
+		}
+		let treeNode = {};
+		treeNode.id = id;
+		treeNode.name = server.server_name;
+		treeNode.pid = id.substring(0, id.lastIndexOf('.'));
+		treeNode.is_parent = false;
+		treeNode.open = false;
+		treeNode.children = [];
+		treeNodeList.push(treeNode);
+		treeNodeMap[id] = treeNode;
+
+		TreeService.parents(treeNodeMap, treeNode, rootNode)
+	})
+
+	return rootNode
+}
+
+/**
+ * 将应用服务转换成层级数据
+ * @param treeNodeMap
+ * @param treeNode
+ * @param rootNodes
  */
 TreeService.parents = (treeNodeMap, treeNode, rootNodes) => {
 	let id = treeNode.pid;
@@ -124,10 +158,17 @@ TreeService.parentsBusiness = async (data) => {
 	})
 	return result
 }
+
+/**
+ * 写入缓存数据
+ */
 TreeService.setCacheData = async (isRefresh) => {
 	cacheData.business = await BusinessDao.getList() || []
 	cacheData.businessRelation = await BusinessRelationDao.getList() || []
+
 	let serverList = await ServerDao.getServerConf4Tree('', '', false)
+
+	// 去重
 	let arr = serverList || [], newArr = [arr[0]]
 	for (let i = 1; i < arr.length; i++) {
 		let repeat = false
@@ -141,30 +182,11 @@ TreeService.setCacheData = async (isRefresh) => {
 			newArr.push(arr[i])
 		}
 	}
-	serverList = newArr
-	let treeNodeList = [];
-	let treeNodeMap = {};
-	let rootNode = [];
-	serverList.forEach(function (server) {
-		server = server.dataValues;
-		let id;
-		if (server.enable_set == 'Y') {
-			id = '1' + server.application + '.' + '2' + server.set_name + '.' + '3' + server.set_area + '.' + '4' + server.set_group + '.' + '5' + server.server_name;
-		} else {
-			id = '1' + server.application + '.' + '5' + server.server_name;
-		}
-		let treeNode = {};
-		treeNode.id = id;
-		treeNode.name = server.server_name;
-		treeNode.pid = id.substring(0, id.lastIndexOf('.'));
-		treeNode.is_parent = false;
-		treeNode.open = false;
-		treeNode.children = [];
-		treeNodeList.push(treeNode);
-		treeNodeMap[id] = treeNode;
-		TreeService.parents(treeNodeMap, treeNode, rootNode);
-	});
-	cacheData.tree = rootNode
+
+	// 写入缓存
+	cacheData.serverData = newArr
+
+	// 每10分钟更新
 	if(!isRefresh){
 		cacheData.timer && clearTimeout(cacheData.timer)
 		cacheData.timer = setTimeout(() => {
@@ -173,36 +195,35 @@ TreeService.setCacheData = async (isRefresh) => {
 	}
 }
 TreeService.setCacheData()
+
+/**
+ * 读取缓存数据
+ * @param  {String}  searchKey           搜索关键字
+ * @param  {String}  uid                 操作用户
+ * @param  {String}  type                类型(1: 服务, 2: DCache)
+ * @return {Promise} 返回请求的promise对象
+ */
 TreeService.getCacheData = async (searchKey, uid, type) => {
 	let businessList = cacheData.business || []
 	let businessRelationList = cacheData.businessRelation || []
-	let data = cacheData.tree || []
+	let serverList = cacheData.serverData || []
+
+	// 过滤Dcache
 	if(type && type === '1'){
-		let newData = []
-		data.forEach(item => {
-			if (item.name !== 'DCache') {
-				newData.push(item)
-			} else if (item.name === 'DCache' && item.children) {
-				let children = item.children.filter(jitem => jitem.name === 'DCacheOptServer' || jitem.name === 'ConfigServer' || jitem.name === 'PropertyServer')
-				item.children = children
-				newData.push(item)
-			}
-		})
-		data = newData
-		
-		// data = data.filter(item => item.name !== 'DCache')
+		serverList = serverList.filter(item => item.application !== 'DCache' || (item.application === 'DCache' && (
+			item.server_name === 'DCacheOptServer'
+			|| item.server_name === 'ConfigServer'
+			|| item.server_name === 'PropertyServer')))
 
 	}else if(type === '2'){
-		let newData = []
-		data.forEach(item => {
-			if(item.name === 'DCache' && item.children){
-				let children = item.children.filter(jitem => jitem.name === 'DCacheOptServer' || jitem.name === 'ConfigServer' || jitem.name === 'PropertyServer')
-				item.children = children
-				newData.push(item)
-			}
-		})
-		data = newData
+		serverList = serverList.filter(item => item.application === 'DCache' && (
+			item.server_name === 'DCacheOptServer'
+			|| item.server_name === 'ConfigServer'
+			|| item.server_name === 'PropertyServer'
+		))
 	}
+
+	// 查询过滤
 	if(searchKey){
 		businessList = businessList.filter(item => 
 			item.f_name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1
@@ -212,18 +233,21 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 			let newData = []
 			businessRelationList && businessRelationList.forEach(jitem => {
 				businessList && businessList.forEach(kitem => {
-					data && data.forEach(item => {
-						if(item.name === jitem.f_application_name && jitem.f_business_name === kitem.f_name){
+					serverList && serverList.forEach(item => {
+						if(item.application === jitem.f_application_name && jitem.f_business_name === kitem.f_name){
 							newData.push(item)
 						}
 					})
+					
 				})
 			})
-			data = newData
+			serverList = newData
 		}else{
-			data = data.filter(item => item.name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1)
+			serverList = serverList.filter(item => item.server_name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1)
 		}
 	}
+
+	const data = TreeService.ArrayToTree(serverList)
 	return await TreeService.parentsBusiness(data)
 }
 module.exports = TreeService;

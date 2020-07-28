@@ -39,6 +39,7 @@ ProxyDao.createProxy = async function ({
     create_person,
   });
 };
+
 ProxyDao.createOrUpdate = async function (whereProperties, params) {
   try {
     const self = tApplyAppProxyConf;

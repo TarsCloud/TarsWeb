@@ -82,10 +82,14 @@ const ServerConfigController = {
       // 用 cache 的服务名去读 tars 的服务
       const serverNameList = cacheServerList.map(server => `Dcache.${server.serverName}`);
       const serverList = await ServerService.getServerNameList({ applicationList: '', serverNameList, allAttr: true });
+
       // 添加 cache 的服务类型， 是主机、备机还是镜像呢
       serverList.forEach((server) => {
         const server_name = server.get('server_name');
         const cacheServer = cacheServerList.find(item => item.serverName === server_name);
+
+        // console.log(cacheServer);
+
         server.setDataValue('area', cacheServer.idcArea);
         server.setDataValue('module_name', cacheServer.moduleName);
         server.setDataValue('group_name', cacheServer.groupName);
@@ -143,21 +147,30 @@ const ServerConfigController = {
       const options = [];
       Object.values(ctx.paramsObj.moduleData).forEach((obj) => {
         const { area, apply_id, module_name, group_name, server_name, server_ip, server_type, memory, shmKey, idc_area, status, modify_time, is_docker, template_name, modify_person = ctx.uid } = obj;
+
         options.push({ area, apply_id, module_name, group_name, server_name, server_ip, server_type, memory, shmKey, idc_area, status, modify_time, is_docker, template_name, modify_person });
       });
+
       const moduleData = await ServerConfigService.addServerConfig(options);
+
       const accessData = { module_id, servant, isSerializated, dbMethod, accessDbId, dbaccess_ip, db_num, db_prefix, table_num, table_prefix, db_host, db_port, db_pwd, db_user, db_charset, create_person = ctx.uid } = ctx.paramsObj.dbAccess
+
       accessData.dbaccess_ip = accessData.dbaccess_ip.join(";");
+
       if (accessData.dbMethod) {
         const dbAccessMysql = await DbAccessService.getAccessDbById(accessDbId);
+
   //      console.log(dbAccessMysql);
+
         accessData.db_host = dbAccessMysql.db_host;
         accessData.db_port = dbAccessMysql.db_port;
         accessData.db_user = dbAccessMysql.db_user;
         accessData.db_pwd = dbAccessMysql.db_pwd;
         accessData.db_charset = dbAccessMysql.db_charset;
       }
+      // console.log(accessData);
       const dbAccess = await DbAccessService.createOrUpdate(['module_id'], accessData);
+
       ctx.makeResObj(200, '', { moduleData, dbAccess } );
     } catch (err) {
       logger.error('[addServerConfig]:', err);

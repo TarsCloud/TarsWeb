@@ -19,7 +19,7 @@ const AdminService = require('../../service/admin/AdminService');
 const ServerService = require('../../service/server/ServerService');
 const util = require('../../tools/util');
 const TaskDao = require('../../dao/TaskDao');
-const KafkaDao = require('../../dao/KafkaDao');
+// const KafkaDao = require('../../dao/KafkaDao');
 const AuthService = require('../../service/auth/AuthService');
 const TreeService = require('../../service/server/TreeService');
 
@@ -63,9 +63,9 @@ TaskService.getTasks = async (params) => {
 	return await TaskDao.getTask(params);
 };
 
-TaskService.getTaskStatus = async (taskNo) => {
-	return await KafkaDao.getTaskByTaskNo(taskNo);
-};
+// TaskService.getTaskStatus = async (taskNo) => {
+// 	return await KafkaDao.getTaskByTaskNo(taskNo);
+// };
 
 TaskService.addTask = async (params, ticket) => {
 	let items = [];

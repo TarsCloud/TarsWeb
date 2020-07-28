@@ -37,6 +37,11 @@ Dao.delete = async (id) => {
 	});
 };
 
+Dao.getAll = async () => {
+	return await dbTable.findAll();
+};
+
+
 Dao.getList = async (name) => {
 	return await dbTable.findAll({
 		where: {

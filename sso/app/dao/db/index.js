@@ -4,7 +4,7 @@
 
 const Sequelize = require('sequelize');
 
-// const Mysql = require('mysql');
+const update = require('./update');
 
 const fs = require('fs-extra');
 
@@ -69,7 +69,11 @@ databases.forEach((database)=>{
         let tableName = dbModel.replace(/\.js$/g, '');
         tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
         tableObj[_.camelCase(tableName)].sync();
+
     });
+    
+    update.update(tableObj);
+
     Db[database] = tableObj;
     Db[database].sequelize = sequelize;
 });

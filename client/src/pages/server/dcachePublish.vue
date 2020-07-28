@@ -169,8 +169,8 @@
           <let-button type="submit" theme="primary">{{$t('serverList.servant.upload')}}</let-button>
         </let-form>
       </let-modal>
-      <!-- 发布结果弹出框 -->
 
+      <!-- 发布结果弹出框 -->
       <PublishStatus ref="publishStatus"></PublishStatus>
       <!--
       <let-modal
@@ -309,7 +309,6 @@
 <script>
 
   import PublishStatus from '../publish/status';
-
   export default {
     name: 'ServerPublish',
     components: {
@@ -433,7 +432,6 @@
       },
       openPublishModal() {
         const checkedServerList = this.serverList.filter(item => item.isChecked);
-
         if (checkedServerList.length <= 0) {
           this.$tip.warning(this.$t('pub.dlg.a'));
           return;
@@ -515,9 +513,7 @@
           } else if (serverType == 'dcache') {
             group_name = 'DCacheServerGroup'
           }
-
           this.$refs.publishStatus.savePublishServer(this.publishModal, this.closePublishModal, group_name, patch_id);
-
           // this.publishModal.model.serverList.forEach((item) => {
           //   items.push({
           //     server_id: item.id.toString(),

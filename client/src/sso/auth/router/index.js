@@ -6,6 +6,7 @@ import AuthManage from '@/sso/auth/pages/authManage';
 import UserManage from '@/sso/auth/pages/userManage';
 import InfoManage from '@/sso/auth/pages/infoManage';
 import TokenManage from '@/sso/auth/pages/tokenManage';
+import SetManage from '@/sso/auth/pages/setManage';
 
 Vue.use(Router);
 
@@ -25,6 +26,11 @@ export default new Router({
       path: '/token',
       name: 'tokenManage',
       component: TokenManage
+    },
+    {
+      path: '/set',
+      name: 'setManage',
+      component: SetManage
     },
     {
       path: '/',
