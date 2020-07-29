@@ -125,6 +125,10 @@ export default {
           // node.expand = true;  //eslint-disable-line
         // }
 
+        if(this.treeSearchKey) {
+          node.expand = true
+        }
+
         if (node.children && node.children.length) {
           this.handleData(node.children);
         }

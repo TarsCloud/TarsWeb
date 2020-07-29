@@ -51,13 +51,14 @@
         // 图标
         serverIcon,
         opaIcon,
-        locale: this.$cookie.get('locale') || 'en',
+        locale: this.$cookie.get('locale') || 'cn',
         uid: '--',
         userOptOpen: false,
         enableLogin: false,
         isAdmin: false,
         localeMessages: localeMessages,
         dcache: this.$cookie.get('dcache') || 'false',
+        enableLdap: false,
       };
     },
     methods: {
@@ -79,6 +80,7 @@
         });
       },
       changeLocale(){
+        alert(this.locale);
         this.$cookie.set('locale', this.locale, {expires: '1Y'});
         location.reload();
       },
