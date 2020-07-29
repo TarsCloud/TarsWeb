@@ -80,7 +80,6 @@
         });
       },
       changeLocale(){
-        alert(this.locale);
         this.$cookie.set('locale', this.locale, {expires: '1Y'});
         location.reload();
       },
