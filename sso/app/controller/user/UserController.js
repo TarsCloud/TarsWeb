@@ -1,7 +1,8 @@
 const UserService = require('../../service/user/UserService');
 const AuthService = require('../../service/auth/AuthService');
 const LdapService = require('../../service/ldap/LdapService');
-const ldapConf = require('../../../../config/webConf').ldapConf;
+const SetService = require('../../service/set/SetService');
+// const ldapConf = require('../../../../config/webConf').ldapConf;
 const logger = require('../../../../app/logger');
 // const logger = require('../../logger');
 const util = require('../../tools/util');
@@ -18,6 +19,9 @@ const userStruct = {
 //获取所有用户列表
 UserController.getUserIdList = async(ctx)=> {
     try {
+
+        let ldapConf = await SetService.ldapConf();
+
         if(ldapConf.enableLDAP) {
             let userRet =  await LdapService.getAllUserList();
             ctx.makeResObj(200, '', userRet);

@@ -165,9 +165,9 @@ ServerDao.updateServerConf = async (params) => {
 
 ServerDao.insertServerConf = async (params, transaction) => {
 	if (transaction) {
-		return await tServerConf.create(params, {transaction: transaction});
+		return await tServerConf.upsert(params, {transaction: transaction});
 	} else {
-		return await tServerConf.create(params);
+		return await tServerConf.upsert(params);
 	}
 };
 
@@ -190,7 +190,6 @@ ServerDao.getSet = async (application, serverName) => {
 	let rst = await tServerConf.sequelize.query('select distinct if(enable_set = \'Y\', CONCAT(set_name, \'.\', set_area, \'.\', set_group), \'\') as \'set\' from db_tars.t_server_conf where application = \'' + application + '\' and server_name = \'' + serverName + '\'');
 	return rst[0] || '';
 };
-
 ServerDao.getObj = async (application, serverName) => {
 	return await tAdapterConf.findAll({
 		attributes:[[Sequelize.fn('DISTINCT', Sequelize.col('servant')) ,'servant']],

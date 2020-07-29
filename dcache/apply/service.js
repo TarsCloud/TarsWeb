@@ -32,74 +32,81 @@ ApplyService.hasApply = async function ({ name }) {
 ApplyService.overwriteApply = async function ({
   idc_area, set_area, admin, name, create_person,
 }) {
-    // 如果是安装成功的， 提醒应用存在
-    // 如果注册过，但是没有安装成功， 就覆盖掉
-    const data = await ApplyDao.createOrUpdate(['name'], {
-      idc_area, set_area, admin, name, create_person, status: 1,
-    });
-    // 创建应用 RouterService
-    const routerOption = {
-      apply_id: data.id,
-      server_name: `${data.name}RouterServer`,
-      server_ip: '',
-      template_file: '',
+  // 如果注册过，但是没有安装成功， 就覆盖掉
+  const data = await ApplyDao.createOrUpdate(['name'], {
+    idc_area, set_area, admin, name, create_person, status: 1,
+  });
+  // 创建应用 RouterService
+  const routerOption = {
+    apply_id: data.id,
+    server_name: `${data.name}RouterServer`,
+    server_ip: '',
+    template_file: '',
     router_db_name: `db_cache_${data.name}`,
     router_db_ip: ``,
     router_db_port: '3306',
-      router_db_user: '',
-      router_db_pass: '',
-      create_person,
-      status: 1,
-    };
-    await RouterService.createOrUpdate(['apply_id'], routerOption);
+    router_db_user: '',
+    router_db_pass: '',
+    create_person,
+    status: 1,
+  };
+  await RouterService.createOrUpdate(['apply_id'], routerOption);
 
-    // 创建 idc_area ProxyService
-    let proxyOption = {
+  // 创建 idc_area ProxyService
+  let proxyOption = {
+    apply_id: data.id,
+    server_name: `${data.name}ProxyServer`,
+    server_ip: '',
+    template_file: '',
+    idc_area: data.idc_area,
+    create_person,
+    status: 1,
+  };
+  await ProxyService.createOrUpdate(['apply_id', 'idc_area'], proxyOption);
+  // 创建 set_area ProxyService
+  const result = [];
+  for (let i = 0; i < set_area.length; i++) {
+    proxyOption = {
       apply_id: data.id,
       server_name: `${data.name}ProxyServer`,
       server_ip: '',
       template_file: '',
-      idc_area: data.idc_area,
+      idc_area: set_area[i],
       create_person,
       status: 1,
     };
-    await ProxyService.createOrUpdate(['apply_id', 'idc_area'], proxyOption);
-    // 创建 set_area ProxyService
-    const result = [];
-    for (let i = 0; i < set_area.length; i++) {
-      proxyOption = {
-        apply_id: data.id,
-        server_name: `${data.name}ProxyServer`,
-        server_ip: '',
-        template_file: '',
-        idc_area: set_area[i],
-        create_person,
-        status: 1,
-      };
-      result.push(ProxyService.createOrUpdate(['apply_id', 'idc_area'], proxyOption));
-    }
-    await Promise.all(result);
-    return data;
+    result.push(ProxyService.createOrUpdate(['apply_id', 'idc_area'], proxyOption));
+  }
+
+  await Promise.all(result);
+  return data;
+  
 };
+
+
 ApplyService.addApply = async function ({
   idc_area, set_area, admin, name, create_person,
 }) {
   const item = await ApplyDao.findOne({ where: { name } });
   if (item && item.status === 2) {
+    // 如果是安装成功的， 提醒应用存在
     throw new Error('#apply.hasExist#');
   } else {
     return await ApplyService.overwriteApply({ idc_area, set_area, admin, name, create_person });
   }
 };
+
 ApplyService.getRouterDb = async function () {
   return await ApplyDao.findRouterDbAll();
 };
+
 ApplyService.getRouterDbById = async function (id) {
   return await ApplyDao.findRouter(id);
 };
 
-ApplyService.getApply = function ({ applyId, queryRouter, queryProxy }) {
-  return ApplyDao.findOne({ where: { id: +applyId }, queryRouter, queryProxy });
+
+ApplyService.getApply = function ({ applyId, queryRouter, queryProxy}) {
+  return ApplyDao.findOne({ where: { id: +applyId }, queryRouter, queryProxy});
 };
 
 ApplyService.findApplyByName = function ({ appName }) {
@@ -110,7 +117,7 @@ ApplyService.getApplyList = function (options = {}) {
   return ApplyDao.findAll(options);
 };
 
-ApplyService.saveRouterProxy = async function ({ Proxy, Router }) {
+ApplyService.saveRouterProxy = async function ({ Proxy, Router}) {
   const result = [];
   for (let i = 0; i < Proxy.length; i++) {
     result.push(ProxyService.update(Proxy[i]));

@@ -25,9 +25,11 @@ applyDao.findRouterDbAll = async function () {
     offset: 0,
   });
 }
+
 applyDao.findRouter = async function (id) {
   return await tApplyAppRouterConf.findOne({ id });
 }
+
 applyDao.findAll = async function ({
   where = {},
   raw = true,
@@ -63,6 +65,7 @@ applyDao.findAll = async function ({
     };
     include.push(dbAccessModelItem);
   }
+
   // 一般来说，查找的都是安装成功的、即status=2
   if (!where.status) where.status = 2;
   const data = await tApplyAppBase.findAll({

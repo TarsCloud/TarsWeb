@@ -7,7 +7,7 @@
       itemWidth="480px"
       @submit.native.prevent="save"
     >
-      <let-form-item :label="$t('deployService.form.app')" required>
+     <let-form-item :label="$t('deployService.form.app')" required>
         <let-select id="inputApplication" v-model="model.apply" size="small" filterable :notFoundText="$t('deployService.form.appAdd')">
           <let-option v-for="d in model.applyList" :key="d" :value="d">
             {{d}}
@@ -45,8 +45,9 @@
           <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
+
       <let-form-item :label="$t('serverList.table.th.ip')" required>
-        <let-select v-model="model.node_name" size="small">
+        <let-select v-model="model.node_name" size="small" filterable>
           <let-option v-for="d in model.nodeList" :key="d" :value="d">
             {{d}}
           </let-option>

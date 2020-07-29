@@ -75,7 +75,7 @@
                     accept=".tars"
                     multiple
                     @upload="uploadFile"
-                >{{$t('common.submit')}}</let-uploader>
+                >{{$t('common.choose')}}</let-uploader>
                     <li v-for="item in uploadModal.fileList2Show" :key="item.index">{{item.name}}</li>
                 </let-form-item>
                 <let-button type="submit" theme="primary">{{$t('serverList.servant.upload')}}</let-button>
@@ -229,7 +229,6 @@ export default {
             } else {
                 this.showInstallBm = true
             }
-            
         },
         deleteTarsFile(id) {
             this.$confirm(this.$t('inf.dlg.deleteMsg'), this.$t('common.alert')).then(()=>{

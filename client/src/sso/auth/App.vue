@@ -12,8 +12,8 @@
 </template>
 
 <script>
-  import AppHeader from '../components/app/header';
-  import AppFooter from '../components/app/footer';
+  import AppHeader from '../../components/app/sso-header';
+  import AppFooter from '../../components/app/footer';
 
   export default {
     name: 'App',

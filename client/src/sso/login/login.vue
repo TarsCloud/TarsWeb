@@ -72,7 +72,7 @@ export default {
         return;
       }
       const loading = this.$Loading.show();
-      this.$ajax.postJSON('/sso/api/login', {uid: this.uid, password: this.password}).then((data)=>{
+      this.$ajax.postJSON('/server/api/login', {uid: this.uid, password: this.password}).then((data)=>{
         loading.hide();
         var redirectUrl = this.redirectUrl;
         var href = redirectUrl + (redirectUrl.indexOf('?') === -1?'?':'&') + 'ticket=' + data.ticket;

@@ -16,6 +16,7 @@
 
 const logger = require('../../logger');
 const Service = require('../../service/businessRelation/BusinessRelationService');
+const TreeService = require('../../service/server/TreeService');
 const util = require('../../tools/util');
 
 const Struct = {
@@ -38,7 +39,15 @@ Controller.add = async (ctx) => {
 	try {
 		let bname = ctx.paramsObj.f_business_name;
 		let aname = ctx.paramsObj.f_application_name;
-		ctx.makeResObj(200, '', util.viewFilter(await Service.add(bname, aname, ctx.uid), Struct));
+
+		const resultData = await Service.getList(bname, aname)
+		if(resultData && Array.isArray(resultData) && resultData.length > 0){
+			ctx.makeResObj(500, 'already exists', resultData);
+		}else{
+			const addData = await Service.add(bname, aname, ctx.uid)
+			TreeService.setCacheData(1)
+			ctx.makeResObj(200, '', util.viewFilter(addData, Struct))
+		}
 	} catch (e) {
 		logger.error('[addBusinessRelation]', e, ctx);
 		ctx.makeErrResObj();
@@ -49,6 +58,7 @@ Controller.delete = async (ctx) => {
 	try {
 		let id = ctx.paramsObj.f_id;
 		await Service.delete(id);
+		TreeService.setCacheData(1);
 		ctx.makeResObj(200, '', [id]);
 	} catch (e) {
 		logger.error('[addBusinessRelation]', e, ctx);

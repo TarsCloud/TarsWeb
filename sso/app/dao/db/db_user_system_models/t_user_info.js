@@ -9,12 +9,12 @@ module.exports = function(sequelize, DataTypes) {
 			autoIncrement: true
 		},
 		uid: {
-			type: DataTypes.STRING(256),
+			type: DataTypes.STRING(128),
 			allowNull: true,
 			unique: true
 		},
 		password: {
-			type: DataTypes.STRING(256),
+			type: DataTypes.STRING(128),
 			allowNull: false
 		},
 		update_time: {

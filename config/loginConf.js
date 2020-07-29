@@ -24,8 +24,6 @@ module.exports = {
     enableLogin: true,                     //是否启用登录验证
     defaultLoginUid: 'admin',                //若不启用登录验证，默认用户为admin
     redirectUrlParamName: 'redirect_url',    //跳转到登录url的时带的原url参数名，如：***/login?service=***，默认是service
-    // baseUserCenterUrl: 'http://localhost:3000',   //登录跳转url(代码中要替换localhost)
-    // baseLoginUrl: 'http://localhost:3000/login.html',                 //登录跳转url(userCenterUrl + loginUrl)
     userCenterUrl: '/auth.html',                      //登录跳转url(代码中要替换baseUserCenterUrl:localhost)
     loginUrl: '/login.html',                           //登录跳转url(baseLoginUrl:localhost)
     logoutUrl: '',
@@ -43,10 +41,10 @@ module.exports = {
     validateMatch: [
         ['data.result', true]
     ],                                      //校验通过匹配条件，可以从多层结果，多个情况
-    ignore: ['/static', '/api'], //不需要登录校验的路径
-    ignoreIps: ['127.0.0.1', 'localhost'],                           //访问ip白名单
+    ignore: ['/static', '/api'],            //不需要登录校验的路径
+    ignoreIps: ['127.0.0.1', 'localhost'],  //访问ip白名单
     apiPrefix: ['/pages/server/api'],       //接口相应的路径前缀，这类接口访问不直接跳转到登录界面，而只是提示未登录
-    apiNotLoginMes: '#common.noLogin#', //接口无登录权限的提示语
+    apiNotLoginMes: '#common.noLogin#',     //接口无登录权限的提示语
 };
 
 /**
@@ -54,27 +52,14 @@ module.exports = {
  * @param ctx
  */
 async function getUidByTicket(ctx, ticket){
+
     if (!ticket) {
         return null;
     }
     
     let uid = await LoginService.getUidByTicket(ticket);
+
     return uid;
-    //TODO
-    // return new Promise((resolve, reject)=>{
-    //     try{
-    //                 request.get('http://localhost:3000/pages/sso/getUidByTicket?ticket='+ticket).then(uidInfo=>{
-                // logger.info(ctx.url, 'getUidByTicket', ticket, uidInfo);
-
-    //                     uidInfo = JSON.parse(uidInfo);
-    //                     resolve(uidInfo.data.uid);
-    //                 }).catch(err=>{
-
-
-    //     }catch(e){
-    //         resolve(false)
-    //     }
-    // })
 }
 
 /**
@@ -82,28 +67,13 @@ async function getUidByTicket(ctx, ticket){
  * @param ctx
  */
 async function validate(ctx, uid, ticket){
+
     if (!ticket) {
         return null;
     }
+
     uid =  await LoginService.getUidByTicket(ticket);
+
     return uid != null;
-    //TODO
-    // return new Promise((resolve, reject)=>{
-    //     try{
-    //                 request.get('http://localhost:3000/pages/sso/getUidByTicket?ticket='+ticket).then(uidInfo=>{
 
-    //                     uidInfo = JSON.parse(uidInfo);
-
-                // logger.info(ctx.url, 'validate uidInfo', uidInfo, uid);
-
-    //                     uid = uidInfo.data.uid;
-    //                     resolve(uidInfo.data.uid);
-
-                // logger.info(ctx.url, 'validate', err);
-    //                     reject(err);
-    //                 })
-    //     }catch(e){
-    //         reject(false)
-    //     }
-    // })
 }

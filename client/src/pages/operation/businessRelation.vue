@@ -26,7 +26,6 @@
       <let-table-column :title="$t('businessRelation.form.time')" prop="f_create_time"></let-table-column>
       <let-table-column :title="$t('operate.operates')">
         <template slot-scope="scope">
-          <let-table-operation @click="editItem(scope.row)">{{$t('operate.update')}}</let-table-operation>
           <let-table-operation @click="removeItem(scope.row)">{{$t('operate.delete')}}</let-table-operation>
         </template>
       </let-table-column>
@@ -45,32 +44,26 @@
       @on-cancel="closeDetailModal"
     >
       <let-form ref="detailForm" v-if="detailModal.model" itemWidth="700px">
+
         <let-form-item :label="$t('application.form.application')" required>
-          <let-input disabled
-            size="small"
+
+          <let-select
             v-model="detailModal.model.f_application_name"
-            :placeholder="$t('common.notEmpty')"
+            size="small"
             required
-            :required-tip="$t('common.notEmpty')"
-            :pattern-tip="$t('common.notEmpty')"
-          ></let-input>
+            :required-tip="$t('common.notEmpty')">
+            <let-option v-for="d in application" :key="d.f_id" :value="d.f_name">{{d.f_name}}</let-option>
+          </let-select>
         </let-form-item>
+
         <let-form-item :label="$t('business.form.business')" required>
-          <let-select v-if="business && business.length > 0"
+          <let-select
             v-model="detailModal.model.f_business_name"
             size="small"
             required
             :required-tip="$t('common.notEmpty')">
             <let-option v-for="d in business" :key="d.f_id" :value="d.f_name">{{d.f_name}}</let-option>
           </let-select>
-          <let-input v-else
-            size="small"
-            v-model="detailModal.model.f_business_name"
-            :placeholder="$t('common.notEmpty')"
-            required
-            :required-tip="$t('common.notEmpty')"
-            :pattern-tip="$t('common.notEmpty')"
-          ></let-input>
         </let-form-item>
       </let-form>
     </let-modal>
@@ -141,11 +134,6 @@ export default {
       this.viewModal.show = true;
     },
 
-    editItem(d) {
-      this.detailModal.model = d;
-      this.detailModal.show = true;
-      this.detailModal.isNew = false;
-    },
     saveItem() {
       if (this.$refs.detailForm.validate()) {
         const model = this.detailModal.model;

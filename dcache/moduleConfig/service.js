@@ -25,19 +25,32 @@ const serverConfigDao = require('./../serverConfig/dao.js');
 // const serverConfigDao = require(path.join(cwd, './app/dao/serverConfigDao.js'));
 const ModuleConfigService = {};
 
+
 ModuleConfigService.hasModule = async function ({ module_name }) {
   const item = await moduleConfigDao.findOne({ where: { module_name } });
+
   if (item && item.status == 2) {
     return true;
   }
   return false;
 }
+
+
 ModuleConfigService.overwriteModuleConfig = async function (option) {
   const { module_name } = option;
+  // const item = await moduleConfigDao.findOne({ where: { module_name } });
+  // if (item && item.status === 2) {
+  //   // 如果是安装成功的， 提醒模块存在
+  //   throw new Error('#module.hasExist#');
+  // } else if (item) {
+    // 如果模块已存在但没安装成功，删除原有模块记录
     await moduleConfigDao.destroy({ where: { module_name }, force: true });
+    // await moduleDao.destroy({ where: { id: item.module_id }, force: true });
     await serverConfigDao.destroy({ where: { module_name }, force: true });
+  // }
   return moduleConfigDao.add(option);
 };
+ 
 ModuleConfigService.addModuleConfig = async function (option) {
   const { module_name } = option;
   const item = await moduleConfigDao.findOne({ where: { module_name } });
@@ -53,8 +66,8 @@ ModuleConfigService.addModuleConfig = async function (option) {
   return moduleConfigDao.add(option);
 };
 
-ModuleConfigService.getModuleConfigInfo = async function ({ moduleId, queryModuleBase, queryServerConf }) {
-  return moduleConfigDao.findOne({ where: { module_id: +moduleId }, queryModuleBase, queryServerConf });
+ModuleConfigService.getModuleConfigInfo = async function ({ moduleId, queryModuleBase, queryServerConf}) {
+  return moduleConfigDao.findOne({ where: { module_id: +moduleId }, queryModuleBase, queryServerConf});
 };
 
 ModuleConfigService.getPublishSuccessModuleConfig = async function () {

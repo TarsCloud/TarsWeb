@@ -54,21 +54,30 @@ InfTestController.uploadTarsFile = async (ctx) => {
 	let tarsFilePath = `${baseUploadPath}/tars_files/${application}/${server_name}`;
 	try {
 		await fs.ensureDirSync(tarsFilePath);
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let files = ctx.req.files;
 			if (!files.length) {
-				logger.error('[uploadTarsFile]:', 'no files', ctx);
+				logger.error('[uploadTarsFile]:', 'no files', files);
 				throw new Error('[uploadTarsFile]: no files');
 			}
 			// 检查文件类型并重命名文件
 			for (let file of files) {
 				if (!(/\.tars$/gi.test(file.originalname) && file.mimetype === 'application/octet-stream')) {
 					logger.error('[uploadTarsFile]:', 'only accept .tars files', ctx);
-					throw new Error('[uploadTarsFile]: #pub.dlg.filetype#');
+					ctx.makeResObj(500, "#pub.dlg.filetype#");
+					return;          
+
 				}
 				await fs.rename(`${baseUploadPath}/${file.filename}`, `${tarsFilePath}/${file.originalname}`);
+			}
+
+			let exists = await InfTestService.hasCaseTool();
+
+			if (!exists) {
+				ctx.makeResObj(500, "#inf.error.caseToolNotExists#");
+				return;
 			}
 			// 解析并入库
 			let ret = [];
@@ -98,7 +107,7 @@ InfTestController.uploadTarsFile = async (ctx) => {
 InfTestController.getFileList = async (ctx) => {
 	try {
 		let {application, server_name} = ctx.paramsObj;
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let ret = await InfTestService.getTarsFile({
@@ -122,7 +131,7 @@ InfTestController.getFileList = async (ctx) => {
 InfTestController.getContexts = async (ctx) => {
 	try {
 		let {id, application, server_name, type, module_name, interface_name} = ctx.paramsObj;
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let contexts;
@@ -146,7 +155,7 @@ InfTestController.getContexts = async (ctx) => {
 InfTestController.getParams = async (ctx) => {
 	try {
 		let {application, server_name, id, module_name, interface_name, function_name} = ctx.paramsObj;
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let params = await InfTestService.getParams(id, module_name, interface_name, function_name);
@@ -193,7 +202,7 @@ InfTestController.getBmCaseList = async (ctx) => {
 	try {
 		let {servant, fn} = ctx.paramsObj;
 		let [application, server_name] = servant.split(".")
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 			return;
 		}
@@ -210,7 +219,7 @@ InfTestController.getBmResultById = async (ctx) => {
 		let {id} = ctx.paramsObj;
 		let ret = await InfTestService.getBmResultById(id);
 		let [application, server_name] = ret.servant.split(".")
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 			return;
 		}
@@ -294,7 +303,7 @@ InfTestController.getEndpoints = async (ctx)=>{
 	try {
 		let {servant} = ctx.paramsObj
 		let [application, server_name] = servant.split(".")
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 			return;
 		}

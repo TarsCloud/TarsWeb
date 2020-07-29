@@ -38,7 +38,7 @@ export default {
   methods: {
     getAuthList(){
       const loading = this.$Loading.show();
-      this.$ajax.getJSON('/sso/api/getMyAuthList').then((data)=>{
+      this.$ajax.getJSON('/server/api/getMyAuthList').then((data)=>{
         loading.hide();
         this.authList = data;
         this.totalCount = data.length;
@@ -52,7 +52,7 @@ export default {
     },
     checkAdmin(){
       this.isAdmin = false; 
-      this.$ajax.getJSON('/sso/api/isAdmin').then((data) => {
+      this.$ajax.getJSON('/server/api/isAdmin').then((data) => {
         this.isAdmin = data.admin;
         if(this.isAdmin) {
           this.empty_msg = this.$t('ssoCommon.admin');

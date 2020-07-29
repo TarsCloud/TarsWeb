@@ -3,20 +3,20 @@
 
     <div class="tree_wrap">
       <a href="javascript:;" class="tree_icon iconfont el-icon-third-shuaxin" @click="getTreeData(1)"></a>
-    <let-tree class="left-tree"
-              v-if="treeData && treeData.length"
-              :data="treeData"
-              :activeKey="$route.params.treeid"
-              @on-select="selectTree"/>
-    <div class="left-tree" v-if="treeData && !treeData.length">
-      <p class="loading">{{$t('common.noService')}}</p>
-    </div>
-    <div class="left-tree" v-if="!treeData" ref="treeLoading">
-      <div class="loading" v-if="treeData === false">
-        <p>{{treeErrMsg}}</p>
-        <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
+      <let-tree class="left-tree"
+                v-if="treeData && treeData.length"
+                :data="treeData"
+                :activeKey="$route.params.treeid"
+                @on-select="selectTree"/>
+      <div class="left-tree" v-if="treeData && !treeData.length">
+        <p class="loading">{{$t('common.noService')}}</p>
       </div>
-    </div>
+      <div class="left-tree" v-if="!treeData" ref="treeLoading">
+        <div class="loading" v-if="treeData === false">
+          <p>{{treeErrMsg}}</p>
+          <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
+        </div>
+      </div>
     </div>
 
     <div class="right-view" v-if="!this.$route.params.treeid">
@@ -174,6 +174,7 @@
           this.$router.push(`/server/${nodeKey}/manage/${serverType}`);
         }
 
+
       },
       // 处理接口返回数据
       handleData(res, isFirstLayer) {
@@ -192,6 +193,7 @@
           if(this.$route.params.treeid === node.nodeKey) {
             node.expand = true;  //eslint-disable-line
           }
+
           if (node.children && node.children.length) {
             this.handleData(node.children);
           }
@@ -315,9 +317,11 @@
     padding-bottom: var(--gap-big);
     padding-top: var(--gap-big);
     display: flex;
+
     /**/
     .tree_wrap{position:relative;}
     .tree_icon{color:#565B66;position:absolute;right:5px;top:5px;}
+
     /*目录树*/
     .left-tree {
       flex: 0 0 auto;

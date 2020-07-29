@@ -637,7 +637,7 @@
       "compileAndPublish": "编译并发布",
       "releasePkg": "发布包",
       "defaultValue": "请选择",
-      "filetype": "只能上传tars类型的文件",
+      "filetype": "只能上传协议文件",
       "noConfFile": "暂无配置文件",
       "a": "请至少选择一个服务节点",
       "ab": "请选择发布版本",
@@ -702,7 +702,8 @@
       "fileName": "文件名不能为空",
       "fileNameReg": "文件名只能包含英文字母或数字、点、下划线、短横线",
       "contentReg": "文件内容不能为空",
-      "addSucccess": "添加成功"
+      "addSucccess": "添加成功",
+      "exists": "同名文件已经存在"
     }
   },
   "monitor": {
@@ -1090,17 +1091,18 @@
       "benchmark":"压测"
     },
     "error":{
-      "parseFail":"协议解析失败"
+      "parseFail":"协议解析失败",
+      "caseToolNotExists": "协议解析工具不存在, 请检查! "
     },
     "title": {
-      "listTitle": "tars文件列表",
-      "dlgTitle": "上传Tars文件"
+      "listTitle": "协议文件列表",
+      "dlgTitle": "上传协议文件"
     },
     "dlg": {
       "selectLabel": "模块/接口/方法",
       "inParam": "方法入参",
       "outParam": "方法出参",
-      "tarsFile": "tars文件",
+      "tarsFile": "协议文件",
       "deleteMsg": "您确定要删除吗？",
       "objName": "Servant名"
     },
@@ -1253,7 +1255,8 @@
       "tab1": "权限列表",
       "tab2": "用户管理",
       "tab3": "权限管理",
-      "tab4": "Token管理"
+      "tab4": "Token管理",
+      "tab5": "设置"
     },
     "modifyPass": "修改密码"
   },
@@ -1322,7 +1325,16 @@
     "notValid": "失效",
     "setTokenValid": "确定修改Token状态吗?",
     "setTokenError": "设置token状态失败",
-    "setTokenSucc": "修改Token状态成功"
+    "setTokenSucc": "修改Token状态成功",
+    "editSet": "编辑配置",
+    "setManageTitle": "配置列表",
+    "setTitle": "配置标题",
+    "setInfo": "配置信息",
+    "loadSetError": "加载配置失败",
+    "setSetValid": "确定修改配置状态吗?",
+    "setSetError": "设置配置状态失败",
+    "setSetSucc": "修改配置状态成功",
+    "about": "配置描述"
   },
   "pass": {
     "title": "修改密码",
@@ -1355,6 +1367,12 @@
     "needArray": "必须为数组",
     "needObject": "必须为对象",
     "needBoolean": "必须为布尔值"
+  },
+  "ldap": {
+    "alert": "开启LDAP后, 除admin用户外, 其他用户都通过ldap登录, 可以使用ldap来对接公司内其他权限验证系统!",
+    "info": "开启LDAP",
+    "url": "ldap url",
+    "basedn": "ldap basedn"
   },
   "localeSelect": {
     "cn": "中文",

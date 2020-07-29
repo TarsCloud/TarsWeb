@@ -14,7 +14,6 @@
             <i v-if="scope.row.default_version == 1" class="icon iconfont" style="color: green">&#xec46;</i>
           </span>
           {{scope.row.id}}
-         
         </template>
       </let-table-column>
       <let-table-column :title="$t('releasePackage.moduleName')" prop="server"></let-table-column>

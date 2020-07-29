@@ -24,13 +24,13 @@
             </template>
           </let-table-column>
           <let-table-column :title="$t('service.serverIp')" prop="server_ip">
-            <template slot-scope="scope">
+          <template slot-scope="scope">
             <let-select v-model="scope.row.server_ip" required size="small">
               <let-option v-for="d in nodeList" :key="d" :value="d">
                 {{d}}
               </let-option>
             </let-select>
-            </template>
+          </template>
           </let-table-column>
           <let-table-column :title="$t('module.shmKey')" prop="shmKey">
             <template slot-scope="scope">
@@ -72,12 +72,15 @@
           </let-table-column>
         </let-table>
       </let-form-group>
+
       <div  v-if="this.dbAccess.servant != ''">
       <let-form-group :title="$t('module.dbAccessInfo') + '(' + dbAccess.servant + ')'" inline label-position="top">
+
       <let-form-item :label="$t('service.isSerializated')" itemWidth="400px" v-if="this.cacheVersion == 1" required>
         <let-radio-group size="small" v-model="dbAccess.isSerializated" :data="cacheTypeOption">
         </let-radio-group>
       </let-form-item>
+
       <let-form-item :label="$t('service.multipleIp')" itemWidth="350px" required>
         <let-select v-model="dbAccess.dbaccess_ip" size="small" required multiple placeholder="Please Choose">
           <let-option v-for="d in nodeList" :key="d" :value="d">
@@ -85,8 +88,10 @@
           </let-option>
         </let-select>
       </let-form-item>
+
       <br>
       <let-form-item :label="$t('cache.db.DBPrefix')" itemWidth="200px" required>
+
         <let-input
           size="small"
           v-model="dbAccess.db_prefix"
@@ -95,6 +100,7 @@
         >
         </let-input>
       </let-form-item>
+
       <let-form-item :label="$t('cache.db.tablePrefix')" itemWidth="200px" required>
         <let-input
           size="small"
@@ -104,6 +110,7 @@
         >
         </let-input>
       </let-form-item>
+
       <let-form-item :label="$t('cache.db.dbNum')" itemWidth="200px" required>
         <let-select
           size="small"
@@ -115,6 +122,7 @@
           <let-option key="10" value="10"> 10 </let-option>
         </let-select>  
       </let-form-item>
+
       <let-form-item :label="$t('cache.db.tableNum')" itemWidth="200px" required>
         <let-select
           size="small"
@@ -126,6 +134,7 @@
           <let-option key="10" value="10"> 10 </let-option>
         </let-select>  
       </let-form-item>
+
       <let-form-item :label="$t('cache.db.tableCharset')" itemWidth="200px" required>
         <let-select
           size="small"
@@ -139,6 +148,7 @@
           <let-option key="latin1" value="latin1">latin1</let-option>
         </let-select>
       </let-form-item>
+
       <div v-if="accessDb.length > 0">
       <let-form-item :label="$t('cache.accessDbName')" itemWidth="240px" required>
         <let-radio v-model="dbAccess.dbMethod" :label="true">{{$t('cache.chooseAccessDb')}}</let-radio>
@@ -151,9 +161,11 @@
         </let-select>
       </let-form-item>
       </div>
+
       <let-form-item :label="$t('cache.accessDbName')" itemWidth="240px" required>
         <let-radio v-model="dbAccess.dbMethod" :label="false">{{$t('cache.inputAccessDb')}}</let-radio>
       </let-form-item>
+
       <span v-if="!dbAccess.dbMethod">
       <let-form-item :label="$t('cache.db.dbHost')" itemWidth="200px" required>
         <let-input
@@ -193,6 +205,7 @@
       </let-form-item>
       </span>
       </let-form-group>
+
       </div>
       <div>
         <let-button size="small" theme="primary" @click="submitServerConfig">{{$t('common.nextStep')}}</let-button>
@@ -252,9 +265,11 @@
                 <let-input
                   size="small"
                   v-model="scope.row.defaultValue"
+
                 />
               </template>
             </let-table-column>
+ 
             <let-table-column :title="$t('MKCache.maxLen')" prop="maxLen">
               <template slot-scope="scope">
                 <let-input
@@ -266,6 +281,7 @@
             -->
           </let-table>
         </let-form-group>
+
         <let-form-group :title="$t('MKCache.unionKey')" inline label-position="top" v-if="multiKey">
           <let-table ref="unionKey" :data="mkCacheStructure.unionKey" :empty-msg="$t('common.nodata')">
             <let-table-column :title="$t('MKCache.fieldName')" prop="fieldName" width="150">
@@ -316,6 +332,7 @@
                 <let-input
                   size="small"
                   v-model="scope.row.defaultValue"
+
                 />
                 <!--required-->
                 <!--:required-tip="$t('deployService.table.tips.empty')"-->
@@ -339,6 +356,7 @@
             </let-table-column>
           </let-table>
         </let-form-group>
+
         <let-form-group :title="$t('MKCache.dataValue')" inline label-position="top">
           <let-table ref="dataValue" :data="mkCacheStructure.value" :empty-msg="$t('common.nodata')">
             <let-table-column :title="$t('MKCache.fieldName')" prop="fieldName" width="20%">
@@ -365,8 +383,6 @@
                 </let-select>
               </template>
             </let-table-column>
-
-
             <let-table-column :title="$t('MKCache.dataDbType')" prop="DBType" width="15%">
               <template slot-scope="scope">
                 <let-select
@@ -381,7 +397,6 @@
                 </let-select>
               </template>
             </let-table-column>
-
 
             <let-table-column :title="$t('MKCache.fieldProperty')" prop="property" width="15%">
               <template slot-scope="scope">
@@ -433,6 +448,7 @@
 <script>
   import _ from 'lodash';
   import { getModuleConfigInfo, templateNameList } from '@/dcache/interface.js'
+
   const getDBAccessConf = () => ({
     module_id: "",
     accessDbId: 0,
@@ -450,6 +466,7 @@
     db_pwd: "",
     db_port: '3306',
   });
+
   const moduleModel = () => (
     {
       module_id: 17,
@@ -462,9 +479,11 @@
       memory: ""
     }
   );
+
   const keyTypeOption = [
     {key: 'string', value: 'string'},
   ];
+
   const dataTypeOption = [
     {key: 'int', value: 'int'},
     {key: 'long', value: 'long'},
@@ -473,6 +492,7 @@
     {key: 'float', value: 'float'},
     {key: 'double', value: 'double'},
   ];
+
   const keyDbTypeOption = [
     {key: 'varchar(64)', value: 'varchar(64)'},
     {key: 'varchar(128)', value: 'varchar(128)'},
@@ -480,6 +500,7 @@
     {key: 'varchar(255)', value: 'varchar(255)'},
     {key: 'varchar(1000)', value: 'varchar(1000)'},
   ];
+
   const dataDbTypeOption = [
     {key: 'int', value: 'int'},
     {key: 'bigint', value: 'bigint'},
@@ -489,6 +510,7 @@
     {key: 'float', value: 'float'},
     {key: 'double', value: 'double'},
   ];
+
   const propertyOption = [
     {key: 'require', value: 'require'},
     {key: 'optional', value: 'optional'},
@@ -496,10 +518,12 @@
 
   export default {
     data () {
+
       const cacheTypeOption = [
         { value: false, text: this.$t('cache.sTypeTip1') },
         { value: true, text: this.$t('cache.sTypeTip2') },
       ];
+
       let {moduleId} = this.$route.params;
       return {
         moduleId,
@@ -564,12 +588,10 @@
     },
     methods: {
       submitServerConfig () {
-
         if(this.dbAccess.dbMethod == undefined) {
             this.$tip.error(`${this.$t('module.dbMethod')}`);
             return;
         }
-        
         if (this.$refs.detailForm.validate()) {
           if (this.isMkCache) {
             this.showMKModal = true;
@@ -583,12 +605,14 @@
       async loadAccessDb() {
         return this.$ajax.getJSON('/server/api/load_access_db').then((data) => {
           this.accessDb = data;
+
           if(data.length > 0) {
             this.dbAccess.dbMethod = true;
             this.dbAccess.accessDbId = data[0].id;
           } else {
             this.dbAccess.dbMethod = false;
           }
+
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
@@ -604,10 +628,12 @@
       addServerConfig () {
         const moduleData = this.moduleData;
         const dbAccess = this.dbAccess;
+
         if(this.dbAccess.dbaccess_ip.length == 0) {
           this.$tip.error(`${this.$t('cache.dbaccessIp')}`);
           return;          
         }
+
         const url = '/server/api/add_server_config';
         const loading = this.$Loading.show();
         this.$ajax.postJSON(url, {moduleData, dbAccess}).then((data) => {
@@ -652,17 +678,18 @@
           // 二期Cache 或者 一期 cache + 持久化 都需要填写数据结构。
           this.isMkCache = data.ModuleBase.cache_version === 2 || data.cache_module_type === 2;
           this.multiKey = data.ModuleBase.cache_version === 2 && data.ModuleBase.mkcache_struct === 1;
+
           this.cacheVersion = data.ModuleBase.cache_version;
           // console.log(this.cacheVersion);
 
           if(this.multiKey) {
             this.dbAccess.isSerializated = true;
           }
-
           this.dbAccess.module_id = this.moduleId;
           this.dbAccess.db_prefix = "db_" + data.module_name + "_";
           this.dbAccess.table_prefix = "t_" + data.module_name + "_";
           this.dbAccess.servant = data.dbAccessServant;
+
         } catch (err) {
           // console.error(err);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -710,12 +737,10 @@
         }
       },
       submitMKCache () {
-
         if(this.dbAccess.dbMethod == undefined) {
             this.$tip.error(`${this.$t('module.dbMethod')}`);
             return;
         }
-        
         if (this.$refs.multiKeyForm.validate()) {
           sessionStorage.setItem('mkCache', JSON.stringify(this.mkCacheStructure));
           this.showMKModal = false;

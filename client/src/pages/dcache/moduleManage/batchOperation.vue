@@ -77,9 +77,14 @@
           });
         });
 
-        const releaseId = await addTask({ items });
-        this.releaseIng = true;
-        this.releaseId = releaseId;
+        try {
+          const releaseId = await addTask({ items });
+          this.releaseIng = true;
+          this.releaseId = releaseId;
+        }
+        catch(err){
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);        
+        }
       },
       getServerList () {
         this.show = false;

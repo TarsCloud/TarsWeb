@@ -73,7 +73,6 @@ export default {
     savePublishServer(publishModal, callback, group_name, patch_id) {
       group_name = group_name || '';
       patch_id = patch_id || publishModal.model.patch_id.toString();
-
       this.closeCallback = callback;
       // 发布
       var items = [];
@@ -119,7 +118,7 @@ export default {
             }
 
             if(item.percent) {
-              item.desc = "(" + item.percent + "%)"
+              item.desc = "(" + item.percent + "%)" 
             } else {
               item.desc = "...";
             }

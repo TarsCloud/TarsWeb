@@ -65,14 +65,18 @@
 
     <!-- 服务实时状态 -->
     <div class="table_head">
-    <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
+      <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
     </div>
     <let-table v-if="serverNotifyList && showOthers"
       :data="serverNotifyList" stripe :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
       <let-table-column width="20%" :title="$t('common.time')" prop="notifytime"></let-table-column>
       <let-table-column width="20%" :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
       <let-table-column width="15%" :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.result')" prop="result"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.result')">
+        <template slot-scope="scope">
+          <span :style="statusStyle(scope.row.result)">{{scope.row.result}}</span>
+        </template>      
+      </let-table-column>
     </let-table>
     <let-pagination
       :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
@@ -389,6 +393,7 @@ export default {
     return {
       // 全选
       isCheckedAll: false,
+
       // 当前页面信息
       serverData: {
         level: 5,
@@ -521,6 +526,16 @@ export default {
         this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
     },
+    statusStyle(message) {
+      message = message || '';
+
+      if(message == "restart" || message.indexOf("[succ]") != -1) {
+        return "color: green";
+      } else if(message == "stop" || message.indexOf("[alarm]") != -1 || message.indexOf("error") != -1 || message.indexOf("ERROR") != -1 ){
+        return "color: red";
+      }
+      return "";
+    },
     // 切换服务实时状态页码
     gotoPage(num) {
       this.getServerNotifyList(num);
@@ -634,6 +649,7 @@ export default {
           command,
         }],
       }).then((res) => {  // eslint-disable-line
+
         return this.checkTaskStatus(res).then((info) => {
           loading.hide();
           // 任务成功重新拉取列表
@@ -985,6 +1001,7 @@ export default {
       width: 200px;
     }
   }
+
   .table_head{padding:10px 0;}
   .dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
 }

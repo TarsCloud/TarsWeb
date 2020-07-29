@@ -88,7 +88,7 @@ export default {
            return;
         }
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/sso/api/register',  {uid: this.uid, password: this.password, repeat_password: this.repeatPassword}).then((data)=>{
+        this.$ajax.postJSON('/server/api/register',  {uid: this.uid, password: this.password, repeat_password: this.repeatPassword}).then((data)=>{
             loading.hide();
             this.$tip.success(`${this.$t('login.registerSucc')}`);
             setTimeout(()=>{

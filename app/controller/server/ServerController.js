@@ -69,7 +69,7 @@ ServerController.getServerConfById = async (ctx) => {
 		var rst = await ServerService.getServerConfById(id);
 		if (!_.isEmpty(rst)) {
 			rst = rst.dataValues;
-			if (!await AuthService.hasDevAuth(rst.application, rst.server_name, ctx.uid)) {
+			if (!await AuthService.hasOpeAuth(rst.application, rst.server_name, ctx.uid)) {
 				ctx.makeNotAuthResObj();
 			} else {
 				ctx.makeResObj(200, '', util.viewFilter(rst, serverConfStruct));
@@ -102,7 +102,8 @@ ServerController.getApplicationList = async (ctx) => {
 		let data = await ServerService.getApplicationList();
 
 		data.forEach((x,y)=>{
-			application.push(x.application);
+			// application.push(x.application);
+			application.push(x.f_name);
 		});
 
 		ctx.makeResObj(200, '', application);
@@ -129,11 +130,14 @@ ServerController.getNodeList = async (ctx) => {
 }
 
 ServerController.getServerConfList4Tree = async (ctx) => {
+
 	let treeNodeId = ctx.paramsObj.tree_node_id;
 	let curPage = parseInt(ctx.paramsObj.cur_page) || 0;
 	let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
+
 	try {
 		let params = ServerController.formatTreeNodeId(treeNodeId);
+
 		if (await AuthService.hasAdminAuth(ctx.uid)) {
 			ctx.makeResObj(200, '', util.viewFilter(await ServerService.getServerConfList4Tree({
 				application: params.application,
@@ -146,7 +150,8 @@ ServerController.getServerConfList4Tree = async (ctx) => {
 				pageSize: pageSize || 0
 			}), serverConfStruct));
 		} else if (params.application && params.serverName) {   //若在服务页面，则直接检测是否有权限
-			if (!await AuthService.hasDevAuth(params.application, params.serverName, ctx.uid)) {
+
+			if (!await AuthService.hasOpeAuth(params.application, params.serverName, ctx.uid)) {
 				ctx.makeNotAuthResObj();
 			} else {
 				ctx.makeResObj(200, '', util.viewFilter(await ServerService.getServerConfList4Tree({
@@ -161,6 +166,7 @@ ServerController.getServerConfList4Tree = async (ctx) => {
 				}), serverConfStruct));
 			}
 		} else {   //若非服务页面，比如应用页面，set页面，需先获取用户相关权限进行合并
+
 			let serverList = await ServerService.getServerConfList4Tree({
 				application: params.application,
 				setName: params.setName,
@@ -231,7 +237,7 @@ ServerController.getInactiveServerConfList = async (ctx) => {
 	let curPage = parseInt(ctx.paramsObj.cur_page) || 0;
 	let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
 	try {
-		if (!await AuthService.hasDevAuth(application, serverName, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, serverName, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let rst = await ServerService.getInactiveServerConfList(application, serverName, nodeName, curPage, pageSize);
@@ -249,7 +255,7 @@ ServerController.getRealtimeState = async (ctx) => {
 		let rst = await ServerService.getServerConfById(id);
 		if (!_.isEmpty(rst)) {
 			rst = rst.dataValues;
-			if (!await AuthService.hasDevAuth(rst.application, rst.server_name, ctx.uid)) {
+			if (!await AuthService.hasOpeAuth(rst.application, rst.server_name, ctx.uid)) {
 				ctx.makeNotAuthResObj();
 			} else {
 				ctx.makeResObj(200, '', {realtime_state: rst['present_state']});
@@ -299,7 +305,7 @@ ServerController.loadServer = async (ctx) => {
 	let serverName = ctx.paramsObj.server_name;
 	let nodeName = ctx.paramsObj.node_name;
 	try {
-		if (!await AuthService.hasDevAuth(application, serverName, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, serverName, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let ret = await AdminService.loadServer(application, serverName, nodeName);
@@ -341,7 +347,7 @@ ServerController.sendCommand = async (ctx) => {
 ServerController.getServerNodes = async (ctx) => {
 	let {application, server_name} = ctx.paramsObj;
 	try {
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let ret = await ServerService.getServerConfList4Tree({application, serverName: server_name});

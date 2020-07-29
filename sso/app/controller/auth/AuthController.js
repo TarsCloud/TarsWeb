@@ -80,7 +80,6 @@ AuthController.getAuth = async(ctx)=> {
 
 AuthController.getAuthListByUid = async(ctx)=> {
     try{
-        // console.log(ctx);
         let uid = ctx.paramsObj.uid;
         let rst = await AuthService.getAuthListByUid(uid);
         
@@ -132,7 +131,7 @@ AuthController.getAuthList = async(ctx)=> {
 AuthController.pageDeleteAuth = async(ctx)=> {
     try{
 
-        if(await AuthService.isAdmin(ctx.paramsObj.uid, ctx.ticket)) {
+        if(!await AuthService.isAdmin(ctx.uid)) {
             ctx.makeResObj(500, '#auth.adminNotErase#', {});
         }
         else {

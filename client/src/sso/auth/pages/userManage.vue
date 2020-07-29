@@ -2,10 +2,10 @@
 
   <div style="margin: 20px auto;">
 
-    <div style="float:center">
-      <let-button size="small" theme="primary" @click="addUser" v-if="enableLdap">{{$t('auth.addUser')}}</let-button>
+    <div style="float:center" v-if="!enableLdap">
+      <let-button size="small" theme="primary" @click="addUser">{{$t('auth.addUser')}}</let-button>
       &nbsp;&nbsp;
-      <let-button size="small" theme="danger"  @click="delUser" v-if="enableLdap">{{$t('auth.delUser')}}</let-button>
+      <let-button size="small" theme="danger"  @click="delUser">{{$t('auth.delUser')}}</let-button>
     </div>
     <let-table :data="userListShow" stripe :empty-msg="$t('ssoCommon.nodata')" :title="$t('auth.userManageTitle')">
       <let-table-column width="5%">
@@ -60,9 +60,6 @@ export default {
     return {
       isCheckedAll: false,
       userList: [],
-      // spinning: false,
-      // sortField: 1,
-      // sortRule: 0,
       totalCount: 0,
       page: 1,
       eachPageCount: 20,
@@ -97,10 +94,10 @@ export default {
   methods: {
     // 获取是否启用LDAP用户库
     getEnableLdap() {
-      this.$ajax.getJSON('/sso/api/isEnableLdap').then(data => {
-        console.log(`enableLdap:`, data);
+      this.$ajax.getJSON('/server/api/isEnableLdap').then(data => {
+        
         if(data) {
-          this.enableLdap = !data.enableLdap
+          this.enableLdap = data.enableLdap
         }
       }).catch(err => {
         console.log(`get enableLdap:`, err);
@@ -109,7 +106,7 @@ export default {
     getUserList() {
       const loading = this.$Loading.show();
 
-      this.$ajax.getJSON('/sso/api/auth/page/getUserIdList').then((data)=>{
+      this.$ajax.getJSON('/server/api/auth/page/getUserIdList').then((data)=>{
         loading.hide();
 
         data.forEach((user)=>{
@@ -148,7 +145,7 @@ export default {
         }
       });
       const loading = this.$Loading.show();
-      var url = '/sso/api/auth/page/addUser';
+      var url = '/server/api/auth/page/addUser';
       this.$ajax.postJSON(url, {user: params}).then((data)=>{
           loading.hide();
           this.showDialog=false;
@@ -177,7 +174,7 @@ export default {
           return;
         }
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/sso/api/auth/page/pageDeleteUser', {id: ids}).then((data)=>{
+        this.$ajax.postJSON('/server/api/auth/page/pageDeleteUser', {id: ids}).then((data)=>{
             loading.hide();
             this.$tip.success(this.$t('auth.delSucc'));
             this.getUserList();
@@ -186,7 +183,7 @@ export default {
             this.$tip.error(`${this.$t('auth.delError')}: ${err.err_msg || err.message}`);
         })
       })
-    }
+    },
   },
   mounted(){
     this.getEnableLdap();
@@ -199,7 +196,11 @@ export default {
           item.isChecked = isCheckedAll;
       });
     },
-  }
+    // 如果路由有变化，会再次执行该方法
+    "$route": function(to, end) {
+      this.getUserList();
+    } 
+  },
 };
 </script>
 <style>

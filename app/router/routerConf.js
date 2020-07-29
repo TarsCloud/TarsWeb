@@ -38,13 +38,6 @@ const LoginController = require('../controller/login/LoginController');
 const LocaleController = require('../controller/locale/LocaleController');
 const InfTestController = require('../controller/infTest/InfTestController');
 const LogviewController = require('../controller/logview/LogviewController');
-const DemoLoginController = require('../../sso/app/controller/login/LoginController');
-const DemoAuthController = require('../../sso/app/controller/auth/AuthController');
-const DemoUserController = require('../../sso/app/controller/user/UserController');
-const DemoTokenController = require('../../sso/app/controller/token/TokenController');
-const DemoLdapController = require('../../sso/app/controller/ldap/LdapController');
-
-const gatewayDaoMidware = require('../midware/gatewayDaoMidware');
 
 const pageConf = [
     //首页
@@ -205,14 +198,19 @@ const apiConf = [
     ['get', '/delete_application', ApplicationController.delete, { f_id: 'notEmpty' }],
     ['get', '/query_application', ApplicationController.getList],
 
+    //业务管理
     ['post', '/add_business', BusinessController.add, { f_name: 'notEmpty' }],
     ['get', '/delete_business', BusinessController.delete, { f_id: 'notEmpty' }],
     ['post', '/update_business', BusinessController.update, { f_id: 'notEmpty', f_name: 'notEmpty', f_show_name: 'notEmpty' }],
     ['get', '/query_business', BusinessController.getList],
+
+    //业务关联
     ['post', '/add_business_relation', BusinessRelationController.add, { f_business_name: 'notEmpty', f_application_name: 'notEmpty' }],
     ['get', '/delete_business_relation', BusinessRelationController.delete, { f_id: 'notEmpty' }],
     ['post', '/update_business_relation', BusinessRelationController.update, { f_id: 'notEmpty', f_business_name: 'notEmpty', f_application_name: 'notEmpty' }],
     ['get', '/query_business_relation', BusinessRelationController.getList],
+    
+
     //网关配置
     ['get', '/gatewayobj_list', GatewayController.getGatewayObjList],
     ['post', '/add_gatewayobj', GatewayController.addGatewayObj, {
@@ -349,43 +347,11 @@ const apiConf = [
     ['get', '/get_endpoints', InfTestController.getEndpoints, { servant: 'notEmpty'}],
     ['get', '/is_benchmark_installed', InfTestController.isBenchmarkInstalled],
     ['get', '/logview_list', LogviewController.getLogFileList, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty' }],
-    ['get', '/logview_data', LogviewController.getLogData, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', log_file: 'notEmpty', interface_params: 'notEmpty' }],
+    ['get', '/logview_data', LogviewController.getLogData, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', log_file: 'notEmpty', interface_params: 'notEmpty' }],  
 ];
 
 const clientConf = [
     ['get', '/get_tarsnode', ResourceController.getTarsNode],
 ];
 
-const demoConf = [
-    ['post', '/register', DemoLoginController.register],
-    ['post', '/login', DemoLoginController.login],
-    ['get',  '/logout', DemoLoginController.logout],
-    ['get', '/getUidByTicket', DemoLoginController.getUidByTicket],
-    ['get', '/validate', DemoLoginController.validate],
-    ['get', '/getLoginUid', DemoLoginController.getLoginUid],
-    ['get', '/isEnableLogin', DemoLoginController.isEnableLogin],
-    ['post', '/adminModifyPass', DemoUserController.adminModifyPass],
-    ['get', '/isAdmin', DemoAuthController.isAdmin],
-    ['get', '/isEnableLdap', DemoLdapController.isEnableLdap],
-    ['post', '/modifyPass', DemoUserController.modifyPass],
-    ['get', '/getMyAuthList', DemoAuthController.getMyAuthList],
-    ['get', '/auth/isAdmin', DemoAuthController.isAdmin],
-    ['post', '/auth/addAuth', DemoAuthController.addAuth],
-    ['post', '/auth/deleteAuth', DemoAuthController.deleteAuth],
-    ['post', '/auth/updateAuth', DemoAuthController.updateAuth],
-    ['get', '/auth/getAuthListByUid', DemoAuthController.getAuthListByUid],
-    ['get', '/auth/getAuth', DemoAuthController.getAuth],
-    ['get', '/auth/getAuthListByFlag', DemoAuthController.getAuthListByFlag],
-    ['get', '/auth/getTokenList', DemoTokenController.getTokenList],
-    ['post', '/auth/addToken', DemoTokenController.addToken],
-    ['post', '/auth/deleteToken', DemoTokenController.deleteToken],
-    ['post', '/auth/setTokenValid', DemoTokenController.setTokenValid],
-    ['get', '/auth/page/getUserIdList', DemoUserController.getUserIdList],
-    ['get', '/auth/page/getAuthList', DemoAuthController.getAuthList],
-    ['post', '/auth/page/addAuth', DemoAuthController.addAuth],
-    ['post', '/auth/page/pageDeleteAuth', DemoAuthController.pageDeleteAuth],
-    ['post', '/auth/page/addUser', DemoUserController.addUser],
-    ['post', '/auth/page/pageDeleteUser', DemoUserController.pageDeleteUser],
-    // ['get', '/get_locale', DemoLocaleController.getLocale]
-];
-module.exports = { pageConf, apiConf, clientConf, demoConf };
+module.exports = { pageConf, apiConf, clientConf};

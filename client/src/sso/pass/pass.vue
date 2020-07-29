@@ -66,7 +66,7 @@ export default {
            return;
         }
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/sso/api/modifyPass',  {password: this.password, repeat_password: this.repeatPassword}).then((data)=>{
+        this.$ajax.postJSON('/server/api/modifyPass',  {password: this.password, repeat_password: this.repeatPassword}).then((data)=>{
             loading.hide();
             this.$tip.success(`${this.$t('pass.modifySucc')}`);
             setTimeout(()=>{

@@ -19,6 +19,7 @@ const TarsParser = require('./TarsParser/TarsParser');
 const { benchmarkPrx, benchmarkStruct} = require('../util/rpcClient');
 const {BenchmarkRunner} = require("./BenchmarkRunner");
 const InfTestDao = require('../../dao/InfTestDao');
+const webConf = require('../../../config/webConf');
 
 const fs = require('fs-extra');
 
@@ -87,7 +88,6 @@ InfTestService.getContext = (tarsFilePath) => {
 InfTestService.getBenchmarkContext = async (tarsFilePath)=>{
 	return await getBenchmarkContext(tarsFilePath)
 }
-
 async function getContext(tarsFilePath) {
 	const content = await fs.readFile(tarsFilePath);
 	const fileDir = tarsFilePath.split(/[/\\]/).slice(0, -1).join('/');
@@ -96,10 +96,18 @@ async function getContext(tarsFilePath) {
 	parser.parseFile(context, content.toString());
 	return context;
 }
-exec("chmod +x ./tars2case", { cwd: __dirname})
+
+let tars2case = webConf.infTestConf.tool;
+
+InfTestService.hasCaseTool = async () => {
+	return await fs.exists(tars2case);
+}
+
+exec("chmod +x " + tars2case, { cwd: __dirname})
+
 async function getBenchmarkContext(tarsFilePath){
 	return await new Promise((resolve, reject)=>{
-		exec(`./tars2case --web ${tarsFilePath}`,{
+		exec(`${tars2case} --web ${tarsFilePath}`,{
 			cwd: __dirname
 		},(error, stdout)=>{
 			if(error){

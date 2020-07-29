@@ -42,13 +42,11 @@ const {
   deleteServerConfigItemBatch,
 } = require('./config/controller.js');
 
-
 const { apiConf } = require(path.join(cwd, './app/router/routerConf.js'));
 
 const dcacheApiConf = [
-  // 业务树
+
   ['get', '/dtree', ApplyController.dtree],
-  
   // 地区
   ['get', '/get_region_list', RegionController.getRegionList],
   ['post', '/add_region', RegionController.addRegion],
@@ -68,12 +66,15 @@ const dcacheApiConf = [
 
   // proxy
   ['post', '/delete_apply_proxy', ProxyController.removeProxyById],
+
   ['post', '/cache/removeProxy', ProxyController.removeProxy],
 
   // router
   ['post', '/cache/removeRouter', RouterController.removeRouter],
 
+  
   ['get', '/load_access_db', DbAccessController.loadAccessDb],
+
   // 模块
   ['post', '/add_module_base_info', ModuleController.addModuleBaseInfo],
   ['get', '/get_module_info', ModuleController.getModuleInfo],
