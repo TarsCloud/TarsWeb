@@ -30,7 +30,7 @@ const logger = require('../../logger');
 
 let Db = {};
 
-let databases = ['db_taf', 'db_taf_web', 'db_base'];
+let databases = ['db_tars', 'db_tars_web', 'db_base'];
 
 databases.forEach((database) => {
 	let {
@@ -53,6 +53,9 @@ databases.forEach((database) => {
 		port,
 		dialect: 'mysql',
 		dialectOptions: {
+			charset: charset
+		},
+		define: {
 			charset: charset
 		},
 		logging,

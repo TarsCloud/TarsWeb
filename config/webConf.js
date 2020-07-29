@@ -23,7 +23,7 @@ if (process.env.NODE_ENV == "dev") {
             port: '3307',            // 数据库端口
             user: 'tarsAdmin',            // 用户名
             password: 'Tars@2019',       // 密码
-            charset: 'utf8_bin',     // 数据库编码
+            charset: 'utf8mb4',     // 数据库编码
             pool: {
                 max: 10,             // 连接池中最大连接数量
                 min: 0,              // 连接池中最小连接数量
@@ -74,7 +74,7 @@ if (process.env.NODE_ENV == "dev") {
             port: '3306',            // 数据库端口
             user: 'tars',            // 用户名
             password: 'tars2015',       // 密码
-            charset: 'utf8_bin',     // 数据库编码
+            charset: 'utf8mb4',     // 数据库编码
             pool: {
                 max: 10,             // 连接池中最大连接数量
                 min: 0,              // 连接池中最小连接数量

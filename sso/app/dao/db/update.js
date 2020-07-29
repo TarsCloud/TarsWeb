@@ -51,12 +51,22 @@ DbUpdate.updateAdmin = async (db) => {
     }
 }
 
+DbUpdate.updateUser = async (db) => {
+
+    let res = await db.tUserInfo.findOne({ where: { uid: 'admin' } });
+
+    if (!res) {
+        await db.tUserInfo.create({ uid: 'admin', password: '', update_time: new Date() });
+    }
+}
 
 DbUpdate.update = async (db) => {
 
     await DbUpdate.updateLdap(db);
 
     await DbUpdate.updateAdmin(db);
+
+    await DbUpdate.updateUser(db);
 }
 
 

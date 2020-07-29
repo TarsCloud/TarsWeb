@@ -36,6 +36,9 @@ databases.forEach((database)=>{
         dialectOptions: {
             charset: charset
         },
+        define: {
+            charset: charset
+        },
         logging(sqlText){
             // console.log(sqlText);
             // logger.sql(sqlText);

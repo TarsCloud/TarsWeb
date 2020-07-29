@@ -12,13 +12,9 @@
           </let-switch>
         </template>
       </let-table-column>
-      <let-table-column v-if="this.$cookie.get('locale')=='cn'" :title="$t('auth.about')" prop="about_cn" width="40%">
+      <let-table-column :title="$t('auth.about')" prop="about_cn" width="60%">
         <template slot-scope="scope">
-          <span>{{scope.row.about_cn}}</span>
-        </template>
-      </let-table-column>
-      <let-table-column  v-if="this.$cookie.get('locale')=='en'" :title="$t('auth.about')" prop="about_en" width="40%">
-        <template slot-scope="scope">
+          <span>{{scope.row.about_cn}}</span><br>
           <span>{{scope.row.about_en}}</span>
         </template>
       </let-table-column>
