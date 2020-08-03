@@ -49,7 +49,7 @@ const ModuleController = {
       const {
         follower, cache_version, mkcache_struct, apply_id,
       } = ctx.paramsObj;
-      const create_person = 'adminUser';
+      const create_person = ctx.uid; 
       const item = await ModuleService.addModuleBaseInfo({
         apply_id,
         follower,

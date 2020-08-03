@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
 			autoIncrement: true,
-			unique: "column"
+			unique: "f_id"
 		},
 		application: {
 			type: DataTypes.STRING(64),

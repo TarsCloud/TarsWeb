@@ -80,7 +80,7 @@ const ServerConfigController = {
       // 从 opt 获取 cache 服务列表
       const cacheServerList = await ServerConfigService.getCacheServerListFromOpt({ appName, moduleName });
       // 用 cache 的服务名去读 tars 的服务
-      const serverNameList = cacheServerList.map(server => `Dcache.${server.serverName}`);
+      const serverNameList = cacheServerList.map(server => `DCache.${server.serverName}`);
       const serverList = await ServerService.getServerNameList({ applicationList: '', serverNameList, allAttr: true });
 
       // 添加 cache 的服务类型， 是主机、备机还是镜像呢

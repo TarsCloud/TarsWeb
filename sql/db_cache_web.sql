@@ -32,7 +32,7 @@ CREATE TABLE `t_apply_app_base` (
   `create_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -54,7 +54,7 @@ CREATE TABLE `t_apply_app_proxy_conf` (
   PRIMARY KEY (`id`),
   KEY `t_apply_app_proxy_conf_apply_id_foreign_idx` (`apply_id`),
   CONSTRAINT `t_apply_app_proxy_conf_apply_id_foreign_idx` FOREIGN KEY (`apply_id`) REFERENCES `t_apply_app_base` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +80,7 @@ CREATE TABLE `t_apply_app_router_conf` (
   PRIMARY KEY (`id`),
   KEY `t_apply_app_router_conf_apply_id_foreign_idx` (`apply_id`),
   CONSTRAINT `t_apply_app_router_conf_apply_id_foreign_idx` FOREIGN KEY (`apply_id`) REFERENCES `t_apply_app_base` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,7 +101,7 @@ CREATE TABLE `t_apply_cache_module_base` (
   `create_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -135,7 +135,7 @@ CREATE TABLE `t_apply_cache_module_conf` (
   UNIQUE KEY `applyModule` (`apply_id`,`module_name`),
   KEY `t_apply_cache_module_conf_module_id_foreign_idx` (`module_id`),
   CONSTRAINT `t_apply_cache_module_conf_module_id_foreign_idx` FOREIGN KEY (`module_id`) REFERENCES `t_apply_cache_module_base` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,7 +164,7 @@ CREATE TABLE `t_apply_cache_server_conf` (
   `template_name` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `applyModule` (`apply_id`,`module_name`,`group_name`,`server_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=636 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,7 +184,7 @@ CREATE TABLE `t_module_operation` (
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,7 +217,7 @@ CREATE TABLE `t_expand_server` (
   PRIMARY KEY (`id`),
   KEY `t_expand_server_operation_id_foreign_idx` (`operation_id`),
   CONSTRAINT `t_expand_server_operation_id_foreign_idx` FOREIGN KEY (`operation_id`) REFERENCES `t_module_operation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -234,68 +234,7 @@ CREATE TABLE `t_region` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `region` (`region`),
   UNIQUE KEY `label` (`label`),
-  UNIQUE KEY `region_2` (`region`),
-  UNIQUE KEY `label_2` (`label`),
-  UNIQUE KEY `region_3` (`region`),
-  UNIQUE KEY `label_3` (`label`),
-  UNIQUE KEY `region_4` (`region`),
-  UNIQUE KEY `label_4` (`label`),
-  UNIQUE KEY `region_5` (`region`),
-  UNIQUE KEY `label_5` (`label`),
-  UNIQUE KEY `region_6` (`region`),
-  UNIQUE KEY `label_6` (`label`),
-  UNIQUE KEY `region_7` (`region`),
-  UNIQUE KEY `label_7` (`label`),
-  UNIQUE KEY `region_8` (`region`),
-  UNIQUE KEY `label_8` (`label`),
-  UNIQUE KEY `region_9` (`region`),
-  UNIQUE KEY `label_9` (`label`),
-  UNIQUE KEY `region_10` (`region`),
-  UNIQUE KEY `label_10` (`label`),
-  UNIQUE KEY `region_11` (`region`),
-  UNIQUE KEY `label_11` (`label`),
-  UNIQUE KEY `region_12` (`region`),
-  UNIQUE KEY `label_12` (`label`),
-  UNIQUE KEY `region_13` (`region`),
-  UNIQUE KEY `label_13` (`label`),
-  UNIQUE KEY `region_14` (`region`),
-  UNIQUE KEY `label_14` (`label`),
-  UNIQUE KEY `region_15` (`region`),
-  UNIQUE KEY `label_15` (`label`),
-  UNIQUE KEY `region_16` (`region`),
-  UNIQUE KEY `label_16` (`label`),
-  UNIQUE KEY `region_17` (`region`),
-  UNIQUE KEY `label_17` (`label`),
-  UNIQUE KEY `region_18` (`region`),
-  UNIQUE KEY `label_18` (`label`),
-  UNIQUE KEY `region_19` (`region`),
-  UNIQUE KEY `label_19` (`label`),
-  UNIQUE KEY `region_20` (`region`),
-  UNIQUE KEY `label_20` (`label`),
-  UNIQUE KEY `region_21` (`region`),
-  UNIQUE KEY `label_21` (`label`),
-  UNIQUE KEY `region_22` (`region`),
-  UNIQUE KEY `label_22` (`label`),
-  UNIQUE KEY `region_23` (`region`),
-  UNIQUE KEY `label_23` (`label`),
-  UNIQUE KEY `region_24` (`region`),
-  UNIQUE KEY `label_24` (`label`),
-  UNIQUE KEY `region_25` (`region`),
-  UNIQUE KEY `label_25` (`label`),
-  UNIQUE KEY `region_26` (`region`),
-  UNIQUE KEY `label_26` (`label`),
-  UNIQUE KEY `region_27` (`region`),
-  UNIQUE KEY `label_27` (`label`),
-  UNIQUE KEY `region_28` (`region`),
-  UNIQUE KEY `label_28` (`label`),
-  UNIQUE KEY `region_29` (`region`),
-  UNIQUE KEY `label_29` (`label`),
-  UNIQUE KEY `region_30` (`region`),
-  UNIQUE KEY `label_30` (`label`),
-  UNIQUE KEY `region_31` (`region`),
-  UNIQUE KEY `label_31` (`label`),
-  UNIQUE KEY `region_32` (`region`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -328,7 +267,7 @@ CREATE TABLE `t_server_patchs` (
   `md5` varchar(40) DEFAULT NULL,
   `svn_version` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

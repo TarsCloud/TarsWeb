@@ -50,7 +50,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(128),
 			allowNull: true,
 			defaultValue: '',
-			unique: true
+			unique: 'group_name'
 		},
 		group_name_cn: {
 			type: DataTypes.STRING(128),

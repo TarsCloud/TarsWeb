@@ -24,9 +24,9 @@ const AuthService = require('../../service/auth/AuthService');
 const LogviewService = {};
 
 LogviewService.getLogFileList = async(application, server_name, node_name) => {
-    logger.info("=======LogviewService 1", application, server_name, node_name)
+    // logger.info("=======LogviewService 1", application, server_name, node_name)
     let rsp = await AdminService.getLogFileList(application, server_name, node_name);
-    logger.info('getLogFileList:', rsp);
+    // logger.info('getLogFileList:', rsp);
     return {
         iRet: 0,
         data: rsp
@@ -66,17 +66,17 @@ LogviewService.getQueryParam = function(paramStr) {
     } else {
         cmd += "|head -" + showLine;
     }
-	cmd += " | cat  "
-    console.log("=============>getQueryParam cmd:" + cmd);
+	cmd += " | cat -v "
+    // console.log("=============>getQueryParam cmd:" + cmd);
     return cmd;
 }
 
 LogviewService.getLogData = async(application, server_name, node_name, log_file, interface_params) => {
     var newCmd = LogviewService.getQueryParam(interface_params);
-    logger.info("=======LogviewService getLogData 2:", application, server_name, node_name, log_file, newCmd)
+    // logger.info("=======LogviewService getLogData 2:", application, server_name, node_name, log_file, newCmd)
 
     let rsp = await AdminService.getLogData(application, server_name, node_name, log_file, newCmd);
-    logger.info('getLogData:', rsp);
+    // logger.info('getLogData:', rsp);
     return {
         iRet: 0,
         cmd: newCmd.replace("__log_file_name__", log_file),

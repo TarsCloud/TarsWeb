@@ -76,19 +76,6 @@
           v-if="serverData.level === 5"
         ></let-tab-pane>
 
-        <!--特性监控-->
-        <!-- <let-tab-pane
-          :tabkey="`${base}/property-monitor/${serverType}`"
-          :tab="$t('index.rightView.tab.propertyMonitor')"
-          v-if="serverData.level === 5 && this.$route.params.serverType !== 'dcache'"
-        ></let-tab-pane> -->
-        <let-tab-pane
-          :tabkey="`${base}/property-monitor/${serverType}`"
-          :tab="$t('index.rightView.tab.propertyMonitor')"
-          v-if="serverData.level === 5"
-        ></let-tab-pane>
-
-
         <!--用户管理-->
         <let-tab-pane
           :tabkey="`${base}/user-manage/${serverType}`"
@@ -106,6 +93,18 @@
           v-if="serverData.level === 6"
           :tabkey="base + '/propertyMonitor'"
           :tab="$t('index.rightView.tab.propertyMonitor')"
+        ></let-tab-pane>
+
+        <!--特性监控-->
+        <!-- <let-tab-pane
+          :tabkey="`${base}/property-monitor/${serverType}`"
+          :tab="$t('index.rightView.tab.propertyMonitor')"
+          v-if="serverData.level === 5 && this.$route.params.serverType !== 'dcache'"
+        ></let-tab-pane> -->
+        <let-tab-pane
+          :tabkey="`${base}/property-monitor/${serverType}`"
+          :tab="$t('index.rightView.tab.propertyMonitor')"
+          v-if="serverData.level === 5 && serverType != 'dcache'"
         ></let-tab-pane>
 
       </let-tabs>

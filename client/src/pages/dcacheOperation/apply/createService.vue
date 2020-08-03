@@ -207,8 +207,8 @@ import { checkServerIdentity } from 'tls';
       templateNameList () {
         return this.$ajax.getJSON('/server/api/template_name_list').then((data) => {
           this.templates = data;
-          this.apply.Router.template_file = "DCache.Cache";
-          this.apply.Proxy.forEach(item => item.template_file = "DCache.Cache");
+          this.apply.Router.template_file = "tars.default";
+          this.apply.Proxy.forEach(item => item.template_file = "tars.default");
 
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

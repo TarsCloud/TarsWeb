@@ -183,6 +183,15 @@ TreeService.setCacheData = async (isRefresh) => {
 		}
 	}
 
+	// 排序
+	newArr = newArr.sort((a, b) => {
+		const a1 = a.server_name.toLowerCase()
+		const b1 = b.server_name.toLowerCase()
+		if (a1 < b1) return -1
+		if (a1 > b1) return 1
+		return 0
+	});
+
 	// 写入缓存
 	cacheData.serverData = newArr
 
@@ -194,6 +203,7 @@ TreeService.setCacheData = async (isRefresh) => {
 		}, 1000 * 60 * 10)
 	}
 }
+
 TreeService.setCacheData()
 
 /**
