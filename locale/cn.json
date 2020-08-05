@@ -826,7 +826,8 @@
     "btn": {
       "manualAddNode": "手工安装节点",
       "autoAddNode": "自动安装节点",
-      "check": "点击开始检查框架状态"
+      "check": "点击开始检查框架状态",
+      "question": "有问题怎么办?"
     },
     "manualAddNode": {
       "title": "操作步骤",

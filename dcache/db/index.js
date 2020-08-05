@@ -84,7 +84,7 @@ databases.forEach((database) => {
 
       await tableObj[_.camelCase(tableName)].sync({ alter: true });
 
-      logger.debug('database ' + database + '.' + tableName + ' sync succ');
+      logger.info('database ' + database + '.' + tableName + ' sync succ');
     } catch (e) {
       logger.error('database ' + database + '.' + tableName + ' error:', e);
     }

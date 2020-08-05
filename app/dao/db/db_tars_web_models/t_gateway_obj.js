@@ -23,13 +23,13 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			autoIncrement: true,
 			primaryKey: true,
-			unique: "column"
+			unique: "id"
 		},
 		obj: {
 			type: DataTypes.STRING(128),
 			allowNull: false,
 			defaultValue: '',
-			unique:"column"
+			unique:"obj"
 			
 		},
 		update_person: {

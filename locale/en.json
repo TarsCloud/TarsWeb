@@ -808,7 +808,8 @@
     "btn": {
       "manualAddNode": "Manual Install node",
       "autoAddNode": "Auto Install node",
-      "check": "Click to check framework"
+      "check": "Click to check framework",
+      "question": "Any Problem?"
     },
     "manualAddNode": {
       "title": "Step",

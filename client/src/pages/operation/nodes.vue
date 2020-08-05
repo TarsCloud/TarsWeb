@@ -9,9 +9,9 @@
         <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
       </let-form-item>
       <div style="float: right">
-      <let-button size="small" theme="primary" @click="manualAddItem">{{$t('nodes.btn.manualAddNode')}}</let-button>
-      &nbsp;&nbsp;&nbsp;
-      <let-button size="small" theme="primary" @click="autoAddItem">{{$t('nodes.btn.autoAddNode')}}</let-button>
+        <let-button size="small" theme="primary" @click="manualAddItem">{{$t('nodes.btn.manualAddNode')}}</let-button>
+        &nbsp;&nbsp;&nbsp;
+        <let-button size="small" theme="primary" @click="autoAddItem">{{$t('nodes.btn.autoAddNode')}}</let-button>
       </div>
     </let-form>
 
