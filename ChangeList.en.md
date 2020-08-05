@@ -1,3 +1,19 @@
+## 20200805(2.4.8)
+- update dcache logo
+- fix create table charset bug
+- support ldap login
+- support all user is admin
+- add update.js for db upgrate
+- /api/upload_patch_package return json
+- update webConf, charset use utf8
+- fix dcache property bug
+- fix config overflow bug
+- fix dcache proxy/router default template
+- fix db sync bug
+- fix benchmark, bug
+- fix tars protocol parse bug
+- support multi tab
+
 ## 20200718(2.4.7)
 - add multi-gateway configuration feature
 - add path input when adding router in gateway station

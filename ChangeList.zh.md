@@ -1,3 +1,19 @@
+## 20200805(2.4.8)
+- 更新dcache图标
+- 修复创建表, 未使用指定字符集的bug
+- 支持LDAP鉴权登录
+- 支持开启所有用户都为admin用户(测试环境佳使用)
+- 增加update.js, 为db升级时使用
+- /api/upload_patch_package 返回json
+- 更新webConf, 字符集改为uft8(其实最好是utf8mb4, 但是历史不太好兼容了)
+- 修改dcache 查看property数据的bug
+- 修改查看配置, 排版溢出的bug
+- 修改dcache proxy/router 缺省的模板
+- 启用db sync的功能, 并修复bug
+- 修改压测的页面展示bug
+- 修改接口测试, 解析枚举类型的bug
+- 支持多tab, 方便操作
+
 ## 20200718(2.4.7)
 - 添加多网关配置功能
 - 添加网关路由ip port模式下配置path的功能
