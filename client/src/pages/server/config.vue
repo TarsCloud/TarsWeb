@@ -130,7 +130,7 @@
           </template>
         </let-table-column>
       </let-table>
-      <pre
+      <pre class="pre_con"
         v-if="(detailModal.model && !detailModal.model.table) ||
           (detailModal.model && detailModal.model.table && detailModal.model.detail)"
         >{{detailModal.model.detail || $t('cfg.msg.empty')}}</pre>
@@ -675,7 +675,10 @@ export default {
 
   pre {
     color: #909FA3;
+    display: block;
     margin-top: 32px;
+    white-space: initial;
+    word-break: break-word;
   }
 
   .detail-loading {

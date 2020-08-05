@@ -1,6 +1,5 @@
 <template>
   <div class="page_operation_businessRelation">
-    <let-button size="small" theme="primary" style="float: right" @click="addItem">{{$t('businessRelation.btn.add')}}</let-button>
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
       <let-form-item :label="$t('business.form.business')">
         <let-select v-model="query.f_business_name" size="small" filterable v-if="business && business.length > 0">
@@ -17,6 +16,9 @@
       <let-form-item>
         <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
       </let-form-item>
+      <div style="float: right">
+        <let-button size="small" theme="primary" style="float: right" @click="addItem">{{$t('businessRelation.btn.add')}}</let-button>
+      </div>
     </let-form>
 
     <let-table ref="table" :data="items" :empty-msg="$t('common.nodata')">

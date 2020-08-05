@@ -2,8 +2,7 @@
   <div class="page_server">
     <div class="left-view">
       <div class="tree_search">
-        <input v-model="treeSearchKey" class="tree_search_key" type="text" @keydown.enter="treeSearch()" placeholder="请输入内容…" />
-        <let-button  class="tree_search_btn" theme="primary" size="mini" @click="treeSearch()">查询</let-button>
+        <input v-model="treeSearchKey" class="tree_search_key" type="text" @blur="treeSearch" @keydown.enter="treeSearch" placeholder="Please Input..." />
       </div>
 
       <div class="tree_wrap">
@@ -37,6 +36,15 @@
     </div>
 
     <div class="right-view" v-else>
+      <ul ref="btabs" class="btabs" v-vscroll>
+        <li class="btabs_item" :class="{
+          'active': item.id === $route.params.treeid
+        }" v-for="item in BTabs" :key="item.id">
+          <a class="btabs_link" href="javascript:;" @click="clickBTabs($event, item.id)">{{ item.id }}</a>
+          <a class="btabs_close" href="javascript:;" @click="closeBTabs(item.id)">关闭</a>
+        </li>
+      </ul>
+
       <let-tabs @click="clickTab" :activekey="$route.path">
         <let-tab-pane :tabkey="base + '/manage'" :tab="$t('header.tab.tab1')"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/publish'" :tab="$t('index.rightView.tab.patch')"
@@ -52,10 +60,9 @@
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/interface-debuger'" :tab="$t('index.rightView.tab.infDebuger')"
           v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')"
-                      v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
+        <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')" v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
       </let-tabs>
-
+      
       <router-view ref="childView" class="page_server_child" :key="$route.params.treeid"></router-view>
     </div>
     
@@ -63,9 +70,9 @@
 </template>
 
 <script>
+
 export default {
   name: 'Server',
-
   data() {
     return {
       treeErrMsg: 'load failed',
@@ -83,6 +90,27 @@ export default {
         set_area: '',
         set_group: '',
       },
+
+      // BTabs
+      BTabs: [],
+
+      //
+      keepAlive: [],
+
+      // tabs: {
+      //   currView: '',
+      //   data: [
+      //     { title: this.$t('header.tab.tab1'), url: `/server/${this.$route.params.treeid}/manage` },
+      //     { title: this.$t('index.rightView.tab.patch'), url: `/server/${this.$route.params.treeid}/publish`, level: 5 },
+      //     { title: this.$t('index.rightView.tab.serviceConfig'), url: `/server/${this.$route.params.treeid}/config`, level: 5 },
+      //     { title: this.$t('index.rightView.tab.setConfig'), url: `/server/${this.$route.params.treeid}/config`, level: 4 },
+      //     { title: this.$t('index.rightView.tab.appConfig'), url: `/server/${this.$route.params.treeid}/config`, level: 1 },
+      //     { title: this.$t('index.rightView.tab.statMonitor'), url: `/server/${this.$route.params.treeid}/server-monitor`, level: 5 },
+      //     { title: this.$t('index.rightView.tab.propertyMonitor'), url: `/server/${this.$route.params.treeid}/property-monitor`, level: 5 },
+      //     { title: this.$t('index.rightView.tab.infDebuger'), url: `/server/${this.$route.params.treeid}/interface-debuger`, level: 5 },
+      //     { title: this.$t('index.rightView.tab.privileage'), url: `/server/${this.$route.params.treeid}/user-manage'`, level: 5, auth: this.enableAuth },
+      //   ]
+      // }
     };
   },
   computed: {
@@ -101,16 +129,44 @@ export default {
       }
     },
   },
+  directives: {
+    vscroll: {
+      componentUpdated(el) {
+        let boxEl = el || ''
+        let itemEl = el.children || []
+        let currEl = ''
+        
+        itemEl.forEach(item => {
+          const iclass = item.getAttribute('class')
+          if(iclass.indexOf('active') > -1) {
+            currEl = item
+          }
+        })
+
+        let left = currEl.offsetLeft || 0
+        if(currEl.offsetLeft + currEl.offsetWidth > boxEl.scrollLeft) {
+          left = currEl.offsetLeft + currEl.offsetWidth - boxEl.offsetWidth
+        }
+        boxEl.scrollTo(left, 0)
+      }
+    }
+  },
   methods: {
     treeSearch(type) {
       this.getTreeData(this.treeSearchKey, type)
     },
     selectTree(nodeKey) {
+      this.selectBTabs(nodeKey)
+      
       if (this.$route.path === '/server') {
         this.$router.push(`/server/${nodeKey}/manage`);
       } else {
-        this.$router.push({ params: { treeid: nodeKey } });
+        if(this.$route.params.treeid !== nodeKey){
+          this.$router.push({ params: { treeid: nodeKey } });
+        }
       }
+
+      this.checkCurrBTabs()
     },
     // 处理接口返回数据
     handleData(res, isFirstLayer) {
@@ -225,19 +281,116 @@ export default {
         this.$router.replace('manage');
       }
     },
+
+    checkBTabs() {
+      let { BTabs } = this
+      const tabs = this.getSetLocalStorage('tars_tabs')
+      if(tabs && tabs.length > 0){
+        tabs.forEach(item => {
+          BTabs.push({ id: item.id })
+        })
+      }
+    },
+
+    checkCurrBTabs() {
+      this.$nextTick(() => {
+        let boxEl = this.$refs.btabs || ''
+        let itemEl = boxEl.children || []
+        let currEl = ''
+        
+        itemEl.forEach(item => {
+          const iclass = item.getAttribute('class')
+          if(iclass.indexOf('active') > -1) {
+            currEl = item
+          }
+        })
+
+        let left = currEl.offsetLeft || 0
+        if(currEl.offsetLeft + currEl.offsetWidth > boxEl.scrollLeft) {
+          left = currEl.offsetLeft + currEl.offsetWidth - boxEl.offsetWidth
+        }
+        boxEl.scrollTo(left, 0)
+      })
+    },
+
+    selectBTabs(nodeKey) {
+      let { BTabs } = this
+      let isBTabTrue = false
+      BTabs.forEach(item => {
+        if(item.id === nodeKey){
+          isBTabTrue = true
+        }
+      })
+      if(!isBTabTrue){
+        this.BTabs.push({
+          id: nodeKey
+        })
+      }
+
+      this.setSetLocalStorage('tars_tabs', JSON.stringify(BTabs))
+    },
+
+    clickBTabs(e, nodeKey) {
+      const { treeid } = this.$route.params
+      if(treeid !== nodeKey) {
+        this.$router.push({ params: { treeid: nodeKey } })
+      }
+    },
+
+    closeBTabs(nodeKey) {
+      let { BTabs } = this
+      let BIndex = 0
+
+      BTabs.forEach((item, index) => {
+        if(item.id === nodeKey){
+          BIndex = index
+        }
+      })
+      BTabs.splice(BIndex, 1)
+
+      this.setSetLocalStorage('tars_tabs', JSON.stringify(BTabs))
+
+      if(BTabs.length > 0){
+        const { treeid } = this.$route.params
+        const id = BTabs[BTabs.length - 1].id
+        if(treeid !== id) {
+          this.$router.push({ params: { treeid: id } })
+        }
+      }else{
+        this.$router.push('/server')
+      }
+    },
+
+    getSetLocalStorage(key) {
+      let result = ''
+      if(window.localStorage){
+        result = JSON.parse(JSON.parse(localStorage.getItem(key)))
+      }
+      return result
+    },
+
+    setSetLocalStorage(key, val) {
+      let result = ''
+      if(window.localStorage){
+        result = localStorage.setItem(key, JSON.stringify(val))
+      }
+      return result
+    },
+
   },
   created() {
     this.serverData = this.getServerData();
     this.isTrueTreeLevel();
   },
   mounted() {
+    this.checkBTabs();
     this.getTreeData();
     // this.checkDeployLog();
     this.$ajax.getJSON('/server/api/is_enable_auth').then((data) => {
       this.enableAuth = data.enableAuth || false;
-     }).catch((err)=>{
+    }).catch((err)=>{
 
-      });
+    });
   },
 };
 </script>
@@ -247,26 +400,31 @@ export default {
 @import '../../assets/css/variable.css';
 
 .page_server {
-  padding-bottom: var(--gap-big);
+  padding-bottom: var(--gap-small);
   padding-top: var(--gap-big);
   display: flex;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
 
   /*left-view*/
   .left-view{
     display:flex;
+    flex: 1;
     flex-flow: column;
+    max-width: 260px;
   }
   /*目录搜索框*/
-  .tree_search{display:block;margin-bottom:20px;position:relative;padding-right:42px;}
-  .tree_search_key{display:block;border:1px solid #c0c4cc;border-radius:4px 0 0 4px;color:#222329;font-size:14px;padding:6px 10px;box-sizing: border-box;width: 100%;}
-  .tree_search_btn{display:block;border-radius:0 4px 4px 0;position:absolute;right:0;top:0;}
+  .tree_search{display:block;margin-bottom:20px;position:relative;}
+  .tree_search_key{display:block;border:1px solid #c0c4cc;border-radius:4px;color:#222329;font-size:14px;padding:6px 10px;box-sizing: border-box;width: 100%;}
   /**/
-  .tree_wrap{position:relative;}
+  .tree_wrap{display:flex;flex:1;overflow:auto;position:relative;}
+  .tree_wrap::-webkit-scrollbar{border-radius:10px;}
   .tree_icon{color:#565B66;position:absolute;right:10px;top:10px;}
   /*目录树*/
   .left-tree {
     flex: 0 0 auto;
-    width: 280px;
+    width: 250px;
     min-height: 380px;
 
     .loading {
@@ -334,9 +492,13 @@ export default {
 
   /*右侧窗口*/
   .right-view {
+    display: flex;
     flex: 1;
+    flex-flow: column;
     margin-left: 40px;
     margin-top: -10px;
+    overflow: hidden;
+    position: relative;
 
     .empty {
       margin: 88px 0 0 calc((100% - 240px) / 2 - 108px);
@@ -360,9 +522,14 @@ export default {
   }
 
   .page_server_child {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
     margin-top: 20px;
-    position: relative;
+    overflow: auto;
+    padding-right: 20px;
   }
+  .page_server_child::-webkit-scrollbar{border-radius:10px;}
 
   .loading-placeholder {
     min-height: 80px;
@@ -432,5 +599,30 @@ export default {
   /*服务状态 end*/
 
   /*右侧窗口 end*/
+
+  .btabs{display:block;overflow-x:auto;position:relative;;white-space:nowrap;}
+  .btabs::-webkit-scrollbar{border-radius:10px;height:8px;}
+  .btabs:before{border-bottom:1px solid #d7dae0;bottom:0;content:"";left:0;position:absolute;right:0;}
+  .btabs_item{border:1px solid #d7dae0;display:inline-block;position:relative;z-index:10}
+  .btabs_item + .btabs_item{margin-left:-1px;}
+  .btabs_item:first-child{border-top-left-radius:5px;}
+  .btabs_item:last-child{border-top-right-radius:5px;}
+  .btabs_item.active{background:#3f5ae1;border-color:#3f5ae1}
+  .btabs_item.active .btabs_link{color:#fff;}
+  .btabs_item.active .btabs_close:before,
+  .btabs_item.active .btabs_close:after{border-color:#fff;}
+  .btabs_link{color:#9096a3;display:block;font-weight:bold;height:30px;line-height:20px;padding:5px 30px 5px 10px;}
+  .btabs_link:hover{color:#222329;}
+  .btabs_close{display:block;font-size:0;height:30px;position:absolute;right:0;top:50%;width:30px;z-index:20;-webkit-transform:translateY(-50%);}
+  .btabs_close:before,
+  .btabs_close:after{border-top:1px solid #9096a3;content:"";height:0;left:50%;position:absolute;top:50%;width:16px;}
+  .btabs_close:before{-webkit-transform:translate3d(-50%,-50%,0) rotateZ(-45deg);}
+  .btabs_close:after{-webkit-transform:translate3d(-50%,-50%,0) rotateZ(45deg);}
+
+  .btabs_close:hover:before,
+  .btabs_close:hover:after{border-color:#222329;}
+  .btabs_item.active .btabs_link:hover{color:#d7dae0;}
+  .btabs_item.active .btabs_close:hover:before,
+  .btabs_item.active .btabs_close:hover:after{border-color:#d7dae0;}
 }
 </style>

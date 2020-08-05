@@ -20,7 +20,12 @@
           <let-input size="small" v-model="query.moduleName"></let-input>
         </tars-form-item>
         <tars-form-item :label="$t('service.serverName')" @onLabelClick="groupBy('serverName')">
-          <let-input size="small" v-model="query.serverName"></let-input>
+          <let-select v-model="query.serverName" size="small" filterable >
+            <let-option v-for="d in cacheServerList" :key="d.id" :value="d.application + '.' + d.server_name">
+              {{d.application + '.' + d.server_name}}
+            </let-option>
+          </let-select>
+          <!--<let-input size="small" v-model="query.serverName"></let-input>-->
         </tars-form-item>
         <let-form-item>
           <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
@@ -40,11 +45,10 @@
     <div style="width: 1200px; overflow-x: auto;padding-bottom:20px;">
       <let-table ref="table" :data="pagedItems" :empty-msg="$t('common.nodata')" stripe>
         <let-table-column :title="$t('common.time')" prop="show_time" width="80px"></let-table-column>
-        <let-table-column :title="$t('module.name')" prop="moduleName" width=""></let-table-column>
+        <let-table-column :title="$t('module.name')" prop="moduleName"></let-table-column>
         <let-table-column :title="$t('service.serverName')" prop="serverName" width="150px"></let-table-column>
         <template v-for="item in keys">
-          <let-table-column :title="$t('monitor.table.curr') + ' ' + item" :prop="`the_${item}`" ></let-table-column>
-          <let-table-column :title="$t('monitor.table.contrast') + ' ' + item" :prop="`pre_${item}`" ></let-table-column>
+          <let-table-column :title="$t('monitor.table.curr') + '/' + $t('monitor.table.contrast') + ' ' + item" prop="value" :key="item"></let-table-column>
         </template>
         <let-pagination
           slot="pagination"
@@ -65,7 +69,7 @@
   import {formatDate, ONE_DAY} from '@/lib/date';
   import HoursFilter from '@/components/hours-filter';
   import CompareChart from '@/components/charts/compare-chart';
-  import { queryProperptyData } from '@/dcache/interface.js'
+  import { getCacheServerList, queryProperptyData } from '@/dcache/interface.js'
 
   const pageSize = 20;
   const formatter = 'YYYYMMDD';
@@ -111,6 +115,8 @@
           moduleName: treeId.split('.')[1].substr(1),
           serverName: '',
         },
+        appName: treeId.split('.')[0].substr(1),
+        cacheServerList: [],
         formatter,
         allItems: [],
         hour: -1,
@@ -161,23 +167,40 @@
     },
 
     mounted() {
-      this.fetchData();
+      // this.fetchData();
+      this.fetchCacheServerList();
     },
 
     methods: {
+      async fetchCacheServerList() {
+        try {
+          this.cacheServerList = await getCacheServerList({appName: this.appName, moduleName: this.query.moduleName});
+        } catch (err) {
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        } 
+      },
       async fetchData() {
         const chartLoading = this.$refs.charts && this.$refs.charts.$loading.show();
         const tableLoading = this.$refs.table.$loading.show();
         try {
           const { query, query: { group_by, serverName }} = this;
           let option = { ...query };
-          if (group_by === 'serverName' && serverName === '' ) option = { ...option, serverName: '*' };
+          if (group_by === 'serverName' && serverName === '' ) option = { ...option, serverName: '' };
           const { data, keys } = await queryProperptyData(option);
           // console.log(data, keys);
           this.allItems = data || [];
-          this.keys= keys || [];
+          // this.keys= keys || [];
+          this.keys = keys || [];
+
+          this.keys.forEach((k,v)=>{
+
+            this.allItems.forEach((item)=>{
+              item.value = item[`the_${k}`] + '/' + item[`pre_${k}`];
+            });
+          });
+
         } catch (err) {
-          console.error(err);
+          // console.error(err);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         } finally {
           chartLoading && chartLoading.hide();

@@ -826,7 +826,8 @@
     "btn": {
       "manualAddNode": "手工安装节点",
       "autoAddNode": "自动安装节点",
-      "check": "点击开始检查框架状态"
+      "check": "点击开始检查框架状态",
+      "question": "有问题怎么办?"
     },
     "manualAddNode": {
       "title": "操作步骤",
@@ -1147,9 +1148,9 @@
       "success":"成功",
       "fail":"失败",
       "successRate":"成功率",
-      "maxCost":"最大耗时(s)",
-      "minCost":"最小耗时(s)",
-      "avgCost":"平均耗时(s)",
+      "maxCost":"最大耗时(ms)",
+      "minCost":"最小耗时(ms)",
+      "avgCost":"平均耗时(ms)",
       "sendBytes":"发送字节",
       "recvBytes":"接收字节",
       "deleteCaseConfirm":"确认删除此用例？",

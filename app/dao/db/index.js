@@ -43,7 +43,7 @@ databases.forEach((database) => {
 	} = dbConf;
 
 	const logging = process.env.NODE_ENV == "dev" ? (sqlText)=>{
-		console.log(sqlText);
+		// console.log(sqlText);
 		logger.sql(sqlText)
 	} : true
 
@@ -84,11 +84,19 @@ databases.forEach((database) => {
 	let tableObj = {};
 	let dbModelsPath = __dirname + '/' + database + '_models';
 	let dbModels = fs.readdirSync(dbModelsPath);
-	let alter = database == "db_tars_web"
-	dbModels.forEach(function (dbModel) {
+	// let alter = database == "db_tars_web"
+	dbModels.forEach(async function (dbModel) {
 		let tableName = dbModel.replace(/\.js$/g, '');
-		tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
-		tableObj[_.camelCase(tableName)].sync({ alter: alter });
+
+		try {
+			tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
+			await tableObj[_.camelCase(tableName)].sync({ alter: true });
+
+			console.log('database ' + database + '.' + tableName + ' sync succ');
+		} catch (e) {
+			console.log('database ' + database + '.' + tableName + ' sync error:', e);
+		}
+
 	});
 	Db[database] = tableObj;
 	Db[database].sequelize = sequelize;

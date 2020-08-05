@@ -75,64 +75,68 @@ databases.forEach((database) => {
   const tableObj = {};
   const dbModelsPath = `${__dirname}/${database}_models`;
   const dbModels = fs.readdirSync(dbModelsPath);
-  dbModels.forEach((dbModel) => {
-    const tableName = dbModel.replace(/\.js$/g, '');
-    tableObj[_.camelCase(tableName)] = sequelize.import(`${dbModelsPath}/${tableName}`);
-    // sync 无表创建表， alter 新增字段
-    // tableObj[_.camelCase(tableName)].sync();
-    // tableObj[_.camelCase(tableName)].sync({ alter: true });
+  dbModels.forEach(async (dbModel) => {
+    let tableName = dbModel.replace(/\.js$/g, '');
+    tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
+    tableObj[_.camelCase(tableName)].sync();
+    try {
+      tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
+
+      await tableObj[_.camelCase(tableName)].sync({ alter: true });
+
+      logger.info('database ' + database + '.' + tableName + ' sync succ');
+    } catch (e) {
+      logger.error('database ' + database + '.' + tableName + ' error:', e);
+    }
+
   });
   Db[database] = tableObj;
   Db[database].sequelize = sequelize;
   sequelize.sync();
 });
 
-const { tApplyAppBase } = Db.db_cache_web;
-const { tApplyAppRouterConf } = Db.db_cache_web;
-const { tApplyAppProxyConf } = Db.db_cache_web;
-tApplyAppBase.hasOne(tApplyAppRouterConf, {
-  foreignKey: 'apply_id',
-  as: 'Router',
-});
-tApplyAppBase.hasMany(tApplyAppProxyConf, {
-  foreignKey: 'apply_id',
-  as: 'Proxy',
-});
-
-const { tApplyCacheModuleBase } = Db.db_cache_web;
-const { tApplyCacheModuleConf } = Db.db_cache_web;
-const { tApplyCacheServerConf } = Db.db_cache_web;
-
-tApplyCacheModuleConf.belongsTo(tApplyAppBase, {
-  foreignKey: 'apply_id',
-  as: 'AppBase',
-});
-
-tApplyCacheModuleConf.belongsTo(tApplyCacheModuleBase, {
-  foreignKey: 'module_id',
-  as: 'ModuleBase',
-});
-tApplyCacheModuleConf.hasMany(tApplyCacheServerConf, {
-  foreignKey: 'module_name',
-  sourceKey: 'module_name',
-  as: 'ServerConf',
-});
-
-tApplyCacheServerConf.belongsTo(tApplyAppBase, {
-  foreignKey: 'apply_id',
-  as: 'applyBase',
-});
-tApplyCacheServerConf.belongsTo(tApplyCacheModuleConf, {
-  foreignKey: 'module_name',
-  targetKey: 'module_name',
-  as: 'moduleBase',
-});
-
-const { tApplyAppDbaccessConf } = Db.db_cache_web;
-// tApplyAppDbaccessConf.belongsTo(tApplyCacheModuleConf, {
-//   foreignKey: 'module_id',
-//   targetKey: 'id',
-//   as: 'DbAccessModuleBase',
+// const { tApplyAppBase } = Db.db_cache_web;
+// const { tApplyAppRouterConf } = Db.db_cache_web;
+// const { tApplyAppProxyConf } = Db.db_cache_web;
+// tApplyAppBase.hasOne(tApplyAppRouterConf, {
+//   foreignKey: 'apply_id',
+//   as: 'Router',
 // });
+// tApplyAppBase.hasMany(tApplyAppProxyConf, {
+//   foreignKey: 'apply_id',
+//   as: 'Proxy',
+// });
+
+// const { tApplyCacheModuleBase } = Db.db_cache_web;
+// const { tApplyCacheModuleConf } = Db.db_cache_web;
+// const { tApplyCacheServerConf } = Db.db_cache_web;
+
+// tApplyCacheModuleConf.belongsTo(tApplyAppBase, {
+//   foreignKey: 'apply_id',
+//   as: 'AppBase',
+// });
+
+// tApplyCacheModuleConf.belongsTo(tApplyCacheModuleBase, {
+//   foreignKey: 'module_id',
+//   as: 'ModuleBase',
+// });
+// tApplyCacheModuleConf.hasMany(tApplyCacheServerConf, {
+//   foreignKey: 'module_name',
+//   sourceKey: 'module_name',
+//   as: 'ServerConf',
+// });
+
+// tApplyCacheServerConf.belongsTo(tApplyAppBase, {
+//   foreignKey: 'apply_id',
+//   as: 'applyBase',
+// });
+// tApplyCacheServerConf.belongsTo(tApplyCacheModuleConf, {
+//   foreignKey: 'module_name',
+//   targetKey: 'module_name',
+//   as: 'moduleBase',
+// });
+
+// const { tApplyAppDbaccessConf } = Db.db_cache_web;
+
 
 module.exports = Db;

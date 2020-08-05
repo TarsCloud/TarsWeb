@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(128),
 			allowNull: true,
 			defaultValue: '',
-			unique: true
+			unique: 'template_name'
 		},
 		parents_name: {
 			type: DataTypes.STRING(128),

@@ -86,21 +86,21 @@
           <let-input size="small" type="textarea" :placeholder="$t('inf.benchmark.endpointsTip')" v-model="caseModel.endpoints"></let-input>
         </let-form-item>
         <let-form-group inline label-position="top">
-           <let-form-item v-if="upsertCaseConfigModal == 'start'" :label="$t('inf.benchmark.links')" :size="5">
+           <let-form-item v-if="upsertCaseConfigModalName == 'start'" :label="$t('inf.benchmark.links')" :size="5">
             <let-input type="number" size="small" v-model="caseModel.links" required></let-input>
           </let-form-item>
-          <let-form-item v-if="upsertCaseConfigModal == 'start'" :label="$t('inf.benchmark.speed')" :size="5">
+          <let-form-item v-if="upsertCaseConfigModalName == 'start'" :label="$t('inf.benchmark.speed')" :size="5">
             <let-input  type="number" size="small" v-model="caseModel.speed" required></let-input>
           </let-form-item>
-          <let-form-item v-if="upsertCaseConfigModal == 'start'" :label="$t('inf.benchmark.duration')" :size="5">
+          <let-form-item v-if="upsertCaseConfigModalName == 'start'" :label="$t('inf.benchmark.duration')" :size="5">
             <let-input  type="number" size="small" v-model="caseModel.duration" required></let-input>
           </let-form-item>
           <let-form-item v-if="testResultModal" :label="$t('inf.benchmark.testResult')" :size="5">
             <div> {{testResult.errmsg || testResultRsp}} </div>
           </let-form-item>
            <let-form-item :size="5">
-            <let-button  v-if="upsertCaseConfigModal == 'test'" @click="execBenchmark('test')" theme="primary" class="start_bm">{{$t('inf.benchmark.infTest')}}</let-button>
-            <let-button v-if="upsertCaseConfigModal == 'start'" @click="upsertCaseConfig" theme="primary" class="start_bm">{{$t('inf.benchmark.startBenchmark')}}</let-button>
+            <let-button v-if="upsertCaseConfigModalName == 'test'" @click="execBenchmark('test')" theme="primary" class="start_bm">{{$t('inf.benchmark.infTest')}}</let-button>
+            <let-button v-if="upsertCaseConfigModalName == 'start'" @click="upsertCaseConfig" theme="primary" class="start_bm">{{$t('inf.benchmark.startBenchmark')}}</let-button>
             <let-button @click="upsertCaseConfigModal = false" class="cancel_bm">{{$t('inf.benchmark.cancelTest')}}</let-button>
           </let-form-item>
         </let-form-group>
@@ -191,6 +191,7 @@
         return {
             showCase: false,
             upsertCaseContentModal:false,
+            upsertCaseConfigModalName: '',
             upsertCaseConfigModal:false,
             resultModal:false,
             testResultModal:false,
@@ -259,7 +260,7 @@
           this.testResultModal = false
           this.caseModel = Object.assign({}, row)
           if(!this.caseModel.links) this.caseModel.links=1
-          if(!this.caseModel.speed) this.caseModel.speed=1
+          if(!this.caseModel.speed) this.caseModel.speed=100
           if(!this.caseModel.duration) this.caseModel.duration=20
           let endpoints = this.caseModel.endpoints.split("\n")
           //reset checkbox status
@@ -274,7 +275,8 @@
           }
           //set the custom endpoints
           this.caseModel.endpoints = endpoints.join("\n")
-          this.upsertCaseConfigModal = mode
+          this.upsertCaseConfigModalName = mode
+          this.upsertCaseConfigModal = true 
           this.resultModal = false
         },
         //run update or init case

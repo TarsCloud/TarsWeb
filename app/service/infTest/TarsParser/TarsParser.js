@@ -279,7 +279,7 @@ class TarsParser {
             v = Number(defaultValue);
             if (Number.isNaN(v)) {
                 let enumDest = context[type.module].enums[type.name];
-                if (!enumDest || !enumDest.values[defaultValue]) {
+                if (!enumDest || enumDest.values[defaultValue] == null) {
                     throw Error("Bad default value for enum " + type.module + "::" + type.name + "::" + defaultValue);
                 } else {
                     return enumDest.values[defaultValue];
@@ -291,9 +291,9 @@ class TarsParser {
             }
         } else if (INTEGER_TYPE.test(type)) {
             v = Number(defaultValue);
-            if (Number.isNaN(v) || v < RANGE_MAP[type][0] || RANGE_MAP[type][1] < v) {
-                throw Error("Bad default value for " + type + ":" + defaultValue);
-            }
+            // if (Number.isNaN(v) || v < RANGE_MAP[type][0] || RANGE_MAP[type][1] < v) {
+            //     throw Error("Bad default value for " + type + ":" + defaultValue);
+            // }
             return v;
         } else if (FLOAT_TYPE.test(type)) {
             v = Number(defaultValue);

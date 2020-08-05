@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(128),
 			allowNull: true,
 			defaultValue: '',
-			unique: true
+			unique: 'node_name'
 		},
 		node_obj: {
 			type: DataTypes.STRING(128),

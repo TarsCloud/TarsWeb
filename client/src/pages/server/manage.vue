@@ -3,7 +3,7 @@
 
     <!-- 服务列表 -->
     <div class="table_head">
-    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+      <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
     </div>
     
     <let-table class="dcache" v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
@@ -1003,6 +1003,7 @@ export default {
   }
 
   .table_head{padding:10px 0;}
+  .buttonText{white-space: nowrap;}
   .dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
 }
 

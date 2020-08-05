@@ -808,7 +808,8 @@
     "btn": {
       "manualAddNode": "Manual Install node",
       "autoAddNode": "Auto Install node",
-      "check": "Click to check framework"
+      "check": "Click to check framework",
+      "question": "Any Problem?"
     },
     "manualAddNode": {
       "title": "Step",
@@ -1127,9 +1128,9 @@
       "success":"success",
       "fail":"fail",
       "successRate":"success rate",
-      "maxCost":"max cost(s)",
-      "minCost":"min cost(s)",
-      "avgCost":"avg cost(s)",
+      "maxCost":"max cost(ms)",
+      "minCost":"min cost(ms)",
+      "avgCost":"avg cost(ms)",
       "sendBytes":"send bytes",
       "recvBytes":"recv bytes",
       "deleteCaseConfirm":"are you sure to delete this case?",

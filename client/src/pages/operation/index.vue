@@ -45,11 +45,23 @@ export default {
 
 <style>
 .page_operation {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  overflow: hidden;
   padding-top: 30px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
+  width: 100%;
 
   &_children {
-    padding: 20px 0;
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    margin-top: 20px;
+    overflow: auto;
+    padding:0 40px 20px 0;
+    position: relative;
   }
+  &_children::-webkit-scrollbar{border-radius:10px;}
 }
 </style>
