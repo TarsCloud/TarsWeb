@@ -47,11 +47,11 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
 		context: {
-			type: DataTypes.TEXT,
+			type: DataTypes.TEXT('medium'),
 			allowNull: true
 		},
 		benchmark_context: {
-			type: DataTypes.TEXT,
+			type: DataTypes.TEXT('medium'),
 			allowNull: true
 		}
 	}, {
