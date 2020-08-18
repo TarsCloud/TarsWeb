@@ -20,6 +20,7 @@ const path = require('path');
 const url = require('url');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
+const session = require('koa-session');
 const multer = require('koa-multer');
 const static = require('koa-static');
 const apiMidware = require('./app/midware/apiMidware');
@@ -43,6 +44,20 @@ onerror(app);
 
 //防洪水攻击
 app.use(limitMidware());
+
+//验证码
+const CONFIG = {
+	key: 'koa:sess',
+	maxAge: 1000 * 60 * 60 * 12, // 12小时, 设置 session 的有效时间，单位毫秒
+	autoCommit: true, 
+	overwrite: true,
+	httpOnly: true,
+	signed: true,
+	rolling: false,
+	renew: false,
+}
+app.keys = ['sessionCaptcha']
+app.use(session(CONFIG, app))
 
 //安全防护
 app.use(helmet());
