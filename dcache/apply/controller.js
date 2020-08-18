@@ -42,11 +42,6 @@ ApplyController.dtree = async (ctx) => {
     
     const rootNode = await ApplyService.buildCacheList();
 
-    // if (!rootNode || rootNode.length == 0) {
-    //   ctx.makeResObj(500, "#common.dcacheSystem#", {});
-    //   return;
-    // }
-
     tarsDcache = tarsDcache.concat(rootNode);
 
     ctx.makeResObj(200, '', tarsDcache);
@@ -76,7 +71,6 @@ ApplyController.getApplyModuleList = async (ctx) => {
     if (ApplyService.rootNode.length == 0) {
       await ApplyService.buildCacheList(); 
     }
-    // console.log(ApplyController.rootNode);
 
     const applyId = ctx.paramsObj.applyId;
 

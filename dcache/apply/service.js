@@ -53,24 +53,20 @@ ApplyService.buildCacheList = async () => {
 
   DCacheOptPrx.setTimeout(timeout);
 
-  // console.log(args.cacheApps[0].cacheModules);
-
   const { __return, cacheApps } = args;
 
   if (__return != 0) {
     return ApplyService.rootNode;
   }
 
-  // const has = await TreeService.hasDCacheServerName('InfoRouterServer');
-
   ApplyService.rootNode = [];
 
   // 如果没有 proxy、router 删除该应用
-  cacheApps.forEach(async (item) => {
+  cacheApps.forEach((item) => {
 
     const applyServer = [];
 
-    if (await TreeService.hasDCacheServerName(item.routerName)) {
+    if (TreeService.hasDCacheServerName(item.routerName)) {
       applyServer.push({
         name: item.routerName,
         id: `1DCache.5${item.routerName}`,
@@ -82,7 +78,7 @@ ApplyService.buildCacheList = async () => {
       });
     }
 
-    if (await TreeService.hasDCacheServerName(item.proxyName)) {
+    if (TreeService.hasDCacheServerName(item.proxyName)) {
       applyServer.push({
         name: item.proxyName,
         id: `1DCache.5${item.proxyName}`,
@@ -108,7 +104,6 @@ ApplyService.buildCacheList = async () => {
         children: [],
         moduleName: key,
       };
-      applyServer.push(cacheNodeFloder)
 
       if (value.cacheServer && value.cacheServer.length > 0) {
         value.cacheServer.forEach(server => {
@@ -126,7 +121,7 @@ ApplyService.buildCacheList = async () => {
 
       // 看看该应用是否已经有了存放 cahce 的模块的节点
       if (value.dbAccessServer && value.dbAccessServer.length > 0) {
-        const has = await TreeService.hasDCacheServerName(value.dbAccessServer);
+        const has = TreeService.hasDCacheServerName(value.dbAccessServer);
 
         if (has) {
           cacheNodeFloder.children.push({
@@ -140,9 +135,15 @@ ApplyService.buildCacheList = async () => {
           });
         }
       }
+
+      if (cacheNodeFloder.children.length > 0) {
+        applyServer.push(cacheNodeFloder);
+      }
+
     });
 
     serverList = serverList.concat(applyServer);
+
     return true;
   });
 

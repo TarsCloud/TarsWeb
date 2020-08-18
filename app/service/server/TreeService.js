@@ -33,11 +33,9 @@ TreeService.getTreeNodes = async (searchKey, uid, type) => {
 	return await TreeService.getCacheData(searchKey, uid, type)
 };
 
-TreeService.hasDCacheServerName = async (serverName) => {
+TreeService.hasDCacheServerName = (serverName) => {
 
-	return true;
-
-	// return cacheData.dcacheData.find((item) => { return item.server_name == serverName; });
+	return cacheData.dcacheData.find((item) => { return item.server_name == serverName; });
 }
 
 /**
