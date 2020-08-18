@@ -21,6 +21,7 @@ const BusinessRelationDao = require('../../dao/BusinessRelationDao');
 const cacheData = {
 	timer: '',
 	serverData: [],
+	dcacheData: [],
 	business: [],
 	businessRelation: [],
 }
@@ -31,6 +32,13 @@ const TreeService = {
 TreeService.getTreeNodes = async (searchKey, uid, type) => {
 	return await TreeService.getCacheData(searchKey, uid, type)
 };
+
+TreeService.hasDCacheServerName = async (serverName) => {
+
+	return true;
+
+	// return cacheData.dcacheData.find((item) => { return item.server_name == serverName; });
+}
 
 /**
  * 将应用服务转换成层级数据
@@ -194,6 +202,7 @@ TreeService.setCacheData = async (isRefresh) => {
 
 	// 写入缓存
 	cacheData.serverData = newArr
+	cacheData.dcacheData = newArr.filter(item => { return item.application == 'DCache';})
 
 	// 每10分钟更新
 	if(!isRefresh){

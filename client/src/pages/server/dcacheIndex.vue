@@ -50,7 +50,6 @@
               <let-tab-pane :tabkey="`${base}/cache`" :tab="$t('header.tab.tab1')"></let-tab-pane>
               <let-tab-pane :tabkey="base + '/moduleCache'" :tab="$t('cache.config.configuration')"></let-tab-pane>
               <let-tab-pane :tabkey="base + '/propertyMonitor'" :tab="$t('index.rightView.tab.propertyMonitor')"></let-tab-pane>
-              <let-tab-pane :tabkey="base + '/cacheDebug'" :tab="$t('index.rightView.tab.cacheDebug')"></let-tab-pane>
             </template>
             <template v-else-if="serverData.level === 5">
               <let-tab-pane :tabkey="`${base}/manage`" :tab="$t('header.tab.tab1')"></let-tab-pane>

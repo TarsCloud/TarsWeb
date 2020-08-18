@@ -23,6 +23,8 @@ const ProxyService = require('../proxy/service');
 const DbAccessService = require('../dbaccess/service');
 const ModuleConfigService = require('../moduleConfig/service');
 const TreeService = require(path.join(cwd, './app/service/server/TreeService'));
+const ServerService = require(path.join(cwd, './app/service/server/ServerService'));
+
 const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
 
 const ApplyService = {};
@@ -51,41 +53,49 @@ ApplyService.buildCacheList = async () => {
 
   DCacheOptPrx.setTimeout(timeout);
 
+  // console.log(args.cacheApps[0].cacheModules);
+
   const { __return, cacheApps } = args;
 
   if (__return != 0) {
     return ApplyService.rootNode;
   }
 
+  // const has = await TreeService.hasDCacheServerName('InfoRouterServer');
+
   ApplyService.rootNode = [];
 
   // 如果没有 proxy、router 删除该应用
-  cacheApps.forEach((item) => {
+  cacheApps.forEach(async (item) => {
 
     const applyServer = [];
 
-    applyServer.push({
-      name: item.routerName,
-      id: `1DCache.5${item.routerName}`,
-      pid: `1${item.name}`,
-      is_parent: false,
-      open: false,
-      children: [],
-      serverType: 'router',
-    });
+    if (await TreeService.hasDCacheServerName(item.routerName)) {
+      applyServer.push({
+        name: item.routerName,
+        id: `1DCache.5${item.routerName}`,
+        pid: `1${item.name}`,
+        is_parent: false,
+        open: false,
+        children: [],
+        serverType: 'router',
+      });
+    }
 
-    applyServer.push({
-      name: item.proxyName,
-      id: `1DCache.5${item.proxyName}`,
-      pid: `1${item.name}`,
-      is_parent: false,
-      open: false,
-      children: [],
-      serverType: 'proxy',
-    });
+    if (await TreeService.hasDCacheServerName(item.proxyName)) {
+      applyServer.push({
+        name: item.proxyName,
+        id: `1DCache.5${item.proxyName}`,
+        pid: `1${item.name}`,
+        is_parent: false,
+        open: false,
+        children: [],
+        serverType: 'proxy',
+      });
+    }
 
     // 获取 cache 服务
-    Object.keys(item.cacheModules).forEach((key) => {
+    Object.keys(item.cacheModules).forEach(async (key) => {
 
       let value = item.cacheModules[key];
 
@@ -113,17 +123,22 @@ ApplyService.buildCacheList = async () => {
           })
         })
       }
+
       // 看看该应用是否已经有了存放 cahce 的模块的节点
       if (value.dbAccessServer && value.dbAccessServer.length > 0) {
-        cacheNodeFloder.children.push({
-          name: value.dbAccessServer,
-          id: `1Dcache.5${value.dbAccessServer}`,
-          pid: `1${item.name}`,
-          is_parent: false,
-          open: false,
-          children: [],
-          serverType: 'dbaccess',
-        })
+        const has = await TreeService.hasDCacheServerName(value.dbAccessServer);
+
+        if (has) {
+          cacheNodeFloder.children.push({
+            name: value.dbAccessServer,
+            id: `1Dcache.5${value.dbAccessServer}`,
+            pid: `1${item.name}`,
+            is_parent: false,
+            open: false,
+            children: [],
+            serverType: 'dbaccess',
+          });
+        }
       }
     });
 

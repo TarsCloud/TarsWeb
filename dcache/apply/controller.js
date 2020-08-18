@@ -42,10 +42,10 @@ ApplyController.dtree = async (ctx) => {
     
     const rootNode = await ApplyService.buildCacheList();
 
-    if (!rootNode || rootNode.length == 0) {
-      ctx.makeResObj(500, "#common.dcacheSystem#", {});
-      return;
-    }
+    // if (!rootNode || rootNode.length == 0) {
+    //   ctx.makeResObj(500, "#common.dcacheSystem#", {});
+    //   return;
+    // }
 
     tarsDcache = tarsDcache.concat(rootNode);
 
