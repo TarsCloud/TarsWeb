@@ -1,6 +1,6 @@
 <template>
 
-  <div style="margin: 20px auto;">
+  <div style="margin: 20px auto;overflow:auto;">
 
     <let-table :data="setListShow" stripe :empty-msg="$t('ssoCommon.nodata')" :title="$t('auth.setManageTitle')">
       <let-table-column :title="$t('auth.setTitle')" prop="title" width="15%"></let-table-column>
@@ -44,7 +44,9 @@
     </let-modal>
 
     <let-modal v-model="viewModal.show" :title="$t('cfg.msg.viewContent')" width="800px">
-      <pre style="margin:20px;overflow:auto;" v-if="viewModal.model">{{viewModal.model.info}}</pre>
+      <div class="pre_con">
+        <pre v-if="viewModal.model">{{viewModal.model.info}}</pre>
+      </div>
       <div slot="foot"></div>
     </let-modal>
 
@@ -183,4 +185,7 @@ export default {
     font-size: 18px;
     border-bottom: 1px solid #c5d9e8;
   }
+  .pre_con{display: block;margin-top:20px;word-break: break-all;}
+  .pre_con pre{display: block;white-space: pre-wrap;}
+
 </style>

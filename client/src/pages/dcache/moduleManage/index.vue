@@ -401,7 +401,7 @@
       v-model="expandShow"
       :footShow="false"
       :closeOnClickBackdrop="false"
-      :width="'1000px'"
+      :width="'1200px'"
       :title="$t('dcache.expand')"
     >
       <Expand @close="expandCloseHandler" v-if="expandShow" :expand-servers="lastGroupServers"></Expand>
@@ -412,7 +412,7 @@
       v-model="serverMigrationShow"
       :footShow="false"
       :closeOnClickBackdrop="false"
-      :width="'1000px'"
+      :width="'1200px'"
       :title="$t('dcache.serverMigration')"
     >
       <server-migration @close="serverMigrationCloseHandler" v-if="serverMigrationShow" :check-src-group-name="checkSrcGroupName"
@@ -510,6 +510,7 @@
         failCount: 0
       };
     },
+    props: ['treeid'],
     computed: {
       showOthers() {
         return this.serverData.level === 5;
@@ -557,7 +558,7 @@
        */
       async expandHandler() {
         try {
-//存在不同版本的服务，不允许扩容
+          //存在不同版本的服务，不允许扩容
           let isSamePatchVersion = this.checkPatchVersion();
           if (!isSamePatchVersion) throw new Error(this.$t('dcache.noTheSamePatchVersion'));
 
@@ -570,7 +571,7 @@
           this.lastGroupServers = this.getLastGroupServers();
           this.expandShow = true;
         } catch (err) {
-          console.error(err);
+          // console.error(err);
           this.$tip.error(err.message)
         }
       },
@@ -692,6 +693,9 @@
         const loading = this.$refs.serverListLoading.$loading.show();
         try {
           const { application, module_name } = this.serverData;
+          if(!application || !module_name){
+            return 
+          }
           const data = await getCacheServerList({ appName: application, moduleName: module_name });
           data.forEach((item) => {
             const preItem = this.serverList.find(subItem => subItem.id === item.id);
@@ -719,7 +723,8 @@
         const loading = this.$refs.serverNotifyListLoading.$loading.show();
 
         this.$ajax.getJSON('/server/api/server_notify_list', {
-          tree_node_id: this.$route.params.treeid,
+          // tree_node_id: this.$route.params.treeid,
+          tree_node_id: this.treeid,
           page_size: this.pageSize,
           curr_page: curr_page,
         }).then((data) => {

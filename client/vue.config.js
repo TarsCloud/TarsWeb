@@ -89,6 +89,10 @@ module.exports = {
             target: `http://127.0.0.1:${server_port}`,
             changeOrigin: false
           },
+          "/captcha": {
+            target: `http://127.0.0.1:${server_port}`,
+            changeOrigin: false
+          },
           "/web_version":{
             target: `http://127.0.0.1:${server_port}`,
             changeOrigin: false

@@ -41,7 +41,10 @@
         </let-pagination>
         <div slot="operations" style="margin-left: -15px;">
           <let-button theme="primary" size="small" @click="openPublishModal">{{$t('pub.btn.pub')}}</let-button>
+          &nbsp;&nbsp;
           <let-button size="small" v-if="serverList && serverList.length > 0" @click="gotoHistory">{{$t('pub.btn.history')}}</let-button>
+          &nbsp;&nbsp;
+          <let-button size="small" @click="gotoPackage">{{$t('managePackage.title')}}</let-button>
         </div>
       </let-table>
       <!-- 发布服务弹出框 -->
@@ -159,6 +162,7 @@
       <let-table-column :title="$t('managePackage.table.th.c5')" prop="publish_time"></let-table-column>
       <let-table-column :title="$t('managePackage.table.th.c6')">
         <template slot-scope="scope">
+          <let-table-operation @click="downloadPackage(scope.row.id)">{{$t('operate.download')}}</let-table-operation>
           <let-table-operation @click="deletePackage(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
         </template>
       </let-table-column>
@@ -366,6 +370,7 @@ export default {
       }
     };
   },
+  props: ['treeid'],
   methods: {
     getCompileConf(){
       this.$ajax.getJSON('/server/api/get_compile_conf').then((data) =>{
@@ -380,7 +385,7 @@ export default {
       // 获取服务列表
       const loading = this.$Loading.show();
       this.$ajax.getJSON('/server/api/server_list', {
-        tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.treeid,
       }).then((data) => {
         loading.hide();
         const items = data || [];
@@ -466,13 +471,12 @@ export default {
         curr_page = 1;
       }
 
-      const checkedServerList = this.serverList.filter(item => item.isChecked);
-      if (checkedServerList.length <= 0) {
+      if (this.serverList.length <= 0) {
         this.$tip.warning(this.$t('pub.dlg.a'));
         return;
       }
       const loading = this.$Loading.show();
-      const first = checkedServerList[0];
+      const first = this.serverList[0];
       this.getPatchList(first.application, first.server_name, curr_page, this.packagePageSize).then((data) => {
         loading.hide();
         this.packageList = data.rows;
@@ -490,6 +494,10 @@ export default {
     changePackagePage(page) {
       this.getPackageList(page);
     },    
+    downloadPackage(id) {
+      location.href="/pages/server/api/download_package?id=" + id;
+      // window.open("/pages/server/api/download_package?id=" + id);
+    },
     deletePackage(id) {
       this.$confirm(this.$t('releasePackage.confirmDeleteTip'), this.$t('common.alert')).then(() => {
           this.$ajax.postJSON('/server/api/delete_patch_package', {id}).then((data) => {

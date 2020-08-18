@@ -10,7 +10,7 @@
           <let-input size="small" v-model="row.modify_value"></let-input>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('operate.operates')" >
+      <let-table-column :title="$t('operate.operates')">
         <template slot-scope="{row}">
           <let-table-operation @click="saveConfig(row)">{{$t('operate.save')}}</let-table-operation>
           <let-table-operation @click="deleteConfig(row)" class="danger">{{$t('operate.delete')}}</let-table-operation>
@@ -43,7 +43,7 @@
           configItemList.forEach(item => item.modify_value="");
           this.configList = configItemList;
         } catch (err) {
-          console.error(err)
+          // console.error(err)
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
       },
@@ -53,7 +53,7 @@
             let configItemList = await this.$ajax.getJSON('/server/api/cache/deleteServerConfigItem', {id});
             await this.getServerConfig();
           } catch (err) {
-            console.error(err)
+            // console.error(err)
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           }
         });
@@ -63,7 +63,7 @@
           let configItemList = await this.$ajax.getJSON('/server/api/cache/updateServerConfigItem', {id, configValue: modify_value});
           await this.getServerConfig();
         } catch (err) {
-          console.error(err)
+          // console.error(err)
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
       }

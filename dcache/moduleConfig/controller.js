@@ -53,6 +53,9 @@ const ModuleConfigController = {
         per_record_avg,
         set_area,
         total_record,
+        open_backup,
+        cache_version,
+        mkcache_struct
       } = ctx.paramsObj;
       const create_person = ctx.uid;
       const option = {
@@ -72,6 +75,9 @@ const ModuleConfigController = {
         set_area,
         total_record,
         create_person,
+        open_backup,
+        cache_version,
+        mkcache_struct
       };
       const item = await ModuleConfigService.overwriteModuleConfig(option);
       ctx.makeResObj(200, '', item);
@@ -100,6 +106,9 @@ const ModuleConfigController = {
         per_record_avg,
         set_area,
         total_record,
+        open_backup,
+        cache_version,
+        mkcache_struct
       } = ctx.paramsObj;
 
       const hasModule = await ModuleConfigService.hasModule({ module_name });
@@ -127,6 +136,9 @@ const ModuleConfigController = {
           set_area,
           total_record,
           create_person,
+          open_backup,
+          cache_version,
+          mkcache_struct
         };
         const item = await ModuleConfigService.addModuleConfig(option);
         item.hasModule = false;
@@ -141,7 +153,7 @@ const ModuleConfigController = {
   getModuleConfigInfo: async (ctx) => {
     try {
       const { moduleId } = ctx.paramsObj;
-      const queryModuleBase = ['cache_version', 'mkcache_struct', 'follower'];
+      const queryModuleBase = ['update', 'follower'];
       const item = await ModuleConfigService.getModuleConfigInfo({ moduleId, queryModuleBase });
       ctx.makeResObj(200, '', item);
     } catch (err) {
@@ -152,39 +164,100 @@ const ModuleConfigController = {
   getModuleConfigAndServerInfo: async (ctx) => {
     try {
       const { moduleId } = ctx.paramsObj;
-      const queryModuleBase = ['cache_version', 'mkcache_struct', 'follower'];
-      const queryServerConf = ['id', 'area', 'apply_id', 'module_name', 'group_name', 'server_name', 'server_ip', 'server_type', 'memory', 'shmKey', 'status', 'is_docker', 'template_name'];
-      // const queryDbAccess = ['module_id', 'servant', 'dbaccess_ip', 'db_num', 'db_prefix', 'table_num', 'table_prefix', 'db_host', 'db_port', 'db_pwd', 'db_user', 'db_charset'];
+      const queryModuleBase = ['update', 'follower'];
 
-      const item = await ModuleConfigService.getModuleConfigInfo({ moduleId, queryModuleBase, queryServerConf});
+      const item = await ModuleConfigService.getModuleConfigInfo({ moduleId, queryModuleBase});
+
+      const serverConf = await ModuleConfigService.getCacheServerConfigInfo(item.module_name);
 
       const dbAccess = await DbAccessService.findByModuleId({ moduleId });
-      ctx.makeResObj(200, '', { item, dbAccess } );
+      ctx.makeResObj(200, '', { item, serverConf, dbAccess } );
     } catch (err) {
       logger.error('[getModuleConfigAndServerInfo]:', err);
       ctx.makeErrResObj();
     }
   },
+  getModuleGroup: async (ctx) => {
+    try {
+      const rootNode = await ApplyService.getCacheList();
+      const moduleName = ctx.paramsObj.module_name;
+      let cache = [];
+      for (let i = 0; i < rootNode.length; i++) {
+        if (moduleName.indexOf(rootNode[i].name) == 0) {
+          for (let j = 0; j < rootNode[i].children.length; j++) {
+            const item = rootNode[i].children[j];
+            if (item.moduleName == moduleName) {
+              cache = item.children;
+              break;
+            }
+          }
+        }
+        if (cache.length > 0) {
+          break;
+        }
+      }
+      let group = {};
+      //group-name, cache-server, type
+      for (var i = 0; i < cache.length; i++) {
+        if (cache[i].name.indexOf("DbAccessServer") != -1) {
+          continue;
+        }
+        let name = cache[i].name.split('-')[0].replace("ServerBak", "");
+        let server_type;
+        if (new RegExp("-1").test(cache[i].name)) {
+          server_type = 0;
+        } else if (new RegExp("-2").test(cache[i].name)) {
+          server_type = 1;
+        } else if (new RegExp("-3").test(cache[i].name)) {
+          server_type = 2;
+        } else if (new RegExp("ServerBak").test(cache[i].name)) {
+          server_type = 1;
+        }
+        let groupName = name.charAt(name.length - 1);
+        group[groupName] = group[groupName] || [];
+        group[groupName].push({
+          server_name: cache[i].name,
+          server_type: server_type
+        }) 
+      }
+      ctx.makeResObj(200, '', group);
+    } catch (err) {
+      logger.error('[getModuleGroup]:', err);
+      ctx.makeErrResObj();
+    }
+  },
+  getModuleConfigByModuleName: async (ctx) => {
+    try {
+      const { module_name } = ctx.paramsObj;
+      const item = await ModuleConfigService.getModuleConfigInfoByModuleName(module_name);
+      ctx.makeResObj(200, '', item );
+    } catch (err) {
+      logger.error('[getModuleConfigByModuleName]:', err);
+      ctx.makeErrResObj();
+    }    
+  },
   installAndPublish: async (ctx) => {
     try {
       let { moduleId, mkCache } = ctx.paramsObj;
-      const queryModuleBase = ['cache_version', 'mkcache_struct', 'follower'];
-      const queryServerConf = ['id', 'area', 'module_name', 'group_name', 'server_name', 'server_ip', 'server_type', 'memory', 'shmKey', 'status', 'is_docker', 'template_name'];
-      const moduleInfo = await ModuleConfigService.getModuleConfigInfo({ moduleId, queryModuleBase, queryServerConf });
+      const queryModuleBase = ['update', 'follower'];
+      const moduleInfo = await ModuleConfigService.getModuleConfigInfo({ moduleId, queryModuleBase });
+
+      const serverConf = await ModuleConfigService.getCacheServerConfigInfo(moduleInfo.module_name);
       const {
-        apply_id, module_name, ServerConf, per_record_avg, ModuleBase, dbAccessServant, cache_module_type, key_type,
+        apply_id, module_name, per_record_avg, ModuleBase, dbAccessServant, cache_module_type, key_type,
       } = moduleInfo;
       const applyInfo = await ApplyService.getApply({ applyId: apply_id });
-      const isMKCache = ModuleBase.cache_version === 2;
+      const isMKCache = moduleInfo.cache_version === 2;
       const CacheHost = [];
       const releaseInfoOption = new TarsStream.List(DCacheOptStruct.ReleaseInfo);
       const releaseArr = [];
-      let args;
+      let args = { __return: 0 };
+
       mkCache = mkCache && JSON.parse(mkCache);
       // 先获取发布包id
       const defaultCachePackage = await PatchService.find({
         where: {
-          package_type: ModuleBase.cache_version,
+          package_type: moduleInfo.cache_version,
           server: 'DCache.DCacheServerGroup',
           default_version: 1,
         },
@@ -207,7 +280,7 @@ const ModuleConfigController = {
           });
           fieldParam.push(record);
         });
-        if (isMKCache && ModuleBase.mkcache_struct === 1) {
+        if (isMKCache && moduleInfo.mkcache_struct === 1) {
           mkCache.unionKey.forEach((item) => {
             const record = new DCacheOptStruct.RecordParam();
             record.readFromObject({
@@ -238,7 +311,7 @@ const ModuleConfigController = {
       }
       // 主机、镜像、备机
       const optServerType = ['M', 'S', 'I'];
-      ServerConf.forEach((item) => {
+      serverConf.forEach((item) => {
         // for install use
         const host = new DCacheOptStruct.CacheHostParam();
         host.readFromObject({
@@ -246,7 +319,7 @@ const ModuleConfigController = {
           serverIp: item.server_ip,
           templateFile: item.template_name || 'tars.default',
           type: optServerType[item.server_type],
-          bakSrcServerName: item.server_type ? `DCache.${ServerConf[0].server_name}` : '',
+          bakSrcServerName: item.server_type ? `DCache.${item.server_name}` : '',
           idc: item.area,
           priority: item.server_type ? '2' : '1',
           groupName: item.group_name,
@@ -273,7 +346,7 @@ const ModuleConfigController = {
         });
         releaseArr.push(releaseInfo);
       });
-      if (!isMKCache) {
+      if (!isMKCache && serverConf.length > 0) {
         // 一期模块
         const kvCacheConf = new DCacheOptStruct.SingleKeyConfParam();
         kvCacheConf.readFromObject({
@@ -281,7 +354,7 @@ const ModuleConfigController = {
           readDbFlag: 'Y',
           enableErase: key_type === 3 ? 'Y' : 'N',
           eraseRadio: '85%',
-          saveOnlyKey: 'N',
+          saveOnlyKey: 'Y',
           dbFlag: cache_module_type === 2 ? 'Y' : 'N',
           dbAccessServant: cache_module_type === 2 ? dbAccessServant : '',
           startExpireThread: key_type === 2 ? 'Y' : 'N',
@@ -295,12 +368,12 @@ const ModuleConfigController = {
           moduleName: module_name,
           kvCacheHost: CacheHost,
           kvCacheConf,
-          version: ModuleBase.cache_version.toString(),
+          version: moduleInfo.cache_version.toString(),
           // replace: moduleInfo.status === 2,
           replace: true,
         });
         args = await DCacheOptPrx.installKVCacheModule(option);
-      } else {
+      } else if (serverConf.length > 0){
         // 二期模块
         const mkvCacheConf = new DCacheOptStruct.MultiKeyConfParam();
         mkvCacheConf.readFromObject({
@@ -308,12 +381,12 @@ const ModuleConfigController = {
           readDbFlag: 'Y',
           enableErase: key_type === 3 ? 'Y' : 'N',
           eraseRadio: '85%',
-          saveOnlyKey: 'N',
+          saveOnlyKey: 'Y',
           dbFlag: cache_module_type === 2 ? 'Y' : 'N',
           dbAccessServant: cache_module_type === 2 ? dbAccessServant : '',
           startExpireThread: key_type === 2 ? 'Y' : 'N',
           expireDb: 'Y',
-          cacheType: mapCacheType(ModuleBase.mkcache_struct),
+          cacheType: mapCacheType(moduleInfo.mkcache_struct),
           hotBackupDays: '3',
           coldBackupDays: '3',
         });
@@ -331,7 +404,7 @@ const ModuleConfigController = {
           });
           fieldParam.push(record);
         });
-        if (ModuleBase.mkcache_struct === 1) {
+        if (moduleInfo.mkcache_struct === 1) {
           mkCache.unionKey.forEach((item) => {
             const record = new DCacheOptStruct.RecordParam();
             record.readFromObject({
@@ -364,7 +437,7 @@ const ModuleConfigController = {
           mkvCacheHost: CacheHost,
           mkvCacheConf,
           fieldParam,
-          version: ModuleBase.cache_version.toString(),
+          version: moduleInfo.cache_version.toString(),
           replace: true,
           // replace: moduleInfo.status === 2,
         });
@@ -373,7 +446,8 @@ const ModuleConfigController = {
       // 安装成功， 进入发布
       if (args.__return === 0) {
 
-        if (cache_module_type == 2) {
+
+        if (cache_module_type == 2 && (ModuleBase.dataValues.update == 0 || ModuleBase.dataValues.update == 1)) {
           const dbAccess = await DbAccessService.findByModuleId({ moduleId });
 
           //安装DBAccess
@@ -387,7 +461,7 @@ const ModuleConfigController = {
             vtModuleRecord: fieldParam,
             conf: {},
             replace: true,
-            cacheType: ModuleBase.cache_version,
+            cacheType: moduleInfo.cache_version,
           });
 
           dbAccessOption.conf = new DCacheOptStruct.DBAccessConf();

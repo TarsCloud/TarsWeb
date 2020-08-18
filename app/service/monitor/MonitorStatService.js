@@ -119,6 +119,7 @@ async function callRpc(params, the) {
 	let data = await statQueryPrx.query(req)
 	let rsp = data.rsp
 	if(data.__return !=0 ||  rsp.ret != 0) throw new Error(`query stat info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
+
 	let map = new Map()
 	for(let key in rsp.result){
 		map.set(key, rsp.result[key])

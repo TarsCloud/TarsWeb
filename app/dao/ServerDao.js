@@ -21,6 +21,31 @@ const ServerDao = {};
 
 ServerDao.sequelize = sequelize;
 
+ServerDao.getServerConfBySearchKey = async (id, curPage, pageSize) => {
+	let options = {
+		attributes: [
+			'application', 'server_name', 'node_name', 'enable_set', 'set_name', 'set_area', 'set_group',
+			'setting_state', 'present_state', 'process_id', 'patch_version', 'patch_time',
+		],
+		where: {
+			application: {
+				[Op.ne]: 'DCache',
+			},
+			[Op.or]: [
+				{ application: { [Sequelize.Op.like]: `%${id}%` } },
+				{ server_name: { [Sequelize.Op.like]: `%${id}%` } },
+				{ node_name: { [Sequelize.Op.like]: `%${id}%` } },
+			]
+		},
+		order: [['application'], ['server_name']]
+	};
+	if (curPage && pageSize) {
+		options.limit = pageSize;
+		options.offset = pageSize * (curPage - 1);
+	}
+	return await tServerConf.findAndCountAll(options);
+};
+
 ServerDao.getServerConfById = async (id) => {
 	return await tServerConf.findOne({
 		where: {

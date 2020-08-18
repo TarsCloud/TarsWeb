@@ -34,6 +34,19 @@
           @keydown.enter="login"
         ></let-input>
       </let-form-item>
+      <let-form-item :label="$t('login.captcha')" required>
+        <div class="captcha_box">
+          <let-input
+            type="text"
+            size="small"
+            v-model="captcha"
+            required
+            :required-tip="$t('login.captchaTips')"
+            @keydown.enter="login"
+          ></let-input>
+          <img class="captcha_code" title="点击刷新" :src="captchaUrl" @click="reloadCaptcha" />
+        </div>
+      </let-form-item>
 
       <let-button type="submit" theme="primary">{{$t('login.login')}}</let-button>
       <!-- <let-button type="button" @click.prevent="toRegisterPage" style="float:right;margin-right:12px;">{{$t('login.toRegisterPage')}}</let-button> -->
@@ -48,7 +61,9 @@ export default {
   data() {
     return {
       uid: '',
-      password: ''
+      password: '',
+      captcha: '',
+      captchaUrl: `/captcha?${Math.random()}`,
     };
   },
   computed: {
@@ -72,7 +87,11 @@ export default {
         return;
       }
       const loading = this.$Loading.show();
-      this.$ajax.postJSON('/server/api/login', {uid: this.uid, password: this.password}).then((data)=>{
+      this.$ajax.postJSON('/server/api/login', {
+        uid: this.uid,
+        password: this.password,
+        captcha: this.captcha,
+      }).then((data)=>{
         loading.hide();
         var redirectUrl = this.redirectUrl;
         var href = redirectUrl + (redirectUrl.indexOf('?') === -1?'?':'&') + 'ticket=' + data.ticket;
@@ -81,6 +100,7 @@ export default {
         location.href = href;
       }).catch((err)=>{
         loading.hide();
+//        this.reloadCaptcha()
         this.$tip.error(`${this.$t('login.loginFailed')}: ${err.err_msg || err.message}`);
       })
     },
@@ -102,7 +122,10 @@ export default {
       }
 
       return value;
-    }
+    },
+    reloadCaptcha() {
+      this.captchaUrl = `/captcha?${Math.random()}`
+    },
   },
   mounted() {
     this.uid = this.getQueryParam('user', '');
@@ -129,4 +152,6 @@ export default {
     right: 10px;
     top: -5px;
   }
+  .captcha_box{display:flex;}
+  .captcha_code{cursor:pointer;display:block;height:32px;margin-left:20px;}
 </style>

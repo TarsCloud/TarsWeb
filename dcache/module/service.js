@@ -109,13 +109,7 @@ ModuleService.findServersFormat = function propertyMonitorFindServersFormat(moni
     const preItem = preData.find(item => item.serverName === serverName);
     const { data: preItemData } = preItem || {};
     data.forEach(({ propData = {} }, index) => {
-      // const option = { date, moduleName, serverName };
-      const option = {
-        show_time: data[index].timeStamp,
-        date,
-        moduleName,
-        serverName
-      };
+            const option = { show_time: data[index].timeStamp, date, moduleName, serverName };
       keys = Object.keys(propData);
       keys.forEach((property) => {
         option[`the_${property}`] = propData[property] || '--';
@@ -128,9 +122,9 @@ ModuleService.findServersFormat = function propertyMonitorFindServersFormat(moni
 };
 
 
-ModuleService.addModuleBaseInfo = async function ({ apply_id, follower, cache_version, mkcache_struct, create_person }) {
+ModuleService.addModuleBaseInfo = async function ({ apply_id, module_name, follower, update, create_person, modify_time }) {
   return moduleDao.addModuleBaseInfo({
-    apply_id, follower, cache_version, mkcache_struct, create_person,
+    apply_id, module_name, follower, update, create_person, modify_time,
   });
 };
 

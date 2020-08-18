@@ -14,11 +14,16 @@
  * specific language governing permissions and limitations under the License.
  */
 
+const cwd = process.cwd();
+const path = require('path');
+
 const ApplyDao = require('./dao');
 const RouterService = require('../router/service');
 const ProxyService = require('../proxy/service');
 const DbAccessService = require('../dbaccess/service');
 const ModuleConfigService = require('../moduleConfig/service');
+const TreeService = require(path.join(cwd, './app/service/server/TreeService'));
+const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
 
 const ApplyService = {};
 
@@ -29,6 +34,118 @@ ApplyService.hasApply = async function ({ name }) {
   }
   return false;
 }
+
+
+ApplyService.rootNode = []
+
+ApplyService.buildCacheList = async () => {
+
+  let serverList = [];
+  const treeNodeMap = {};
+
+  // 获取 dache 的router、proxy 服务
+  let timeout = DCacheOptPrx.getTimeout();
+  DCacheOptPrx.setTimeout(10000);
+
+  const args = await DCacheOptPrx.loadCacheApp();
+
+  DCacheOptPrx.setTimeout(timeout);
+
+  const { __return, cacheApps } = args;
+
+  if (__return != 0) {
+    return ApplyService.rootNode;
+  }
+
+  ApplyService.rootNode = [];
+
+  // 如果没有 proxy、router 删除该应用
+  cacheApps.forEach((item) => {
+
+    const applyServer = [];
+
+    applyServer.push({
+      name: item.routerName,
+      id: `1DCache.5${item.routerName}`,
+      pid: `1${item.name}`,
+      is_parent: false,
+      open: false,
+      children: [],
+      serverType: 'router',
+    });
+
+    applyServer.push({
+      name: item.proxyName,
+      id: `1DCache.5${item.proxyName}`,
+      pid: `1${item.name}`,
+      is_parent: false,
+      open: false,
+      children: [],
+      serverType: 'proxy',
+    });
+
+    // 获取 cache 服务
+    Object.keys(item.cacheModules).forEach((key) => {
+
+      let value = item.cacheModules[key];
+
+      let cacheNodeFloder = {
+        name: key,
+        id: `1${item.name}.6${key}`,
+        pid: `1${item.name}`,
+        is_parent: false,
+        open: false,
+        children: [],
+        moduleName: key,
+      };
+      applyServer.push(cacheNodeFloder)
+
+      if (value.cacheServer && value.cacheServer.length > 0) {
+        value.cacheServer.forEach(server => {
+          cacheNodeFloder.children.push({
+            name: server,
+            id: `1Dcache.5${server}`,
+            pid: `1${value.moduleName}`,
+            is_parent: false,
+            open: false,
+            children: [],
+            serverType: 'dcache',
+          })
+        })
+      }
+      // 看看该应用是否已经有了存放 cahce 的模块的节点
+      if (value.dbAccessServer && value.dbAccessServer.length > 0) {
+        cacheNodeFloder.children.push({
+          name: value.dbAccessServer,
+          id: `1Dcache.5${value.dbAccessServer}`,
+          pid: `1${item.name}`,
+          is_parent: false,
+          open: false,
+          children: [],
+          serverType: 'dbaccess',
+        })
+      }
+    });
+
+    serverList = serverList.concat(applyServer);
+    return true;
+  });
+
+  serverList.forEach((server) => {
+    TreeService.parents(treeNodeMap, server, ApplyService.rootNode);
+  });
+
+  return ApplyService.rootNode;
+}
+
+ApplyService.getCacheList = async () => {
+  if (ApplyService.rootNode.length == 0) {
+    await ApplyService.buildCacheList();
+  }
+
+  return ApplyService.rootNode;
+}
+
 ApplyService.overwriteApply = async function ({
   idc_area, set_area, admin, name, create_person,
 }) {
@@ -102,6 +219,10 @@ ApplyService.getRouterDb = async function () {
 
 ApplyService.getRouterDbById = async function (id) {
   return await ApplyDao.findRouter(id);
+};
+
+ApplyService.getApplyById = function ( applyId ) {
+  return ApplyDao.findOne({ where: { id: applyId } } );
 };
 
 

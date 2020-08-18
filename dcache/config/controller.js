@@ -103,10 +103,10 @@ controller.getModuleConfig = async function (ctx) {
 
 controller.getServerConfig = async function (ctx) {
   try {
-    const { moduleName, serverName, nodeName } = ctx.paramsObj;
-    const moduleInfo = await getModuleConfigByName({ moduleName, queryAppBase: ['name', 'set_area'] });
-    assert(moduleInfo, '#cache.config.noModuleExist#');
-    const appName = moduleInfo.AppBase.name;
+    const { appName, moduleName, serverName, nodeName } = ctx.paramsObj;
+    // const moduleInfo = await getModuleConfigByName({ moduleName, queryAppBase: ['name', 'set_area'] });
+    // assert(moduleInfo, '#cache.config.noModuleExist#');
+    // const appName = moduleInfo.AppBase.name;
     const res = await getServerConfigItemList({
       appName, moduleName, serverName, nodeName,
     });

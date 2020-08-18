@@ -153,6 +153,7 @@ const ServerConfigController = {
 
       const moduleData = await ServerConfigService.addServerConfig(options);
 
+      if (ctx.paramsObj.dbAccess.servant && ctx.paramsObj.dbAccess.servant != '') {
       const accessData = { module_id, servant, isSerializated, dbMethod, accessDbId, dbaccess_ip, db_num, db_prefix, table_num, table_prefix, db_host, db_port, db_pwd, db_user, db_charset, create_person = ctx.uid } = ctx.paramsObj.dbAccess
 
       accessData.dbaccess_ip = accessData.dbaccess_ip.join(";");
@@ -172,6 +173,9 @@ const ServerConfigController = {
       const dbAccess = await DbAccessService.createOrUpdate(['module_id'], accessData);
 
       ctx.makeResObj(200, '', { moduleData, dbAccess } );
+      } else {
+        ctx.makeResObj(200, '', { moduleData});
+      }
     } catch (err) {
       logger.error('[addServerConfig]:', err);
       ctx.makeResObj(500, err.message);

@@ -13,7 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
- 
+
 const Tokenizer = require('./Tokenizer');
 const fs = require('fs');
 const path = require('path');
@@ -24,13 +24,13 @@ const LEGAL_NAME = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/,
     INTEGER_TYPE = /^(byte|short|int|long|unsigned byte|unsigned short|unsigned int)$/,
     FLOAT_TYPE = /^(float|double)$/,
     RANGE_MAP = {
-        "byte" : [ -0x80, 0x7F ],
-        "short" : [ -0x8000, 0x7FFF ],
-        "int" : [ -0x80000000, 0x7FFFFFFF ],
-        "long" : [ -8000000000000000, 0x7FFFFFFFFFFFFFFF ],
-        "unsigned byte" : [ 0, 0xFF ],
-        "unsigned short" : [ 0, 0xFFFF ],
-        "unsigned int" : [ 0, 0xFFFFFFFF ],
+        "byte": [-0x80, 0x7F],
+        "short": [-0x8000, 0x7FFF],
+        "int": [-0x80000000, 0x7FFFFFFF],
+        "long": [-8000000000000000, 0x7FFFFFFFFFFFFFFF],
+        "unsigned byte": [0, 0xFF],
+        "unsigned short": [0, 0xFFFF],
+        "unsigned int": [0, 0xFFFFFFFF],
     };
 
 class TarsParser {
@@ -42,55 +42,55 @@ class TarsParser {
         let tokenizer = new Tokenizer(content);
         let token;
         while (token = tokenizer.next()) {
-            if(token == '#include') {
+            if (token == '#include') {
                 this.parseInclude(context, tokenizer);
-            } else if(token == 'module') {
+            } else if (token == 'module') {
                 this.parseModule(context, tokenizer);
-            } 
+            }
         }
     }
 
     parseModule(context, tokenizer) {
         const moduleName = tokenizer.next();
-        if(tokenizer.next() != '{') {
+        if (tokenizer.next() != '{') {
             throw Error(`missing { after moduleName at '${moduleName}'`);
         }
         if (!context[moduleName]) {
             context[moduleName] = {
-                enums : {},
-                structs : {},
-                interfaces : {},
-                consts : {}
+                enums: {},
+                structs: {},
+                interfaces: {},
+                consts: {}
             }
         }
         let token;
         while ((tokenizer.peek() || "}") !== "}") {
             token = tokenizer.next();
             switch (token) {
-                case 'enum' : 
+                case 'enum':
                     this.parseEnum(context, tokenizer, moduleName);
                     break;
-                case 'struct' :
+                case 'struct':
                     this.parseStruct(context, tokenizer, moduleName);
                     break;
-                case 'key' :
+                case 'key':
                     this.parseKey(context, tokenizer, moduleName);
                     break;
-                case 'interface' :
+                case 'interface':
                     this.parseInterface(context, tokenizer, moduleName);
                     break;
-                case 'const' : 
+                case 'const':
                     this.parseConst(context, tokenizer, moduleName);
                     break;
             }
         }
-        if(tokenizer.next() !=='}' || tokenizer.next() !==';') {
+        if (tokenizer.next() !== '}' || tokenizer.next() !== ';') {
             throw Error(`format error at module ${moduleName}`);
         }
     }
 
     parseConst(context, tokenizer, moduleName) {
-        let type = this.getType(context, tokenizer, moduleName), 
+        let type = this.getType(context, tokenizer, moduleName),
             name = tokenizer.next();
         if (!LEGAL_NAME.test(name)) {
             throw Error("Illegal const name " + moduleName + "::" + name);
@@ -103,27 +103,27 @@ class TarsParser {
             throw Error("Format error for const " + moduleName + "::" + name);
         }
         context[moduleName].consts[name] = {
-            module : moduleName,
-            name : name,
-            fullName : moduleName + "::" + name,
-            type : type,
-            value : value
+            module: moduleName,
+            name: name,
+            fullName: moduleName + "::" + name,
+            type: type,
+            value: value
         };
     }
 
     parseInterface(context, tokenizer, moduleName) {
         let interfaceName = tokenizer.next();
-        if(!LEGAL_NAME.test(interfaceName)) {
+        if (!LEGAL_NAME.test(interfaceName)) {
             throw Error(`Illegal interface name ${moduleName}::${interfaceName}`);
         }
-        if(tokenizer.next() != '{') {
+        if (tokenizer.next() != '{') {
             throw Error(`Format error for interface ${moduleName}::${interfaceName}`);
         }
         let inf = context[moduleName].interfaces[interfaceName] = {
-            module : moduleName,
-            name : interfaceName,
-            fullName : moduleName + '::' + interfaceName,
-            functions : {}
+            module: moduleName,
+            name: interfaceName,
+            fullName: moduleName + '::' + interfaceName,
+            functions: {}
         }
         while ((tokenizer.peek() || "}") != "}") {
             this.parseFun(context, tokenizer, inf);
@@ -135,21 +135,21 @@ class TarsParser {
 
     parseKey(context, tokenizer, moduleName) {
         let token = tokenizer.next();
-        if(token !== '[') {
+        if (token !== '[') {
             throw Error(`format error for key of ${moduleName} at ${token}`);
         }
         let structName = tokenizer.next();
-        if(!LEGAL_NAME.test(structName)) {
+        if (!LEGAL_NAME.test(structName)) {
             throw Error(`Illegal key[${structName}] of ${moduleName}`);
         }
         let struct = context[moduleName].structs[structName];
-        if(!struct) {
+        if (!struct) {
             throw Error(`No matching struct for key ${moduleName}::${structName}`);
         }
-        if(struct.keys.length) {
+        if (struct.keys.length) {
             throw Error(`Duplicate key ${moduleName}::${structName}`);
         }
-        while((token = tokenizer.peek() || "]") !== "]") {
+        while ((token = tokenizer.peek() || "]") !== "]") {
             if ((token = tokenizer.next()) !== ",") {
                 throw Error("Parse key error " + moduleName + "::" + structName);
             }
@@ -157,7 +157,7 @@ class TarsParser {
             if (!LEGAL_NAME.test(token)) {
                 throw Error("Illegal field name[" + structName + "] of key " + moduleName + "::" + structName);
             }
-            for ( var key in struct.keys) {
+            for (var key in struct.keys) {
                 if (key === token) {
                     throw Error("Duplicate key field " + moduleName + "::" + structName + "." + key);
                 }
@@ -172,22 +172,22 @@ class TarsParser {
         }
     }
 
-    parseStruct(context, tokenizer, moduleName){
+    parseStruct(context, tokenizer, moduleName) {
         let structName = tokenizer.next();
-        if(tokenizer.next() != '{') {
+        if (tokenizer.next() != '{') {
             throw Error(`missing { after struct at '${structName}'`);
         }
         const struct = context[moduleName].structs[structName] = {
-            module : moduleName,
-            name : structName,
-            fullName : moduleName + '::' + structName,
-            fields : {},
-            keys : []
+            module: moduleName,
+            name: structName,
+            fullName: moduleName + '::' + structName,
+            fields: {},
+            keys: []
         };
         while ((tokenizer.peek() || "}") !== "}") {
             this.parseField(context, tokenizer, struct);
         }
-        if(tokenizer.next() != '}' || tokenizer.next() != ';') {
+        if (tokenizer.next() != '}' || tokenizer.next() != ';') {
             throw Error(`format error for struct ${moduleName}::${structName}`);
         }
     }
@@ -195,33 +195,33 @@ class TarsParser {
     parseField(context, tokenizer, struct) {
         let tag = Number(tokenizer.next()),
             opt = tokenizer.next();
-        if(Number.isNaN(tag)) {
+        if (Number.isNaN(tag)) {
             throw Error(`Illegal tag name at ${tag} of ${struct.fullName}`);
         }
-        if(opt !== 'require' && opt !== 'optional') {
+        if (opt !== 'require' && opt !== 'optional') {
             throw Error(`missing require/optional after ${struct.fullName}`);
         }
         let type = this.getType(context, tokenizer, struct.module);
         let name = tokenizer.next(),
             token = tokenizer.next(),
             defaultValue = null;
-        if(!LEGAL_NAME.test(name)) {
+        if (!LEGAL_NAME.test(name)) {
             throw Error(`Illegal field name[${name}] of ${struct.fullName}`);
         }
-        if(token === '='){
-            if(type === "string") tokenizer.readingString = true
+        if (token === '=') {
+            if (type === "string") tokenizer.readingString = true
             defaultValue = this.checkDef(context, type, tokenizer.next());
             token = tokenizer.next();
         }
-        if(token != ';') {
+        if (token != ';') {
             throw Error(`Parse struct error ${struct.fullName}`);
         }
         struct.fields[name] = {
-            tag : tag,
-            optional : opt === 'optional',
-            type : type,
-            name : name,
-            defaultValue : defaultValue
+            tag: tag,
+            optional: opt === 'optional',
+            type: type,
+            name: name,
+            defaultValue: defaultValue
         }
     }
 
@@ -232,9 +232,9 @@ class TarsParser {
             throw Error("Illegal function name " + inf.fullName + "::" + funcName);
         }
         let func = inf.functions[funcName] = {
-            "name" : funcName,
-            "return" : returnType,
-            "params" : []
+            "name": funcName,
+            "return": returnType,
+            "params": []
         };
         if (tokenizer.next() != "(") {
             throw Error("Format error for function " + inf.fullName + "::" + funcName);
@@ -250,9 +250,9 @@ class TarsParser {
                 throw Error("Illegal parameter[" + paramName + "] for function " + inf.fullName + "::" + funcName);
             }
             func.params.push({
-                "out" : out,
-                "type" : paramType,
-                "name" : paramName
+                "out": out,
+                "type": paramType,
+                "name": paramName
             });
             if (tokenizer.peek() === ",") {
                 tokenizer.next();
@@ -279,6 +279,7 @@ class TarsParser {
             v = Number(defaultValue);
             if (Number.isNaN(v)) {
                 let enumDest = context[type.module].enums[type.name];
+
                 if (!enumDest || enumDest.values[defaultValue] == null) {
                     throw Error("Bad default value for enum " + type.module + "::" + type.name + "::" + defaultValue);
                 } else {
@@ -321,8 +322,8 @@ class TarsParser {
                 throw Error(`missing > for ${token}`);
             }
             return {
-                "vector" : true,
-                "type" : type
+                "vector": true,
+                "type": type
             };
         } else if (paramType === "map") {
             let token = tokenizer.next();
@@ -340,13 +341,13 @@ class TarsParser {
                 throw Error(`missing > for ${token}`);
             }
             return {
-                "map" : true,
-                "key" : keyType,
-                "value" : valueType
+                "map": true,
+                "key": keyType,
+                "value": valueType
             };
         } else if (LEGAL_TYPE.test(paramType)) {
             if (!INNER_TYPE.test(paramType)) {
-                let typeModule = moduleName, 
+                let typeModule = moduleName,
                     typeName = paramType;
                 if (paramType.indexOf("::") > 0) {
                     let temp = paramType.split("::");
@@ -366,10 +367,10 @@ class TarsParser {
                     throw Error(`Cannot find type["${paramType}"]`);
                 }
                 paramType = {
-                    "module" : typeModule,
-                    "name" : typeName,
-                    "isStruct" : !notStruct,
-                    "isEnum" : !notEnum,
+                    "module": typeModule,
+                    "name": typeName,
+                    "isStruct": !notStruct,
+                    "isEnum": !notEnum,
                 };
             }
             return paramType;
@@ -380,29 +381,29 @@ class TarsParser {
 
     parseEnum(context, tokenizer, moduleName) {
         let enumName = tokenizer.next();
-        if(tokenizer.next() != '{') {
+        if (tokenizer.next() != '{') {
             throw Error(`missing { after enum at '${enumName}'`);
         }
         let enumInfo = context[moduleName].enums[enumName] = {
-            module : moduleName,
-            name : enumName,
-            fullName : moduleName + '::' + enumName,
-            values : {}
+            module: moduleName,
+            name: enumName,
+            fullName: moduleName + '::' + enumName,
+            values: {}
         }
         let token, value = 0;
         while ((tokenizer.peek() || "}") !== "}") {
             let name = tokenizer.next();
-            if(!LEGAL_NAME.test(name)) {
+            if (!LEGAL_NAME.test(name)) {
                 throw Error(`Illegal enum name at ${name} of ${moduleName}::${enumName}`);
             }
-            if(enumInfo.values[name]) {
+            if (enumInfo.values[name]) {
                 throw Error(`Duplicate enum value at ${name} of ${moduleName}::${enumName}`);
             }
             token = tokenizer.peek();
-            if(token === '=') {
+            if (token === '=') {
                 tokenizer.next();
                 value = Number(token = tokenizer.next());
-                if(isNaN(value)) {
+                if (isNaN(value)) {
                     throw Error(`Illegal enum value at '${token}' of ${moduleName}::${enumName}`);
                 }
                 enumInfo.values[name] = value;
@@ -410,20 +411,20 @@ class TarsParser {
             } else {
                 enumInfo.values[name] = ++value;
             }
-            if(token === ',') {
+            if (token === ',') {
                 tokenizer.next();
-            } else if((token || "}") !== "}") {
+            } else if ((token || "}") !== "}") {
                 throw Error(`Parse enum error '${token}' of ${moduleName}::${enumName}`);
             }
         }
-        if(tokenizer.next() !== '}' || tokenizer.next() != ';') {
+        if (tokenizer.next() !== '}' || tokenizer.next() != ';') {
             throw Error("Format error for enum " + moduleName + "::" + enumName);
         }
     }
 
     parseInclude(context, tokenizer) {
         let token = tokenizer.next(),
-        include = token.replace(/^['"]|['"]$/g,'');
+            include = token.replace(/^['"]|['"]$/g, '');
         context.includes = context.includes || {};
         context.includes[include] = true;
         this.parseFile(context, fs.readFileSync(path.join(this.fileDir, include)).toString());

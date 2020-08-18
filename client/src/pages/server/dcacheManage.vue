@@ -430,7 +430,7 @@ export default {
     return {
       // 当前页面信息
       isCheckedAll: false,
-      serverType: this.$route.params.serverType || 'taf',
+      serverType: this.servertype || 'taf',
       serverData: {
         level: 5,
         application: '',
@@ -500,6 +500,7 @@ export default {
       failCount :0
     };
   },
+  props: ['treeid', 'servertype'],
   computed: {
     showOthers() {
       return this.serverData.level === 5;
@@ -535,7 +536,8 @@ export default {
       const loading = this.$refs.serverListLoading.$loading.show();
 
       this.$ajax.getJSON('/server/api/server_list', {
-        tree_node_id: this.$route.params.treeid,
+        // tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.treeid,
       }).then(async (data) => {
         loading.hide();
         data.forEach(item => {
@@ -550,7 +552,7 @@ export default {
           let serverLength = this.serverList.length;
           if (serverLength > 0) return false;
           try {
-            await this.$ajax.postJSON('/server/api/cache/removeServer', {server_name: this.$route.params.treeid.split('.')[1].substr(1)});
+            await this.$ajax.postJSON('/server/api/cache/removeServer', {server_name: this.treeid.split('.')[1].substr(1)});
             this.$parent.getTreeData();
           } catch (err) {
             console.error(err)
@@ -562,7 +564,7 @@ export default {
           let serverLength = this.serverList.length;
           if (serverLength > 0) return false;
           try {
-            await this.$ajax.postJSON('/server/api/cache/removeProxy', {server_name: this.$route.params.treeid.split('.')[1].substr(1)});
+            await this.$ajax.postJSON('/server/api/cache/removeProxy', {server_name: this.treeid.split('.')[1].substr(1)});
             this.$parent.getTreeData();
           } catch (err) {
             console.error(err)
@@ -573,7 +575,7 @@ export default {
           let serverLength = this.serverList.length;
           if (serverLength > 0) return false;
           try {
-            await this.$ajax.postJSON('/server/api/cache/removeRouter', {server_name: this.$route.params.treeid.split('.')[1].substr(1)});
+            await this.$ajax.postJSON('/server/api/cache/removeRouter', {server_name: this.treeid.split('.')[1].substr(1)});
             this.$parent.getTreeData();
           } catch (err) {
             console.error(err)
@@ -593,7 +595,8 @@ export default {
       const loading = this.$refs.serverNotifyListLoading.$loading.show();
 
       this.$ajax.getJSON('/server/api/server_notify_list', {
-        tree_node_id: this.$route.params.treeid,
+        // tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.treeid,
         page_size: this.pageSize,
         curr_page: curr_page,
       }).then((data) => {

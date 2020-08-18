@@ -288,6 +288,7 @@
       checkServerConfigList (row) {
         this.serverConfigListVisible = true;
         this.checkServer = {
+          appName: this.appName,
           serverName: row.server_name,
           nodeName: row.node_name
         }

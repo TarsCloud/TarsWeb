@@ -92,7 +92,7 @@ module.exports = function(sequelize, DataTypes) {
 		patch_time: {
 			type: DataTypes.DATE,
 			allowNull: false,
-			defaultValue: '0000-00-00 00:00:00'
+			defaultValue: new Date() 
 		},
 		patch_user: {
 			type: DataTypes.STRING(128),
@@ -106,8 +106,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		posttime: {
 			type: DataTypes.DATE,
-			allowNull: false,
-			defaultValue: '0000-00-00 00:00:00'
+			allowNull: true,
 		},
 		lastuser: {
 			type: DataTypes.STRING(30),

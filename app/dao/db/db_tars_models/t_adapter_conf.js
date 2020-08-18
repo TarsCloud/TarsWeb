@@ -85,7 +85,6 @@ module.exports = function(sequelize, DataTypes) {
 		posttime: {
 			type: DataTypes.DATE,
 			allowNull: true,
-			defaultValue: '0000-00-00 00:00:00'
 		},
 		lastuser: {
 			type: DataTypes.STRING(30),

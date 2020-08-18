@@ -1,6 +1,6 @@
 <template>
 
-  <div style="margin: 20px auto;">
+  <div style="margin: 20px auto;overflow:auto;">
 
     <div style="float:center" v-if="!enableLdap">
       <let-button size="small" theme="primary" @click="addUser">{{$t('auth.addUser')}}</let-button>

@@ -1,6 +1,9 @@
 <template>
   <section class="page_operation">
-    <let-button theme="primary" size="small" @click="addConfig">{{$t('cache.config.addConfig')}}</let-button>
+    <div>
+      <let-button theme="primary" size="small" @click="addConfig">{{$t('cache.config.addConfig')}}</let-button>
+    </div>
+    
     <let-table :data="list" :title="$t('cache.config.tableTitle')" :empty-msg="$t('common.nodata')">
       <let-table-column title="ID" prop="id"></let-table-column>
       <let-table-column :title="$t('cache.config.remark')" prop="remark"></let-table-column>
@@ -8,7 +11,7 @@
       <let-table-column :title="$t('cache.config.item')" prop="item"></let-table-column>
       <let-table-column :title="$t('cache.config.reload')" prop="reload"></let-table-column>
       <let-table-column :title="$t('cache.config.period')" prop="period"></let-table-column>
-      <let-table-column :title="$t('operate.operates')" >
+      <let-table-column :title="$t('operate.operates')">
         <template slot-scope="{row}">
           <let-table-operation @click="editConfig(row)">{{$t('operate.update')}}</let-table-operation>
           <let-table-operation @click="deleteConfig(row)" class="danger">{{$t('operate.delete')}}</let-table-operation>
@@ -84,5 +87,5 @@
 </script>
 
 <style>
-
+  .page_operation{overflow:auto;}
 </style>

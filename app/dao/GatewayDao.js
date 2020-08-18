@@ -40,14 +40,12 @@ class UidFilter{
 		return !!station
 	}
 }
-//添加/更新gatewayObj
 GatewayDao.upsertGatewayObj = async(user, gatewayObj)=>{
 	return await tGatewayObj.upsert({
 		obj: gatewayObj,
 		update_person: user
 	})
 }
-//删除gatewayObj
 GatewayDao.deleteGatewayObj = async(user, gatewayObj)=>{
 	return await tGatewayObj.destroy({
 		where:{
@@ -56,7 +54,6 @@ GatewayDao.deleteGatewayObj = async(user, gatewayObj)=>{
 		}
 	})
 }
-//获取gatewayObj列表
 GatewayDao.getGatewayObjList = async ()=>{
 	let rows =  await tGatewayObj.findAll({
 		attributes:["obj"]

@@ -42,8 +42,8 @@ const LogviewController = require('../controller/logview/LogviewController');
 const pageConf = [
     //首页
     ['get', '/', PageController.index],
-    ['get', '/web_version', PageController.version]
-    
+    ['get', '/web_version', PageController.version],
+    ['get', '/captcha', PageController.captcha],
 ];
 
 const apiConf = [
@@ -67,6 +67,7 @@ const apiConf = [
     ['post', '/update_server', ServerController.updateServerConf, { id: 'notEmpty' },
         ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path', 'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile']
     ],
+    ['get', '/server_search', ServerController.getServerSearch],
 
     ['get', '/tree', TreeController.listTree],
     ['get', '/send_command', ServerController.sendCommand, { server_ids: 'notEmpty', command: 'notEmpty' }],
@@ -167,6 +168,7 @@ const apiConf = [
     ['post', '/do_compile', PatchController.doCompile],
     ['get', '/compiler_task', PatchController.compilerTask],
     ['get', '/get_compile_conf', PatchController.getCompilerConf],
+    ['get', '/download_package', PatchController.downloadPackage, {id: 'notEmpty'}],
     ['post', '/delete_patch_package', PatchController.deletePatchPackage],
     ['post', '/set_patch_package_default', PatchController.setPatchPackageDefault],
     ['get', '/has_dcache_patch_package', PatchController.hasDcachePatchPackage],
@@ -289,6 +291,9 @@ const apiConf = [
 
     //资源管理
     ['get', '/list_tars_node', ResourceController.listTarsNode],
+    ['get', '/load_node_label', ResourceController.loadNodeLabel, { node_name: 'notEmpty' }],
+    ['post', '/add_node_label', ResourceController.addNodeLabel, { node_name: 'notEmpty', name: 'notEmpty', value: 'notEmpty' }],
+    ['post', '/delete_node_label', ResourceController.deleteNodeLabel, { node_name: 'notEmpty', name: 'notEmpty'}],
     ['post', '/connect_tars_node', ResourceController.connectTarsNode],
     ['post', '/install_tars_nodes', ResourceController.installTarsNodes],
     ['get', '/uninstall_tars_nodes', ResourceController.uninstallTarsNodes, { ips: 'notEmpty' }],

@@ -130,10 +130,12 @@
           </template>
         </let-table-column>
       </let-table>
-      <pre class="pre_con"
-        v-if="(detailModal.model && !detailModal.model.table) ||
-          (detailModal.model && detailModal.model.table && detailModal.model.detail)"
-        >{{detailModal.model.detail || $t('cfg.msg.empty')}}</pre>
+      <div class="pre_con">
+        <pre
+          v-if="(detailModal.model && !detailModal.model.table) ||
+            (detailModal.model && detailModal.model.table && detailModal.model.detail)"
+          >{{detailModal.model.detail || $t('cfg.msg.empty')}}</pre>
+      </div>
       <div class="detail-loading" ref="detailModalLoading"></div>
     </let-modal>
 
@@ -673,12 +675,14 @@ export default {
     padding-right: 10px;
   }
 
-  pre {
+  .pre_con{display:block;overflow:hidden;}
+
+  .pre_con pre {
     color: #909FA3;
     display: block;
     margin-top: 32px;
-    white-space: initial;
     word-break: break-word;
+    white-space: pre-wrap;
   }
 
   .detail-loading {

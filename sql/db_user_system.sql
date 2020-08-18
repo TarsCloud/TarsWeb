@@ -14,9 +14,9 @@ DROP TABLE IF EXISTS `t_auth`;
 
 CREATE TABLE `t_auth` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `flag` varchar(256) DEFAULT NULL,
-  `role` varchar(256) DEFAULT NULL,
-  `uid` varchar(256) DEFAULT NULL,
+  `flag` varchar(128) DEFAULT NULL,
+  `role` varchar(128) DEFAULT NULL,
+  `uid` varchar(128) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -39,8 +39,8 @@ DROP TABLE IF EXISTS `t_login_temp_info`;
 
 CREATE TABLE `t_login_temp_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ticket` varchar(256) DEFAULT NULL,
-  `uid` varchar(256) DEFAULT NULL,
+  `ticket` varchar(128) DEFAULT NULL,
+  `uid` varchar(128) DEFAULT NULL,
   `expire_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -55,7 +55,7 @@ DROP TABLE IF EXISTS `t_user_info`;
 CREATE TABLE `t_user_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` varchar(128) DEFAULT NULL,
-  `password` varchar(256) NOT NULL,
+  `password` varchar(128) NOT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_name` (`uid`)

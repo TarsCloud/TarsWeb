@@ -246,8 +246,10 @@ ExpandService.getApplication = async (uid) => {
 };
 
 ExpandService.getServerName = async (application, uid) => {
+	let serverList = [];
+
 	if (await AuthService.hasAdminAuth(uid)) {
-		return ExpandService.formatToArray(await ServerDao.getServerName(application), 'server_name');
+		serverList = ExpandService.formatToArray(await ServerDao.getServerName(application), 'server_name');
 	} else {
 		let authList = await AuthService.getAuthListByUid(uid);
 		let serverList = [];
@@ -269,8 +271,14 @@ ExpandService.getServerName = async (application, uid) => {
 				})
 			}
 		}
-		return _.uniq(serverList);
+		serverList = _.uniq(serverList);
 	}
+
+	if (application == "DCache") {
+		serverList = serverList.filter(item => { return item.indexOf("CacheServer") == -1; });
+	}
+	return serverList;
+
 };
 
 ExpandService.getSet = async (application, serverName) => {

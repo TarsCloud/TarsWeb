@@ -3,51 +3,55 @@
     <let-form label-position="top" ref="detailForm">
       <let-form-group :title="$t('common.baseInfo')" inline label-position="top">
         <let-form-item :label="$t('module.moduleId')" itemWidth="240px" required>
-          {{moduleData.module_id}}
+          {{moduleInfo.module_id}}
         </let-form-item>
         <let-form-item :label="$t('module.name')" itemWidth="240px" required>
-          {{moduleData.module_name}}
+          {{moduleInfo.module_name}}
         </let-form-item>
         <let-form-item :label="$t('module.cacheType')" itemWidth="240px" required>
-          {{mapCacheType(moduleData.ModuleBase)}}
+          {{mapCacheType(moduleInfo)}}
         </let-form-item>
+<!--
         <let-form-item :label="$t('module.follower')" itemWidth="240px">
-          {{moduleData.ModuleBase && moduleData.ModuleBase.follower}}
+          {{moduleInfo.ModuleBase && moduleInfo.ModuleBase.follower}}
         </let-form-item>
+-->
       </let-form-group>
 
       <let-form-group :title="$t('module.moduleInfo')" inline label-position="top">
         <let-form-item :label="$t('module.deployArea')" itemWidth="240px">
-          {{moduleData.idc_area}}
+          {{moduleInfo.idc_area}}
         </let-form-item>
         <!-- <let-form-item :label="$t('module.keyType')" itemWidth="240px" required>
-          {{moduleData.key_type}}
+          {{moduleInfo.key_type}}
         </let-form-item> -->
         <let-form-item :label="$t('region.setArea')" itemWidth="240px">
-          {{moduleData.set_area && moduleData.set_area.join(',')}}
+          {{moduleInfo.set_area && moduleInfo.set_area.join(',')}}
         </let-form-item>
         <let-form-item :label="$t('module.scenario')" itemWidth="240px" required>
-          {{mapModuleType(moduleData.cache_module_type)}}
+          {{mapModuleType(moduleInfo.cache_module_type)}}
         </let-form-item>
         <let-form-item :label="$t('cache.perRecordAvg')" itemWidth="240px" required>
-          {{moduleData.per_record_avg}}
+          {{moduleInfo.per_record_avg}}
         </let-form-item>
+<!--
         <let-form-item :label="$t('cache.maxReadFlow')" itemWidth="240px" required>
-          {{moduleData.max_read_flow}}
+          {{moduleInfo.max_read_flow}}
         </let-form-item>
         <let-form-item :label="$t('cache.totalRecord')" itemWidth="240px" required>
-          {{moduleData.total_record}}
+          {{moduleInfo.total_record}}
         </let-form-item>
         <let-form-item :label="$t('cache.maxWriteFlow')" itemWidth="240px" required>
-          {{moduleData.max_write_flow}}
+          {{moduleInfo.max_write_flow}}
         </let-form-item>
+-->        
         <let-form-item :label="$t('cache.moduleRemark')" itemWidth="240px" required>
-          {{moduleData.module_remark}}
+          {{moduleInfo.module_remark}}
         </let-form-item>
       </let-form-group>
 
-      <let-form-group :title="$t('module.serverInfo')" inline label-position="top">
-        <let-table ref="table" :data="moduleData.ServerConf" :empty-msg="$t('common.nodata')">
+      <let-form-group :title="$t('module.serverInfo')" inline label-position="top" v-if="serverConf.length > 0 && this.moduleInfo.ModuleBase.update != 1">
+        <let-table ref="table" :data="serverConf" :empty-msg="$t('common.nodata')">
           <let-table-column :title="$t('module.name')" prop="module_name" width="25%">
             <template slot-scope="scope">
               {{scope.row.module_name}}
@@ -90,44 +94,47 @@
           </let-table-column>
         </let-table>
       </let-form-group>
-      <let-form-group :title="$t('module.dbAccessInfo')" inline label-position="top" v-if="this.dbAccessData.servant != ''">
+
+      <let-form-group :title="$t('module.dbAccessInfo')" inline label-position="top" v-if="this.isDbAccess()">
         <let-form-item :label="$t('module.servant')" itemWidth="400px">
-          {{dbAccessData.servant}}
+          {{dbAccess.servant}}
         </let-form-item>
+
         <let-form-item :label="$t('service.isSerializated')" itemWidth="350px">
-          {{mapSerializeType(dbAccessData.isSerializated)}}
+          {{mapSerializeType(dbAccess.isSerializated)}}
         </let-form-item>
+
         <let-form-item :label="$t('module.dbAccessIp')" itemWidth="400px">
-          {{dbAccessData.dbaccess_ip}}
+          {{dbAccess.dbaccess_ip}}
         </let-form-item>
         <br>
         <let-form-item :label="$t('cache.db.dbNum')" itemWidth="240px" required>
-          {{dbAccessData.db_num}}
+          {{dbAccess.db_num}}
         </let-form-item>
         <let-form-item :label="$t('cache.db.DBPrefix')" itemWidth="240px" required>
-          {{dbAccessData.db_prefix}}
+          {{dbAccess.db_prefix}}
         </let-form-item>
-        <br>
         <let-form-item :label="$t('cache.db.tableNum')" itemWidth="240px" required>
-          {{dbAccessData.table_num}}
+          {{dbAccess.table_num}}
         </let-form-item>
         <let-form-item :label="$t('cache.db.tablePrefix')" itemWidth="240px" required>
-          {{dbAccessData.table_prefix}}
+          {{dbAccess.table_prefix}}
         </let-form-item>
         <br>
         <let-form-item :label="$t('cache.db.dbHost')" itemWidth="240px" required>
-          {{dbAccessData.db_host}}
+          {{dbAccess.db_host}}
         </let-form-item>
         <let-form-item :label="$t('cache.db.dbPort')" itemWidth="240px" required>
-          {{dbAccessData.db_port}}
+          {{dbAccess.db_port}}
         </let-form-item>
         <let-form-item :label="$t('cache.db.dbUser')" itemWidth="240px" required>
-          {{dbAccessData.db_user}}
+          {{dbAccess.db_user}}
         </let-form-item>
         <let-form-item :label="$t('cache.db.tableCharset')" itemWidth="240px" required>
-          {{dbAccessData.db_charset}}
+          {{dbAccess.db_charset}}
         </let-form-item>
       </let-form-group>
+
       <let-button size="small" theme="primary" @click="installAndPublish">{{$t('apply.installAndPublish')}}
       </let-button>
     </let-form>
@@ -143,6 +150,7 @@
           </template>
         </let-table-column>
       </let-table>
+
     </let-modal>
   </section>
 </template>
@@ -155,19 +163,25 @@
       let {moduleId} = this.$route.params;
       return {
         moduleId,
-        moduleData: {},
-        dbAccessData: {},
+        moduleInfo: {},
+        serverConf: [],
+        dbAccess: {servant: ''},
         releaseProgress: [],
         showModal: false,
         timerId: null
       }
     },
     methods: {
+      isDbAccess() {
+        return this.dbAccess.servant != '' && (this.moduleInfo.ModuleBase.update == 0 || this.moduleInfo.ModuleBase.update == 1);
+      },
       getModuleFullInfo () {
         let {moduleId} = this;
         this.$ajax.getJSON('/server/api/get_module_full_info', {moduleId}).then((data) => {
-          this.moduleData = data.item || {};
-          this.dbAccessData = data.dbAccess || {};
+          // console.log(data);
+          this.moduleInfo = data.item || {};
+          this.serverConf = data.serverConf || [];
+          this.dbAccess = data.dbAccess || null;
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
@@ -177,12 +191,15 @@
         let {moduleId} = this;
         let mkCache = sessionStorage.getItem('mkCache');
         this.$ajax.getJSON('/server/api/module_install_and_publish', {moduleId, mkCache}).then(response => {
+
           loading.hide();
+
           let releaseId = response.releaseRsp.releaseId;
           this.getTaskRepeat({releaseId});
           this.$tip.success(response.releaseRsp.errMsg)
         }).catch(err => {
           loading.hide();
+          
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       },
@@ -191,6 +208,7 @@
         this.showModal = true;
         const getTask = () => {
           this.$ajax.getJSON('/server/api/get_module_release_progress', {releaseId}).then((data) => {
+
             let done = true;
             data.progress.forEach((item) => {
               if (parseInt(item.percent, 10) !== 100) {

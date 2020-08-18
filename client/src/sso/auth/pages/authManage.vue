@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 20px auto;">
+  <div style="margin: 20px auto;overflow:auto;">
     <div style="float:center">
       <let-button size="small" theme="primary"  @click="addItem">{{$t('auth.addPrivilege')}}</let-button>
       &nbsp;&nbsp;

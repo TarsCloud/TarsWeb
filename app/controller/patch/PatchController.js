@@ -25,6 +25,8 @@ const WebConf = require('../../../config/webConf');
 const util = require('../../tools/util');
 const fs = require('fs-extra');
 const md5Sum = require('md5-file').sync;
+const send = require('koa-send');
+const path = require('path');
 
 const PatchController = {};
 
@@ -300,6 +302,25 @@ PatchController.compilerTask = async (ctx) => {
 		ctx.makeErrResObj(500, e.toString());
 	}
 };
+
+PatchController.downloadPackage = async (ctx) => {
+	let { id } = ctx.paramsObj;
+	try {
+
+		let patch = await PatchService.find({ where: { id: id } });
+		if (patch) {
+
+			let fileUrl = path.join(WebConf.pkgUploadPath.path, patch.server.split('.')[0], patch.server.split('.')[1], patch.tgz);
+
+			ctx.set('Content-Type', 'application/octet-stream');
+			ctx.set('Content-Disposition', 'attachment; filename=' + patch.tgz),
+				ctx.body = fs.createReadStream(fileUrl);
+		}
+	} catch (e) {
+		logger.error('[PatchController.downloadPackage]:', e, ctx);
+		ctx.makeErrResObj(500, e.toString());
+	}
+}
 
 PatchController.deletePatchPackage = async (ctx) => {
 	let {id} = ctx.paramsObj;

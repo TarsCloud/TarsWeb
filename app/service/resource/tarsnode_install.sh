@@ -47,7 +47,7 @@ mkdir -p ${TARS_PATH}
 
 rm -rf tarsnode.tgz
 
-wget ${webHost}/files/tarsnode.tgz
+curl -O ${webHost}/files/tarsnode.tgz
 
 #休息1s, 避免下载的文件没有写成功
 sleep 1

@@ -34,6 +34,16 @@ NodeInfoDao.hasNodeNode = async (nodeName) => {
 	})
 };
 
+NodeInfoDao.updateNodeLabel = async (nodeName, label) => {
+	return await tNodeInfo.update({
+		label: label
+	}, {
+		where: {
+			node_name: nodeName
+		}
+	})
+};
+
 NodeInfoDao.deleteNodeInfo = async (nodeName) => {
 	return await tNodeInfo.destroy({
 		where: {node_name: nodeName}
