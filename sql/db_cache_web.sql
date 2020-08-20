@@ -75,7 +75,6 @@ CREATE TABLE `t_apply_app_proxy_conf` (
   `modify_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `t_apply_app_proxy_conf_apply_id_foreign_idx` (`apply_id`),
-  CONSTRAINT `t_apply_app_proxy_conf_ibfk_1` FOREIGN KEY (`apply_id`) REFERENCES `t_apply_app_base` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -98,7 +97,6 @@ CREATE TABLE `t_apply_app_router_conf` (
   `modify_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `t_apply_app_router_conf_apply_id_foreign_idx` (`apply_id`),
-  CONSTRAINT `t_apply_app_router_conf_ibfk_1` FOREIGN KEY (`apply_id`) REFERENCES `t_apply_app_base` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -147,8 +145,6 @@ CREATE TABLE `t_apply_cache_module_conf` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `applyModule` (`apply_id`,`module_name`),
   KEY `t_apply_cache_module_conf_module_id_foreign_idx` (`module_id`),
-  CONSTRAINT `t_apply_cache_module_conf_ibfk_3` FOREIGN KEY (`module_id`) REFERENCES `t_apply_cache_module_base` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  CONSTRAINT `t_apply_cache_module_conf_ibfk_4` FOREIGN KEY (`apply_id`) REFERENCES `t_apply_app_base` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -204,7 +200,6 @@ CREATE TABLE `t_expand_server` (
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `t_expand_server_operation_id_foreign_idx` (`operation_id`),
-  CONSTRAINT `t_expand_server_operation_id_foreign_idx` FOREIGN KEY (`operation_id`) REFERENCES `t_module_operation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
