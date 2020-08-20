@@ -199,7 +199,7 @@ CREATE TABLE `t_expand_server` (
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `t_expand_server_operation_id_foreign_idx` (`operation_id`),
+  KEY `t_expand_server_operation_id_foreign_idx` (`operation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
