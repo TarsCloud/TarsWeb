@@ -74,7 +74,6 @@ CREATE TABLE `t_apply_app_proxy_conf` (
   `create_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `t_apply_app_proxy_conf_apply_id_foreign_idx` (`apply_id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -96,7 +95,6 @@ CREATE TABLE `t_apply_app_router_conf` (
   `create_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `t_apply_app_router_conf_apply_id_foreign_idx` (`apply_id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -144,7 +142,6 @@ CREATE TABLE `t_apply_cache_module_conf` (
   `dbAccessServant` varchar(150) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `applyModule` (`apply_id`,`module_name`),
-  KEY `t_apply_cache_module_conf_module_id_foreign_idx` (`module_id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -196,8 +193,6 @@ CREATE TABLE `t_expand_server` (
   `modify_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime DEFAULT NULL,
   `is_docker` tinyint(1) NOT NULL DEFAULT '0',
-  `createdAt` datetime DEFAULT NULL,
-  `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `t_expand_server_operation_id_foreign_idx` (`operation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -214,8 +209,6 @@ CREATE TABLE `t_module_operation` (
   `appName` varchar(256) NOT NULL,
   `moduleName` varchar(256) NOT NULL,
   `cache_version` int(4) DEFAULT '0',
-  `createdAt` datetime DEFAULT NULL,
-  `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
