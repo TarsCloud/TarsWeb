@@ -9,6 +9,8 @@
 - add search
 - fix auth bug
 - fix sync db bug
+- fix monitor chart data bug
+
 
 ## 20200805(2.4.8)
 - update dcache logo
