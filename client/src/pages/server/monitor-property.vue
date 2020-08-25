@@ -123,7 +123,7 @@ export default {
   },
 
   data() {
-    const treeId = this.$route.params.treeid;
+    const treeId = this.treeid;
 
     return {
       query: {
@@ -145,7 +145,7 @@ export default {
       showChart: true,
     };
   },
-
+  props: ['treeid'],
   computed: {
     enableHourFilter(){
       return this.allItems.length && this.allItems[0].show_time

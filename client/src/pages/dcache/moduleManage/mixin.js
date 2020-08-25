@@ -47,6 +47,7 @@ export  default {
       return servers.map((item, index) => {
         let {group_name, server_name} = item;
 
+        //和taf版本不一样, 不要随便合并
         //  **********name1    => *******name2
         group_name = group_name.replace(/^(.*?)(\d+)$/, function () {
           return arguments[1] + (+arguments[2] + 1)

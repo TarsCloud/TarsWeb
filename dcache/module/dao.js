@@ -20,10 +20,10 @@ const moduleDao = {};
 
 
 moduleDao.addModuleBaseInfo = function ({
-  apply_id, follower, cache_version, mkcache_struct, create_person,
+  apply_id, module_name, follower, update, create_person, modify_time, 
 }) {
   return tApplyCacheModuleBase.create({
-    apply_id, follower, cache_version, mkcache_struct, create_person,
+    apply_id, module_name, follower, update, create_person, modify_time,
   });
 };
 

@@ -20,7 +20,7 @@
           </let-table-column>
           <let-table-column :title="$t('service.serverIp')" prop="server_ip">
             <template slot-scope="scope">
-              <let-select v-model="scope.row.server_ip" size="small" required>
+              <let-select v-model="scope.row.server_ip" size="small" filterable required>
                 <let-option v-for="d in nodeList" :key="d" :value="d">
                   {{d}}
                 </let-option>
@@ -41,7 +41,11 @@
           </let-table-column>
           <let-table-column :title="$t('module.memorySize')" prop="memory">
             <template slot-scope="{row}">
-              {{row.memory}}
+              <let-input
+                size="small"
+                v-model="row.memory"
+                :placeholder="$t('module.shmKeyRule')"
+              />
             </template>
           </let-table-column>
           <let-table-column :title="$t('module.shmKey')" prop="shmKey"  width="150px">

@@ -19,7 +19,29 @@ export default{
 }
 </script>
 <style>
-.operation-manage .let-tabs__content{
-  padding-top: 20px;
+.operation-manage {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  overflow: hidden;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  width: 100%;
+
+  .let-tabs__content{
+    padding-top: 20px;
+  }
+
+  &-children {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    margin-top: 20px;
+    overflow: auto;
+    padding:0 40px 20px 0;
+    position: relative;
+  }
+  &-children::-webkit-scrollbar{border-radius:10px;}
 }
 </style>
+

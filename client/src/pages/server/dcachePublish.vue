@@ -316,7 +316,7 @@
     },
     data() {
       return {
-        serverType: this.$route.params.serverType || 'tars',
+        serverType: this.servertype || 'tars',
         activeKey: '',
         treeData: [],
         totalServerList: [],
@@ -395,6 +395,7 @@
         }
       };
     },
+    props: ['treeid', 'servertype'],
     methods: {
       getCompileConf(){
         this.$ajax.getJSON('/server/api/get_compile_conf').then((data) => {
@@ -409,7 +410,8 @@
         // 获取服务列表
         const loading = this.$Loading.show();
         this.$ajax.getJSON('/server/api/server_list', {
-          tree_node_id: this.$route.params.treeid,
+          // tree_node_id: this.$route.params.treeid,
+          tree_node_id: this.treeid,
         }).then((data) => {
           loading.hide();
           const items = data || [];

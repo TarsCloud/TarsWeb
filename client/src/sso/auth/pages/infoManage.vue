@@ -1,6 +1,6 @@
 <template>
 
-  <div style="margin: 20px auto;">
+  <div style="margin: 20px auto;overflow:auto;">
 
     <let-table :data="authListShow" stripe :empty-msg="empty_msg">
       <let-table-column :title="$t('auth.role')" prop="role" width="20%"></let-table-column>

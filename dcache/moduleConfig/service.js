@@ -66,8 +66,14 @@ ModuleConfigService.addModuleConfig = async function (option) {
   return moduleConfigDao.add(option);
 };
 
-ModuleConfigService.getModuleConfigInfo = async function ({ moduleId, queryModuleBase, queryServerConf}) {
-  return moduleConfigDao.findOne({ where: { module_id: +moduleId }, queryModuleBase, queryServerConf});
+ModuleConfigService.getModuleConfigInfo = async function ({ moduleId, queryModuleBase}) {
+  return moduleConfigDao.findOne({ where: { module_id: +moduleId }, queryModuleBase});
+};
+ModuleConfigService.getModuleConfigInfoByModuleName = async function (moduleName) {
+  return moduleConfigDao.findOne({ where: { module_name: moduleName } });
+};
+ModuleConfigService.getCacheServerConfigInfo = async function (module_name) {
+  return await serverConfigDao.findAll({ where: { module_name: module_name }});
 };
 
 ModuleConfigService.getPublishSuccessModuleConfig = async function () {

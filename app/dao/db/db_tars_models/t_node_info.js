@@ -100,6 +100,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
+		label: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+			defaultValue: ''
+		},
 		group_id: {
 			type: DataTypes.INTEGER(11),
 			allowNull: true,

@@ -458,6 +458,7 @@ export default {
       failCount :0
     };
   },
+  props: ['treeid'],
   computed: {
     showOthers() {
       return this.serverData.level === 5;
@@ -489,7 +490,7 @@ export default {
       const loading = this.$refs.serverListLoading.$loading.show();
 
       this.$ajax.getJSON('/server/api/server_list', {
-        tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.treeid,
       }).then((data) => {
         loading.hide();
         data.forEach(item => {
@@ -511,7 +512,7 @@ export default {
         curr_page = this.pageNum || 1; 
       }
       this.$ajax.getJSON('/server/api/server_notify_list', {
-        tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.treeid,
         page_size: this.pageSize,
         curr_page: curr_page,
       }).then((data) => {

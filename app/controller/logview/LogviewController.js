@@ -26,17 +26,17 @@ const LogviewController = {};
 LogviewController.getLogFileList = async(ctx) => {
     try {
         const { application, server_name, node_name } = ctx.paramsObj;
-        logger.error("======getLogFileList:", application, server_name, node_name, ctx.uid);
-        if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+   //     logger.error("======getLogFileList:", application, server_name, node_name, ctx.uid);
+        if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            logger.error("getlogfilelist 2222222");
+
             let rsp = await LogviewService.getLogFileList(
                 application,
                 server_name,
                 node_name
             );
-            logger.error("getlogfilelist 33333333");
+
             ctx.makeResObj(200, '', JSON.stringify(rsp));
         }
     } catch (e) {
@@ -49,7 +49,7 @@ LogviewController.getLogFileList = async(ctx) => {
 LogviewController.getLogData = async(ctx) => {
     try {
         const { application, server_name, node_name, log_file, interface_params } = ctx.paramsObj;
-        if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+        if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
             let rsp = await LogviewService.getLogData(

@@ -1,3 +1,15 @@
+## 20200819(2.4.9)
+- tarsnode tag
+- patch package download
+- tarsnode batch update
+- config UI modify
+- web UI support multi tab
+- dcache support install dbaccess/backup/mirror
+- add login verify code
+- add search
+- fix auth bug
+- fix sync db bug
+
 ## 20200805(2.4.8)
 - update dcache logo
 - fix create table charset bug

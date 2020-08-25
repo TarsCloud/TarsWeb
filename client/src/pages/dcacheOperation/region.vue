@@ -1,6 +1,10 @@
 <template>
   <section class="page_operation_region">
-    <let-button theme="primary" size="mini" @click="addRegion">{{$t('region.add')}}</let-button>
+
+    <div>
+      <let-button theme="primary" size="mini" @click="addRegion">{{$t('region.add')}}</let-button>
+    </div>
+
     <let-table ref="table" :data="items" :empty-msg="$t('common.nodata')" :title="$t('region.list')">
       <let-table-column :title="$t('common.serial')" width="25%"><template slot-scope="scope">{{scope.$index + 1}}</template></let-table-column>
       <let-table-column :title="$t('region.title')" prop="region" width="25%"></let-table-column>

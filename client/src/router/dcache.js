@@ -20,7 +20,7 @@ import Router from 'vue-router';
 // 服务管理
 import Server from '@/pages/server/dcacheIndex';
 
-import ServerManage from '@/pages/server/manage';
+// import ServerManage from '@/pages/server/manage';
 import dcacheServerManage from '@/pages/server/dcacheManage.vue';
 import dcacheModuleManage from '@/pages/dcache/moduleManage/index.vue';
 import PropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
@@ -32,7 +32,6 @@ import ServerServerMonitor from '@/pages/server/monitor-server';
 import ServerPropertyMonitor from '@/pages/server/monitor-property';
 import userManage from '@/pages/server/user-manage';
 import InterfaceDebuger from '@/pages/server/interface-debuger';
-
 
 // dcache 运维管理
 import Operation from '@/pages/dcacheOperation/index';

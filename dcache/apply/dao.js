@@ -35,7 +35,7 @@ applyDao.findAll = async function ({
   raw = true,
   queryRouter = [],
   queryProxy = [],
-  queryDbAccess = [],
+  // queryDbAccess = [],
   attributes = ['id', 'status', 'idc_area', 'set_area', 'admin', 'name', 'create_person'],
   include = [],
 }) {
@@ -57,14 +57,14 @@ applyDao.findAll = async function ({
     };
     include.push(proxyModelItem);
   }
-  if (queryDbAccess.length > 0) {
-    const dbAccessModelItem = {
-      model: tApplyAppDbaccessConf,
-      attributes: queryDbAccess,
-      as: 'DbAccess',
-    };
-    include.push(dbAccessModelItem);
-  }
+  // if (queryDbAccess.length > 0) {
+  //   const dbAccessModelItem = {
+  //     model: tApplyAppDbaccessConf,
+  //     attributes: queryDbAccess,
+  //     as: 'DbAccess',
+  //   };
+  //   include.push(dbAccessModelItem);
+  // }
 
   // 一般来说，查找的都是安装成功的、即status=2
   if (!where.status) where.status = 2;
@@ -82,7 +82,6 @@ applyDao.findOne = async function ({
   attributes = ['id', 'status', 'idc_area', 'set_area', 'admin', 'name', 'create_person'],
   queryRouter = [],
   queryProxy = [],
-  queryDbAccess = [],
   include = [],
 }) {
   if (queryRouter.length > 0) {
@@ -100,14 +99,6 @@ applyDao.findOne = async function ({
       as: 'Proxy',
     };
     include.push(proxyModelItem);
-  }
-  if (queryDbAccess.length > 0) {
-    const dbAccessModelItem = {
-      model: tApplyAppDbaccessConf,
-      attributes: queryDbAccess,
-      as: 'DbAccess',
-    };
-    include.push(dbAccessModelItem);
   }
 
   const data = await tApplyAppBase.findOne({ where, attributes, include });

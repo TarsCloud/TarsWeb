@@ -38,7 +38,10 @@ LoginController.login = async (ctx) => {
 
     let uid = ctx.paramsObj.uid;
     let password = ctx.paramsObj.password;
+    const captcha = ctx.paramsObj.captcha
+    const sessionCaptcha = ctx.session.captcha
     try{
+        if(captcha === sessionCaptcha){
         let rst = await LoginService.login(uid, password);
         if(rst.errMsg === undefined){
             // ctx.cookies.set('ticket', rst.ticket,  {maxAge: exprireTime});
@@ -46,6 +49,9 @@ LoginController.login = async (ctx) => {
             ctx.makeResObj(200, rst.errMsg, {ticket: rst.ticket});
         }else{
             ctx.makeResObj(500, rst.errMsg, {});
+            }
+        }else{
+            ctx.makeResObj(500, 'verify code error', {});
         }
     }catch(e){
         logger.error('[login]' , e, ctx);

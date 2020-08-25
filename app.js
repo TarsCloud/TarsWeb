@@ -20,6 +20,7 @@ const path = require('path');
 const url = require('url');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
+const session = require('koa-session');
 const multer = require('koa-multer');
 const static = require('koa-static');
 const apiMidware = require('./app/midware/apiMidware');
@@ -44,6 +45,20 @@ onerror(app);
 //防洪水攻击
 app.use(limitMidware());
 
+//验证码
+const CONFIG = {
+	key: 'koa:sess',
+	maxAge: 1000 * 60 * 60 * 12, // 12小时, 设置 session 的有效时间，单位毫秒
+	autoCommit: true, 
+	overwrite: true,
+	httpOnly: true,
+	signed: true,
+	rolling: false,
+	renew: false,
+}
+app.keys = ['sessionCaptcha']
+app.use(session(CONFIG, app))
+
 //安全防护
 app.use(helmet());
 
@@ -61,7 +76,7 @@ preMidware.forEach((midware) => {
 
 //登录校验
 let loginConf = require('./config/loginConf.js');
-loginConf.ignore = loginConf.ignore.concat(['/web_version','/static', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
+loginConf.ignore = loginConf.ignore.concat(['/web_version', '/static', '/captcha', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
 loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/register.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login']);
 
 //上传文件不需要登录

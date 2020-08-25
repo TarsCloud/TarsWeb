@@ -1,7 +1,7 @@
 <template>
   <section class="page_operation_create_service">
     <let-form inline ref="detailForm">
-      <let-form-group :title="$t('module.serverInfo')" inline label-position="top">
+      <let-form-group :title="$t('module.serverInfo')" inline label-position="top" v-if="moduleData.length>0">
         <let-table ref="table" :data="moduleData" :empty-msg="$t('common.nodata')">
           <let-table-column :title="$t('module.name')" prop="module_name" >
             <template slot-scope="scope">
@@ -73,7 +73,7 @@
         </let-table>
       </let-form-group>
 
-      <div  v-if="this.dbAccess.servant != ''">
+      <div v-if="isDbAccess()">
       <let-form-group :title="$t('module.dbAccessInfo') + '(' + dbAccess.servant + ')'" inline label-position="top">
 
       <let-form-item :label="$t('service.isSerializated')" itemWidth="400px" v-if="this.cacheVersion == 1" required>
@@ -81,6 +81,7 @@
         </let-radio-group>
       </let-form-item>
 
+      <br>
       <let-form-item :label="$t('service.multipleIp')" itemWidth="350px" required>
         <let-select v-model="dbAccess.dbaccess_ip" size="small" required multiple placeholder="Please Choose">
           <let-option v-for="d in nodeList" :key="d" :value="d">
@@ -208,7 +209,8 @@
 
       </div>
       <div>
-        <let-button size="small" theme="primary" @click="submitServerConfig">{{$t('common.nextStep')}}</let-button>
+
+      <let-button size="small" theme="primary" @click="submitServerConfig">{{$t('common.nextStep')}}</let-button>
       </div>
     </let-form>
 
@@ -447,7 +449,7 @@
 
 <script>
   import _ from 'lodash';
-  import { getModuleConfigInfo, templateNameList } from '@/dcache/interface.js'
+  import { getModuleConfigInfo, getModuleGroup, templateNameList } from '@/dcache/interface.js'
 
   const getDBAccessConf = () => ({
     module_id: "",
@@ -528,6 +530,7 @@
       return {
         moduleId,
         accessDb: [],
+        moduleInfo: { ModuleBase: {update: 0} },
         dbAccess: getDBAccessConf(),
         moduleData: [],
         nodeList: [],
@@ -587,13 +590,25 @@
       });
     },
     methods: {
+      isNewInstall() {
+        return this.moduleInfo.ModuleBase.update == 0;
+      },
+      isDbAccess() {
+        return this.dbAccess.servant != '' && (this.moduleInfo.ModuleBase.update == 0 || this.moduleInfo.ModuleBase.update == 1);
+      },
+      isBackup() {
+        return this.moduleInfo.ModuleBase.update == 2;
+      },
+      isMirror() {
+        return this.moduleInfo.ModuleBase.update == 3;
+      },      
       submitServerConfig () {
         if(this.dbAccess.dbMethod == undefined) {
             this.$tip.error(`${this.$t('module.dbMethod')}`);
             return;
         }
         if (this.$refs.detailForm.validate()) {
-          if (this.isMkCache) {
+          if (this.isDbAccess() && this.isMkCache) {
             this.showMKModal = true;
           } else if (this.checkSameShmKey(this.moduleData)) {
             this.addServerConfig();
@@ -619,17 +634,12 @@
       },
       checkSameShmKey (data) {
         return true;
-        // const uniqData = _.uniqWith(data, (object, other) => {
-        //   return object.server_ip === other.server_ip && object.shmKey === other.shmKey;
-        // });
-        // // console.log(uniqData);
-        // return data.length === uniqData.length;
       },
       addServerConfig () {
         const moduleData = this.moduleData;
         const dbAccess = this.dbAccess;
 
-        if(this.dbAccess.dbaccess_ip.length == 0) {
+        if(this.isDbAccess() && this.dbAccess.dbaccess_ip.length == 0) {
           this.$tip.error(`${this.$t('cache.dbaccessIp')}`);
           return;          
         }
@@ -653,34 +663,117 @@
 
           let { moduleId } = this.$route.params;
           let data = await getModuleConfigInfo({ moduleId });
-          let cacheVersion = data.ModuleBase.cache_version === 1 ? 'KV' : 'MKV';
-          data.group_name = data.module_name + cacheVersion + 'Group1';
+
+          this.moduleInfo = data;
+
+          let module_name = data.module_name;
+
+          let groupInfo = await getModuleGroup({ module_name });
+
+          var count = 0;
+          for(var i in groupInfo) {
+              if(groupInfo.hasOwnProperty(i)) {
+                count++;
+              }
+          }
+
           data.area = data.idc_area;
+
+          let cacheVersion = data.cache_version === 1 ? 'T' : 'MK';
+          data.group_name = data.module_name + cacheVersion + 'Group1';
           data.server_name = data.module_name + cacheVersion + 'CacheServer1-1';
           data.server_type = 0;
-          // data.memory = Math.ceil(data.per_record_avg * data.total_record * 10000 / 1024 / 1024);
-          // if(data.memory < 50) {
-          data.memory = 50;
-          // }
-          this.moduleData.push({...data});
-          let backData = { ...data, server_name: data.module_name + cacheVersion + 'CacheServer1-2', server_type: 1 };
-          this.moduleData.push(backData);
+          data.memory = 50
 
-          if (data.set_area.length > 0) {
-            data.set_area.forEach((item, index) => {
-              let mirItem = { ...data, area: item, server_name: data.module_name + cacheVersion + 'CacheServer1-' + (index + 3), server_type: 2};
-              this.moduleData.push(mirItem);
-            });
+          if(count == 0) {
+
+            if(this.isNewInstall()) {
+              //new install
+              this.moduleData.push({...data});
+            }
+
+            if(this.isBackup() || (this.isNewInstall() && data.open_backup)) {
+              //new install or iinstall backup
+              let backData = { ...data, server_name: data.module_name + cacheVersion + 'CacheServer1-2', server_type: 1 };
+              this.moduleData.push(backData);
+            }
+
+            if(this.isMirror() || this.isNewInstall()) {
+              //new install or install mirror
+              if (data.set_area.length > 0) {
+                data.set_area.forEach((item, index) => {
+                  let mirItem = { ...data, area: item, server_name: data.module_name + cacheVersion + 'CacheServer1-' + (index + 3), server_type: 2};
+                  this.moduleData.push(mirItem);
+                });
+              }
+            }
+          } else {
+
+            if(this.isNewInstall()) {
+
+              for(var group in groupInfo) {
+
+                for(var i = 0; i < groupInfo[group].length; i++) {
+
+                  let cache = groupInfo[group][i];
+                  let cacheData = {...data, group_name: data.module_name + cacheVersion + 'Group' + group, server_name: cache.server_name, server_type: cache.server_type };
+
+                    //new install
+                    this.moduleData.push(cacheData);
+                }
+              }
+            } else if(this.isBackup()) {
+
+              for(var group in groupInfo) {
+
+                var hasBackup = false;
+
+                for(var i = 0; i < groupInfo[group].length; i++) {
+                  if(groupInfo[group][i].server_type == 1) {
+                    hasBackup = true;
+                    break;
+                  }
+                }
+
+                for(var i = 0; i < groupInfo[group].length; i++) {
+
+                  let cache = groupInfo[group][i];
+                  let cacheData = {...data, group_name: data.module_name + cacheVersion + 'Group' + group, server_name: cache.server_name, server_type: cache.server_type };
+
+                  if(hasBackup && cache.server_type == 1) {
+
+                    this.moduleData.push(cacheData);
+                  } else if(!hasBackup){
+                    let backData = { ...cacheData, server_name: cacheData.module_name + cacheVersion + 'CacheServer' + group + '-2', server_type: 1 };
+
+                    this.moduleData.push(backData);
+                  }
+                }
+              }
+            }
+            else if(this.isMirror()) {
+              for(var group in groupInfo) {
+                let cache = groupInfo[group][0];
+                let cacheData = {...data, group_name: data.module_name + cacheVersion + 'Group' + group, server_name: cache.server_name, server_type: cache.server_type };
+
+                  if (data.set_area.length > 0) {
+                    data.set_area.forEach((item, index) => {
+                      let mirItem = { ...cacheData, area: item, group_name: data.module_name + cacheVersion + 'Group' + group, server_name: cacheData.module_name + cacheVersion + 'CacheServer' + group + '-' + (index + 3), server_type: 2};
+                      this.moduleData.push(mirItem);
+                    });
+                  }
+              }
+            }
           }
+
           // 设置 cache 服务默认 DCache.Cache 模版
           this.moduleData = this.moduleData.map(item => ({ ...item, 'template_name': templates.includes('DCache.Cache') ? 'DCache.Cache' : 'tars.default' }));
 
-          // 二期Cache 或者 一期 cache + 持久化 都需要填写数据结构。
-          this.isMkCache = data.ModuleBase.cache_version === 2 || data.cache_module_type === 2;
-          this.multiKey = data.ModuleBase.cache_version === 2 && data.ModuleBase.mkcache_struct === 1;
+          // 二期Cache 或者 一期 cache + 持久化 都需要填写数据结构。 一期暂时不用填写。
+          this.isMkCache = data.cache_version === 2 || data.cache_module_type === 2;
+          this.multiKey = data.cache_version === 2 && data.mkcache_struct === 1;
 
-          this.cacheVersion = data.ModuleBase.cache_version;
-          // console.log(this.cacheVersion);
+          this.cacheVersion = data.cache_version;
 
           if(this.multiKey) {
             this.dbAccess.isSerializated = true;
@@ -752,7 +845,10 @@
     async created () {
       sessionStorage.clear();
       await this.getModuleConfigInfo();
-      await this.loadAccessDb();
+
+      if(this.isDbAccess()) { 
+        await this.loadAccessDb();
+      }
     }
   }
 </script>

@@ -14,6 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
+const moment = require('moment');
 const logger = require('../../logger');
 const TaskService = require('../../service/task/TaskService');
 const util = require('../../tools/util');
@@ -39,7 +40,7 @@ TaskController.getTasks = async (ctx) => {
 	// console.log(ctx);
 	try {
 		let {application, server_name, command, from, to, curr_page = 0, page_size = 0} = ctx.paramsObj;
-		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let ret = [];
@@ -57,8 +58,6 @@ TaskController.getTasks = async (ctx) => {
 				return e;
 			});
 
-			// console.log('--------', tasks);
-
 			for (let i = 0, len = tasks.rows.length; i < len; i++) {
 				let task = tasks.rows[i];
 
@@ -74,6 +73,8 @@ TaskController.getTasks = async (ctx) => {
 						items: [{}]
 					});
 				}
+
+				ret[ret.length - 1].create_time = moment(task.update_time).format("YYYY-MM-DD HH:mm:ss");
 			}
 			ctx.makeResObj(200, '', {count: tasks.count, rows: ret});
 		}

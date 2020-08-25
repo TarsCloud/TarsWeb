@@ -124,6 +124,7 @@
   },
   "apply": {
     "title": "应用",
+        "createTitle": "创建应用",
     "name": "应用名",
     "createApply": "创建应用",
     "createRouterProxyService": "创建 router、proxy 服务",
@@ -147,7 +148,10 @@
   },
   "module": {
     "title": "模块",
+        "createTitle": "创建模块",
+        "update": "模块已经存在, 请选择更新方式",
     "name": "模块名",
+        "chooseMirror": "请选择至少一个镜像地址",
     "namingRule": "应用名+自定义名称, 只允许字母和数字",
     "keyType": "key类型",
     "createModule": "创建模块",
@@ -175,7 +179,9 @@
     "namingError": "模块名须以应用名开头，且只允许字母和数字",
     "shmKeyError": "同一IP下不允许有相同的共享内存key",
     "dbAccessIp": "DbAccess服务Ip",
-    "dbMethod": "请选择DbAccess Mysql实例"
+        "dbMethod": "请选择DbAccess Mysql实例",
+        "openBackup": "备机",
+        "closeBackup": "备机"
   },
   "MKCache": {
     "mainKey": "主索引(mkey)",
@@ -199,7 +205,13 @@
     "cacheTypeTip1": "内存数据库(不淘汰)",
     "cacheTypeTip2": "临时缓存(过期淘汰)",
     "cacheTypeTip3": "热点缓存(容量淘汰)",
-    "perRecordAvg": "数据记录平均字节数(请评估准确)",
+        "installFull": "全新覆盖安装",
+        "installFullInfo": "请注意共享内存的大小需要和之前保持一致, 或者清除之前的共享内存, 请谨慎操作!",
+        "installDbAccess": "安装DbAccess",
+        "installDbAccessInfo": "安装完后注意修改对应的Cache配置, 启用DbAccess并关联到当前DbAccess服务, 并重启Cache服务",
+        "installBackup": "安装备机",
+        "installMirror": "安装镜像",
+        "perRecordAvg": "数据记录平均字节数",
     "perRecordAvgUnit": "字节Byte",
     "totalRecord": "Cache中保存",
     "maxReadFlow": "预估峰值读流量",
@@ -445,6 +457,7 @@
     "modify": "修改",
     "delete": "删除",
     "more": "更多命令",
+    "download": "下载",
     "operates": "操作",
     "view": "查看",
     "merge": "合并后",
@@ -453,6 +466,7 @@
     "goback": "返回",
     "default": "默认",
     "save": "保存",
+        "submit": "提交",
     "title": {
       "update": "编辑",
       "add": "添加",
@@ -483,9 +497,11 @@
         "last_heartbeat": "最后心跳",
         "present_state": "当前状态",
         "tars_version": "版本",
+        "label": "标签",
         "load_avg5": "负载",
         "check": "操作"
       },
+      "edit": "编辑",
       "check": "检查",
       "delete": "删除"
     },
@@ -816,7 +832,7 @@
   },
   "nodes": {
     "node_name": "节点",
-    "nodeNameTips": "节点不能为空",
+    "nodeNameTips": "节点不能为空, 多节点以,分割",
     "port": "SSH PORT",
     "portTips": "SSH端口不能为空",
     "user": "用户",
@@ -826,6 +842,7 @@
     "btn": {
       "manualAddNode": "手工安装节点",
       "autoAddNode": "自动安装节点",
+      "autoUpdateNode": "批量升级节点",
       "check": "点击开始检查框架状态",
       "question": "有问题怎么办?"
     },
@@ -854,6 +871,13 @@
     "add": {
       "nodeNameTips": "节点名不能为空",
       "title": "安装节点(暂不支持Windows)"
+    },
+    "label": {
+      "title": "编辑标签",
+      "name": "标签名称",
+      "value": "标签值",
+      "operator": "操作",
+      "delete": "删除"
     }
   },
   "connectNodeList": {
@@ -1265,6 +1289,7 @@
     "loginTitle": "请登录",
     "userName": "用户名",
     "password": "密码",
+    "captcha": "验证码",
     "repeatPassword": "二次确认密码",
     "login": "登录",
     "toRegisterPage": "没有账号？前往注册",
@@ -1273,6 +1298,7 @@
     "userNameRegTips": "用户名只能包含英文字母，数字或下划线",
     "passwordTips": "密码不能为空",
     "passwordNoCorrect": "密码错误",
+    "captchaTips": "验证码不能为空",
     "userNoExist": "用户名不存在",
     "loginFailed": "登录失败",
     "registerTitle": "请注册",

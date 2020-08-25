@@ -21,6 +21,7 @@ const BusinessRelationDao = require('../../dao/BusinessRelationDao');
 const cacheData = {
 	timer: '',
 	serverData: [],
+	dcacheData: [],
 	business: [],
 	businessRelation: [],
 }
@@ -31,6 +32,11 @@ const TreeService = {
 TreeService.getTreeNodes = async (searchKey, uid, type) => {
 	return await TreeService.getCacheData(searchKey, uid, type)
 };
+
+TreeService.hasDCacheServerName = (serverName) => {
+
+	return cacheData.dcacheData.find((item) => { return item.server_name == serverName; });
+}
 
 /**
  * 将应用服务转换成层级数据
@@ -187,13 +193,14 @@ TreeService.setCacheData = async (isRefresh) => {
 	newArr = newArr.sort((a, b) => {
 		const a1 = a.server_name.toLowerCase()
 		const b1 = b.server_name.toLowerCase()
-		if (a1 < b1) return -1
-		if (a1 > b1) return 1
+		if(a1 < b1) return -1
+		if(a1 > b1) return 1
 		return 0
-	});
+	})
 
 	// 写入缓存
 	cacheData.serverData = newArr
+	cacheData.dcacheData = newArr.filter(item => { return item.application == 'DCache';})
 
 	// 每10分钟更新
 	if(!isRefresh){
@@ -203,7 +210,6 @@ TreeService.setCacheData = async (isRefresh) => {
 		}, 1000 * 60 * 10)
 	}
 }
-
 TreeService.setCacheData()
 
 /**
@@ -220,12 +226,13 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 
 	// 过滤Dcache
 	if(type && type === '1'){
+		// 应用服务
 		serverList = serverList.filter(item => item.application !== 'DCache' || (item.application === 'DCache' && (
 			item.server_name === 'DCacheOptServer'
 			|| item.server_name === 'ConfigServer'
 			|| item.server_name === 'PropertyServer')))
-
 	}else if(type === '2'){
+		// DCache
 		serverList = serverList.filter(item => item.application === 'DCache' && (
 			item.server_name === 'DCacheOptServer'
 			|| item.server_name === 'ConfigServer'

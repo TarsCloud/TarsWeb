@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
 		uid: {
 			type: DataTypes.STRING(128),
 			allowNull: true,
-			unique: true
+			unique: 'uid' 
 		},
 		token: {
 			type: DataTypes.STRING(128),

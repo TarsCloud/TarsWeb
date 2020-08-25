@@ -300,6 +300,34 @@ ServerController.updateServerConf = async (ctx) => {
 
 };
 
+ServerController.getServerSearch = async (ctx) => {
+	let { searchkey } = ctx.paramsObj
+	try {
+		let currPage = parseInt(ctx.paramsObj.curr_page) || 0
+		let pageSize = parseInt(ctx.paramsObj.page_size) || 0
+		let ret = await ServerDao.getServerConfBySearchKey(searchkey, currPage, pageSize)
+		let rows = util.viewFilter(ret.rows, serverConfStruct) || []
+
+		rows.forEach(server => {
+			let id;
+			if (server.enable_set == 'Y') {
+				id = '1' + server.application + '.' + '2' + server.set_name + '.' + '3' + server.set_area + '.' + '4' + server.set_group + '.' + '5' + server.server_name;
+			} else {
+				id = '1' + server.application + '.' + '5' + server.server_name;
+			}
+			server.id = id
+		})
+
+		ctx.makeResObj(200, '', {
+			count: ret.count,
+			rows,
+		})
+	} catch (e) {
+		logger.error('[getServerSearch]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
 ServerController.loadServer = async (ctx) => {
 	let application = ctx.paramsObj.application;
 	let serverName = ctx.paramsObj.server_name;

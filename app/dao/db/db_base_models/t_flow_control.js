@@ -25,7 +25,7 @@ module.exports = function(sequelize, DataTypes) {
     f_station_id: {
       type: DataTypes.STRING(64),
       allowNull: false,
-      unique: 'f_station_id'
+      unique: 'f_station_id' 
     },
     f_duration: {
       type: DataTypes.INTEGER(10),

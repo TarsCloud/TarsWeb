@@ -124,6 +124,7 @@
   },
   "apply": {
     "title": "Application",
+        "createTitle": "Create Application",
     "name": "Application Name",
     "createApply": "Create Application",
     "createRouterProxyService": "Create Router、proxy Service",
@@ -148,7 +149,10 @@
   },
   "module": {
     "title": "Module",
+        "createTitle": "Create Module",
+        "update": "Module already exists, please select update mode",
     "name": "Module Name",
+        "chooseMirror": "Please choose one mirror at least",
     "namingRule": "Application name + custom name.Only digits and letters allowed.",
     "keyType": "Key Type",
     "createModule": "Create Module",
@@ -198,6 +202,12 @@
     "cacheTypeTip1": "Memory database (not obsolete)",
     "cacheTypeTip2": "Temporary cache (expired)",
     "cacheTypeTip3": "Hot spot cache (expand elimination)",
+        "installFull": "Overwrite Install",
+        "installlFullInfo": "The size of shared memory should be the same as before, or clear the previous shared memory",
+        "installDbAccess": "Install DbAccess Server",
+        "installDbAccessInfo": "After installing dbaccess, pay attention to modify the corresponding cache configuration, enable dbaccess and associate it with the current dbaccess service",
+        "installBackup": "Install Backup Cache",
+        "installMirror": "Install Mirror Cache",
     "perRecordAvg": "Average bytes of data records",
     "perRecordAvgUnit": "Byte",
     "totalRecord": "Save in the Cache",
@@ -427,6 +437,7 @@
     "modify": "modify",
     "delete": "delete",
     "more": "more",
+        "download": "Download",
     "operates": "Operates",
     "view": "view",
     "merge": "merge",
@@ -435,6 +446,7 @@
     "goback": "go back",
     "default": "default",
     "save": "save",
+        "submit": "submit",
     "title": {
       "update": "Update",
       "add": "Add",
@@ -465,9 +477,11 @@
         "last_heartbeat": "Last Heartbeat",
         "present_state": "Present State",
         "tars_version": "Version",
+                "label": "label",
         "load_avg5": "Load",
         "check": "Operator"
       },
+            "edit": "Edit",
       "check": "Check",
       "delete": "Delete"
     },
@@ -808,8 +822,8 @@
     "btn": {
       "manualAddNode": "Manual Install node",
       "autoAddNode": "Auto Install node",
-      "check": "Click to check framework",
-      "question": "Any Problem?"
+            "autoUpdateNode": "Batch Upgrate node",
+            "check": "Click to check framework"
     },
     "manualAddNode": {
       "title": "Step",
@@ -836,6 +850,13 @@
     "add": {
       "nodeNameTips": "node name cannot be empty",
       "title": "Install Node(Windows not support)"
+        },
+        "label": {
+            "title": "Edit Label",
+            "name": "Label Name",
+            "value": "Label Value",
+            "operator": "Operator",
+            "delete": "Delete"
     }
   },
   "connectNodeList": {
@@ -1243,6 +1264,7 @@
     "loginTitle": "Please Sign In",
     "userName": "User name",
     "password": "Password",
+    "captcha": "Captcha",
     "repeatPassword": "Repeat password",
     "login": "Sign in",
     "toRegisterPage": "Create an account",
@@ -1251,6 +1273,7 @@
     "userNameRegTips": "The user name can contain only letters or Numbers, underscores",
     "passwordTips": "Password is required",
     "passwordNoCorrect": "Incorrect password",
+    "captchaTips": "Captcha is required",
     "userNoExist": "User name does not exist",
     "loginFailed": "Sign in failed",
     "registerTitle": "Please Sign Up",

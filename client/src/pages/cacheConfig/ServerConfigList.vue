@@ -12,6 +12,7 @@
 <script>
   export default {
     props: {
+      appName: {type: String, required: true},
       moduleName: {type: String, required: true},
       serverName: {type: String, required: true},
       nodeName: {type: String, required: true},
@@ -25,6 +26,7 @@
       async getServerConfig () {
         try {
           let option = {
+            appName: this.appName,
             moduleName: this.moduleName,
             serverName: this.serverName,
             nodeName: this.nodeName,
@@ -38,7 +40,6 @@
             return item === lastItem
           })
         } catch (err) {
-          console.error(err)
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
       }
