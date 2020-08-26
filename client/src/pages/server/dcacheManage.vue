@@ -2,13 +2,24 @@
   <div class="page_server_manage">
 
     <!-- 服务列表 -->
-    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    <div class="table_head">
+      <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    </div>
     
-    <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
-      <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
-        <template slot-scope="scope">
-          <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" title="点击查看服务日志(view server logs)" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
+    <!-- 服务列表 -->
+    <let-table class="dcache" v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" ref="serverListLoading">
+     <let-table-column>
+        <template slot="head" slot-scope="props">
+          <let-checkbox v-model="isCheckedAll" :value="isCheckedAll"></let-checkbox>
         </template>
+        <template slot-scope="scope">
+          <let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>
+        </template>
+      </let-table-column>
+      <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
+       <template slot-scope="scope">
+          <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" title="点击查看服务日志(view server logs)" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
+        </template>      
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.enableSet')">
@@ -48,15 +59,24 @@
           <let-table-operation @click="showMoreCmd(scope.row)">{{$t('operate.more')}}</let-table-operation>
         </template>
       </let-table-column>
+      <template slot="operations">
+        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="restart"></batch-operation>
+        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="stop"></batch-operation>
+      </template>
     </let-table>
 
     <!-- 服务实时状态 -->
     <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
-    <let-table v-if="serverNotifyList && showOthers" :data="serverNotifyList" ref="serverNotifyListLoading">
+    <let-table v-if="serverNotifyList && showOthers"
+      :data="serverNotifyList" :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
       <let-table-column :title="$t('common.time')" prop="notifytime"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.result')" prop="result"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.result')">
+        <template slot-scope="scope">
+          <span :style="statusStyle(scope.row.result)">{{scope.row.result}}</span>
+        </template>         
+      </let-table-column>
     </let-table>
     <let-pagination
       :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
@@ -390,6 +410,7 @@
 
 <script>
   import { expandServerPreview, autoPort, expandServer, addTask } from '@/dcache/interface.js'
+  import batchOperation from './../dcache/moduleManage/batchOperation.vue'
 const getInitialExpandModel = () => ({
   application: 'DCache',
   server_name: '',
@@ -404,10 +425,12 @@ const getInitialExpandModel = () => ({
 });
 export default {
   name: 'ServerManage',
+  components: { batchOperation },
   data() {
     return {
       // 当前页面信息
-      serverType: this.$route.params.serverType || 'tars',
+      isCheckedAll: false,
+      serverType: this.servertype || 'taf',
       serverData: {
         level: 5,
         application: '',
@@ -477,6 +500,7 @@ export default {
       failCount :0
     };
   },
+  props: ['treeid', 'servertype'],
   computed: {
     showOthers() {
       return this.serverData.level === 5;
@@ -487,8 +511,20 @@ export default {
       }
       return this.checkServantEndpoint(this.servantDetailModal.model.endpoint);
     },
+    hasCheckedServer() {
+      return this.serverList.filter(item => item.isChecked === true).length !== 0;
+    },
+    checkedServers() {
+      return this.serverList.filter(item => item.isChecked === true);
+    }
   },
   watch: {
+    isCheckedAll() {
+      let isCheckedAll = this.isCheckedAll;
+      this.serverList.forEach((item) => {
+        item.isChecked = isCheckedAll;
+      });
+    },
     '$route' (to, from) {
       this.getServerList();
       this.getServerNotifyList(1);
@@ -500,9 +536,14 @@ export default {
       const loading = this.$refs.serverListLoading.$loading.show();
 
       this.$ajax.getJSON('/server/api/server_list', {
-        tree_node_id: this.$route.params.treeid,
+        // tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.treeid,
       }).then(async (data) => {
         loading.hide();
+        data.forEach(item => {
+          item.isChecked = false
+        });
+
         this.serverList = data;
 
 
@@ -511,7 +552,7 @@ export default {
           let serverLength = this.serverList.length;
           if (serverLength > 0) return false;
           try {
-            await this.$ajax.postJSON('/server/api/cache/removeServer', {server_name: this.$route.params.treeid.split('.')[1].substr(1)});
+            await this.$ajax.postJSON('/server/api/cache/removeServer', {server_name: this.treeid.split('.')[1].substr(1)});
             this.$parent.getTreeData();
           } catch (err) {
             console.error(err)
@@ -523,7 +564,7 @@ export default {
           let serverLength = this.serverList.length;
           if (serverLength > 0) return false;
           try {
-            await this.$ajax.postJSON('/server/api/cache/removeProxy', {server_name: this.$route.params.treeid.split('.')[1].substr(1)});
+            await this.$ajax.postJSON('/server/api/cache/removeProxy', {server_name: this.treeid.split('.')[1].substr(1)});
             this.$parent.getTreeData();
           } catch (err) {
             console.error(err)
@@ -534,7 +575,7 @@ export default {
           let serverLength = this.serverList.length;
           if (serverLength > 0) return false;
           try {
-            await this.$ajax.postJSON('/server/api/cache/removeRouter', {server_name: this.$route.params.treeid.split('.')[1].substr(1)});
+            await this.$ajax.postJSON('/server/api/cache/removeRouter', {server_name: this.treeid.split('.')[1].substr(1)});
             this.$parent.getTreeData();
           } catch (err) {
             console.error(err)
@@ -554,7 +595,8 @@ export default {
       const loading = this.$refs.serverNotifyListLoading.$loading.show();
 
       this.$ajax.getJSON('/server/api/server_notify_list', {
-        tree_node_id: this.$route.params.treeid,
+        // tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.treeid,
         page_size: this.pageSize,
         curr_page: curr_page,
       }).then((data) => {
@@ -566,6 +608,16 @@ export default {
         loading.hide();
         this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
+    },
+    statusStyle(message) {
+      message = message || '';
+
+      if(message == "restart" || message.indexOf("[succ]") != -1) {
+        return "color: green";
+      } else if(message == "stop" || message.indexOf("[alarm]") != -1 || message.indexOf("error") != -1 || message.indexOf("ERROR") != -1 ){
+        return "color: red";
+      }
+      return "";
     },
     // 切换服务实时状态页码
     gotoPage(num) {
@@ -1140,6 +1192,7 @@ export default {
 };
 </script>
 
+
 <style lang="postcss">
 @import '../../assets/css/variable.css';
 
@@ -1149,6 +1202,12 @@ export default {
   }
   .danger {
     color: var(--off-color);
+  }
+
+  .icon.iconfont {
+    font-size:10px;
+    cursor: pointer;
+    vertical-align: 0em  
   }
 
   .more-cmd {
@@ -1163,6 +1222,9 @@ export default {
       width: 200px;
     }
   }
+
+  .table_head{padding:10px 0;}
+  .dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
 }
 
 </style>

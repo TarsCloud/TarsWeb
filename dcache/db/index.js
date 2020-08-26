@@ -21,7 +21,6 @@ const Sequelize = require('sequelize');
 
 const _ = require('lodash');
 
-
 const fs = require('fs-extra');
 
 
@@ -75,13 +74,21 @@ databases.forEach((database) => {
   const tableObj = {};
   const dbModelsPath = `${__dirname}/${database}_models`;
   const dbModels = fs.readdirSync(dbModelsPath);
-  dbModels.forEach((dbModel) => {
+  dbModels.forEach(async (dbModel) => {
     const tableName = dbModel.replace(/\.js$/g, '');
-    tableObj[_.camelCase(tableName)] = sequelize.import(`${dbModelsPath}/${tableName}`);
-    // sync 无表创建表， alter 新增字段
-    // tableObj[_.camelCase(tableName)].sync();
-    // tableObj[_.camelCase(tableName)].sync({ alter: true });
+    try {
+      tableObj[_.camelCase(tableName)] = sequelize.import(`${dbModelsPath}/${tableName}`);
+      // sync 无表创建表， alter 新增字段
+      // tableObj[_.camelCase(tableName)].sync();
+      await tableObj[_.camelCase(tableName)].sync({ alter: true });
+
+      console.log('sync ' + database + '.' + tableName + ' succ');
+
+    } catch (e) {
+      console.log('sync ' + database + '.' + tableName + ' error:', e);
+    }
   });
+
   Db[database] = tableObj;
   Db[database].sequelize = sequelize;
   sequelize.sync();
@@ -112,21 +119,7 @@ tApplyCacheModuleConf.belongsTo(tApplyCacheModuleBase, {
   foreignKey: 'module_id',
   as: 'ModuleBase',
 });
-tApplyCacheModuleConf.hasMany(tApplyCacheServerConf, {
-  foreignKey: 'module_name',
-  sourceKey: 'module_name',
-  as: 'ServerConf',
-});
 
-tApplyCacheServerConf.belongsTo(tApplyAppBase, {
-  foreignKey: 'apply_id',
-  as: 'applyBase',
-});
-tApplyCacheServerConf.belongsTo(tApplyCacheModuleConf, {
-  foreignKey: 'module_name',
-  targetKey: 'module_name',
-  as: 'moduleBase',
-});
 
 
 module.exports = Db;

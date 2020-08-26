@@ -27,7 +27,7 @@ module.exports = function(sequelize, DataTypes) {
 		task_no: {
 			type: DataTypes.STRING(40),
 			allowNull: true,
-			unique: true
+			unique: 'task_no' 
 		},
 		serial: {
 			type: DataTypes.INTEGER(1),

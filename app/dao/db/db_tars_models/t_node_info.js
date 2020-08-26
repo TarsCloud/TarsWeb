@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(128),
 			allowNull: true,
 			defaultValue: '',
-			unique: true
+			unique: 'node_name'
 		},
 		node_obj: {
 			type: DataTypes.STRING(128),
@@ -99,6 +99,11 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.DATE,
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+		},
+		label: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+			defaultValue: ''
 		},
 		group_id: {
 			type: DataTypes.INTEGER(11),

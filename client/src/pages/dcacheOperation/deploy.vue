@@ -7,16 +7,12 @@
       itemWidth="480px"
       @submit.native.prevent="save"
     >
-      <let-form-item :label="$t('deployService.form.app')" required>
-        <let-input
-          size="small"
-          v-model="model.application"
-          :placeholder="$t('deployService.form.placeholder')"
-          required
-          :required-tip="$t('deployService.form.appTips')"
-          pattern="^[a-zA-Z]+$"
-          :pattern-tip="$t('deployService.form.placeholder')"
-        ></let-input>
+     <let-form-item :label="$t('deployService.form.app')" required>
+        <let-select id="inputApplication" v-model="model.apply" size="small" filterable :notFoundText="$t('deployService.form.appAdd')">
+          <let-option v-for="d in model.applyList" :key="d" :value="d">
+            {{d}}
+          </let-option>
+        </let-select>
       </let-form-item>
       <let-form-item :label="$t('deployService.form.serviceName')" required>
         <let-input
@@ -49,16 +45,13 @@
           <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
         </let-select>
       </let-form-item>
+
       <let-form-item :label="$t('serverList.table.th.ip')" required>
-        <let-input
-          size="small"
-          v-model="model.node_name"
-          :placeholder="$t('serverList.table.th.ip')"
-          required
-          :required-tip="$t('deployService.form.nodeTips')"
-          pattern="^[0-9]{1,3}(?:\.[0-9]{1,3}){3}$"
-          :pattern-tip="$t('deployService.form.nodeFormatTips')"
-        ></let-input>
+        <let-select v-model="model.node_name" size="small" filterable>
+          <let-option v-for="d in model.nodeList" :key="d" :value="d">
+            {{d}}
+          </let-option>
+        </let-select>
       </let-form-item>
       <let-form-item label="SET">
         <SetInputer
@@ -298,6 +291,7 @@ export default {
     return {
       types,
       templates: [],
+      applyList: [],
       model: getInitialModel(),
       enableAuth: false,
       resultModal: {
@@ -323,6 +317,17 @@ export default {
     this.$ajax.getJSON('/server/api/template_name_list').then((data) => {
       this.templates = data;
       this.model.template_name = data[0];
+    }).catch((err) => {
+      this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+    });
+    this.$ajax.getJSON('/server/api/get_apply_list').then((data) => {
+      this.model.applicationList = data;
+    }).catch((err) => {
+      this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+    });
+    this.$ajax.getJSON('/server/api/node_list').then((data) => {
+      // console.log(data);
+      this.model.nodeList = data;
     }).catch((err) => {
       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
     });

@@ -205,7 +205,7 @@ ExpandService.expand = async (params) => {
 				let portType = sourceAdapter.endpoint.substring(0, sourceAdapter.endpoint.indexOf(' '));
 				portType = _.indexOf(['tcp', 'udp'], portType) > -1 ? portType : 'tcp';
 				adapter.endpoint = portType + ' -h ' + preServer.bind_ip + ' -t ' + sourceAdapter.queuetimeout + ' -p ' + preServer.port + ' -e ' + (preServer.auth ? preServer.auth : 0);
-				console.log('adapter', adapter);
+				// console.log('adapter', adapter);
 				await AdapterDao.insertAdapterConf(adapter, transaction);
 			}
 		}
@@ -246,8 +246,10 @@ ExpandService.getApplication = async (uid) => {
 };
 
 ExpandService.getServerName = async (application, uid) => {
+	let serverList = [];
+
 	if (await AuthService.hasAdminAuth(uid)) {
-		return ExpandService.formatToArray(await ServerDao.getServerName(application), 'server_name');
+		serverList = ExpandService.formatToArray(await ServerDao.getServerName(application), 'server_name');
 	} else {
 		let authList = await AuthService.getAuthListByUid(uid);
 		let serverList = [];
@@ -269,12 +271,32 @@ ExpandService.getServerName = async (application, uid) => {
 				})
 			}
 		}
-		return _.uniq(serverList);
+		serverList = _.uniq(serverList);
 	}
+
+	if (application == "DCache") {
+		serverList = serverList.filter(item => { return item.indexOf("CacheServer") == -1; });
+	}
+	return serverList;
+
 };
 
 ExpandService.getSet = async (application, serverName) => {
 	return ExpandService.formatToArray(await ServerDao.getSet(application, serverName), 'set');
+};
+
+ExpandService.getObj = async (application, serverName, uid) => {
+	if (await AuthService.hasAdminAuth(uid)) {
+		return ExpandService.formatToArray(await ServerDao.getObj(application, serverName), 'servant');
+	} else {
+		let authList = await AuthService.getAuthListByUid(uid);
+		for(let auth of authList){
+			if(auth.application == application || auth.serverName == serverName){
+				return ExpandService.formatToArray(await ServerDao.getObj(application, serverName), 'servant');
+			}
+		}
+	}
+	return []
 };
 
 ExpandService.getNodeName = async (application, serverName, set) => {

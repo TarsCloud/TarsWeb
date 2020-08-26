@@ -9,11 +9,11 @@ import Axios from '@/lib/axios.js'
  * @param cache_version
  */
 export function expandModule({ servers, appName, moduleName, status = '1', cache_version, srcGroupName = [], dstGroupName = [] }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/expandModule',
-    data: { appName, moduleName, servers, status, cache_version, srcGroupName, dstGroupName }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/expandModule',
+        data: { appName, moduleName, servers, status, cache_version, srcGroupName, dstGroupName }
+    })
 }
 
 /**
@@ -27,11 +27,11 @@ export function expandModule({ servers, appName, moduleName, status = '1', cache
  * @param dstGroupName
  */
 export function transferDCache({ servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, transferData }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/transferDCache',
-    data: { servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, transferData}
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/transferDCache',
+        data: { servers, appName, moduleName, cache_version, srcGroupName, dstGroupName, transferData }
+    })
 }
 
 /**
@@ -43,14 +43,14 @@ export function transferDCache({ servers, appName, moduleName, cache_version, sr
  * @param transferData
  */
 export function transferDCacheGroup({ appName, moduleName, srcGroupName, dstGroupName, transferData }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/transferDCacheGroup',
-    data: { appName, moduleName, srcGroupName, dstGroupName, transferData },
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/transferDCacheGroup',
+        data: { appName, moduleName, srcGroupName, dstGroupName, transferData },
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
 }
 
 /**
@@ -58,11 +58,11 @@ export function transferDCacheGroup({ appName, moduleName, srcGroupName, dstGrou
  * @param releaseId
  */
 export function getReleaseProgress({ releaseId }) {
-  return Axios({
-    method: 'get',
-    url: '/cache/getReleaseProgress',
-    params: { releaseId }
-  })
+    return Axios({
+        method: 'get',
+        url: '/cache/getReleaseProgress',
+        params: { releaseId }
+    })
 }
 
 /**
@@ -70,27 +70,27 @@ export function getReleaseProgress({ releaseId }) {
  * @param releaseId
  */
 export function getTarsReleaseProgress({ releaseId }) {
-  return Axios({
-    method: 'get',
-    url: '/task',
-    params: {
-      task_no: releaseId
-    }
-  })
+    return Axios({
+        method: 'get',
+        url: '/task',
+        params: {
+            task_no: releaseId
+        }
+    })
 }
 
 export function configTransfer({ appName, moduleName, type = '1', srcGroupName = [], dstGroupName = [] }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/configTransfer',
-    data: {
-      appName,
-      moduleName,
-      type,
-      srcGroupName,
-      dstGroupName,
-    }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/configTransfer',
+        data: {
+            appName,
+            moduleName,
+            type,
+            srcGroupName,
+            dstGroupName,
+        }
+    })
 }
 
 /**
@@ -98,26 +98,26 @@ export function configTransfer({ appName, moduleName, type = '1', srcGroupName =
  * @type String 0、1、2 迁移、扩容、缩容
  */
 export function getRouterChange({ type = '1' }) {
-  return Axios({
-    method: 'get',
-    url: '/cache/getRouterChange',
-    params: {
-      type
-    }
-  })
+    return Axios({
+        method: 'get',
+        url: '/cache/getRouterChange',
+        params: {
+            type
+        }
+    })
 }
 
 export function hasOperation({ appName, moduleName, type, srcGroupName }) {
-  return Axios({
-    method: 'get',
-    url: '/cache/hasOperation',
-    params: {
-      appName,
-      moduleName,
-      type,
-      srcGroupName,
-    }
-  })
+    return Axios({
+        method: 'get',
+        url: '/cache/hasOperation',
+        params: {
+            appName,
+            moduleName,
+            type,
+            srcGroupName,
+        }
+    })
 }
 
 /**
@@ -130,17 +130,17 @@ export function hasOperation({ appName, moduleName, type, srcGroupName }) {
  *
  */
 export function stopTransfer({ appName = '', moduleName = '', type = '1', srcGroupName = [], dstGroupName = [] }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/stopTransfer',
-    data: {
-      appName,
-      moduleName,
-      type,
-      srcGroupName,
-      dstGroupName
-    }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/stopTransfer',
+        data: {
+            appName,
+            moduleName,
+            type,
+            srcGroupName,
+            dstGroupName
+        }
+    })
 }
 
 /**
@@ -153,17 +153,17 @@ export function stopTransfer({ appName = '', moduleName = '', type = '1', srcGro
  *
  */
 export function restartTransfer({ appName = '', moduleName = '', type = '1', srcGroupName = [], dstGroupName = [] }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/restartTransfer',
-    data: {
-      appName,
-      moduleName,
-      type,
-      srcGroupName,
-      dstGroupName
-    }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/restartTransfer',
+        data: {
+            appName,
+            moduleName,
+            type,
+            srcGroupName,
+            dstGroupName
+        }
+    })
 }
 
 /**
@@ -176,17 +176,17 @@ export function restartTransfer({ appName = '', moduleName = '', type = '1', src
  *
  */
 export function deleteTransfer({ appName = '', moduleName = '', type = '1', srcGroupName = [], dstGroupName = [] }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/deleteTransfer',
-    data: {
-      appName,
-      moduleName,
-      type,
-      srcGroupName,
-      dstGroupName
-    }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/deleteTransfer',
+        data: {
+            appName,
+            moduleName,
+            type,
+            srcGroupName,
+            dstGroupName
+        }
+    })
 }
 
 /**
@@ -196,15 +196,15 @@ export function deleteTransfer({ appName = '', moduleName = '', type = '1', srcG
  * @param srcGroupName
  */
 export function reduceDcache({ appName = '', moduleName = '', srcGroupName = [] }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/reduceDcache',
-    data: {
-      appName,
-      moduleName,
-      srcGroupName,
-    }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/reduceDcache',
+        data: {
+            appName,
+            moduleName,
+            srcGroupName,
+        }
+    })
 }
 
 /**
@@ -214,15 +214,15 @@ export function reduceDcache({ appName = '', moduleName = '', srcGroupName = [] 
  * @param groupName
  */
 export function switchServer({ appName = '', moduleName = '', groupName = '' }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/switchServer',
-    data: {
-      appName,
-      moduleName,
-      groupName,
-    }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/switchServer',
+        data: {
+            appName,
+            moduleName,
+            groupName,
+        }
+    })
 }
 
 /**
@@ -232,15 +232,15 @@ export function switchServer({ appName = '', moduleName = '', groupName = '' }) 
  * @param groupName
  */
 export function getSwitchInfo({ appName = '', moduleName = '', groupName = '' }) {
-  return Axios({
-    method: 'get',
-    url: '/cache/getSwitchInfo',
-    params: {
-      appName,
-      moduleName,
-      groupName,
-    }
-  })
+    return Axios({
+        method: 'get',
+        url: '/cache/getSwitchInfo',
+        params: {
+            appName,
+            moduleName,
+            groupName,
+        }
+    })
 }
 
 /**
@@ -253,11 +253,11 @@ export function getSwitchInfo({ appName = '', moduleName = '', groupName = '' })
  * @param enableErase
  */
 export function recoverMirrorStatus({ appName, moduleName, groupName, mirrorIdc, dbFlag, enableErase }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/recoverMirrorStatus',
-    data: { appName, moduleName, groupName, mirrorIdc, dbFlag, enableErase }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/recoverMirrorStatus',
+        data: { appName, moduleName, groupName, mirrorIdc, dbFlag, enableErase }
+    })
 }
 
 /**
@@ -267,11 +267,11 @@ export function recoverMirrorStatus({ appName, moduleName, groupName, mirrorIdc,
  * @param serversNames
  */
 export function uninstall4DCache({ unType, appName, moduleName, serverNames }) {
-  return Axios({
-    method: 'post',
-    url: '/cache/uninstall4DCache',
-    data: { unType, appName, moduleName, serverNames }
-  })
+    return Axios({
+        method: 'post',
+        url: '/cache/uninstall4DCache',
+        data: { unType, appName, moduleName, serverNames }
+    })
 }
 
 /**
@@ -280,11 +280,11 @@ export function uninstall4DCache({ unType, appName, moduleName, serverNames }) {
  * @param moduleName
  */
 export function getCacheServerList({ appName, moduleName }) {
-  return Axios({
-    method: 'get',
-    url: '/cache/getCacheServerList',
-    params: { appName, moduleName }
-  })
+    return Axios({
+        method: 'get',
+        url: '/cache/getCacheServerList',
+        params: { appName, moduleName }
+    })
 }
 
 /**
@@ -293,33 +293,33 @@ export function getCacheServerList({ appName, moduleName }) {
  * @param moduleName
  */
 export function getModuleConfig({ appName, moduleName }) {
-  return Axios({
-    method: 'get',
-    url: '/cache/getModuleConfig',
-    params: { appName, moduleName }
-  })
+    return Axios({
+        method: 'get',
+        url: '/cache/getModuleConfig',
+        params: { appName, moduleName }
+    })
 }
 
 /**
  * 获取所有的服务配置
  */
 export function getConfig() {
-  return Axios({
-    method: 'get',
-    url: '/cache/getConfig',
-  })
+    return Axios({
+        method: 'get',
+        url: '/cache/getConfig',
+    })
 }
 
 /**
  * 安装发布应用的 router 和 proxy 服务
  * @param applyId
  */
-export function installAndPublish ({ applyId }) {
-  return Axios({
-    method: 'get',
-    url: '/cache/install_and_publish',
-    params: { applyId }
-  })
+export function installAndPublish({ applyId, replace }) {
+    return Axios({
+        method: 'get',
+        url: '/cache/install_and_publish',
+        params: { applyId, replace }
+    })
 }
 
 /**
@@ -348,31 +348,31 @@ export function queryProperptyData({ thedate, predate, startshowtime, endshowtim
  * @param cacheVersion     package_type  的类型，  1是dcache 一期， 2是 dcache 2期
  */
 export function serverPatchList({ application = 'DCache', moduleName = 'DCacheServerGroup', currPage = 1, pageSize = 5, cacheVersion }) {
-  return Axios({
-    method: 'get',
-    url: '/server_patch_list',
-    params: {
-      application,
-      module_name: moduleName,
-      curr_page: currPage,
-      page_size: pageSize,
-      package_type: cacheVersion
-    }
-  })
+    return Axios({
+        method: 'get',
+        url: '/server_patch_list',
+        params: {
+            application,
+            module_name: moduleName,
+            curr_page: currPage,
+            page_size: pageSize,
+            package_type: cacheVersion
+        }
+    })
 }
 
 export function addTask({ serial = false, items = [{ server_id: '', command: 'patch_tars', parameters: { patch_id: 0, bak_flag: '', group_name: '' } }] }) {
-  return Axios({
-    method: 'post',
-    url: '/add_task',
-    data: {
-      serial,
-      items,
-    },
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+    return Axios({
+        method: 'post',
+        url: '/add_task',
+        data: {
+            serial,
+            items,
+        },
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
 }
 
 /**
@@ -380,59 +380,73 @@ export function addTask({ serial = false, items = [{ server_id: '', command: 'pa
  * @param moduleId
  */
 export function getModuleConfigInfo({ moduleId }) {
-  return Axios({
-    method: 'get',
-    url: '/get_module_config_info',
-    params: {
-      moduleId
-    }
-  })
+    return Axios({
+        method: 'get',
+        url: '/get_module_config_info',
+        params: {
+            moduleId
+        }
+    })
+}
+
+/**
+ * 获取模块信息
+ * @param moduleId
+ */
+export function getModuleGroup({ module_name }) {
+    return Axios({
+        method: 'get',
+        url: '/get_module_group',
+        params: {
+            module_name
+        }
+    })
 }
 
 /**
  * 获取模版信息
  */
 export function templateNameList() {
-  return Axios({
-    method: 'get',
-    url: '/template_name_list',
-    params: {},
-  })
+    return Axios({
+        method: 'get',
+        url: '/template_name_list',
+        params: {},
+    })
 }
 
 export function getRegionList() {
-  return Axios({
-    method: 'get',
-    url: '/get_region_list'
-  })
+    return Axios({
+        method: 'get',
+        url: '/get_region_list'
+    })
 }
 
 export function expandServerPreview({ application = "", server_name = "", set = "", node_name = "", expand_nodes = [""], enable_set = false, set_name = "", set_area = "", set_group = "", copy_node_config = false }) {
-  return Axios({
-    method: 'post',
-    url: '/expand_server_preview',
-    data: { application, server_name, set, node_name, expand_nodes, enable_set, set_name, set_area, set_group, copy_node_config },
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+    return Axios({
+        method: 'post',
+        url: '/expand_server_preview',
+        data: { application, server_name, set, node_name, expand_nodes, enable_set, set_name, set_area, set_group, copy_node_config },
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
 }
 
-export function autoPort({node_name}) {
-  return Axios({
-    method: 'get',
-    url: '/auto_port',
-    params: { node_name }
-  })
+export function autoPort({ node_name }) {
+    return Axios({
+        method: 'get',
+        url: '/auto_port',
+        params: { node_name }
+    })
 }
 
-export function expandServer({ application = "", server_name = "", set = "", node_name = "", copy_node_config = false, expand_preview_servers = [{"bind_ip":"","node_name":"","obj_name":"","port":"","set":""}]}) {
-  return Axios({
-    method: 'post',
-    url: '/expand_server',
-    data: { application, server_name, set, node_name, copy_node_config, expand_preview_servers },
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+export function expandServer({ application = "", server_name = "", set = "", node_name = "", copy_node_config = false, expand_preview_servers = [{ "bind_ip": "", "node_name": "", "obj_name": "", "port": "", "set": "" }] }) {
+    return Axios({
+        method: 'post',
+        url: '/expand_server',
+        data: { application, server_name, set, node_name, copy_node_config, expand_preview_servers },
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
 }

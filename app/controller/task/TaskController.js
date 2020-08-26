@@ -14,29 +14,30 @@
  * specific language governing permissions and limitations under the License.
  */
 
+const moment = require('moment');
 const logger = require('../../logger');
 const TaskService = require('../../service/task/TaskService');
 const util = require('../../tools/util');
-const kafkaConf = require('../../../config/webConf').kafkaConf;
+// const kafkaConf = require('../../../config/webConf').kafkaConf;
 const AuthService = require('../../service/auth/AuthService');
 const webConf = require('../../../config/webConf').webConf;
 const ServerService = require('../../service/server/ServerService');
 const TaskController = {};
 
-let kafkaProducer;
-let kafkaConsumer;
+// let kafkaProducer;
+// let kafkaConsumer;
 
-if (kafkaConf.enable) {
-	const kafka = require('kafka-node');
-	kafkaProducer = require('../../service/task/KafkaProducer');
-	kafkaConsumer = require('../../service/task/KafkaConsumer');
+// if (kafkaConf.enable) {
+// 	const kafka = require('kafka-node');
+// 	kafkaProducer = require('../../service/task/KafkaProducer');
+// 	kafkaConsumer = require('../../service/task/KafkaConsumer');
 
-	kafkaConsumer.consume();
-}
+// 	kafkaConsumer.consume();
+// }
 
 
 TaskController.getTasks = async (ctx) => {
-	console.log(ctx);
+	// console.log(ctx);
 	try {
 		let {application, server_name, command, from, to, curr_page = 0, page_size = 0} = ctx.paramsObj;
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
@@ -57,8 +58,6 @@ TaskController.getTasks = async (ctx) => {
 				return e;
 			});
 
-			// console.log('--------', tasks);
-
 			for (let i = 0, len = tasks.rows.length; i < len; i++) {
 				let task = tasks.rows[i];
 
@@ -74,6 +73,8 @@ TaskController.getTasks = async (ctx) => {
 						items: [{}]
 					});
 				}
+
+				ret[ret.length - 1].create_time = moment(task.update_time).format("YYYY-MM-DD HH:mm:ss");
 			}
 			ctx.makeResObj(200, '', {count: tasks.count, rows: ret});
 		}
@@ -86,16 +87,16 @@ TaskController.getTasks = async (ctx) => {
 TaskController.getTask = async (ctx) => {
 	try {
 		let ret;
-		if (kafkaConf.enable) {
-			let task = await TaskService.getTaskStatus(ctx.paramsObj.task_no);
-			if (task.status == 'waiting') {
-				ret = {status: 0};
-			} else {
-				ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
-			}
-		} else {
+		// if (kafkaConf.enable) {
+		// 	let task = await TaskService.getTaskStatus(ctx.paramsObj.task_no);
+		// 	if (task.status == 'waiting') {
+		// 		ret = {status: 0};
+		// 	} else {
+		// 		ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
+		// 	}
+		// } else {
 			ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
-		}
+		// }
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
 		logger.error('[TaskController.getTask]:', e, ctx);
@@ -142,14 +143,25 @@ TaskController.addTask = async (ctx) => {
 			}
 		}
 		let task_no = util.getUUID().toString();
-	
-		if (kafkaConf.enable) {
-			await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
-				logger.info('task produce success!');
-			});
-		} else {
-			await TaskService.addTask({serial, items, task_no, user_name});
+
+		for (let i = 0; i < items.length; i++) {
+			let item = items[i];
+
+			let server = await ServerService.getServerConfById(item.server_id);
+
+			if (!await AuthService.hasDevAuth(server.application, server.serverName, ctx.uid)) {
+				ctx.makeNotAuthResObj();
+				return;
+			}
 		}
+	
+		// if (kafkaConf.enable) {
+		// 	await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
+		// 		logger.info('task produce success!');
+		// 	});
+		// } else {
+			await TaskService.addTask({serial, items, task_no, user_name});
+		// }
 		ctx.makeResObj(200, '', task_no);
 	} catch (e) {
 		logger.error('[TaskController.addTask]:', e, ctx);

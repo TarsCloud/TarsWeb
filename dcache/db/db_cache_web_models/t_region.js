@@ -25,12 +25,12 @@ module.exports = function (sequelize, DataTypes) {
     region: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      unique: true,
+      unique: 'region',
     },
     label: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      unique: true,
+      unique: 'label',
     },
   }, {
     tableName: 't_region',

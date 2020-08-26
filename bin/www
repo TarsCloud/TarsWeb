@@ -27,6 +27,9 @@ const tarsInit = require('../app/init/tars');
 const port = normalizePort(process.env.PORT || webConf.port || '3000');
 const enableMultiProcess = false;
 
+const LdapService = require('../sso/app/service/ldap/LdapService')
+const CronService = require('../sso/app/service/ldap/CronService')
+
 //创建服务
 try {
 	//加载发布包
@@ -36,7 +39,6 @@ try {
 	if(process.env.TARS_WEB_STRICT) {
 		webConf.strict = (process.env.TARS_WEB_STRICT == "true");
 	}
-	// webConf.strict = process.env.TARS_WEB_STRICT || webConf.strict;
 
 	let numCpus = os.cpus().length;
 	if (cluster.isMaster && enableMultiProcess) {
@@ -59,6 +61,11 @@ try {
 			logger.info('Server has been started successfully');
 		});
 		server.on('error', onError);
+		
+		// 初始化LDAP创建
+        	LdapService.init();
+        	// 注册定时任务
+        	CronService.start();
 	}
 } catch (e) {
 	logger.error(e.toString())

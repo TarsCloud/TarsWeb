@@ -39,6 +39,46 @@ ResourceController.listTarsNode = async(ctx) => {
 	}
 }
 
+ResourceController.loadNodeLabel = async (ctx) => {
+	let nodeName = ctx.paramsObj.node_name || '';
+	try {
+		let rst = await ResourceService.loadNodeLabel(nodeName);
+		ctx.makeResObj(200, '', rst);
+	} catch (e) {
+		logger.error('[loadNodeLabel]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+ResourceController.addNodeLabel = async (ctx) => {
+	let nodeName = ctx.paramsObj.node_name || '';
+	let name = ctx.paramsObj.name || '';
+	let value = ctx.paramsObj.value || '';
+	try {
+
+		let rst = await ResourceService.addNodeLabel(nodeName, name, value);
+		
+		ctx.makeResObj(200, '', rst);
+	} catch (e) {
+		logger.error('[addNodeLabel]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+ResourceController.deleteNodeLabel = async (ctx) => {
+	let nodeName = ctx.paramsObj.node_name || '';
+	let name = ctx.paramsObj.name || '';
+	try {
+		let rst = await ResourceService.deleteNodeLabel(nodeName, name);
+
+		ctx.makeResObj(200, '', rst);
+	} catch (e) {
+		logger.error('[deleteNodeLabel]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+
 ResourceController.connectTarsNode = async (ctx) => {
 	try {
 		let rst = await ResourceService.connectTarsNode(ctx.paramsObj);

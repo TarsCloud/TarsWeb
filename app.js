@@ -17,10 +17,10 @@
 const Koa = require('koa');
 const app = new Koa();
 const path = require('path');
-// const views = require('koa-views');
-// const json = require('koa-json');
+const url = require('url');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
+const session = require('koa-session');
 const multer = require('koa-multer');
 const static = require('koa-static');
 const apiMidware = require('./app/midware/apiMidware');
@@ -28,14 +28,13 @@ const preMidware = require('./app/midware/preMidware');
 const postMidware = require('./app/midware/postMidware');
 const localeMidware = require('./app/midware/localeMidware');
 const helmet = require("koa-helmet");
-// const compress = require('koa-compress')
-const loginMidware = require('yami-sso-client').koa;
+const loginMidware = require('./app/midware/ssoMidware');
 const limitMidware = require('./app/midware/limitMidware');
 const WebConf = require('./config/webConf');
-// const Router = require('koa-router');
 const staticRouter = require('koa-static-router');
 const upload = multer({dest: WebConf.pkgUploadPath.path + '/'});
 const logger = require('./app/logger');
+const AuthService = require('./sso/app/service/auth/AuthService');
 
 //信任proxy头部，支持 X-Forwarded-Host
 app.proxy = true;
@@ -45,6 +44,20 @@ onerror(app);
 
 //防洪水攻击
 app.use(limitMidware());
+
+//验证码
+const CONFIG = {
+	key: 'koa:sess',
+	maxAge: 1000 * 60 * 60 * 12, // 12小时, 设置 session 的有效时间，单位毫秒
+	autoCommit: true, 
+	overwrite: true,
+	httpOnly: true,
+	signed: true,
+	rolling: false,
+	renew: false,
+}
+app.keys = ['sessionCaptcha']
+app.use(session(CONFIG, app))
 
 //安全防护
 app.use(helmet());
@@ -63,7 +76,8 @@ preMidware.forEach((midware) => {
 
 //登录校验
 let loginConf = require('./config/loginConf.js');
-loginConf.ignore = loginConf.ignore.concat(['/web_version','/static', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
+loginConf.ignore = loginConf.ignore.concat(['/web_version', '/static', '/captcha', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
+loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/register.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login']);
 
 //上传文件不需要登录
 if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
@@ -78,25 +92,22 @@ if(process.env.COOKIE_DOMAIN) {
 	loginConf.cookieDomain = process.env.COOKIE_DOMAIN
 }
 
-if(process.env.USER_CENTER_HOST) {
-	//存在外部host, 使用外部host代替 
-	loginConf.userCenterUrl = process.env.USER_CENTER_HOST;
-} 
-
-loginConf.loginUrl = loginConf.baseLoginUrl.replace("http://localhost:3001", loginConf.userCenterUrl);
-
-logger.info('loginUrl:', loginConf.loginUrl, 'userCenterUrl:', loginConf.userCenterUrl, 'cookieDomain', loginConf.cookieDomain);
-
 app.use(async (ctx, next) => {
-	// logger.info('loginUrl:', loginConf.loginUrl, 'userCenterUrl:', loginConf.userCenterUrl, 'cookieDomain', loginConf.cookieDomain);
-	if(!process.env.USER_CENTER_HOST) {
-		//直接用当前host代替, 端口还是保留
-		let userCenterIp = ctx.host.split(':')[0];
+	var myurl = url.parse(ctx.url);
 
-		loginConf.userCenterUrl = loginConf.baseUserCenterUrl.replace("localhost", userCenterIp);
+	if (await AuthService.isInit()) {
 
-		loginConf.loginUrl = loginConf.baseLoginUrl.replace("localhost", userCenterIp);
+		if ((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
 
+			logger.info('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
+			ctx.redirect('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
+			return;
+		}
+
+	} else if (myurl.pathname == '/adminPass.html') {
+
+		ctx.redirect(myurl.pathname);
+		return;
 	}
 
 	await next();
@@ -111,6 +122,7 @@ app.use(staticRouter([
     router: '/files'    //路由命名
 }]));
 
+//激活router
 
 let dcacheConf = require('./config/dcacheConf.js');
 if (dcacheConf.enableDcache) {
@@ -119,11 +131,11 @@ if (dcacheConf.enableDcache) {
 		ctx.cookies.set('dcache', 'true', {httpOnly: false});
 	});
 	//  tars-dcache 的包，依赖了很多tars的模块，引用路径是从根目录开始的，防止引用出错，先改后更
-	let cwd = process.cwd();
-	process.chdir(path.join(__dirname, './'));
+	// let cwd = process.cwd();
+	// process.chdir(path.join(__dirname, './'));
 	require('./dcache');
 	// let tarsDcache = require('@tars/dcache');
-	process.chdir(cwd);
+	// process.chdir(cwd);
 } else {
 	app.use(async (ctx, next) => {
 		await next();
@@ -131,11 +143,13 @@ if (dcacheConf.enableDcache) {
 	})
 }
 
+require('./sso');
+
 //激活router
 // dcache 会添加新的 page、api router， 不能提前
-const {pageRouter, paegApiRouter, clientRouter, apiRouter} = require('./app/router');
+const { pageRouter, paegApiRouter, clientRouter, apiRouter} = require('./app/router');
 
-app.use(apiMidware(apiRouter));
+// app.use(apiMidware(apiRouter));
 
 app.use(pageRouter.routes(), pageRouter.allowedMethods());
 app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods());

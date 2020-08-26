@@ -22,13 +22,14 @@ const logger = require(path.join(cwd, './app/logger'));
 const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
 
 const ModuleService = require('./service.js');
-
+const ApplyService = require('../apply/service');
 
 const ModuleController = {
   // 服务名 DCache.xxx, 不填表示查询模块下所有服务合并统计数据，填"*"表示列出所有服务的独立数据
   async queryProperptyData(ctx) {
     try {
       const { thedate, predate, startshowtime, endshowtime, moduleName, serverName, get } = ctx.paramsObj;
+
       const option = {
         moduleName,
         serverName,
@@ -37,7 +38,9 @@ const ModuleController = {
         endTime: endshowtime,
         get,
       };
+
       const rsp = await ModuleService.queryProperptyData(option);
+
       ctx.makeResObj(200, '', rsp);
     } catch (err) {
       logger.error('[queryProperptyData]:', err);
@@ -46,22 +49,56 @@ const ModuleController = {
   },
   async addModuleBaseInfo(ctx) {
     try {
-      const {
-        follower, cache_version, mkcache_struct, apply_id,
+      let {
+        follower, apply_id, module_name, update
       } = ctx.paramsObj;
-      const create_person = 'adminUser';
+      const create_person = ctx.uid;
+      
+      const modify_time = new Date();
       const item = await ModuleService.addModuleBaseInfo({
         apply_id,
+        module_name,
         follower,
-        cache_version,
-        mkcache_struct,
+        update,
         create_person,
+        modify_time,
       });
       ctx.makeResObj(200, '', item);
     } catch (err) {
       logger.error('[addModuleBaseInfo]:', err);
       ctx.makeResObj(500, err.message);
     }
+  },
+  async hasModuleInfo(ctx) {
+    try {
+      const module_name = ctx.paramsObj.module_name;
+
+      const rootNode = await ApplyService.getCacheList();
+
+      let hasModule = false;
+      for (let i = 0; i < rootNode.length; i++) {
+
+        if (module_name.indexOf(rootNode[i].name) == 0) {
+          for (let j = 0; j < rootNode[i].children.length; j++) {
+            const item = rootNode[i].children[j];
+            if (item.moduleName == module_name) {
+              hasModule = true;
+              break;
+            }
+          }
+        }
+
+        if (hasModule) {
+          break;
+        }
+      }
+
+      ctx.makeResObj(200, '', { hasModule });
+    } catch (err) {
+      logger.error('[hasModuleInfo]:', err);
+      ctx.makeErrResObj();
+    }
+    
   },
   async getModuleInfo(ctx) {
     try {
@@ -73,6 +110,7 @@ const ModuleController = {
       ctx.makeErrResObj();
     }
   },
+
   /**
   * 获取模块信息
   * @returns {Promise.<void>}
@@ -96,7 +134,6 @@ const ModuleController = {
       ctx.makeResObj(500, err.message);
     }
   },
-
 };
 
 module.exports = ModuleController;

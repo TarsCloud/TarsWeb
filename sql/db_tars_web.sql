@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.23, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.29, for Linux (x86_64)
 --
--- Host: localhost    Database: db_tars_web
+-- Host: 127.0.0.1    Database: db_tars_web
 -- ------------------------------------------------------
--- Server version	5.5.28
+-- Server version	5.6.47
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,22 +16,48 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `t_bm_case`
+--
+
+DROP TABLE IF EXISTS `t_bm_case`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_bm_case` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `servant` varchar(128) NOT NULL,
+  `fn` varchar(64) NOT NULL,
+  `des` varchar(256) DEFAULT '',
+  `in_values` text,
+  `endpoints` text,
+  `links` int(11) DEFAULT NULL,
+  `speed` int(11) DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL,
+  `posttime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_deleted` int(11) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `results` text,
+  PRIMARY KEY (`id`),
+  KEY `t_bm_case_servant_fn` (`servant`,`fn`)
+) ENGINE=InnoDB CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `t_kafka_queue`
 --
 
-DROP TABLE IF EXISTS `t_kafka_queue`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `t_kafka_queue` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `topic` varchar(16) NOT NULL DEFAULT '',
-  `partition` int(4) NOT NULL DEFAULT '0',
-  `offset` int(11) NOT NULL DEFAULT '0',
-  `task_no` varchar(64) NOT NULL DEFAULT '' COMMENT '任务ID',
-  `status` varchar(16) NOT NULL DEFAULT 'waiting' COMMENT '任务状态',
-  `message` varchar(256) DEFAULT '',
-  PRIMARY KEY (`id`,`task_no`,`status`)
-) ENGINE=InnoDB CHARSET=utf8;
+-- DROP TABLE IF EXISTS `t_kafka_queue`;
+-- /*!40101 SET @saved_cs_client     = @@character_set_client */;
+-- /*!40101 SET character_set_client = utf8 */;
+-- CREATE TABLE `t_kafka_queue` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `topic` varchar(16) NOT NULL DEFAULT '',
+--   `partition` int(4) NOT NULL DEFAULT '0',
+--   `offset` int(11) NOT NULL DEFAULT '0',
+--   `task_no` varchar(64) NOT NULL DEFAULT '' COMMENT '任务ID',
+--   `status` varchar(16) NOT NULL DEFAULT 'waiting' COMMENT '任务状态',
+--   `message` varchar(256) DEFAULT '',
+--   PRIMARY KEY (`id`,`task_no`,`status`)
+-- ) ENGINE=InnoDB CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +75,6 @@ CREATE TABLE `t_patch_task` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 --
 -- Table structure for table `t_tars_files`
@@ -64,10 +89,22 @@ CREATE TABLE `t_tars_files` (
   `server_name` varchar(128) NOT NULL DEFAULT '' COMMENT '服务名',
   `file_name` varchar(64) NOT NULL DEFAULT '' COMMENT '文件名',
   `posttime` datetime DEFAULT NULL COMMENT '更新时间',
-  `context` text COMMENT '解析后的JSON对象',
+  `context` mediumtext COMMENT '解析后的JSON对象',
+  `benchmark_context` text,
   PRIMARY KEY (`server_name`,`file_name`),
-  UNIQUE KEY `f_id` (`f_id`)
+  UNIQUE KEY `f_id` (`f_id`) USING BTREE
 ) ENGINE=InnoDB CHARSET=utf8 COMMENT='接口测试tars文件表';
+
+DROP TABLE IF EXISTS `t_gateway_obj`;
+CREATE TABLE `t_gateway_obj` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `update_person` varchar(64) NOT NULL DEFAULT '',
+  `posttime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `obj` varchar(128) NOT NULL DEFAULT '',
+  UNIQUE KEY `column` (`id`),
+  UNIQUE KEY `t_gateway_obj_obj` (`obj`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='网关控制obj记录表';
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -79,4 +116,4 @@ CREATE TABLE `t_tars_files` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-03 20:37:08
+-- Dump completed on 2020-06-20 17:02:14

@@ -24,6 +24,30 @@ ConfigService.getUnusedApplicationConfigFile = async (application, configId) => 
 	return await ConfigDao.getUnusedApplicationConfigFile(application, configId);
 };
 
+ConfigService.hasConfigFile = async (params) => {
+	const APP_LEVEL = 1;        // 应用配置，set配置
+	const SERVER_LEVEL = 2;     // 服务配置
+
+	let paramsObj = {};
+	paramsObj.level = params.level == 5 ? SERVER_LEVEL : APP_LEVEL;
+
+	paramsObj.server_name = paramsObj.level === APP_LEVEL ? params.application : `${params.application}.${params.server_name}`;
+
+	Object.assign(paramsObj, {
+		set_name: params.set_name || '',
+		set_area: params.set_area || '',
+		set_group: params.set_group || '',
+		filename: params.filename.replace(/(^\s*)|(\s*$)/g, ''),
+	});
+
+	let configFile = await ConfigDao.findServerConfigFile(paramsObj);
+
+	if (configFile) {
+		return true;
+	}
+	return false;
+};
+
 /**
  * 新增配置文件
  * @param params
@@ -55,8 +79,19 @@ ConfigService.addConfigFile = async (params) => {
 		posttime: formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss')
 	});
 
-	let configFile = await ConfigDao.insertConfigFile(paramsObj);
-	configFile = configFile.dataValues;
+	let configFile;
+
+	if (!params.force) {
+		configFile = await ConfigDao.insertConfigFile(paramsObj);
+	} else {
+
+		await ConfigDao.replaceConfigFile(paramsObj);
+
+		configFile = await ConfigDao.findServerConfigFile(paramsObj);
+
+		configFile = configFile.dataValues;
+	}
+
 	let history = {
 		configid: configFile.id,
 		reason: 'add config',

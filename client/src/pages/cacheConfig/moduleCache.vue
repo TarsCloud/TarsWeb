@@ -1,8 +1,9 @@
 <template>
   <section class="moduleCache">
+    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    <br>
     <!-- 服务列表 -->
-    <let-table v-if="serverList" :data="serverList" :title="$t('serverList.title.serverList')"
-               :empty-msg="$t('common.nodata')" ref="serverListLoading">
+    <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" ref="serverListLoading">
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.zb')" width="140px">
@@ -38,7 +39,7 @@
     </let-table>
     <let-table :data="showConfigList" :title="$t('cache.config.tableTitle')" :empty-msg="$t('common.nodata')"
                :stripe="true">
-      <let-table-column>
+      <let-table-column width="50">
         <template slot="head" slot-scope="props">
           <let-checkbox v-model="isCheckedAll" :value="isCheckedAll" :change="checkedAllChange"></let-checkbox>
         </template>
@@ -46,13 +47,13 @@
           <let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('cache.config.remark')" prop="remark"></let-table-column>
-      <let-table-column :title="$t('cache.config.path')" prop="path"></let-table-column>
-      <let-table-column :title="$t('cache.config.item')" prop="item"></let-table-column>
-      <let-table-column :title="$t('cache.config.config_value')" prop="config_value">
+      <let-table-column :title="$t('cache.config.remark')" prop="remark" width="300"></let-table-column>
+      <let-table-column :title="$t('cache.config.path')" prop="path" width="100"></let-table-column>
+      <let-table-column :title="$t('cache.config.item')" prop="item" width="100"></let-table-column>
+      <let-table-column :title="$t('cache.config.config_value')" prop="config_value"  width="200">
         <template slot-scope="{ row: { config_value } }"><div style="white-space: pre-wrap;" >{{ config_value }}</div></template>
       </let-table-column>
-      <let-table-column :title="$t('cache.config.modify_value')" prop="period">
+      <let-table-column :title="$t('cache.config.modify_value')" prop="period"  width="200">
         <template slot-scope="{row}">
           <let-input
             size="small"
@@ -161,10 +162,10 @@
     },
     computed: {
       showConfigList() {
-        return this.configList.slice(10 * (this.pagination.page - 1 ), 10 * this.pagination.page)
+        return this.configList.slice(100 * (this.pagination.page - 1 ), 100 * this.pagination.page)
       },
       total () {
-        return Math.ceil(this.configList.length / 10)
+        return Math.ceil(this.configList.length / 100)
       },
       hasCheckedItem () {
           return this.showConfigList.filter(item => item.isChecked === true).length !== 0;
@@ -180,7 +181,7 @@
     },
     methods: {
       checkedAllChange () {
-        console.log(arguments);
+        // console.log(arguments);
       },
       changePage (page) {
         this.pagination.page = page;
@@ -203,21 +204,23 @@
           });
           this.configList = configItemList;
         } catch (err) {
-          console.error(err)
+          // console.error(err)
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
       },
       // 获取服务列表
       async getServerList() {
+        const loading = this.$Loading.show();
         try {
           // let data = await this.$ajax.getJSON('/server/api/get_cache_server_list', {tree_node_id: this.moduleName});
           const { appName, moduleName } = this;
           const data = await getCacheServerList({ appName, moduleName });
           this.serverList = data;
         } catch (err) {
-          console.error(err)
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
+
+        loading.hide();
       },
       async saveConfig (row) {
         let {id, modify_value} = row;
@@ -228,7 +231,7 @@
           });
           await this.getModuleConfig();
         } catch (err) {
-          console.error(err)
+          // console.error(err)
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
       },
@@ -243,7 +246,7 @@
           let configItemList = await this.$ajax.postJSON('/server/api/cache/updateServerConfigItemBatch', {serverConfigList});
           await this.getModuleConfig();
         } catch (err) {
-          console.error(err)
+          // console.error(err)
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         }
       },
@@ -269,7 +272,7 @@
             let configItemList = await this.$ajax.postJSON('/server/api/cache/deleteServerConfigItemBatch', {serverConfigList});
             await this.getModuleConfig();
           } catch (err) {
-            console.error(err)
+            // console.error(err)
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
           }
         });
@@ -285,6 +288,7 @@
       checkServerConfigList (row) {
         this.serverConfigListVisible = true;
         this.checkServer = {
+          appName: this.appName,
           serverName: row.server_name,
           nodeName: row.node_name
         }

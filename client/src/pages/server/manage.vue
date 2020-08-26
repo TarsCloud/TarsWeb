@@ -2,9 +2,19 @@
   <div class="page_server_manage">
 
     <!-- 服务列表 -->
-    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    <div class="table_head">
+      <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    </div>
     
-    <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
+    <let-table class="dcache" v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
+      <let-table-column>
+        <template slot="head" slot-scope="props">
+          <let-checkbox v-model="isCheckedAll" :value="isCheckedAll"></let-checkbox>
+        </template>
+        <template slot-scope="scope">
+          <let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
         <template slot-scope="scope">
           <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" title="点击查看服务日志(view server logs)" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
@@ -47,16 +57,26 @@
           <let-table-operation @click="showMoreCmd(scope.row)">{{$t('operate.more')}}</let-table-operation>
         </template>
       </let-table-column>
+      <template slot="operations">
+        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="restart"></batch-operation>
+        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="stop"></batch-operation>
+      </template>
     </let-table>
 
     <!-- 服务实时状态 -->
-    <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
+    <div class="table_head">
+      <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
+    </div>
     <let-table v-if="serverNotifyList && showOthers"
       :data="serverNotifyList" stripe :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
       <let-table-column width="20%" :title="$t('common.time')" prop="notifytime"></let-table-column>
       <let-table-column width="20%" :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
       <let-table-column width="15%" :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.result')" prop="result"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.result')">
+        <template slot-scope="scope">
+          <span :style="statusStyle(scope.row.result)">{{scope.row.result}}</span>
+        </template>      
+      </let-table-column>
     </let-table>
     <let-pagination
       :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
@@ -239,7 +259,6 @@
             v-model="servantDetailModal.model.obj_name"
             :placeholder="$t('serverList.servant.c')"
             required
-            pattern="^[A-Za-z]+$"
             :pattern-tip="$t('serverList.servant.obj')"
           ></let-input>
         </let-form-item>
@@ -366,10 +385,15 @@
 </template>
 
 <script>
+import batchOperation from './../dcache/moduleManage/batchOperation.vue'
 export default {
+  components: { batchOperation },
   name: 'ServerManage',
   data() {
     return {
+      // 全选
+      isCheckedAll: false,
+
       // 当前页面信息
       serverData: {
         level: 5,
@@ -434,6 +458,7 @@ export default {
       failCount :0
     };
   },
+  props: ['treeid'],
   computed: {
     showOthers() {
       return this.serverData.level === 5;
@@ -444,6 +469,20 @@ export default {
       }
       return this.checkServantEndpoint(this.servantDetailModal.model.endpoint);
     },
+    hasCheckedServer() {
+      return this.serverList.filter(item => item.isChecked === true).length !== 0;
+    },
+    checkedServers() {
+      return this.serverList.filter(item => item.isChecked === true);
+    },
+  },
+  watch: {
+    isCheckedAll() {
+      let isCheckedAll = this.isCheckedAll;
+      this.serverList.forEach((item) => {
+        item.isChecked = isCheckedAll;
+      });
+    },
   },
   methods: {
     // 获取服务列表
@@ -451,9 +490,12 @@ export default {
       const loading = this.$refs.serverListLoading.$loading.show();
 
       this.$ajax.getJSON('/server/api/server_list', {
-        tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.treeid,
       }).then((data) => {
         loading.hide();
+        data.forEach(item => {
+          item.isChecked = false
+        })
         this.serverList = data;
       }).catch((err) => {
         loading.hide();
@@ -470,7 +512,7 @@ export default {
         curr_page = this.pageNum || 1; 
       }
       this.$ajax.getJSON('/server/api/server_notify_list', {
-        tree_node_id: this.$route.params.treeid,
+        tree_node_id: this.treeid,
         page_size: this.pageSize,
         curr_page: curr_page,
       }).then((data) => {
@@ -484,6 +526,16 @@ export default {
         // loading.hide();
         this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
+    },
+    statusStyle(message) {
+      message = message || '';
+
+      if(message == "restart" || message.indexOf("[succ]") != -1) {
+        return "color: green";
+      } else if(message == "stop" || message.indexOf("[alarm]") != -1 || message.indexOf("error") != -1 || message.indexOf("ERROR") != -1 ){
+        return "color: red";
+      }
+      return "";
     },
     // 切换服务实时状态页码
     gotoPage(num) {
@@ -598,6 +650,7 @@ export default {
           command,
         }],
       }).then((res) => {  // eslint-disable-line
+
         return this.checkTaskStatus(res).then((info) => {
           loading.hide();
           // 任务成功重新拉取列表
@@ -949,6 +1002,10 @@ export default {
       width: 200px;
     }
   }
+
+  .table_head{padding:10px 0;}
+  .buttonText{white-space: nowrap;}
+  .dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
 }
 
 </style>

@@ -54,11 +54,12 @@ TarsInit.insert = async(patchTmp, patchPath, filePath, file)=> {
     }
 
     let src = filePath + '/' + file;
+    let server = "tars." + name[0];
 
     let hash = md5Sum(src);
 
     let patch = await PatchDao.find({
-        server: "tars." + name[0],
+        server: server,
         version: hash 
     });
 
@@ -102,19 +103,21 @@ TarsInit.insert = async(patchTmp, patchPath, filePath, file)=> {
         let md5hash = md5Sum(dstFile);
 
         var params = {
-            server: "tars." + name[0],
+            server: server,
             version: hash,
             tgz: file,
             update_text: 'system install',
             publish: 0,
             posttime: new Date(),
-            postuser: 'user',
+            postuser: 'web',
             upload_time: new Date(),
             upload_user: 'admin',
             md5: md5hash
         }
 
         await PatchDao.insertServerPatch(params);
+
+        console.log("parepare taf patch package succ");
     }
 
 };
@@ -124,21 +127,19 @@ TarsInit.preparePatch = async() => {
     var dir = path.join(__dirname, "../../files");
 
     let files = fs.readdirSync(dir);
-    // let result;
 
     if (files) {
 
         let patchTmp = dir + '/patchTmp';
         let patchPath = dir + '/patch';
     
-        console.log("mkdir :", patchTmp);
         fs.mkdirSync(patchTmp, {recursive: true});
-        console.log("mkdir :", patchPath);
         fs.mkdirSync(patchPath, {recursive: true});
+
+        console.log("mkdir :", patchTmp, patchPath);
 
         files.map(async(file) => {
             let filePath = path.join(dir, file);
-            console.log(dir, file);
 
             if (fs.statSync(filePath).isFile()) {
                 await TarsInit.insert(patchTmp, patchPath, dir, file);

@@ -181,7 +181,7 @@ AdminService.getFrameworkList = async() => {
     if (ret.__return === 0) {
         return ret.servers;
     } else {
-        console.log("getFrameworkList", ret);
+        // console.log("getFrameworkList", ret);
         throw new Error(__return);
     }
 };

@@ -70,18 +70,21 @@ export default {
         this.closeCallback();
       }
     },
-    savePublishServer(publishModal, callback) {
+    savePublishServer(publishModal, callback, group_name, patch_id) {
+      group_name = group_name || '';
+      patch_id = patch_id || publishModal.model.patch_id.toString();
       this.closeCallback = callback;
       // 发布
       var items = [];
       publishModal.model.serverList.forEach((item) => {
           items.push({
             server_id: item.id.toString(),
-            command: 'patch_tars',
+            command: publishModal.command || 'patch_tars',
             parameters: {
-              patch_id: publishModal.model.patch_id.toString(),
+              patch_id: patch_id,
               bak_flag: item.bak_flag || false,
               update_text: publishModal.model.update_text || '',
+              group_name: group_name
             },
           });
         });

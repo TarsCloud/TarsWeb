@@ -14,12 +14,37 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const {tServerConf, sequelize} = require('./db').db_tars;
+const {tServerConf, tAdapterConf, sequelize} = require('./db').db_tars;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const ServerDao = {};
 
 ServerDao.sequelize = sequelize;
+
+ServerDao.getServerConfBySearchKey = async (id, curPage, pageSize) => {
+	let options = {
+		attributes: [
+			'application', 'server_name', 'node_name', 'enable_set', 'set_name', 'set_area', 'set_group',
+			'setting_state', 'present_state', 'process_id', 'patch_version', 'patch_time',
+		],
+		where: {
+			application: {
+				[Op.ne]: 'DCache',
+			},
+			[Op.or]: [
+				{ application: { [Sequelize.Op.like]: `%${id}%` } },
+				{ server_name: { [Sequelize.Op.like]: `%${id}%` } },
+				{ node_name: { [Sequelize.Op.like]: `%${id}%` } },
+			]
+		},
+		order: [['application'], ['server_name']]
+	};
+	if (curPage && pageSize) {
+		options.limit = pageSize;
+		options.offset = pageSize * (curPage - 1);
+	}
+	return await tServerConf.findAndCountAll(options);
+};
 
 ServerDao.getServerConfById = async (id) => {
 	return await tServerConf.findOne({
@@ -89,7 +114,7 @@ ServerDao.getServerConfByTemplate = async (templateName) => {
 	})
 };
 
-ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr) => {
+ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr, searchKey) => {
 	let where = {};
 	let or = [];
 	if (!!applicationList && applicationList.length > 0) {
@@ -103,6 +128,11 @@ ServerDao.getServerConf4Tree = async (applicationList, serverNameList, allAttr) 
 	}
 	else {
 		where = {[Op.or]: or};
+	}
+	if(searchKey){
+		where.server_name = {
+			[Sequelize.Op.like]: '%' + searchKey + '%'
+		}
 	}
 
 	let option = {};
@@ -160,9 +190,9 @@ ServerDao.updateServerConf = async (params) => {
 
 ServerDao.insertServerConf = async (params, transaction) => {
 	if (transaction) {
-		return await tServerConf.create(params, {transaction: transaction});
+		return await tServerConf.upsert(params, {transaction: transaction});
 	} else {
-		return await tServerConf.create(params);
+		return await tServerConf.upsert(params);
 	}
 };
 
@@ -185,6 +215,15 @@ ServerDao.getSet = async (application, serverName) => {
 	let rst = await tServerConf.sequelize.query('select distinct if(enable_set = \'Y\', CONCAT(set_name, \'.\', set_area, \'.\', set_group), \'\') as \'set\' from db_tars.t_server_conf where application = \'' + application + '\' and server_name = \'' + serverName + '\'');
 	return rst[0] || '';
 };
+ServerDao.getObj = async (application, serverName) => {
+	return await tAdapterConf.findAll({
+		attributes:[[Sequelize.fn('DISTINCT', Sequelize.col('servant')) ,'servant']],
+		where:{
+			application: application,
+			server_name: serverName
+		}
+	})
+}
 
 ServerDao.getNodeName = async (params) => {
 	let where = {

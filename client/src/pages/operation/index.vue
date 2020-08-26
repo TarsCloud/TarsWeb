@@ -6,6 +6,10 @@
       <let-tab-pane :tab="$t('deployService.title.template')" tabkey="/operation/templates"></let-tab-pane>
       <let-tab-pane :tab="$t('deployService.title.nodes')" tabkey="/operation/nodes"></let-tab-pane>
       <let-tab-pane :tab="$t('deployService.title.check')" tabkey="/operation/check"></let-tab-pane>
+      <let-tab-pane :tab="$t('deployService.title.gateway')" tabkey="/operation/gateway"></let-tab-pane>
+      <let-tab-pane :tab="$t('deployService.title.application')" tabkey="/operation/application"></let-tab-pane>
+      <let-tab-pane :tab="$t('deployService.title.business')" tabkey="/operation/business"></let-tab-pane>
+      <let-tab-pane :tab="$t('deployService.title.businessRelation')" tabkey="/operation/businessRelation"></let-tab-pane>
     </let-tabs>
 
     <router-view class="page_operation_children"></router-view>
@@ -41,11 +45,23 @@ export default {
 
 <style>
 .page_operation {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  overflow: hidden;
   padding-top: 30px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
+  width: 100%;
 
   &_children {
-    padding: 20px 0;
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    margin-top: 20px;
+    overflow: auto;
+    padding:0 40px 20px 0;
+    position: relative;
   }
+  &_children::-webkit-scrollbar{border-radius:10px;}
 }
 </style>

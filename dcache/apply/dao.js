@@ -14,15 +14,28 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const { tApplyAppBase, tApplyAppRouterConf, tApplyAppProxyConf } = require('./../db').db_cache_web;
-
+const { tApplyAppBase, tApplyAppRouterConf, tApplyAppProxyConf, tApplyAppDbaccessConf } = require('./../db').db_cache_web;
+const Sequelize = require('sequelize');
 const applyDao = {};
+
+applyDao.findRouterDbAll = async function () {
+  return await tApplyAppRouterConf.findAll({
+    attributes: [[Sequelize.literal('distinct concat(`router_db_ip`, ":", `router_db_port`, "-", `router_db_user`)'), 'router_db_flag'], 'id'],
+    limit: 1,
+    offset: 0,
+  });
+}
+
+applyDao.findRouter = async function (id) {
+  return await tApplyAppRouterConf.findOne({ id });
+}
 
 applyDao.findAll = async function ({
   where = {},
   raw = true,
   queryRouter = [],
   queryProxy = [],
+  // queryDbAccess = [],
   attributes = ['id', 'status', 'idc_area', 'set_area', 'admin', 'name', 'create_person'],
   include = [],
 }) {
@@ -44,6 +57,15 @@ applyDao.findAll = async function ({
     };
     include.push(proxyModelItem);
   }
+  // if (queryDbAccess.length > 0) {
+  //   const dbAccessModelItem = {
+  //     model: tApplyAppDbaccessConf,
+  //     attributes: queryDbAccess,
+  //     as: 'DbAccess',
+  //   };
+  //   include.push(dbAccessModelItem);
+  // }
+
   // 一般来说，查找的都是安装成功的、即status=2
   if (!where.status) where.status = 2;
   const data = await tApplyAppBase.findAll({
@@ -110,14 +132,14 @@ applyDao.createOrUpdate = async function (whereProperties, params) {
     whereProperties.forEach((key) => {
       where[key] = params[key];
     });
-    console.log("createOrUpdate:", where, params);
+    // console.log("createOrUpdate:", where, params);
     
     let record = await self.findOne({ where });
     if (!record) {
       record = await self.create(params);
     } else {
 
-      console.log("record:", record);
+      // console.log("record:", record);
 
       // record.updateAttributes(params);
       record.update(params);

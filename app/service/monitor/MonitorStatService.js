@@ -25,8 +25,8 @@ const MonitorStatService = {};
 MonitorStatService.getData = async (params) => {
 	let theData = new Map(), preData = new Map()
 	// if(params.userpc == "1"){
-		theData = await callRpc(params, true)
-		preData = await callRpc(params, false)
+		theData = await callRpc(params, true);
+		preData = await callRpc(params, false);
 	// } else {
 	// 	theData = await call(params, true)
 	// 	preData = await call(params, false)
@@ -119,6 +119,7 @@ async function callRpc(params, the) {
 	let data = await statQueryPrx.query(req)
 	let rsp = data.rsp
 	if(data.__return !=0 ||  rsp.ret != 0) throw new Error(`query stat info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
+
 	let map = new Map()
 	for(let key in rsp.result){
 		map.set(key, rsp.result[key])
@@ -223,14 +224,14 @@ function mergeKey(params, theData, preData) {
 
 function translate(data) {
 	if (!data) {
-		return [-1, -1, -1, -1];
+		return [0, 0, 0, 0];
 	}
 	let ret = [];
 	let total = parseInt(data[0]) + parseInt(data[1]) + parseInt(data[2]);
 	ret[0] = total;
-	ret[1] = total == 0 ? -1 : data[3] / ret[0];
-	ret[2] = total == 0 ? -1 : data[2] / ret[0];
-	ret[3] = total == 0 ? -1 : data[1] / ret[0];
+	ret[1] = total == 0 ? 0 : data[3] / ret[0];
+	ret[2] = total == 0 ? 0 : data[2] / ret[0];
+	ret[3] = total == 0 ? 0 : data[1] / ret[0];
 	return ret;
 }
 

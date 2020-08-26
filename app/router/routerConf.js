@@ -27,7 +27,11 @@ const TaskController = require('../controller/task/TaskController');
 const PatchController = require('../controller/patch/PatchController');
 const MonitorController = require('../controller/monitor/MonitorController');
 const TemplateController = require('../controller/template/TemplateController');
+const ApplicationController = require('../controller/application/ApplicationController');
+const BusinessController = require('../controller/business/BusinessController');
+const BusinessRelationController = require('../controller/businessRelation/BusinessRelationController');
 const ResourceController = require('../controller/resource/ResourceController');
+const GatewayController = require('../controller/gateway/GatewayController');
 
 const AuthController = require('../controller/auth/AuthController');
 const LoginController = require('../controller/login/LoginController');
@@ -38,8 +42,8 @@ const LogviewController = require('../controller/logview/LogviewController');
 const pageConf = [
     //首页
     ['get', '/', PageController.index],
-    ['get', '/web_version', PageController.version]
-    
+    ['get', '/web_version', PageController.version],
+    ['get', '/captcha', PageController.captcha],
 ];
 
 const apiConf = [
@@ -63,6 +67,7 @@ const apiConf = [
     ['post', '/update_server', ServerController.updateServerConf, { id: 'notEmpty' },
         ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path', 'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile']
     ],
+    ['get', '/server_search', ServerController.getServerSearch],
 
     ['get', '/tree', TreeController.listTree],
     ['get', '/send_command', ServerController.sendCommand, { server_ids: 'notEmpty', command: 'notEmpty' }],
@@ -163,6 +168,7 @@ const apiConf = [
     ['post', '/do_compile', PatchController.doCompile],
     ['get', '/compiler_task', PatchController.compilerTask],
     ['get', '/get_compile_conf', PatchController.getCompilerConf],
+    ['get', '/download_package', PatchController.downloadPackage, {id: 'notEmpty'}],
     ['post', '/delete_patch_package', PatchController.deletePatchPackage],
     ['post', '/set_patch_package_default', PatchController.setPatchPackageDefault],
     ['get', '/has_dcache_patch_package', PatchController.hasDcachePatchPackage],
@@ -189,9 +195,105 @@ const apiConf = [
         profile: 'notEmpty'
     }],
 
+    //应用管理
+    ['post', '/add_application', ApplicationController.add, { f_name: 'notEmpty' }],
+    ['get', '/delete_application', ApplicationController.delete, { f_id: 'notEmpty' }],
+    ['get', '/query_application', ApplicationController.getList],
+
+    //业务管理
+    ['post', '/add_business', BusinessController.add, { f_name: 'notEmpty' }],
+    ['get', '/delete_business', BusinessController.delete, { f_id: 'notEmpty' }],
+    ['post', '/update_business', BusinessController.update, { f_id: 'notEmpty', f_name: 'notEmpty', f_show_name: 'notEmpty' }],
+    ['get', '/query_business', BusinessController.getList],
+
+    //业务关联
+    ['post', '/add_business_relation', BusinessRelationController.add, { f_business_name: 'notEmpty', f_application_name: 'notEmpty' }],
+    ['get', '/delete_business_relation', BusinessRelationController.delete, { f_id: 'notEmpty' }],
+    ['post', '/update_business_relation', BusinessRelationController.update, { f_id: 'notEmpty', f_business_name: 'notEmpty', f_application_name: 'notEmpty' }],
+    ['get', '/query_business_relation', BusinessRelationController.getList],
+    
+
+    //网关配置
+    ['get', '/gatewayobj_list', GatewayController.getGatewayObjList],
+    ['post', '/add_gatewayobj', GatewayController.addGatewayObj, {
+        gatewayObj: 'notEmpty'
+    }], 
+    ['post', '/delete_gatewayobj', GatewayController.deleteGatewayObj, {
+        gatewayObj: 'notEmpty'
+    }], 
+    ['get', '/station_list', GatewayController.getStationList, {
+        gatewayObj: 'notEmpty'
+    }], 
+    ['post', '/add_station', GatewayController.addStation,{
+        f_station_id: 'notEmpty',
+        f_name_cn: 'notEmpty',
+        gatewayObj: 'notEmpty'
+    }],
+    ['post', '/update_station', GatewayController.updateStation,{
+        f_id: 'notEmpty',
+        f_station_id: 'notEmpty',
+        f_name_cn: 'notEmpty',
+        gatewayObj: 'notEmpty'
+    }],
+    ['post', '/delete_station', GatewayController.deleteStation, { f_id: 'notEmpty', gatewayObj: 'notEmpty' }],
+
+    ['get', '/upstream_list', GatewayController.getUpstreamList, { gatewayObj: 'notEmpty' }], 
+    ['post', '/add_upstream', GatewayController.addUpstream,{
+        f_upstream: 'notEmpty',
+        f_addr: 'notEmpty',
+        f_weight: 'notEmpty',
+        f_fusing_onoff: 'notEmpty',
+        gatewayObj: 'notEmpty'
+    }],
+    ['post', '/update_upstream', GatewayController.updateUpstream,{
+        f_id: 'notEmpty',
+        f_upstream: 'notEmpty',
+        f_addr: 'notEmpty',
+        f_weight: 'notEmpty',
+        f_fusing_onoff: 'notEmpty',
+        gatewayObj: 'notEmpty'
+    }],
+    ['post', '/delete_upstream', GatewayController.deleteUpstream, { f_id: 'notEmpty', gatewayObj: 'notEmpty' }],
+
+    ['get', '/httprouter_list', GatewayController.getHttpRouterList, { f_station_id: 'notEmpty', gatewayObj: 'notEmpty' }], 
+    ['post', '/add_httprouter', GatewayController.addHttpRouter,{
+        f_station_id: 'notEmpty',
+        f_path_rule: 'notEmpty',
+        f_proxy_pass: 'notEmpty',
+        gatewayObj: 'notEmpty'
+    }],
+    ['post', '/update_httprouter', GatewayController.updateHttpRouter,{
+        f_id: 'notEmpty',
+        f_station_id: 'notEmpty',
+        f_path_rule: 'notEmpty',
+        f_proxy_pass: 'notEmpty',
+        gatewayObj: 'notEmpty'
+    }],
+    ['post', '/delete_httprouter', GatewayController.deleteHttpRouter, { f_id: 'notEmpty',gatewayObj: 'notEmpty' }],
+    
+    ['get', '/bwlist', GatewayController.getBWList, { 
+        type: 'notEmpty',
+        gatewayObj: 'notEmpty' 
+    }], 
+    ['post', '/add_bwlist', GatewayController.addBWList,{
+        f_ip: 'notEmpty',
+        type: 'notEmpty',
+        gatewayObj: 'notEmpty'
+    }],
+    ['post', '/delete_bwlist', GatewayController.deleteBWList, { f_id: 'notEmpty',type: 'notEmpty',gatewayObj: 'notEmpty' }],
+    ['get', '/get_flowcontrol', GatewayController.getFlowControl, { f_station_id: 'notEmpty',gatewayObj: 'notEmpty'}],
+    ['post', '/upsert_flowcontrol', GatewayController.upsertFlowControl, {
+        f_station_id: 'notEmpty',
+        f_duration: 'notEmpty',
+        f_max_flow: 'notEmpty',
+        gatewayObj: 'notEmpty'
+    }],
 
     //资源管理
     ['get', '/list_tars_node', ResourceController.listTarsNode],
+    ['get', '/load_node_label', ResourceController.loadNodeLabel, { node_name: 'notEmpty' }],
+    ['post', '/add_node_label', ResourceController.addNodeLabel, { node_name: 'notEmpty', name: 'notEmpty', value: 'notEmpty' }],
+    ['post', '/delete_node_label', ResourceController.deleteNodeLabel, { node_name: 'notEmpty', name: 'notEmpty'}],
     ['post', '/connect_tars_node', ResourceController.connectTarsNode],
     ['post', '/install_tars_nodes', ResourceController.installTarsNodes],
     ['get', '/uninstall_tars_nodes', ResourceController.uninstallTarsNodes, { ips: 'notEmpty' }],
@@ -238,6 +340,8 @@ const apiConf = [
     }],
     ['get', '/delete_tars_file', InfTestController.deleteTarsFile, { id: 'notEmpty' }],
     ['get', '/get_structs', InfTestController.getStructs, { id: 'notEmpty', module_name: 'notEmpty' }],
+    
+    //压力测试
     ['get', '/get_benchmark_des', InfTestController.getBenchmarkDes, { id: 'notEmpty'}],
     ['get', '/get_bm_case_list', InfTestController.getBmCaseList, { servant: 'notEmpty', fn: 'notEmpty'}],
     ['get', '/get_bm_result_by_id', InfTestController.getBmResultById, { id: 'notEmpty'}],
@@ -248,11 +352,11 @@ const apiConf = [
     ['get', '/get_endpoints', InfTestController.getEndpoints, { servant: 'notEmpty'}],
     ['get', '/is_benchmark_installed', InfTestController.isBenchmarkInstalled],
     ['get', '/logview_list', LogviewController.getLogFileList, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty' }],
-    ['get', '/logview_data', LogviewController.getLogData, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', log_file: 'notEmpty', interface_params: 'notEmpty' }],
+    ['get', '/logview_data', LogviewController.getLogData, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', log_file: 'notEmpty', interface_params: 'notEmpty' }],  
 ];
 
 const clientConf = [
     ['get', '/get_tarsnode', ResourceController.getTarsNode],
 ];
 
-module.exports = { pageConf, apiConf, clientConf };
+module.exports = { pageConf, apiConf, clientConf};

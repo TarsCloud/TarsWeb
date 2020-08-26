@@ -18,6 +18,8 @@ const Sequelize = require('sequelize');
 
 const Mysql = require('mysql');
 
+const Update = require('./update');
+
 const fs = require('fs-extra');
 
 const _ = require('lodash');
@@ -28,7 +30,7 @@ const logger = require('../../logger');
 
 let Db = {};
 
-let databases = ['db_tars', 'db_tars_web'];
+let databases = ['db_tars', 'db_tars_web', 'db_base'];
 
 databases.forEach((database) => {
 	let {
@@ -41,9 +43,9 @@ databases.forEach((database) => {
 	} = dbConf;
 
 	const logging = process.env.NODE_ENV == "dev" ? (sqlText)=>{
-		console.log(sqlText);
+		// console.log(sqlText);
 		logger.sql(sqlText)
-	} : false
+	} : true
 
 	//初始化sequelize
 	const sequelize = new Sequelize(database, user, password, {
@@ -51,6 +53,9 @@ databases.forEach((database) => {
 		port,
 		dialect: 'mysql',
 		dialectOptions: {
+			charset: charset
+		},
+		define: {
 			charset: charset
 		},
 		logging,
@@ -79,15 +84,27 @@ databases.forEach((database) => {
 	let tableObj = {};
 	let dbModelsPath = __dirname + '/' + database + '_models';
 	let dbModels = fs.readdirSync(dbModelsPath);
-	let alter = database == "db_tars_web"
-	dbModels.forEach(function (dbModel) {
+
+	dbModels.forEach(async function (dbModel) {
 		let tableName = dbModel.replace(/\.js$/g, '');
 		tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
-		tableObj[_.camelCase(tableName)].sync({ alter: alter });
+		
+		try {
+
+			await tableObj[_.camelCase(tableName)].sync({ alter: true });
+			// tableObj[_.camelCase(tableName)].sync();
+
+			console.log('database ' + database + '.' + tableName + ' sync succ');
+
+		} catch (e) {
+			console.log('database ' + database + '.' + tableName  + ' sync error:', e);
+
+		}
 	});
 	Db[database] = tableObj;
 	Db[database].sequelize = sequelize;
 });
 
+Update.update(Db['db_tars'], Db['db_tars_web']);
 
 module.exports = Db;

@@ -13,56 +13,57 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
+/* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('t_apply_cache_module_base', {
     id: {
+      autoIncrement: true,
       type: DataTypes.INTEGER(11),
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
+      primaryKey: true
     },
     status: {
       type: DataTypes.INTEGER(4),
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 0
     },
     area: {
       type: DataTypes.STRING(50),
       allowNull: true,
-      defaultValue: '',
+      defaultValue: ""
     },
     apply_id: {
       type: DataTypes.INTEGER(11),
+      allowNull: false
+    },
+    module_name: {
+      type: DataTypes.STRING(100),
       allowNull: false,
+      defaultValue: ""
     },
-    cache_version: {
+    update: {
       type: DataTypes.INTEGER(4),
-      allowNull: true,
-      defaultValue: 1,
-    },
-    mkcache_struct: {
-      type: DataTypes.INTEGER(4),
-      allowNull: true,
-      defaultValue: 0,
+      allowNull: false,
+      defaultValue: 0
     },
     follower: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      defaultValue: '',
+      defaultValue: ""
     },
     create_person: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      defaultValue: '',
+      defaultValue: ""
     },
     modify_time: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
-    },
+    }
   }, {
+    sequelize,
     tableName: 't_apply_cache_module_base',
-    timestamps: false,
+    timestamps: false
   });
 };

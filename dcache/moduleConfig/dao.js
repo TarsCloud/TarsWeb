@@ -15,11 +15,10 @@
  */
 
 const {
-  tApplyCacheModuleConf, tApplyCacheServerConf, tApplyCacheModuleBase, tApplyAppBase,
+  tApplyCacheModuleConf, tApplyCacheServerConf, tApplyCacheModuleBase, tApplyAppBase, 
 } = require('./../db').db_cache_web;
 
 const moduleConf = {};
-
 
 moduleConf.add = function (option) {
   return tApplyCacheModuleConf.create(option);
@@ -31,7 +30,7 @@ moduleConf.destroy = function (option) {
 
 moduleConf.findOne = function ({
   where = {},
-  attributes = ['id', 'module_id', 'apply_id', 'module_name', 'status', 'area', 'idc_area', 'set_area', 'admin', 'cache_module_type', 'per_record_avg', 'total_record', 'max_read_flow', 'key_type', 'max_write_flow', 'module_remark', 'dbAccessServant'],
+  attributes = ['id', 'module_id', 'apply_id', 'module_name', 'status', 'area', 'idc_area', 'set_area', 'admin', 'cache_module_type', 'per_record_avg', 'total_record', 'max_read_flow', 'key_type', 'max_write_flow', 'module_remark', 'dbAccessServant', 'open_backup', 'cache_version', 'mkcache_struct'],
   queryModuleBase = [],
   queryServerConf = [],
   queryAppBase = [],
@@ -61,12 +60,13 @@ moduleConf.findOne = function ({
     };
     include.push(serverConfModelItem);
   }
+
   return tApplyCacheModuleConf.findOne({ where, attributes, include });
 };
 
 moduleConf.findAll = function ({
   where = {},
-  attributes = ['id', 'module_id', 'apply_id', 'module_name', 'status', 'area', 'idc_area', 'set_area', 'admin', 'cache_module_type', 'per_record_avg', 'total_record', 'max_read_flow', 'key_type', 'max_write_flow', 'module_remark'],
+  attributes = ['id', 'module_id', 'apply_id', 'module_name', 'status', 'area', 'idc_area', 'set_area', 'admin', 'cache_module_type', 'per_record_avg', 'total_record', 'max_read_flow', 'key_type', 'max_write_flow', 'module_remark', 'dbAccessServant', 'open_backup', 'cache_version', 'mkcache_struct'],
   queryModuleBase = [],
   queryServerConf = [],
   queryAppBase = [],

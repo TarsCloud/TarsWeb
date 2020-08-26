@@ -47,10 +47,10 @@ ModuleService.queryProperptyData = async function ({ moduleName, serverName = ''
   option.readFromObject({ moduleName, serverName, date, startTime, endTime });
   const args = await DCacheOptPrx.queryProperptyData(option);
   const { __return, rsp } = args;
-  assert(__return === 0, '获取特性监控数据出错');
-  if (get) return rsp;
+  assert(__return === 0, 'get data error');
+  // if (get) return rsp;
 
-  if (serverName === '*') {
+  if (serverName === '') {
     // 获取服务列表
     // formatRsp = { data: rsp, keys: [] };
     formatRsp = ModuleService.findServersFormat(rsp, date);
@@ -70,6 +70,9 @@ ModuleService.queryProperptyData = async function ({ moduleName, serverName = ''
 ModuleService.normalFormat = function propertyMonitorNormalFormat(monitorData = [{ moduleName: '', serverName: '', date: '', data: [{ propData: {}, timeStamp: '0000' }] }]) {
   const data = [];
   let keys = [];
+  // if (!monitorData.data || monitorData.data.length == 0) {
+  //   return {};
+  // }
   const [{ moduleName, serverName, data: theData }, { data: preData }] = monitorData;
   for (let hour = 0; hour < 24; hour++) {
     for (let min = 0; min <= 60; min += 5) {
@@ -106,7 +109,7 @@ ModuleService.findServersFormat = function propertyMonitorFindServersFormat(moni
     const preItem = preData.find(item => item.serverName === serverName);
     const { data: preItemData } = preItem || {};
     data.forEach(({ propData = {} }, index) => {
-      const option = { date, moduleName, serverName };
+            const option = { show_time: data[index].timeStamp, date, moduleName, serverName };
       keys = Object.keys(propData);
       keys.forEach((property) => {
         option[`the_${property}`] = propData[property] || '--';
@@ -119,9 +122,9 @@ ModuleService.findServersFormat = function propertyMonitorFindServersFormat(moni
 };
 
 
-ModuleService.addModuleBaseInfo = async function ({ apply_id, follower, cache_version, mkcache_struct, create_person }) {
+ModuleService.addModuleBaseInfo = async function ({ apply_id, module_name, follower, update, create_person, modify_time }) {
   return moduleDao.addModuleBaseInfo({
-    apply_id, follower, cache_version, mkcache_struct, create_person,
+    apply_id, module_name, follower, update, create_person, modify_time,
   });
 };
 

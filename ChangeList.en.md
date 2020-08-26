@@ -1,3 +1,50 @@
+## 20200819(2.4.9)
+- tarsnode tag
+- patch package download
+- tarsnode batch update
+- config UI modify
+- web UI support multi tab
+- dcache support install dbaccess/backup/mirror
+- add login verify code
+- add search
+- fix auth bug
+- fix sync db bug
+- fix monitor chart data bug
+
+
+## 20200805(2.4.8)
+- update dcache logo
+- fix create table charset bug
+- support ldap login
+- support all user is admin
+- add update.js for db upgrate
+- /api/upload_patch_package return json
+- update webConf, charset use utf8
+- fix dcache property bug
+- fix config overflow bug
+- fix dcache proxy/router default template
+- fix db sync bug
+- fix benchmark, bug
+- fix tars protocol parse bug
+- support multi tab
+
+## 20200718(2.4.7)
+- add multi-gateway configuration feature
+- add path input when adding router in gateway station
+- support dcache deploy, support router, cache, proxy, dbaccess auto deploy
+- merge demo to web, not open to ports
+- support tars tree set bussiness relation
+- support tarsgo gracefull patch
+
+## 20200703(2.4.6)
+- fix strict mode, tarslog transfer deploy bug
+- edit servant obj, obj name can not has digit bug
+- Add TARS_WEB_SSO_PREFIX environment variable to identify the common prefix of web and demo, which is easy to deploy, for example: Web - > tars.com , demo-> sso.tars.com , export TARS_ WEB_ SSO_ PREFIX=sso
+
+## 20200620(2.4.5)
+- add gateway config
+- add operator permissions to current user when current user don't has admin auth
+
 ## 20200612(2.4.4)
 - add install tutorial when benchmark admin is not installed
 - optimize the error message in benchmark tool when framework server exception

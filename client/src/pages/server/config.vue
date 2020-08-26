@@ -38,7 +38,6 @@
           <template slot-scope="scope">
             <let-table-operation @click="deleteRef(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
             <let-table-operation @click="showDetail(scope.row)">{{$t('operate.view')}}</let-table-operation>
-            <let-table-operation @click="showHistory(scope.row.id)">{{$t('pub.btn.history')}}</let-table-operation>
           </template>
         </let-table-column>
       </let-table>
@@ -131,10 +130,12 @@
           </template>
         </let-table-column>
       </let-table>
-      <pre
-        v-if="(detailModal.model && !detailModal.model.table) ||
-          (detailModal.model && detailModal.model.table && detailModal.model.detail)"
-        >{{detailModal.model.detail || $t('cfg.msg.empty')}}</pre>
+      <div class="pre_con">
+        <pre
+          v-if="(detailModal.model && !detailModal.model.table) ||
+            (detailModal.model && detailModal.model.table && detailModal.model.detail)"
+          >{{detailModal.model.detail || $t('cfg.msg.empty')}}</pre>
+      </div>
       <div class="detail-loading" ref="detailModalLoading"></div>
     </let-modal>
 
@@ -318,9 +319,14 @@ export default {
     },
     addConfig() {
       this.configModal.model = {
-        filename: '',
+        filename: this.serverData.server_name + ".conf",
         config: '',
       };
+
+      if(this.serverData.server_name == "") {
+        this.configModal.model.filename = this.serverData.application + ".conf";
+      }
+
       this.configModal.isNew = true;
       this.configModal.show = true;
     },
@@ -355,9 +361,9 @@ export default {
             }
             this.$tip.success(this.$t('common.success'));
             this.closeConfigModal();
-          }).catch(() => {
+          }).catch((err) => {
             loading.hide();
-            this.$tip.error(this.$t('common.error'));
+            this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
           });
         // 修改
         } else {
@@ -379,9 +385,9 @@ export default {
             }
             this.$tip.success(this.$t('common.success'));
             this.closeConfigModal();
-          }).catch(() => {
+          }).catch((err) => {
             loading.hide();
-            this.$tip.error(this.$t('common.error'));
+            this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
           });
         }
       }
@@ -467,6 +473,13 @@ export default {
           loading.hide();
           this.refFileModal.show = false;
           this.refFileModal.isNodeRef ? this.getNodeRefFileList(this.refFileModal.id) : this.getRefFileList()
+        }).catch(err=>{
+          loading.hide();
+
+          this.$tip.error({
+              title: this.$t('common.error'),
+              message: err.err_msg || err.message || this.$t('common.networkErr'),
+            });
         })
       }
     },
@@ -486,6 +499,13 @@ export default {
             this.getRefFileList();
           }
           this.$tip.success(this.$t('common.success'));
+        }).catch(err=>{
+          loading.hide();
+
+          this.$tip.error({
+              title: this.$t('common.error'),
+              message: err.err_msg || err.message || this.$t('common.networkErr'),
+            });
         })
       })
     },
@@ -655,9 +675,14 @@ export default {
     padding-right: 10px;
   }
 
-  pre {
+  .pre_con{display:block;overflow:hidden;}
+
+  .pre_con pre {
     color: #909FA3;
+    display: block;
     margin-top: 32px;
+    word-break: break-word;
+    white-space: pre-wrap;
   }
 
   .detail-loading {

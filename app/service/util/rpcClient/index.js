@@ -48,7 +48,7 @@ const RPCClientPrx = (proxy, moduleName, interfaceName, servantName, setInfo) =>
                                     }
                                 }
 
-                                logger.info( 'method: ',fnName, ' request: ', _args, ' response: ', rst);
+                                // logger.info( 'method: ',fnName, ' request: ', _args, ' response: ', rst);
                                 return rst;
                             })();
                             return rst;

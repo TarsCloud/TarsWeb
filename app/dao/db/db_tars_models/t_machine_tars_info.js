@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
 			autoIncrement: true,
-			unique: true
+			unique: 'id' 
 		},
 		application: {
 			type: DataTypes.STRING(100),

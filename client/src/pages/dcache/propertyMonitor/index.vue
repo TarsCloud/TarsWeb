@@ -1,5 +1,5 @@
 <template>
-  <div class="page_server_property_monitor">
+  <div class="page_server_manage">
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
       <let-form-group>
         <let-form-item :label="$t('monitor.search.a')">
@@ -20,7 +20,13 @@
           <let-input size="small" v-model="query.moduleName"></let-input>
         </tars-form-item>
         <tars-form-item :label="$t('service.serverName')" @onLabelClick="groupBy('serverName')">
-          <let-input size="small" v-model="query.serverName"></let-input>
+
+          <let-select v-model="query.serverName" size="small" filterable >
+            <let-option v-for="d in cacheServerList" :key="d.id" :value="d.application + '.' + d.server_name">
+              {{d.application + '.' + d.server_name}}
+            </let-option>
+          </let-select>
+
         </tars-form-item>
         <let-form-item>
           <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
@@ -37,27 +43,25 @@
 
     <hours-filter v-model="hour"></hours-filter>
 
-    <div style="width: 1200px; overflow-x: auto;padding-bottom:20px;">
-      <let-table ref="table" :data="pagedItems" :empty-msg="$t('common.nodata')" stripe>
-        <let-table-column :title="$t('common.time')" prop="show_time" width="80px"></let-table-column>
-        <let-table-column :title="$t('module.name')" prop="moduleName" width=""></let-table-column>
-        <let-table-column :title="$t('service.serverName')" prop="serverName" width="150px"></let-table-column>
-        <template v-for="item in keys">
-          <let-table-column :title="$t('monitor.table.curr') + ' ' + item" :prop="`the_${item}`" ></let-table-column>
-          <let-table-column :title="$t('monitor.table.contrast') + ' ' + item" :prop="`pre_${item}`" ></let-table-column>
-        </template>
-        <let-pagination
-          slot="pagination"
-          v-if="pageCount"
-          :total="pageCount"
-          :page="page"
-          :sum="itemsCount"
-          show-sums
-          jump
-          @change="changePage"
-        ></let-pagination>
-      </let-table>
-    </div>
+    <let-table ref="table" :data="pagedItems" :empty-msg="$t('common.nodata')" stripe>
+      <let-table-column :title="$t('common.time')" prop="show_time"></let-table-column>
+      <let-table-column :title="$t('module.name')" prop="moduleName"></let-table-column>
+      <let-table-column :title="$t('service.serverName')" prop="serverName"></let-table-column>
+      <template v-for="item in keys">
+        <let-table-column :title="$t('monitor.table.curr') + '/' + $t('monitor.table.contrast') + ' ' + item" prop="value" ></let-table-column>
+      </template>
+      <let-pagination
+        slot="pagination"
+        v-if="pageCount"
+        :total="pageCount"
+        :page="page"
+        :sum="itemsCount"
+        show-sums
+        jump
+        @change="changePage"
+      ></let-pagination>
+    </let-table>
+
   </div>
 </template>
 
@@ -65,7 +69,7 @@
   import {formatDate, ONE_DAY} from '@/lib/date';
   import HoursFilter from '@/components/hours-filter';
   import CompareChart from '@/components/charts/compare-chart';
-  import { queryProperptyData } from '@/dcache/interface.js'
+  import { getCacheServerList, queryProperptyData } from '@/dcache/interface.js'
 
   const pageSize = 20;
   const formatter = 'YYYYMMDD';
@@ -100,7 +104,7 @@
     },
 
     data() {
-      const treeId = this.$route.params.treeid;
+      const treeId = this.treeid;
 
       return {
         query: {
@@ -111,6 +115,8 @@
           moduleName: treeId.split('.')[1].substr(1),
           serverName: '',
         },
+        appName: treeId.split('.')[0].substr(1),
+        cacheServerList: [],
         formatter,
         allItems: [],
         hour: -1,
@@ -119,6 +125,8 @@
         keys: []
       };
     },
+
+    props: ['treeid'],
 
     computed: {
       filteredItems() {
@@ -161,28 +169,46 @@
     },
 
     mounted() {
-      this.fetchData();
+      // this.fetchData();
+      this.fetchCacheServerList();
     },
 
     methods: {
+      async fetchCacheServerList() {
+        try {
+          this.cacheServerList = await getCacheServerList({appName: this.appName, moduleName: this.query.moduleName});
+        } catch (err) {
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+        } 
+      },
       async fetchData() {
         const chartLoading = this.$refs.charts && this.$refs.charts.$loading.show();
         const tableLoading = this.$refs.table.$loading.show();
         try {
           const { query, query: { group_by, serverName }} = this;
           let option = { ...query };
-          if (group_by === 'serverName' && serverName === '' ) option = { ...option, serverName: '*' };
+          if (group_by === 'serverName' && serverName === '' ) option = { ...option, serverName: '' };
           const { data, keys } = await queryProperptyData(option);
-          this.allItems = data;
-          this.keys= keys;
+          // console.log(data, keys);
+          this.allItems = data || [];
+
+          this.keys = keys || [];
+
+          this.keys.forEach((k,v)=>{
+
+            this.allItems.forEach((item)=>{
+              item.value = item[`the_${k}`] + '/' + item[`pre_${k}`];
+            });
+          });
+
         } catch (err) {
-          console.error(err);
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         } finally {
           chartLoading && chartLoading.hide();
           tableLoading.hide();
         }
       },
+
       groupBy(name) {
         this.query.group_by = name;
         this.showChart = false;
@@ -204,30 +230,23 @@
 </script>
 
 <style lang="postcss">
-  .page_server_property_monitor {
-    padding-bottom: 20px;
-  .chart {
-    margin-top: 20px;
-  }
-
-  .let-table {
-    th {
-      border: 1px solid #ddd;
-      word-break: keep-all;
+  .page_server_manage {
+    
+    .chart {
+      margin-top: 20px;
     }
-    td {
-      word-break: keep-all;
-      border: 1px solid #ddd;
+
+    .let-table {
+      th {
+        word-break: keep-all;
+      }
+      td {
+        word-break: keep-all;
+      }
     }
-  }
 
-  .charts {
-    margin-top: 20px;
-  }
-
-  .hours-filter {
-    margin-bottom: 16px;
-  }
-
+    .charts {
+      margin-top: 20px;
+    }
   }
 </style>

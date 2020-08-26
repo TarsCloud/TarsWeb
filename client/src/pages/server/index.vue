@@ -1,34 +1,78 @@
 <template>
   <div class="page_server">
+    <div class="left-view">
+      <div class="tree_search">
+        <input v-model="treeSearchKey" class="tree_search_key" type="text" @blur="treeSearch" @keydown.enter="treeSearch" placeholder="请输入内容…" />
+      </div>
 
-    <let-tree class="left-tree"
-      v-if="treeData && treeData.length"
-      :data="treeData"
-      :activeKey="$route.params.treeid"
-      @on-select="selectTree"/>
-    <div class="left-tree" v-if="treeData && !treeData.length">
-      <p class="loading">{{$t('common.noService')}}</p>
-    </div>
-    <div class="left-tree" v-if="!treeData" ref="treeLoading">
-      <div class="loading" v-if="treeData === false">
-        <p>{{treeErrMsg}}</p>
-        <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
+      <div class="tree_wrap">
+        <a href="javascript:;" class="tree_icon iconfont el-icon-third-shuaxin" @click="treeSearch(1)"></a>
+        <let-tree class="left-tree"
+          v-if="treeData && treeData.length"
+          :data="treeData"
+          :activeKey="treeid"
+          @on-select="selectTree"/>
+        <div class="left-tree" v-if="treeData && !treeData.length">
+          <p class="loading">{{$t('common.noService')}}</p>
+        </div>
+        <div class="left-tree" v-if="!treeData" ref="treeLoading">
+          <div class="loading" v-if="treeData === false">
+            <p>{{treeErrMsg}}</p>
+            <a href="javascript:;" @click="getTreeData">{{$t('common.reTry')}}</a>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="right-view" v-if="!this.$route.params.treeid">
-      <div class="empty" style="width: 300px">
-
+    <!-- <div class="right-view" v-if="!this.$route.params.treeid"> -->
+    <div class="right-view" v-if="!treeid">
+      <serverHistory></serverHistory>
+      <!-- <div class="empty" style="width: 300px">
         <img class="package" src="@/assets/img/package.png">
         <p class="title">{{$t('index.rightView.title')}}</p>
         <p class="notice" v-html="$t('index.rightView.tips')"></p>
-        <p class="notice">https://github.com/TarsCloud/Tars</p>
-      </div>
-
+	<p class="notice">https://github.com/TarsCloud/Tars</p>
+      </div> -->
     </div>
 
     <div class="right-view" v-else>
-      <let-tabs @click="clickTab" :activekey="$route.path">
+      <div class="btabs_wrap">
+        <ul ref="btabs" class="btabs" v-vscroll>
+          <li class="btabs_item" :class="{
+            'active': item.id === treeid
+          }" v-for="item in BTabs" :key="item.id">
+            <a class="btabs_link" href="javascript:;" @click="clickBTabs($event, item.id)">{{ item.id }}</a>
+            <a class="btabs_close" href="javascript:;" @click="closeBTabs(item.id)">关闭</a>
+          </li>
+        </ul>
+        <a class="btabs_all" href="javascript:;" title="关闭全部" @click="closeAllBTabs">关闭全部</a>
+      </div>
+
+      <div class="btabs_con">
+        <div class="btabs_con_item" v-for="item in BTabs" :key="item.id" v-show="item.id === treeid">
+          <let-tabs @click="clickTab" :activekey="item.path">
+            <let-tab-pane :tabkey="base + '/manage'" :tab="$t('header.tab.tab1')"></let-tab-pane>
+            <let-tab-pane :tabkey="base + '/publish'" :tab="$t('index.rightView.tab.patch')"
+              v-if="serverData.level === 5"></let-tab-pane>
+            <let-tab-pane :tabkey="base + '/config'"
+              :tab="serverData.level === 5 ? $t('index.rightView.tab.serviceConfig') :
+                    serverData.level === 4 ? $t('index.rightView.tab.setConfig') :
+                    serverData.level === 1 ? $t('index.rightView.tab.appConfig') : ''"
+              v-if="serverData.level === 5 || serverData.level === 4 || serverData.level === 1"></let-tab-pane>
+            <let-tab-pane :tabkey="base + '/server-monitor'" :tab="$t('index.rightView.tab.statMonitor')"
+              v-if="serverData.level === 5"></let-tab-pane>
+            <let-tab-pane :tabkey="base + '/property-monitor'" :tab="$t('index.rightView.tab.propertyMonitor')"
+              v-if="serverData.level === 5"></let-tab-pane>
+            <let-tab-pane :tabkey="base + '/interface-debuger'" :tab="$t('index.rightView.tab.infDebuger')"
+              v-if="serverData.level === 5"></let-tab-pane>
+            <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')" v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
+          </let-tabs>
+
+          <router-view :is="getName(item.path)" :treeid="item.id" ref="childView" class="page_server_child"></router-view>
+        </div>
+      </div>
+
+      <!-- <let-tabs @click="clickTab" :activekey="$route.path">
         <let-tab-pane :tabkey="base + '/manage'" :tab="$t('header.tab.tab1')"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/publish'" :tab="$t('index.rightView.tab.patch')"
           v-if="serverData.level === 5"></let-tab-pane>
@@ -43,24 +87,43 @@
           v-if="serverData.level === 5"></let-tab-pane>
         <let-tab-pane :tabkey="base + '/interface-debuger'" :tab="$t('index.rightView.tab.infDebuger')"
           v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')"
-                      v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
-      </let-tabs>
-
-      <router-view ref="childView" class="page_server_child" :key="$route.params.treeid"></router-view>
+        <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')" v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
+      </let-tabs> -->
+      
+      <!-- <router-view ref="childView" class="page_server_child" :key="$route.params.treeid"></router-view> -->
     </div>
     
   </div>
 </template>
 
 <script>
+import manage from './manage'
+import publish from './publish'
+import config from './config'
+import serverMonitor from './monitor-server'
+import propertyMonitor from './monitor-property'
+import interfaceDebuger from './interface-debuger'
+import userManage from './user-manage'
+import serverHistory from './history'
+
 export default {
   name: 'Server',
-
+  components: {
+    manage,
+    publish,
+    config,
+    'server-monitor': serverMonitor,
+    'property-monitor': propertyMonitor,
+    'interface-debuger': interfaceDebuger,
+    'user-manage': userManage,
+    serverHistory,
+  },
   data() {
     return {
       treeErrMsg: 'load failed',
       treeData: null,
+      treeSearchKey: '',
+      treeid: '',
       enableAuth: false,
       // deployLog: false,
 
@@ -73,17 +136,20 @@ export default {
         set_area: '',
         set_group: '',
       },
+
+      // BTabs
+      BTabs: [],
     };
   },
   computed: {
     base() {
-      return `/server/${this.$route.params.treeid}`;
+      return `/server/${this.treeid}`;
     },
   },
   watch: {
-    '$route.params.treeid': function (treeid) { // eslint-disable-line
+    'treeid'() {
       this.serverData = this.getServerData();
-      this.isTrueTreeLevel();
+      // this.isTrueTreeLevel();
     },
     '$route' (to, from) {
       if (to.path === '/server') {
@@ -91,13 +157,44 @@ export default {
       }
     },
   },
-  methods: {
-    selectTree(nodeKey) {
-      if (this.$route.path === '/server') {
-        this.$router.push(`/server/${nodeKey}/manage`);
-      } else {
-        this.$router.push({ params: { treeid: nodeKey } });
+  directives: {
+    vscroll: {
+      componentUpdated(el) {
+        let boxEl = el || ''
+        let itemEl = el.children || []
+        let currEl = ''
+        
+        itemEl.forEach(item => {
+          const iclass = item.getAttribute('class')
+          if(iclass.indexOf('active') > -1) {
+            currEl = item
+          }
+        })
+        
+        if(currEl.offsetLeft < boxEl.scrollLeft){
+          const x = currEl.offsetLeft
+          boxEl.scrollTo(x, 0)
+        }else if(currEl.offsetLeft + currEl.offsetWidth > boxEl.scrollLeft + boxEl.offsetWidth){
+          const x = currEl.offsetLeft + currEl.offsetWidth - boxEl.offsetWidth
+          boxEl.scrollTo(x, 0)
+        }
       }
+    }
+  },
+  methods: {
+    getName(val) {
+      let result = ''
+      if(val.lastIndexOf('/') > -1){
+        result = val.substring(val.lastIndexOf('/') + 1, val.length)
+      }
+      return result
+    },
+    treeSearch(type) {
+      this.getTreeData(this.treeSearchKey, type)
+    },
+    selectTree(nodeKey) {
+      this.selectBTabs(nodeKey)
+      this.checkCurrBTabs()
     },
     // 处理接口返回数据
     handleData(res, isFirstLayer) {
@@ -107,9 +204,13 @@ export default {
         node.nodeKey = node.id;  //eslint-disable-line
 
         // 第一层特殊图标、展开
-        if (isFirstLayer) {
-          node.iconClass = 'tree-icon';
-          node.expand = true;  //eslint-disable-line
+        // if (isFirstLayer) {
+          // node.iconClass = 'tree-icon';
+          // node.expand = true;  //eslint-disable-line
+        // }
+
+        if(this.treeSearchKey) {
+          node.expand = true
         }
 
         if (node.children && node.children.length) {
@@ -117,7 +218,7 @@ export default {
         }
       });
     },
-    getTreeData() {
+    getTreeData(key, type) {
       this.treeData = null;
 
       this.$nextTick(() => {
@@ -125,7 +226,10 @@ export default {
           target: this.$refs.treeLoading,
         });
 
-        this.$ajax.getJSON('/server/api/tree').then((res) => {
+        this.$ajax.getJSON('/server/api/tree', {
+          searchKey: key || '',
+          type,
+        }).then((res) => {
           loading.hide();
           this.treeData = res;
           this.handleData(this.treeData, true);
@@ -137,10 +241,10 @@ export default {
       });
     },
     getServerData() {
-      if (!this.$route.params.treeid) {
+      if (!this.treeid) {
         return {};
       }
-      const treeArr = this.$route.params.treeid.split('.');
+      const treeArr = this.treeid.split('.');
       const serverData = {
         level: 5,
         application: '',
@@ -178,10 +282,19 @@ export default {
       return serverData;
     },
 
+    checkTreeid() {
+      this.treeid = this.getLocalStorage('taf_treeid') || ''
+    },
+
     clickTab(tabkey) {
-      this.$router.push(Object.assign({}, this.$route, {
-        path: tabkey,
-      }));
+      let { treeid, BTabs } = this
+      BTabs && BTabs.forEach(item => {
+        if(item.id === treeid) {
+          item.path = tabkey
+        }
+      })
+
+      this.setLocalStorage('taf_tabs', JSON.stringify(BTabs))
     },
 
     // 有些目录层级不显示某些标签，处理之
@@ -193,7 +306,7 @@ export default {
       let shouldRedirect = false;
       // publish、server-monitor、property-monitor 只有 level 5 可访问
       if (this.serverData.level !== 5 &&
-        (route === 'publish' || route === 'server-monitor' || route === 'property-monitor' || route === 'user-manage')) {
+        (route === 'publish' || route === 'server-monitor' || route === 'property-monitor' || route === 'user-manage' || route === 'interface-debuger')) {
         shouldRedirect = true;
       }
       // config 有 level 5、4、1 可访问
@@ -205,19 +318,130 @@ export default {
         this.$router.replace('manage');
       }
     },
+
+    checkBTabs() {
+      let { BTabs } = this
+      const tabs = this.getLocalStorage('taf_tabs')
+      if(tabs && tabs.length > 0){
+        tabs.forEach(item => {
+          BTabs.push({
+            id: item.id,
+            path: item.path,
+          })
+        })
+      }
+    },
+
+    checkCurrBTabs() {
+      this.$nextTick(() => {
+        let boxEl = this.$refs.btabs || ''
+        let itemEl = boxEl.children || []
+        let currEl = ''
+        
+        itemEl.forEach(item => {
+          const iclass = item.getAttribute('class')
+          if(iclass.indexOf('active') > -1) {
+            currEl = item
+          }
+        })
+
+        if(currEl.offsetLeft < boxEl.scrollLeft){
+          const x = currEl.offsetLeft
+          boxEl.scrollTo(x, 0)
+        }else if(currEl.offsetLeft + currEl.offsetWidth > boxEl.scrollLeft + boxEl.offsetWidth){
+          const x = currEl.offsetLeft + currEl.offsetWidth - boxEl.offsetWidth
+          boxEl.scrollTo(x, 0)
+        }
+      })
+    },
+
+    selectBTabs(nodeKey) {
+      let { BTabs } = this
+      let isBTabTrue = false
+      BTabs.forEach(item => {
+        if(item.id === nodeKey){
+          isBTabTrue = true
+          item.path = `/server/${nodeKey}/manage`
+        }
+      })
+      if(!isBTabTrue){
+        this.BTabs.push({
+          id: nodeKey,
+          path: `/server/${nodeKey}/manage`
+        })
+      }
+
+      this.treeid = nodeKey
+      this.setLocalStorage('taf_treeid', JSON.stringify(nodeKey))
+      this.setLocalStorage('taf_tabs', JSON.stringify(BTabs))
+    },
+
+    clickBTabs(e, nodeKey) {
+      this.treeid = nodeKey
+      this.setLocalStorage('taf_treeid', JSON.stringify(nodeKey))
+    },
+
+    closeBTabs(nodeKey) {
+      let { BTabs } = this
+      let BIndex = 0
+
+      BTabs.forEach((item, index) => {
+        if(item.id === nodeKey){
+          BIndex = index
+        }
+      })
+      BTabs.splice(BIndex, 1)
+
+      this.setLocalStorage('taf_tabs', JSON.stringify(BTabs))
+
+      if(BTabs.length > 0){
+        this.treeid = BTabs[BTabs.length - 1].id
+      }else{
+        this.treeid = ''
+      }
+      this.setLocalStorage('taf_treeid', JSON.stringify(this.treeid))
+      this.getTreeData()
+    },
+
+    closeAllBTabs() {
+      this.BTabs = []
+      this.treeid = ''
+      this.setLocalStorage('taf_tabs', JSON.stringify(this.BTabs))
+      this.setLocalStorage('taf_treeid', JSON.stringify(this.treeid))
+      this.getTreeData()
+    },
+
+    getLocalStorage(key) {
+      let result = ''
+      if(window.localStorage){
+        result = JSON.parse(JSON.parse(localStorage.getItem(key)))
+      }
+      return result
+    },
+
+    setLocalStorage(key, val) {
+      let result = ''
+      if(window.localStorage){
+        result = localStorage.setItem(key, JSON.stringify(val))
+      }
+      return result
+    },
+
   },
   created() {
     this.serverData = this.getServerData();
     this.isTrueTreeLevel();
   },
   mounted() {
+    this.checkTreeid();
+    this.checkBTabs();
     this.getTreeData();
     // this.checkDeployLog();
     this.$ajax.getJSON('/server/api/is_enable_auth').then((data) => {
       this.enableAuth = data.enableAuth || false;
-     }).catch((err)=>{
+    }).catch((err)=>{
 
-      });
+    });
   },
 };
 </script>
@@ -227,14 +451,31 @@ export default {
 @import '../../assets/css/variable.css';
 
 .page_server {
-  padding-bottom: var(--gap-big);
+  padding-bottom: var(--gap-small);
   padding-top: var(--gap-big);
   display: flex;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
 
+  /*left-view*/
+  .left-view{
+    display:flex;
+    flex: 1;
+    flex-flow: column;
+    max-width: 260px;
+  }
+  /*目录搜索框*/
+  .tree_search{display:block;margin-bottom:20px;position:relative;}
+  .tree_search_key{display:block;border:1px solid #c0c4cc;border-radius:4px;color:#222329;font-size:14px;padding:6px 10px;box-sizing: border-box;width: 100%;}
+  /**/
+  .tree_wrap{display:flex;flex:1;overflow:auto;position:relative;}
+  .tree_wrap::-webkit-scrollbar{border-radius:10px;}
+  .tree_icon{color:#565B66;position:absolute;right:10px;top:10px;}
   /*目录树*/
   .left-tree {
     flex: 0 0 auto;
-    width: 152px;
+    width: 250px;
     min-height: 380px;
 
     .loading {
@@ -251,28 +492,30 @@ export default {
     ul.let-tree__node {
       font-size: 14px;
       line-height: var(--gap-small);
-      margin-left: 10px;
+        margin-left: 18px;
 
       li {
         text-overflow: ellipsis;
         overflow: hidden;
+        word-break: break-all;
+        white-space: pre;
       }
     }
 
     & > ul.let-tree__node {
       font-size: 16px;
-      margin-bottom: var(--gap-small);
+      margin-bottom: 10px;
       margin-left: 0;
 
       & > li > ul.let-tree__node {
         margin-left: 0;
 
         li .pointer:first-of-type {
-          margin-left: 3px;
+            margin-left: 20px;
         }
 
         li .pointer:first-of-type:empty {
-          margin-left: 26px;
+            margin-left: 20px;
         }
       }
     }
@@ -300,9 +543,12 @@ export default {
 
   /*右侧窗口*/
   .right-view {
+    display: flex;
     flex: 1;
+    flex-flow: column;
     margin-left: 40px;
-    margin-top: -10px;
+    overflow: hidden;
+    position: relative;
 
     .empty {
       margin: 88px 0 0 calc((100% - 240px) / 2 - 108px);
@@ -326,9 +572,14 @@ export default {
   }
 
   .page_server_child {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
     margin-top: 20px;
-    position: relative;
+    overflow: auto;
+    padding-right: 20px;
   }
+  .page_server_child::-webkit-scrollbar{border-radius:10px;}
 
   .loading-placeholder {
     min-height: 80px;
@@ -398,5 +649,40 @@ export default {
   /*服务状态 end*/
 
   /*右侧窗口 end*/
+  .btabs_wrap{display:block;height:32px;margin-bottom:10px;position:relative;}
+  .btabs{display:block;margin-right:32px;overflow-x:auto;overflow-y:hidden;position:relative;white-space:nowrap;}
+  .btabs::-webkit-scrollbar{border-radius:10px;height:8px;}
+  .btabs:before{border-bottom:1px solid #d7dae0;bottom:0;content:"";left:0;position:absolute;right:0;}
+  .btabs_item{border:1px solid #d7dae0;display:inline-block;position:relative;z-index:10}
+  .btabs_item + .btabs_item{margin-left:-1px;}
+  .btabs_item:first-child{border-top-left-radius:5px;}
+  .btabs_item:last-child{border-top-right-radius:5px;}
+  .btabs_item.active{background:#457ff5;}
+  .btabs_item.active .btabs_link{color:#fff;}
+  .btabs_item:hover .btabs_close,
+  .btabs_item.active .btabs_close{-webkit-transform:translateY(-50%) scale(1);}
+  .btabs_item.active .btabs_close:before,
+  .btabs_item.active .btabs_close:after{border-color:#fff;}
+  .btabs_link{color:#9096a3;display:block;font-weight:bold;height:30px;line-height:20px;padding:5px 30px 5px 10px;}
+  .btabs_link:hover{color:#222329;}
+  .btabs_close{display:block;font-size:0;height:30px;overflow:hidden;position:absolute;right:0;top:50%;width:30px;z-index:20;-webkit-transform:translateY(-50%) scale(.5) rotateZ(-180deg);-webkit-transition:all 0.5s ease-in-out;}
+  .btabs_close:before,
+  .btabs_close:after{border-top:1px solid #9096a3;content:"";height:0;left:50%;position:absolute;top:50%;width:13px;}
+  .btabs_close:before{-webkit-transform:translate3d(-50%,-50%,0) rotateZ(-45deg);}
+  .btabs_close:after{-webkit-transform:translate3d(-50%,-50%,0) rotateZ(45deg);}
+  .btabs_all{background:#e36654;bottom:0;border-radius:5px;display:block;font-size:0;overflow:hidden;position:absolute;right:0;top:0;text-indent:-9999em;width:32px;z-index:30;}
+  .btabs_all:before,
+  .btabs_all:after{border-top:1px solid #fff;content:"";height:0;left:50%;position:absolute;top:50%;width:16px;}
+  .btabs_all:before{-webkit-transform:translate3d(-50%,-50%,0) rotateZ(-45deg);}
+  .btabs_all:after{-webkit-transform:translate3d(-50%,-50%,0) rotateZ(45deg);}
+  .btabs_all:hover{opacity:.7;}
+
+  .btabs_close:hover:before,
+  .btabs_close:hover:after{border-color:#222329;}
+  .btabs_item.active .btabs_link:hover{color:#222329;}
+  .btabs_item.active .btabs_close:hover:before,
+  .btabs_item.active .btabs_close:hover:after{border-color:#222329;}
+  .btabs_con{display:flex;flex:1;flex-flow:column;overflow:hidden;}
+  .btabs_con_item{display:flex;flex:1;flex-flow:column;overflow:hidden;}
 }
 </style>

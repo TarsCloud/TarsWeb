@@ -1,6 +1,6 @@
 <template>
   <div class="page_operation_templates">
-    <let-button size="small" theme="primary" style="float: right" @click="addItem">{{$t('template.btn.addTempate')}}</let-button>
+    
     <let-form inline itemWidth="200px" @submit.native.prevent="search">
       <let-form-item :label="$t('deployService.form.template')">
         <let-input size="small" v-model="query.template_name"></let-input>
@@ -11,6 +11,9 @@
       <let-form-item>
         <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
       </let-form-item>
+      <div style="float: right">
+        <let-button size="small" theme="primary" @click="addItem">{{$t('template.btn.addTempate')}}</let-button>
+      </div>
     </let-form>
 
     <let-table ref="table" :data="items" :empty-msg="$t('common.nodata')">
@@ -47,7 +50,7 @@
             :placeholder="$t('template.add.templateFormatTips')"
             required
             :required-tip="$t('template.add.templateNameTips')"
-            pattern="^[a-zA-Z]([.a-zA-Z0-9]+)?$"
+            pattern="^[a-zA-Z-]([.a-zA-Z0-9-]+)?$"
             :pattern-tip="$t('template.add.templateFormatTips')"
           ></let-input>
         </let-form-item>

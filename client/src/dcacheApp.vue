@@ -7,7 +7,7 @@
       <router-view class="main-width"></router-view>
     </keep-alive>
 
-    <app-footer class="app_index__footer"></app-footer>
+    <!-- <app-footer class="app_index__footer"></app-footer> -->
   </div>
 </template>
 
@@ -65,14 +65,16 @@
 
   .main-width {
     margin: 0 auto;
-    max-width: var(--main-width);
+    /* max-width: var(--main-width); */
     padding: 0 var(--gap-small);
   }
 
   #app {
+    display: flex;
+    flex-flow: column;
+    overflow: hidden;
     position: relative;
-    padding-bottom: 48px;
-    min-height: 100%;
+    height: 100%;
     font-size: 14px;
   }
 

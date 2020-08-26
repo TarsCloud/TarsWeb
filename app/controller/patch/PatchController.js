@@ -25,6 +25,8 @@ const WebConf = require('../../../config/webConf');
 const util = require('../../tools/util');
 const fs = require('fs-extra');
 const md5Sum = require('md5-file').sync;
+const send = require('koa-send');
+const path = require('path');
 
 const PatchController = {};
 
@@ -36,9 +38,9 @@ PatchController.uploadAndPublish = async (ctx) => {
 	try {
 
 		let task_id = util.getUUID().toString();
-		let package_type = 0;
+		// let package_type = 0;
 
-		let {application, module_name, comment} = ctx.req.body;
+		let { application, module_name, comment, package_type} = ctx.req.body;
 
 		let file = ctx.req.files[0];
 		if (!file) {
@@ -48,7 +50,7 @@ PatchController.uploadAndPublish = async (ctx) => {
 		let baseUploadPath = WebConf.pkgUploadPath.path;
 		// 发布包上传目录
 		let updateTgzPath = `${baseUploadPath}/${application}/${module_name}`;
-		console.info('updateTgzPath:', updateTgzPath);
+		// console.info('updateTgzPath:', updateTgzPath);
 		await fs.ensureDirSync(updateTgzPath);
 		let hash = md5Sum(`${baseUploadPath}/${file.filename}`);
 
@@ -158,26 +160,18 @@ PatchController.uploadPatchPackage = async (ctx) => {
 				id: '',
 				server: '',
 				tgz: '',
-				update_text: { key: 'comment' },
-				posttime: { formatter: util.formatTimeStamp }
+				update_text: {key: 'comment'},
+				posttime: {formatter: util.formatTimeStamp}
 			});
 
 			let id = data.id;
 			let package = { id, application, module_name, package_type };
 
-			let value = await PatchService.find({
-				where: {
-					server: application + "." + module_name,
-					default_version: 1,
-					package_type: 0
-				}
-			});
+			//dcache的包, 设置为缺省包
+			await PatchService.setPatchPackageDefault(package);
 
-			if (!value) {
-				//如果是第一条记录, 则设置为default
-				await PatchService.setPatchPackageDefault(package);
-			}
-
+			// ctx.body = "upload succ and set this package to default package!\r\n";
+			//ctx.makeResObj(200, '', "upload succ and set this package to default package!");
 			ctx.makeResObj(200, '', data);
 		}
 	} catch (e) {
@@ -190,9 +184,10 @@ PatchController.uploadPatchPackage = async (ctx) => {
 PatchController.serverPatchList = async (ctx) => {
 	let { application, module_name, curr_page = 0, page_size = 0, package_type } = ctx.paramsObj;
 	try {
-		if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, module_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
+
 			let ret = await PatchService.getServerPatch(application, module_name, parseInt(curr_page), parseInt(page_size), package_type);
 			// console.log(ret);
 			ctx.makeResObj(200, '', {
@@ -235,7 +230,7 @@ PatchController.getServerPatchByTaskId = async (ctx) => {
 PatchController.getTagList = async (ctx) => {
 	let {application, server_name} = ctx.paramsObj;
 	try {
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let list = await CompileService.getTagList(application, server_name);
@@ -259,7 +254,7 @@ PatchController.getCompilerConf = (ctx) => {
 PatchController.getCodeInfConf = async (ctx) => {
 	let {application, server_name} = ctx.paramsObj;
 	try {
-		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let ret = await CompileService.getCodeInfConf(application, server_name);
@@ -308,12 +303,31 @@ PatchController.compilerTask = async (ctx) => {
 	}
 };
 
+PatchController.downloadPackage = async (ctx) => {
+	let { id } = ctx.paramsObj;
+	try {
+
+		let patch = await PatchService.find({ where: { id: id } });
+		if (patch) {
+
+			let fileUrl = path.join(WebConf.pkgUploadPath.path, patch.server.split('.')[0], patch.server.split('.')[1], patch.tgz);
+
+			ctx.set('Content-Type', 'application/octet-stream');
+			ctx.set('Content-Disposition', 'attachment; filename=' + patch.tgz),
+				ctx.body = fs.createReadStream(fileUrl);
+		}
+	} catch (e) {
+		logger.error('[PatchController.downloadPackage]:', e, ctx);
+		ctx.makeErrResObj(500, e.toString());
+	}
+}
+
 PatchController.deletePatchPackage = async (ctx) => {
 	let {id} = ctx.paramsObj;
 	try {
 
 		let patch = await PatchService.find({where: {id:id}});
-		console.log(patch);
+		// console.log(patch);
 		if(patch)
 		{
 			logger.info('deletePatchPackage:' + id + ", " + patch.server.split('.')[0] + ", " + patch.server.split('.')[1] + ", " + patch.tgz);

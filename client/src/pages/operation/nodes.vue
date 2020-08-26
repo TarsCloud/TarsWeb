@@ -9,9 +9,11 @@
         <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
       </let-form-item>
       <div style="float: right">
-      <let-button size="small" theme="primary" @click="manualAddItem">{{$t('nodes.btn.manualAddNode')}}</let-button>
-      &nbsp;&nbsp;&nbsp;
-      <let-button size="small" theme="primary" @click="autoAddItem">{{$t('nodes.btn.autoAddNode')}}</let-button>
+        <let-button size="small" theme="primary" @click="manualAddItem">{{$t('nodes.btn.manualAddNode')}}</let-button>
+        &nbsp;&nbsp;&nbsp;
+        <let-button size="small" theme="primary" @click="autoAddItem">{{$t('nodes.btn.autoAddNode')}}</let-button>
+        &nbsp;&nbsp;&nbsp;
+        <let-button size="small" theme="primary" @click="autoUpdateItem">{{$t('nodes.btn.autoUpdateNode')}}</let-button>
       </div>
     </let-form>
 
@@ -48,11 +50,14 @@
       </let-table-column>
       <let-table-column :title="$t('common.time')" prop="last_reg_time"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.last_heartbeat')" prop="last_heartbeat"></let-table-column>
+      <let-table-column :title="$t('nodeList.table.th.label')" prop="label" width="20%"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.tars_version')" prop="tars_version"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.load_avg5')" prop="load_avg5"></let-table-column>
       <let-table-column :title="$t('nodeList.table.th.check')">
 
         <template slot-scope="scope">
+          <let-table-operation @click="editNode(scope.row.node_name)">{{$t('nodeList.table.edit')}}</let-table-operation>
+          &nbsp;&nbsp;
           <let-table-operation @click="checkNode(scope.row.node_name)">{{$t('nodeList.table.check')}}</let-table-operation>
           &nbsp;&nbsp;
           <let-table-operation @click="deleteNode(scope.row.node_name)">{{$t('nodeList.table.delete')}}</let-table-operation>
@@ -67,7 +72,7 @@
     <let-modal
       v-model="connectModal.show"
       :title="this.$t('connectNodeList.title')"
-      width="750px"
+      width="1200px"
       :footShow="false"
       :showClose="false"
     >
@@ -84,7 +89,7 @@
                 </let-steps>
                 <p v-if="scope.row.installState == 'fail' && scope.row.step == 1" class="fail_txt">Error: please check file /usr/local/app/web/files/tarsnode.tgz</p>
                 <p v-if="scope.row.installState == 'fail' && scope.row.step == 2" class="fail_txt">Error: please ensure the ssh service is enabled, and the ip/port/user/password config is right</p>
-                <p v-if="scope.row.installState == 'fail' && scope.row.step == 3" class="fail_txt">Error: please install wget on the node</p>
+                <p v-if="scope.row.installState == 'fail' && scope.row.step == 3" class="fail_txt">Error: please install curl on the node</p>
                 <p v-if="scope.row.installState == 'fail' && scope.row.step == 4" class="fail_txt">Error: please ensure the registry is available</p>
                 <p v-if="scope.row.installState == 'fail' && scope.row.step == 5" class="fail_txt">Error: some unknown error, please check log</p>
                 <pre class="stdout">{{scope.row.stdout}}</pre>
@@ -115,9 +120,12 @@
       @on-confirm="showConnectNode"
       @on-cancel="closeDetailModal"
     >
-      <let-form ref="detailForm" v-if="detailModal.model" itemWidth="450px">
+      <let-form ref="detailForm" itemWidth="450px">
         <let-form-item :label="$t('nodes.node_name')" required>
+
+<!--新增-->
           <let-input
+            v-if="detailModal.add"
             type="textarea"
             :rows="3"
             v-model="detailModal.model.node_name"
@@ -125,6 +133,13 @@
             required
             :required-tip="$t('nodes.nodeNameTips')"
           ></let-input>
+<!--批量升级-->
+          <let-select v-model="detailModal.model.update_node_name" v-else size="small" required multiple>
+            <let-option v-for="d in nodeList" :key="d.node_name" :value="d.node_name">
+              {{d.node_name + '(' + d.tars_version + ')'}}
+            </let-option>
+          </let-select>
+
         </let-form-item>
         <let-form-item :label="$t('nodes.user')" required>
             <let-input
@@ -161,6 +176,45 @@
         </let-form-item>
       </let-form>
     </let-modal>
+
+
+    <let-modal
+      v-model="labelModel.show"
+      :title="this.$t('nodes.label.title')"
+      width="500px"
+      @on-confirm="onAddLabel"
+    >
+      <let-form ref="labelForm" itemWidth="450px">
+        <let-table :data="labelModel.labelList" stripe :empty-msg="$t('common.nodata')" style="margin-top: 20px;"> 
+          <let-table-column :title="$t('nodes.label.name')" prop="name"></let-table-column>
+          <let-table-column :title="$t('nodes.label.value')" prop="value"></let-table-column>
+          <let-table-column :title="$t('nodes.label.operator')">
+            <template slot-scope="scope">
+              <let-table-operation @click="deleteLabel(labelModel.node_name, scope.row.name)">{{$t('nodes.label.delete')}}</let-table-operation>
+            </template>
+          </let-table-column>
+        </let-table>
+
+        <let-form-item :label="$t('nodes.label.name')" required itemWidth="150">
+            <let-input
+              size="small"
+              required
+              width="150px"
+              pattern="^[a-zA-Z0-9]([a-zA-Z0-9]+)?$"
+              v-model="labelModel.model.name"
+            ></let-input>
+        </let-form-item>
+        <let-form-item :label="$t('nodes.label.value')" required itemWidth="150">
+            <let-input
+            size="small"
+            required
+            width="150px"
+            v-model="labelModel.model.value"
+            pattern="^[a-zA-Z0-9]([a-zA-Z0-9]+)?$"
+          ></let-input>
+        </let-form-item>
+      </let-form>
+    </let-modal>
   </div>
 </template>
 
@@ -193,13 +247,25 @@ export default {
       showManualAddItem: false,
       detailModal: {
         show: false,
+        add: true,
         model: {
+          node_name: '',
+          update_node_name: [],
           user: 'root',
           password:'',
           port: '22',
           runuser: 'tars'
         }
       },
+      labelModel: {
+        show: false,
+        node_name:'',
+        labelList: [],
+        model: {
+          name: '',
+          value:''
+        }
+      }
     };
   },
 
@@ -208,6 +274,69 @@ export default {
   },
 
   methods: {
+    updateLabel(node_name, label) {
+      for(var i = 0; i < this.nodeList.length; i++) {
+        let item = this.nodeList[i];
+        if(item.node_name == node_name) {
+          item.label = label;
+          return;
+        }
+      }
+    },
+    updateLabelList(data) {
+      this.labelModel.labelList = [];
+
+      let labels = JSON.parse(data);
+      for(var key in labels){
+        this.labelModel.labelList.push({name: key, value: labels[key]});
+      }
+    },
+    editNode(node_name) {
+      this.$ajax.getJSON('/server/api/load_node_label', {
+        node_name: node_name,
+      }).then((data) => {
+
+        this.labelModel.node_name = node_name;
+        this.updateLabelList(data);
+        this.updateLabel(this.labelModel.node_name, data);
+
+        this.labelModel.show = true;
+
+      }).catch((err) => {
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+      });
+    },
+    onAddLabel(){
+      this.$ajax.postJSON('/server/api/add_node_label', {
+        node_name: this.labelModel.node_name,
+        name: this.labelModel.model.name,
+        value: this.labelModel.model.value
+      }).then((labels) => {
+        this.updateLabelList(labels);
+        this.updateLabel(this.labelModel.node_name, labels);
+
+        this.labelModel.model.name = '';
+        this.labelModel.model.value = '';
+
+      }).catch((err) => {
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+      });
+    },
+    deleteLabel(node_name, name) {
+      this.$ajax.postJSON('/server/api/delete_node_label', {
+        node_name: node_name,
+        name: name,
+      }).then((data) => {
+
+
+        this.updateLabelList(data);
+        this.updateLabel(node_name, data);
+
+        this.$tip.success(`${this.$t('common.success')}` );
+      }).catch((err) => {
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+      });
+    },
     checkNode(node_name) {
       const loading = this.$refs.nodeListLoading.$loading.show();
       this.$ajax.getJSON('/server/api/check_tars_node', {
@@ -269,7 +398,7 @@ export default {
         this.nodeList.forEach(x => {
           x.last_heartbeat = moment(x.last_heartbeat).format("YYYY-MM-DD HH:mm:ss");
           x.last_reg_time = moment(x.last_reg_time).format("YYYY-MM-DD HH:mm:ss")
-        })
+        });
       }).catch((err) => {
         loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
@@ -304,18 +433,30 @@ export default {
     },
     autoAddItem() {
       this.detailModal.show = true;
+      this.detailModal.add = true;
+    },
+    autoUpdateItem() {
+      this.detailModal.show = true;
+      this.detailModal.add = false;
     },
     showConnectNode() {
       if (this.$refs.detailForm.validate()) {
 
-        // if(this.connectNodeList.length == 0) {
           this.btnConnectText = this.$t('connectNodeList.btnConnect');
           this.btnInstallText = this.$t('connectNodeList.btnInstall');
           this.connectNodeList = [];
 
           const model = this.detailModal.model;
+
+          let node_name = [];
+
+          if(!this.detailModal.add) {
+            node_name = model.update_node_name; 
+          } else {
+            node_name = model.node_name.split(/[,;\n]/) 
+          }
           
-          model.node_name.split(/[,;\n]/).forEach(x=>{
+          node_name.forEach(x=>{
 
             if(x.trim() === '') {
               return;
@@ -411,7 +552,7 @@ export default {
 
         this.executeInstall = false;
         this.$ajax.postJSON('/server/api/install_tars_nodes', obj).then((data) => {
-          // console.log(data);
+
           data.forEach(n => {
             
           let node = this.connectNodeList.filter(x=>x.ip == n.ip);

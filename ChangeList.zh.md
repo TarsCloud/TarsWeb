@@ -1,3 +1,49 @@
+## 20200819(2.4.9)
+- web上支持给tarsnode打标签(未来可能有其他用途)
+- 支持发布包下载
+- tarsnode批量升级功能
+- 优化服务配置界面样式
+- web全面支持多tab, 保留tab状态
+- dcache支持独立升级安装dbaccess/backup/mirror
+- 登录支持验证码
+- 首页支持搜索逻辑
+- 修复权限的bug, 给开发用户更大权限
+- 修复数据库同步的bug
+- 修复监控图标的bug
+
+## 20200805(2.4.8)
+- 更新dcache图标
+- 修复创建表, 未使用指定字符集的bug
+- 支持LDAP鉴权登录
+- 支持开启所有用户都为admin用户(测试环境佳使用)
+- 增加update.js, 为db升级时使用
+- /api/upload_patch_package 返回json
+- 更新webConf, 字符集改为uft8(其实最好是utf8mb4, 但是历史不太好兼容了)
+- 修改dcache 查看property数据的bug
+- 修改查看配置, 排版溢出的bug
+- 修改dcache proxy/router 缺省的模板
+- 启用db sync的功能, 并修复bug
+- 修改压测的页面展示bug
+- 修改接口测试, 解析枚举类型的bug
+- 支持多tab, 方便操作
+
+## 20200718(2.4.7)
+- 添加多网关配置功能
+- 添加网关路由ip port模式下配置path的功能
+- 完善dcache的支持, 全面支持dcache, 包括router, cache, router, dbaccess的自动部署
+- 合并demo到web下, 不再开启两个端口
+- 支持tars树的业务关系配置
+- 支持tarsgo的优雅发布
+
+## 20200703(2.4.6)
+- 修复strict模式下, tarslog迁移部署的问题
+- 修改servant obj编辑时, obj名称不能带数字的问题
+- 增加TARS_WEB_SSO_PREFIX环境变量, 识别web和demo的共同前缀, 便于部署, 比如: web->tars.com, demo->sso.tars.com, export TARS_WEB_SSO_PREFIX=sso
+
+## 20200620(2.4.5)
+- 合入网关配置功能
+- 非管理员用户部署服务时，默认给当前用户添加运维权限
+
 ## 20200612(2.4.4)
 - 压测功能添加安装压测服务指引
 - 优化框架服务异常时压测模块的报错提示

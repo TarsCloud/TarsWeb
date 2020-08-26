@@ -32,6 +32,55 @@ ResourceService.listTarsNode = async(nodeName, curPage, pageSize) =>{
 	return await NodeInfoDao.getNodeInfoList(nodeName, curPage, pageSize);
 }
 
+ResourceService.addNodeLabel = async (nodeName, name, value) => {
+
+	let node = await NodeInfoDao.hasNodeNode(nodeName);
+
+	if (!node) {
+		return [];
+	}
+
+	if (node.label == '') {
+		node.label = '{}';
+	}
+
+	let labels = JSON.parse(node.label);
+
+	labels[name] = value;
+
+	await NodeInfoDao.updateNodeLabel(nodeName, JSON.stringify(labels));
+
+	return JSON.stringify(labels);
+}
+
+ResourceService.loadNodeLabel = async (nodeName) => {
+	let node = await NodeInfoDao.hasNodeNode(nodeName);
+
+	if (!node || node.label == '') {
+		return {};
+	}
+
+	return node.label;
+}
+
+ResourceService.deleteNodeLabel = async (nodeName, name) => {
+	let node = await NodeInfoDao.hasNodeNode(nodeName);
+
+	if (!node || node.label == '') {
+		return {};
+	}
+
+	let labels = JSON.parse(node.label);
+
+	delete labels[name];
+
+	await NodeInfoDao.updateNodeLabel(nodeName, JSON.stringify(labels));
+
+	return JSON.stringify(labels);
+}
+
+
+
 /**
  * 批量检测并安装Tars node
  * @param ips
@@ -228,6 +277,12 @@ ResourceService.uninstallTarsNode = async (ips) => {
 				ip: ip,
 				rst: false,
 				msg: '#api.resource.serverExist#'
+			});
+		}else{
+			rst.push({
+				ip: ip,
+				rst: true,
+				msg: '#api.resource.uninstallSuccess#'
 			});
 		}
 	}

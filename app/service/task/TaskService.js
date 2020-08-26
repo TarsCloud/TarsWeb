@@ -19,8 +19,9 @@ const AdminService = require('../../service/admin/AdminService');
 const ServerService = require('../../service/server/ServerService');
 const util = require('../../tools/util');
 const TaskDao = require('../../dao/TaskDao');
-const KafkaDao = require('../../dao/KafkaDao');
+// const KafkaDao = require('../../dao/KafkaDao');
 const AuthService = require('../../service/auth/AuthService');
+const TreeService = require('../../service/server/TreeService');
 
 const TaskService = {};
 
@@ -62,11 +63,11 @@ TaskService.getTasks = async (params) => {
 	return await TaskDao.getTask(params);
 };
 
-TaskService.getTaskStatus = async (taskNo) => {
-	return await KafkaDao.getTaskByTaskNo(taskNo);
-};
+// TaskService.getTaskStatus = async (taskNo) => {
+// 	return await KafkaDao.getTaskByTaskNo(taskNo);
+// };
 
-TaskService.addTask = async (params) => {
+TaskService.addTask = async (params, ticket) => {
 	let items = [];
 	for (let i = 0, len = params.items.length; i < len; i++) {
 		let item = params.items[i];
@@ -95,6 +96,7 @@ TaskService.addTask = async (params) => {
 
 		if (item.command === 'undeploy_tars') {
 			TaskService.autoDeletePermission(serverConf.application, serverConf.server_name, params.task_no);
+			TreeService.setCacheData()
 		}
 	}
 	let req = {

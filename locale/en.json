@@ -14,6 +14,7 @@
       "tab2": "Create Service"
     },
     "logout": "Logout",
+    "modifyPass": "Modify Password",
     "userCenter": "User Center"
   },
   "deployLog": {
@@ -26,6 +27,7 @@
   },
   "releasePackage": {
     "proxyList": "Proxy Service List",
+    "accessList": "DbAccess Service List",
     "routerList": "Router Service List",
     "cacheList": "Cache Service List",
     "uploadPackage": "Upload publish package",
@@ -122,6 +124,7 @@
   },
   "apply": {
     "title": "Application",
+        "createTitle": "Create Application",
     "name": "Application Name",
     "createApply": "Create Application",
     "createRouterProxyService": "Create Router、proxy Service",
@@ -138,11 +141,18 @@
     "CacheManage": "The Cache Management",
     "noDefaultProxyPackage": "There is no default Proxy distribution package",
     "noDefaultRouterPackage": "There is no default Router distribution package",
-    "duplicateIp": "Duplicate service IP is not allowed, please input correct service IP"
+    "duplicateIp": "Duplicate service IP is not allowed, please input correct service IP",
+    "routerIp": "Router IP can not be empty",
+    "proxyIp": "Proxy IP can not be empty",
+    "dbAccessIp": "DbAccess IP can not be empty",
+    "dbMethod": "Please choose router database"
   },
   "module": {
     "title": "Module",
+        "createTitle": "Create Module",
+        "update": "Module already exists, please select update mode",
     "name": "Module Name",
+        "chooseMirror": "Please choose one mirror at least",
     "namingRule": "Application name + custom name.Only digits and letters allowed.",
     "keyType": "Key Type",
     "createModule": "Create Module",
@@ -153,8 +163,35 @@
     "cacheType": "Cache Types",
     "follower": "Focus People",
     "serverConfig": "Server Config",
+    "serverGroup": "Server Group",
+    "memorySize": "Memory Size（M）",
+    "deployArea": "Deploy Area",
+    "moduleId": "ID",
+    "moduleInfo": "Cache Module Info",
+    "serverInfo": "Cache Server Info",
+    "mainServer": "Master",
+    "backServer": "Slave",
+    "mirror": "Mirror",
+    "shmKey": "Shared Memory Key",
+    "shmKeyRule": "Empty will be automatically allocated",
+    "MultiKeyConfig": "Muti Key Config",
+    "hasExist": "Module Exists",
+    "dbAccessInfo": "DbAccess Info",
     "namingError": "Module name must not be started with Application name, only digits and letters allowed",
-    "shmKeyError": "Same share memory keys are not allowed under same IP"
+    "shmKeyError": "Same share memory keys are not allowed under same IP",
+    "dbAccessIp": "DbAccess Ip",
+    "dbMethod": "Please choose DbAccess Mysql Instance"
+  },
+  "MKCache": {
+    "mainKey": "Main key(mkey)",
+    "unionKey": "Union Key(ukey)",
+    "dataValue": "Data Value(value)",
+    "fieldName": "Field Name",
+    "dataType": "Field Type",
+    "fieldProperty": "require/optional",
+    "defaultValue": "Default Value",
+    "maxLen": "Max Length(bytes)",
+    "error": "At less keep one item"
   },
   "cache": {
     "title": "cache",
@@ -165,7 +202,13 @@
     "cacheTypeTip1": "Memory database (not obsolete)",
     "cacheTypeTip2": "Temporary cache (expired)",
     "cacheTypeTip3": "Hot spot cache (expand elimination)",
-    "perRecordAvg": "Average size of data records",
+        "installFull": "Overwrite Install",
+        "installlFullInfo": "The size of shared memory should be the same as before, or clear the previous shared memory",
+        "installDbAccess": "Install DbAccess Server",
+        "installDbAccessInfo": "After installing dbaccess, pay attention to modify the corresponding cache configuration, enable dbaccess and associate it with the current dbaccess service",
+        "installBackup": "Install Backup Cache",
+        "installMirror": "Install Mirror Cache",
+    "perRecordAvg": "Average bytes of data records",
     "perRecordAvgUnit": "Byte",
     "totalRecord": "Save in the Cache",
     "maxReadFlow": "Estimate peak read flow",
@@ -177,6 +220,10 @@
     "mirror": "mirror",
     "add": "add",
     "modification": "modification",
+    "accessDbName": "DbAccess Mysql Instance",
+    "chooseAccessDb": "Choose DbAccess Mysql Instance",
+    "inputAccessDb": "Input DbAccess Mysql Instance",
+    "dbaccessIp": "Must choose one DbAccess server ip",
     "config": {
       "tableTitle": "cache configuration list",
       "addSuccess": "add configuration success",
@@ -247,6 +294,8 @@
     "offlineMirrorServers": "The selected service has mirroring. Log off all the mirroring services of this module",
     "offlineBackupMirrorServers": "The selected service has backup and mirroring to offline all backup and mirroring",
     "sureOffline": "determine the offline",
+    "moduleExists": "The module already exists. Are you sure to cover it?",
+      "applyExists": "The dcache already exists. Are you sure to cover it?",
     "operationManage": {
       "expand": "expand manage",
       "shrinkage": "shrinkage manage",
@@ -308,7 +357,10 @@
     "routerDbPort": "Database port",
     "routerDbUser": "username",
     "routerDbPass": "password",
-    "multipleIp": "Service IP(multiple IP USES ; Separated)"
+    "multipleIp": "Service IP(multiple IP USES ; Separated)",
+    "isSerializated": "Data Serializate",
+    "chooseRouterDb": "Choose Mysql instance",
+    "inputRouterDb": "Input Mysql instance"
   },
   "region": {
     "title": "region",
@@ -331,6 +383,8 @@
     "serial": "serial",
     "config": "configuration",
     "patch": "publish",
+    "gracePatch": "grace publish",
+    "graceInfo": "(TarsFramework >= v2.4.4, TarsGo >= v1.1.4)",
     "service": "service",
     "time": "Time",
     "name": "name",
@@ -352,6 +406,7 @@
     "systemError": "system error",
     "noPrivilage": "no privilage",
     "notEmpty": " is required",
+    "mustUnique": "already exist",
     "needNumber": " must be numeric type",
     "needArray": " must be array type",
     "needObject": " must be object type",
@@ -378,8 +433,11 @@
     "stop": "stop",
     "add": "add",
     "manage": "management",
+    "config": "config",
+    "modify": "modify",
     "delete": "delete",
     "more": "more",
+        "download": "Download",
     "operates": "Operates",
     "view": "view",
     "merge": "merge",
@@ -388,6 +446,7 @@
     "goback": "go back",
     "default": "default",
     "save": "save",
+        "submit": "submit",
     "title": {
       "update": "Update",
       "add": "Add",
@@ -418,9 +477,11 @@
         "last_heartbeat": "Last Heartbeat",
         "present_state": "Present State",
         "tars_version": "Version",
+                "label": "label",
         "load_avg5": "Load",
         "check": "Operator"
       },
+            "edit": "Edit",
       "check": "Check",
       "delete": "Delete"
     },
@@ -637,7 +698,8 @@
       "fileName": "fileName is required",
       "fileNameReg": "The file name can contain only letters or Numbers, point, underscores, dash",
       "contentReg": "content is required",
-      "addSucccess": "add success"
+      "addSucccess": "add success",
+      "exists": "File with the same name already exists!"
     }
   },
   "monitor": {
@@ -691,7 +753,11 @@
       "template": "Manage template",
       "apply": "Apply for deployment",
       "nodes": "Node service",
-      "check": "Check Framework"
+      "check": "Check Framework",
+      "gateway": "Gateway Config",
+      "application": "Manage application",
+      "business": "Manage business",
+      "businessRelation": "Business Relation"
     },
     "form": {
       "app": "APP",
@@ -756,7 +822,8 @@
     "btn": {
       "manualAddNode": "Manual Install node",
       "autoAddNode": "Auto Install node",
-      "check": "Click to check framework"
+            "autoUpdateNode": "Batch Upgrate node",
+            "check": "Click to check framework"
     },
     "manualAddNode": {
       "title": "Step",
@@ -783,6 +850,13 @@
     "add": {
       "nodeNameTips": "node name cannot be empty",
       "title": "Install Node(Windows not support)"
+        },
+        "label": {
+            "title": "Edit Label",
+            "name": "Label Name",
+            "value": "Label Value",
+            "operator": "Operator",
+            "delete": "Delete"
     }
   },
   "connectNodeList": {
@@ -874,6 +948,77 @@
       "title": "Delete template"
     }
   },
+  "gateway":{
+    "station":"Station Config",
+    "upstream":"Upstream Config",
+    "globalblack":"Global Black List",
+    "stationId":"Station ID",
+    "stationName":"Station Name",
+    "monitorUrl":"Monitor Url",
+    "serverName":"Server Name",
+    "pathRule":"Path Rule",
+    "proxyPass":"ProxyPass",
+    "addr":"Addr",
+    "weight":"Weight",
+    "fusing":"Fusing",
+    "fusingOn":"FusingOn",
+    "fusingOff":"FusingOff",
+    "lastUpdate":"Update Time",
+    "gatewayObj":"GatewayFlowControlObj",
+    "switchGateway":"Switch Gateway",
+    "btn":{
+      "addGateway": "Add Gateway",
+      "addUpstream": "Add Upstream",
+      "addHttpRouter": "Add Router"
+    },
+    "add": {
+      "stationNameTips": "please input station name",
+      "idFormatTips": "station id can only contain letters, numbers, dots, underscores, start with a letter, and cannot end with Obj",
+      "monitorUrlTips": "please input monitor tips",
+      "upstreamFormatTips":"upstream can only contain letters, numbers, underscores, start with a letter, and cannot end with Obj",
+      "addrFormatTips":"please input ip:port",
+      "weightFormatTips":"please input weight",
+      "serverNameTip":"support wildcards or regular expressions. if empty, matchs all",
+      "pathRuleTip":"please input path rule",
+      "proxyPassTip":"please input ProxyPass，support ip:port, upstream, tars obj",
+      "title": "add station",
+      "upstream": "add upstream"
+    },
+    "update": {
+      "title": "edit station",
+      "routerTitle": "edit router",
+      "upstream": "edit upstream",
+      "errTips": "edit fail"
+    },
+    "delete": {
+      "confirmTips": "are you sure to delete this station?",
+      "upstreamConfirmTips": "are you sure to delete this upstream?",
+      "bwListConfirmTips": "are you sure to delete this black/whitelist?",
+      "deleteUpstreamErrorTip":"detete fail，there are still associated routers, or upstream is not exsit",
+      "title": "Delete Station"
+    },
+    "config":{
+      "title":"Gateway Config"
+    },
+    "bwlist":{
+      "title":{
+        "black":"Blacklist",
+        "white":"Whitelist"
+      },
+      "ipTip":"please input ip（support wildcards）"
+    },
+    "flowControl":{
+      "title":"flow control",
+      "duration":"time window(s)",
+      "durationTip":"please input seconds of time window",
+      "maxFlow":"max flow",
+      "maxFlowTip":"please input max flow in time window",
+      "tip":"that is, during the 'time window', when reached 'max flow', the excess flow will be rejected"
+    },
+    "router":{
+      "title":"Router Config"
+    }
+  },
   "serviceExpand": {
     "title": "service expand",
     "form": {
@@ -948,7 +1093,8 @@
       "benchmark":"benchmark"
     },
     "error":{
-      "parseFail":"proto parse fail"
+      "parseFail":"proto parse fail",
+      "caseToolNotExists": "protocol parse tool not exists! please copy to web/"
     },
     "title": {
       "listTitle": "Tars Files",
@@ -1003,21 +1149,234 @@
       "success":"success",
       "fail":"fail",
       "successRate":"success rate",
-      "maxCost":"max cost(s)",
-      "minCost":"min cost(s)",
-      "avgCost":"avg cost(s)",
+      "maxCost":"max cost(ms)",
+      "minCost":"min cost(ms)",
+      "avgCost":"avg cost(ms)",
       "sendBytes":"send bytes",
       "recvBytes":"recv bytes",
       "deleteCaseConfirm":"are you sure to delete this case?",
       "installTip":"please install benchmark server before you use benchmark tool",
       "installTutorial":"install tutorial",
       "installScript":"install script"
-
     }
   },
   "publishLog": {
     "title": "Publish Log",
     "sync": "synchronizing PMS...",
-    "releaseId": "Release ID"
+    "releaseId": "Release ID",
+    "releaseProgress": "Publishing progress（%）",
+    "publishInfo": "Publishing, please wait..."
+  },
+  "application": {
+    "btn": {
+      "add": "add application"
+    },
+    "form": {
+      "application": "application",
+      "person": "person",
+      "time": "time",
+      "content": "content"
+    },
+    "view": {
+      "title": "View application"
+    },
+    "add": {
+      "nameTips": "The application name cannot be empty",
+      "formatTips": "The application name can only contain letters, Numbers, and begin with a letter",
+      "parent": "Please select the parent application",
+      "title": "Add application"
+    },
+    "update": {
+      "title": "Update application",
+      "errTips": "update failed"
+    },
+    "delete": {
+      "confirmTips": "Are you sure to delete this application",
+      "title": "Delete application"
+    }
+  },
+  "business": {
+    "btn": {
+      "add": "add business"
+    },
+    "form": {
+      "business": "business",
+      "showName": "show name",
+      "order": "order",
+      "person": "person",
+      "time": "time",
+      "content": "content"
+    },
+    "view": {
+      "title": "View business"
+    },
+    "add": {
+      "nameTips": "The business name cannot be empty",
+      "formatTips": "The business name can only contain letters, Numbers, and begin with a letter",
+      "parent": "Please select the parent business",
+      "title": "Add business"
+    },
+    "update": {
+      "title": "Update business",
+      "errTips": "update failed"
+    },
+    "delete": {
+      "confirmTips": "Are you sure to delete this business",
+      "title": "Delete business"
+    }
+  },
+  "businessRelation": {
+    "btn": {
+      "add": "add business relation"
+    },
+    "view": {
+      "title": "View business relation"
+    },
+    "form": {
+      "person": "person",
+      "time": "time"
+    },
+    "add": {
+      "nameTips": "The business name cannot be empty",
+      "formatTips": "The business name can only contain letters, Numbers, and begin with a letter",
+      "title": "Add business relation"
+    },
+    "update": {
+      "title": "Update business relation",
+      "errTips": "update failed"
+    },
+    "delete": {
+      "confirmTips": "Are you sure to delete this business relation",
+      "title": "Delete business relation"
+    }
+  },
+  "ssoHeader": {
+    "tab": {
+      "tab1": "My Privilege List",
+      "tab2": "Manage User",
+      "tab3": "Manage Privilege",
+      "tab4": "Token Manage",
+      "tab5": "Setting"
+    },
+    "modifyPass": "Modify Password"
+  },
+  "login": {
+    "loginTitle": "Please Sign In",
+    "userName": "User name",
+    "password": "Password",
+    "captcha": "Captcha",
+    "repeatPassword": "Repeat password",
+    "login": "Sign in",
+    "toRegisterPage": "Create an account",
+    "toLoginPage": "Sign in",
+    "userNameTips": "User name is required",
+    "userNameRegTips": "The user name can contain only letters or Numbers, underscores",
+    "passwordTips": "Password is required",
+    "passwordNoCorrect": "Incorrect password",
+    "captchaTips": "Captcha is required",
+    "userNoExist": "User name does not exist",
+    "loginFailed": "Sign in failed",
+    "registerTitle": "Please Sign Up",
+    "repeatPasswordTips": "Repeat password is required",
+    "register": "Sign up",
+    "passwordDiff": "Two different input password, please re-entry",
+    "hasExist": "User name already exists",
+    "registerSucc": "Sign up successfully",
+    "registerFailed": "Sign up failed",
+    "getUidFailed": "Get user name failed",
+    "logout": "Sign out",
+    "noLogin": "You have not been sign in"
+  },
+  "auth": {
+    "flag": "Flag(Application or Application.ServerName)",
+    "role": "Role",
+    "uid": "Uid",
+    "flagTips": "Flag is required",
+    "roleTips": "Role is required",
+    "uidTips": "Uid is required",
+    "uidPlaceholder": "if multiple uid, with a semicolon (;) space",
+    "addPrivilege": "Add Privilege",
+    "delPrivilege": "Revoke Privilege",
+    "privilegeManageTitle": "Privilege Manage",
+    "loadListError": "Load privilege list failed",
+    "selectRecord": "Please select at least one record",
+    "confirmDelete": "Are you sure to delete this record?",
+    "loadUserIdError": "Load user list failed",
+    "delSucc": "Delete successfully",
+    "delError": "Delete error",
+    "adminNotErase": "Admin user privilege can not be delete",
+    "addUser": "Add User",
+    "delUser": "Delete User",
+    "userManageTitle": "User List",
+    "userTime": "Create Time",
+    "adminDelError": "admin Can not be deleted",
+    "token": "TOKEN",
+    "addToken": "Add Token",
+    "delToken": "Delete Token",
+    "tokenManageTitle": "Token List",
+    "tokenExpireTime": "Token Expire Time",
+    "tokenTime": "Token Create Time",
+    "loadTokenError": "Load Token failed",
+    "confirmTokenDelete": "Confirm to delete the token?",
+    "confirmTokenTitle": "Delete Token",
+    "status": "Status",
+    "operator": "Operator",
+    "tokenValid": "valid",
+    "valid": "Enable",
+    "notValid": "Disable",
+    "setTokenValid": "Confirmm to Modify Token Status?",
+    "setTokenError": "Set Token Status Failed",
+    "setTokenSucc": "Modify Token Status Success",
+    "editSet": "Update Setting",
+    "setManageTitle": "Setting List",
+    "setTitle": "Setting Title",
+    "setInfo": "Setting Info",
+    "loadSetError": "Load Setting failed",
+    "setSetValid": "Confirmm to Modify Setting Status?",
+    "setSetError": "Set Setting Status Failed",
+    "setSetSucc": "Modify Setting Status Success",
+    "about": "Setting description"
+  },
+  "pass": {
+    "title": "Modify Password",
+    "adminTitle": "First Login -- Set [admin] Password",
+    "userName": "Uid",
+    "password": "Password",
+    "repeatPassword": "Repeat password",
+    "modify": "Modify",
+    "passwordDiff": "Two different input password, please re-entry",
+    "modifySucc": "Modify Succ",
+    "modifyFailed": "Modify Failed",
+    "passwordTips": "Password is required",
+    "repeatPasswordTips": "Repeat password is required",
+    "setAdminPasswordFailed": "Can not set admin user password",
+    "toIndexPage": "Goto My Index Page"
+  },
+  "ssoCommon": {
+    "search": "search",
+    "nextPage": "next",
+    "prevPage": "back",
+    "nodata": "no data",
+    "admin": "admin user has all privileges",
+    "success": " successfully",
+    "failed": " failed",
+    "confirmTitle": "System Confirm",
+    "systemError": "system error",
+    "noPrivilage": "no privilage",
+    "notEmpty": " is required",
+    "needNumber": " must be numeric type",
+    "needArray": " must be array type",
+    "needObject": " must be object type",
+    "needBoolean": " must be boolean type"
+  },
+  "ldap": {
+    "alert": "After LDAP is enabled, except for admin user, other users can login through LDAP. You can use LDAP to connect with other authority authentication systems in the company!",
+    "info": "Open LDAP",
+    "url": "ldap url",
+    "basedn": "ldap basedn"
+  },
+  "localeSelect": {
+    "cn": "Chinese",
+    "en": "English"
   }
 }

@@ -25,7 +25,11 @@ const TreeController = {};
 
 TreeController.listTree = async (ctx) => {
 	try {
-		ctx.makeResObj(200, '', await TreeService.getTreeNodes(ctx.uid));
+		const { searchKey, type } = ctx.paramsObj
+		if(type && type === '1'){
+			await TreeService.setCacheData(1)
+		}
+		ctx.makeResObj(200, '', await TreeService.getTreeNodes(searchKey, ctx.uid, '1'));
 	} catch (e) {
 		logger.error('[listTree]', e, ctx);
 		ctx.makeErrResObj();

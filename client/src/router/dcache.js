@@ -20,7 +20,7 @@ import Router from 'vue-router';
 // 服务管理
 import Server from '@/pages/server/dcacheIndex';
 
-import ServerManage from '@/pages/server/manage';
+// import ServerManage from '@/pages/server/manage';
 import dcacheServerManage from '@/pages/server/dcacheManage.vue';
 import dcacheModuleManage from '@/pages/dcache/moduleManage/index.vue';
 import PropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
@@ -32,7 +32,6 @@ import ServerServerMonitor from '@/pages/server/monitor-server';
 import ServerPropertyMonitor from '@/pages/server/monitor-property';
 import userManage from '@/pages/server/user-manage';
 import InterfaceDebuger from '@/pages/server/interface-debuger';
-
 
 // dcache 运维管理
 import Operation from '@/pages/dcacheOperation/index';
@@ -50,6 +49,7 @@ import Region from '@/pages/dcacheOperation/region';
 // 发布包管理
 import releasePackage from '@/pages/releasePackage/index';
 import proxyList from '@/pages/releasePackage/proxyList';
+import accessList from '@/pages/releasePackage/accessList';
 import routerList from '@/pages/releasePackage/routerList';
 import cacheList from '@/pages/releasePackage/cacheList';
 
@@ -184,6 +184,10 @@ export default new Router({
         {
           path: 'proxyList',
           component: proxyList,
+        },
+        {
+          path: 'accessList',
+          component: accessList,
         },
         {
           path: 'routerList',
