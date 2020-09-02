@@ -20,7 +20,7 @@ if (process.env.NODE_ENV == "dev") {
         dbType: 1,
         dbConf: {
             host: '172.16.0.14',       // 数据库地址
-            port: '3307',            // 数据库端口
+            port: '3306',            // 数据库端口
             user: 'tarsAdmin',            // 用户名
             password: 'Tars@2019',       // 密码
             charset: 'utf8',     // 数据库编码
