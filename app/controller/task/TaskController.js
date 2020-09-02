@@ -149,7 +149,7 @@ TaskController.addTask = async (ctx) => {
 
 			let server = await ServerService.getServerConfById(item.server_id);
 
-			if (!await AuthService.hasDevAuth(server.application, server.serverName, ctx.uid)) {
+			if (!await AuthService.hasDevAuth(server.application, server.server_name, ctx.uid)) {
 				ctx.makeNotAuthResObj();
 				return;
 			}
