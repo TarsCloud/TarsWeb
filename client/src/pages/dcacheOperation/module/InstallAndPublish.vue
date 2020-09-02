@@ -181,7 +181,8 @@
           // console.log(data);
           this.moduleInfo = data.item || {};
           this.serverConf = data.serverConf || [];
-          this.dbAccess = data.dbAccess || null;
+          this.dbAccess = data.dbAccess || {servant:''};
+          this.dbAccess.servant = this.dbAccess.servant || '';
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });

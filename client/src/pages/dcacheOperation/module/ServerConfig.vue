@@ -679,7 +679,7 @@
 
           data.area = data.idc_area;
 
-          let cacheVersion = data.cache_version === 1 ? 'T' : 'MK';
+          let cacheVersion = data.cache_version === 1 ? 'KV' : 'MKV';
           data.group_name = data.module_name + cacheVersion + 'Group1';
           data.server_name = data.module_name + cacheVersion + 'CacheServer1-1';
           data.server_type = 0;

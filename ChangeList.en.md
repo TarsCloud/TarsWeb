@@ -1,3 +1,9 @@
+## 20200902(2.4.10)
+- fix dcache cache(no dbaccess) bug
+- fix ret[0]== 0，chart not show bug
+- fix addTask auth bug
+- fix db_cache_web.sql sql bug
+
 ## 20200819(2.4.9)
 - tarsnode tag
 - patch package download

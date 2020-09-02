@@ -73,7 +73,7 @@ CREATE TABLE `t_apply_app_proxy_conf` (
   `template_file` varchar(50) NOT NULL DEFAULT '',
   `create_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

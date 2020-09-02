@@ -1,3 +1,9 @@
+## 20200902(2.4.10)
+- fix dcache 部署不带db的cache的bug
+- 修复ret[0]为0时，平均耗时/异常率/超时率不出图的bug
+- 修复addTask, 鉴权的bug
+- 修复db_cache_web.sql sql的bug
+
 ## 20200819(2.4.9)
 - web上支持给tarsnode打标签(未来可能有其他用途)
 - 支持发布包下载
