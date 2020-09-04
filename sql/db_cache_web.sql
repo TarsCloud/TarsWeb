@@ -141,7 +141,7 @@ CREATE TABLE `t_apply_cache_module_conf` (
   `modify_time` datetime DEFAULT NULL,
   `dbAccessServant` varchar(150) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `applyModule` (`apply_id`,`module_name`),
+  UNIQUE KEY `applyModule` (`apply_id`,`module_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
