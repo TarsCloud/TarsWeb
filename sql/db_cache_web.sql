@@ -94,7 +94,7 @@ CREATE TABLE `t_apply_app_router_conf` (
   `router_db_pass` varchar(50) NOT NULL DEFAULT '',
   `create_person` varchar(50) NOT NULL DEFAULT '',
   `modify_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -212,8 +212,6 @@ CREATE TABLE `t_module_operation` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
 # Dump of table t_region
 # ------------------------------------------------------------
 
@@ -223,10 +221,8 @@ CREATE TABLE `t_region` (
   `label` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `region` (`region`),
-  UNIQUE KEY `label` (`label`),
+  UNIQUE KEY `label` (`label`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 
 # Dump of table t_server_patchs
 # ------------------------------------------------------------
