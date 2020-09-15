@@ -30,7 +30,7 @@ const enableMultiProcess = false;
 const LdapService = require('../sso/app/service/ldap/LdapService')
 const CronService = require('../sso/app/service/ldap/CronService')
 
-//创建服务
+//create services
 try {
 	//加载发布包
 	tarsInit.preparePatch();
