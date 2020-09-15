@@ -1,8 +1,8 @@
 [change history](changelist.Zh.MD)
 ## Efficient operation of the tars web management platform
-[tars](https://github.com/tarscloud/tars) is the open source version of the unified application framework TAF (total application framework) of the background logic layer that Tencent has been using since 2008,
+[TARS](https://github.com/tarscloud/tars) is the open source version of the unified application framework TAF (total application framework) of the background logic layer that Tencent has been using since 2008,
 Currently, C + +, Java, go, nodejs and PHP are supported. The framework provides users with a complete set of solutions related to development, operation and maintenance, as well as testing. Tars is naturally more powerful than RPC framework because Tars comes with its own operation and maintenance management platform.
-Tars web is the operation and maintenance management platform of [tars](https://github.com/tarscloud/tars) framework service, which provides rich functions to help a product or service develop, deploy, test and go online quickly.
+Tars web is the operation and maintenance management platform of [TARS](https://github.com/tarscloud/tars) framework service, which provides rich functions to help a product or service develop, deploy, test and go online quickly.
 Through the tars web management platform, users can easily complete the following contents:
 *View the existing service IP list
 *Change the service configuration of a single machine
@@ -11,7 +11,7 @@ Through the tars web management platform, users can easily complete the followin
 *Machine or service monitoring and reporting
 *Single or batch service configuration
 ## Installation 
-Because tars web relies on tars, please refer to [tars installation instruction document](https://tarscloud.github.io/TarsDocs/installation/) to install tars web.
+Because tars web relies on tars, please refer to [TARS installation instruction document](https://tarscloud.github.io/TarsDocs/installation/) to install tars web.
 
 ## Functions
 Tars web provides visual operation to operate and maintain tars service. It can quickly build its own stable and reliable distributed application in the way of microservice, and realize complete and effective service governance. It has the following functions:
