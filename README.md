@@ -19,9 +19,9 @@ Tars web provides visual operation to operate and maintain tars service. It can 
 Tars web provides the 'tars' service deployment function. Currently, the supported languages are
 - [C++](https://github.com/TarsCloud/TarsCpp)
 - [Java](https://github.com/TarsCloud/TarsJava) 
-- [go](https://github.com/TarsCloud/TarsGo)
-- [nodejs](https://github.com/tars-node/Tars.js)
-- [php](https://github.com/TarsPHP/TarsPHP)
+- [Go](https://github.com/TarsCloud/TarsGo)
+- [Node.js](https://github.com/tars-node/Tars.js)
+- [PHP](https://github.com/TarsPHP/TarsPHP)
 On the platform, services can be simply deployed. Fill in the application name, service name, obj name and node address, select the service type and template to deploy a service.
 
 ### Release management
