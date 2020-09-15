@@ -23,7 +23,7 @@ const cluster = require('cluster');
 const os = require('os');
 const tarsInit = require('../app/init/tars');
 
-//获取端口
+//get the port info
 const port = normalizePort(process.env.PORT || webConf.port || '3000');
 const enableMultiProcess = false;
 
