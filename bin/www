@@ -32,7 +32,7 @@ const CronService = require('../sso/app/service/ldap/CronService')
 
 //create services
 try {
-	//加载发布包
+	//load patch
 	tarsInit.preparePatch();
 
 	//优先环境变量生效
