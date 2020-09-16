@@ -66,7 +66,7 @@ databases.forEach((database) => {
 		},
 		timezone: (() => {
 			let offset = 0 - new Date().getTimezoneOffset();
-			return (offset >= 0 ? '+' : '-') + (Math.abs(offset/60) + '').padStart(2, '0') + ':00';
+			return (offset >= 0 ? '+' : '-') + (Math.abs(parseInt(offset/60)) + '').padStart(2, '0') + ':' + (offset%60 + '').padStart(2, '0');
 		})()  //获取当前时区并做转换
 	});
 
