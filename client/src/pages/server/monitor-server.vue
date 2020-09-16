@@ -159,6 +159,13 @@ export default {
 
   data() {
     const treeId = this.treeid;
+    let _slave_name_arr = treeId.split('.');
+    let _slave_name = '';
+    if (_slave_name_arr.length == 2){ //没有启用set的被调名
+      _slave_name = _slave_name_arr[0].substring(1) + '.' +  _slave_name_arr[1].substring(1);
+    }else if(_slave_name_arr.length == 5){ //启用set的被调名
+      _slave_name = _slave_name_arr[0].substring(1) + '.' +  _slave_name_arr[4].substring(1) + '.' +  _slave_name_arr[1].substring(1) +  _slave_name_arr[2].substring(1) +  _slave_name_arr[3].substring(1);
+    }
 
     return {
       query: {
@@ -168,7 +175,7 @@ export default {
         startshowtime: '0000',
         endshowtime: '2360',
         master_name: '',
-        slave_name: treeId.split('.').map(d => d.replace(/^\d+/, '')).join('.'),
+        slave_name: _slave_name,
         interface_name: '',
         master_ip: '',
         slave_ip: '',
