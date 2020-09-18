@@ -139,7 +139,7 @@ $(function() {
     function refreshCombo(data) {
         //data = data.value;
         data = sortFileList(data);
-        console.log("file list=>", data)
+        // console.log("file list=>", data)
         var json = [],
             html = '';
         for (var i = 0, len = data.length; i < len; i++) {

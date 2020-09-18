@@ -41,6 +41,10 @@ ApplyController.dtree = async (ctx) => {
     let tarsDcache = await TreeService.getTreeNodes('', ctx.uid, '2');
     
     const rootNode = await ApplyService.buildCacheList();
+    if (!rootNode || rootNode.length == 0) {
+        ctx.makeResObj(500, "#common.dcacheSystem#", {});
+        return;
+    }
 
     tarsDcache = tarsDcache.concat(rootNode);
 
@@ -98,11 +102,18 @@ ApplyController.getApplyModuleList = async (ctx) => {
 ApplyController.overwriteApply = async (ctx) => {
   try {
     const {
-      admin, name, idcArea, setArea,
+            admin,
+            name,
+            idcArea,
+            setArea,
     } = ctx.paramsObj;
     const create_person = ctx.uid;
     let data = await ApplyService.overwriteApply({
-      idc_area: idcArea, set_area: setArea, admin, name, create_person,
+            idc_area: idcArea,
+            set_area: setArea,
+            admin,
+            name,
+            create_person,
     });
     data.hasApply = false;
     ctx.makeResObj(200, '', data);
@@ -115,17 +126,27 @@ ApplyController.overwriteApply = async (ctx) => {
 ApplyController.addApply = async (ctx) => {
   try {
     const {
-      admin, name, idcArea, setArea,
+            admin,
+            name,
+            idcArea,
+            setArea,
     } = ctx.paramsObj;
     // const create_person = 'adminUser';
     const create_person = ctx.uid;
     const hasApply = await ApplyService.hasApply({ name });
     if (hasApply) {
       ctx.makeResObj(200, '', { hasApply: true});
+        } else if (name.toLowerCase() == "web") {
+            logger.error("error: DCache app's name can not be 'web'");
+            ctx.makeErrResObj();
     } else {
     // 创建应用
       let data = await ApplyService.addApply({
-      idc_area: idcArea, set_area: setArea, admin, name, create_person,
+                idc_area: idcArea,
+                set_area: setArea,
+                admin,
+                name,
+                create_person,
     });
 
       data.hasApply = false;

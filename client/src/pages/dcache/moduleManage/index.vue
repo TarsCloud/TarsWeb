@@ -692,7 +692,9 @@
         // 从 opt 获取服务列表
         const loading = this.$refs.serverListLoading.$loading.show();
         try {
-          const { application, module_name } = this.serverData;
+          const serverData = this.treeid && this.treeid.split('.') || []
+          const application = serverData[0] && serverData[0].substring(1) || ''
+          const module_name = serverData[1] && serverData[1].substring(1) || ''
           if(!application || !module_name){
             return 
           }

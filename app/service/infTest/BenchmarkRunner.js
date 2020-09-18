@@ -103,7 +103,7 @@ class BenchmarkRunner{
                 proto: "json"
             })
             let data = await benchmarkPrx.query(stReq)
-            console.log(" query response data:", stReq.toObject(), data)
+            // console.log(" query response data:", stReq.toObject(), data)
             let ret = data.__return
             //更新结果或者设置状态为停止
             if(ret == 0){

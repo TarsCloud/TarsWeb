@@ -23,6 +23,7 @@ const compressing = require('compressing');
 var fs = require("fs")
 var path = require("path")
 const md5Sum = require('md5-file').sync;
+const logger = require('../logger')
 
 const TarsInit = {};
 
@@ -42,7 +43,7 @@ TarsInit.deleteDirectory = (dir) => {
             fs.rmdirSync(dir);
         }
     }catch(e) {
-        console.log('deleteDirectory error:', e);
+        logger.error('deleteDirectory error:', e);
     }
 }
  
@@ -66,30 +67,30 @@ TarsInit.insert = async(patchTmp, patchPath, filePath, file)=> {
     if(!patch) {
 
         let dstTmp = patchTmp + '/' + name[0] + '.tar';
-        console.log("uncompress tgz -> tar:", src, dstTmp)
+        logger.info("uncompress tgz -> tar:", src, dstTmp)
         await compressing.gzip.uncompress(src, dstTmp);
 
-        console.log("uncompress tar -> dir:", dstTmp, patchTmp)
+        logger.info("uncompress tar -> dir:", dstTmp, patchTmp)
         await compressing.tar.uncompress(dstTmp, patchTmp);
 
         //移动可执行文件到上一层目录
         let newPatchPath = patchPath +'/' + name[0];
 
-        console.log("mkdir :", newPatchPath);
+        logger.info("mkdir :", newPatchPath);
         fs.mkdirSync(newPatchPath, {recursive: true});
 
-        console.log("rename :", patchTmp + '/' + name[0] + '/bin/' + name[0], ' -> ', newPatchPath + '/' + name[0]);
+        logger.info("rename :", patchTmp + '/' + name[0] + '/bin/' + name[0], ' -> ', newPatchPath + '/' + name[0]);
         fs.renameSync(patchTmp + '/' + name[0] + '/bin/' + name[0], newPatchPath + '/' + name[0]);
 
-        console.log("compress to tar :", newPatchPath, ' -> ', newPatchPath + '.tar');
+        logger.info("compress to tar :", newPatchPath, ' -> ', newPatchPath + '.tar');
         await compressing.tar.compressDir(newPatchPath, newPatchPath + '.tar');
-        console.log("compress to tgz :", newPatchPath + '.tar', ' -> ', newPatchPath + '.tgz');
+        logger.info("compress to tgz :", newPatchPath + '.tar', ' -> ', newPatchPath + '.tgz');
         await compressing.gzip.compressFile(newPatchPath + '.tar', newPatchPath + '.tgz');
 
-        console.log('delete dir:', newPatchPath);
+        logger.info('delete dir:', newPatchPath);
         TarsInit.deleteDirectory(newPatchPath); 
 
-        console.log('delete file:', newPatchPath + '.tar');
+        logger.info('delete file:', newPatchPath + '.tar');
         fs.unlinkSync(newPatchPath + '.tar');
 
         //copy 到tars.upload目录下
@@ -117,7 +118,7 @@ TarsInit.insert = async(patchTmp, patchPath, filePath, file)=> {
 
         await PatchDao.insertServerPatch(params);
 
-        console.log("parepare taf patch package succ");
+        logger.info("parepare taf patch package succ");
     }
 
 };
@@ -136,7 +137,7 @@ TarsInit.preparePatch = async() => {
         fs.mkdirSync(patchTmp, {recursive: true});
         fs.mkdirSync(patchPath, {recursive: true});
 
-        console.log("mkdir :", patchTmp, patchPath);
+        logger.info("mkdir :", patchTmp, patchPath);
 
         files.map(async(file) => {
             let filePath = path.join(dir, file);
@@ -147,7 +148,7 @@ TarsInit.preparePatch = async() => {
         });
 
         //删除临时文件
-        // console.log('delete dir:', patchTmp);
+        // logger.info('delete dir:', patchTmp);
         // TarsInit.deleteDirectory(patchTmp);
     }
 };

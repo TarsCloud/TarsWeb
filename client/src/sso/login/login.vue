@@ -95,7 +95,7 @@ export default {
         loading.hide();
         var redirectUrl = this.redirectUrl;
         var href = redirectUrl + (redirectUrl.indexOf('?') === -1?'?':'&') + 'ticket=' + data.ticket;
-        console.log(data, redirectUrl, href);
+        // console.log(data, redirectUrl, href);
 
         location.href = href;
       }).catch((err)=>{

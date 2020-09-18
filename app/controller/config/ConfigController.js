@@ -264,7 +264,7 @@ ConfigController.getConfigFileHistory = async (ctx) => {
 };
 
 ConfigController.configFileHistoryList = async (ctx) => {
-	let {config_id, currPage = 0, pageSize = 0} = ctx.paramsObj;
+	let {config_id, currPage = 1, pageSize = 10} = ctx.paramsObj;
 	try {
 		let serverParams = await ConfigService.getServerInfoByConfigId(config_id);
 

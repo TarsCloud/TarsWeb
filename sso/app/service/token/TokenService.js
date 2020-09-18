@@ -26,7 +26,7 @@ TokenService.encode = async(token) => {
   
 TokenService.addToken = async(uid, expireTime) => {
 
-    console.log('addToken:', uid, expireTime);
+    // console.log('addToken:', uid, expireTime);
 
     let tokenStr = await TokenService.encode(Math.random() + "-" + uid + "-" + expireTime + "-" + new Date());
 

@@ -51,6 +51,10 @@
   }
 }
 
+.let-select_disabled .let-icon-clear {
+    z-index: -1;
+    pointer-events: none;
+}
 .let-radio + .let-radio {
   margin-left: 12px;
 }
@@ -61,7 +65,8 @@
 
 
 .let-table {
-  th, td {
+    th,
+    td {
     &:last-child.right {
       padding-right: 15px;
     }

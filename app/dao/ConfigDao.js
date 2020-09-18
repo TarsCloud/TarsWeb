@@ -67,7 +67,8 @@ ConfigDao.getSetConfigFile = async(params) => {
 ConfigDao.getServerConfigFile = async(params) => {
     let whereObj = Object.assign({ level: 2 }, filterParams(params));
     return await tConfigFiles.findAll({
-        where: whereObj
+        where: whereObj,
+        order: [['posttime', 'DESC']],
     });
 };
 

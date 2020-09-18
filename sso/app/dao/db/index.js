@@ -12,6 +12,8 @@ const _ = require('lodash');
 
 const webConf = require('../../../../config/webConf');
 
+const logger = require('../../../../app/logger');
+
 let dbConf = webConf.dbConf;
 
 let Db = {};
@@ -40,8 +42,8 @@ databases.forEach((database)=>{
             charset: charset
         },
         logging(sqlText){
-            // console.log(sqlText);
-            // logger.sql(sqlText);
+            // logger.info(sqlText);
+            logger.sql(sqlText);
         },
         pool: {
             max: pool.max || 10,
@@ -58,10 +60,10 @@ databases.forEach((database)=>{
     (async function () {
         try {
             let connect = await sequelize.authenticate();
-            console.log('Mysql connection has been established successfully.');
+            logger.info('Mysql connection has been established successfully.');
 
         } catch (err) {
-            console.error('Mysql connection err', err)
+            logger.error('Mysql connection err', err)
         }
     })();
 
@@ -75,9 +77,9 @@ databases.forEach((database)=>{
             tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
             await tableObj[_.camelCase(tableName)].sync({alter: true});
 
-            console.log('database ' + database + '.' + tableName + ' sync succ');
+            logger.info('database ' + database + '.' + tableName + ' sync succ');
         } catch (e) {
-            console.log('database ' + database + '.' + tableName + ' sync error:', e);
+            logger.error('database ' + database + '.' + tableName + ' sync error:', e);
         }
 
     });

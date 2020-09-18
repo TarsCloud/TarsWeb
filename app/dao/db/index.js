@@ -74,7 +74,7 @@ databases.forEach((database) => {
 	(async function () {
 		try {
 			let connect = await sequelize.authenticate();
-			console.log('Mysql connection has been established successfully.');
+			// console.log('Mysql connection has been established successfully.');
 
 		} catch (err) {
 			console.error('Mysql connection err', err)
@@ -94,10 +94,10 @@ databases.forEach((database) => {
 			await tableObj[_.camelCase(tableName)].sync({ alter: true });
 			// tableObj[_.camelCase(tableName)].sync();
 
-			console.log('database ' + database + '.' + tableName + ' sync succ');
+			logger.info('database ' + database + '.' + tableName + ' sync succ');
 
 		} catch (e) {
-			console.log('database ' + database + '.' + tableName  + ' sync error:', e);
+			logger.info('database ' + database + '.' + tableName  + ' sync error:', e);
 
 		}
 	});

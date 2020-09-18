@@ -46,7 +46,12 @@
           </let-table-column>
           <let-table-column :title="$t('module.memorySize')" prop="memory">
             <template slot-scope="{row}">
-              {{row.memory}}
+              <!--{{row.memory}} -->
+              <let-input
+                size="small"
+                v-model="row.memory"
+                :placeholder="$t('module.shmKeyRule')"
+              />
             </template>
           </let-table-column>
           <let-table-column :title="$t('module.shmKey')" prop="shmKey">

@@ -148,7 +148,7 @@ ExpandServerController.expandServer = async (ctx) => {
 			});
 		}
 	} catch (e) {
-		console.log(e);
+		// console.log(e);
 		logger.error('[expandServer]', e, ctx);
 		ctx.makeErrResObj(500, e);
 	}
