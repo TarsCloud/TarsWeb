@@ -1,11 +1,12 @@
 ## 20200918(2.4.11)
 - Fix the bug that the time zone is not the time zone when connecting to the database
 - Fix the bug displayed in the service monitoring (set mode) tree 
-- Create a DCache application for protection. It cannot be named web
 - Fix the problem that the drop-down list can still be clicked when the DCache overlay installation is read-only
+- Fix DCache tree data display bug
+- Fix dcache mk server publish bug
+- Create a DCache application for protection. It cannot be named web
 - Config history displays 10 pieces of data by default
 - The config configuration is sorted in reverse order
-- Fix DCache tree data display bug
 - The memory size can be modified during dCache migration
 
 ## 20200902(2.4.10)
