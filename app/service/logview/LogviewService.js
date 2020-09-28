@@ -66,7 +66,7 @@ LogviewService.getQueryParam = function(paramStr) {
     } else {
         cmd += "|head -" + showLine;
     }
-	cmd += " | cat -v "
+	cmd += " | | iconv -c -f UTF-8 -t UTF-8 | sed 's/[\\cA-\\cZ]//g'"
     // console.log("=============>getQueryParam cmd:" + cmd);
     return cmd;
 }
