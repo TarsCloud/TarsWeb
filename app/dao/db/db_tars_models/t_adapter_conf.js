@@ -47,7 +47,7 @@ module.exports = function(sequelize, DataTypes) {
 		registry_timestamp: {
 			type: DataTypes.DATE,
 			allowNull: false,
-			defaultValue: sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+			defaultValue: DataTypes.NOW
 		},
 		thread_num: {
 			type: DataTypes.INTEGER(11),
