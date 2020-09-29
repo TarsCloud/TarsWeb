@@ -3,6 +3,7 @@
 - fix server show name
 - fix registry_timestamp node update bug
 - fix add servant node return value bug
+- fix logview show bug
 
 ## 20200918(2.4.11)
 - Fix the bug that the time zone is not the time zone when connecting to the database
