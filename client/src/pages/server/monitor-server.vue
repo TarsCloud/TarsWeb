@@ -196,7 +196,7 @@ export default {
     filteredItems() {
       const hour = this.hour;
       return (hour >= 0 && this.enableHourFilter)
-        ? this.allItems.filter((d) => {+d.show_time.slice(0, 2) === hour})
+        ? this.allItems.filter((d) => +d.show_time.slice(0, 2) === hour)
         : this.allItems;
     },
     itemsCount() {
