@@ -77,7 +77,17 @@ AdapterDao.insertAdapterConf = async (params, transaction) => {
 	if (transaction) {
 		return await tAdapterConf.upsert(params, {transaction: transaction});
 	} else {
-		return await tAdapterConf.upsert(params);
+		await tAdapterConf.upsert(params);
+		return await tAdapterConf.findOne({
+			where: {
+				application: params.application,
+				server_name: params.server_name,
+				node_name: params.node_name,
+				adapter_name: params.adapter_name,
+				endpoint: params.endpoint,
+			}
+		})
+
 	}
 };
 
