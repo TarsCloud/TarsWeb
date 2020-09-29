@@ -1,3 +1,9 @@
+## 20200929(2.4.12)
+- fix monitor server page, hour show bug
+- fix server show name
+- fix registry_timestamp node update bug
+- fix add servant node return value bug
+
 ## 20200918(2.4.11)
 - Fix the bug that the time zone is not the time zone when connecting to the database
 - Fix the bug displayed in the service monitoring (set mode) tree 
