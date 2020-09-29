@@ -41,7 +41,7 @@
           <li class="btabs_item" :class="{
             'active': item.id === treeid
           }" v-for="item in BTabs" :key="item.id">
-            <a class="btabs_link" href="javascript:;" @click="clickBTabs($event, item.id)">{{ item.id }}</a>
+            <a class="btabs_link" href="javascript:;" @click="clickBTabs($event, item.id)">{{ getNewServerName(item.id) }}</a>
             <a class="btabs_close" href="javascript:;" @click="closeBTabs(item.id)">关闭</a>
           </li>
         </ul>
@@ -182,6 +182,11 @@ export default {
     }
   },
   methods: {
+    getNewServerName(id) {
+      const app = id && id.split('.')[0].substring(1)
+      const server = id && id.split('.')[1].substring(1)
+      return `${app}.${server}`
+    },
     getName(val) {
       let result = ''
       if(val.lastIndexOf('/') > -1){
