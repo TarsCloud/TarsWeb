@@ -185,11 +185,21 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
       }
     },
     methods: {
-      getNewServerName(id) {
+    getNewServerName(id) {
+      const v = id && id.split('.');
+      if(!v){
+        return id;
+      }
+      if(v.length == 1) {
+        const app = id && id.split('.')[0].substring(1)
+        return `${app}`
+      }
+      if(v.length > 1) {
         const app = id && id.split('.')[0].substring(1)
         const server = id && id.split('.')[1].substring(1)
         return `${app}.${server}`
-      },
+      }      
+    },
       getName(val) {
         let result = ''
         if(val.lastIndexOf('/') > -1){
