@@ -119,8 +119,9 @@ ExpandService.expand = async (params) => {
 					});
 					server = util.leftAssign(ServerService.serverConfFields(), server);
 					let rst = await ServerDao.insertServerConf(server, transaction);
-					// console.log('rst', rst);
-					addServers.push(rst.dataValues);
+
+					addServers.push(serverConf);
+
 					addServersMap[`${server.application}-${server.server_name}-${server.node_name}`] = true;
 					addNodeNameMap[server.node_name] = true;
 					if (params.copy_node_config) {
@@ -203,9 +204,9 @@ ExpandService.expand = async (params) => {
 					posttime: new Date('1970-01-01 00:00:00')
 				};
 				let portType = sourceAdapter.endpoint.substring(0, sourceAdapter.endpoint.indexOf(' '));
-				portType = _.indexOf(['tcp', 'udp'], portType) > -1 ? portType : 'tcp';
+				portType = _.indexOf(['tcp', 'udp', 'ssl'], portType) > -1 ? portType : 'tcp';
 				adapter.endpoint = portType + ' -h ' + preServer.bind_ip + ' -t ' + sourceAdapter.queuetimeout + ' -p ' + preServer.port + ' -e ' + (preServer.auth ? preServer.auth : 0);
-				// console.log('adapter', adapter);
+				console.log('adapter', adapter);
 				await AdapterDao.insertAdapterConf(adapter, transaction);
 			}
 		}
