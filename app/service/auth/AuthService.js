@@ -134,9 +134,9 @@ AuthService.isAdmin = async (uid) => {
 };
 
 AuthService.getAuthListByUid = async (uid) => {
-	if (!enableAuth) {
-		return [];
-	}
+	// if (!enableAuth) {
+	// 	return [];
+	// }
 	var rst = await util.jsonRequest.get(AuthService.getUrl(getAuthListByUidUrl), {
 		uid: uid
 	});
