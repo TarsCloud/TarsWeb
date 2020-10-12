@@ -13,6 +13,7 @@
           size="small"
           v-model="model.application"
           required
+          filterable
           :required-tip="$t('deployService.table.tips.empty')"
           @change="changeSelect('application')"
         >
@@ -26,6 +27,7 @@
           size="small"
           v-model="model.server_name"
           required
+          filterable
           :required-tip="$t('deployService.table.tips.empty')"
           @change="changeSelect('server_name')"
         >
@@ -38,6 +40,7 @@
           size="small"
           v-model="model.set"
           required
+          filterable
           :required-tip="$t('deployService.table.tips.empty')"
           @change="changeSelect('set')"
         >
