@@ -162,7 +162,9 @@
       <let-table-column :title="$t('managePackage.table.th.c5')" prop="publish_time"></let-table-column>
       <let-table-column :title="$t('managePackage.table.th.c6')">
         <template slot-scope="scope">
-          <let-table-operation @click="downloadPackage(scope.row.id)">{{$t('operate.download')}}</let-table-operation>
+          <let-table-operation>
+            <a class="let-table__operation" target="_blank" :href="`/pages/server/api/download_package?id=${scope.row.id}&name=${scope.row.tgz}`">{{$t('operate.download')}}</a>
+          </let-table-operation>
           <let-table-operation @click="deletePackage(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
         </template>
       </let-table-column>
@@ -494,10 +496,6 @@ export default {
     changePackagePage(page) {
       this.getPackageList(page);
     },    
-    downloadPackage(id) {
-      location.href="/pages/server/api/download_package?id=" + id;
-      // window.open("/pages/server/api/download_package?id=" + id);
-    },
     deletePackage(id) {
       this.$confirm(this.$t('releasePackage.confirmDeleteTip'), this.$t('common.alert')).then(() => {
           this.$ajax.postJSON('/server/api/delete_patch_package', {id}).then((data) => {
