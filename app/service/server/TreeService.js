@@ -179,7 +179,10 @@ TreeService.setCacheData = async (isRefresh) => {
 	for (let i = 1; i < arr.length; i++) {
 		let repeat = false
 		for (let j = 0; j < newArr.length; j++) {
-			if (arr[i].application === newArr[j].application && arr[i].server_name === newArr[j].server_name){
+			if (arr[i].application === newArr[j].application
+				&& arr[i].server_name === newArr[j].server_name
+				&& arr[i].enable_set === newArr[j].enable_set
+				&& arr[i].set_group === newArr[j].set_group) {
 				repeat = true
 				break
 			}

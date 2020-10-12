@@ -2,7 +2,7 @@
   <div>
     <let-select ref="localSelect" v-model="locale" @change="changeLocale" :clearable="false" size="small">
       <template v-for="locale in localeMessages">
-        <let-option :value="locale.localeCode">{{locale.localeName}}</let-option>
+        <let-option :value="locale.localeCode" v-bind:key="locale.localeCode">{{locale.localeName}}</let-option>
       </template>
     </let-select>
   </div>

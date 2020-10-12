@@ -54,6 +54,9 @@ ExpandService.preview = async (params) => {
 	let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
 	let sourceAdapter = await AdapterDao.getAdapterConf(application, serverName, params.node_name);
 	let result = [];
+
+	// console.log(sourceServer, sourceAdapter);
+
 	params.expand_nodes.forEach((expandNode) => {
 		sourceAdapter.forEach((adapter) => {
 			// adapter = adapter.dataValues;
@@ -74,6 +77,9 @@ ExpandService.preview = async (params) => {
 			preServer.obj_name = servant.substring(servant.lastIndexOf('.') + 1);
 			preServer.bind_ip = expandNode;
 			preServer.status = expandNode == sourceServer.node_name ? "#api.expand.node.status.existent#" : "#api.expand.node.status.nonexistent#";
+
+			// console.log(preServer);
+			
 			result.push(preServer);
 		});
 	});
@@ -206,7 +212,7 @@ ExpandService.expand = async (params) => {
 				let portType = sourceAdapter.endpoint.substring(0, sourceAdapter.endpoint.indexOf(' '));
 				portType = _.indexOf(['tcp', 'udp', 'ssl'], portType) > -1 ? portType : 'tcp';
 				adapter.endpoint = portType + ' -h ' + preServer.bind_ip + ' -t ' + sourceAdapter.queuetimeout + ' -p ' + preServer.port + ' -e ' + (preServer.auth ? preServer.auth : 0);
-				console.log('adapter', adapter);
+				// console.log('adapter', adapter);
 				await AdapterDao.insertAdapterConf(adapter, transaction);
 			}
 		}

@@ -76,7 +76,7 @@
             this.uid = '***';
           }
         }).catch((err) => {
-          this.$tip.error(`获取用户登录信息: ${err.err_msg || err.message}`);
+          this.$tip.error(`get user login info error: ${err.err_msg || err.message}`);
         });
       },
       changeLocale(){
@@ -85,18 +85,16 @@
       },
       checkEnableLogin(){
         this.$ajax.getJSON('/server/api/is_enable_login').then((data) => {
-                    // console.log(data);
-
           this.enableLogin = data.enableLogin || false;
         }).catch((err) => {
         });
       },
       checkEnableLdap(){
-          this.$ajax.getJSON('/server/api/isEnableLdap').then((data) => {
-              this.enableLdap = data.enableLdap || false;
-          }).catch((err)=>{
+        this.$ajax.getJSON('/server/api/isEnableLdap').then((data) => {
+            this.enableLdap = data.enableLdap || false;
+        }).catch((err)=>{
 
-          });
+        });
       },
       checkAdmin(){
         this.isAdmin = false; 
