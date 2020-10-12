@@ -81,12 +81,14 @@ PatchController.uploadAndPublish = async (ctx) => {
 		let serial = true;
 		let items = [];
 
-		ctx.body += "\n";
-		for(let index = 0; index < serverIds.length; index++)
-		{
-			ctx.body += "patch serverId: " + serverIds[index].id + ", node_name: " + serverIds[index].node_name + "\n";
-			items.push({server_id: serverIds[index].id, command: "patch_tars", parameters: {patch_id: patch.id}});
-		}
+        ctx.body += "\n";
+        for (let index = 0; index < serverIds.length; index++) {
+            if (serverIds[index].setting_state == "inactive") {
+                continue;
+            }
+            ctx.body += "patch serverId: " + serverIds[index].id + ", node_name: " + serverIds[index].node_name + "\n";
+            items.push({ server_id: serverIds[index].id, command: "patch_taf", parameters: { patch_id: patch.id } });
+        }
 
 		await TaskService.addTask({serial, items, task_no, userName: 'auto-developer'});
 
@@ -98,14 +100,13 @@ PatchController.uploadAndPublish = async (ctx) => {
 			}
 		}
 
-		let info = "-----------------------------------------------------------------\n";
-		info += "task no:  [" + ret.task_no + "]\n\n";
-		for(var index = 0; index < ret.items.length; ++index)
-		{
-			let node = ret.items[index];
-			info += node.node_name + " " + node.status_info + " " + node.execute_info + "\n";
-		}
-		ctx.body += info;
+        let info = "-----------------------------------------------------------------\n";
+        info += "task no:  [" + ret.task_no + "]\n\n";
+        for (var index = 0; index < ret.items.length; ++index) {
+            let node = ret.items[index];
+            info += node.node_name + " " + node.status_info + " " + node.execute_info + "\n";
+        }
+        ctx.body += info;
 
 	} catch (e) {
 		ctx.body = "upload and patch err:" + e;
@@ -326,11 +327,10 @@ PatchController.deletePatchPackage = async (ctx) => {
 	let {id} = ctx.paramsObj;
 	try {
 
-		let patch = await PatchService.find({where: {id:id}});
-		// console.log(patch);
-		if(patch)
-		{
-			logger.info('deletePatchPackage:' + id + ", " + patch.server.split('.')[0] + ", " + patch.server.split('.')[1] + ", " + patch.tgz);
+        let patch = await PatchService.find({ where: { id: id } });
+        // console.log(patch);
+        if (patch) {
+            logger.info('deletePatchPackage:' + id + ", " + patch.server.split('.')[0] + ", " + patch.server.split('.')[1] + ", " + patch.tgz);
 
 			await AdminService.deletePatchFile(patch.server.split('.')[0], patch.server.split('.')[1], patch.tgz);
 
