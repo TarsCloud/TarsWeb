@@ -87,7 +87,7 @@ PatchController.uploadAndPublish = async (ctx) => {
                 continue;
             }
             ctx.body += "patch serverId: " + serverIds[index].id + ", node_name: " + serverIds[index].node_name + "\n";
-            items.push({ server_id: serverIds[index].id, command: "patch_taf", parameters: { patch_id: patch.id } });
+            items.push({ server_id: serverIds[index].id, command: "patch_tars", parameters: { patch_id: patch.id } });
         }
 
 		await TaskService.addTask({serial, items, task_no, userName: 'auto-developer'});
