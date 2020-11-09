@@ -53,7 +53,7 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: true
 		},
 		config: {
-			type: DataTypes.TEXT,
+			type: DataTypes.TEXT('long'),
 			allowNull: true
 		},
 		posttime: {
