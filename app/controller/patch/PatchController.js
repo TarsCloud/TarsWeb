@@ -149,7 +149,9 @@ PatchController.uploadPatchPackage = async (ctx) => {
 				update_text: comment || '',
 				task_id: task_id,
 				package_type: package_type || '0',
-				posttime: new Date()
+                posttime: new Date(),
+                upload_time:new Date(),
+                upload_user:ctx.uid
 			};
 			logger.info('[addServerPatch:]', paramsObj);
 			let ret = await PatchService.addServerPatch(paramsObj);
@@ -201,7 +203,9 @@ PatchController.serverPatchList = async (ctx) => {
 					tgz: '',
 					publish_time: {formatter: util.formatTimeStamp},
 					update_text: {key: 'comment'},
-					posttime: {formatter: util.formatTimeStamp}
+                    posttime: { formatter: util.formatTimeStamp },
+                    upload_time:{ formatter: util.formatTimeStamp },
+                    upload_user:''
 				})
 			});
 		}
@@ -209,6 +213,33 @@ PatchController.serverPatchList = async (ctx) => {
 		logger.error('[PatchController.serverPatchList]:', e, ctx);
 		ctx.makeErrResObj(500, e.toString());
 	}
+};
+PatchController.serverNowList = async(ctx) => {
+    let params = ctx.paramsObj;
+    try {
+        if (!await AuthService.hasOpeAuth(params.application, params.serverName, ctx.uid)) {
+            ctx.makeNotAuthResObj();
+        } else {
+            let ret = await ServerService.getServerConfList4Tree({
+                application: params.application,
+                serverName: params.serverName,
+                enableSet: params.enableSet ? 'Y' : 'N',
+                setName: params.setName,
+                setArea: params.setArea,
+                setGroup: params.setGroup,
+                nodeName: params.nodeName
+            })
+            ctx.makeResObj(200, '', util.viewFilter(ret, {
+                application: '',
+                server_name: '',
+                node_name: '',
+                patch_version: ''
+            }));
+        }
+    } catch (e) {
+        logger.error('[PatchController.serverNowList]:', e, ctx);
+        ctx.makeErrResObj(500, e.toString());
+    }
 };
 
 PatchController.getServerPatchByTaskId = async (ctx) => {

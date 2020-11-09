@@ -69,6 +69,7 @@ TaskService.getTasks = async (params) => {
 
 TaskService.addTask = async (params, ticket) => {
 	let items = [];
+    let userName = params.user_name || '';
 	for (let i = 0, len = params.items.length; i < len; i++) {
 		let item = params.items[i];
 		let parameters = item.parameters;
@@ -79,7 +80,8 @@ TaskService.addTask = async (params, ticket) => {
 			taskNo: params.task_no,
 			itemNo: util.getUUID(),
 			command: item.command,
-			parameters: parameters
+            parameters: parameters,
+            userName: userName,
 		};
 		let serverConf = await ServerService.getServerConfById(item.server_id.toString()).catch(e => {
 			logger.error('[ServerService.getServerConfById]:', e.toString());

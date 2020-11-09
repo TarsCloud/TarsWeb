@@ -36,13 +36,21 @@
           <span :class="scope.row.setting_state === 'active' ? 'status-active' : 'status-off'"></span>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('serverList.table.th.currStatus')" width="65px">
+      <let-table-column :title="$t('serverList.table.th.currStatus')" width="90px">
         <template slot-scope="scope">
           <span :class="scope.row.present_state === 'active' ? 'status-active' : scope.row.present_state === 'activating' ? 'status-activating' : 'status-off'"></span>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('serverList.table.th.processID')" prop="process_id" width="80px"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.version')" prop="patch_version" width="68px"></let-table-column>
+
+      <let-table-column :title="$t('serverList.table.th.flowStatus')" width="90px">
+        <template slot-scope="scope">
+          <span :class="scope.row.flow_state === 'inactive' ? 'status-off' : 'status-flowactive'"></span>
+        </template>
+      </let-table-column>
+
+      <let-table-column :title="$t('serverList.table.th.processID')" prop="process_id"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.version')" prop="patch_version"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.operator')" prop="patch_user"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.time')">
         <template slot-scope="scope">
           <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.patch_time)}}</span>
@@ -58,6 +66,8 @@
         </template>
       </let-table-column>
       <template slot="operations">
+        <let-button theme="primary" size="small" :disabled="!hasCheckedServer" @click="batchShowMoreCmd">{{ $t('operate.more') }}</let-button>
+        <let-button theme="primary" size="small" :disabled="!hasCheckedServer" @click="batchConfigServer">{{ $t('dcache.batch.edit') }}</let-button>
         <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="restart"></batch-operation>
         <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="stop"></batch-operation>
       </template>
@@ -86,18 +96,34 @@
 
     <!-- 编辑服务弹窗 -->
     <let-modal
-      v-model="configModal.show"
-      :title="$t('serverList.dlg.title.editService')"
-      width="800px"
-      :footShow="!!(configModal.model && configModal.model.server_name)"
-      @on-confirm="saveConfig"
-      @close="closeConfigModal"
-      @on-cancel="closeConfigModal">
+        v-model="configModal.show"
+        :title="$t('serverList.dlg.title.editService')"
+        width="800px"
+        :footShow="!!(configModal.model && configModal.model.server_name)"
+        @on-confirm="saveConfig(batchEditConf.show)"
+        @close="closeConfigModal"
+        @on-cancel="closeConfigModal">
       <let-form
-        v-if="!!(configModal.model && configModal.model.server_name)"
-        ref="configForm" itemWidth="360px" :columns="2" class="two-columns">
-        <let-form-item :label="$t('common.service')">{{configModal.model.server_name}}</let-form-item>
-        <let-form-item :label="$t('common.ip')">{{configModal.model.node_name}}</let-form-item>
+          v-if="!!(configModal.model && configModal.model.server_name)"
+          ref="configForm" itemWidth="360px" :columns="2" class="two-columns">
+        <let-form-item :label="$t('common.service')" v-if="batchEditConf.show">{{ configModal.model.server_name }}</let-form-item>
+        <let-form-item :label="$t('common.ip')" v-if="batchEditConf.show">{{ configModal.model.node_name }}</let-form-item>
+        <let-form-item :label="$t('serverList.dlg.useIdc')" required>
+          <let-radio-group
+              size="small"
+              v-model="configModal.model.enable_group"
+              :data="[{ value: true, text: $t('common.yes') }, { value: false, text: $t('common.no') }]">
+          </let-radio-group>
+        </let-form-item>
+        <let-form-item :label="$t('serverList.dlg.groupName')">
+          <let-select
+              size="small"
+              v-model="configModal.model.ip_group_name"  v-bind:disabled="!configModal.model.enable_group"
+              >
+            <let-option v-for="t in configModal.model.groupList" :key="t.value" :value="t.key">{{t.value}}</let-option>
+          </let-select>
+        </let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.isBackup')" required>
           <let-radio-group
             size="small"
@@ -352,7 +378,7 @@
             <let-option v-for="l in logLevels" :key="l" :value="l">{{l}}</let-option>
           </let-select>
         </let-form-item>
-        <let-form-item itemWidth="100%">
+        <let-form-item itemWidth="100%" v-if="!isBatchShowCmd">
           <let-radio v-model="moreCmdModal.model.selected" label="loadconfig">{{$t('serverList.servant.pushFile')}}</let-radio>
           <let-select
             size="small"
@@ -386,6 +412,7 @@
 
 <script>
 import batchOperation from './../dcache/moduleManage/batchOperation.vue'
+import group from "@/pages/dcache/routerManage/group";
 export default {
   components: { batchOperation },
   name: 'ServerManage',
@@ -406,6 +433,8 @@ export default {
 
       // 服务列表
       serverList: [],
+      // 分组列表
+      groupList:[],
 
       // 操作历史列表
       serverNotifyList: [],
@@ -426,8 +455,11 @@ export default {
       configModal: {
         show: false,
         model: null,
+        batch: false,
       },
-
+      batchEditConf: {
+        show: true,
+      },
       // 编辑servant
       servantModal: {
         show: false,
@@ -453,9 +485,9 @@ export default {
         model: null,
         currentServer: null,
       },
-
       // 失败重试次数
-      failCount :0
+      failCount :0,
+      isBatchShowCmd:false
     };
   },
   props: ['treeid'],
@@ -503,13 +535,14 @@ export default {
           this.getServerList();
         });
       });
+      this.isCheckedAll = false;
     },
     // 获取服务实时状态
     getServerNotifyList(curr_page) {
       if (!this.showOthers) return;
       // const loading = this.$refs.serverNotifyListLoading.$loading.show();
       if(!curr_page) {
-        curr_page = this.pageNum || 1; 
+        curr_page = this.pageNum || 1;
       }
       this.$ajax.getJSON('/server/api/server_notify_list', {
         tree_node_id: this.treeid,
@@ -554,6 +587,22 @@ export default {
         this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
     },
+    // 获取IDC分组列表
+    getGroupList() {
+      this.$ajax.getJSON('/server/api/dict_idc').then((data) => {
+        let groupList = [{"key":" ","value":"自动"}];
+        data.forEach((row)=>{
+          groupList.push({"key":row.group_name,"value":row.group_name+"-"+row.group_name_cn});
+        })
+        if (this.configModal.model) {
+          this.configModal.model.groupList = groupList;
+        } else {
+          this.configModal.model = { groupList: groupList };
+        }
+      }).catch((err) => {
+        this.$tip.error(`${this.$t('getGroupList.restart.failed')}: ${err.err_msg || err.message}`);
+      });
+    },
     // 获取服务数据
     getServerConfig(id) {
       const loading = this.$loading.show({
@@ -580,22 +629,66 @@ export default {
     configServer(id) {
       this.configModal.show = true;
       this.getTemplateList();
+      this.getGroupList();
       this.getServerConfig(id);
     },
-    saveConfig() {
+    batchConfigServer() {
+      var ids = this.serverList.filter(item => item.isChecked === true).map((item,index)=>{
+        return item.id;
+      })
+      this.configModal.show = true;
+      this.batchEditConf.show = false;
+      this.getTemplateList();
+      this.getGroupList();
+      this.configModal.model = Object.assign({}, this.configModal.model, {
+        id : ids,
+        server_name: 'batchedit',
+        node_name: 'batchedit',
+        server_type: 'taf_cpp',
+        enable_set: false,
+        set_name: '',
+        set_area: '',
+        set_group: '',
+        bak_flag: true,
+        templates: [],
+        template_name: 'tars.default',
+        profile: '',
+        async_thread_num: 3,
+        base_path: '',
+        exe_path: '',
+        start_script_path: '',
+        stop_script_path: '',
+        monitor_script_path: '',
+        enable_group: false,
+        ip_group_name:''
+      });
+    },
+    saveConfig(flag) {
       if (this.$refs.configForm.validate()) {
+        var url = flag ? '/server/api/update_server' : '/server/api/batch_update_server';
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/update_server', {
+        this.$ajax.postJSON(url, {
           isBak: this.configModal.model.bak_flag,
           ...this.configModal.model,
         }).then((res) => {
           loading.hide();
-          this.serverList = this.serverList.map((item) => {
-            if (item.id === res.id) {
-              return res;
-            }
-            return item;
-          });
+          if (flag){
+            this.serverList = this.serverList.map((item) => {
+              if (item.id === res.id) {
+                return res;
+              }
+              return item;
+            });
+          }else{
+            res.forEach(row=>{
+              this.serverList = this.serverList.map((item) => {
+                if (item.id === row.id) {
+                  return row;
+                }
+                return item;
+              });
+            })
+          }
           this.closeConfigModal();
           this.$tip.success(this.$t('serverList.restart.success'));
         }).catch((err) => {
@@ -607,6 +700,7 @@ export default {
     closeConfigModal() {
       if (this.$refs.configForm) this.$refs.configForm.resetValid();
       this.configModal.show = false;
+      this.batchEditConf.show = true;
       this.configModal.model = null;
     },
 
@@ -700,7 +794,22 @@ export default {
             success: this.$t('serverList.undeploy.success'),
             error: this.$t('serverList.undeploy.failed'),
           });
-          this.closeMoreCmdModal();
+        });
+      }
+    },
+    // 批量下线服务
+    undeployServers(servers) {
+      const activeSer = servers.filter(item => item.present_state==="active");
+      if(activeSer.length>0) {
+        this.$tip.error(`${this.$t('serverList.tips.undeploy')}`);
+      } else {
+        this.$confirm(this.$t('serverList.dlg.msg.undeploy'), this.$t('common.alert')).then(() => {
+          servers.forEach((item)=>{
+            this.addTask(item.id, 'undeploy_tars', {
+              success: this.$t('serverList.undeploy.success'),
+              error: this.$t('serverList.undeploy.failed'),
+            });
+          })
         });
       }
     },
@@ -876,6 +985,7 @@ export default {
       });
       this.moreCmdModal.show = true;
       this.moreCmdModal.currentServer = server;
+      this.isBatchShowCmd =false;
 
       this.$ajax.getJSON('/server/api/config_file_list', {
         level: 5,
@@ -887,6 +997,35 @@ export default {
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       });
     },
+    // 批量打开更多命令
+    batchShowMoreCmd(){
+      const checkedServer = this.serverList.filter(item => item.isChecked === true);
+      this.moreCmdModal.model = {
+        selected: 'setloglevel',
+        setloglevel: 'NONE',
+        loadconfig: '',
+        command: '',
+        configs: null,
+      };
+      this.moreCmdModal.unwatch = this.$watch('moreCmdModal.model.selected', () => {
+        if (this.$refs.moreCmdForm) this.$refs.moreCmdForm.resetValid();
+      });
+      this.moreCmdModal.show = true;
+      this.isBatchShowCmd =true
+      if (checkedServer.length === 1) {
+        this.isBatchShowCmd =false
+        this.$ajax.getJSON('/server/api/config_file_list', {
+          level: 5,
+          application: checkedServer[0].application,
+          server_name: checkedServer[0].server_name,
+        }).then((data) => {
+          if (this.moreCmdModal.model) this.moreCmdModal.model.configs = data;
+        }).catch((err) => {
+          this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+        });
+      }
+    },
+
     sendCommand(id, command, hold) {
       const loading = this.$Loading.show();
       this.$ajax.getJSON('/server/api/send_command', {
@@ -914,30 +1053,49 @@ export default {
       });
     },
     invokeMoreCmd() {
-      const model = this.moreCmdModal.model;
-      const server = this.moreCmdModal.currentServer;
-      // 下线服务
-      if (model.selected === 'undeploy_tars') {
-        this.undeployServer(server);
-      // 设置日志等级
-      } else if (model.selected === 'setloglevel') {
-        this.sendCommand(server.id, `tars.setloglevel ${model.setloglevel}`);
-      // push 日志文件
-      } else if (model.selected === 'loadconfig' && this.$refs.moreCmdForm.validate()) {
-        this.sendCommand(server.id, `tars.loadconfig ${model.loadconfig}`);
-      // 发送自定义命令
-      } else if (model.selected === 'command' && this.$refs.moreCmdForm.validate()) {
-        this.sendCommand(server.id, model.command);
-      // 查看服务链接
-      } else if (model.selected === 'connection') {
-        this.sendCommand(server.id, `tars.connection`, true);
+      if (this.isBatchShowCmd) {
+        const checkedList = this.serverList.filter(item => item.isChecked === true);
+        const model = this.moreCmdModal.model;
+          // 下线服务
+          if (model.selected === 'undeploy_taf') {
+            this.undeployServers(checkedList);
+          } // 设置日志等级
+          else if (model.selected === 'setloglevel') {
+            checkedList.forEach((item)=> {this.sendCommand(item.id, `tars.setloglevel ${model.setloglevel}`);})
+          }  // 发送自定义命令
+          else if (model.selected === 'command' && this.$refs.moreCmdForm.validate()) {
+            checkedList.forEach((item)=> {this.sendCommand(item.id, model.command);})
+          }else if (model.selected === 'connection') {
+            checkedList.forEach((item)=> {this.sendCommand(item.id, `tars.connection`, true);})
+          }
+      }else{
+        const model = this.moreCmdModal.model;
+        const server = this.moreCmdModal.currentServer;
+        // 下线服务
+        if (model.selected === 'undeploy_taf') {
+          this.undeployServer(server);
+          // 设置日志等级
+        } else if (model.selected === 'setloglevel') {
+          this.sendCommand(server.id, `taf.setloglevel ${model.setloglevel}`);
+          // push 日志文件
+        } else if (model.selected === 'loadconfig' && this.$refs.moreCmdForm.validate()) {
+          this.sendCommand(server.id, `taf.loadconfig ${model.loadconfig}`);
+          // 发送自定义命令
+        } else if (model.selected === 'command' && this.$refs.moreCmdForm.validate()) {
+          this.sendCommand(server.id, model.command);
+          // 查看服务链接
+        } else if (model.selected === 'connection') {
+          this.sendCommand(server.id, `taf.connection`, true);
+        }
       }
+      this.closeMoreCmdModal();
     },
     closeMoreCmdModal() {
       if (this.$refs.moreCmdForm) this.$refs.moreCmdForm.resetValid();
       if (this.moreCmdModal.unwatch) this.moreCmdModal.unwatch();
       this.moreCmdModal.show = false;
       this.moreCmdModal.model = null;
+      this.isBatchShowCmd =false;
     },
 
     // 处理未发布时间显示

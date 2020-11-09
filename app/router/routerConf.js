@@ -38,6 +38,8 @@ const LoginController = require('../controller/login/LoginController');
 const LocaleController = require('../controller/locale/LocaleController');
 const InfTestController = require('../controller/infTest/InfTestController');
 const LogviewController = require('../controller/logview/LogviewController');
+const IDCConntroller = require('../controller/idc/IDCController');
+
 
 const pageConf = [
     //首页
@@ -52,7 +54,7 @@ const apiConf = [
     ['get', '/server_exist', ServerController.serverExist, {
         application: 'notEmpty',
         server_name: 'notEmpty',
-        node_name: 'notEmpty'
+        node_name: ''
     }],
     ['get', '/application_list', ServerController.getApplicationList],
     ['get', '/node_list', ServerController.getNodeList],
@@ -65,13 +67,22 @@ const apiConf = [
         node_name: 'notEmpty'
     }],
     ['post', '/update_server', ServerController.updateServerConf, { id: 'notEmpty' },
-        ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path', 'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile']
+        ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path',
+            'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name'
+        ]
+    ],
+    ['post', '/batch_update_server', ServerController.batchUpdateServerConf, { id: 'notEmpty' },
+        ['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path',
+            'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name'
+        ]
     ],
     ['get', '/server_search', ServerController.getServerSearch],
 
     ['get', '/tree', TreeController.listTree],
     ['get', '/send_command', ServerController.sendCommand, { server_ids: 'notEmpty', command: 'notEmpty' }],
     ['get', '/server_nodes', ServerController.getServerNodes, { application: 'notEmpty', server_name: 'notEmpty' }],
+
+    ['post', '/update_flowstatus', ServerController.updateFlowStatus, { server_id: 'notEmpty', status: 'notEmpty', node_list: 'notEmpty' }],
 
     //检查框架
     ['get', '/get_framework_list', ServerController.getFrameworkList],
@@ -156,7 +167,9 @@ const apiConf = [
     // 发布包
     ['post', '/upload_and_publish', PatchController.uploadAndPublish, { application: 'notEmpty', module_name: 'notEmpty' }],
     ['post', '/upload_patch_package', PatchController.uploadPatchPackage, { application: 'notEmpty' }],
+    ['put', '/upload_patch_package', PatchController.uploadPatchPackage, { application: 'notEmpty' }],
     ['get', '/server_patch_list', PatchController.serverPatchList, { application: 'notEmpty' }],
+    ['get', '/server_now_version', PatchController.serverNowList, { application: 'notEmpty', serverName: 'notEmpty' }],
     ['get', '/get_server_patch', PatchController.getServerPatchByTaskId, { task_id: 'notEmpty' }],
     ['get', '/get_tag_list', PatchController.getTagList, { application: 'notEmpty', server_name: 'notEmpty' }],
     ['get', '/get_tag_conf', PatchController.getCodeInfConf, { application: 'notEmpty', server_name: 'notEmpty' }],
@@ -211,7 +224,19 @@ const apiConf = [
     ['get', '/delete_business_relation', BusinessRelationController.delete, { f_id: 'notEmpty' }],
     ['post', '/update_business_relation', BusinessRelationController.update, { f_id: 'notEmpty', f_business_name: 'notEmpty', f_application_name: 'notEmpty' }],
     ['get', '/query_business_relation', BusinessRelationController.getList],
-    
+
+    //IDC分组管理
+    ['get', '/query_idc', IDCConntroller.getIDCGroupList],
+    ['get', '/dict_idc', IDCConntroller.getIDCGroupDict],
+    ['post', '/add_idc', IDCConntroller.addIDCGroup, { group_name: 'notEmpty', group_name_cn: 'notEmpty', ip_order: 'notEmpty' },
+        ['group_name', 'group_name_cn', 'ip_order', 'allowList', 'dennyList']
+    ],
+    ['get', '/delete_idc', IDCConntroller.deleteIDCGroup, { group_id: 'notEmpty' }],
+    ['post', '/update_idc', IDCConntroller.updateIDCGroup, { group_id: 'notEmpty', group_name: 'notEmpty', group_name_cn: 'notEmpty', ip_order: 'notEmpty' },
+        ['group_id', 'group_name', 'group_name_cn', 'ip_order', 'allowList', 'dennyList']
+    ],
+
+
 
     //网关配置
     ['get', '/gatewayobj_list', GatewayController.getGatewayObjList],

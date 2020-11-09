@@ -14,12 +14,14 @@
         <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"> </let-table-column>
         <let-table-column :title="$t('serverList.table.th.enableSet')">
           <template slot-scope="scope">
-            <span>{{ scope.row.enable_set ? $t('common.enable') : $t('common.disable') }}</span>
+            <span v-if="!scope.row.enable_set">{{$t('common.disable')}}</span>
+            <p v-else style="max-width: 200px">
+              {{$t('common.set.setName')}}：{{scope.row.set_name}}<br>
+              {{$t('common.set.setArea')}}：{{scope.row.set_area}}<br>
+              {{$t('common.set.setGroup')}}：{{scope.row.set_group}}
+            </p>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('common.set.setName')" prop="set_name"></let-table-column>
-        <let-table-column :title="$t('common.set.setArea')" prop="set_area"></let-table-column>
-        <let-table-column :title="$t('common.set.setGroup')" prop="set_group"></let-table-column>
         <let-table-column :title="$t('serverList.table.th.configStatus')">
           <template slot-scope="scope">
             <span :class="scope.row.setting_state == 'active' ? 'status-active' : 'status-off'"></span>
@@ -77,13 +79,15 @@
                 <div>
                 <let-select
                   size="small"
-                  style="width:50%"
+                  style="width:75%"
                   v-model="publishModal.model.patch_id"
                   required
                   :required-tip="$t('pub.dlg.ab')"
                 >
-                  <let-option v-for="d in publishModal.model.patchList" :key="d.id" :value="d.id">
-                    {{d.id}} | {{d.posttime}} | {{d.comment}}
+                <let-option v-for="(d,index) in publishModal.model.patchList" :key="d.id" :value="d.id">
+                  <span v-html="imgNew" v-if="index==0"></span><span v-else v-html="imgSpace">&emsp;</span>
+                  <span v-html="imgCur" v-if="includes(nowVersion,d.id)"></span><span v-else v-html="imgSpace"></span>
+                  {{d.id}}| {{"PubTime:"+d.publish_time}} | {{"UploadTime:"+d.upload_time+""}} |{{formatString("UploadUser:"+d.upload_user,20)}}| {{d.comment}}
                   </let-option>
                 </let-select>
                 &nbsp;&nbsp;
@@ -157,7 +161,8 @@
     <let-table ref="packageTable" :data="packageList" :empty-msg="$t('common.nodata')">
       <let-table-column :title="$t('managePackage.table.th.c1')" prop="id"></let-table-column>
       <let-table-column :title="$t('managePackage.table.th.c2')" prop="server"></let-table-column>
-      <let-table-column :title="$t('managePackage.table.th.c3')" prop="posttime"></let-table-column>
+        <let-table-column :title="$t('managePackage.table.th.c7')" prop="upload_user"></let-table-column>
+        <let-table-column :title="$t('managePackage.table.th.c3')" prop="upload_time"></let-table-column>
       <let-table-column :title="$t('managePackage.table.th.c4')" prop="comment"></let-table-column>
       <let-table-column :title="$t('managePackage.table.th.c5')" prop="publish_time"></let-table-column>
       <let-table-column :title="$t('managePackage.table.th.c6')">
@@ -302,6 +307,10 @@ export default {
     },
   data() {
     return {
+      imgNew:"<img class=\"logo\" src=\"/static/img/new.gif\">",
+      imgCur:"<img class=\"logo\" src=\"/static/img/current.gif\">",
+      imgSpace:"<img class=\"logo\" src=\"/static/img/space.png\">",
+      nowVersion:[],
       activeKey: '',
       treeData: [],
       totalServerList: [],
@@ -424,6 +433,13 @@ export default {
         update_text: '',
         show: true
       };
+      this.getNewVersionList(first).then((data) =>{
+        if(data.length!=0){
+            data.forEach((item)=>{
+            this.nowVersion.push(item.patch_version);
+          })
+        }
+      });
       this.getPatchList(first.application, first.server_name, 1, 50).then((data) => {
         // this.packageList = data.rows;
         this.publishModal.model.patchList = data.rows;
@@ -440,9 +456,23 @@ export default {
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);        
       });
     },
+    getNewVersionList(node){
+        return this.$ajax.getJSON("/server/api/server_now_version",{
+          application: node.application,
+          serverName: node.server_name,
+          enableSet: node.enable_set,
+          setName: node.set_name,
+          setArea: node.set_area,
+          setGroup: node.set_group,
+          nodeName: node.node_name
+        }).catch((err)=>{
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`)
+        })
+    },
     closePublishModal() {
       // 关闭发布弹出框
       this.publishModal.show = false;
+      this.nowVersion =[];
       this.publishModal.modal = null;
       this.patchType = 'patch';
       this.$refs.publishForm.resetValid();
@@ -482,6 +512,7 @@ export default {
       this.getPatchList(first.application, first.server_name, curr_page, this.packagePageSize).then((data) => {
         loading.hide();
         this.packageList = data.rows;
+        this.packagePage = curr_page;
         this.packageTotalPage = Math.ceil(data.count / this.packagePageSize);
 
       }).catch((err)=>{
@@ -495,6 +526,11 @@ export default {
     },
     changePackagePage(page) {
       this.getPackageList(page);
+    },
+    downloadPackage(data) {
+      const url = `/pages/server/api/download_package?id=${data.id}&name=${data.tgz}`
+      // location.href = url
+      window.open(url, true)
     },    
     deletePackage(id) {
       this.$confirm(this.$t('releasePackage.confirmDeleteTip'), this.$t('common.alert')).then(() => {
@@ -576,6 +612,14 @@ export default {
       this.$refs.uploadForm.resetValid();
     },
     uploadFile(file) {
+      const { treeid } = this
+      const app = treeid && treeid.split('.')[0] && treeid.split('.')[0].slice(1)
+      const arr = treeid.split('.');
+      const server = treeid && arr[arr.length-1] && arr[arr.length-1].slice(1)
+      const fileName = file.name && file.name.split('.') && file.name.split('.')[0]
+      if(server !== fileName){
+        return this.$tip.error(`${this.$t('releasePackage.uploadPackageTips')}`);
+      }
       this.uploadModal.model.file = file;
     },
     uploadPatchPackage() {
@@ -740,6 +784,22 @@ export default {
           })
         }
         f();
+    },
+    //数组是否包含
+    includes(arr, item) {
+      if (arr.includes(String(item))) {
+        return true
+      } else {
+        return false
+      }
+    },
+    //字符串固定长度  小于长度右补空格,大于加省略号
+    formatString(str,len){
+        if(str!=null && str.length<len){
+          return str.padEnd((len-str.length))
+        }else {
+          return str.substring(0,len)
+        }
     }
   },
   mounted() {

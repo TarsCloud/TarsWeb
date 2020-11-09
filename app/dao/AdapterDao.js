@@ -15,6 +15,8 @@
  */
 
 const {tAdapterConf, sequelize} = require('./db').db_tars;
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const AdapterDao = {};
 
@@ -101,4 +103,28 @@ AdapterDao.updateAdapterConf = async (params) => {
 	return await tAdapterConf.update(params, {where: {id: params.id}});
 };
 
+AdapterDao.getAdapterProxy =  async (params)  =>{
+	let where = {
+		[Op.or]:[{
+			application:{[Op.ne]:'DCache'}
+		},{
+			[Op.and]:[
+				{application:{[Op.eq]:'DCache'}},
+				{server_name:{[Op.in]:['ConfigServer','DCacheOptServer','PropertyServer']}}
+			]
+		}
+		]
+	}
+	params.application != undefined && (where.application = params.application);
+	params.serverName != undefined && (where.server_name = params.serverName);
+	let options = {
+		where: where,
+		order: [['application'], ['server_name']]
+	};
+	if (params.curPage && params.pageSize) {
+		options.limit = params.pageSize;
+		options.offset = params.pageSize * (params.curPage - 1);
+	}
+	return  await tAdapterConf.findAndCountAll(options);
+}
 module.exports = AdapterDao;

@@ -18,6 +18,7 @@ const {tServerConf, tAdapterConf, sequelize} = require('./db').db_tars;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const ServerDao = {};
+const Db = require('../dao/db/index')
 
 ServerDao.sequelize = sequelize;
 
@@ -50,6 +51,14 @@ ServerDao.getServerConfById = async (id) => {
 	return await tServerConf.findOne({
 		where: {
 			id
+		}
+	});
+};
+
+ServerDao.getServerConfByIds = async (ids) => {
+	return await tServerConf.findAll({
+		where: {
+			id:ids
 		}
 	});
 };
@@ -104,6 +113,31 @@ ServerDao.getServerConf = async (params) => {
 		options.offset = params.pageSize * (params.curPage - 1);
 	}
 	return await tServerConf.findAll(options);
+};
+
+ServerDao.getServerConfAndCount = async (params) => {
+	let where = {};
+	params.application != undefined && (where.application = params.application);
+	params.serverName != undefined && (where.server_name = params.serverName);
+	params.nodeName != undefined && (where.node_name = params.nodeName);
+	if (params.enableSet) {
+		if (params.enableSet == 'Y') {
+			params.setName && (where.set_name = params.setName);
+			params.setArea && (where.set_area = params.setArea);
+			params.setGroup && (where.set_group = params.setGroup);
+		} else {
+			where.enable_set = 'N'
+		}
+	}
+	let options = {
+		where: where,
+		order: [['application'], ['server_name']]
+	};
+	if (params.curPage && params.pageSize) {
+		options.limit = params.pageSize;
+		options.offset = params.pageSize * (params.curPage - 1);
+	}
+	return await tServerConf.findAndCountAll(options);
 };
 
 ServerDao.getServerConfByTemplate = async (templateName) => {
@@ -183,10 +217,18 @@ ServerDao.updateServerConf = async (params) => {
 		stop_script_path: params.stop_script_path,
 		monitor_script_path: params.monitor_script_path,
 		profile: params.profile,
-		posttime: params.posttime
+		posttime: params.posttime,
+		enable_group:params.enable_group,
+		ip_group_name:params.ip_group_name
 	};
 	return await tServerConf.update(updateOptions, {where: {id: params.id}});
 };
+
+ServerDao.batchUpdateServerConf = async (params) => {
+	return await tServerConf.bulkCreate(params, {updateOnDuplicate: ["bak_flag", "template_name", "server_type", "enable_set", "set_name",
+			"set_area", "set_group", "async_thread_num", "base_path", "exe_path", "start_script_path", "stop_script_path", "monitor_script_path", "profile", "posttime"]});
+};
+
 
 ServerDao.insertServerConf = async (params, transaction) => {
 	if (transaction) {
@@ -256,6 +298,17 @@ ServerDao.getNodeNameList = async (params) => {
 		where: where,
 		raw: true
 	})
+};
+
+ServerDao.getServerConfListByBatch = async (params) => {
+	let where = "";
+	for(const item of params){
+		where+=`('${item.application}','${item.server_name}','${item.node_name}'),`;
+	}
+	where=where.substr(0,where.length-1);
+	let sql = `select * from t_server_conf where (application,server_name,node_name) in (${where})`;
+	let rst = await Db['db_tars'].sequelize.query(sql,{ type: Sequelize.QueryTypes.SELECT})
+	return rst;
 };
 
 ServerDao.destroy = async (where = {}) => {

@@ -10,7 +10,7 @@
     >
       <let-form>
         <let-form-item :label="$t('service.serverName')">
-          <p v-for="server in checkedServers">{{ server.server_name }}</p>
+          <p v-for="server in checkedServers">{{ server.application + "." + server.server_name + "_" + server.node_name }}</p>
         </let-form-item>
       </let-form>
     </let-modal>

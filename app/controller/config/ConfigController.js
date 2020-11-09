@@ -174,6 +174,7 @@ ConfigController.updateConfigFile = async (ctx) => {
 		// if (!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))) {
 			ctx.makeNotAuthResObj();
 		} else {
+			params.lastuser = ctx.uid;
 			let ret = await ConfigService.updateConfigFile(params);
 			ctx.makeResObj(200, '', util.viewFilter(ret, configListStruct));
 		}
@@ -368,14 +369,11 @@ ConfigController.pushConfigFile = async (ctx) => {
 		ids = ids.split(/[,;]/);
 		let list = await ConfigService.getConfigFileList(ids);
 		let filename = '';
-		let auth = true;
-		let targets = list.map(async (configFile) => {
+		let auth = await AuthService.hasOpeAuth(list[0].application, list[0].server_name, ctx.uid);
+		let targets =list.map( (configFile) => {
 			let [application, server_name] = configFile.server_name.split('.');
 			filename = configFile.filename;
 
-			if (auth) {
-				auth = await AuthService.hasOpeAuth(application, server_name, ctx.uid);
-			}
 
 			return {
 				application: application,
