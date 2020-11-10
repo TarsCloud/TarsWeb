@@ -17,6 +17,7 @@
 const ServerDao = require('../../dao/ServerDao');
 const BusinessDao = require('../../dao/BusinessDao');
 const BusinessRelationDao = require('../../dao/BusinessRelationDao');
+const AuthService = require('../auth/AuthService');
 
 const cacheData = {
 	timer: '',
@@ -43,30 +44,37 @@ TreeService.hasDCacheServerName = (serverName) => {
  * @param data
  */
 
-TreeService.ArrayToTree = (data) => {
+TreeService.ArrayToTree = async (data, uid) => {
 	let treeNodeList = []
 	let treeNodeMap = {}
 	let rootNode = []
-	data.forEach(function (server) {
-		server = server.dataValues;
-		let id;
-		if (server.enable_set == 'Y') {
-			id = '1' + server.application + '.' + '2' + server.set_name + '.' + '3' + server.set_area + '.' + '4' + server.set_group + '.' + '5' + server.server_name;
-		} else {
-			id = '1' + server.application + '.' + '5' + server.server_name;
-		}
-		let treeNode = {};
-		treeNode.id = id;
-		treeNode.name = server.server_name;
-		treeNode.pid = id.substring(0, id.lastIndexOf('.'));
-		treeNode.is_parent = false;
-		treeNode.open = false;
-		treeNode.children = [];
-		treeNodeList.push(treeNode);
-		treeNodeMap[id] = treeNode;
 
-		TreeService.parents(treeNodeMap, treeNode, rootNode)
-	})
+	for (var i = 0; i < data.length; i++)
+	{
+		let server = data[i];
+
+		if (await AuthService.hasOpeAuth(server.application, server.server_name, uid)) {
+
+			let id;
+			if (server.enable_set == 'Y') {
+				id = '1' + server.application + '.' + '2' + server.set_name + '.' + '3' + server.set_area + '.' + '4' + server.set_group + '.' + '5' + server.server_name;
+			} else {
+				id = '1' + server.application + '.' + '5' + server.server_name;
+			}
+			let treeNode = {};
+			treeNode.id = id;
+			treeNode.name = server.server_name;
+			treeNode.pid = id.substring(0, id.lastIndexOf('.'));
+			treeNode.is_parent = false;
+			treeNode.open = false;
+			treeNode.children = [];
+			treeNodeList.push(treeNode);
+			treeNodeMap[id] = treeNode;
+
+			TreeService.parents(treeNodeMap, treeNode, rootNode)
+		}	
+
+	};
 
 	return rootNode
 }
@@ -274,7 +282,7 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 		}
 	}
 
-	const data = TreeService.ArrayToTree(serverList)
+	const data = await TreeService.ArrayToTree(serverList, uid)
 	return await TreeService.parentsBusiness(data)
 }
 module.exports = TreeService;
