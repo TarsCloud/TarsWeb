@@ -151,7 +151,7 @@ ConfigController.deleteConfigFile = async (ctx) => {
 	try {
 		let serverParams = await ConfigService.getServerInfoByConfigId(id);
 
-		if (!await AuthService.hasDevAuth(serverParams.application, serverParams.server_name, ctx.uid)) {
+		if (!await AuthService.hasDevAuth(serverParams.application, serverParams.serverName, ctx.uid)) {
 
 		// if (!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))) {
 			ctx.makeNotAuthResObj();
@@ -167,9 +167,10 @@ ConfigController.deleteConfigFile = async (ctx) => {
 ConfigController.updateConfigFile = async (ctx) => {
 	let params = ctx.paramsObj;
 	try {
+
 		let serverParams = await ConfigService.getServerInfoByConfigId(params.id);
 
-		if (!await AuthService.hasDevAuth(serverParams.application, serverParams.server_name, ctx.uid)) {
+		if (!await AuthService.hasDevAuth(serverParams.application, serverParams.serverName, ctx.uid)) {
 
 		// if (!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))) {
 			ctx.makeNotAuthResObj();
@@ -189,7 +190,7 @@ ConfigController.configFile = async (ctx) => {
 	try {
 		let serverParams = await ConfigService.getServerInfoByConfigId(id);
 
-		if (!await AuthService.hasOpeAuth(serverParams.application, serverParams.server_name, ctx.uid)) {
+		if (!await AuthService.hasOpeAuth(serverParams.application, serverParams.serverName, ctx.uid)) {
 
 		// if (!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))) {
 			ctx.makeNotAuthResObj();
@@ -269,8 +270,6 @@ ConfigController.configFileHistoryList = async (ctx) => {
 	try {
 		let serverParams = await ConfigService.getServerInfoByConfigId(config_id);
 
-		// console.log(serverParams);
-
 		if (!await AuthService.hasOpeAuth(serverParams.application, serverParams.server_name, ctx.uid)) {
 
 		// if (!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))) {
@@ -299,7 +298,7 @@ ConfigController.addConfigRef = async (ctx) => {
 	try {
 		let serverParams = await ConfigService.getServerInfoByConfigId(config_id);
 
-		if (!await AuthService.hasDevAuth(serverParams.application, serverParams.server_name, ctx.uid)) {
+		if (!await AuthService.hasDevAuth(serverParams.application, serverParams.serverName, ctx.uid)) {
 
 		// if (!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))) {
 			ctx.makeNotAuthResObj();
@@ -318,7 +317,7 @@ ConfigController.deleteConfigRef = async (ctx) => {
 	try {
 		let serverParams = await ConfigService.getServerInfoByConfigId(id, 'refId');
 
-		if (!await AuthService.hasDevAuth(serverParams.application, serverParams.server_name, ctx.uid)) {
+		if (!await AuthService.hasDevAuth(serverParams.application, serverParams.serverName, ctx.uid)) {
 		// if (!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))) {
 			ctx.makeNotAuthResObj();
 		} else {
