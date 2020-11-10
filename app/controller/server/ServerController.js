@@ -23,6 +23,7 @@ const ServerDao = require('../../dao/ServerDao');
 const _ = require('lodash');
 const util = require('../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
+const { async } = require('q');
 const webConf = require('../../../config/webConf').webConf;
 
 const serverConfStruct = {
@@ -56,8 +57,20 @@ const serverConfStruct = {
 	monitor_script_path: '',
 	patch_time: {formatter: util.formatTimeStamp},
 	patch_version: "",
+  patch_user: '',
 	process_id: '',
-	posttime: {formatter: util.formatTimeStamp}
+    posttime: { formatter: util.formatTimeStamp },
+    enable_group: {
+        formatter: (value) => {
+            return value == 'Y' ? true : false;
+        }
+    },
+    ip_group_name: {
+        formatter: (value) => {
+            return value == null ? "" : value;
+        }
+    },
+    flow_state: 'active',
 };
 
 const ServerController = {};
@@ -282,6 +295,8 @@ ServerController.updateServerConf = async (ctx) => {
 			Object.assign(server, updateServer);
 			server.bak_flag = server.isBak ? 1 : 0;
 			server.enable_set = server.enable_set ? 'Y' : 'N';
+            server.ip_group_name = server.enable_group ? server.ip_group_name : "";
+            server.enable_group = server.enable_group ? 'Y' : 'N';
 			if (server.enable_set == 'Y' && parseInt(server.set_group) != server.set_group) {
 				ctx.makeResObj(500, '#serverList.dlg.errMsg.setGroup#');
 				return;
@@ -300,13 +315,44 @@ ServerController.updateServerConf = async (ctx) => {
 
 };
 
-ServerController.getServerSearch = async (ctx) => {
-	let { searchkey } = ctx.paramsObj
-	try {
-		let currPage = parseInt(ctx.paramsObj.curr_page) || 0
-		let pageSize = parseInt(ctx.paramsObj.page_size) || 0
-		let ret = await ServerDao.getServerConfBySearchKey(searchkey, currPage, pageSize)
-		let rows = util.viewFilter(ret.rows, serverConfStruct) || []
+ServerController.batchUpdateServerConf = async(ctx) => {
+    let updateServer = ctx.paramsObj;
+    let ids = updateServer.id;
+    let server = await ServerService.getServerConfByIds(ids);
+    if (!(updateServer.id == null || ids.length != server.length)) {
+        for (let i = 0; i < server.length; i++) {
+            if (!await AuthService.hasDevAuth(server[i].application, server[i].server_name, ctx.uid)) {
+                ctx.makeNotAuthResObj();
+                continue;
+            }
+            Object.assign(server[i], updateServer);
+            server[i].bak_flag = server[i].isBak ? 1 : 0;
+            server[i].enable_set = server[i].enable_set ? 'Y' : 'N';
+            server[i].ip_group_name = server[i].enable_group ? server[i].ip_group_name : "";
+            server[i].enable_group = server[i].enable_group ? 'Y' : 'N';
+            if (server[i].enable_set == 'Y' && parseInt(server[i].set_group) != server[i].set_group) {
+                ctx.makeResObj(500, '#batchUpdateServerConf assign fail#');
+                return;
+            }
+            server[i].posttime = new Date();
+        } //只要有一个有权限有问题就全部不做更新
+        for (let i = 0; i < server.length; i++) {
+            await ServerService.updateServerConf(server[i]);
+        }
+        ctx.makeResObj(200, '', util.viewFilter(await ServerService.getServerConfByIds(ids), serverConfStruct));
+    } else {
+        logger.error('[BatchUpdateServerConf]', '未查询到或修改个数与库存在个数不一致', ctx);
+        ctx.makeErrResObj();
+    }
+};
+
+ServerController.getServerSearch = async(ctx) => {
+    let { searchkey } = ctx.paramsObj
+    try {
+        let currPage = parseInt(ctx.paramsObj.curr_page) || 0
+        let pageSize = parseInt(ctx.paramsObj.page_size) || 0
+        let ret = await ServerDao.getServerConfBySearchKey(searchkey, currPage, pageSize)
+        let rows = util.viewFilter(ret.rows, serverConfStruct) || []
 
 		rows.forEach(server => {
 			let id;
@@ -467,19 +513,42 @@ ServerController.getFrameworkList = async (ctx) => {
 	}
 }
 
-ServerController.checkFrameworkServer = async (ctx) => {
-	try {
-		if (!await AuthService.hasAdminAuth(ctx.uid)) {
-			ctx.makeNotAuthResObj();
-		} else {
-			let ret = await AdminService.checkServer(ctx.paramsObj.server);
-			ctx.makeResObj(200, '', ret);
-		}
-	} catch (e) {
-		logger.error('[checkFrameworkServer]', e, ctx);
-		ctx.makeErrResObj();
-	}
-	
+ServerController.checkFrameworkServer = async(ctx) => {
+    try {
+        if (!await AuthService.hasAdminAuth(ctx.uid)) {
+            ctx.makeNotAuthResObj();
+        } else {
+            let ret = await AdminService.checkServer(ctx.paramsObj.server);
+            ctx.makeResObj(200, '', ret);
+        }
+    } catch (e) {
+        logger.error('[checkFrameworkServer]', e, ctx);
+        ctx.makeErrResObj();
+    }
+
+}
+
+ServerController.updateFlowStatus = async(ctx) => {
+    try {
+        let params = ctx.paramsObj;
+        let server = await ServerService.getServerConfById(params.server_id);
+        if (!_.isEmpty(server)) {
+            if (!await AuthService.hasDevAuth(server.application, server.server_name, ctx.uid)) {
+                ctx.makeNotAuthResObj();
+                return;
+            }
+
+            let ret = await AdminService.updateFlowStatus(server.application, server.server_name, params.status, params.node_list);
+            ctx.makeResObj(200, '', ret);
+
+        } else {
+            logger.error('[updateServerConf]', '未查询到id=' + params.server_id + '相应的服务', ctx);
+            ctx.makeErrResObj();
+        }
+    } catch (e) {
+        logger.error('[updateServerConf]', e, ctx);
+        ctx.makeErrResObj();
+    }
 }
 
 module.exports = ServerController;

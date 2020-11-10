@@ -152,6 +152,7 @@ ConfigService.updateConfigFile = async (params) => {
 	Object.assign(configFile, {
 		config: params.config,
 		reason: params.reason,
+		lastuser:params.lastuser,
 		posttime: formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss')
 	});
 	await ConfigDao.updateConfigFile(configFile).catch(e => {

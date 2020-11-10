@@ -126,7 +126,7 @@ ExpandService.expand = async (params) => {
 					server = util.leftAssign(ServerService.serverConfFields(), server);
 					let rst = await ServerDao.insertServerConf(server, transaction);
 
-					addServers.push(serverConf);
+					addServers.push(rst.dataValues);
 
 					addServersMap[`${server.application}-${server.server_name}-${server.node_name}`] = true;
 					addNodeNameMap[server.node_name] = true;

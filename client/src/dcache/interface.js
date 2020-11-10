@@ -450,3 +450,81 @@ export function expandServer({ application = "", server_name = "", set = "", nod
         }
     })
 }
+export function getRouterTree() {
+    return Axios({ method: 'get', url: '/routerTree' })
+}
+export function routerModuleCreate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerModule/create', data })
+}
+export function routerModuleDelete({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerModule/delete', data })
+}
+export function routerModuleUpdate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerModule/update', data })
+}
+export function routerModuleFindOne({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerModule/find', params: data })
+}
+export function routerModuleList({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerModule/list', params: data })
+}
+export function routerGroupCreate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerGroup/create', data })
+}
+export function routerGroupDelete({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerGroup/delete', data })
+}
+export function routerGroupUpdate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerGroup/update', data })
+}
+export function routerGroupFindOne({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerGroup/find', params: data })
+}
+export function routerGroupList({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerGroup/list', params: data })
+}
+export function routerRecordCreate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerRecord/create', data })
+}
+export function routerRecordDelete({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerRecord/delete', data })
+}
+export function routerRecordUpdate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerRecord/update', data })
+}
+export function routerRecordFindOne({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerRecord/find', params: data })
+}
+export function routerRecordList({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerRecord/list', params: data })
+}
+export function routerServerCreate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerServer/create', data })
+}
+export function routerServerDelete({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerServer/delete', data })
+}
+export function routerServerUpdate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerServer/update', data })
+}
+export function routerServerFindOne({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerServer/find', params: data })
+}
+export function routerServerList({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerServer/list', params: data })
+}
+export function routerTransferCreate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerTransfer/create', data })
+}
+export function routerTransferDelete({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerTransfer/delete', data })
+}
+export function routerTransferUpdate({ data = {} }) {
+    return Axios({ method: 'post', url: '/routerTransfer/udpate', data })
+}
+export function routerTransferFindOne({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerTransfer/find', params: data })
+}
+export function routerTransferList({ data = {} }) {
+    return Axios({ method: 'get', url: '/routerTransfer/list', params: data })
+}

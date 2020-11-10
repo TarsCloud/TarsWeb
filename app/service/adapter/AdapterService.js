@@ -128,5 +128,8 @@ AdapterService.getAvaliablePort = async (nodeNames) => {
 	return portRst;
 };
 
+AdapterService.getAdapterProxy = async (params) => {
+	return await AdapterDao.getAdapterProxy(params);
+};
 
 module.exports = AdapterService;

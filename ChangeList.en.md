@@ -1,3 +1,11 @@
+## 20201111(2.4.14)
+- The interface supports IDC grouping configuration. In the service editing, you can set whether the service enables IDC
+- It can be configured in the operation and maintenance interface of IDC
+- Batch modification service
+- Configuration change display comparison
+- dcache router info configuration
+- The directory tree displays only services with permissions
+
 ## 20201012(2.4.13)
 - fix inactive server not start when patch server
 - download url use html a tag

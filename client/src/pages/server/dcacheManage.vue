@@ -57,6 +57,7 @@
           <let-table-operation class="danger" @click="stopServer(scope.row.id)">{{$t('operate.stop')}}</let-table-operation>
           <let-table-operation @click="manageServant(scope.row)">{{$t('operate.servant')}}</let-table-operation>
           <let-table-operation @click="showMoreCmd(scope.row)">{{$t('operate.more')}}</let-table-operation>
+          <let-table-operation @click="showStatus(scope.row.id)">{{$t('operate.status')}}</let-table-operation>
         </template>
       </let-table-column>
       <template slot="operations">
@@ -430,7 +431,7 @@ export default {
     return {
       // 当前页面信息
       isCheckedAll: false,
-      serverType: this.servertype || 'taf',
+      serverType: this.servertype || 'tars_cpp',
       serverData: {
         level: 5,
         application: '',
@@ -978,6 +979,9 @@ export default {
       }).catch((err) => {
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       });
+    },
+    showStatus(id) {
+      this.sendCommand(id, "status", true);
     },
     sendCommand(id, command, hold) {
       const loading = this.$Loading.show();

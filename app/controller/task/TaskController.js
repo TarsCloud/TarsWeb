@@ -74,7 +74,7 @@ TaskController.getTasks = async (ctx) => {
 					});
 				}
 
-				ret[ret.length - 1].create_time = moment(task.update_time).format("YYYY-MM-DD HH:mm:ss");
+                ret[ret.length - 1].create_time = moment(task.create_time).format("YYYY-MM-DD HH:mm:ss");
 			}
 			ctx.makeResObj(200, '', {count: tasks.count, rows: ret});
 		}

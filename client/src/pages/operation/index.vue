@@ -10,6 +10,7 @@
       <let-tab-pane :tab="$t('deployService.title.application')" tabkey="/operation/application"></let-tab-pane>
       <let-tab-pane :tab="$t('deployService.title.business')" tabkey="/operation/business"></let-tab-pane>
       <let-tab-pane :tab="$t('deployService.title.businessRelation')" tabkey="/operation/businessRelation"></let-tab-pane>
+      <let-tab-pane :tab="$t('deployService.title.idcManage')" tabkey="/operation/idc"></let-tab-pane>
     </let-tabs>
 
     <router-view class="page_operation_children"></router-view>

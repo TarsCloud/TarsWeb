@@ -43,15 +43,14 @@ Dao.getAll = async () => {
 
 
 Dao.getList = async (name) => {
-	return await dbTable.findAll({
-		where: {
-			f_name: {
-				//$like: '%' + name + '%'
+	const where = {}
+	if(name) {
+		where.f_name = {
 				//syntax breaking changes after V5, should be:
-				[Sequelize.Op.like]: '%' + name + '%'
-			},
+			[Sequelize.Op.like]: `%${name}%`,
 		}
-	});
+		}
+	return await dbTable.findAll({ where, order: [['f_name' , 'ASC']]});
 };
 
 module.exports = Dao;

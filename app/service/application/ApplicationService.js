@@ -36,5 +36,8 @@ Service.getList = async (name) => {
 	return await Dao.getList(name);
 };
 
+Service.getAll = async () => {
+	return await Dao.getAll();
+};
 
 module.exports = Service;

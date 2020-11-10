@@ -61,18 +61,22 @@ import ModuleCache from '@/pages/cacheConfig/moduleCache'
 import OperationManage from '@/pages/dcache/operationManage/index.vue'
 import OperationManageTypeList from '@/pages/dcache/operationManage/typeList.vue'
 import MainBackup from '@/pages/dcache/operationManage/mainBackup.vue'
+import OperationManageRouter from '@/pages/dcache/routerManage/index'
+import OperationManageRouterModule from '@/pages/dcache/routerManage/module'
+import OperationManageRouterRecord from '@/pages/dcache/routerManage/record'
+import OperationManageRouterGroup from '@/pages/dcache/routerManage/group'
+import OperationManageRouterServer from '@/pages/dcache/routerManage/server'
+import OperationManageRouterTransfer from '@/pages/dcache/routerManage/transfer'
 
 
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
+    routes: [{
       path: '/server',
       name: 'Server',
       component: Server,
-      children: [
-        {
+            children: [{
           path: ':treeid/manage',
           component: dcacheServerManage,
         },
@@ -124,8 +128,7 @@ export default new Router({
       name: 'Operation',
       component: Operation,
       redirect: '/operation/apply',
-      children: [
-        {
+            children: [{
           path: 'apply',
           name: 'apply',
           component: Apply,
@@ -214,6 +217,32 @@ export default new Router({
           component: MainBackup,
         },
         {
+                    path: 'router',
+                    component: OperationManageRouter,
+                    children: [
+                        {
+                            path: ':treeid/module',
+                            component: OperationManageRouterModule,
+                        },
+                        {
+                            path: ':treeid/record',
+                            component: OperationManageRouterRecord,
+                        },
+                        {
+                            path: ':treeid/group',
+                            component: OperationManageRouterGroup,
+                        },
+                        {
+                            path: ':treeid/server',
+                            component: OperationManageRouterServer,
+                        },
+                        {
+                            path: ':treeid/transfer',
+                            component: OperationManageRouterTransfer,
+                        },
+                    ]
+                },
+                {
           path: ':type',
           component: OperationManageTypeList,
         },
