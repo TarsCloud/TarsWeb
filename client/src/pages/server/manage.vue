@@ -644,7 +644,7 @@ export default {
         id : ids,
         server_name: 'batchedit',
         node_name: 'batchedit',
-        server_type: 'taf_cpp',
+        server_type: 'tars_cpp',
         enable_set: false,
         set_name: '',
         set_area: '',
@@ -1057,7 +1057,7 @@ export default {
         const checkedList = this.serverList.filter(item => item.isChecked === true);
         const model = this.moreCmdModal.model;
           // 下线服务
-          if (model.selected === 'undeploy_taf') {
+          if (model.selected === 'undeploy_tars') {
             this.undeployServers(checkedList);
           } // 设置日志等级
           else if (model.selected === 'setloglevel') {
@@ -1072,20 +1072,20 @@ export default {
         const model = this.moreCmdModal.model;
         const server = this.moreCmdModal.currentServer;
         // 下线服务
-        if (model.selected === 'undeploy_taf') {
+        if (model.selected === 'undeploy_tars') {
           this.undeployServer(server);
           // 设置日志等级
         } else if (model.selected === 'setloglevel') {
-          this.sendCommand(server.id, `taf.setloglevel ${model.setloglevel}`);
+          this.sendCommand(server.id, `tars.setloglevel ${model.setloglevel}`);
           // push 日志文件
         } else if (model.selected === 'loadconfig' && this.$refs.moreCmdForm.validate()) {
-          this.sendCommand(server.id, `taf.loadconfig ${model.loadconfig}`);
+          this.sendCommand(server.id, `tars.loadconfig ${model.loadconfig}`);
           // 发送自定义命令
         } else if (model.selected === 'command' && this.$refs.moreCmdForm.validate()) {
           this.sendCommand(server.id, model.command);
           // 查看服务链接
         } else if (model.selected === 'connection') {
-          this.sendCommand(server.id, `taf.connection`, true);
+          this.sendCommand(server.id, `tars.connection`, true);
         }
       }
       this.closeMoreCmdModal();

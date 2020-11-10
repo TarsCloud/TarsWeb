@@ -431,7 +431,7 @@ export default {
     return {
       // 当前页面信息
       isCheckedAll: false,
-      serverType: this.servertype || 'taf',
+      serverType: this.servertype || 'tars_cpp',
       serverData: {
         level: 5,
         application: '',
