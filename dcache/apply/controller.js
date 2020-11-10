@@ -49,6 +49,23 @@ ApplyController.dtree = async (ctx) => {
     tarsDcache = tarsDcache.concat(rootNode);
 
     ctx.makeResObj(200, '', tarsDcache);
+    } catch (e) {
+        logger.error('[dtree]', e, ctx);
+        ctx.makeResObj(500, "#common.dcacheSystem#", {});
+    }
+}
+ApplyController.routerTree = async(ctx) => {
+    try {
+        let rootNode = await ApplyService.buildCacheList();
+        if (!rootNode || rootNode.length == 0) {
+            ctx.makeResObj(500, "#common.dcacheSystem#", {});
+            return;
+        }
+        rootNode = rootNode.filter(item => {
+            item.children = []
+            return item
+        })
+        ctx.makeResObj(200, '', rootNode);
   } catch (e) {
     logger.error('[dtree]', e, ctx);
     ctx.makeResObj(500, "#common.dcacheSystem#", {});

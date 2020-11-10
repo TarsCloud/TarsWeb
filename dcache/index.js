@@ -26,6 +26,7 @@ const ProxyController = require('./proxy/controller.js');
 const RouterController = require('./router/controller.js');
 const ModuleOperation = require('./moduleOperation/controller');
 const DbAccessController = require('./dbaccess/controller.js');
+const routerManageController = require('./routerManage/controller')
 
 const {
   getConfig,
@@ -205,6 +206,32 @@ const dcacheApiConf = [
     ['post', '/cache/deleteServerConfigItemBatch', deleteServerConfigItemBatch, { serverConfigList: 'notEmpty' }],
 
 
+    ['get', '/routerTree', ApplyController.routerTree],
+    ['post', '/routerModule/create', routerManageController.moduleCreate],
+    ['post', '/routerModule/delete', routerManageController.moduleDestroy, { id: 'notEmpty' }],
+    ['post', '/routerModule/update', routerManageController.moduleUpdate, { id: 'notEmpty' }],
+    ['get', '/routerModule/find', routerManageController.moduleFindOne, { id: 'notEmpty' }],
+    ['get', '/routerModule/list', routerManageController.moduleFindAndCountAll],
+    ['post', '/routerGroup/create', routerManageController.groupCreate],
+    ['post', '/routerGroup/delete', routerManageController.groupDestroy, { id: 'notEmpty' }],
+    ['post', '/routerGroup/update', routerManageController.groupUpdate, { id: 'notEmpty' }],
+    ['get', '/routerGroup/find', routerManageController.groupFindOne, { id: 'notEmpty' }],
+    ['get', '/routerGroup/list', routerManageController.groupFindAndCountAll],
+    ['post', '/routerRecord/create', routerManageController.recordCreate],
+    ['post', '/routerRecord/delete', routerManageController.recordDestroy, { id: 'notEmpty' }],
+    ['post', '/routerRecord/update', routerManageController.recordUpdate, { id: 'notEmpty' }],
+    ['get', '/routerRecord/find', routerManageController.recordFindOne, { id: 'notEmpty' }],
+    ['get', '/routerRecord/list', routerManageController.recordFindAndCountAll],
+    ['post', '/routerServer/create', routerManageController.serverCreate],
+    ['post', '/routerServer/delete', routerManageController.serverDestroy, { id: 'notEmpty' }],
+    ['post', '/routerServer/update', routerManageController.serverUpdate, { id: 'notEmpty' }],
+    ['get', '/routerServer/find', routerManageController.serverFindOne, { id: 'notEmpty' }],
+    ['get', '/routerServer/list', routerManageController.serverFindAndCountAll],
+    ['post', '/routerTransfer/create', routerManageController.transferCreate],
+    ['post', '/routerTransfer/delete', routerManageController.transferDestroy, { id: 'notEmpty' }],
+    ['post', '/routerTransfer/update', routerManageController.transferUpdate, { id: 'notEmpty' }],
+    ['get', '/routerTransfer/find', routerManageController.transferFindOne, { id: 'notEmpty' }],
+    ['get', '/routerTransfer/list', routerManageController.transferFindAndCountAll],
 ];
 
 dcacheApiConf.forEach(conf => apiConf.push(conf));
