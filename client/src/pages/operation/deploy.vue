@@ -1,5 +1,4 @@
 
-<!--和taf版本不同, 一般情况下, 不要合并代码!! -->
 
 <template>
   <div class="page_operation_deploy">
@@ -12,7 +11,7 @@
       @submit.native.prevent="save"
     >
       <let-form-item :label="$t('deployService.form.app')" required>
-        <let-select id="inputApplication" v-model="model.application" @change="changeApplication" size="small" filterable :notFoundText="$t('deployService.form.appAdd')">
+        <let-select id="inputApplication" v-model="model.application" size="small" filterable :notFoundText="$t('deployService.form.appAdd')">
           <let-option v-for="d in applicationList" :key="d" :value="d">
             {{d}}
           </let-option>
@@ -52,20 +51,15 @@
         </let-select>
       </let-form-item>
 
+    <!-- 
       <let-form-item :label="$t('serverList.table.th.ip')" required>
         <let-select v-model="model.node_name" size="small" required filterable>
           <let-option v-for="d in nodeList" :key="d" :value="d">
             {{d}}
           </let-option>
         </let-select>
-        <!-- <let-input
-          size="small"
-          v-model="model.node_name"
-          :placeholder="$t('serverList.table.th.ip')"
-          required
-          :required-tip="$t('deployService.form.nodeTips')"
-        ></let-input> -->
-      </let-form-item>
+       
+      </let-form-item> -->
 
       <let-form-item label="SET">
         <SetInputer
@@ -110,7 +104,19 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('deployService.table.th.endpoint')"  width="200px">
+        <let-table-column :title="$t('deployService.form.node_name')"  width="180px">
+          <template slot="head" slot-scope="props">
+            <span class="required">{{props.column.title}}</span>
+          </template>
+          <template slot-scope="props">
+            <let-select @change="nodeNameChange(props.row)" v-model="props.row.node_name" size="small" required filterable>
+            <let-option v-for="d in nodeList" :key="d" :value="d">
+              {{d}}
+            </let-option>
+          </let-select>
+          </template>
+        </let-table-column>
+        <let-table-column :title="$t('deployService.table.th.endpoint')"  width="140px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -124,7 +130,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('deployService.table.th.port')" width="100px">
+        <let-table-column :title="$t('deployService.table.th.port')" width="90px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -159,7 +165,7 @@
             <let-radio v-model="props.row.protocol" label="not_tars">{{$t('serverList.servant.notTARS')}}</let-radio>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('deployService.table.th.threads')" width="80px">
+        <let-table-column :title="$t('deployService.table.th.threads')" width="60px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -174,7 +180,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" width="100px">
+        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" width="90px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -189,7 +195,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxQueue')" width="100px">
+        <let-table-column :title="$t('serverList.table.servant.maxQueue')" width="90px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -204,7 +210,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.timeout')" width="100px">
+        <let-table-column :title="$t('serverList.table.servant.timeout')" width="90px">
           <template slot-scope="props">
             <let-input
               size="small"
@@ -214,7 +220,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('operate.operates')" width="100px">
+        <let-table-column :title="$t('operate.operates')" width="60px">
           <template slot-scope="props">
             <let-table-operation @click="addAdapter(props.row)">{{$t('operate.add')}}</let-table-operation>
             <let-table-operation
@@ -254,7 +260,7 @@
 
     <div style="width:400px;margin:0 auto;" v-show="deployModal.show">
       <let-form ref="deployForm" itemWidth="400px">
-          <let-form-item :label="$t('nodes.node_name')" required>
+          <let-form-item :label="$t('nodes.node_name')" >
             <let-select v-model="deployModal.node_name">
               <let-option v-for="d in nodeList" :key="d" :value="d">
                 {{d}}
@@ -357,11 +363,11 @@ export default {
   data() {
     return {
       types,
-      tars_templates,
+      // tars_templates,
       applicationList: [],
       nodeList:[],
       all_templates: [],
-      notars_templates: [],
+      // notars_templates: [],
       templates: [],
       model: getInitialModel(),
       enableAuth: false,
@@ -410,16 +416,16 @@ export default {
     this.$ajax.getJSON('/server/api/template_name_list').then((data) => {
       this.templates = data;
       this.all_templates = data;
-      this.notars_templates = [];
+      // this.notars_templates = [];
       
-      this.all_templates.forEach((e) => {
-        var index;
-        for(index = 0; index < this.tars_templates.length; index++) {
-          if(this.tars_templates[index] == e)
-            return;
-        }
-        this.notars_templates.push(e);
-      });
+      // this.all_templates.forEach((e) => {
+      //   var index;
+      //   for(index = 0; index < this.tars_templates.length; index++) {
+      //     if(this.tars_templates[index] == e)
+      //       return;
+      //   }
+      //   this.notars_templates.push(e);
+      // });
 
       this.model.template_name = data[0];
 
@@ -434,7 +440,7 @@ export default {
       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
     });
 
-    this.$watch('model.node_name', (val, oldVal) => {
+    this.$watch('props.row.node_name', (val, oldVal) => {
       if (val === oldVal) {
         return;
       }
@@ -448,17 +454,30 @@ export default {
   },
 
   methods: {
-    changeApplication(app) {
-      if(app == 'tars') {
-        this.templates = this.tars_templates;
-      } else {
-        this.templates = this.notars_templates;
-      }
+    nodeNameChange(obj) {
+      obj.bind_ip = obj.node_name
     },
+    // changeApplication(app) {
+    //   if(app == 'tars') {
+    //     this.templates = this.tars_templates;
+    //   } else {
+    //     this.templates = this.notars_templates;
+    //   }
+    // },
     addAdapter(template) {
       this.model.adapters.push(Object.assign({}, template));
     },
     deploy() {
+      let objNode = [];
+      for (var i = 0; i < this.model.adapters.length; i++) {
+        var oo = this.model.adapters[i].obj_name + "-" + this.model.adapters[i].node_name;
+        if (objNode.indexOf(oo) != -1) {
+          this.$tip.error(`${this.$t('deployService.infos.objNodedupErr')}`);
+          return;
+        } else {
+          objNode.push(oo);
+        }
+      }
 
       this.$confirm(this.$t('deployService.form.deployServiceTip'), this.$t('common.alert')).then(() => {
         const loading = this.$Loading.show();
@@ -509,7 +528,7 @@ export default {
         this.$ajax.getJSON('/server/api/server_exist', {
           application: model.application,
           server_name: model.server_name,
-          node_name: model.node_name,
+          //node_name: model.node_name,
         }).then((isExists) => {
           loading.hide();
           if (isExists) {
