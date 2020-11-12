@@ -5,6 +5,7 @@
 - Configuration change display comparison
 - dcache router info configuration
 - The directory tree displays only services with permissions
+- Multiple servers can be deployed in batches during deployment
 
 ## 20201012(2.4.13)
 - fix inactive server not start when patch server
