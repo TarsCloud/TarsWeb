@@ -236,7 +236,7 @@ ServerService.addServerConf = async(params) => {
             }
             node_name_list.push(nn);
             serverConf.node_name = nn;
-        await ServerDao.insertServerConf(serverConf, transaction);
+            await ServerDao.insertServerConf(serverConf, transaction);
         }
 
         if (operator || developer) {

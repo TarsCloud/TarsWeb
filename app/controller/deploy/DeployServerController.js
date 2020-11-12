@@ -59,6 +59,15 @@ const serverConfStruct = {
 DeployServerController.deployServer = async (ctx) => {
 	var params = ctx.paramsObj;
 
+	if (params.node_name) {
+		for (var i = 0; i < adapters.length; i++) {
+			if (!adapters[i].node_name)
+			{
+				adapters[i].node_name = params.node_name;
+			}
+		}		
+	}
+	
     let adapters = params.adapters;
     let node_name_list = [];
     for (var i = 0; i < adapters.length; i++) {
