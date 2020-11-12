@@ -285,10 +285,13 @@ export default {
     },
     updateLabelList(data) {
       this.labelModel.labelList = [];
+      if (data) {
 
-      let labels = JSON.parse(data);
-      for(var key in labels){
-        this.labelModel.labelList.push({name: key, value: labels[key]});
+        let labels = data;
+
+        for(var key in labels){
+          this.labelModel.labelList.push({name: key, value: labels[key]});
+        }
       }
     },
     editNode(node_name) {

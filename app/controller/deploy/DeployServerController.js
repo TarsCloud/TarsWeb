@@ -59,7 +59,25 @@ const serverConfStruct = {
 DeployServerController.deployServer = async (ctx) => {
 	var params = ctx.paramsObj;
 
-	if(webConf.strict && await ServerService.isDeployWithRegistry([params.node_name])) {
+	if (params.node_name) {
+		for (var i = 0; i < adapters.length; i++) {
+			if (!adapters[i].node_name)
+			{
+				adapters[i].node_name = params.node_name;
+			}
+		}		
+	}
+	
+    let adapters = params.adapters;
+    let node_name_list = [];
+    for (var i = 0; i < adapters.length; i++) {
+        var nn = adapters[i].node_name;
+        if (node_name_list.indexOf(nn)) {
+            continue;
+        }
+        node_name_list.push(nn);
+    }
+    if (webConf.strict && await ServerService.isDeployWithRegistry(node_name_list)) {
 		//tarsregistry节点上, 无法部署其他任何服务
 		ctx.makeResObj(500, '#common.deploy#');
 		return

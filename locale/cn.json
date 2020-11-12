@@ -36,6 +36,7 @@
     "accessList": "DbAccess服务列表",
     "cacheList": "Cache服务列表",
     "uploadPackage": "上传发布包",
+    "uploadPackageTips": "发布包与服务名称不匹配",
     "moduleName": "模块名",
     "uploadTime": "上传时间",
     "default": "默认",
@@ -320,6 +321,7 @@
       "shrinkage": "缩容管理",
       "migration": "迁移管理",
       "mainBackup": "切换管理",
+      "router": "路由管理",
       "appName": "应用名",
       "moduleName": "模块名",
       "srcGroupName": "迁移源组",
@@ -360,8 +362,12 @@
       "switchMethod": "切换方式"
     },
     "batch": {
-      "restart": "批量重启",
-      "stop": "批量停止"
+	    "edit": "批量编辑",
+	    "restart": "批量重启",
+	    "stop": "批量停止",
+	    "elegantTask": "无损任务",
+	    "commonTask": "普通任务",
+	    "elegantEachNum": "每批任务节点数"
     },
     "execute": "执行中...",
     "executeSuccess": "执行成功"
@@ -451,6 +457,8 @@
     "undeploy": "下线",
     "restart": "重启",
     "stop": "停止",
+    "pause": "暂停",
+    "resume": "恢复",
     "add": "添加",
     "manage": "管理",
     "config": "配置",
@@ -467,6 +475,7 @@
     "default": "默认",
     "save": "保存",
         "submit": "提交",
+    "status": "状态",
     "title": {
       "update": "编辑",
       "add": "添加",
@@ -523,12 +532,15 @@
         "enableSet": "启用Set",
         "configStatus": "设置状态",
         "currStatus": "当前状态",
+	"flowStatus": "流量状态",
         "processID": "进程ID",
         "version": "版本",
+	"operator": "发布人",
         "time": "发布时间",
         "threadID": "线程ID",
         "serviceID": "服务ID",
-        "result": "结果"
+                "result": "结果",
+	"lastUser": "最后修改人"
       },
       "servant": {
         "title": "Servants管理",
@@ -545,6 +557,8 @@
     },
     "dlg": {
       "isBackup": "是否备机",
+      "useIdc": "启用IDC分组",
+      "groupName": "IDC组名",
       "placeholder": {
         "english": "全英文，全小写",
         "num": "数字或者*号",
@@ -600,7 +614,8 @@
       "cancel": "取消",
       "parial": "部分成功",
       "restartFailed": "重启失败",
-      "restartResult": "重启结果"
+            "restartResult": "重启结果",
+      "pauseFlow": "关闭流量中（预计需要75秒）"
     },
     "stopService": {
       "msg": {
@@ -651,6 +666,9 @@
       "releaseVersion": "发布版本",
       "upload": "上传发布包",
       "compileAndPublish": "编译并发布",
+      "elegantPublish": "无损发布",
+      "elegantEachNum": "每批发布节点数",
+      "commomPublish": "普通发布",
       "releasePkg": "发布包",
       "defaultValue": "请选择",
       "filetype": "只能上传协议文件",
@@ -777,7 +795,9 @@
       "gateway": "网关配置",
       "application": "应用管理",
       "business": "业务管理",
-      "businessRelation": "业务关系"
+      "businessRelation": "业务关系",
+      "idcManage": "IDC分组管理",
+      "exportServer": "服务导入导出"
     },
     "form": {
       "app": "应用",
@@ -828,6 +848,9 @@
         "ipFormat": "IP格式有误",
         "empty": "参数不能为空"
       }
+    },
+    "infos": {
+    	"objNodedupErr": "Obj名称+节点 不能重复！"
     }
   },
   "nodes": {
@@ -1072,7 +1095,8 @@
         "c3": "上传时间",
         "c4": "发布备注",
         "c5": "发布时间",
-        "c6": "操作"
+                "c6": "操作",
+	"c7": "上传人"
       }
     }
   },
@@ -1275,6 +1299,63 @@
       "title": "删除业务关系"
     }
   },
+    "idc": {
+        "grid": {
+            "groupName": "分组名",
+            "groupNameCN": "分组中文名",
+            "ipOrder": "允许方式",
+            "allowIpRule": "IP规则列表",
+            "dennyIpRule": "IP规则黑名单",
+            "lastuser": "最后操作人",
+            "modifyTime": "新增时间"
+        },
+        "btn": {
+            "add": "新增分组"
+        },
+        "update": {
+            "title": "编辑IDC分组信息",
+            "errTips": "编辑失败",
+            "placeholder": "请输入",
+            "allowType": "默认为denny_allow,一般不用修改",
+            "addIp": "请添加ip,最后一位可使用'*'",
+            "errorIp": "请输入正确的ip,格式(1~255).(0~255).(0~255).(0~255),仅最后一组可使用'*'",
+            "exists": "不可重复添加"
+        },
+        "delete": {
+            "confirmTips": "您确定要删除这个分组吗",
+            "title": "删除IDC分组"
+        },
+        "valid": {
+            "groupName": "分组名只能包含英文字母，数字，并以字母开头"
+        }
+    },
+    "export": {
+        "errorNode": "导入node节点未在系统中维护,请检查",
+        "needConf": "是否导出配置文件",
+        "needTgz": "是否导出发布包",
+        "import": "导入",
+        "export": "导出",
+        "tab": {
+            "edit": "编辑导出配置",
+            "th": {
+                "exportIp": "导出ip",
+                "exportOBJIp": "导出OBJ绑定ip"
+            }
+        },
+        "form": {
+            "ipPlaceholder": "请输入ip",
+            "ipError": "请输入正确的ip",
+            "valid": "导出必须先编辑导出至ip与obj绑定ip"
+        },
+        "import": {
+            "dlg": {
+                "upload": "请上传批量发布包"
+            },
+            "btn": {
+                "uploadAndPublish": "上传发布"
+            }
+        }
+    },
   "ssoHeader": {
     "tab": {
       "tab1": "权限列表",
@@ -1404,5 +1485,44 @@
   "localeSelect": {
     "cn": "中文",
     "en": "英文"
-  }
+    },
+    "filter": {
+        "title": {
+            "diffTxt": "对比内容"
+        }
+    },
+    "routerManage": {
+        "routerModule": "业务模块管理",
+        "routerRecord": "路由记录配置",
+        "routerGroup": "服务组配置",
+        "routerServer": "服务器配置",
+        "routerTransfer": "迁移记录",
+        "moduleName": "业务模块名",
+        "version": "版本号",
+        "switchStatus": "模块状态",
+        "remark": "备注",
+        "groupName": "服务器组名",
+        "accessStatus": "访问状态",
+        "serverName": "服务器名",
+        "serverStatus": "服务器名",
+        "pri": "优先级",
+        "sourceServerName": "备份源Server",
+        "fromPageNo": "开始页",
+        "toPageNo": "结束页",
+        "routerGroupName": "路由目的服务器组名",
+        "idcArea": "IDC地区",
+        "ip": "服务器IP",
+        "binlogPort": "BinLogObj服务端口",
+        "cachePort": "cache_port服务端口",
+        "wcachePort": "wcache_port服务端口",
+        "backupPort": "backup_port服务端口",
+        "routeclientPort": "routeclient_port服务端口",
+        "transGroupName": "迁移目的服务器组名",
+        "transferedPageNo": "已迁移成功页",
+        "state": "迁移状态",
+        "time": "时间",
+        "startTime": "开始时间",
+        "endTime": "结束时间"
+    }
+
 }

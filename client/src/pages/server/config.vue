@@ -13,6 +13,7 @@
         </let-table-column>
         <let-table-column :title="$t('serverList.table.th.service')" prop="server_name"></let-table-column>
         <let-table-column :title="$t('cfg.btn.fileName')" prop="filename"></let-table-column>
+        <let-table-column :title="$t('serverList.table.th.lastUser')" prop="lastuser"></let-table-column>
         <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="posttime"></let-table-column>
         <let-table-column :title="$t('operate.operates')" width="260px">
           <template slot-scope="scope">
@@ -78,7 +79,7 @@
       v-model="configModal.show"
       :title="configModal.isNew ? `${$t('operate.title.add')} ${$t('common.config')}` : `${$t('operate.title.update')} ${$t('common.config')}`"
       width="700px"
-      @on-confirm="updateConfigFile"
+      @on-confirm="configDiff"
       @close="closeConfigModal"
       @on-cancel="closeConfigModal">
       <let-form
@@ -104,11 +105,27 @@
             size="large"
             type="textarea"
             :rows="16"
-            v-model="configModal.model.config"
+            v-model="configContent"
             required
           ></let-input>
         </let-form-item>
       </let-form>
+    </let-modal>
+    <!-- 配置对比弹窗 -->
+    <let-modal
+      v-model="configDiffModal.show"
+      :title="$t('filter.title.diffTxt')"
+      width="1200px"
+      @on-confirm="updateConfigDiff"
+      @close="closeConfigDiffModal"
+      @on-cancel="closeConfigDiffModal">
+      <div v-if="configDiffModal.model" style="padding-top:30px;">
+        <div class="codediff_head">
+          <div class="codediff_th">旧内容:</div>
+          <div class="codediff_th">新内容:</div>
+        </div>
+        <diff :old-string="configDiffModal.model.oldData" :new-string="configDiffModal.model.newData" :context="10" output-format="side-by-side"></diff>
+      </div>
     </let-modal>
 
     <!-- 查看弹窗 -->
@@ -211,14 +228,18 @@
 
 <script>
 import wrapper from '@/components/section-wrappper';
+import diff from '@/components/diff/index';
 
 export default {
   name: 'ServerConfig',
   components: {
     wrapper,
+    diff,
   },
   data() {
     return {
+      oldStr: 'old code',
+      newStr: 'new code',
       // 当前页面信息
       serverData: {
         level: 5,
@@ -241,7 +262,14 @@ export default {
       nodeCheckList: [],
 
       // 添加、修改配置弹窗
+      configContent: '',
       configModal: {
+        show: false,
+        isNew: true,
+        model: null,
+      },
+      configDiffModal: {
+        type: '',
         show: false,
         isNew: true,
         model: null,
@@ -334,6 +362,7 @@ export default {
       this.configModal.model = Object.assign({
         reason: '',
       }, config);
+      this.configContent = config.config
       this.configModal.target = array;
       this.configModal.isNew = false;
       this.configModal.show = true;
@@ -361,6 +390,7 @@ export default {
             }
             this.$tip.success(this.$t('common.success'));
             this.closeConfigModal();
+            this.closeConfigDiffModal();
           }).catch((err) => {
             loading.hide();
             this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
@@ -385,6 +415,7 @@ export default {
             }
             this.$tip.success(this.$t('common.success'));
             this.closeConfigModal();
+            this.closeConfigDiffModal();
           }).catch((err) => {
             loading.hide();
             this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
@@ -632,7 +663,39 @@ export default {
       this.nodeRefFileListModal.model = null;
       this.refFileModal.id = id;
       this.getNodeRefFileList(id);
+    },
+    configDiff() {
+      if (this.$refs.configForm.validate()) {
+        this.configDiffModal.type = 'config'
+        this.configDiffModal.show = true
+        this.configDiffModal.isNew = false
+        this.configDiffModal.model = {
+          oldData: this.configModal.model.config,
+          newData: this.configContent,
     }
+      }
+    },
+    updateConfigDiff() {
+      let { type } = this.configDiffModal
+      if(type === 'config'){
+        this.configModal.model.config = this.configContent
+        this.updateConfigFile()
+      }
+    },
+    closeConfigDiffModal() {
+      this.configDiffModal.show = false
+    },
+    nodeConfigDiff() {
+      if (this.$refs.nodeConfigForm.validate()) {
+        this.configDiffModal.type = 'nodeConfig'
+        this.configDiffModal.show = true
+        this.configDiffModal.isNew = false
+        this.configDiffModal.model = {
+          oldData: this.nodeConfigModal.model.config,
+          newData: this.nodeConfigContent,
+        }
+      }
+    },
   },
   created() {
     this.serverData = this.$parent.getServerData();
@@ -698,5 +761,9 @@ export default {
   .let-checkbox {
     vertical-align: initial;
   }
+  .btn_group{position:absolute;right:0;top:0;z-index:2;}
+  .btn_group .let-button + .let-button{margin-left:10px;}
+  .codediff_head{display:flex;flex:1;margin-bottom:5px;}
+  .codediff_th{display:block;flex:1;}
 }
 </style>

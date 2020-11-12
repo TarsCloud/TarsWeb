@@ -2,11 +2,13 @@
   <div class="page_server">
     <div class="left-view">
       <div class="tree_search">
-        <input v-model="treeSearchKey" class="tree_search_key" type="text" @blur="treeSearch" @keydown.enter="treeSearch" placeholder="请输入内容…" />
+        <input v-model="treeSearchKey" class="tree_search_key" type="text"  @keydown.enter="treeSearch(0)" placeholder="请输入内容…" />
       </div>
 
       <div class="tree_wrap">
-        <a href="javascript:;" class="tree_icon iconfont el-icon-third-shuaxin" @click="treeSearch(1)"></a>
+        <a href="javascript:;" class="tree_icon iconfont el-icon-third-shuaxin"
+           :class="{ active: isIconPlay }"
+           @click="treeSearch(1)"></a>
         <let-tree class="left-tree"
           v-if="treeData && treeData.length"
           :data="treeData"
@@ -71,26 +73,6 @@
           <router-view :is="getName(item.path)" :treeid="item.id" ref="childView" class="page_server_child"></router-view>
         </div>
       </div>
-
-      <!-- <let-tabs @click="clickTab" :activekey="$route.path">
-        <let-tab-pane :tabkey="base + '/manage'" :tab="$t('header.tab.tab1')"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/publish'" :tab="$t('index.rightView.tab.patch')"
-          v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/config'"
-          :tab="serverData.level === 5 ? $t('index.rightView.tab.serviceConfig') :
-                serverData.level === 4 ? $t('index.rightView.tab.setConfig') :
-                serverData.level === 1 ? $t('index.rightView.tab.appConfig') : ''"
-          v-if="serverData.level === 5 || serverData.level === 4 || serverData.level === 1"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/server-monitor'" :tab="$t('index.rightView.tab.statMonitor')"
-          v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/property-monitor'" :tab="$t('index.rightView.tab.propertyMonitor')"
-          v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/interface-debuger'" :tab="$t('index.rightView.tab.infDebuger')"
-          v-if="serverData.level === 5"></let-tab-pane>
-        <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')" v-if="serverData.level === 5 && enableAuth"></let-tab-pane>
-      </let-tabs> -->
-      
-      <!-- <router-view ref="childView" class="page_server_child" :key="$route.params.treeid"></router-view> -->
     </div>
     
   </div>
@@ -124,6 +106,7 @@ export default {
       treeData: null,
       treeSearchKey: '',
       treeid: '',
+      isIconPlay: false,
       enableAuth: false,
       // deployLog: false,
 
@@ -204,7 +187,17 @@ export default {
       }
       return result
     },
+    iconLoading() {
+      const that = this
+      if(!that.isIconPlay){
+        that.isIconPlay = true
+        setTimeout(function(){
+          that.isIconPlay = false
+        }, 1000)
+      }
+    },
     treeSearch(type) {
+      this.iconLoading()
       this.getTreeData(this.treeSearchKey, type)
     },
     selectTree(nodeKey) {
@@ -250,7 +243,7 @@ export default {
           this.handleData(this.treeData, true);
         }).catch((err) => {
           loading.hide();
-          this.treeErrMsg = err.err_msg || err.message || '加载失败';
+          this.treeErrMsg = err.err_msg || err.message || 'load failed';
           this.treeData = false;
         });
       });
@@ -465,6 +458,12 @@ export default {
 <style>
 @import '../../assets/css/variable.css';
 
+.el-icon-third-shuaxin.active{animation:icon_loading 1s;}
+@-webkit-keyframes icon_loading{
+  0%{transform: rotateZ(0deg);}
+  100%{transform: rotateZ(360deg);}
+}
+
 .page_server {
   padding-bottom: var(--gap-small);
   padding-top: var(--gap-big);
@@ -624,10 +623,10 @@ export default {
     }
   }
 
-  /*服务状态*/
-  .status-active, .status-off, .status-activating {
-    display: flex;
-    align-items: center;
+/*服务状态*/
+.status-active, .status-off, .status-activating, .status-flowactive {
+  display: flex;
+  align-items: center;
 
     &:before {
       content: "";
@@ -655,13 +654,19 @@ export default {
     }
   }
 
-  .status-activating {
-    color: var(--off-color);
-    &:after {
-      content: "Activating";
-    }
-  }
-  /*服务状态 end*/
+.status-activating {
+  color: var(--off-color);
+&:after {
+   content: "Activating";
+ }
+}
+
+.status-flowactive {
+&:after {
+   content: "Active";
+ }
+}
+/*服务状态 end*/
 
   /*右侧窗口 end*/
   .btabs_wrap{display:block;height:32px;margin-bottom:10px;position:relative;}

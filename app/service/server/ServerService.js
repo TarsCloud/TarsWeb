@@ -75,6 +75,9 @@ ServerService.getServerConfById = async(id) => {
     return await ServerDao.getServerConfById(id);
 };
 
+ServerService.getServerConfByIds = async(ids) => {
+    return await ServerDao.getServerConfByIds(ids);
+};
 ServerService.getApplicationList= async() => {
     return await ApplicationDao.getAll();
     // return await ServerDao.getApplication();
@@ -86,11 +89,18 @@ ServerService.getNodeList= async() => {
 
 //通过应用，服务，节点获取获取服务信息
 ServerService.getServerConf = async(application, serverName, nodeName) => {
+    if (nodeName && nodeName != "") {
     return await ServerDao.getServerConf({
         application: application,
         serverName: serverName,
         nodeName: nodeName
     });
+    } else {
+        return await ServerDao.getServerConf({
+            application: application,
+            serverName: serverName
+        });
+    }
 };
 
 //通过ID获取服务信息
@@ -108,6 +118,9 @@ ServerService.getServerConfByTemplate = async(templateName) => {
 //通过treeNodeId查询服务列表
 ServerService.getServerConfList4Tree = async(params) => {
     return await ServerDao.getServerConf(params);
+};
+ServerService.getServerConfList4TreeAndCount = async(params) => {
+    return await ServerDao.getServerConfAndCount(params);
 };
 
 ServerService.getInactiveServerConfList = async(application, serverName, nodeName, curPage, pageSize) => {
@@ -183,6 +196,9 @@ ServerService.undeployTarsLog = async(uid) => {
 ServerService.updateServerConf = async(params) => {
     return await ServerDao.updateServerConf(params);
 };
+ServerService.batchUpdateServerConf = async(params) => {
+    return await ServerDao.batchUpdateServerConf(params);
+};
 
 ServerService.getNodeNameList = async(params) => {
     return await ServerDao.getNodeNameList(params);
@@ -210,21 +226,32 @@ ServerService.addServerConf = async(params) => {
         }
         serverConf.posttime = new Date();
 
-        await ServerDao.insertServerConf(serverConf, transaction);
+        let adapters = params.adapters;
+        let node_name_list = [];
+        for (var i = 0; i < adapters.length; i++) {
+            var nn = adapters[i].node_name;
+            if (node_name_list.indexOf(nn) != -1) {
+      //          console.log("===find node name:", nn);
+                continue;
+            }
+            node_name_list.push(nn);
+            serverConf.node_name = nn;
+            await ServerDao.insertServerConf(serverConf, transaction);
+        }
 
         if (operator || developer) {
             await AuthService.addAuth(serverConf.application, serverConf.server_name, operator, developer);
         }
 
         let adapterConf = AdapterService.adpaterConfFields();
-        let adapters = params.adapters;
+
         for (var i = 0; i < adapters.length; i++) {
             var servant = adapters[i];
             let newAdapterConf = Object.assign({}, adapterConf);
             newAdapterConf = util.leftAssign(newAdapterConf, servant);
             newAdapterConf.application = serverConf.application;
             newAdapterConf.server_name = serverConf.server_name;
-            newAdapterConf.node_name = serverConf.node_name;
+            //newAdapterConf.node_name = serverConf.node_name;
             newAdapterConf.endpoint = servant.port_type + ' -h ' + servant.bind_ip + ' -t 60000 -p ' + servant.port + ' -e ' + (servant.auth ? servant.auth : 0);
             newAdapterConf.servant = serverConf.application + '.' + serverConf.server_name + '.' + servant.obj_name;
             newAdapterConf.adapter_name = newAdapterConf.servant + 'Adapter';
@@ -246,4 +273,7 @@ ServerService.addServerConf = async(params) => {
     }
 };
 
+ServerService.getServerConfListByBatch = async (params) => {
+    return await ServerDao.getServerConfListByBatch(params);
+};
 module.exports = ServerService;

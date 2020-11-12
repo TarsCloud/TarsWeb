@@ -38,6 +38,8 @@ import OperationGateway from '@/pages/operation/gateway/index';
 import OperationApplication from '@/pages/operation/application';
 import OperationBusiness from '@/pages/operation/business';
 import OperationBusinessRelation from '@/pages/operation/businessRelation';
+import OperationIDCManage from '@/pages/operation/idc';
+
 
 Vue.use(Router);
 
@@ -119,6 +121,10 @@ export default new Router({
         {
           path: 'businessRelation',
           component: OperationBusinessRelation,
+        },
+        {
+          path: 'idc',
+          component: OperationIDCManage,
         }
       ],
     },

@@ -181,7 +181,12 @@ service.transferDCacheGroup = async function ({ appName, moduleName, srcGroupNam
  * @returns {Promise.<void>}
  */
 service.configTransfer = async function ({
-  appName, moduleName, type = 1, srcGroupName = [], dstGroupName = [], transferData = true,
+    appName,
+    moduleName,
+    type = 1,
+    srcGroupName = [],
+    dstGroupName = [],
+    transferData = true,
 }) {
   const option = new DCacheOptStruct.ConfigTransferReq();
   option.readFromObject({
@@ -207,7 +212,12 @@ service.configTransfer = async function ({
  * number: 一次获取数据的个数(获取全部数据 number设置为-1)
  */
 service.getRouterChange = async function ({
-  appName = '', moduleName = '', srcGroupName = '', dstGroupName = '', status = '', type = '',
+    appName = '',
+    moduleName = '',
+    srcGroupName = '',
+    dstGroupName = '',
+    status = '',
+    type = '',
 }) {
   const option = new DCacheOptStruct.RouterChangeReq();
   const cond = {};
@@ -245,7 +255,11 @@ service.reduceDCache = async function ({ appName = '', moduleName = '', srcGroup
   const { __return, reduceRsp, reduceRsp: { errMsg } } = await DCacheOptPrx.reduceDCache(option);
   assert(__return === 0, errMsg);
   const configTransferRsp = await service.configTransfer({
-    appName, moduleName, type: 2, srcGroupName, dstGroupName: [],
+        appName,
+        moduleName,
+        type: 2,
+        srcGroupName,
+        dstGroupName: [],
   });
   return {
     reduceRsp,
@@ -263,7 +277,11 @@ service.reduceDCache = async function ({ appName = '', moduleName = '', srcGroup
  *
  */
 service.stopTransfer = async function ({
-  appName = '', moduleName = '', type = '1', srcGroupName = '', dstGroupName = '',
+    appName = '',
+    moduleName = '',
+    type = '1',
+    srcGroupName = '',
+    dstGroupName = '',
 }) {
   const option = new DCacheOptStruct.StopTransferReq();
   option.readFromObject({
@@ -313,7 +331,11 @@ service.restartTransfer = async function ({ appName = '', moduleName = '', type 
  *
  */
 service.deleteTransfer = async function ({
-  appName = '', moduleName = '', type = '1', srcGroupName = '', dstGroupName = '',
+    appName = '',
+    moduleName = '',
+    type = '1',
+    srcGroupName = '',
+    dstGroupName = '',
 }) {
   const option = new DCacheOptStruct.DeleteTransferReq();
   option.readFromObject({
@@ -339,11 +361,19 @@ service.deleteTransfer = async function ({
  * @returns {Promise<void>}
  */
 service.switchServer = async function ({
-  appName, moduleName, groupName, forceSwitch = false, diffBinlogTime = 5,
+    appName,
+    moduleName,
+    groupName,
+    forceSwitch = false,
+    diffBinlogTime = 5,
 }) {
   const option = new DCacheOptStruct.SwitchReq();
   option.readFromObject({
-    appName, moduleName, groupName, forceSwitch, diffBinlogTime,
+        appName,
+        moduleName,
+        groupName,
+        forceSwitch,
+        diffBinlogTime,
   });
   const { __return, rsp, rsp: { errMsg } } = await DCacheOptPrx.switchServer(option);
   assert(__return === 0, errMsg);
@@ -366,10 +396,14 @@ service.switchMainBackup = async function ({ moduleName, groupName }) {
       server_type: 0,
     },
   });
+    if (main && backup) {
   return Promise.all([
     main.update({ server_type: 0 }),
     backup.update({ server_type: 1 }),
   ]);
+    } else {
+        return {};
+    }
 };
 
 /*
@@ -409,7 +443,11 @@ service.recoverMirrorStatus = async function ({ appName, moduleName, groupName, 
 };
 */
 service.getSwitchInfo = async function ({
-  appName = '', moduleName = '', groupName = '', msterServer = '', slaveServer = '',
+    appName = '',
+    moduleName = '',
+    groupName = '',
+    msterServer = '',
+    slaveServer = '',
 }) {
   const option = new DCacheOptStruct.SwitchInfoReq();
   const cond = {};

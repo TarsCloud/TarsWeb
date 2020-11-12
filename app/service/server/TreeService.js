@@ -17,6 +17,7 @@
 const ServerDao = require('../../dao/ServerDao');
 const BusinessDao = require('../../dao/BusinessDao');
 const BusinessRelationDao = require('../../dao/BusinessRelationDao');
+const AuthService = require('../auth/AuthService');
 
 const cacheData = {
 	timer: '',
@@ -43,30 +44,37 @@ TreeService.hasDCacheServerName = (serverName) => {
  * @param data
  */
 
-TreeService.ArrayToTree = (data) => {
+TreeService.ArrayToTree = async (data, uid) => {
 	let treeNodeList = []
 	let treeNodeMap = {}
 	let rootNode = []
-	data.forEach(function (server) {
-		server = server.dataValues;
-		let id;
-		if (server.enable_set == 'Y') {
-			id = '1' + server.application + '.' + '2' + server.set_name + '.' + '3' + server.set_area + '.' + '4' + server.set_group + '.' + '5' + server.server_name;
-		} else {
-			id = '1' + server.application + '.' + '5' + server.server_name;
-		}
-		let treeNode = {};
-		treeNode.id = id;
-		treeNode.name = server.server_name;
-		treeNode.pid = id.substring(0, id.lastIndexOf('.'));
-		treeNode.is_parent = false;
-		treeNode.open = false;
-		treeNode.children = [];
-		treeNodeList.push(treeNode);
-		treeNodeMap[id] = treeNode;
 
-		TreeService.parents(treeNodeMap, treeNode, rootNode)
-	})
+	for (var i = 0; i < data.length; i++)
+	{
+		let server = data[i];
+
+		if (await AuthService.hasOpeAuth(server.application, server.server_name, uid)) {
+
+			let id;
+			if (server.enable_set == 'Y') {
+				id = '1' + server.application + '.' + '2' + server.set_name + '.' + '3' + server.set_area + '.' + '4' + server.set_group + '.' + '5' + server.server_name;
+			} else {
+				id = '1' + server.application + '.' + '5' + server.server_name;
+			}
+			let treeNode = {};
+			treeNode.id = id;
+			treeNode.name = server.server_name;
+			treeNode.pid = id.substring(0, id.lastIndexOf('.'));
+			treeNode.is_parent = false;
+			treeNode.open = false;
+			treeNode.children = [];
+			treeNodeList.push(treeNode);
+			treeNodeMap[id] = treeNode;
+
+			TreeService.parents(treeNodeMap, treeNode, rootNode)
+		}	
+
+	};
 
 	return rootNode
 }
@@ -179,12 +187,19 @@ TreeService.setCacheData = async (isRefresh) => {
 	for (let i = 1; i < arr.length; i++) {
 		let repeat = false
 		for (let j = 0; j < newArr.length; j++) {
+			if (arr[i].enable_set === 'Y') {
 			if (arr[i].application === newArr[j].application
 				&& arr[i].server_name === newArr[j].server_name
 				&& arr[i].enable_set === newArr[j].enable_set
 				&& arr[i].set_group === newArr[j].set_group) {
 				repeat = true
 				break
+				}
+			}else{
+				if (arr[i].application === newArr[j].application && arr[i].server_name === newArr[j].server_name){
+					repeat = true
+					break
+				}
 			}
 		}
 		if (!repeat) {
@@ -267,7 +282,7 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 		}
 	}
 
-	const data = TreeService.ArrayToTree(serverList)
+	const data = await TreeService.ArrayToTree(serverList, uid)
 	return await TreeService.parentsBusiness(data)
 }
 module.exports = TreeService;

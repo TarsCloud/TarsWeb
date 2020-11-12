@@ -62,6 +62,9 @@ util.viewFilter = (data, filterSturct) => {
 
 //数据库时间戳转换
 util.formatTimeStamp = (timeStamp) => {
+	if(timeStamp==null){
+		return "";
+	}
 	return moment(timeStamp).format('YYYY-MM-DD HH:mm:ss');
 };
 

@@ -1,10 +1,11 @@
 <template>
   <div class="operation-manage">
-    <let-tabs @click="onTabClick" :activekey="$route.path">
+    <let-tabs @click="onTabClick" :activekey="getTabKey()">
       <let-tab-pane :tab="$t('dcache.operationManage.expand')" tabkey="/operationManage/expand"></let-tab-pane>
       <let-tab-pane :tab="$t('dcache.operationManage.shrinkage')" tabkey="/operationManage/shrinkage"></let-tab-pane>
       <let-tab-pane :tab="$t('dcache.operationManage.migration')" tabkey="/operationManage/migration"></let-tab-pane>
       <let-tab-pane :tab="$t('dcache.operationManage.mainBackup')" tabkey="/operationManage/mainBackup"></let-tab-pane>
+      <let-tab-pane :tab="$t('dcache.operationManage.router')" tabkey="/operationManage/router"></let-tab-pane>
     </let-tabs>
     <router-view class="operation-manage-children"></router-view>
   </div>
@@ -13,7 +14,18 @@
 export default{
   methods: {
     onTabClick (tabkey) {
+      if(this.$route.path != tabkey){
       this.$router.replace(tabkey)
+      }
+    },
+    getTabKey() {
+      const { path } = this.$route
+      const pathIndex = path.indexOf('/', path.indexOf('/', path.indexOf('/') + 1) + 1)
+      let result = path
+      if(pathIndex > 0){
+        result = path.substr(0, pathIndex)
+      }
+      return result
     }
   }
 }
@@ -36,9 +48,8 @@ export default{
     display: flex;
     flex: 1;
     flex-flow: column;
-    margin-top: 20px;
     overflow: auto;
-    padding:0 40px 20px 0;
+    padding:0 20px 20px 0;
     position: relative;
   }
   &-children::-webkit-scrollbar{border-radius:10px;}

@@ -29,7 +29,10 @@ TreeController.listTree = async (ctx) => {
 		if(type && type === '1'){
 			await TreeService.setCacheData(1)
 		}
-		ctx.makeResObj(200, '', await TreeService.getTreeNodes(searchKey, ctx.uid, '1'));
+
+		let data = await TreeService.getTreeNodes(searchKey, ctx.uid, '1');
+
+		ctx.makeResObj(200, '', data);
 	} catch (e) {
 		logger.error('[listTree]', e, ctx);
 		ctx.makeErrResObj();
