@@ -785,7 +785,6 @@ export default {
     // 下线服务
     undeployServer(server) {
 
-      // console.log(server)
       if(server.present_state === "active") {
         this.$tip.error(`${this.$t('serverList.tips.undeploy')}`); 
       } else {
@@ -799,6 +798,7 @@ export default {
     },
     // 批量下线服务
     undeployServers(servers) {
+
       const activeSer = servers.filter(item => item.present_state==="active");
       if(activeSer.length>0) {
         this.$tip.error(`${this.$t('serverList.tips.undeploy')}`);
@@ -1000,6 +1000,7 @@ export default {
     // 批量打开更多命令
     batchShowMoreCmd(){
       const checkedServer = this.serverList.filter(item => item.isChecked === true);
+
       this.moreCmdModal.model = {
         selected: 'setloglevel',
         setloglevel: 'NONE',
@@ -1010,10 +1011,13 @@ export default {
       this.moreCmdModal.unwatch = this.$watch('moreCmdModal.model.selected', () => {
         if (this.$refs.moreCmdForm) this.$refs.moreCmdForm.resetValid();
       });
+      this.isBatchShowCmd = true;
       this.moreCmdModal.show = true;
-      this.isBatchShowCmd =true
+
       if (checkedServer.length === 1) {
-        this.isBatchShowCmd =false
+        this.isBatchShowCmd = false
+        this.moreCmdModal.currentServer = checkedServer[0];
+
         this.$ajax.getJSON('/server/api/config_file_list', {
           level: 5,
           application: checkedServer[0].application,
@@ -1053,7 +1057,8 @@ export default {
       });
     },
     invokeMoreCmd() {
-      if (this.isBatchShowCmd) {
+
+      if (!this.moreCmdModal.currentServer) {
         const checkedList = this.serverList.filter(item => item.isChecked === true);
         const model = this.moreCmdModal.model;
           // 下线服务

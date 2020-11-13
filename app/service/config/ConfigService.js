@@ -103,7 +103,7 @@ ConfigService.addConfigFile = async (params) => {
 
 	// insert default node config
 	if (paramsObj.level == 2) {
-		ConfigService.addDefaultNodeConfigFile(configFile);
+		ConfigService.addDefaultNodeConfigFile(configFile, params.force);
 	}
 
 	return Promise.resolve(configFile);
@@ -410,7 +410,7 @@ function formatToStr(date, format) {
 	}
 }
 
-ConfigService.addDefaultNodeConfigFile = (params) => {
+ConfigService.addDefaultNodeConfigFile = (params, force) => {
 
 	// 传了节点时
 	const addConfigFileByNodeName = async () => {
@@ -465,10 +465,21 @@ ConfigService.addDefaultNodeConfigFile = (params) => {
 				config: '',
 				host: server.node_name,
 				posttime: formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss'),
-				lastuser: '',
+				lastuser: params.lastuser||'',
 				level: 3,
 			});
-			let configFile = await ConfigDao.insertConfigFile(newRow).catch(e => logger.error('[addConfigFileByFileName.insertConfigFile]:', e));
+
+			let configFile;
+			
+			if (force) {
+				await ConfigDao.replaceConfigFile(newRow).catch(e => logger.error('[addConfigFileByFileName.replaceConfigFile]:', e));
+
+				configFile = await ConfigDao.findServerConfigFile(newRow);
+
+			} else {
+				configFile = await ConfigDao.insertConfigFile(newRow).catch(e => logger.error('[addConfigFileByFileName.insertConfigFile]:', e));
+			}
+
 			configFile = configFile.dataValues;
 			const history = {
 				configid: configFile.id,
