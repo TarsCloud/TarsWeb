@@ -284,7 +284,7 @@
           </let-table>
         </let-form-group>
 
-        <let-form-group :title="$t('MKCache.unionKey')" inline label-position="top" v-if="isMkCache">
+        <let-form-group :title="$t('MKCache.unionKey')" inline label-position="top" v-if="multiKey">
           <let-table ref="unionKey" :data="mkCacheStructure.unionKey" :empty-msg="$t('common.nodata')">
             <let-table-column :title="$t('MKCache.fieldName')" prop="fieldName" width="150">
               <template slot-scope="scope">
@@ -769,12 +769,10 @@
           // 设置 cache 服务默认 DCache.Cache 模版
           this.moduleData = this.moduleData.map(item => ({ ...item, 'template_name': templates.includes('DCache.Cache') ? 'DCache.Cache' : 'tars.default' }));
 
-          // 持久化或者二期Cache 都需要填写数据结构
-          this.isMkCache = data.cache_version === 2 || data.cache_module_type === 2;
+          // 一期持久化或者二期Cache 都需要填写数据结构
+          this.isMkCache = data.cache_version === 2;// || data.cache_module_type === 2;
           //多key的情况
           this.multiKey = data.cache_version === 2 && data.mkcache_struct === 1;
-
-          console.log(this.isMkCache, data);
 
           this.cacheVersion = data.cache_version;
 
