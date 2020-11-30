@@ -363,16 +363,16 @@ export default {
 
     getSetLocalStorage(key) {
       let result = ''
-      if(window.localStorage){
-        result = JSON.parse(JSON.parse(localStorage.getItem(key)))
+      if(window.sessionStorage){
+        result = JSON.parse(JSON.parse(sessionStorage.getItem(key)))
       }
       return result
     },
 
     setSetLocalStorage(key, val) {
       let result = ''
-      if(window.localStorage){
-        result = localStorage.setItem(key, JSON.stringify(val))
+      if(window.sessionStorage){
+        result = sessionStorage.setItem(key, JSON.stringify(val))
       }
       return result
     },
