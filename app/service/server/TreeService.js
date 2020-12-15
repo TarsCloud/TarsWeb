@@ -198,7 +198,7 @@ TreeService.setCacheData = async (isRefresh) => {
 				break
 				}
 			}else{
-				if (arr[i].application === newArr[j].application && arr[i].server_name === newArr[j].server_name){
+				if (arr[i].application === newArr[j].application && arr[i].server_name === newArr[j].server_name && newArr[j].enable_set != 'Y'){
 					repeat = true
 					break
 				}
