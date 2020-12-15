@@ -223,15 +223,12 @@ ServerController.formatTreeNodeId = (treeNodeId) => {
 				break;
 			case 2:
 				serverConf.setName = v;
-				serverConf.enableSet = 'Y';
 				break;
 			case 3:
 				serverConf.setArea = v;
-				serverConf.enableSet = 'Y';
 				break;
 			case 4:
 				serverConf.setGroup = v;
-				serverConf.enableSet = 'Y';
 				break;
 			case 5:
 				serverConf.serverName = v;
@@ -240,6 +237,11 @@ ServerController.formatTreeNodeId = (treeNodeId) => {
 				break;
 		}
 	});
+	if(serverConf.setName && serverConf.setArea && typeof serverConf.setGroup != "undefined"){
+		serverConf.enableSet = 'Y';
+	} else {
+		serverConf.enableSet = 'N';
+	}
 	return serverConf;
 };
 

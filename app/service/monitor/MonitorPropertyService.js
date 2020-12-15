@@ -25,13 +25,12 @@ const MonitorPropertyService = {};
 
 MonitorPropertyService.getData = async (params) => {
 	let theData = new Map(), preData = new Map()
-	// if(params.userpc == "1"){
-		theData = await callRpc(params, true)
+	theData = await callRpc(params, true)
+	if(params.thedate == params.predate){
+		preData = theData
+	} else {
 		preData = await callRpc(params, false)
-	// } else {
-	// 	theData = await call(params, true)
-	// 	preData = await call(params, false)
-	// }
+	}
 	return merge(params, theData, preData);
 };
 
@@ -183,12 +182,16 @@ function mergeKey(params, theData, preData) {
 	for (let key of theData.keys()) {
 		set.add(key);
 	}
-	for (let key of preData.keys()) {
+	let preKeys = preData.keys()
+	for (let preKey of preKeys) {
+		let key = preKey.split(',');
 		key = key.split(',');
 		if (key.length > 1) {
 			key[0] = params.thedate;
 		}
-		set.add(key.join(','));
+		let theKey = key.join(',');
+		preData.set(theKey, preData.get(preKey))
+		set.add(theKey);
 	}
 	return set;
 }

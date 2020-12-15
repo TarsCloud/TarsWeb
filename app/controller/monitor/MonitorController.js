@@ -22,7 +22,8 @@ const MonitorPropertyService = require('../../service/monitor/MonitorPropertySer
 const MonitorController = {};
 
 MonitorController.tarsstat = async (ctx) => {
-	let {thedate, predate, startshowtime, endshowtime, master_name, slave_name, interface_name, master_ip, slave_ip, group_by,userpc} = ctx.paramsObj;
+	//group_by_first: support more fields as the first comparison dimension
+	let {thedate, predate, startshowtime, endshowtime, master_name, slave_name, interface_name, master_ip, slave_ip, group_by_first, group_by,userpc} = ctx.paramsObj;
 	try {
 		let list = await MonitorStatService.getData({
 			thedate,
@@ -34,6 +35,7 @@ MonitorController.tarsstat = async (ctx) => {
 			interface_name,
 			master_ip,
 			slave_ip,
+			group_by_first,
 			group_by,
 			userpc
 		});

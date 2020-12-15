@@ -140,6 +140,7 @@ const dataFormatter = (data) => {
           if (item[key] === "0.00%") {
             result[key] = "0";
           }
+          result[key] = item[key].replace("%", "");
         }
       });
       return result;

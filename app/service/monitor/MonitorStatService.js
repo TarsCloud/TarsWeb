@@ -24,13 +24,12 @@ const MonitorStatService = {};
 
 MonitorStatService.getData = async (params) => {
 	let theData = new Map(), preData = new Map()
-	// if(params.userpc == "1"){
-		theData = await callRpc(params, true);
+	theData = await callRpc(params, true);
+	if(params.thedate == params.predate){
+		preData = theData
+	} else {
 		preData = await callRpc(params, false);
-	// } else {
-	// 	theData = await call(params, true)
-	// 	preData = await call(params, false)
-	// }
+	}
 	return merge(params, theData, preData);
 };
 
@@ -115,7 +114,7 @@ async function callRpc(params, the) {
 		conditions.push({ field: "slave_ip", op: monitorQueryStruct.OP.LIKE, val:params.slave_ip })
 	}
 	req.conditions.readFromObject(conditions)
-	req.groupby.readFromObject(params.group_by ? ['f_date', params.group_by] : ['f_tflag'])
+	req.groupby.readFromObject(params.group_by ? [params.group_by_first || 'f_date', params.group_by] : ['f_tflag'])
 	let data = await statQueryPrx.query(req)
 	let rsp = data.rsp
 	if(data.__return !=0 ||  rsp.ret != 0) throw new Error(`query stat info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
@@ -171,7 +170,7 @@ function merge(params, theData, preData) {
 			total_count_wave: totalCountWave
 		};
 
-		let groupby = params.group_by ? ['f_date', params.group_by] : ['f_tflag'];
+		let groupby = params.group_by ? [params.group_by_first || 'f_date', params.group_by] : ['f_tflag'];
 		for (let i = 0; i < groupby.length; i++) {
 			let callGroup = groupby[i],
 				key = item.split(','),
@@ -212,12 +211,15 @@ function mergeKey(params, theData, preData) {
 	for (let key of theData.keys()) {
 		set.add(key);
 	}
-	for (let key of preData.keys()) {
-		key = key.split(',');
+	let preKeys = preData.keys()
+	for (let preKey of preKeys) {
+		let key = preKey.split(',');
 		if (key.length > 1) {
 			key[0] = params.thedate;
 		}
-		set.add(key.join(','));
+		let theKey = key.join(',');
+		preData.set(theKey, preData.get(preKey))
+		set.add(theKey);
 	}
 	return set;
 }
