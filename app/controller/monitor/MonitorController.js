@@ -67,7 +67,8 @@ MonitorController.tarsstat = async (ctx) => {
 };
 
 MonitorController.tarsproperty = async (ctx) => {
-	let {thedate, predate, startshowtime, endshowtime, master_name, master_ip, property_name, policy, group_by,userpc} = ctx.paramsObj;
+	//group_by_first: support more fields as the first comparison dimension
+	let {thedate, predate, startshowtime, endshowtime, master_name, master_ip, property_name, policy, group_by_first, group_by,userpc} = ctx.paramsObj;
 	try {
 		let list = await MonitorPropertyService.getData({
 			thedate,
@@ -78,6 +79,7 @@ MonitorController.tarsproperty = async (ctx) => {
 			master_ip,
 			property_name,
 			policy,
+			group_by_first,
 			group_by,
 			userpc
 		});
