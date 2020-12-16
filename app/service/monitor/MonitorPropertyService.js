@@ -109,7 +109,7 @@ async function callRpc(params, the) {
 	}
 
 	req.conditions.readFromObject(conditions)
-	req.groupby.readFromObject(params.group_by ? ['f_date', params.group_by] : ['f_tflag'])
+	req.groupby.readFromObject(params.group_by ? [params.group_by_first || 'f_date', params.group_by] : ['f_tflag'])
 	let data = await propertyQueryPrx.query(req)
 	let rsp = data.rsp
 	if(data.__return !=0 ||  rsp.ret != 0) 
@@ -144,7 +144,7 @@ function merge(params, theData, preData) {
 			pre_value: prevalueOutput[0]
 		};
 
-		let groupby = params.group_by ? ['f_date', params.group_by] : ['f_tflag'];
+		let groupby = params.group_by ? [params.group_by_first || 'f_date', params.group_by] : ['f_tflag'];
 		for (let i = 0; i < groupby.length; i++) {
 			let callGroup = groupby[i],
 				key = item.split(','),
@@ -186,7 +186,7 @@ function mergeKey(params, theData, preData) {
 	for (let preKey of preKeys) {
 		let key = preKey.split(',');
 		key = key.split(',');
-		if (key.length > 1) {
+		if (key.length > 1 && (!params.group_by_first || params.group_by_first == 'f_date')) {
 			key[0] = params.thedate;
 		}
 		let theKey = key.join(',');

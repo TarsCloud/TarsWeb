@@ -214,7 +214,7 @@ function mergeKey(params, theData, preData) {
 	let preKeys = preData.keys()
 	for (let preKey of preKeys) {
 		let key = preKey.split(',');
-		if (key.length > 1) {
+		if (key.length > 1 && (!params.group_by_first || params.group_by_first == 'f_date')) {
 			key[0] = params.thedate;
 		}
 		let theKey = key.join(',');
