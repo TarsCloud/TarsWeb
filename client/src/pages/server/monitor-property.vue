@@ -124,7 +124,13 @@ export default {
 
   data() {
     const treeId = this.treeid;
-
+    let _master_name_arr = treeId.split('.');
+    let _master_name = '';
+    if (_master_name_arr.length == 2){ //没有启用set的主调名
+      _master_name = _master_name_arr[0].substring(1) + '.' +  _master_name_arr[1].substring(1);
+    }else if(_master_name_arr.length == 5){ //启用set的主调名
+      _master_name = _master_name_arr[0].substring(1) + '.' +  _master_name_arr[4].substring(1) + '.' +  _master_name_arr[1].substring(1) +  _master_name_arr[2].substring(1) +  _master_name_arr[3].substring(1);
+    }
     return {
       query: {
         // userpc: 0,
@@ -132,7 +138,7 @@ export default {
         predate: formatDate(Date.now() - ONE_DAY, formatter),
         startshowtime: '0000',
         endshowtime: '2360',
-        master_name: treeId.split('.').map(d => d.replace(/^\d+/, '')).join('.'),
+        master_name: _master_name,
         master_ip: '',
         property_name: '',
         policy: '',
