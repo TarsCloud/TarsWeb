@@ -240,6 +240,11 @@ ServerController.formatTreeNodeId = (treeNodeId) => {
 	if(serverConf.setName || serverConf.setArea || typeof serverConf.setGroup != "undefined"){
 		serverConf.enableSet = 'Y';
 	}
+	// 无set信息，且有app和servername信息时，说明是查询无set服务节点。此时要将enableSet设置为N，否则会把带set节点也查出来
+	// 不能直接非Y就设置为N，否则根据application查询下面所有节点时，会查不到任何数据
+	if(serverConf.enableSet != 'Y' && serverConf.application && serverConf.serverName){
+		serverConf.enableSet = 'N'
+	}
 	return serverConf;
 };
 
