@@ -239,8 +239,6 @@ ServerController.formatTreeNodeId = (treeNodeId) => {
 	});
 	if(serverConf.setName && serverConf.setArea && typeof serverConf.setGroup != "undefined"){
 		serverConf.enableSet = 'Y';
-	} else {
-		serverConf.enableSet = 'N';
 	}
 	return serverConf;
 };
