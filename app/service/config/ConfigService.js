@@ -269,9 +269,9 @@ ConfigService.getNodeConfigFile = async (params) => {
 	const configFile = await ConfigDao.getConfigFile(params.config_id);
 	let nodeConfigFile = await ConfigDao.getNodeConfigFile({
 		server_name: `${params.application}.${params.server_name}`,
-		set_name: params.set_name || undefined,
-		set_area: params.set_area || undefined,
-		set_group: params.set_group || undefined
+		set_name: params.set_name || '',
+		set_area: params.set_area || '',
+		set_group: params.set_group || ''
 	});
 	let servers = await ServerDao.getServerConf({
     application:params.application,
@@ -281,14 +281,19 @@ ConfigService.getNodeConfigFile = async (params) => {
 		setArea: params.set_area,
 		setGroup: params.set_group
 	});
-	let list = [];
+	let list = [], nodeConfigFileList = [];
 	nodeConfigFile = nodeConfigFile.filter(config => config.filename == configFile.filename);
 	nodeConfigFile.forEach(config => {
 		list.push(`${config.server_name}.${config.set_name || ''}.${config.set_area || ''}.${config.set_group || ''}_${config.host}`);
 	});
-	servers = servers.filter(server => {
+	servers = servers.filter((server, index) => {
 		let key = `${params.application}.${params.server_name}.${params.set_name || ''}.${params.set_area || ''}.${params.set_group || ''}_${server.node_name}`;
-		return !list.includes(key);
+		let exist = list.includes(key);
+		//只返回选中服务节点的配置，例如选中无set的服务时，不要返回带set服务的节点配置
+		if(exist){
+			nodeConfigFileList.push(nodeConfigFile[index]);
+		}
+		return !exist;
 	});
 	for (let i = 0, len = servers.length; i < len; i++) {
 		let server = servers[i];
@@ -313,7 +318,7 @@ ConfigService.getNodeConfigFile = async (params) => {
 		};
 		await ConfigDao.insertConfigFileHistory(history).catch(e => logger.error('[insertConfigFileHistory]:', e));
 	}
-	return await nodeConfigFile;
+	return await nodeConfigFileList;
 };
 
 /**
