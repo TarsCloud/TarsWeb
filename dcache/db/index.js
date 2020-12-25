@@ -77,7 +77,7 @@ databases.forEach((database) => {
   dbModels.forEach(async (dbModel) => {
     const tableName = dbModel.replace(/\.js$/g, '');
     try {
-      tableObj[_.camelCase(tableName)] = sequelize.import(`${dbModelsPath}/${tableName}`);
+      tableObj[_.camelCase(tableName)] = require(`${dbModelsPath}/${tableName}`)(sequelize, Sequelize);
       // sync 无表创建表， alter 新增字段
       // tableObj[_.camelCase(tableName)].sync();
       await tableObj[_.camelCase(tableName)].sync({ alter: true });
