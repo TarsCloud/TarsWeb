@@ -97,6 +97,7 @@ ServerDao.getServerConf = async (params) => {
 	params.nodeName != undefined && (where.node_name = params.nodeName);
 	if (params.enableSet) {
 		if (params.enableSet == 'Y') {
+			where.enable_set = 'Y';
 			params.setName && (where.set_name = params.setName);
 			params.setArea && (where.set_area = params.setArea);
 			params.setGroup && (where.set_group = params.setGroup);
