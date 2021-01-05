@@ -1,3 +1,11 @@
+## 20210105(2.4.15)
+- fix display error in the left tree with set open
+- fix can not show timeout rate and fail rate in stat query
+- fix property query with set open
+- fix the node config is not consistent with the actual node
+- optimize the query logic of stat and property, when the day and pre day is the same
+- stat query support multi group query
+
 ## 20201111(2.4.14)
 - The interface supports IDC grouping configuration. In the service editing, you can set whether the service enables IDC
 - It can be configured in the operation and maintenance interface of IDC
