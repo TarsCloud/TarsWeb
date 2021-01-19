@@ -28,8 +28,8 @@ const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/
 
 function mapCacheType(key) {
   if (key === 1) return 'hash';
-  if (key === 2) return 'list';
-  if (key === 3) return 'set';
+  if (key === 2) return 'set';
+  if (key === 3) return 'list';
   return 'zset';
 }
 
