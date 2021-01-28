@@ -495,6 +495,7 @@
         // 更多命令
         logLevels: [
           'NONE',
+          'TARS',
           'DEBUG',
           'INFO',
           'WARN',
