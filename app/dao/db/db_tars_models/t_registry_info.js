@@ -27,12 +27,15 @@ module.exports = function(sequelize, DataTypes) {
 		locator_id: {
 			type: DataTypes.STRING(128),
 			allowNull: false,
-			defaultValue: ''
+			defaultValue: '',
+			unique: 'locator_id'
+
 		},
 		servant: {
 			type: DataTypes.STRING(128),
 			allowNull: false,
-			defaultValue: ''
+			defaultValue: '',
+			unique: 'locator_id'
 		},
 		endpoint: {
 			type: DataTypes.STRING(128),
