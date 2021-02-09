@@ -63,6 +63,11 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false,
             defaultValue: ""
         },
+        status: {
+            type: DataTypes.INTEGER(11),
+            allowNull: true,
+            defaultValue: 0
+        },
         remark: {
             type: DataTypes.STRING(255),
             allowNull: true,
