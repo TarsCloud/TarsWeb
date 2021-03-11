@@ -33,7 +33,7 @@ const initDB = async (treeid) => {
   let result = dbTpl[DBInfo.router_db_name] || ''
   if(!result){
     const config = {
-      host: DBInfo.server_ip,
+      host: DBInfo.router_db_ip,
       database: DBInfo.router_db_name,
       port: DBInfo.router_db_port,
       user: DBInfo.router_db_user,
