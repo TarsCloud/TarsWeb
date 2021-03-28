@@ -127,29 +127,31 @@ TarsInit.preparePatch = async() => {
 
     var dir = path.join(__dirname, "../../files");
 
-    let files = fs.readdirSync(dir);
+    if (fs.existsSync(dir)) {
+        let files = fs.readdirSync(dir);
 
-    if (files) {
+        if (files) {
 
-        let patchTmp = dir + '/patchTmp';
-        let patchPath = dir + '/patch';
+            let patchTmp = dir + '/patchTmp';
+            let patchPath = dir + '/patch';
     
-        fs.mkdirSync(patchTmp, {recursive: true});
-        fs.mkdirSync(patchPath, {recursive: true});
+            fs.mkdirSync(patchTmp, { recursive: true });
+            fs.mkdirSync(patchPath, { recursive: true });
 
-        logger.info("mkdir :", patchTmp, patchPath);
+            logger.info("mkdir :", patchTmp, patchPath);
 
-        files.map(async(file) => {
-            let filePath = path.join(dir, file);
+            files.map(async (file) => {
+                let filePath = path.join(dir, file);
 
-            if (fs.statSync(filePath).isFile()) {
-                await TarsInit.insert(patchTmp, patchPath, dir, file);
-            }
-        });
+                if (fs.statSync(filePath).isFile()) {
+                    await TarsInit.insert(patchTmp, patchPath, dir, file);
+                }
+            });
 
-        //删除临时文件
-        // logger.info('delete dir:', patchTmp);
-        // TarsInit.deleteDirectory(patchTmp);
+            //删除临时文件
+            // logger.info('delete dir:', patchTmp);
+            // TarsInit.deleteDirectory(patchTmp);
+        }
     }
 };
 

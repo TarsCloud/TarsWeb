@@ -19,7 +19,7 @@ if (process.env.NODE_ENV == "dev") {
     module.exports = {
         dbType: 1,
         dbConf: {
-            host: '172.16.0.14',       // 数据库地址
+            host: '127.0.0.1',       // 数据库地址
             port: '3306',            // 数据库端口
             user: 'tarsAdmin',            // 用户名
             password: 'Tars@2019',       // 密码
@@ -31,7 +31,7 @@ if (process.env.NODE_ENV == "dev") {
             }
         },
         webConf: {
-            host: '172.16.0.14',
+            host: '127.0.0.1',
             port: 5001,              //服务启动端口
             loggerPath: path.join(__dirname, '../log'),    //本地日志的目录
             logFileKeepDays: '1',         //日志保留时间

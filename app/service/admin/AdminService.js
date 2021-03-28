@@ -211,4 +211,13 @@ AdminService.getProfileTemplate = async(profileName) => {
     }
 };
 
+AdminService.getVersion = async () => {
+    let ret = await adminRegPrx.getVersion();
+    if (ret.__return === 0) {
+        return ret.version;
+    } else {
+        throw new Error(ret.__return);
+    }
+};
+
 module.exports = AdminService;
