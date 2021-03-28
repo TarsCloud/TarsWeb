@@ -437,6 +437,8 @@ export default {
       groupList:[],
 
       // 操作历史列表
+      reloadTask: null,
+      isreloadlist: false,
       serverNotifyList: [],
       getServerNotifyListTimer:0,
       pageNum: 1,
@@ -560,6 +562,32 @@ export default {
         // loading.hide();
         this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
+    },
+    reloadServerList() {
+      let that = this
+
+      let allPath = this.$parent.BTabs[0].path;
+      let path = allPath.substring(allPath.lastIndexOf('/') + 1);
+
+      if(path === 'manage' || !that.reloadTask ){
+        that.reloadTask = setTimeout(() => {
+          if(that.isreloadlist){
+
+            if(that.$parent.treeid == this.treeid) {
+
+              that.getServerList()
+              that.getServerNotifyList();
+            }
+          }
+          that.reloadServerList()
+        }, 3000)
+      } 
+    },
+    startServerList(){
+      this.isreloadlist = true
+    },
+    stopServerList(){
+      this.isreloadlist = false
     },
     statusStyle(message) {
       message = message || '';
@@ -1118,6 +1146,8 @@ export default {
   mounted() {
     this.getServerList();
     this.getServerNotifyList(1);
+    this.reloadServerList()
+    this.startServerList()
   },
   beforeRouteEnter (to, from, next) {
     next(next(vm => {
