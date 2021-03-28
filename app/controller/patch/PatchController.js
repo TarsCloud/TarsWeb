@@ -90,23 +90,28 @@ PatchController.uploadAndPublish = async (ctx) => {
             items.push({ server_id: serverIds[index].id, command: "patch_tars", parameters: { patch_id: patch.id } });
         }
 
-		await TaskService.addTask({serial, items, task_no, userName: 'auto-developer'});
+		if (items.length > 0) {
+			await TaskService.addTask({ serial, items, task_no, userName: 'auto-developer' });
 
-		while(true) {
-			await PatchController.sleep(2000);
-			ret = await TaskService.getTaskRsp(task_no);
-			if(ret.status != 1) {
-				break;
+			while (true) {
+				await PatchController.sleep(2000);
+				ret = await TaskService.getTaskRsp(task_no);
+				if (ret.status != 1) {
+					break;
+				}
 			}
-		}
 
-        let info = "-----------------------------------------------------------------\n";
-        info += "task no:  [" + ret.task_no + "]\n\n";
-        for (var index = 0; index < ret.items.length; ++index) {
-            let node = ret.items[index];
-            info += node.node_name + " " + node.status_info + " " + node.execute_info + "\n";
-        }
-        ctx.body += info;
+			let info = "-----------------------------------------------------------------\n";
+			info += "task no:  [" + ret.task_no + "]\n\n";
+			for (var index = 0; index < ret.items.length; ++index) {
+				let node = ret.items[index];
+				info += node.node_name + " " + node.status_info + " " + node.execute_info + "\n";
+			}
+			ctx.body += info;
+		} else {
+			ctx.body = "no active server, please start server first!\r\n";
+
+		}
 
 	} catch (e) {
 		ctx.body = "upload and patch err:" + e;

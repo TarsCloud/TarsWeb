@@ -50,7 +50,7 @@ module.exports = (loginConf) => {
 
         if (await validate(ctx, uid, ticket)) {
           ctx.uid = uid;
-          if (ticketFromQuery) {
+          if (ticketFromQuery && !isInPath(ctx, loginConf.apiPrefix || [])) {
             const urlObj = url.parse(ctx.request.url, true);
             delete (urlObj.query[loginConf.ticketParamName || 'ticket']);
             delete (urlObj.search);
