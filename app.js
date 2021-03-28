@@ -130,12 +130,7 @@ if (dcacheConf.enableDcache) {
 		await next();
 		ctx.cookies.set('dcache', 'true', {httpOnly: false});
 	});
-	//  tars-dcache 的包，依赖了很多tars的模块，引用路径是从根目录开始的，防止引用出错，先改后更
-	// let cwd = process.cwd();
-	// process.chdir(path.join(__dirname, './'));
 	require('./dcache');
-	// let tarsDcache = require('@tars/dcache');
-	// process.chdir(cwd);
 } else {
 	app.use(async (ctx, next) => {
 		await next();
