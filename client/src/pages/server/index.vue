@@ -26,15 +26,8 @@
       </div>
     </div>
 
-    <!-- <div class="right-view" v-if="!this.$route.params.treeid"> -->
     <div class="right-view" v-if="!treeid">
       <serverHistory></serverHistory>
-      <!-- <div class="empty" style="width: 300px">
-        <img class="package" src="@/assets/img/package.png">
-        <p class="title">{{$t('index.rightView.title')}}</p>
-        <p class="notice" v-html="$t('index.rightView.tips')"></p>
-	<p class="notice">https://github.com/TarsCloud/Tars</p>
-      </div> -->
     </div>
 
     <div class="right-view" v-else>
@@ -132,7 +125,6 @@ export default {
   watch: {
     'treeid'() {
       this.serverData = this.getServerData();
-      // this.isTrueTreeLevel();
     },
     '$route' (to, from) {
       if (to.path === '/server') {
