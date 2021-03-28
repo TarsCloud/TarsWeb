@@ -18,13 +18,17 @@ const captcha = require('svg-captcha')
 
 const PageController = {}
 const package = require("../../../package.json")
-
+const AdminService = require('../../service/admin/AdminService');
 PageController.index = async (ctx) => {
 	await ctx.redirect('/index.html');
 };
 
 PageController.version = async (ctx) => {
-	ctx.body = package.version
+    const version = {
+        webVersion: package.version,
+        frameworkVersion: await AdminService.getVersion()
+    }
+	ctx.body = version
 };
 
 PageController.captcha = async (ctx) => {

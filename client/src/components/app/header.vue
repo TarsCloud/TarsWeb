@@ -20,10 +20,14 @@
           </template>
         </let-select>
       </div>
-      
+      <div class="version-wrap">
+        <div>web:{{web_version}} </div>
+        <div>framework:{{framework_version}}</div>
+      </div>      
       <div class="user-wrap">
         <p class="user-info" @click="userOptOpen = !userOptOpen">
-          <span class="name toe">{{uid}} </span>
+
+          <span class="name toe">{{uid}}</span>
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}" v-show="enableLogin"></i>
           <transition name="fade">
             <div class="user-pop-wrap" v-show="enableLogin && userOptOpen">
@@ -43,8 +47,7 @@
   import serverIcon from '@/assets/img/server-icon.png';
   import opaIcon from '@/assets/img/opa-icon.png';
   import {localeMessages} from '@/locale/i18n';
-
-
+  import Axios from 'axios'
   export default {
     data() {
       return {
@@ -59,6 +62,8 @@
         localeMessages: localeMessages,
         dcache: this.$cookie.get('dcache') || 'false',
         enableLdap: false,
+        web_version:"loading··",
+        framework_version:"loading··"
       };
     },
     methods: {
@@ -111,6 +116,14 @@
       this.checkAdmin();
       this.checkEnableLdap();
 
+      Axios.create({baseURL: '/'})({
+        method: 'get',
+        url: '/web_version'
+      }).then((response)=>{
+        this.web_version = response.data.webVersion;
+        this.framework_version = response.data.frameworkVersion ;
+      })
+
       window.header =this;
     }
   };
@@ -131,7 +144,11 @@
       border-bottom: none;
     }
 
-    .logo-wrap, .user-wrap, .language-wrap {
+    .let-select__dropdown {
+      z-index: 100
+    }
+    
+    .logo-wrap, .user-wrap, .language-wrap, .version-wrap {
       position: absolute;
       top: 0;
       height: 80px;
@@ -173,11 +190,16 @@
 
     }
     .language-wrap {
-      right: 150px;
+      right: 250px;
       width: 150px;
       padding-top: 20px;
     }
-
+    .version-wrap {
+      text-align: center;
+      right: 100px;
+      width: 150px;
+      padding-top: 20px;      
+    }
     .user-wrap {
       right: 0;
       width: 150px;

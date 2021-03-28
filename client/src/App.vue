@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <app-header></app-header>
-    <p id="web_version">Version:{{web_version}}</p>
+    <app-header>
+
+    </app-header>
+
     <!-- 切换 tab 缓存接口（主要为左侧目录树） -->
     <keep-alive>
       <router-view class="main-width"></router-view>
@@ -24,16 +26,18 @@
     },
     data(){
       return {
-        web_version:" loading··"
+        web_version:"Version: loading··",
+        framework_version:"Version: loading··"
       }
     },
     mounted(){
-      Axios.create({baseURL: '/'})({
-        method: 'get',
-        url: '/web_version'
-      }).then((response)=>{
-        this.web_version = response.data
-      })
+      // Axios.create({baseURL: '/'})({
+      //   method: 'get',
+      //   url: '/web_version'
+      // }).then((response)=>{
+      //   this.web_version = response.data.webVersion;
+      //   this.framework_version = response.data.frameworkVersion ;
+      // })
     }
   };
 </script>
