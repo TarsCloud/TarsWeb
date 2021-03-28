@@ -58,6 +58,11 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false,
             defaultValue: ""
         },
+        controlack_port: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            defaultValue: ""
+        },
         idc_area: {
             type: DataTypes.STRING(100),
             allowNull: false,
@@ -67,6 +72,14 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.INTEGER(11),
             allowNull: true,
             defaultValue: 0
+        },
+        POSTTIME: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
+        LASTUSER: {
+            type: DataTypes.STRING(60),
+            allowNull: true
         },
         remark: {
             type: DataTypes.STRING(255),

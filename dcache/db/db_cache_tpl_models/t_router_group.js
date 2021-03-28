@@ -50,7 +50,15 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        pri: {
+        POSTTIME: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
+        LASTUSER: {
+            type: DataTypes.STRING(60),
+            allowNull: true
+        },
+        priority: {
             type: DataTypes.STRING(100),
             allowNull: false,
         },

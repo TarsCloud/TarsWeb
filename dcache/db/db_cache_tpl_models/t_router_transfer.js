@@ -67,6 +67,14 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
+        POSTTIME: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
+        LASTUSER: {
+            type: DataTypes.STRING(60),
+            allowNull: true
+        },
         startTime: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
