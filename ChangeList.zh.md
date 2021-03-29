@@ -3,13 +3,14 @@
 - 修复部分图片缺失的问题
 - 自动刷新服务list和通知信息
 - 添加framework版本展示
-- 修复语言下来框遮挡tag的bug
+- 修复语言下拉框遮挡tab的bug
 - 修复DCache安装和发布页面type错误
 - 修复DCacheRouter Manger Db连接错误
 - 修复当服务没启动时, 发布的错误
 - 修复dcache router相关表js中定义字段不匹配的错误
 - 修改registry_info.js, 添加唯一关键字locator_id
 - 日志等级添加TARS
+- 修复上传文件没有权限验证的bug
 ## 20210105(2.4.15)
 - 修复左侧树在含有带set分组服务的情况下显示异常的问题
 - 修复调用监控超时率、异常率无法显示的问题

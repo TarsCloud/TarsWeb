@@ -522,18 +522,18 @@ export default {
   methods: {
     // 获取服务列表
     getServerList() {
-      const loading = this.$refs.serverListLoading.$loading.show();
+      // const loading = this.$refs.serverListLoading.$loading.show();
 
       this.$ajax.getJSON('/server/api/server_list', {
         tree_node_id: this.treeid,
       }).then((data) => {
-        loading.hide();
+        // loading.hide();
         data.forEach(item => {
           item.isChecked = false
         })
         this.serverList = data;
       }).catch((err) => {
-        loading.hide();
+        // loading.hide();
         this.$confirm(err.err_msg || err.message || this.$t('serverList.msg.fail'), this.$t('common.alert')).then(() => {
           this.getServerList();
         });

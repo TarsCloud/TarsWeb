@@ -10,6 +10,8 @@
 - Fixed: Wrong `cacheType` while installing MKV module for type `List` and `set`
 - fix registry_info.js, add unique locator_id
 - logLevel add TARS
+- Fix the bug that the upload file does not verify
+
 ## 20210105(2.4.15)
 - fix display error in the left tree with set open
 - fix can not show timeout rate and fail rate in stat query
