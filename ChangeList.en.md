@@ -1,3 +1,15 @@
+## 20210329(2.4.16)
+- fix some pic lost bug
+- auto refresh server list & notify list
+- add framework version
+- fix language dropdown z-index
+- Fix: DCache Install and Publish page cache type error
+- Fix: Router manage DB connection error
+- fix patch bug when server not start
+- fix dcache db templage bug
+- Fixed: Wrong `cacheType` while installing MKV module for type `List` and `set`
+- fix registry_info.js, add unique locator_id
+- logLevel add TARS
 ## 20210105(2.4.15)
 - fix display error in the left tree with set open
 - fix can not show timeout rate and fail rate in stat query
