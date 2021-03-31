@@ -87,6 +87,11 @@ if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
 	loginConf.ignore.push('/api/upload_and_publish');
 }
 
+//不需要登录, 环境变量优先
+if (process.env.TARS_ENABLE_LOGIN == "false") {
+	loginConf.enableLogin = false;
+}
+
 //web和demo的cookie写在同一个域名下
 if(process.env.COOKIE_DOMAIN) {
 	loginConf.cookieDomain = process.env.COOKIE_DOMAIN
