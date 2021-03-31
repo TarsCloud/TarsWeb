@@ -11,7 +11,7 @@
 - fix registry_info.js, add unique locator_id
 - logLevel add TARS
 - Fix the bug that the upload file does not verify
-
+- Add environment variable TARS_ENABLE_LOGIN, which controls whether you need to log in (priority), is mainly used for automatic testing
 ## 20210105(2.4.15)
 - fix display error in the left tree with set open
 - fix can not show timeout rate and fail rate in stat query
