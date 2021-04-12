@@ -575,7 +575,7 @@ export default {
 
             if(that.$parent.treeid == this.treeid) {
 
-              that.getServerList()
+              // that.getServerList(); //不要刷新, 会导致checked没有选中了!
               that.getServerNotifyList();
             }
           }
