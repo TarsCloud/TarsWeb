@@ -124,7 +124,7 @@ ConfigService.deleteConfigFile = async (id) => {
 		let nodeConfigFiles = await ConfigDao.getNodeConfigFile({
 			server_name: configFile.server_name,
 			set_name: configFile.set_name,
-			set_area: configFile.set_name,
+			set_area: configFile.set_area,
 			set_group: configFile.set_group
 		});
 		nodeConfigFiles = nodeConfigFiles.filter(config => config.filename == configFile.filename);
