@@ -11,7 +11,7 @@
     "core-js": "^3.6.4",
     "echarts": "^4.0.4",
     "let-ui": "^0.1.23",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.21",
     "request": "^2.88.0",
     "svg-sprite-loader": "^4.1.6",
     "v-charts": "^1.16.8",
