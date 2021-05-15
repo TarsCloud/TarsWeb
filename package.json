@@ -50,7 +50,7 @@
         "q": "^1.5.1",
         "request": "^2.87.0",
         "request-promise-any": "^1.0.5",
-        "sequelize": "^5.21.2",
+        "sequelize": "^6.3.5",
         "sha1": "^1.1.1",
         "svg-captcha": "^1.4.0",
         "url": "^0.11.0",

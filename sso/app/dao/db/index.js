@@ -74,7 +74,7 @@ databases.forEach((database)=>{
 
         let tableName = dbModel.replace(/\.js$/g, '');
         try {
-            tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
+            tableObj[_.camelCase(tableName)] = require(`${dbModelsPath}/${tableName}`)(sequelize, Sequelize);
             await tableObj[_.camelCase(tableName)].sync({alter: true});
 
             logger.info('database ' + database + '.' + tableName + ' sync succ');

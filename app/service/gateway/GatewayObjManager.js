@@ -98,7 +98,7 @@ class GatewayObjManager{
         let dbModels = fs.readdirSync(dbModelsPath);
         dbModels.forEach(function (dbModel) {
             let tableName = dbModel.replace(/\.js$/g, '');
-            dbObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
+            dbObj[_.camelCase(tableName)] = require(`${dbModelsPath}/${tableName}`)(sequelize, Sequelize);
             dbObj[_.camelCase(tableName)].sync({ alter: false });
         })
         dbObj.seq = sequelize

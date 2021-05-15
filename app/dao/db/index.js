@@ -87,7 +87,7 @@ databases.forEach((database) => {
 
 	dbModels.forEach(async function (dbModel) {
 		let tableName = dbModel.replace(/\.js$/g, '');
-		tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
+		tableObj[_.camelCase(tableName)] = require(`${dbModelsPath}/${tableName}`)(sequelize, Sequelize);
 		
 		try {
 
