@@ -36,7 +36,7 @@
     "accessList": "DbAccess服务列表",
     "cacheList": "Cache服务列表",
     "uploadPackage": "上传发布包",
-    "uploadPackageTips": "发布包与服务名称不匹配",
+    "uploadPackageTips": "发布包需要以服务名称开头",
     "moduleName": "模块名",
     "uploadTime": "上传时间",
     "default": "默认",

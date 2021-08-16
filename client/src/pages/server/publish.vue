@@ -617,7 +617,7 @@ export default {
       const arr = treeid.split('.');
       const server = treeid && arr[arr.length-1] && arr[arr.length-1].slice(1)
       const fileName = file.name && file.name.split('.') && file.name.split('.')[0]
-      if(server !== fileName){
+      if(!fileName.startsWith(server)){
         return this.$tip.error(`${this.$t('releasePackage.uploadPackageTips')}`);
       }
       this.uploadModal.model.file = file;

@@ -31,7 +31,7 @@
     "routerList": "Router Service List",
     "cacheList": "Cache Service List",
     "uploadPackage": "Upload publish package",
-        "uploadPackageTips": "The release package does not match the service name",
+    "uploadPackageTips": "The release package must start by the service name",
     "moduleName": "moduleName",
     "uploadTime": "upload time",
     "default": "default",
