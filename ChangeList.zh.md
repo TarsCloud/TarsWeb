@@ -1,4 +1,8 @@
-
+## 20210819(2.4.17)
+- 自动更新 t_server_conf 添加 flow_state字段, 为了支持无损发布
+- 修复上传发布包名称过于严格的问题
+- 修复deleteConfigFile参数的bug
+- 不再自动刷新getServerList
 ## 20210331(2.4.16)
 - 修复部分图片缺失的问题
 - 自动刷新服务list和通知信息
