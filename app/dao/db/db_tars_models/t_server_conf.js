@@ -79,6 +79,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: 'inactive'
 		},
+        flow_state: {
+        	type: DataTypes.ENUM('active', 'inactive'),
+        	allowNull: false,
+        	defaultValue: 'active'
+        },
 		process_id: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
