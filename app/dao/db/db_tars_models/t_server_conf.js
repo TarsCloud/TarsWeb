@@ -27,12 +27,14 @@ module.exports = function(sequelize, DataTypes) {
 		application: {
 			type: DataTypes.STRING(128),
 			allowNull: true,
-			defaultValue: ''
+			defaultValue: '',
+			unique: 'app_server_ip'
 		},
 		server_name: {
 			type: DataTypes.STRING(128),
 			allowNull: true,
-			defaultValue: ''
+			defaultValue: '',
+			unique: 'app_server_ip'
 		},
 		node_group: {
 			type: DataTypes.STRING(50),
@@ -42,7 +44,8 @@ module.exports = function(sequelize, DataTypes) {
 		node_name: {
 			type: DataTypes.STRING(50),
 			allowNull: false,
-			defaultValue: ''
+			defaultValue: '',
+			unique: 'app_server_ip'
 		},
 		registry_timestamp: {
 			type: 'DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)',
