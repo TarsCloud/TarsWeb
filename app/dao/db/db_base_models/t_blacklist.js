@@ -48,6 +48,12 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     tableName: 't_blacklist',
-		timestamps: false
+    timestamps: false,
+		indexes: [{
+		    name: 'station_ip',
+		    unique: true,
+		    fields: [`f_station_id`, `f_ip`]
+		  }
+		]
   });
 };

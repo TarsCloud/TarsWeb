@@ -50,6 +50,12 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_server_group_relation',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+				name: 'f_unique',
+				unique: false,
+				fields: [`application`, `server_group`, `server_name`]
+			}
+		]
 	});
 };

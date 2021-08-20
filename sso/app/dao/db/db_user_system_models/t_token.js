@@ -10,8 +10,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		uid: {
 			type: DataTypes.STRING(128),
-			allowNull: true,
-			unique: 'uid' 
+			allowNull: true
 		},
 		token: {
 			type: DataTypes.STRING(128),
@@ -31,6 +30,17 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_token',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+				name: 'uid',
+				unique: false,
+				fields: [`uid`]
+			},
+			{
+				name: 'token',
+				unique: false,
+				fields: ['token']
+			}
+		]
 	});
 };

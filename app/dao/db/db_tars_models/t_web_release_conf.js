@@ -64,6 +64,17 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_web_release_conf',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+				name: 'server',
+				unique: true,
+				fields: ['server', 'is_server_group']
+			},
+			{
+				name: 'web_release_conf_server_index',
+				unique: false,
+				fields: ['server']
+			}
+		]
 	});
 };

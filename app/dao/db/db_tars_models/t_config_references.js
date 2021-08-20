@@ -34,6 +34,11 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_config_references',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+			name: 'config_id',
+			unique: true,
+			fields: [`config_id`, `reference_id`]
+		}]
 	});
 };

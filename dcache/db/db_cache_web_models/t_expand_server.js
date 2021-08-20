@@ -104,6 +104,12 @@ module.exports = function(sequelize, DataTypes) {
     }, {
         sequelize,
         tableName: 't_expand_server',
-            timestamps: false
+        timestamps: false,
+		indexes: [{
+		        name: 't_expand_server_operation_id_foreign_idx',
+		        unique: false,
+		        fields: [`operation_id`]
+		    }
+		]
     });
 };

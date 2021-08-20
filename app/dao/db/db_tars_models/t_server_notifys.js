@@ -77,6 +77,26 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_server_notifys',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+				name: 'index_name',
+				unique: false,
+				fields: ['server_name']
+			},
+			{
+				name: 'servernoticetime_i',
+				unique: false,
+				fields: ['notifytime']
+			},
+			{
+				name: 'indx_server_id',
+				unique: false,
+				fields: ['server_id']
+			}, {
+				name: 'query_index',
+				unique: false,
+				fields: [`application`, `server_name`, `node_name`, `set_name`, `set_area`, `set_group`]
+			}
+		]
 	});
 };

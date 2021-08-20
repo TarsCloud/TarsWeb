@@ -56,6 +56,10 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_tars_files',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+			unique: false,
+			fields: ['server_name', 'file_name']
+		}]
 	});
 };

@@ -58,6 +58,11 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     tableName: 't_http_router',
-		timestamps: false
+    timestamps: false,
+		indexes: [{
+		  name: 'station_rule',
+		  unique: true,
+		  fields: [`f_server_name`, `f_path_rule`]
+		}]
   });
 };

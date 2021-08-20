@@ -69,6 +69,18 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_machine_tars_info',
-		timestamps: false
+		timestamps: false,
+		indexes: [
+			{
+				name: 'tmachine_key',
+				unique: true,
+				fields: [`application`, `node_name`, `server_name`]
+			},
+			{
+				name: 'tmachine_idx',
+				unique: false,
+				fields: [`node_name`, `server_name`]
+			}
+		]
 	});
 };

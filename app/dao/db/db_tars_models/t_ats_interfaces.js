@@ -66,6 +66,11 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_ats_interfaces',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+			name: 'objname_idx',
+			unique: true,
+			fields: [`objname`, `funcname`]
+		}]
 	});
 };

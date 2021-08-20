@@ -74,6 +74,22 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_task_item',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+				name: 'f_uniq',
+				unique: true,
+				fields: ['item_no', 'task_no']
+			},
+			{
+				name: 'f_task_no',
+				unique: false,
+				fields: ['task_no']
+			},
+			{
+				name: 'f_index',
+				unique: false,
+				fields: [`application`,`server_name`,`command`]
+			}
+		]
 	});
 };

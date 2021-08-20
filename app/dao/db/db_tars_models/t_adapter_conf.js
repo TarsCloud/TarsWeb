@@ -102,6 +102,22 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_adapter_conf',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+				name: 'application',
+				unique: true,
+				fields: [`application`, `server_name`, `node_name`, `adapter_name`]
+			},
+			{
+				name: 'adapter_conf_endpoint_index',
+				unique: false,
+				fields: ['endpoint']
+			},
+			{
+				name: 'index_regtime',
+				unique: false,
+				fields: ['registry_timestamp']
+			}
+		]
 	});
 };

@@ -58,6 +58,11 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     tableName: 't_upstream',
-		timestamps: false
+    timestamps: false,
+		indexes: [{
+		  name: 'station_addr',
+		  unique: true,
+		  fields: [`f_upstream`, `f_addr`]
+		}]
   });
 };

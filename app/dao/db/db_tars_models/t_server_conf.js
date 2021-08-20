@@ -198,6 +198,22 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_server_conf',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+				name: 'node_name',
+				unique: false,
+				fields: ['node_name']
+			},
+			{
+				name: 'index_i',
+				unique: false,
+				fields: ['setting_state', 'server_type', 'application', 'server_name', 'node_name']
+			},
+			{
+				name: 'index_regtime',
+				unique: false,
+				fields: ['registry_timestamp']
+			}
+		]
 	});
 };

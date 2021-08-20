@@ -112,6 +112,12 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_node_info',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+				name: 'indx_node_info',
+				unique: false,
+				fields: [`last_heartbeat`]
+			}
+		]
 	});
 };

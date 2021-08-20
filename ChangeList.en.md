@@ -4,7 +4,7 @@
 - fix params of deleteConfigFile
 - not auto refresh getServerList
 - t_server_conf add key
-- not sync database
+- fix db sync, add index
 ## 20210329(2.4.16)
 - fix some pic lost bug
 - auto refresh server list & notify list

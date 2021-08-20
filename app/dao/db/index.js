@@ -89,17 +89,16 @@ databases.forEach((database) => {
 		let tableName = dbModel.replace(/\.js$/g, '');
 		tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
 		
-		// try {
+		try {
 
-		// 	await tableObj[_.camelCase(tableName)].sync({ alter: true });
-		// 	// tableObj[_.camelCase(tableName)].sync();
+			await tableObj[_.camelCase(tableName)].sync({ alter: true });
 
-		// 	logger.info('database ' + database + '.' + tableName + ' sync succ');
+			logger.info('database ' + database + '.' + tableName + ' sync succ');
 
-		// } catch (e) {
-		// 	logger.info('database ' + database + '.' + tableName  + ' sync error:', e);
+		} catch (e) {
+			logger.info('database ' + database + '.' + tableName  + ' sync error:', e);
 
-		// }
+		}
 	});
 	Db[database] = tableObj;
 	Db[database].sequelize = sequelize;

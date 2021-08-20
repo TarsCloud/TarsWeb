@@ -4,7 +4,7 @@
 - 修复deleteConfigFile参数的bug
 - 不再自动刷新getServerList
 - t_server_conf 添加关键字
-- 不再同步db数据结构
+- 修复db同步的问题, 增加索引
 ## 20210331(2.4.16)
 - 修复部分图片缺失的问题
 - 自动刷新服务list和通知信息

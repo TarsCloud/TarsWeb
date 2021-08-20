@@ -76,7 +76,12 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: 0
 		}
 	}, {
-		tableName: 't_config_files',
-		timestamps: false
+		tableName: 'application',
+		timestamps: false,
+		indexes: [{
+			name: 'application',
+			unique: true,
+			fields: [`server_name`, `filename`, `host`, `level`, `set_name`, `set_area`, `set_group`]
+		}]
 	});
 };
