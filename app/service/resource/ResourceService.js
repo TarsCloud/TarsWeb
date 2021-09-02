@@ -40,7 +40,7 @@ ResourceService.addNodeLabel = async (nodeName, name, value) => {
 		return [];
 	}
 
-	if (node.label == '') {
+	if (typeof node.label === 'undefined' || !node.label || node.label == '') {
 		node.label = '{}';
 	}
 
@@ -60,7 +60,7 @@ ResourceService.loadNodeLabel = async (nodeName) => {
 		return {};
 	}
 
-	return node.label;
+	return JSON.parse(node.label);
 }
 
 ResourceService.deleteNodeLabel = async (nodeName, name) => {
