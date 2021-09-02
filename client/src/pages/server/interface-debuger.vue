@@ -343,7 +343,7 @@ export default {
                 objName : this.objName
             }).then(data => {
                 loading.hide();
-                this.outParam = data;
+                this.outParam = JSON.stringify(JSON.parse(data), null, 4);
             }).catch((err) => {
                 loading.hide();
                 this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
