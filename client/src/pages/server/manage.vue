@@ -3,9 +3,10 @@
 
     <!-- 服务列表 -->
     <div class="table_head">
-      <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+      <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin"   style="font-family: iconfont  !important;"
+                                                        @click="getServerList(serverPageNum)"></i></h4>
     </div>
-    
+
     <let-table class="dcache" v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" stripe ref="serverListLoading">
       <let-table-column>
         <template slot="head" slot-scope="props">
@@ -17,10 +18,21 @@
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
         <template slot-scope="scope">
-          <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=' + [scope.row.node_name]" title="点击查看服务日志(view server logs)" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
+          <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=remote'"
+             :title="$t('serverList.link.remoteLog')" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="140px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="200px">
+        <template slot-scope="scope">
+          <span v-if="scope.row.is_node_ok">
+            <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name='+ [scope.row.node_name]"
+               :title="$t('serverList.link.nodeLog')" target="_blank" class="buttonText"> {{scope.row.node_name}} </a>
+          </span>
+          <span v-else style="color: #FF0000">
+            {{scope.row.node_name}}{{$t('serverList.link.invalidNode')}}
+          </span>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('serverList.table.th.enableSet')">
         <template slot-scope="scope">
           <span v-if="!scope.row.enable_set">{{$t('common.disable')}}</span>
@@ -33,12 +45,16 @@
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.configStatus')" width="90px">
         <template slot-scope="scope">
-          <span :class="scope.row.setting_state === 'active' ? 'status-active' : 'status-off'"></span>
+          <span v-if="scope.row.setting_state ==='Inactive'" style="color: #FF0000">{{scope.row.setting_state}}</span>
+          <span v-else style="color: #49CC8F">{{scope.row.setting_state}}</span>
         </template>
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.currStatus')" width="90px">
         <template slot-scope="scope">
-          <span :class="scope.row.present_state === 'active' ? 'status-active' : scope.row.present_state === 'activating' ? 'status-activating' : 'status-off'"></span>
+          <span v-if="scope.row.query_ret_code !='0'" style="color: #FF0000">Inactive</span>
+          <span v-else-if="scope.row.present_state_in_node==='Active'"
+                style="color: #49CC8F">{{ scope.row.present_state_in_node }}</span>
+          <span v-else style="color: #FF0000">{{ scope.row.present_state_in_node }}</span>
         </template>
       </let-table-column>
 
@@ -56,41 +72,51 @@
           <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.patch_time)}}</span>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('operate.operates')" width="260px">
+      <let-table-column :title="$t('operate.operates')" width="300px">
         <template slot-scope="scope">
           <let-table-operation @click="configServer(scope.row.id)">{{$t('operate.update')}}</let-table-operation>
           <let-table-operation @click="restartServer(scope.row.id)">{{$t('operate.restart')}}</let-table-operation>
           <let-table-operation class="danger" @click="stopServer(scope.row.id)">{{$t('operate.stop')}}</let-table-operation>
+          <let-table-operation v-if="scope.row.flow_state === 'active'" @click="updateFlowStatus(scope.row.id, false, scope.row.node_name)">{{$t('operate.pause')}}</let-table-operation>
+          <let-table-operation v-if="scope.row.flow_state === 'inactive'" @click="updateFlowStatus(scope.row.id, true, scope.row.node_name)">{{$t('operate.resume')}}</let-table-operation>
           <let-table-operation @click="manageServant(scope.row)">{{$t('operate.servant')}}</let-table-operation>
+          <let-table-operation @click="showStatusModal(scope.row)">{{$t('operate.statusView')}}</let-table-operation>
+          <let-table-operation @click="showTemplateView(scope.row)">{{$t('operate.templateView')}}</let-table-operation>
           <let-table-operation @click="showMoreCmd(scope.row)">{{$t('operate.more')}}</let-table-operation>
         </template>
       </let-table-column>
       <template slot="operations">
+        <let-button theme="primary" size="small" :disabled="!hasCheckedServer" @click="batchshowStatusModal">{{ $t('operate.statusView') }}</let-button>
         <let-button theme="primary" size="small" :disabled="!hasCheckedServer" @click="batchShowMoreCmd">{{ $t('operate.more') }}</let-button>
         <let-button theme="primary" size="small" :disabled="!hasCheckedServer" @click="batchConfigServer">{{ $t('dcache.batch.edit') }}</let-button>
-        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="restart"></batch-operation>
+        <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers"@success-fn="getServerList" type="restart"></batch-operation>
         <batch-operation size="small" :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList" type="stop"></batch-operation>
       </template>
     </let-table>
+    <let-pagination v-if="!(serverNotifyList && showOthers)"
+                    :page="serverPageNum" @change="gotoServerPage" style="margin-bottom: 32px;"
+                    :total="serverTotal">
+    </let-pagination>
+
 
     <!-- 服务实时状态 -->
     <div class="table_head">
       <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
     </div>
     <let-table v-if="serverNotifyList && showOthers"
-      :data="serverNotifyList" stripe :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
+               :data="serverNotifyList" stripe :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
       <let-table-column width="20%" :title="$t('common.time')" prop="notifytime"></let-table-column>
       <let-table-column width="20%" :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
       <let-table-column width="15%" :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.result')">
         <template slot-scope="scope">
           <span :style="statusStyle(scope.row.result)">{{scope.row.result}}</span>
-        </template>      
+        </template>
       </let-table-column>
     </let-table>
-    <let-pagination
-      :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
-      :total="total">
+    <let-pagination v-if="serverNotifyList && showOthers"
+                    :page="pageNum" @change="gotoPage" style="margin-bottom: 32px;"
+                    :total="total">
     </let-pagination>
 
 
@@ -108,154 +134,202 @@
           ref="configForm" itemWidth="360px" :columns="2" class="two-columns">
         <let-form-item :label="$t('common.service')" v-if="batchEditConf.show">{{ configModal.model.server_name }}</let-form-item>
         <let-form-item :label="$t('common.ip')" v-if="batchEditConf.show">{{ configModal.model.node_name }}</let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.useIdc')" required>
-          <let-radio-group
-              size="small"
-              v-model="configModal.model.enable_group"
-              :data="[{ value: true, text: $t('common.yes') }, { value: false, text: $t('common.no') }]">
-          </let-radio-group>
+            <let-checkbox v-model="batchEditConf.itemEnable.enable_group" v-show="!batchEditConf.show" class="form_item_disabled"/>
+            <let-radio-group size="small"
+                    v-model="configModal.model.enable_group"
+                    v-bind:disabled="!batchEditConf.itemEnable.enable_group"
+                    :data="[{ value: true, text: $t('common.yes') }, { value: false, text: $t('common.no') }]">
+            </let-radio-group>
         </let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.groupName')">
-          <let-select
-              size="small"
-              v-model="configModal.model.ip_group_name"  v-bind:disabled="!configModal.model.enable_group"
-              >
+          <let-checkbox v-model="batchEditConf.itemEnable.enable_group" v-show="!batchEditConf.show"
+                        class="form_item_disabled"/>
+          <let-select class= "form_item_style"
+                  size="small"  v-model="configModal.model.ip_group_name"
+                  v-bind:disabled="!configModal.model.enable_group">
             <let-option v-for="t in configModal.model.groupList" :key="t.value" :value="t.key">{{t.value}}</let-option>
           </let-select>
         </let-form-item>
 
         <let-form-item :label="$t('serverList.dlg.isBackup')" required>
+          <let-checkbox v-model="batchEditConf.itemEnable.bak_flag" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-radio-group
-            size="small"
-            v-model="configModal.model.bak_flag"
-            :data="[{ value: true, text: $t('common.yes') }, { value: false, text: $t('common.no') }]">
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.bak_flag"
+              v-model="configModal.model.bak_flag"
+              :data="[{ value: true, text: $t('common.yes') }, { value: false, text: $t('common.no') }]">
           </let-radio-group>
         </let-form-item>
+
         <let-form-item :label="$t('common.template')" required>
+          <let-checkbox v-model="batchEditConf.itemEnable.template_name" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-select
-            size="small"
-            v-model="configModal.model.template_name"
-            v-if="configModal.model.templates && configModal.model.templates.length"
-            required>
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.template_name"
+              v-model="configModal.model.template_name"
+              v-if="configModal.model.templates && configModal.model.templates.length"
+              required>
             <let-option v-for="t in configModal.model.templates" :key="t" :value="t">{{t}}</let-option>
           </let-select>
           <span v-else>{{configModal.model.template_name}}</span>
         </let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.serviceType')" required>
+          <let-checkbox v-model="batchEditConf.itemEnable.server_type" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-select
-            size="small"
-            v-model="configModal.model.server_type"
-            required>
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.server_type"
+              v-model="configModal.model.server_type"
+              required>
             <let-option v-for="t in serverTypes" :key="t" :value="t">{{t}}</let-option>
           </let-select>
         </let-form-item>
+
         <let-form-item :label="$t('serverList.table.th.enableSet')" required>
+          <let-checkbox v-model="batchEditConf.itemEnable.enable_set" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-radio-group
-            size="small"
-            v-model="configModal.model.enable_set"
-            :data="[{ value: true, text: $t('common.enable') }, { value: false, text: $t('common.disable') }]">
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.enable_set"
+              v-model="configModal.model.enable_set"
+              :data="[{ value: true, text: $t('common.enable') }, { value: false, text: $t('common.disable') }]">
           </let-radio-group>
         </let-form-item>
+
         <let-form-item :label="$t('common.set.setName')" required v-if="configModal.model.enable_set">
+          <let-checkbox v-model="batchEditConf.itemEnable.set_name" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="small"
-            v-model="configModal.model.set_name"
-            :placeholder="$t('serverList.dlg.errMsg.setName')"
-            required
-            pattern="^[a-z]+$"
-            :pattern-tip="$t('serverList.dlg.errMsg.setName')"
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.set_name"
+              v-model="configModal.model.set_name"
+              :placeholder="$t('serverList.dlg.errMsg.setName')"
+              required
+              pattern="^[a-z]+$"
+              :pattern-tip="$t('serverList.dlg.errMsg.setName')"
           ></let-input>
         </let-form-item>
+
         <let-form-item :label="$t('common.set.setArea')" required v-if="configModal.model.enable_set">
+          <let-checkbox v-model="batchEditConf.itemEnable.set_area" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="small"
-            v-model="configModal.model.set_area"
-            :placeholder="$t('serverList.dlg.errMsg.setArea')"
-            required
-            pattern="^[a-z]+$"
-            :pattern-tip="$t('serverList.dlg.errMsg.setArea')"
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.set_area"
+              v-model="configModal.model.set_area"
+              :placeholder="$t('serverList.dlg.errMsg.setArea')"
+              required
+              pattern="^[a-z]+$"
+              :pattern-tip="$t('serverList.dlg.errMsg.setArea')"
           ></let-input>
         </let-form-item>
+
         <let-form-item :label="$t('common.set.setGroup')" required v-if="configModal.model.enable_set">
+          <let-checkbox v-model="batchEditConf.itemEnable.set_group" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="small"
-            v-model="configModal.model.set_group"
-            :placeholder="$t('serverList.dlg.errMsg.setGroup')"
-            required
-            pattern="^[0-9\*]+$"
-            :pattern-tip="$t('serverList.dlg.errMsg.setGroup')"
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.set_group"
+              v-model="configModal.model.set_group"
+              :placeholder="$t('serverList.dlg.errMsg.setGroup')"
+              required
+              pattern="^[0-9\*]+$"
+              :pattern-tip="$t('serverList.dlg.errMsg.setGroup')"
           ></let-input>
         </let-form-item>
 
         <let-form-item :label="$t('serverList.dlg.asyncThread')" required>
+          <let-checkbox v-model="batchEditConf.itemEnable.async_thread_num" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="small"
-            v-model="configModal.model.async_thread_num"
-            :placeholder="$t('serverList.dlg.placeholder.thread')"
-            required
-            :pattern="configModal.model.server_type === 'tars_nodejs' ? '^[1-9][0-9]*$' : '^([3-9]|[1-9][0-9]+)$'"
-            :pattern-tip="$t('serverList.dlg.placeholder.thread')"
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.async_thread_num"
+              v-model="configModal.model.async_thread_num"
+              :placeholder="$t('serverList.dlg.placeholder.thread')"
+              required
+              :pattern="configModal.model.server_type === 'tars_nodejs' ? '^[1-9][0-9]*$' : '^([3-9]|[1-9][0-9]+)$'"
+              :pattern-tip="$t('serverList.dlg.placeholder.thread')"
           ></let-input>
         </let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.defaultPath')">
+          <let-checkbox v-model="batchEditConf.itemEnable.base_path" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="small"
-            v-model="configModal.model.base_path"
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.base_path"
+              v-model="configModal.model.base_path"
           ></let-input>
         </let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.exePath')">
+          <let-checkbox v-model="batchEditConf.itemEnable.exe_path" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="small"
-            v-model="configModal.model.exe_path"
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.exe_path"
+              v-model="configModal.model.exe_path"
           ></let-input>
         </let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.startScript')">
+          <let-checkbox v-model="batchEditConf.itemEnable.start_script_path" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="small"
-            v-model="configModal.model.start_script_path"
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.start_script_path"
+              v-model="configModal.model.start_script_path"
           ></let-input>
         </let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.stopScript')">
+          <let-checkbox v-model="batchEditConf.itemEnable.stop_script_path" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="small"
-            v-model="configModal.model.stop_script_path"
+              size="small" class= "form_item_style"
+              v-bind:disabled="!batchEditConf.itemEnable.stop_script_path"
+              v-model="configModal.model.stop_script_path"
           ></let-input>
         </let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.monitorScript')" itemWidth="724px">
+          <let-checkbox v-model="batchEditConf.itemEnable.monitor_script_path" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="small"
-            v-model="configModal.model.monitor_script_path"
+              style="width: 664px"
+              size="small"
+              v-bind:disabled="!batchEditConf.itemEnable.monitor_script_path"
+              v-model="configModal.model.monitor_script_path"
           ></let-input>
         </let-form-item>
+
         <let-form-item :label="$t('serverList.dlg.privateTemplate')" labelWidth="150px" itemWidth="724px">
+          <let-checkbox v-model="batchEditConf.itemEnable.profile" v-show="!batchEditConf.show" class="form_item_disabled"/>
           <let-input
-            size="large"
-            type="textarea"
-            :rows="4"
-            v-model="configModal.model.profile"
+              style="width: 664px"
+              size="large"
+              type="textarea"
+              :rows="4"
+              v-bind:disabled="!batchEditConf.itemEnable.profile"
+              v-model="configModal.model.profile"
           ></let-input>
         </let-form-item>
+
       </let-form>
       <div v-else class="loading-placeholder" ref="configFormLoading"></div>
     </let-modal>
 
     <!-- Servant管理弹窗 -->
     <let-modal
-      v-model="servantModal.show"
-      :title="$t('serverList.table.servant.title')"
-      width="1200px"
-      :footShow="false"
-      @close="closeServantModal">
+        v-model="servantModal.show"
+        :title="$t('serverList.table.servant.title')"
+        width="1200px"
+        :footShow="false"
+        @close="closeServantModal">
       <let-button size="small" theme="primary" class="tbm16" @click="configServant()">{{$t('operate.add')}} Servant</let-button>
       <let-table v-if="servantModal.model" :data="servantModal.model" :empty-msg="$t('common.nodata')">
         <let-table-column :title="$t('operate.servant')" prop="servant"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.adress')" prop="endpoint"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.thread')" prop="thread_num"></let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" prop="max_connections"></let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxQueue')" prop="queuecap"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.connections')" prop="max_connections"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.capacity')" prop="queuecap"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.timeout')" prop="queuetimeout"></let-table-column>
-        <let-table-column :title="$t('operate.operates')" width="90px">
+        <let-table-column :title="$t('operate.operates')" width="120px">
           <template slot-scope="scope">
+            <let-table-operation v-clipboard:copy="scope.row.servant+'@'+scope.row.endpoint" v-clipboard:success="onCopy" v-clipboard:error="onError">{{$t('operate.copy')}}</let-table-operation>
             <let-table-operation @click="configServant(scope.row.id)">{{$t('operate.update')}}</let-table-operation>
             <let-table-operation class="danger" @click="deleteServant(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
           </template>
@@ -266,81 +340,81 @@
 
     <!-- Servant新增、编辑弹窗 -->
     <let-modal
-      v-model="servantDetailModal.show"
-      :title="servantDetailModal.isNew ? `${$t('operate.title.add')} Servant` : `${$t('operate.title.update')} Servant`"
-      width="800px"
-      :footShow="!!servantDetailModal.model"
-      @on-confirm="saveServantDetail"
-      @close="closeServantDetailModal"
-      @on-cancel="closeServantDetailModal">
+        v-model="servantDetailModal.show"
+        :title="servantDetailModal.isNew ? `${$t('operate.title.add')} Servant` : `${$t('operate.title.update')} Servant`"
+        width="800px"
+        :footShow="!!servantDetailModal.model"
+        @on-confirm="saveServantDetail"
+        @close="closeServantDetailModal"
+        @on-cancel="closeServantDetailModal">
       <let-form
-        v-if="servantDetailModal.model"
-        ref="servantDetailForm" itemWidth="360px" :columns="2" class="two-columns">
+          v-if="servantDetailModal.model"
+          ref="servantDetailForm" itemWidth="360px" :columns="2" class="two-columns">
         <let-form-item :label="$t('serverList.servant.appService')" itemWidth="724px">
           <span>{{servantDetailModal.model.application}}·{{servantDetailModal.model.server_name}}</span>
         </let-form-item>
         <let-form-item :label="$t('serverList.servant.objName')" required>
           <let-input
-            size="small"
-            v-model="servantDetailModal.model.obj_name"
-            :placeholder="$t('serverList.servant.c')"
-            required
-            :pattern-tip="$t('serverList.servant.obj')"
+              size="small"
+              v-model="servantDetailModal.model.obj_name"
+              :placeholder="$t('serverList.servant.c')"
+              required
+              :pattern-tip="$t('serverList.servant.obj')"
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('serverList.servant.numOfThread')" required>
           <let-input
-            size="small"
-            v-model="servantDetailModal.model.thread_num"
-            :placeholder="$t('serverList.servant.thread')"
-            required
-            pattern="^[1-9][0-9]*$"
-            :pattern-tip="$t('serverList.servant.thread')"
+              size="small"
+              v-model="servantDetailModal.model.thread_num"
+              :placeholder="$t('serverList.servant.thread')"
+              required
+              pattern="^[1-9][0-9]*$"
+              :pattern-tip="$t('serverList.servant.thread')"
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('serverList.table.servant.adress')" required>
           <let-input
-            ref="endpoint"
-            size="small"
-            v-model="servantDetailModal.model.endpoint"
-            placeholder="tcp -h 127.0.0.1 -t 60000 -p 12000"
-            required
-            :extraTip="isEndpointValid ? '' :
+              ref="endpoint"
+              size="small"
+              v-model="servantDetailModal.model.endpoint"
+              placeholder="tcp -h 127.0.0.1 -t 60000 -p 12000"
+              required
+              :extraTip="isEndpointValid ? '' :
               $t('serverList.servant.error')"
           ></let-input>
         </let-form-item>
-          <let-form-item :label="$t('serverList.table.servant.nodeName')" required>
-              <let-input
-                ref="node_name"
-                size="small"
-                v-model="servantDetailModal.model.node_name"
-                placeholder="127.0.0.1"
-                required
-                :disabled="!servantDetailModal.isNew"
-              ></let-input>
-        </let-form-item>
-        <let-form-item :label="$t('serverList.servant.maxConnecttions')" labelWidth="150px">
+        <let-form-item :label="$t('serverList.table.servant.nodeName')" required>
           <let-input
-            size="small"
-            v-model="servantDetailModal.model.max_connections"
+              ref="node_name"
+              size="small"
+              v-model="servantDetailModal.model.node_name"
+              placeholder="127.0.0.1"
+              required
+              :disabled="!servantDetailModal.isNew"
+          ></let-input>
+        </let-form-item>
+        <let-form-item :label="$t('serverList.servant.connections')" labelWidth="150px">
+          <let-input
+              size="small"
+              v-model="servantDetailModal.model.max_connections"
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('serverList.servant.lengthOfQueue')" labelWidth="150px">
           <let-input
-            size="small"
-            v-model="servantDetailModal.model.queuecap"
+              size="small"
+              v-model="servantDetailModal.model.queuecap"
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('serverList.servant.queueTimeout')" labelWidth="150px">
           <let-input
-            size="small"
-            v-model="servantDetailModal.model.queuetimeout"
+              size="small"
+              v-model="servantDetailModal.model.queuetimeout"
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('serverList.servant.allowIP')">
           <let-input
-            size="small"
-            v-model="servantDetailModal.model.allow_ip"
+              size="small"
+              v-model="servantDetailModal.model.allow_ip"
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('serverList.servant.protocol')" required>
@@ -352,8 +426,8 @@
         </let-form-item>
         <let-form-item :label="$t('serverList.servant.treatmentGroup')" labelWidth="150px">
           <let-input
-            size="small"
-            v-model="servantDetailModal.model.handlegroup"
+              size="small"
+              v-model="servantDetailModal.model.handlegroup"
           ></let-input>
         </let-form-item>
       </let-form>
@@ -361,42 +435,42 @@
 
     <!-- 更多命令弹窗 -->
     <let-modal
-      v-model="moreCmdModal.show"
-      :title="$t('operate.title.more')"
-      width="700px"
-      class="more-cmd"
-      @on-confirm="invokeMoreCmd"
-      @close="closeMoreCmdModal"
-      @on-cancel="closeMoreCmdModal">
+        v-model="moreCmdModal.show"
+        :title="$t('operate.title.more')"
+        width="700px"
+        class="more-cmd"
+        @on-confirm="invokeMoreCmd"
+        @close="closeMoreCmdModal"
+        @on-cancel="closeMoreCmdModal">
       <let-form v-if="moreCmdModal.model" ref="moreCmdForm">
         <let-form-item itemWidth="100%">
           <let-radio v-model="moreCmdModal.model.selected" label="setloglevel">{{$t('serverList.servant.logLevel')}}</let-radio>
           <let-select
-            size="small"
-            :disabled="moreCmdModal.model.selected !== 'setloglevel'"
-            v-model="moreCmdModal.model.setloglevel">
+              size="small"
+              :disabled="moreCmdModal.model.selected !== 'setloglevel'"
+              v-model="moreCmdModal.model.setloglevel">
             <let-option v-for="l in logLevels" :key="l" :value="l">{{l}}</let-option>
           </let-select>
         </let-form-item>
         <let-form-item itemWidth="100%" v-if="!isBatchShowCmd">
           <let-radio v-model="moreCmdModal.model.selected" label="loadconfig">{{$t('serverList.servant.pushFile')}}</let-radio>
           <let-select
-            size="small"
-            :placeholder="moreCmdModal.model.configs && moreCmdModal.model.configs.length ? $t('pub.dlg.defaultValue') : $t('pub.dlg.noConfFile')"
-            :disabled="!(moreCmdModal.model.configs && moreCmdModal.model.configs.length)
+              size="small"
+              :placeholder="moreCmdModal.model.configs && moreCmdModal.model.configs.length ? $t('pub.dlg.defaultValue') : $t('pub.dlg.noConfFile')"
+              :disabled="!(moreCmdModal.model.configs && moreCmdModal.model.configs.length)
               || moreCmdModal.model.selected !== 'loadconfig'"
-            v-model="moreCmdModal.model.loadconfig"
-            :required="moreCmdModal.model.selected === 'loadconfig'">
+              v-model="moreCmdModal.model.loadconfig"
+              :required="moreCmdModal.model.selected === 'loadconfig'">
             <let-option v-for="l in moreCmdModal.model.configs" :key="l.filename" :value="l.filename">{{l.filename}}</let-option>
           </let-select>
         </let-form-item>
         <let-form-item itemWidth="100%">
           <let-radio v-model="moreCmdModal.model.selected" label="command">{{$t('serverList.servant.sendCommand')}}</let-radio>
           <let-input
-            size="small"
-            :disabled="moreCmdModal.model.selected !== 'command'"
-            v-model="moreCmdModal.model.command"
-            :required="moreCmdModal.model.selected === 'command'"
+              size="small"
+              :disabled="moreCmdModal.model.selected !== 'command'"
+              v-model="moreCmdModal.model.command"
+              :required="moreCmdModal.model.selected === 'command'"
           ></let-input>
         </let-form-item>
         <let-form-item itemWidth="100%">
@@ -407,12 +481,74 @@
         </let-form-item>
       </let-form>
     </let-modal>
+
+    <!-- 服务模板弹窗 -->
+    <let-modal
+            v-model="templateMoadal.show"
+            width="700px"
+            :title="$t('operate.templateView')"
+            @close="closeTemplateMoadal">
+        <div class="pre_con" >
+          <pre v-if="templateMoadal.show">
+              {{templateMoadal.model.template}}
+          </pre>
+        </div>
+      <div slot="foot"></div>
+    </let-modal>
+
+    <!--查看服务状态-->
+    <let-modal
+            v-model="serverStatusModal.show"
+            width="55%" :footShow="false"
+            :title="$t('operate.templateView')"
+            @close="closeStatusModal">
+      <let-table :data="serverStatusModal.model.statusList" stripe :empty-msg="$t('common.nodata')"
+                 v-if="serverStatusModal.show"  ref="serverStatusListLoading">
+        <let-table-column width="20%" :title="$t('serverList.table.th.serviceID')">
+          <template slot-scope="scope">
+            <span>{{`${scope.row.application}.${scope.row.server_name}`}}</span><br>
+            <span>{{scope.row.node_name}}</span>
+          </template>
+        </let-table-column>
+        <let-table-column :title="$t('serverList.table.th.result')">
+          <div slot-scope="scope" class="pre_con">
+            <pre :style="serverStatusStyle(scope.row.ret_code)">{{scope.row.err_msg}}</pre>
+          </div>
+        </let-table-column>
+      </let-table>
+    </let-modal>
   </div>
 </template>
 
 <script>
 import batchOperation from './../dcache/moduleManage/batchOperation.vue'
-import group from "@/pages/dcache/routerManage/group";
+import Vue from 'vue'
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
+
+const batchConfigModel = {
+  id : [],
+  server_name: 'batchedit',
+  node_name: 'batchedit',
+  server_type: 'tars_cpp',
+  enable_set: false,
+  set_name: '',
+  set_area: '',
+  set_group: '',
+  bak_flag: true,
+  templates: [],
+  template_name: 'tars.default',
+  profile: '',
+  async_thread_num: 3,
+  base_path: '',
+  exe_path: '',
+  start_script_path: '',
+  stop_script_path: '',
+  monitor_script_path: '',
+  enable_group: false,
+  ip_group_name:''
+}
+
 export default {
   components: { batchOperation },
   name: 'ServerManage',
@@ -437,13 +573,15 @@ export default {
       groupList:[],
 
       // 操作历史列表
-      reloadTask: null,
-      isreloadlist: false,
       serverNotifyList: [],
       getServerNotifyListTimer:0,
       pageNum: 1,
       pageSize: 20,
       total:1,
+
+      serverPageNum:1,
+      serverPageSize:16,
+      serverTotal:1,
 
       // 编辑服务
       serverTypes: [
@@ -461,6 +599,7 @@ export default {
       },
       batchEditConf: {
         show: true,
+        itemEnable:null,
       },
       // 编辑servant
       servantModal: {
@@ -487,6 +626,14 @@ export default {
         show: false,
         model: null,
         currentServer: null,
+      },
+      templateMoadal: {
+        show: false,
+        model: null,
+      },
+      serverStatusModal: {
+        show: false,
+        model: null
       },
       // 失败重试次数
       failCount :0,
@@ -521,24 +668,69 @@ export default {
   },
   methods: {
     // 获取服务列表
-    getServerList() {
-      // const loading = this.$refs.serverListLoading.$loading.show();
-
+    getServerList(server_curr_page) {
+      if(!server_curr_page) {
+        server_curr_page = this.serverPageNum || 1;
+      }
+      const loading = this.$refs.serverListLoading.$loading.show();
       this.$ajax.getJSON('/server/api/server_list', {
         tree_node_id: this.treeid,
+        page_size: this.serverPageSize,
+        cur_page: server_curr_page,
+        is_page: !(this.serverNotifyList && this.showOthers) //是否分页
       }).then((data) => {
-        // loading.hide();
-        data.forEach(item => {
-          item.isChecked = false
-        })
-        this.serverList = data;
+        loading.hide()
+        if(!(this.serverNotifyList && this.showOthers)){
+          data.rows.forEach(item => {
+            item.isChecked = false
+            item.present_state_in_node = ""
+            item.is_node_ok = true;
+            item.query_ret_code = 0;
+            item.setting_state = item.setting_state.charAt(0).toUpperCase()+item.setting_state.slice(1);
+          })
+          this.serverPageNum = server_curr_page;
+          this.serverTotal = Math.ceil(data.count / this.serverPageSize);
+          this.serverList = data.rows;
+        }else{
+          data.forEach(item => {
+            item.isChecked = false
+            item.present_state_in_node = ""
+            item.is_node_ok = true;
+            item.query_ret_code = 0;
+            item.setting_state = item.setting_state.charAt(0).toUpperCase()+item.setting_state.slice(1);
+          })
+          this.serverList = data;
+        }
+        this.updateServerState();
       }).catch((err) => {
-        // loading.hide();
+        loading.hide();
         this.$confirm(err.err_msg || err.message || this.$t('serverList.msg.fail'), this.$t('common.alert')).then(() => {
           this.getServerList();
         });
       });
       this.isCheckedAll = false;
+    },
+    //tarsadmin修改服务实时状态
+    updateServerState() {
+      if (this.serverList.length != 0) {
+        let queryState = this.serverList.map((item) => {
+          return {
+            application: item.application,
+            server_name: item.server_name,
+            node_name: item.node_name
+          }
+        })
+        this.$ajax.postJSON('/server/api/server_state', {
+            queryState
+        }).then((data) => {
+          this.serverList.forEach((item) => {
+            let serverState = data.filter(app => app.application == item.application && app.server_name == item.server_name & app.node_name == item.node_name);
+            item.present_state_in_node = serverState[0].present_state_in_node;
+            item.is_node_ok = serverState[0].is_node_ok;
+            item.query_ret_code = serverState[0].query_ret_code;
+          })
+        })
+      }
     },
     // 获取服务实时状态
     getServerNotifyList(curr_page) {
@@ -563,32 +755,6 @@ export default {
         this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
       });
     },
-    reloadServerList() {
-      let that = this
-
-      let allPath = this.$parent.BTabs[0].path;
-      let path = allPath.substring(allPath.lastIndexOf('/') + 1);
-
-      if(path === 'manage' || !that.reloadTask ){
-        that.reloadTask = setTimeout(() => {
-          if(that.isreloadlist){
-
-            if(that.$parent.treeid == this.treeid) {
-
-              // that.getServerList(); //不要刷新, 会导致checked没有选中了!
-              that.getServerNotifyList();
-            }
-          }
-          that.reloadServerList()
-        }, 3000)
-      } 
-    },
-    startServerList(){
-      this.isreloadlist = true
-    },
-    stopServerList(){
-      this.isreloadlist = false
-    },
     statusStyle(message) {
       message = message || '';
 
@@ -602,6 +768,9 @@ export default {
     // 切换服务实时状态页码
     gotoPage(num) {
       this.getServerNotifyList(num);
+    },
+    gotoServerPage(num){
+      this.getServerList(num);
     },
 
     // 获取模版列表
@@ -660,40 +829,45 @@ export default {
       this.getTemplateList();
       this.getGroupList();
       this.getServerConfig(id);
+
+      this.batchEditConf.itemEnable = {...batchConfigModel}
+      for (let key in this.batchEditConf.itemEnable) {
+        this.batchEditConf.itemEnable[key]=true;
+      }
     },
     batchConfigServer() {
       var ids = this.serverList.filter(item => item.isChecked === true).map((item,index)=>{
         return item.id;
       })
+      if(ids.length==1){
+        this.configServer(ids[0]);
+        return;
+      }
       this.configModal.show = true;
       this.batchEditConf.show = false;
       this.getTemplateList();
       this.getGroupList();
-      this.configModal.model = Object.assign({}, this.configModal.model, {
-        id : ids,
-        server_name: 'batchedit',
-        node_name: 'batchedit',
-        server_type: 'tars_cpp',
-        enable_set: false,
-        set_name: '',
-        set_area: '',
-        set_group: '',
-        bak_flag: true,
-        templates: [],
-        template_name: 'tars.default',
-        profile: '',
-        async_thread_num: 3,
-        base_path: '',
-        exe_path: '',
-        start_script_path: '',
-        stop_script_path: '',
-        monitor_script_path: '',
-        enable_group: false,
-        ip_group_name:''
-      });
+      this.configModal.model = {...batchConfigModel};
+      this.configModal.model.id = ids;
+      this.batchEditConf.itemEnable = {...batchConfigModel}
+      for (let key in this.batchEditConf.itemEnable) {
+        this.batchEditConf.itemEnable[key]=false;
+      }
     },
     saveConfig(flag) {
       if (this.$refs.configForm.validate()) {
+        if (!flag) {//批量修改
+          this.batchEditConf.itemEnable.id= true;
+          if(this.configModal.model.enable_group){
+            this.batchEditConf.itemEnable.ip_group_name = true;
+          }
+          for (let key in this.batchEditConf.itemEnable) {
+            if (!this.batchEditConf.itemEnable[key]) {
+              delete this.configModal.model[key];
+            }
+          }
+        }
+        // console.log("this.configModal.model:" + JSON.stringify(this.configModal.model, null, 4));
         var url = flag ? '/server/api/update_server' : '/server/api/batch_update_server';
         const loading = this.$Loading.show();
         this.$ajax.postJSON(url, {
@@ -701,23 +875,7 @@ export default {
           ...this.configModal.model,
         }).then((res) => {
           loading.hide();
-          if (flag){
-            this.serverList = this.serverList.map((item) => {
-              if (item.id === res.id) {
-                return res;
-              }
-              return item;
-            });
-          }else{
-            res.forEach(row=>{
-              this.serverList = this.serverList.map((item) => {
-                if (item.id === row.id) {
-                  return row;
-                }
-                return item;
-              });
-            })
-          }
+          this.getServerList();//修改后直接查询
           this.closeConfigModal();
           this.$tip.success(this.$t('serverList.restart.success'));
         }).catch((err) => {
@@ -744,10 +902,10 @@ export default {
             setTimeout(() => {
               resolve(this.checkTaskStatus(taskid));
             }, 3000);
-          // 成功
+            // 成功
           } else if (data.status === 2) {
             resolve(`taskid: ${data.task_no}`);
-          // 失败
+            // 失败
           }  else {
             reject(new Error(`taskid: ${data.task_no}`));
           }
@@ -760,6 +918,28 @@ export default {
               resolve(this.checkTaskStatus(taskid, true));
             }, 3000);
           }
+        });
+      });
+    },
+    // 修改流量状态
+    updateFlowStatus(id, bActive, nodeName) {
+      const loading = this.$Loading.show();
+      this.$ajax.postJSON('/server/api/update_flowstatus', {
+        server_id: id,
+        status: bActive,
+        node_list: [nodeName],
+      }).then((res) => {  // eslint-disable-line
+        loading.hide();
+        // 任务成功重新拉取列表
+        this.getServerList();
+        this.$t('common.success')
+      }).catch((err) => {
+        loading.hide();
+        // 任务失败也重新拉取列表
+        this.getServerList();
+        this.$tip.error({
+          title: "update flow status fail.",
+          message: err.err_msg || err.message || this.$t('common.networkErr'),
         });
       });
     },
@@ -813,9 +993,8 @@ export default {
     },
     // 下线服务
     undeployServer(server) {
-
       if(server.present_state === "active") {
-        this.$tip.error(`${this.$t('serverList.tips.undeploy')}`); 
+        this.$tip.error(`${this.$t('serverList.tips.undeploy')}`);
       } else {
         this.$confirm(this.$t('serverList.dlg.msg.undeploy'), this.$t('common.alert')).then(() => {
           this.addTask(server.id, 'undeploy_tars', {
@@ -827,7 +1006,6 @@ export default {
     },
     // 批量下线服务
     undeployServers(servers) {
-
       const activeSer = servers.filter(item => item.present_state==="active");
       if(activeSer.length>0) {
         this.$tip.error(`${this.$t('serverList.tips.undeploy')}`);
@@ -842,6 +1020,7 @@ export default {
         });
       }
     },
+
 
     // 管理Servant弹窗
     manageServant(server) {
@@ -1040,13 +1219,11 @@ export default {
       this.moreCmdModal.unwatch = this.$watch('moreCmdModal.model.selected', () => {
         if (this.$refs.moreCmdForm) this.$refs.moreCmdForm.resetValid();
       });
-      this.isBatchShowCmd = true;
       this.moreCmdModal.show = true;
-
+      this.isBatchShowCmd =true
       if (checkedServer.length === 1) {
-        this.isBatchShowCmd = false
+        this.isBatchShowCmd =false
         this.moreCmdModal.currentServer = checkedServer[0];
-
         this.$ajax.getJSON('/server/api/config_file_list', {
           level: 5,
           application: checkedServer[0].application,
@@ -1070,24 +1247,25 @@ export default {
         if (res[0].ret_code === 0) {
           const opt = {
             title: this.$t('common.success'),
-            message: msg,
+            message: `${res[0].application}.${res[0].server_name}_${res[0].node_name}:<br>${msg}`,
           };
           if (hold) opt.duration = 0;
           this.$tip.success(opt);
         } else {
-          throw new Error(msg);
+          throw new Error(`${res[0].application}.${res[0].server_name}_${res[0].node_name}:<br>${msg}`);
         }
       }).catch((err) => {
         loading.hide();
-        this.$tip.error({
-          title: this.$t('common.error'),
-          message: err.err_msg || err.message,
-        });
+         const opt = {
+            title: this.$t('common.error'),
+            message: err.err_msg || err.message,
+          };
+          if (hold) opt.duration = 0;
+          this.$tip.error(opt);
       });
     },
     invokeMoreCmd() {
-
-      if (!this.moreCmdModal.currentServer) {
+      if (this.isBatchShowCmd) {
         const checkedList = this.serverList.filter(item => item.isChecked === true);
         const model = this.moreCmdModal.model;
           // 下线服务
@@ -1098,7 +1276,7 @@ export default {
             checkedList.forEach((item)=> {this.sendCommand(item.id, `tars.setloglevel ${model.setloglevel}`);})
           }  // 发送自定义命令
           else if (model.selected === 'command' && this.$refs.moreCmdForm.validate()) {
-            checkedList.forEach((item)=> {this.sendCommand(item.id, model.command);})
+            checkedList.forEach((item)=> {this.sendCommand(item.id, model.command, true);})
           }else if (model.selected === 'connection') {
             checkedList.forEach((item)=> {this.sendCommand(item.id, `tars.connection`, true);})
           }
@@ -1116,7 +1294,7 @@ export default {
           this.sendCommand(server.id, `tars.loadconfig ${model.loadconfig}`);
           // 发送自定义命令
         } else if (model.selected === 'command' && this.$refs.moreCmdForm.validate()) {
-          this.sendCommand(server.id, model.command);
+          this.sendCommand(server.id, model.command, true);
           // 查看服务链接
         } else if (model.selected === 'connection') {
           this.sendCommand(server.id, `tars.connection`, true);
@@ -1139,6 +1317,72 @@ export default {
       }
       return timeStr;
     },
+    onCopy(e){
+      this.$tip.success(this.$t('common.success'));
+    },
+    onError(e){
+      this.$tip.error(this.$t('serverList.servant.copyErr'));
+    },
+    showTemplateView(row){
+      const loading = this.$Loading.show();
+      this.$ajax.getJSON('/server/api/view_server_merge', {
+        application: row.application,
+        serverName: row.server_name,
+        nodeName: row.node_name
+      }).then((data) => {
+        loading.hide();
+        this.templateMoadal.model = {template: `\n${data.template}`};
+        this.templateMoadal.show = true;
+      }).catch((err) => {
+        loading.hide();
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+      });
+    },
+    closeTemplateMoadal(){
+      this.templateMoadal.show = false;
+      this.templateMoadal.model = null;
+    },
+    showStatusModal(row) {
+      this.getServerStatusDatil(row.id);
+    },
+    batchshowStatusModal(){
+      let ids = this.checkedServers.map(item=>{
+        return item.id
+      });
+      this.getServerStatusDatil(ids);
+    },
+    getServerStatusDatil(ids){
+      const loading = this.$Loading.show();
+      this.$ajax.getJSON('/server/api/send_command', {
+        server_ids: ids,
+        command: "tars.viewstatus",
+      }).then((res) => {
+        loading.hide();
+        res.forEach(item=>{
+          item.service_id = `${item.application}.${item.server_name}_${item.node_name}`
+          if(item.ret_code==0){
+            item.err_msg  = `${this.$t('serverList.tips.success')}\n`+item.err_msg
+          }else {
+            item.err_msg  = `${this.$t('serverList.tips.error')}\n`+item.err_msg
+          }
+        })
+        this.serverStatusModal.model = {statusList: res};
+        this.serverStatusModal.show = true;
+      }).catch((err) => {
+        loading.hide();
+        this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+      });
+    },
+    serverStatusStyle(code) {
+      if (code == -1) {
+        return "color: red";
+      }
+      return "color : #9096A3 ";
+    },
+    closeStatusModal() {
+      this.serverStatusModal.model = null;
+      this.serverStatusModal.show = false;
+    }
   },
   created() {
     this.serverData = this.$parent.getServerData();
@@ -1146,8 +1390,6 @@ export default {
   mounted() {
     this.getServerList();
     this.getServerNotifyList(1);
-    this.reloadServerList()
-    this.startServerList()
   },
   beforeRouteEnter (to, from, next) {
     next(next(vm => {
@@ -1155,13 +1397,13 @@ export default {
     }))
   },
   beforeRouteUpdate (to, from, next) {
-     next(next(vm => {
+    next(next(vm => {
       vm.getServerNotifyList(1);
     }))
   },
   linkDownload (url) {
-      window.open(url,'_blank') // 新窗口打开外链接
-  }
+    window.open(url,'_blank') // 新窗口打开外链接
+  },
 };
 
 
@@ -1171,35 +1413,50 @@ export default {
 @import '../../assets/css/variable.css';
 
 .page_server_manage {
-  .tbm16 {
-    margin: 16px 0;
-  }
-  .danger {
-    color: var(--off-color);
-  }
+.tbm16 {
+  margin: 16px 0;
+}
+.danger {
+  color: var(--off-color);
+}
 
-  .icon.iconfont {
-    font-size:10px;
-    cursor: pointer;
-    vertical-align: 0em  
-  }
+.icon.iconfont {
+  font-size:10px;
+  cursor: pointer;
+  vertical-align: 0em
+}
 
-  .more-cmd {
-    .let-form-item__content {
-      display: flex;
-      align-items: center;
-    }
-    span.let-radio {
-      margin-right: 5px;
-    }
-    label.let-radio {
-      width: 200px;
-    }
-  }
+.more-cmd {
+.let-form-item__content {
+  display: flex;
+  align-items: center;
+}
+span.let-radio {
+  margin-right: 5px;
+}
+label.let-radio {
+  width: 200px;
+}
+}
 
-  .table_head{padding:10px 0;}
-  .buttonText{white-space: nowrap;}
-  .dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
+.pre_con{display:block;overflow:hidden;}
+.pre_con pre {
+  color: #909FA3;
+  display: block;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.table_head{padding:10px 0;}
+.buttonText{white-space: nowrap;}
+.dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
+.form_item_disabled{display:block;float:left;}
+.form_item_style{width:300px}
+a:link {color: #0000EF}
+a:visited {color: #0000EF}
+a:hover {color: #5c76f3
+}
+
 }
 
 </style>

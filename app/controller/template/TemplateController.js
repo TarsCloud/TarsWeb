@@ -14,11 +14,11 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const TemplateService = require('../../service/template/TemplateService');
 const AdminService = require('../../service/admin/AdminService');
 const _ = require('lodash');
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
 
 const templateStruct = {
@@ -85,6 +85,17 @@ TemplateController.getMergeTemplate = async (ctx) => {
 	}
 };
 
+//获取服务模板
+TemplateController.getServerProfileTemplate = async (ctx) => {
+	try {
+		let {application, serverName, nodeName} = ctx.paramsObj;
+		ctx.makeResObj(200, '', {template: await AdminService.getServerProfileTemplate(application, serverName, nodeName)});
+	} catch (e) {
+		logger.error('[getServerProfileTemplate]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
 TemplateController.getTemplateList = async (ctx) => {
 	try {
 		let templateName = ctx.paramsObj.template_name || '';
@@ -95,6 +106,7 @@ TemplateController.getTemplateList = async (ctx) => {
 		ctx.makeErrResObj();
 	}
 };
+
 TemplateController.getTemplateNameList = async (ctx) => {
 	try {
 		let templateList = await TemplateService.getTemplateList('', '');

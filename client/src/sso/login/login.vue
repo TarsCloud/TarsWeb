@@ -1,5 +1,8 @@
 <template>
   <div class="login-page">
+    <!-- <img class="logo" src="../../assets/img/logo-light.svg"> -->
+    
+    <div class="login-page_wrap">
     <h1 class="top-title">
       {{$t('login.loginTitle')}}
       <div class="locale-wrap">
@@ -48,7 +51,7 @@
         </div>
       </let-form-item>
 
-      <let-button type="submit" theme="primary">{{$t('login.login')}}</let-button>
+      <let-button class="btn_long" type="submit" theme="primary">{{$t('login.login')}}</let-button>
       <!-- <let-button type="button" @click.prevent="toRegisterPage" style="float:right;margin-right:12px;">{{$t('login.toRegisterPage')}}</let-button> -->
     </let-form>
   </div>
@@ -56,6 +59,7 @@
 
 <script>
 import localeSelect from '../../components/locale-select.vue';
+import sha1 from 'sha1';
 export default {
   name: 'loginPage',
   data() {
@@ -63,33 +67,41 @@ export default {
       uid: '',
       password: '',
       captcha: '',
+      enableLdap: false,
       captchaUrl: `/captcha?${Math.random()}`,
     };
   },
   computed: {
     redirectUrl(){
       return this.getQueryParam('redirect_url', '/');
-      // var key = 'redirect_url=';
-      // var idx = location.search.indexOf(key);
-      // if(idx > -1){
-      //   return decodeURIComponent(location.search.substring(idx + key.length));
-      // }else{
-      //   return '/';
-      // }
     }
   },
   components: {
     localeSelect
   },
   methods: {
+    checkEnableLdap(){
+        this.$ajax.getJSON('/server/api/isEnableLdap').then((data) => {
+            this.enableLdap = data.enableLdap || false;
+        }).catch((err)=>{
+
+        });
+    },
     login() {
       if(!this.$refs.form.validate()){
         return;
       }
+
+      let password = this.password;
+      if(!this.enableLdap || this.uid == 'admin') {
+        password = sha1(this.password)
+      }
+
       const loading = this.$Loading.show();
+
       this.$ajax.postJSON('/server/api/login', {
         uid: this.uid,
-        password: this.password,
+        password: password,
         captcha: this.captcha,
       }).then((data)=>{
         loading.hide();
@@ -100,7 +112,6 @@ export default {
         location.href = href;
       }).catch((err)=>{
         loading.hide();
-//        this.reloadCaptcha()
         this.$tip.error(`${this.$t('login.loginFailed')}: ${err.err_msg || err.message}`);
       })
     },
@@ -129,6 +140,7 @@ export default {
   },
   mounted() {
     this.uid = this.getQueryParam('user', '');
+    this.checkEnableLdap();
   }
 };
 </script>

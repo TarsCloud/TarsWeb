@@ -259,8 +259,8 @@
         <let-table-column :title="$t('operate.servant')" prop="servant"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.adress')" prop="endpoint"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.thread')" prop="thread_num"></let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" prop="max_connections"></let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxQueue')" prop="queuecap"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.connections')" prop="max_connections"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.capacity')" prop="queuecap"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.timeout')" prop="queuetimeout"></let-table-column>
         <let-table-column :title="$t('operate.operates')" width="90px">
           <template slot-scope="scope">
@@ -318,7 +318,7 @@
               $t('serverList.servant.error')"
           ></let-input>
         </let-form-item>
-        <let-form-item :label="$t('serverList.servant.maxConnecttions')" labelWidth="150px">
+        <let-form-item :label="$t('serverList.servant.connections')" labelWidth="150px">
           <let-input
             size="small"
             v-model="servantDetailModal.model.max_connections"

@@ -14,11 +14,11 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const AdapterService = require('../../service/adapter/AdapterService');
 const AuthService = require('../../service/auth/AuthService');
 const _ = require('lodash');
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 
 const adapterConfStruct = {
 	id: '',

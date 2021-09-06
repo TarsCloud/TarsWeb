@@ -14,10 +14,10 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const Service = require('../../service/businessRelation/BusinessRelationService');
 const TreeService = require('../../service/server/TreeService');
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 
 const Struct = {
 	f_id: '',

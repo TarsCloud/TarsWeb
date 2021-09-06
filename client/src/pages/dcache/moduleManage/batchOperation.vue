@@ -13,6 +13,21 @@
           <p v-for="server in checkedServers">{{ server.application + "." + server.server_name + "_" + server.node_name }}</p>
         </let-form-item>
       </let-form>
+      
+      <let-form class="elegant-form" >
+            <div class="elegant-switch">
+              <let-switch size="large" v-model="elegantChecked" @change="changeElegantStatus">
+                <span slot="open">{{$t('dcache.batch.elegantTask')}}</span>
+                <span slot="close">{{$t('dcache.batch.commonTask')}}</span>
+              </let-switch>
+              &nbsp;&nbsp;&nbsp;
+              <div class="elegant-num" v-if="elegantChecked">
+                <span class="elegant-label">{{$t('dcache.batch.elegantEachNum')}}</span>
+                <let-input-number class="elegant-box" :max="20" :min="1" :step="1"   v-model="eachNum" size="small"></let-input-number>
+              </div>
+            </div>
+          
+      </let-form>
     </let-modal>
     <let-modal
       v-model="releaseIng"
@@ -59,6 +74,8 @@
           currPage: 1,
         },
         releaseIng: false,
+        elegantChecked: false,
+        eachNum: 0,
       }
     },
     methods: {
@@ -78,7 +95,10 @@
         });
 
         try {
-          const releaseId = await addTask({ items });
+          let elegant = this.elegantChecked;
+          let eachnum = this.eachNum;
+          let serial = false;
+          const releaseId = await addTask({ serial, elegant, eachnum, items });
           this.releaseIng = true;
           this.releaseId = releaseId;
         }
@@ -89,10 +109,22 @@
       getServerList () {
         this.show = false;
         this.$emit('success-fn');
+      },
+      changeElegantStatus(status) {
+        this.checked = status;
+        if (status) {
+          this.eachNum = 1;
+        }
       }
     }
   }
 </script>
 <style lang="postcss">
-
+@import '../../../assets/css/variable.css';
+.elegant-form {background-color: white !important;}
+.elegant-switch{display: block;overflow: hidden;}
+.elegant-switch .let-switch{display:block;float:left;margin-right: 10px;width:105px}
+.elegant-num{display:block;overflow: hidden;}
+.elegant-label{display:block;float: left;margin-right: 10px;}
+.elegant-box{display: block;overflow: hidden;}
 </style>

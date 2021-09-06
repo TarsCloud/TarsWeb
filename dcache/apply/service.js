@@ -23,9 +23,8 @@ const ProxyService = require('../proxy/service');
 const DbAccessService = require('../dbaccess/service');
 const ModuleConfigService = require('../moduleConfig/service');
 const TreeService = require(path.join(cwd, './app/service/server/TreeService'));
-const ServerService = require(path.join(cwd, './app/service/server/ServerService'));
-
-const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
+const { DCacheOptPrx } = require(path.join(cwd, './rpc'));
+const { DCacheOptStruct } = require(path.join(cwd, './rpc/struct'));
 
 const ApplyService = {};
 
@@ -169,8 +168,9 @@ ApplyService.overwriteApply = async function ({
   const data = await ApplyDao.createOrUpdate(['name'], {
     idc_area, set_area, admin, name, create_person, status: 1,
   });
+
   // 创建应用 RouterService
-  const routerOption = {
+  let routerOption = {
     apply_id: data.id,
     server_name: `${data.name}RouterServer`,
     server_ip: '',
@@ -183,6 +183,18 @@ ApplyService.overwriteApply = async function ({
     create_person,
     status: 1,
   };
+
+  const router = await RouterService.find(data.id);
+
+  if (router) {
+    routerOption.template_file = router.template_file;
+    routerOption.router_db_name = router.router_db_name;
+    routerOption.router_db_ip = router.router_db_ip;
+    routerOption.router_db_port = router.router_db_port;
+    routerOption.router_db_user = router.router_db_user;
+    // routerOption.router_db_pass = router.router_db_pass;
+  }
+
   await RouterService.createOrUpdate(['apply_id'], routerOption);
 
   // 创建 idc_area ProxyService

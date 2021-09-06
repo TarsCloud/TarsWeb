@@ -13,18 +13,21 @@
           <let-checkbox v-model="isCheckedAll"></let-checkbox>
         </template>
         <template slot-scope="scope">
-          <let-checkbox v-model="scope.row.isChecked" :value="scope.row.id"></let-checkbox>
+          <let-checkbox v-model="scope.row.isChecked" :value="scope.row.token"></let-checkbox>
         </template>
       </let-table-column>
       <let-table-column :title="$t('auth.uid')" prop="uid" width="10%"></let-table-column>
       <let-table-column :title="$t('auth.token')" prop="token" width="20%"></let-table-column>
       <let-table-column :title="$t('auth.tokenExpireTime')" prop="expire_time" width="15%"></let-table-column>
       <let-table-column :title="$t('auth.tokenTime')" prop="update_time" width="15%"></let-table-column>
-      <let-table-column :title="$t('auth.status')" prop="validDesc" width="5%"></let-table-column>
+      <let-table-column :title="$t('auth.status')" width="5%">
+        <template slot-scope="scope">
+          <span :style="statusStyle(scope.row.valid)">{{scope.row.validDesc}}</span>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('auth.operator')"  width="5%">
         <template slot-scope="scope">
-            <let-table-operation  @click="onTokenValid(scope.row)"><let-tooltip style="width: 150px;" :content="isTokenValid(scope.row.valid)">{{isTokenValid(scope.row.valid)}}</let-tooltip></let-table-operation>
-          <!-- </span> -->
+          <let-button @click="onTokenValid(scope.row)" :theme="scope.row.valid?'primary':'danger'">{{isTokenValid(scope.row.valid)}}</let-button>
         </template>
       </let-table-column>
       <let-pagination slot="pagination" align="right" v-if="pageCount > 0"  :prev-text="$t('ssoCommon.prevPage')" :next-text="$t('ssoCommon.nextPage')"
@@ -105,12 +108,20 @@ export default {
           this.$tip.error(`${this.$t('auth.loadTokenError')}: ${err.err_msg || err.message}`);
         })
     },
+    statusStyle(valid) {
+
+      if(valid) {
+        return "color: green";
+      } else {
+        return "color: red";
+      }
+    },
     onTokenValid(token) {
       this.$confirm(this.$t('auth.setTokenValid')).then(() => {
 
         const loading = this.$Loading.show();
 
-        this.$ajax.postJSON('/server/api/auth/setTokenValid', {id: token.id, valid: 1-token.valid}).then((data)=>{
+        this.$ajax.postJSON('/server/api/auth/setTokenValid', {token: token.token, valid: 1-token.valid}).then((data)=>{
           
           loading.hide();
 
@@ -158,7 +169,7 @@ export default {
         var ids = [];
         this.tokenListShow.forEach((auth)=>{
             if(auth.isChecked === true){
-              ids.push(auth.id);
+              ids.push(auth.token);
             }
         });
         if(!ids.length){
@@ -166,7 +177,7 @@ export default {
           return;
         }
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/auth/deleteToken', {id: ids}).then((data)=>{
+        this.$ajax.postJSON('/server/api/auth/deleteToken', {tokens: ids}).then((data)=>{
             loading.hide();
             this.$tip.success(this.$t('auth.delSucc'));
             this.getTokenList();

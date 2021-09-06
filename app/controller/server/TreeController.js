@@ -14,11 +14,11 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const TreeService = require('../../service/server/TreeService');
 const AdminService = require('../../service/admin/AdminService');
 const _ = require('lodash');
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
 
 const TreeController = {};
@@ -29,10 +29,7 @@ TreeController.listTree = async (ctx) => {
 		if(type && type === '1'){
 			await TreeService.setCacheData(1)
 		}
-
-		let data = await TreeService.getTreeNodes(searchKey, ctx.uid, '1');
-
-		ctx.makeResObj(200, '', data);
+		ctx.makeResObj(200, '', await TreeService.getTreeNodes(searchKey, ctx.uid, '1'));
 	} catch (e) {
 		logger.error('[listTree]', e, ctx);
 		ctx.makeErrResObj();

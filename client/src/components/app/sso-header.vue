@@ -6,13 +6,13 @@
         <h1 class="hidden">TARS</h1>
 
         <div class="logo-wrap">
-          <a :class="{active: false}" href="/"><img class="logo" src="@/assets/img/tars-logo.png"></a>
+          <a v-if="enable === 'true' && show === 'true'" :class="{active: false}" href="/"><img class="logo" src="/static/img/tars-logo.png"></a>
+          <a v-if="k8s === 'true'" :class="{active: true}" href="/k8s.html"><img class="logo" src="/static/img/K8S.png"></a>
         </div>
 
         <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
           <let-tab-pane :tab="$t('ssoHeader.tab.tab1')" tabkey="/" :icon="serverIcon"></let-tab-pane>
           <let-tab-pane v-if="isAdmin" :tab="$t('ssoHeader.tab.tab2')" tabkey="/user" :icon="userIcon"></let-tab-pane>
-          <let-tab-pane v-if="isAdmin" :tab="$t('ssoHeader.tab.tab3')" tabkey="/auth" :icon="packageIcon"></let-tab-pane>
           <let-tab-pane :tab="$t('ssoHeader.tab.tab4')" tabkey="/token" :icon="tokenIcon"></let-tab-pane>
           <let-tab-pane  v-if="isAdmin" :tab="$t('ssoHeader.tab.tab5')" tabkey="/set" :icon="opaIcon"></let-tab-pane>
         </let-tabs>
@@ -57,18 +57,21 @@ export default {
   name: 'App',
   data(){
     return {
-       serverIcon,
-       opaIcon,
-       userIcon,
-       packageIcon,
-       tokenIcon, 
-       locale: this.$cookie.get('locale') || 'cn',
-       localeMessages: localeMessages,
-       enableLogin: true,
-       isAdmin: false,
-       uid: '--',
-       userOptOpen: false,
-       enableLdap: false,
+        serverIcon,
+        opaIcon,
+        userIcon,
+        packageIcon,
+        tokenIcon, 
+        locale: this.$cookie.get('locale') || 'cn',
+        localeMessages: localeMessages,
+        enableLogin: true,
+        isAdmin: false,
+        uid: '--',
+        k8s: this.$cookie.get('k8s') || 'false',
+        enable: this.$cookie.get('enable') || 'false',
+        show: this.$cookie.get('show') || 'false',
+        userOptOpen: false,
+        enableLdap: false,
     }
   },
   methods:{

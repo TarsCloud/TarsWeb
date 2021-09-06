@@ -15,7 +15,8 @@
  */
 
 const NotifyDao = require('../../dao/NotifyDao');
-const logger = require('../../logger');
+const AdminService = require('../admin/AdminService')
+const logger = require('../../../logger');
 const serverService = require('../server/ServerService');
 const _ = require('lodash');
 
@@ -29,5 +30,20 @@ NotifyService.getServerNotifyList = async (params, curPage, pageSize) => {
 	});
 	return await NotifyDao.getServerNotifyList(serverIds, curPage, pageSize);
 }
+
+NotifyService.getServerNotifyListByServerName = async (params) => {
+	return await NotifyDao.getServerNotifyList([`${params.application}.${params.serverName}_${params.node}`], params.curPage, params.pageSize);
+}
+
+//查询服务最新的实时状态(节点配置->tarsnode实时最新状态)
+NotifyService.getServerLastNotify = async (server_id) => {
+	return await NotifyDao.getServerLastNotify(server_id)
+}
+
+//获取某台服务器的基本负载情况
+NotifyService.getMachineStatusInfo = async (params) => {
+	return await AdminService.getMachineStatusInfo(params)
+}
+
 
 module.exports = NotifyService;

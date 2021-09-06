@@ -14,8 +14,9 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const cwd = process.cwd();
-const path = require('path');
+const WebConf = require('../config/webConf');
+
+if (WebConf.enable) {
 
 const RegionController = require('./region/controller.js');
 const ApplyController = require('./apply/controller.js');
@@ -43,7 +44,7 @@ const {
   deleteServerConfigItemBatch,
 } = require('./config/controller.js');
 
-const { apiConf } = require(path.join(cwd, './app/router/routerConf.js'));
+// const { apiConf } = require(path.join(cwd, './app/router/routerConf.js'));
 
 const dcacheApiConf = [
 
@@ -139,6 +140,12 @@ const dcacheApiConf = [
         moduleName: 'notEmpty',
         groupName: 'notEmpty',
     }],
+        ['post', '/cache/switchMIServer', ModuleOperation.switchMIServer, {
+            appName: 'notEmpty',
+            moduleName: 'notEmpty',
+            groupName: 'notEmpty',
+            imageIdc: 'notEmpty',
+        }],
     ['get', '/cache/hasOperation', ModuleOperation.hasOperation, {
         appName: 'notEmpty',
         moduleName: 'notEmpty',
@@ -234,4 +241,9 @@ const dcacheApiConf = [
     ['get', '/routerTransfer/list', routerManageController.transferFindAndCountAll],
 ];
 
-dcacheApiConf.forEach(conf => apiConf.push(conf));
+    module.exports = { dcacheApiConf };
+    
+} else {
+    const dcacheApiConf = [];
+    module.exports = { dcacheApiConf };
+}

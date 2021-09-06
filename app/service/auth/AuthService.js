@@ -27,8 +27,8 @@ const {
 const loginConf = require('../../../config/loginConf');
 const webConf = require('../../../config/webConf');
 
-const util = require('../../tools/util');
-const logger = require('../../logger');
+const util = require('../../../tools/util');
+const logger = require('../../../logger');
 const _ = require('lodash');
 const ServerDao = require('../../dao/ServerDao');
 
@@ -62,6 +62,9 @@ AuthService.checkHasAuth = async (application, serverName, role, uid) => {
 		// console.log('checkHasAuth2:', hasAuth);
 		}
 		if (!hasAuth) {
+			hasAuth = await AuthService.httpCallCheckAuth('*', role, uid);
+		}
+		if (!hasAuth) {
 			hasAuth = await AuthService.httpCallCheckAuth('', 'admin', uid);
 		// console.log('checkHasAuth3:', hasAuth);
 			if (!hasAuth) {
@@ -78,10 +81,10 @@ AuthService.checkHasAuth = async (application, serverName, role, uid) => {
 };
 
 AuthService.getUrl = (path) => {
-	return "http://localhost:" + webConf.webConf.port + path;
+	return "http://127.0.0.1:" + webConf.webConf.port + path;
 }
 AuthService.httpCallCheckAuth = async (flag, roles, uid) => {
-	
+	// logger.info('httpCallCheckAuth', AuthService.getUrl(getAuthUrl));
 	var rst = await util.jsonRequest.get(AuthService.getUrl(getAuthUrl), {
 		flag: flag,
 		role: roles,
@@ -134,9 +137,12 @@ AuthService.isAdmin = async (uid) => {
 };
 
 AuthService.getAuthListByUid = async (uid) => {
-	// if (!enableAuth) {
-	// 	return [];
-	// }
+	if (!enableAuth) {
+		return [];
+	}
+
+//	logger.info('getAuthListByUid', AuthService.getUrl(getAuthListByUidUrl));
+
 	var rst = await util.jsonRequest.get(AuthService.getUrl(getAuthListByUidUrl), {
 		uid: uid
 	});

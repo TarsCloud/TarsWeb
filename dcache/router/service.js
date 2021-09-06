@@ -73,6 +73,9 @@ RouterService.createOrUpdate = function (whereProperties, {
   });
 };
 
+RouterService.find = function (apply_id ) {
+  return RouterDao.findOne({ where: { apply_id: apply_id } });
+};
 
 RouterService.update = function (Router) {
   return RouterDao.update(Router);

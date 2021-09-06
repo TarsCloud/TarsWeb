@@ -17,6 +17,8 @@
 const {tAdapterConf, sequelize} = require('./db').db_tars;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const Db = require('../dao/db/index')
+
 
 const AdapterDao = {};
 
@@ -117,9 +119,11 @@ AdapterDao.getAdapterProxy =  async (params)  =>{
 	}
 	params.application != undefined && (where.application = params.application);
 	params.serverName != undefined && (where.server_name = params.serverName);
+
 	let options = {
 		where: where,
-		order: [['application'], ['server_name']]
+		order: [['application'], ['server_name']],
+		attributes:[[sequelize.fn('DISTINCT', Sequelize.col('servant')), 'servant'],'application','server_name']
 	};
 	if (params.curPage && params.pageSize) {
 		options.limit = params.pageSize;
@@ -127,4 +131,16 @@ AdapterDao.getAdapterProxy =  async (params)  =>{
 	}
 	return  await tAdapterConf.findAndCountAll(options);
 }
+
+AdapterDao.getObjFirAdapterInfo = async(params) => {
+	let where = "";
+	for(const item of params){
+		where+=`('${item.application}','${item.server_name}','${item.servant}'),`;
+	}
+	where=where.substr(0,where.length-1);
+	let sql = `select * from t_adapter_conf where (application,server_name,servant) in (${where}) order by id `;
+	let rst = await Db['db_tars'].sequelize.query(sql,{ type: Sequelize.QueryTypes.SELECT})
+	return rst;
+};
+
 module.exports = AdapterDao;

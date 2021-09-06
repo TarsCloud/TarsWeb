@@ -14,10 +14,10 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const IDCService = require('../../service/idc/IDCService');
 const _ = require('lodash');
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 
 const IDCController = {};
 const IDCStruct = {

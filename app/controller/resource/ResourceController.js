@@ -14,9 +14,10 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const ResourceService = require('../../service/resource/ResourceService');
 const AdminService = require('../../service/admin/AdminService');
+const NotifyService = require('../../service/notify/NotifyService')
 const _ = require('lodash');
 const path = require('path');
 // const util = require('../../tools/util');
@@ -32,12 +33,28 @@ ResourceController.listTarsNode = async(ctx) => {
 	let nodeName = ctx.paramsObj.node_name || '';
 	try {
 		let rst = await ResourceService.listTarsNode(nodeName, curPage, pageSize);
+		//获取每个节点tarsnode最新实时状态
+		rst.rows.forEach(item => {
+			item.last_notity = "Loading...";
+		})
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
 		logger.error('[listTarsNode]', e, ctx);
 		ctx.makeErrResObj();
 	}
 }
+
+ResourceController.getLastSatet = async(ctx) => {
+	try {
+		let server_id = ctx.paramsObj.server_id;
+		let ret = await NotifyService.getServerLastNotify(server_id);
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[listTarsNode]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
 
 ResourceController.loadNodeLabel = async (ctx) => {
 	let nodeName = ctx.paramsObj.node_name || '';

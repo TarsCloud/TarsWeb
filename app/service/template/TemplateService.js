@@ -16,8 +16,8 @@
 
 const TemplateDao = require('../../dao/TemplateDao');
 const ServerService = require('../../service/server/ServerService');
-const logger = require('../../logger');
-const util = require('../../tools/util');
+const logger = require('../../../logger');
+const util = require('../../../tools/util');
 const TemplateService = {};
 
 TemplateService.addTemplate = async (templateName, parentsName, profile) => {

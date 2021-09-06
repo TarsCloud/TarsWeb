@@ -18,8 +18,10 @@ const path = require('path');
 const assert = require('assert');
 
 const cwd = process.cwd();
-const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
-const logger = require(path.join(cwd, './app/logger'));
+const { DCacheOptPrx } = require(path.join(cwd, './rpc'));
+const { DCacheOptStruct } = require(path.join(cwd, './rpc/struct'));
+const logger = require(path.join(cwd, './logger'));
+
 const TarsStream = require('@tars/stream');
 
 const serverConfigService = require('./../serverConfig/service.js');
@@ -381,26 +383,86 @@ service.switchServer = async function ({
 };
 
 // 主备切换
-service.switchMainBackup = async function ({ moduleName, groupName }) {
-  const main = await serverConfigService.findOne({
-    where: {
-      module_name: moduleName,
-      group_name: groupName,
-      server_type: 1,
-    },
-  });
-  const backup = await serverConfigService.findOne({
-    where: {
-      module_name: moduleName,
-      group_name: groupName,
-      server_type: 0,
-    },
-  });
+service.switchMainBackup = async function({ moduleName, groupName }) {
+    const main = await serverConfigService.findOne({
+        where: {
+            module_name: moduleName,
+            group_name: groupName,
+            server_type: 1,
+        },
+    });
+    const backup = await serverConfigService.findOne({
+        where: {
+            module_name: moduleName,
+            group_name: groupName,
+            server_type: 0,
+        },
+    });
+
     if (main && backup) {
-  return Promise.all([
-    main.update({ server_type: 0 }),
-    backup.update({ server_type: 1 }),
-  ]);
+        return Promise.all([
+            main.update({ server_type: 0 }),
+            backup.update({ server_type: 1 }),
+        ]);
+    } else {
+        return {};
+    }
+};
+
+/**
+ * 镜像切主
+ * 0 require string appName;
+ * 1 require string moduleName;
+ * 2 require string groupName;
+ * 3 optional bool forceSwitch; // 是否强制切换
+ * 4 optional int diffBinlogTime;
+ * @returns {Promise<void>}
+ */
+ service.switchMIServer = async function({
+    appName,
+    moduleName,
+    groupName,
+    imageIdc,
+    forceSwitch = false,
+    diffBinlogTime = 5,
+}) {
+    const option = new DCacheOptStruct.SwitchMIReq();
+    option.readFromObject({
+        appName,
+        moduleName,
+        groupName,
+        imageIdc,
+        forceSwitch,
+        diffBinlogTime,
+    });
+    const { __return, rsp, rsp: { errMsg } } = await DCacheOptPrx.switchMIServer(option);
+    assert(__return === 0, errMsg);
+    return rsp;
+};
+
+// 主备切换
+service.switchMainImage = async function({ moduleName, groupName, imageIdc }) {
+    const main = await serverConfigService.findOne({
+        where: {
+            module_name: moduleName,
+            group_name: groupName,
+            server_type: 2,
+            area: imageIdc,
+        },
+    });
+    const image = await serverConfigService.findOne({
+        where: {
+            module_name: moduleName,
+            group_name: groupName,
+            server_type: 0,
+        },
+    });
+
+    if (main && image) {
+        return Promise.all([
+            main.update({ server_type: 0 }),
+            image.update({ server_type: 2 }),
+        ]);
     } else {
         return {};
     }
@@ -417,12 +479,12 @@ struct RecoverMirrorReq
     3 require string mirrorIdc;
 };
 */
-service.recoverMirrorStatus = async function ({ appName, moduleName, groupName, mirrorIdc }) {
-  const option = new DCacheOptStruct.RecoverMirrorReq();
-  option.readFromObject({ appName, moduleName, groupName, mirrorIdc });
-  const { __return, rsp: { errMsg } } = await DCacheOptPrx.recoverMirrorStatus(option);
-  assert(__return === 0, errMsg);
-  return true;
+service.recoverMirrorStatus = async function({ appName, moduleName, groupName, mirrorIdc }) {
+    const option = new DCacheOptStruct.RecoverMirrorReq();
+    option.readFromObject({ appName, moduleName, groupName, mirrorIdc });
+    const { __return, rsp: { errMsg } } = await DCacheOptPrx.recoverMirrorStatus(option);
+    assert(__return === 0, errMsg);
+    return true;
 };
 
 /*
@@ -442,41 +504,41 @@ service.recoverMirrorStatus = async function ({ appName, moduleName, groupName, 
   2 require int number;
 };
 */
-service.getSwitchInfo = async function ({
+service.getSwitchInfo = async function({
     appName = '',
     moduleName = '',
     groupName = '',
     msterServer = '',
     slaveServer = '',
 }) {
-  const option = new DCacheOptStruct.SwitchInfoReq();
-  const cond = {};
-  if (appName) cond.appName = appName;
-  if (moduleName) cond.moduleName = moduleName;
-  if (groupName) cond.groupName = groupName;
-  if (msterServer) cond.msterServer = msterServer;
-  if (slaveServer) cond.slaveServer = slaveServer;
-  option.readFromObject({
-    index: 0,
-    number: -1,
-    cond,
-  });
-  const { __return, rsp, rsp: { errMsg } } = await DCacheOptPrx.getSwitchInfo(option);
-  assert(__return === 0, errMsg);
-  return rsp;
+    const option = new DCacheOptStruct.SwitchInfoReq();
+    const cond = {};
+    if (appName) cond.appName = appName;
+    if (moduleName) cond.moduleName = moduleName;
+    if (groupName) cond.groupName = groupName;
+    if (msterServer) cond.msterServer = msterServer;
+    if (slaveServer) cond.slaveServer = slaveServer;
+    option.readFromObject({
+        index: 0,
+        number: -1,
+        cond,
+    });
+    const { __return, rsp, rsp: { errMsg } } = await DCacheOptPrx.getSwitchInfo(option);
+    assert(__return === 0, errMsg);
+    return rsp;
 };
 
-service.getReleaseProgress = async function (releaseId, appName, moduleName, type, srcGroupName, dstGroupName, transferData) {
-  try {
-    const { percent } = await ModuleConfigService.getReleaseProgress(releaseId);
-    if (+percent !== 100) {
-      setTimeout(service.getReleaseProgress.bind(this, releaseId, appName, moduleName, type, srcGroupName, dstGroupName, transferData), 1500);
-    } else {
-      await service.configTransfer({ appName, moduleName, type, srcGroupName, dstGroupName, transferData });
+service.getReleaseProgress = async function(releaseId, appName, moduleName, type, srcGroupName, dstGroupName, transferData) {
+    try {
+        const { percent } = await ModuleConfigService.getReleaseProgress(releaseId);
+        if (+percent !== 100) {
+            setTimeout(service.getReleaseProgress.bind(this, releaseId, appName, moduleName, type, srcGroupName, dstGroupName, transferData), 1500);
+        } else {
+            await service.configTransfer({ appName, moduleName, type, srcGroupName, dstGroupName, transferData });
+        }
+    } catch (err) {
+        logger.error('[getReleaseProgress]:', err);
     }
-  } catch (err) {
-    logger.error('[getReleaseProgress]:', err);
-  }
 };
 
 /**
@@ -491,50 +553,50 @@ service.getReleaseProgress = async function (releaseId, appName, moduleName, typ
  *    4 optional string groupName;        //cache服务组名, 当unType!=1时可为空
  * };
  */
-service.uninstallModule4DCache = async function ({ unType = 2, appName, moduleName, serverName = '', groupName = '' }) {
-  const option = new DCacheOptStruct.UninstallReq();
-  option.readFromObject({
-    unType,
-    appName,
-    moduleName,
-    serverName,
-    groupName,
-  });
-  const { __return, uninstallRsp, uninstallRsp: { errMsg } } = await DCacheOptPrx.uninstall4DCache(option);
-  assert(__return === 0, errMsg);
-  const module = await ModuleConfigService.getModuleConfigByName({ moduleName });
-  if (module) await ModuleConfigService.removeModuleConfig({ module_name: moduleName, module_id: module.module_id });
-  await service.getUninstallPercent(option);
-  return uninstallRsp;
-};
-
-service.uninstallServer4DCache = async function ({ unType = 0, appName, moduleName, serverName, groupName = '' }) {
-  const option = new DCacheOptStruct.UninstallReq();
-  option.readFromObject({
-    unType,
-    appName,
-    moduleName,
-    serverName,
-    groupName,
-  });
-  const { __return, uninstallRsp, uninstallRsp: { errMsg } } = await DCacheOptPrx.uninstall4DCache(option);
-  assert(__return === 0, errMsg);
-  await serverConfigService.removeServer({ server_name: serverName.replace('DCache.', '') });
-  await service.getUninstallPercent(option);
-  return uninstallRsp;
-};
-
-service.getUninstallPercent = async function (option) {
-  const { __return, progressRsp: { percent, errMsg } } = await DCacheOptPrx.getUninstallPercent(option);
-  assert(__return === 0, errMsg);
-  if (percent !== 100) {
-    await new Promise((resolve) => {
-      setTimeout(async () => {
-        await service.getUninstallPercent(option);
-        resolve();
-      }, 500);
+service.uninstallModule4DCache = async function({ unType = 2, appName, moduleName, serverName = '', groupName = '' }) {
+    const option = new DCacheOptStruct.UninstallReq();
+    option.readFromObject({
+        unType,
+        appName,
+        moduleName,
+        serverName,
+        groupName,
     });
-  }
+    const { __return, uninstallRsp, uninstallRsp: { errMsg } } = await DCacheOptPrx.uninstall4DCache(option);
+    assert(__return === 0, errMsg);
+    const module = await ModuleConfigService.getModuleConfigByName({ moduleName });
+    if (module) await ModuleConfigService.removeModuleConfig({ module_name: moduleName, module_id: module.module_id });
+    await service.getUninstallPercent(option);
+    return uninstallRsp;
+};
+
+service.uninstallServer4DCache = async function({ unType = 0, appName, moduleName, serverName, groupName = '' }) {
+    const option = new DCacheOptStruct.UninstallReq();
+    option.readFromObject({
+        unType,
+        appName,
+        moduleName,
+        serverName,
+        groupName,
+    });
+    const { __return, uninstallRsp, uninstallRsp: { errMsg } } = await DCacheOptPrx.uninstall4DCache(option);
+    assert(__return === 0, errMsg);
+    await serverConfigService.removeServer({ server_name: serverName.replace('DCache.', '') });
+    await service.getUninstallPercent(option);
+    return uninstallRsp;
+};
+
+service.getUninstallPercent = async function(option) {
+    const { __return, progressRsp: { percent, errMsg } } = await DCacheOptPrx.getUninstallPercent(option);
+    assert(__return === 0, errMsg);
+    if (percent !== 100) {
+        await new Promise((resolve) => {
+            setTimeout(async() => {
+                await service.getUninstallPercent(option);
+                resolve();
+            }, 500);
+        });
+    }
 };
 
 module.exports = service;

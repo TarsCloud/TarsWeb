@@ -34,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: ''
 		},
 		tgz: {
-			type: DataTypes.STRING(255),
+			type: DataTypes.TEXT,
 			allowNull: true
 		},
 		update_text: {
@@ -117,11 +117,6 @@ module.exports = function(sequelize, DataTypes) {
 				name: 'server_patchs_server_index',
 				unique: false,
 				fields: ['server']
-			},
-			{
-				name: 'index_i',
-				unique: false,
-				fields: ['tgz']
 			}
 		]
 	});

@@ -17,6 +17,7 @@
 const { tConfigFiles, tConfigHistoryFiles, tConfigReferences } = require('./db').db_tars;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const Db = require('../dao/db/index')
 let ConfigDao = {};
 
 ConfigDao.getUnusedApplicationConfigFile = async(application, configId) => {

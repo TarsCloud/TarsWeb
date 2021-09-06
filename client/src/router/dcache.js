@@ -28,10 +28,11 @@ import PropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
 // import ServerPublish from '@/pages/server/publish';
 import ServerPublish from '@/pages/server/dcachePublish';
 import ServerConfig from '@/pages/server/config';
-import ServerServerMonitor from '@/pages/server/monitor-server';
-import ServerPropertyMonitor from '@/pages/server/monitor-property';
-import userManage from '@/pages/server/user-manage';
-import InterfaceDebuger from '@/pages/server/interface-debuger';
+
+import ServerServerMonitor from '@/common/monitor-server';
+import ServerPropertyMonitor from '@/common/monitor-property';
+import userManage from '@/common/user-manage';
+import InterfaceDebuger from '@/common/interface-debuger';
 
 // dcache 运维管理
 import Operation from '@/pages/dcacheOperation/index';

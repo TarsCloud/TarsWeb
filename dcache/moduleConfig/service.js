@@ -18,13 +18,12 @@ const cwd = process.cwd();
 const path = require('path');
 const assert = require('assert');
 
-const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
+const { DCacheOptPrx } = require(path.join(cwd, './rpc'));
+const { DCacheOptStruct } = require(path.join(cwd, './rpc/struct'));
 const moduleConfigDao = require('./dao.js');
 const moduleDao = require('./../module/dao.js');
 const serverConfigDao = require('./../serverConfig/dao.js');
-// const serverConfigDao = require(path.join(cwd, './app/dao/serverConfigDao.js'));
 const ModuleConfigService = {};
-
 
 ModuleConfigService.hasModule = async function ({ module_name }) {
   const item = await moduleConfigDao.findOne({ where: { module_name } });

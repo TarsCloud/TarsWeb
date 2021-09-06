@@ -4,6 +4,7 @@
       <let-button theme="primary" size="small" @click="addEvent">{{$t('operate.add')}}</let-button>
       <let-button theme="danger" size="small" @click="delEvent">{{$t('operate.delete')}}</let-button>
     </div>
+
     <let-table :data="tableData" :empty-msg="$t('common.nodata')" ref="pageTable">
       <let-table-column>
         <template slot="head" slot-scope="props">
@@ -27,13 +28,10 @@
         </template>
       </let-table-column>
     </let-table>
-
-    <div style="overflow:hidden;">
-      <let-pagination align="right" style="float:right;"
-        :page="pagination.page" @change="gotoPage"
-        :total="pagination.total">
-      </let-pagination>
-    </div>
+    <let-pagination
+            :page="pagination.page" @change="gotoPage"
+            :total="pagination.total">
+    </let-pagination>
 
     <!-- 编辑服务弹窗 -->
     <let-modal

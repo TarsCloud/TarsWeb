@@ -84,6 +84,7 @@ Loading.hide = function hide() {
 
 LetUILoading.show = Loading.show;
 LetUILoading.hide = Loading.hide;
+
 Object.defineProperty(Vue.prototype, '$loading', {
   get() {
     if (!this._loading) {
@@ -91,10 +92,16 @@ Object.defineProperty(Vue.prototype, '$loading', {
     }
     return this._loading;
   },
+  set(val) {
+
+  }
 });
 
 Object.defineProperty(Vue.prototype, '$tip', {
   get() {
     return this.$Notice;
   },
+  set(val) {
+
+  }
 });

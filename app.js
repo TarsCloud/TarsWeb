@@ -23,18 +23,21 @@ const bodyparser = require('koa-bodyparser');
 const session = require('koa-session');
 const multer = require('koa-multer');
 const static = require('koa-static');
-const apiMidware = require('./app/midware/apiMidware');
-const preMidware = require('./app/midware/preMidware');
-const postMidware = require('./app/midware/postMidware');
-const localeMidware = require('./app/midware/localeMidware');
 const helmet = require("koa-helmet");
-const loginMidware = require('./app/midware/ssoMidware');
-const limitMidware = require('./app/midware/limitMidware');
-const WebConf = require('./config/webConf');
 const staticRouter = require('koa-static-router');
+
+const WebConf = require('./config/webConf');
 const upload = multer({dest: WebConf.pkgUploadPath.path + '/'});
-const logger = require('./app/logger');
-const AuthService = require('./sso/app/service/auth/AuthService');
+const logger = require('./logger');
+
+// const apiMidware = require('./midware/apiMidware');
+const preMidware = require('./midware/preMidware');
+const postMidware = require('./midware/postMidware');
+const localeMidware = require('./midware/localeMidware');
+const loginMidware = require('./midware/ssoMidware');
+const limitMidware = require('./midware/limitMidware');
+const router = require('koa-router')()
+const AuthService = require('./sso/service/auth/AuthService');
 
 //信任proxy头部，支持 X-Forwarded-Host
 app.proxy = true;
@@ -59,6 +62,7 @@ const CONFIG = {
 app.keys = ['sessionCaptcha']
 app.use(session(CONFIG, app))
 
+
 //安全防护
 app.use(helmet());
 
@@ -73,34 +77,31 @@ app.use(localeMidware);
 preMidware.forEach((midware) => {
 	app.use(midware);
 });
-
+//app.use
 //登录校验
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/web_version', '/static', '/captcha', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
-loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/register.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login']);
+loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login','/pages/server/api/isEnableLdap']);
 
-//上传文件不需要登录
-if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
-	loginConf.ignore.push('/pages/server/api/upload_patch_package');
-	loginConf.ignore.push('/api/upload_patch_package');
-	loginConf.ignore.push('/pages/server/api/upload_and_publish');
-	loginConf.ignore.push('/api/upload_and_publish');
-}
+// //上传文件不需要登录
+// if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
+// 	loginConf.ignore.push('/pages/server/api/upload_patch_package');
+// 	loginConf.ignore.push('/pages/k8s/api/upload_patch_package');
+// 	loginConf.ignore.push('/api/upload_patch_package');
+// 	loginConf.ignore.push('/pages/server/api/upload_and_publish');
+// 	loginConf.ignore.push('/pages/k8s/api/upload_patch_package');
+// 	loginConf.ignore.push('/api/upload_and_publish');
+// }
 
 //不需要登录, 环境变量优先
 if (process.env.TARS_ENABLE_LOGIN == "false") {
 	loginConf.enableLogin = false;
 }
 
-//web和demo的cookie写在同一个域名下
-if(process.env.COOKIE_DOMAIN) {
-	loginConf.cookieDomain = process.env.COOKIE_DOMAIN
-}
-
 app.use(async (ctx, next) => {
 	var myurl = url.parse(ctx.url);
 
-	if (await AuthService.isInit()) {
+	if (!await AuthService.isActivated()) {
 
 		if ((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
 
@@ -128,41 +129,56 @@ app.use(staticRouter([
 }]));
 
 //激活router
-
-let dcacheConf = require('./config/dcacheConf.js');
-if (dcacheConf.enableDcache) {
-	app.use(async (ctx, next) => {
-		await next();
-		ctx.cookies.set('dcache', 'true', {httpOnly: false});
-	});
-	require('./dcache');
-} else {
-	app.use(async (ctx, next) => {
-		await next();
-		ctx.cookies.set('dcache', 'false', {httpOnly: false});
-	})
+if (WebConf.isEnableK8s()) {
+	require('./k8s');
 }
 
-require('./sso');
+if (WebConf.enable) {
+	require('./dcache');
+}
+
+app.use(async (ctx, next) => {
+	await next();
+	ctx.cookies.set('enable', WebConf.enable?"true":"false", {httpOnly: false});
+	ctx.cookies.set('show', (WebConf.enable && WebConf.show)?"true":"false", {httpOnly: false});
+	ctx.cookies.set('k8s', WebConf.isEnableK8s()?"true":"false", {httpOnly: false});
+})
+
 
 //激活router
 // dcache 会添加新的 page、api router， 不能提前
-const { pageRouter, paegApiRouter, clientRouter, apiRouter} = require('./app/router');
+const {
+	pageRouter,
+	paegApiRouter,
+	clientRouter,
+	apiRouter,
+	k8sRouter,
+	k8sApiRouter,
+	gatewayApiRouter
+} = require('./midware');
 
-// app.use(apiMidware(apiRouter));
-
-app.use(pageRouter.routes(), pageRouter.allowedMethods());
-app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods());
-app.use(clientRouter.routes(), clientRouter.allowedMethods());
-app.use(apiRouter.routes(), apiRouter.allowedMethods());
+app.use(pageRouter.routes(), pageRouter.allowedMethods({throw:true}));
+app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods({throw:true}));
+app.use(clientRouter.routes(), clientRouter.allowedMethods({throw:true}));
+app.use(apiRouter.routes(), apiRouter.allowedMethods({throw:true}));
+if (k8sRouter) {
+	app.use(k8sRouter.routes()).use(k8sRouter.allowedMethods());
+}
+if (k8sApiRouter) {
+	app.use(k8sApiRouter.routes()).use(k8sApiRouter.allowedMethods());
+}
+app.use(gatewayApiRouter.routes()).use(gatewayApiRouter.allowedMethods());
 
 //激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
+
+app.use(router.routes()); //作用：启动路由
+app.use(router.allowedMethods());
 
 //后置中间件
 postMidware.forEach((midware) => {
 	app.use(midware);
 });
-//
+
 module.exports = app;
 

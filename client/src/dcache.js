@@ -19,7 +19,7 @@ import './plugins/ui';
 import './plugins/ajax';
 // import './plugins/charts';
 
-import App from './dcacheApp';
+import dcacheApp from './dcacheApp';
 import router from './router/dcache';
 import {i18n, loadLang} from './locale/i18n'
 
@@ -33,8 +33,8 @@ loadLang.call(this).then(() => {
     i18n: i18n,
     el: '#app',
     router,
-    components: {App},
-    template: '<App/>'
+    components: {dcacheApp},
+    template: '<dcacheApp/>'
   });
 })
 

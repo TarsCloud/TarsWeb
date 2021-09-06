@@ -17,7 +17,8 @@ const path = require('path');
 const assert = require('assert');
 
 const cwd = process.cwd();
-const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
+const { DCacheOptPrx } = require(path.join(cwd, './rpc'));
+const { DCacheOptStruct } = require(path.join(cwd, './rpc/struct'));
 const Dao = require('./dao.js');
 
 const Service = {};

@@ -5,13 +5,15 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <a :class="{active: dcache === 'true'}" href="/"><img class="logo" src="/static/img/tars-logo.png"></a>
-        <a v-if="dcache === 'true'" href="/dcache.html"><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"></a>
+        <a v-if="enable === 'true' && show === 'true'" :class="{active: true}" href="/"><img class="logo" src="/static/img/tars-logo.png"></a>
+        <a v-if="k8s === 'true'"  href="/k8s.html"><img class="logo" src="/static/img/K8S.png"></a>
+        <a v-if="enable === 'true'" href="/dcache.html"><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"></a>
       </div>
 
       <let-tabs class="tabs" :center="true" @click="clickTab" :activekey="$route.matched[0].path">
         <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab8')" tabkey="/gateway" :icon="cacheIcon"></let-tab-pane>
       </let-tabs>
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
@@ -26,8 +28,7 @@
       </div>      
       <div class="user-wrap">
         <p class="user-info" @click="userOptOpen = !userOptOpen">
-
-          <span class="name toe">{{uid}}</span>
+          <span class="name toe">{{uid}} </span>
           <i class="let-icon let-icon-caret-down" :class="{up: userOptOpen}" v-show="enableLogin"></i>
           <transition name="fade">
             <div class="user-pop-wrap" v-show="enableLogin && userOptOpen">
@@ -46,6 +47,7 @@
 <script>
   import serverIcon from '@/assets/img/server-icon.png';
   import opaIcon from '@/assets/img/opa-icon.png';
+  import cacheIcon from '@/assets/img/cache-l.png';
   import {localeMessages} from '@/locale/i18n';
   import Axios from 'axios'
   export default {
@@ -54,13 +56,16 @@
         // 图标
         serverIcon,
         opaIcon,
-        locale: this.$cookie.get('locale') || 'cn',
+        cacheIcon,
+        locale: this.$cookie.get('locale') || 'en',
         uid: '--',
         userOptOpen: false,
         enableLogin: false,
         isAdmin: false,
         localeMessages: localeMessages,
-        dcache: this.$cookie.get('dcache') || 'false',
+        k8s: this.$cookie.get('k8s') || 'false',
+        enable: this.$cookie.get('enable') || 'false',
+        show: this.$cookie.get('show') || 'false',
         enableLdap: false,
         web_version:"loading··",
         framework_version:"loading··"
@@ -95,15 +100,15 @@
         });
       },
       checkEnableLdap(){
-        this.$ajax.getJSON('/server/api/isEnableLdap').then((data) => {
-            this.enableLdap = data.enableLdap || false;
-        }).catch((err)=>{
+          this.$ajax.getJSON('/server/api/isEnableLdap').then((data) => {
+              this.enableLdap = data.enableLdap || false;
+          }).catch((err)=>{
 
-        });
+          });
       },
       checkAdmin(){
         this.isAdmin = false; 
-        this.$ajax.getJSON('/server/api/is_admin').then((data) => {
+        this.$ajax.getJSON('/server/api/isAdmin').then((data) => {
           // console.log(data);
           this.isAdmin = data.admin;
         }).catch((err) => {

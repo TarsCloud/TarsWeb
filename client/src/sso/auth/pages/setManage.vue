@@ -114,7 +114,7 @@ export default {
 
         const loading = this.$Loading.show();
 
-        this.$ajax.postJSON('/server/api/auth/page/setSetValid', {id: set.id, valid: 1 - (set.valid ? 0 : 1 ) }).then((data)=>{
+        this.$ajax.postJSON('/server/api/auth/page/setSetValid', {title: set.title, valid: 1 - (set.valid ? 0 : 1 ) }).then((data)=>{
           
           loading.hide();
 

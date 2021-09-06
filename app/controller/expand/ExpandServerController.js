@@ -14,11 +14,11 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const ExpandService = require('../../service/expand/ExpandService');
 const ServerService = require('../../service/server/ServerService');
 const webConf = require('../../../config/webConf').webConf;
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
 
 const expandStruct = {
@@ -144,7 +144,6 @@ ExpandServerController.expandServer = async (ctx) => {
 			let rst = await ExpandService.expand(params);
 			// console.log(rst.server_conf);
 			ctx.makeResObj(200, '', {
-
 				// server_conf: util.viewFilter(rst.server_conf, serverConfStruct),
 				tars_node_rst: rst.tars_node_rst
 			});

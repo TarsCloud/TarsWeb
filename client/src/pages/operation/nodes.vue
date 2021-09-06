@@ -1,21 +1,28 @@
 <template>
   <div class="page_operation_templates">
-
-    <let-form inline itemWidth="200px" @submit.native.prevent="search">
-      <let-form-item :label="$t('nodes.node_name')">
-        <let-input size="small" v-model="query.node_name"></let-input>
-      </let-form-item>
-      <let-form-item>
-        <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
-      </let-form-item>
+    <el-form inline itemWidth="200px">
+      <el-form-item :label="$t('nodes.node_name') + '：'">
+        <el-input size="small" v-model="querynode.node_name"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button size="small" type="submit" @click="search" theme="primary">{{
+          $t("operate.search")
+        }}</el-button>
+      </el-form-item>
       <div style="float: right">
-        <let-button size="small" theme="primary" @click="manualAddItem">{{$t('nodes.btn.manualAddNode')}}</let-button>
+        <el-button size="small" type="primary" @click="manualAddItem"
+          >{{ $t("nodes.btn.manualAddNode") }}
+        </el-button>
         &nbsp;&nbsp;&nbsp;
-        <let-button size="small" theme="primary" @click="autoAddItem">{{$t('nodes.btn.autoAddNode')}}</let-button>
+        <el-button size="small" type="primary" @click="autoAddItem"
+          >{{ $t("nodes.btn.autoAddNode") }}
+        </el-button>
         &nbsp;&nbsp;&nbsp;
-        <let-button size="small" theme="primary" @click="autoUpdateItem">{{$t('nodes.btn.autoUpdateNode')}}</let-button>
+        <el-button size="small" type="primary" @click="autoUpdateItem"
+          >{{ $t("nodes.btn.autoUpdateNode") }}
+        </el-button>
       </div>
-    </let-form>
+    </el-form>
 
     <let-modal :title="$t('nodes.btn.manualAddNode')" v-model="showManualAddItem" :footShow="false"  width="800px">
       <div>

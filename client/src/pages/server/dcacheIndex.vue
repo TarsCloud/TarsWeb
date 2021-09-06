@@ -97,10 +97,12 @@
 import manage from './dcacheManage'
 import publish from './dcachePublish'
 import config from './config'
-import serverMonitor from './monitor-server'
-import propertyMonitor from './monitor-property'
-import interfaceDebuger from './interface-debuger'
-import userManage from './user-manage'
+
+import serverMonitor from '@/common/monitor-server'
+import propertyMonitor from '@/common/monitor-property'
+import interfaceDebuger from '@/common/interface-debuger'
+import userManage from '@/common/user-manage'
+
 import cache from '@/pages/dcache/moduleManage/index.vue'
 import moduleCache from '@/pages/cacheConfig/moduleCache'
 import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
@@ -166,14 +168,14 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
           let boxEl = el || ''
           let itemEl = el.children || []
           let currEl = ''
-          
+
           itemEl.forEach(item => {
             const iclass = item.getAttribute('class')
             if(iclass.indexOf('active') > -1) {
               currEl = item
             }
           })
-          
+
           if(currEl.offsetLeft < boxEl.scrollLeft){
             const x = currEl.offsetLeft
             boxEl.scrollTo(x, 0)
@@ -185,21 +187,21 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
       }
     },
     methods: {
-    getNewServerName(id) {
-      const v = id && id.split('.');
-      if(!v){
-        return id;
-      }
-      if(v.length == 1) {
-        const app = id && id.split('.')[0].substring(1)
-        return `${app}`
-      }
-      if(v.length > 1) {
-        const app = id && id.split('.')[0].substring(1)
-        const server = id && id.split('.')[1].substring(1)
-        return `${app}.${server}`
-      }      
-    },
+      getNewServerName(id) {
+        const v = id && id.split('.');
+        if(!v){
+          return id;
+        }
+        if(v.length == 1) {
+          const app = id && id.split('.')[0].substring(1)
+          return `${app}`
+        }
+        if(v.length > 1) {
+          const app = id && id.split('.')[0].substring(1)
+          const server = id && id.split('.')[1].substring(1)
+          return `${app}.${server}`
+        }
+      },
       getName(val) {
         let result = ''
         if(val.lastIndexOf('/') > -1){
@@ -310,7 +312,7 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
       },
 
       checkTreeid() {
-        this.treeid = this.getLocalStorage('taf_dcache_treeid') || ''
+        this.treeid = this.getLocalStorage('tars_dcache_treeid') || ''
       },
 
       clickTab(tabkey) {
@@ -321,7 +323,7 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
           }
         })
 
-        this.setLocalStorage('taf_dcache_tabs', JSON.stringify(BTabs))
+        this.setLocalStorage('tars_dcache_tabs', JSON.stringify(BTabs))
       },
 
       // 有些目录层级不显示某些标签，处理之
@@ -348,7 +350,7 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
 
       checkBTabs() {
         let { BTabs } = this
-        const tabs = this.getLocalStorage('taf_dcache_tabs')
+        const tabs = this.getLocalStorage('tars_dcache_tabs')
         if(tabs && tabs.length > 0){
           tabs.forEach(item => {
             BTabs.push({
@@ -364,7 +366,7 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
           let boxEl = this.$refs.btabs || ''
           let itemEl = boxEl.children || []
           let currEl = ''
-          
+
           itemEl.forEach(item => {
             const iclass = item.getAttribute('class')
             if(iclass.indexOf('active') > -1) {
@@ -399,13 +401,13 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
         }
 
         this.treeid = nodeKey
-        this.setLocalStorage('taf_dcache_treeid', JSON.stringify(nodeKey))
-        this.setLocalStorage('taf_dcache_tabs', JSON.stringify(BTabs))
+        this.setLocalStorage('tars_dcache_treeid', JSON.stringify(nodeKey))
+        this.setLocalStorage('tars_dcache_tabs', JSON.stringify(BTabs))
       },
 
       clickBTabs(e, nodeKey) {
         this.treeid = nodeKey
-        this.setLocalStorage('taf_dcache_treeid', JSON.stringify(nodeKey))
+        this.setLocalStorage('tars_dcache_treeid', JSON.stringify(nodeKey))
       },
 
       closeBTabs(nodeKey) {
@@ -419,14 +421,14 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
         })
         BTabs.splice(BIndex, 1)
 
-        this.setLocalStorage('taf_dcache_tabs', JSON.stringify(BTabs))
+        this.setLocalStorage('tars_dcache_tabs', JSON.stringify(BTabs))
 
         if(BTabs.length > 0){
           this.treeid = BTabs[BTabs.length - 1].id
         }else{
           this.treeid = ''
         }
-        this.setLocalStorage('taf_dcache_treeid', JSON.stringify(this.treeid))
+        this.setLocalStorage('tars_dcache_treeid', JSON.stringify(this.treeid))
 
         this.getTreeData()
       },
@@ -434,8 +436,8 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
       closeAllBTabs() {
         this.BTabs = []
         this.treeid = ''
-        this.setLocalStorage('taf_dcache_tabs', JSON.stringify(this.BTabs))
-        this.setLocalStorage('taf_dcache_treeid', JSON.stringify(this.treeid))
+        this.setLocalStorage('tars_dcache_tabs', JSON.stringify(this.BTabs))
+        this.setLocalStorage('tars_dcache_treeid', JSON.stringify(this.treeid))
         this.getTreeData()
       },
 

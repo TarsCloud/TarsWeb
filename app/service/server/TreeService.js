@@ -17,7 +17,6 @@
 const ServerDao = require('../../dao/ServerDao');
 const BusinessDao = require('../../dao/BusinessDao');
 const BusinessRelationDao = require('../../dao/BusinessRelationDao');
-const AuthService = require('../auth/AuthService');
 
 const cacheData = {
 	timer: '',
@@ -33,9 +32,7 @@ const TreeService = {
 TreeService.getTreeNodes = async (searchKey, uid, type) => {
 	return await TreeService.getCacheData(searchKey, uid, type)
 };
-
 TreeService.hasDCacheServerName = (serverName) => {
-
 	return cacheData.dcacheData.find((item) => { return item.server_name == serverName; });
 }
 
@@ -44,37 +41,30 @@ TreeService.hasDCacheServerName = (serverName) => {
  * @param data
  */
 
-TreeService.ArrayToTree = async (data, uid) => {
+TreeService.ArrayToTree = (data) => {
 	let treeNodeList = []
 	let treeNodeMap = {}
 	let rootNode = []
+	data.forEach(function (server) {
+		server = server.dataValues;
+		let id;
+		if (server.enable_set == 'Y') {
+			id = '1' + server.application + '.' + '2' + server.set_name + '.' + '3' + server.set_area + '.' + '4' + server.set_group + '.' + '5' + server.server_name;
+		} else {
+			id = '1' + server.application + '.' + '5' + server.server_name;
+		}
+		let treeNode = {};
+		treeNode.id = id;
+		treeNode.name = server.server_name;
+		treeNode.pid = id.substring(0, id.lastIndexOf('.'));
+		treeNode.is_parent = false;
+		treeNode.open = false;
+		treeNode.children = [];
+		treeNodeList.push(treeNode);
+		treeNodeMap[id] = treeNode;
 
-	for (var i = 0; i < data.length; i++)
-	{
-		let server = data[i];
-
-		if (await AuthService.hasOpeAuth(server.application, server.server_name, uid)) {
-
-			let id;
-			if (server.enable_set == 'Y') {
-				id = '1' + server.application + '.' + '2' + server.set_name + '.' + '3' + server.set_area + '.' + '4' + server.set_group + '.' + '5' + server.server_name;
-			} else {
-				id = '1' + server.application + '.' + '5' + server.server_name;
-			}
-			let treeNode = {};
-			treeNode.id = id;
-			treeNode.name = server.server_name;
-			treeNode.pid = id.substring(0, id.lastIndexOf('.'));
-			treeNode.is_parent = false;
-			treeNode.open = false;
-			treeNode.children = [];
-			treeNodeList.push(treeNode);
-			treeNodeMap[id] = treeNode;
-
-			TreeService.parents(treeNodeMap, treeNode, rootNode)
-		}	
-
-	};
+		TreeService.parents(treeNodeMap, treeNode, rootNode)
+	})
 
 	return rootNode
 }
@@ -122,6 +112,17 @@ TreeService.parents = (treeNodeMap, treeNode, rootNodes) => {
 };
 
 TreeService.parentsBusiness = async (data) => {
+	//将app级别先排序(保证进入业务层后是按照顺序的)
+	data = data.sort((a, b) => {
+		if(b.order === a.order){
+			let aName = a.name.toLowerCase()
+			let bName = b.name.toLowerCase()
+			if(aName < bName){ return -1 }
+			if(aName > bName){ return 1 }
+			return 0
+		}
+		return b.order - a.order
+	})
 	const businessList = cacheData.business
 	const businessRelationList = cacheData.businessRelation
 	let result = []
@@ -182,13 +183,15 @@ TreeService.setCacheData = async (isRefresh) => {
 
 	let serverList = await ServerDao.getServerConf4Tree('', '', false)
 
+	// console.log(serverList);
+
 	// 去重
 	let arr = serverList || [], newArr = [arr[0]]
 	for (let i = 1; i < arr.length; i++) {
 		let repeat = false
 		for (let j = 0; j < newArr.length; j++) {
 			if (arr[i].enable_set === 'Y') {
-			if (arr[i].application === newArr[j].application
+				if (arr[i].application === newArr[j].application
 				&& arr[i].server_name === newArr[j].server_name
 				&& arr[i].enable_set === newArr[j].enable_set
 				&& arr[i].set_name === newArr[j].set_name
@@ -220,6 +223,7 @@ TreeService.setCacheData = async (isRefresh) => {
 
 	// 写入缓存
 	cacheData.serverData = newArr
+
 	cacheData.dcacheData = newArr.filter(item => { return item.application == 'DCache';})
 
 	// 每10分钟更新
@@ -231,6 +235,16 @@ TreeService.setCacheData = async (isRefresh) => {
 	}
 }
 TreeService.setCacheData()
+
+TreeService.getDCacheCommonServer = () => {
+	return ['DCacheOptServer', 'ConfigServer', 'PropertyServer'];
+}
+
+TreeService.isDCacheCommonServer = (server_name) => {
+	return server_name === 'DCacheOptServer'
+		|| server_name === 'ConfigServer'
+		|| server_name === 'PropertyServer';
+}
 
 /**
  * 读取缓存数据
@@ -247,17 +261,11 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 	// 过滤Dcache
 	if(type && type === '1'){
 		// 应用服务
-		serverList = serverList.filter(item => item.application !== 'DCache' || (item.application === 'DCache' && (
-			item.server_name === 'DCacheOptServer'
-			|| item.server_name === 'ConfigServer'
-			|| item.server_name === 'PropertyServer')))
+		// serverList = serverList.filter(item => item.application !== 'DCache' || (item.application === 'DCache' && TreeService.isDCacheCommonServer(item.server_name)))
+		serverList = serverList.filter(item => item.application !== 'DCache')
 	}else if(type === '2'){
 		// DCache
-		serverList = serverList.filter(item => item.application === 'DCache' && (
-			item.server_name === 'DCacheOptServer'
-			|| item.server_name === 'ConfigServer'
-			|| item.server_name === 'PropertyServer'
-		))
+		serverList = serverList.filter(item => item.application === 'DCache' && TreeService.isDCacheCommonServer(item.server_name))
 	}
 
 	// 查询过滤
@@ -284,7 +292,7 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 		}
 	}
 
-	const data = await TreeService.ArrayToTree(serverList, uid)
+	const data = TreeService.ArrayToTree(serverList)
 	return await TreeService.parentsBusiness(data)
 }
 module.exports = TreeService;

@@ -14,11 +14,11 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const ConfigService = require('../../service/config/ConfigService');
 const AdminService = require('../../service/admin/AdminService');
 
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 
 const ConfigController = {};
 
@@ -117,26 +117,17 @@ ConfigController.configFileList = async (ctx) => {
 
 ConfigController.addConfigFile = async (ctx) => {
 	let params = ctx.paramsObj;
+	params.uid = ctx.uid;
 	try {
 
 		if (!await AuthService.hasDevAuth(params.application, params.server_name, ctx.uid)) {
-
-		// if (!await AuthService.checkHasParentAuth({
-		// 		application: params.application,
-		// 		setName: params.set_name,
-		// 		setArea: params.set_area,
-		// 		setGroup: params.set_group,
-		// 		serverName: params.server_name,
-		// 	  uid: ctx.uid
-		// 	})) {
 			ctx.makeNotAuthResObj();
 		} else {
 
 			if (!params.force && await ConfigService.hasConfigFile(params)) {
 				ctx.makeResObj(500, "#cfg.dlg.exists#");
 				return;
-			}	
-
+			}
 			let ret = await ConfigService.addConfigFile(params);
 			ctx.makeResObj(200, '', util.viewFilter(ret, configListStruct));
 		}
@@ -150,10 +141,8 @@ ConfigController.deleteConfigFile = async (ctx) => {
 	let id = ctx.paramsObj.id;
 	try {
 		let serverParams = await ConfigService.getServerInfoByConfigId(id);
-
+		let config	=  await ConfigService.getConfigFile(id);
 		if (!await AuthService.hasDevAuth(serverParams.application, serverParams.serverName, ctx.uid)) {
-
-		// if (!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))) {
 			ctx.makeNotAuthResObj();
 		} else {
 			ctx.makeResObj(200, '', await ConfigService.deleteConfigFile(id));
@@ -209,16 +198,6 @@ ConfigController.nodeConfigFileList = async (ctx) => {
 	try {
 
 		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
-
-
-		// if (!await AuthService.checkHasParentAuth({
-		// 		application: application,
-		// 		setName: set_name,
-		// 		setArea: set_area,
-		// 		setGroup: set_group,
-		// 		serverName: server_name,
-		// 		uid: ctx.uid
-		// 	})) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let list = await ConfigService.getNodeConfigFile({
@@ -270,7 +249,9 @@ ConfigController.configFileHistoryList = async (ctx) => {
 	try {
 		let serverParams = await ConfigService.getServerInfoByConfigId(config_id);
 
-		if (!await AuthService.hasOpeAuth(serverParams.application, serverParams.server_name, ctx.uid)) {
+		// console.log(serverParams);
+
+		if (!await AuthService.hasOpeAuth(serverParams.application, serverParams.serverName, ctx.uid)) {
 
 		// if (!await AuthService.checkHasParentAuth(Object.assign(serverParams, {uid: ctx.uid}))) {
 			ctx.makeNotAuthResObj();

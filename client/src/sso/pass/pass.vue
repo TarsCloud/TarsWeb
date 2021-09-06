@@ -43,6 +43,8 @@
 
 <script>
 import localeSelect from '../../components/locale-select.vue';
+import sha1 from 'sha1';
+
 export default {
   name: 'pass_page',
 
@@ -66,7 +68,8 @@ export default {
            return;
         }
         const loading = this.$Loading.show();
-        this.$ajax.postJSON('/server/api/modifyPass',  {password: this.password, repeat_password: this.repeatPassword}).then((data)=>{
+        var passwordHash = sha1(this.password);
+        this.$ajax.postJSON('/server/api/modifyPass',  {password: passwordHash, repeat_password: passwordHash}).then((data)=>{
             loading.hide();
             this.$tip.success(`${this.$t('pass.modifySucc')}`);
             setTimeout(()=>{

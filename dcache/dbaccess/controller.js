@@ -18,7 +18,7 @@ const cwd = process.cwd();
 const path = require('path');
 const assert = require('assert');
 
-const logger = require(path.join(cwd, './app/logger'));
+const logger = require(path.join(cwd, './logger'));
 
 const DbAccessService = require('./service.js');
 

@@ -13,21 +13,17 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-// const HttpController = require('../controller/http/HttpController');
 
-const cwd = process.cwd();
-const path = require('path');
+const DemoLoginController = require('./controller/login/LoginController');
+const DemoAuthController = require('./controller/auth/AuthController');
+const DemoUserController = require('./controller/user/UserController');
+const DemoTokenController = require('./controller/token/TokenController');
+const DemoSetController = require('./controller/set/SetController');
+const DemoLdapController = require('./controller/ldap/LdapController');
 
-const DemoLoginController = require('./app/controller/login/LoginController');
-const DemoAuthController = require('./app/controller/auth/AuthController');
-const DemoUserController = require('./app/controller/user/UserController');
-const DemoTokenController = require('./app/controller/token/TokenController');
-const DemoSetController = require('./app/controller/set/SetController');
-const DemoLdapController = require('./app/controller/ldap/LdapController');
+// const { apiConf } = require(path.join(cwd, './app/router/routerConf.js'));
 
-const { apiConf } = require(path.join(cwd, './app/router/routerConf.js'));
-
-const ssoConf = [
+const ssoApiConf = [
     //登录注册接口
     ['post', '/register', DemoLoginController.register],
     ['post', '/login', DemoLoginController.login],
@@ -62,9 +58,8 @@ const ssoConf = [
     ['post', '/auth/deleteToken', DemoTokenController.deleteToken],
     ['post', '/auth/setTokenValid', DemoTokenController.setTokenValid],
 
-
-    //登录且权限本地页面相关接口(必须是admin权限才可以操作, authMiddleware里面限制了)
-    ['get', '/auth/page/getUserIdList', DemoUserController.getUserIdList],
+    //sso的页面请求(必须是admin权限才可以操作, authMiddleware里面限制了)
+    ['get', '/auth/page/getUserIdList', DemoUserController.getUserAuthList],
     ['get', '/auth/page/getAuthList', DemoAuthController.getAuthList],
     ['post', '/auth/page/addAuth', DemoAuthController.addAuth],
     ['post', '/auth/page/pageDeleteAuth', DemoAuthController.pageDeleteAuth],
@@ -73,8 +68,8 @@ const ssoConf = [
 
     ['get', '/auth/page/getSetList', DemoSetController.getSetList],
     ['post', '/auth/page/updateSet', DemoSetController.updateSet],
-    ['post', '/auth/page/setSetValid', DemoSetController.setSetValid],
+    ['post', '/auth/page/setSetValid', DemoSetController.setSetValid]
 
 ];
 
-ssoConf.forEach(conf => apiConf.push(conf));
+module.exports = { ssoApiConf };

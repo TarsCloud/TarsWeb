@@ -43,7 +43,7 @@ DROP TABLE IF EXISTS `t_flow_control`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_flow_control` (
   `f_id` int(11) NOT NULL AUTO_INCREMENT,
-  `f_station_id` varchar(64) NOT NULL COMMENT '站点英文名, 对于wup接口调用的taf，就是服务的obj',
+  `f_station_id` varchar(64) NOT NULL COMMENT '站点英文名, 对于wup接口调用的tars，就是服务的obj',
   `f_duration` int(10) NOT NULL DEFAULT '60' COMMENT '时间窗口，单位秒， 默认为60秒',
   `f_max_flow` int(10) NOT NULL COMMENT '最大流量，即在f_duration时间内最多请求f_max_flow次',
   `f_valid` int(2) NOT NULL DEFAULT '1' COMMENT '1:valid, 0:invalid',
@@ -125,7 +125,7 @@ DROP TABLE IF EXISTS `t_whitelist`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_whitelist` (
   `f_id` int(11) NOT NULL AUTO_INCREMENT,
-  `f_station_id` varchar(64) NOT NULL COMMENT '站点英文名,taf服务则为Obj',
+  `f_station_id` varchar(64) NOT NULL COMMENT '站点英文名,tars服务则为Obj',
   `f_ip` varchar(20) NOT NULL COMMENT 'ip, 可以用通配符',
   `f_valid` int(2) NOT NULL DEFAULT '1' COMMENT '1:valid, 0:invalid',
   `f_update_person` varchar(64) NOT NULL DEFAULT '' COMMENT '更新人',

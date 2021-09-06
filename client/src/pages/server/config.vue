@@ -677,6 +677,43 @@ export default {
     },
     updateConfigDiff() {
       let { type } = this.configDiffModal
+
+      const model = this.configModal.model;
+
+      if(model.filename.toLowerCase().endsWith(".json")) {
+        //json格式, 检查配置文件格式
+        try {
+          JSON.parse(this.configContent);
+        }catch(e){
+          alert("config format error:" + e.toString());
+          return;
+        }
+      }
+
+      if(model.filename.toLowerCase().endsWith(".xml")) {
+        //json格式, 检查配置文件格式
+        try {
+          // (new DOMParser()).parseFromString(this.configContent,"text/xml");
+            var parser=new DOMParser(); 
+            var xmlDoc = parser.parseFromString(this.configContent,"text/xml");
+            var error = xmlDoc.getElementsByTagName("parsererror"); 
+            let errorMessage = '';
+            if (error.length > 0) { 
+              if(xmlDoc.documentElement.nodeName=="parsererror"){ 
+                errorMessage = xmlDoc.documentElement.childNodes[0].nodeValue; 
+              } else { 
+                  errorMessage = xmlDoc.getElementsByTagName("parsererror")[0].innerHTML; 
+              } 
+
+              alert("config format error:" + errorMessage);
+              return;
+            } 
+        }catch(e){
+          alert("config format error:" + e.toString());
+          return;
+        }
+      }
+
       if(type === 'config'){
         this.configModal.model.config = this.configContent
         this.updateConfigFile()

@@ -23,23 +23,41 @@ const Db = require('../dao/db/index')
 ServerDao.sequelize = sequelize;
 
 ServerDao.getServerConfBySearchKey = async (id, curPage, pageSize) => {
+	let where = {
+		application: {
+			[Op.ne]: 'DCache',
+		},
+		[Op.or]: [
+			{application: {[Sequelize.Op.like]: `%${id}%`}},
+			{server_name: {[Sequelize.Op.like]: `%${id}%`}},
+			{node_name: {[Sequelize.Op.like]: `%${id}%`}},
+		]
+	};
+	if (id.indexOf(".") != -1) {
+		where = {
+			application: {
+				[Op.ne]: 'DCache',
+			},
+			[Op.or]: [
+				{
+					[Op.and]:[
+						{application: id.split('.')[0]},
+						{server_name: {[Sequelize.Op.like]: `%${id.split('.')[1]}%`}},
+					]
+				},
+				{node_name: {[Sequelize.Op.like]: `%${id}%`}},
+			]
+		}
+	}
 	let options = {
 		attributes: [
 			'application', 'server_name', 'node_name', 'enable_set', 'set_name', 'set_area', 'set_group',
 			'setting_state', 'present_state', 'process_id', 'patch_version', 'patch_time',
 		],
-		where: {
-			application: {
-				[Op.ne]: 'DCache',
-			},
-			[Op.or]: [
-				{ application: { [Sequelize.Op.like]: `%${id}%` } },
-				{ server_name: { [Sequelize.Op.like]: `%${id}%` } },
-				{ node_name: { [Sequelize.Op.like]: `%${id}%` } },
-			]
-		},
-		order: [['application'], ['server_name']]
-	};
+		where:where,
+		order:[['application'], ['server_name']]
+}
+	;
 	if (curPage && pageSize) {
 		options.limit = pageSize;
 		options.offset = pageSize * (curPage - 1);
@@ -58,7 +76,9 @@ ServerDao.getServerConfById = async (id) => {
 ServerDao.getServerConfByIds = async (ids) => {
 	return await tServerConf.findAll({
 		where: {
-			id:ids
+			id:{
+				[Op.in]: ids
+			}
 		}
 	});
 };
@@ -203,26 +223,26 @@ ServerDao.getInactiveServerConfList = async (application, serverName, nodeName, 
 };
 
 ServerDao.updateServerConf = async (params) => {
-	let updateOptions = {
-		bak_flag: params.bak_flag,
-		template_name: params.template_name,
-		server_type: params.server_type,
-		enable_set: params.enable_set,
-		set_name: params.set_name,
-		set_area: params.set_area,
-		set_group: params.set_group,
-		async_thread_num: params.async_thread_num,
-		base_path: params.base_path,
-		exe_path: params.exe_path,
-		start_script_path: params.start_script_path,
-		stop_script_path: params.stop_script_path,
-		monitor_script_path: params.monitor_script_path,
-		profile: params.profile,
-		posttime: params.posttime,
-		enable_group:params.enable_group,
-		ip_group_name:params.ip_group_name
-	};
-	return await tServerConf.update(updateOptions, {where: {id: params.id}});
+    let updateOptions = {};
+    params.bak_flag != undefined && (updateOptions.bak_flag = params.bak_flag);
+    params.template_name != undefined && (updateOptions.template_name = params.template_name);
+    params.server_type != undefined && (updateOptions.server_type = params.server_type);
+    params.enable_set != undefined && (updateOptions.enable_set = params.enable_set);
+    params.set_name != undefined && (updateOptions.set_name = params.set_name);
+    params.set_area != undefined && (updateOptions.set_area = params.set_area);
+    params.set_group != undefined && (updateOptions.set_group = params.set_group);
+    params.async_thread_num != undefined && (updateOptions.async_thread_num = params.async_thread_num);
+    params.base_path != undefined && (updateOptions.base_path = params.base_path);
+    params.exe_path !=  undefined && (updateOptions.exe_path = params.exe_path);
+    params.start_script_path != undefined && (updateOptions.start_script_path = params.start_script_path);
+    params.stop_script_path != undefined && (updateOptions.stop_script_path = params.stop_script_path);
+    params.monitor_script_path != undefined && (updateOptions.monitor_script_path = params.monitor_script_path);
+    params.profile != undefined && (updateOptions.profile = params.profile);
+    params.posttime != undefined && (updateOptions.posttime = params.posttime);
+    params.enable_group != undefined && (updateOptions.enable_group = params.enable_group);
+    params.ip_group_name != undefined && (updateOptions.ip_group_name = params.ip_group_name);
+
+    return await tServerConf.update(updateOptions, {where: {id: params.id}});
 };
 
 ServerDao.batchUpdateServerConf = async (params) => {
@@ -244,6 +264,12 @@ ServerDao.getApplication = async () => {
 		attributes: [[Sequelize.literal('distinct `application`'), 'application']]
 	});
 };
+
+//获取可以扩容dcache服务列表
+ServerDao.getDCacheServer = async (application) => {
+	let rst = await tServerConf.sequelize.query('select distinct \`server_name\` as \'server_name\' from db_tars.t_server_conf where application = \'' + application + '\' and (server_name like \'%RouterServer\' or server_name or \'%ProxyServer\' or server_name like \'%DbAccessServer\')');
+	return rst[0] || [];
+}
 
 ServerDao.getServerName = async (application) => {
 	return await tServerConf.findAll({
@@ -304,13 +330,31 @@ ServerDao.getNodeNameList = async (params) => {
 ServerDao.getServerConfListByBatch = async (params) => {
 	let where = "";
 	for(const item of params){
-		where+=`('${item.application}','${item.server_name}','${item.node_name}'),`;
+		where+=`('${item.application}','${item.server_name}'),`;
 	}
 	where=where.substr(0,where.length-1);
-	let sql = `select * from t_server_conf where (application,server_name,node_name) in (${where})`;
+	let sql = `select * from t_server_conf where (application,server_name) in (${where}) order by id `;
 	let rst = await Db['db_tars'].sequelize.query(sql,{ type: Sequelize.QueryTypes.SELECT})
 	return rst;
 };
+
+ServerDao.getServerConfByServant = async (params) =>{
+	let sql = ' select b.* from t_adapter_conf a join t_server_conf b on a.application =b.application and a.server_name = b.server_name and a.node_name = b.node_name ' +
+		'where servant = ? '
+	let sqlParams = [params.servant.trim()];
+	return await Db['db_tars'].sequelize.query(sql, {type: Sequelize.QueryTypes.SELECT, replacements: sqlParams})
+}
+
+ServerDao.getAbnornalConf = async (params) => {
+	let where = {
+		setting_state: 'active',
+		present_state: {
+			[Sequelize.Op.ne]: 'active'
+		}
+	}
+	params.application && (where.application = params.application);
+	return await tServerConf.findAll({where});
+}
 
 ServerDao.destroy = async (where = {}) => {
 	return tServerConf.destroy({where})

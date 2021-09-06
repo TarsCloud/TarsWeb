@@ -73,7 +73,7 @@ module.exports = {
     return dbModel.tRouterModule.findOne({ where: { id } })
   },
   async moduleFindAndCountAll(params) {
-    const { treeid, page = 1, size = 20 } = params
+    const { treeid, page = 1, size = 12 } = params
     const dbModel = await initDB(treeid)
     let result = await dbModel.tRouterModule.findAndCountAll({
       order: [['modify_time', 'desc']],
@@ -105,7 +105,7 @@ module.exports = {
     return dbModel.tRouterGroup.findOne({ where: { id } })
   },
   async groupFindAndCountAll(params) {
-    const { treeid, page = 1, size = 20 } = params
+    const { treeid, page = 1, size = 12 } = params
     const dbModel = await initDB(treeid)
     let result = await dbModel.tRouterGroup.findAndCountAll({
       order: [['modify_time', 'desc']],
@@ -137,7 +137,7 @@ module.exports = {
     return dbModel.tRouterRecord.findOne({ where: { id } })
   },
   async recordFindAndCountAll(params) {
-    const { treeid, page = 1, size = 20 } = params
+    const { treeid, page = 1, size = 12 } = params
     const dbModel = await initDB(treeid)
     let result = await dbModel.tRouterRecord.findAndCountAll({
       order: [['modify_time', 'desc']],
@@ -169,7 +169,7 @@ module.exports = {
     return dbModel.tRouterServer.findOne({ where: { id } })
   },
   async serverFindAndCountAll(params) {
-    const { treeid, page = 1, size = 20 } = params
+    const { treeid, page = 1, size = 12 } = params
     const dbModel = await initDB(treeid)
     let result = await dbModel.tRouterServer.findAndCountAll({
       order: [['modify_time', 'desc']],
@@ -201,7 +201,7 @@ module.exports = {
     return dbModel.tRouterTransfer.findOne({ where: { id } })
   },
   async transferFindAndCountAll(params) {
-    const { treeid, page = 1, size = 20 } = params
+    const { treeid, page = 1, size = 12 } = params
     const dbModel = await initDB(treeid)
     let result = await dbModel.tRouterTransfer.findAndCountAll({
       order: [['modify_time', 'desc']],

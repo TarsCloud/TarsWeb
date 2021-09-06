@@ -18,8 +18,9 @@ const cwd = process.cwd();
 const path = require('path');
 const assert = require('assert');
 
-const logger = require(path.join(cwd, './app/logger'));
-const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
+const logger = require(path.join(cwd, './logger'));
+const { DCacheOptPrx } = require(path.join(cwd, './rpc'));
+const { DCacheOptStruct } = require(path.join(cwd, './rpc/struct'));
 
 const ModuleService = require('./service.js');
 const ApplyService = require('../apply/service');

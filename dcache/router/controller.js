@@ -17,8 +17,8 @@
 const cwd = process.cwd();
 const path = require('path');
 
-const logger = require(path.join(cwd, './app/logger'));
-// const util = require(path.join(cwd, './app/tools/util'));
+const logger = require(path.join(cwd, './logger'));
+// const util = require(path.join(cwd, './tools/util'));
 
 const service = require('./service');
 

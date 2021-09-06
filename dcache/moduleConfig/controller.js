@@ -17,14 +17,15 @@
 const cwd = process.cwd();
 const path = require('path');
 
-const logger = require(path.join(cwd, './app/logger'));
+const logger = require(path.join(cwd, './logger'));
 const TarsStream = require('@tars/stream');
 const ApplyService = require('./../apply/service.js');
 const ModuleConfigService = require('./service.js');
 const DbAccessService = require('../dbaccess/service.js');
 
 const PatchService = require(path.join(cwd, './app/service/patch/PatchService'));
-const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
+const { DCacheOptPrx } = require(path.join(cwd, './rpc'));
+const { DCacheOptStruct } = require(path.join(cwd, './rpc/struct'));
 
 function mapCacheType(key) {
   if (key === 1) return 'hash';
@@ -311,7 +312,17 @@ const ModuleConfigController = {
       }
       // 主机、镜像、备机
       const optServerType = ['M', 'S', 'I'];
+      let bakSrcName = {};
       serverConf.forEach((item) => {
+         if (item.server_type == 0) {
+           bakSrcName[item.group_name] = `DCache.${item.server_name}`;
+         }
+      });
+
+      serverConf.forEach((item) => {
+
+        // console.log(item.dataValues);
+
         // for install use
         const host = new DCacheOptStruct.CacheHostParam();
         host.readFromObject({
@@ -319,7 +330,7 @@ const ModuleConfigController = {
           serverIp: item.server_ip,
           templateFile: item.template_name || 'tars.default',
           type: optServerType[item.server_type],
-          bakSrcServerName: item.server_type ? `DCache.${item.server_name}` : '',
+          bakSrcServerName: item.server_type ? (bakSrcName[item.group_name] ? bakSrcName[item.group_name] : '') : '',
           idc: item.area,
           priority: item.server_type ? '2' : '1',
           groupName: item.group_name,
@@ -352,12 +363,12 @@ const ModuleConfigController = {
         kvCacheConf.readFromObject({
           avgDataSize: per_record_avg.toString(),
           readDbFlag: 'Y',
-          enableErase: key_type === 3 ? 'Y' : 'N',
+          enableErase: (key_type == 3 || cache_module_type == 2 )? 'Y' : 'N',
           eraseRadio: '85%',
-          saveOnlyKey: 'Y',
-          dbFlag: cache_module_type === 2 ? 'Y' : 'N',
+          saveOnlyKey: cache_module_type == 2 ? 'Y': 'N',
+          dbFlag: cache_module_type == 2 ? 'Y' : 'N',
           dbAccessServant: cache_module_type === 2 ? dbAccessServant : '',
-          startExpireThread: key_type === 2 ? 'Y' : 'N',
+          startExpireThread: 'Y',
           expireDb: 'Y',
           hotBackupDays: '3',
           coldBackupDays: '3',
@@ -379,12 +390,12 @@ const ModuleConfigController = {
         mkvCacheConf.readFromObject({
           avgDataSize: per_record_avg.toString(),
           readDbFlag: 'Y',
-          enableErase: key_type === 3 ? 'Y' : 'N',
+          enableErase: (key_type == 3 || cache_module_type == 2) ? 'Y' : 'N',
           eraseRadio: '85%',
-          saveOnlyKey: 'Y',
-          dbFlag: cache_module_type === 2 ? 'Y' : 'N',
-          dbAccessServant: cache_module_type === 2 ? dbAccessServant : '',
-          startExpireThread: key_type === 2 ? 'Y' : 'N',
+          saveOnlyKey: cache_module_type == 2 ? 'Y': 'N',
+          dbFlag: cache_module_type == 2 ? 'Y' : 'N',
+          dbAccessServant: cache_module_type == 2 ? dbAccessServant : '',
+          startExpireThread: 'Y',
           expireDb: 'Y',
           cacheType: mapCacheType(moduleInfo.mkcache_struct),
           hotBackupDays: '3',
@@ -501,6 +512,8 @@ const ModuleConfigController = {
           const serverIps = dbAccess.dbaccess_ip.split(";");
           for (var i = 0; i < serverIps.length; i++) {
             const dbAccessReleaseInfo = new DCacheOptStruct.ReleaseInfo();
+
+            //注意, 这里和开源的不同, 为了兼容老版本!!!
             dbAccessReleaseInfo.readFromObject({
               appName: 'DCache',
               serverName: dbAccess.servant.split(".")[1],

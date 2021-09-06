@@ -7,7 +7,7 @@
         <template slot-scope="scope">
           <let-tag
             :theme="scope.row.status == 2 ? 'success' : (scope.row.status == 3 ? 'danger' : '')" checked>
-            {{statusConfig[scope.row.status] + (scope.row.status != 2 && scope.row.status != 3 ? '...' : '')}}
+            {{statusConfig[scope.row.status] + (scope.row.status != 2 && scope.row.status != 3 && scope.row.status != 4 ? '...' : '')}}
           </let-tag>
         </template>
       </let-table-column>
@@ -37,7 +37,8 @@
           2: this.$t('serverList.restart.success'),
           3: this.$t('serverList.restart.failed'),
           4: this.$t('serverList.restart.cancel'),
-          5: this.$t('serverList.restart.parial'),
+          //5: this.$t('serverList.restart.parial'),
+          5: this.$t('serverList.restart.pauseFlow'),
         },
       }
     },
@@ -47,7 +48,9 @@
           let { items, serial, status, task_no } = await getTarsReleaseProgress({releaseId: this.releaseId});
           this.items = items;
           let done = true;
-          items.forEach(item => ![2, 3].includes(item.status) ? done = false : '');
+          
+          items.forEach(item => ![2, 3, 4].includes(item.status) ? done = false : '');
+          //console.log("===>done:", done);
           if (done) {
             if (this.timer) window.clearTimeout(this.timer);
             this.success = true;

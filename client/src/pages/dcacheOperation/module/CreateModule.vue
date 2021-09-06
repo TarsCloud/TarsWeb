@@ -10,6 +10,7 @@
           size="small"
           v-model="model.apply_id"
           required
+          filterable
           :required-tip="$t('deployService.table.tips.empty')"
         >
           <let-option v-for="d in applys" :key="d.id" :value="d.id">
@@ -145,6 +146,13 @@
       Ajax.getJSON('/server/api/get_apply_list').then((applys) => {
         if (applys.length) {
           next(vm => {
+            applys = applys.sort((a, b) => {
+              const a1 = a.name.toLowerCase()
+              const b1 = b.name.toLowerCase()
+              if(a1 < b1) return -1
+              if(a1 > b1) return 1
+              return 0
+            });
             vm.applys = applys
           })
         } else {

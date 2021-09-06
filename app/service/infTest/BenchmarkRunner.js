@@ -1,5 +1,6 @@
 const InfTestDao = require('../../dao/InfTestDao');
-const { benchmarkPrx, benchmarkStruct, benchmarkNodeStruct} = require('../util/rpcClient');
+const { benchmarkPrx, benchmarkStruct, benchmarkNodeStruct} = require('../../../rpc');
+const logger = require('../../../logger');
 
 //TODO:协议中增加返回值枚举，替换此处硬编码
 const RetMap = {

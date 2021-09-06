@@ -20,7 +20,8 @@ const Sequelize = require('sequelize');
 const _ = require('lodash');
 const fs = require('fs-extra');
 
-const logger = require(path.join(cwd, './app/logger'));
+const logger = require(path.join(cwd, './logger'));
+const webConf = require(path.join(cwd, './config/webConf'));
 
 module.exports = {
   async conn(config) {
@@ -35,7 +36,7 @@ module.exports = {
         charset,
       },
       logging(sqlText) {
-        logger.sql(sqlText);
+        // logger.sql(sqlText);
       },
       pool: {
         max: pool.max || 10,
@@ -63,10 +64,10 @@ module.exports = {
       try {
         tableObj[_.camelCase(tableName)] = sequelize.import(`${dbModelsPath}/${tableName}`);
         // sync 无表创建表， alter 新增字段
-        // tableObj[_.camelCase(tableName)].sync();
-        await tableObj[_.camelCase(tableName)].sync({ alter: true });
+        // if (webConf.webConf.alter) {
+        //   await tableObj[_.camelCase(tableName)].sync({ alter: true });
+        // }
 
-        // logger.info('sync ' + database + '.' + tableName + ' succ');
       } catch (e) {
         logger.info('sync ' + database + '.' + tableName + ' error:', e);
       }
@@ -74,6 +75,6 @@ module.exports = {
 
     that[database] = tableObj;
     that[database].sequelize = sequelize;
-    await sequelize.sync();
+    // await sequelize.sync();
   }
 }

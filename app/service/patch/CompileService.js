@@ -17,7 +17,7 @@
 const PatchDao = require('../../dao/PatchDao');
 const request = require('request-promise-any');
 const compileConf = require('../../../config/compileConf');
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const CompileService = {};
 
 CompileService.addPatchTask = async (params) => {

@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const PatchService = require('../../service/patch/PatchService');
 const CompileService = require('../../service/patch/CompileService');
 const AuthService = require('../../service/auth/AuthService');
@@ -22,7 +22,7 @@ const AdminService = require('../../service/admin/AdminService');
 const ServerService = require('../../service/server/ServerService');
 const TaskService = require('../../service/task/TaskService');
 const WebConf = require('../../../config/webConf');
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 const fs = require('fs-extra');
 const md5Sum = require('md5-file').sync;
 const send = require('koa-send');
@@ -30,60 +30,68 @@ const path = require('path');
 
 const PatchController = {};
 
-PatchController.sleep = (timeountMS) => new Promise((resolve) => {
-	setTimeout(resolve, timeountMS);
-  });
+PatchController.uploadAndPublish = async(ctx) => {
+    try {
 
-PatchController.uploadAndPublish = async (ctx) => {
-	try {
+        let task_id = util.getUUID().toString();
 
-		let task_id = util.getUUID().toString();
-		// let package_type = 0;
+        let { application, module_name, comment, package_type } = ctx.req.body;
 
-		let { application, module_name, comment, package_type} = ctx.req.body;
+        let file = ctx.req.files[0];
+        if (!file) {
+            ctx.body = "upload not files";
+            return;
+        }
+        let baseUploadPath = WebConf.pkgUploadPath.path;
+        // 发布包上传目录
+        let updateTgzPath = `${baseUploadPath}/${application}/${module_name}`;
+        // console.info('updateTgzPath:', updateTgzPath);
+        await fs.ensureDirSync(updateTgzPath);
+        let hash = md5Sum(`${baseUploadPath}/${file.filename}`);
 
-		let file = ctx.req.files[0];
-		if (!file) {
-			ctx.body = "upload not files";
-			return;
-		}
-		let baseUploadPath = WebConf.pkgUploadPath.path;
-		// 发布包上传目录
-		let updateTgzPath = `${baseUploadPath}/${application}/${module_name}`;
-		// console.info('updateTgzPath:', updateTgzPath);
-		await fs.ensureDirSync(updateTgzPath);
-		let hash = md5Sum(`${baseUploadPath}/${file.filename}`);
+        let uploadTgzName = `${application}.${module_name}_${file.fieldname}_${new Date().getTime()}.tgz`;
+        logger.info('[newTgzName]:', `${updateTgzPath}/${uploadTgzName}`);
+        logger.info('[orgTgzName]:', `${baseUploadPath}/${file.filename}`);
+        await fs.rename(`${baseUploadPath}/${file.filename}`, `${updateTgzPath}/${uploadTgzName}`);
+        let paramsObj = {
+            server: `${application}.${module_name}`,
+            tgz: uploadTgzName,
+            md5: hash,
+            update_text: comment || '',
+            task_id: task_id,
+            package_type: package_type || '0',
+            posttime: new Date()
+        };
+        logger.info('[addServerPatch:]', paramsObj);
 
-		let uploadTgzName = `${application}.${module_name}_${file.fieldname}_${new Date().getTime()}.tgz`;
-		logger.info('[newTgzName]:', `${updateTgzPath}/${uploadTgzName}`);
-		logger.info('[orgTgzName]:', `${baseUploadPath}/${file.filename}`);
-		await fs.rename(`${baseUploadPath}/${file.filename}`, `${updateTgzPath}/${uploadTgzName}`);
-		let paramsObj = {
-			server: `${application}.${module_name}`,
-			tgz: uploadTgzName,
-			md5: hash,
-			update_text: comment || '',
-			task_id: task_id,
-			package_type: package_type || '0',
-			posttime: new Date()
-		};
-		logger.info('[addServerPatch:]', paramsObj);
-		let ret = await PatchService.addServerPatch(paramsObj);
-		await CompileService.addPatchTask(paramsObj).catch((err) => {
-			logger.error('[CompileService.addPatchTask]:', err);
-		});
+        if (WebConf.isEnableK8s()) {
+            //上传到patch服务
+            let ret = await PatchService.uploadToPatch(hash, application, module_name, uploadTgzName, updateTgzPath + '/' + uploadTgzName);
+            if (ret != 0) {
+                ctx.body += "upload to patch error";
+                return;
+            }
+        }
 
-		let patch = await CompileService.getServerPatchByTaskId(task_id);
+        //写数据库
+        await PatchService.addServerPatch(paramsObj);
 
-		let serverIds = util.viewFilter(await ServerService.getServerConfList4Tree({application, serverName: module_name}));
+        await CompileService.addPatchTask(paramsObj).catch((err) => {
+            logger.error('[addPatchTask]:', err);
+        });
 
-		let task_no = util.getUUID().toString();
-		let serial = true;
-		let items = [];
+        let patch = await CompileService.getServerPatchByTaskId(task_id);
+
+        let serverIds = util.viewFilter(await ServerService.getServerConfList4Tree({ application, serverName: module_name }));
+
+        let task_no = util.getUUID().toString();
+        let serial = true;
+        let items = [];
 
         ctx.body += "\n";
+        let restart = ctx.req.body.restart || "";
         for (let index = 0; index < serverIds.length; index++) {
-            if (serverIds[index].setting_state == "inactive") {
+            if (restart != "1" && serverIds[index].setting_state == "inactive") {
                 continue;
             }
             ctx.body += "patch serverId: " + serverIds[index].id + ", node_name: " + serverIds[index].node_name + "\n";
@@ -93,13 +101,13 @@ PatchController.uploadAndPublish = async (ctx) => {
 		if (items.length > 0) {
 			await TaskService.addTask({ serial, items, task_no, userName: 'auto-developer' });
 
-			while (true) {
-				await PatchController.sleep(2000);
-				ret = await TaskService.getTaskRsp(task_no);
-				if (ret.status != 1) {
-					break;
-				}
-			}
+        while (true) {
+            await util.sleep(2000);
+            ret = await TaskService.getTaskRsp(task_no);
+            if (ret.status != 1) {
+                break;
+            }
+        }
 
 			let info = "-----------------------------------------------------------------\n";
 			info += "task no:  [" + ret.task_no + "]\n\n";
@@ -113,9 +121,9 @@ PatchController.uploadAndPublish = async (ctx) => {
 
 		}
 
-	} catch (e) {
-		ctx.body = "upload and patch err:" + e;
-	}
+    } catch (e) {
+        ctx.body = "upload and patch err:" + e;
+    }
 
 };
 
@@ -155,14 +163,25 @@ PatchController.uploadPatchPackage = async (ctx) => {
 				task_id: task_id,
 				package_type: package_type || '0',
                 posttime: new Date(),
-                upload_time:new Date(),
-                upload_user:ctx.uid
-			};
-			logger.info('[addServerPatch:]', paramsObj);
-			let ret = await PatchService.addServerPatch(paramsObj);
-			await CompileService.addPatchTask(paramsObj).catch((err) => {
-				logger.error('[CompileService.addPatchTask]:', err);
-			});
+                upload_time: new Date(),
+                upload_user: ctx.uid
+            };
+
+            if (WebConf.isEnableK8s()) {
+
+                //上传到patch服务
+                let ret = await PatchService.uploadToPatch(hash, application, module_name, uploadTgzName, updateTgzPath + '/' + uploadTgzName);
+                if (ret != 0) {
+                    ctx.makeErrResObj(500, "upload to patch error");
+                    return;
+                }
+            }
+
+            logger.info('[addServerPatch:]', paramsObj);
+            await PatchService.addServerPatch(paramsObj);
+            let ret = await CompileService.addPatchTask(paramsObj).catch((err) => {
+                logger.error('[addPatchTask]:', err);
+            });
 
 			let data = util.viewFilter(ret, {
 				id: '',

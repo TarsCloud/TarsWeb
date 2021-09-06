@@ -13,9 +13,9 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
-// let request = require('request-promise-any');
-const logger = require('../app/logger');
-let LoginService = require('../sso/app/service/login/LoginService')
+const logger = require('../logger');
+
+let LoginService = require('../sso/service/login/LoginService');
 
 /**
  * 登录配置
@@ -41,9 +41,9 @@ module.exports = {
     validateMatch: [
         ['data.result', true]
     ],                                      //校验通过匹配条件，可以从多层结果，多个情况
-    ignore: ['/static'],                    //不需要登录校验的路径
-    ignoreIps: ['127.0.0.1', 'localhost'],  //访问ip白名单
-    apiPrefix: ['/pages/server/api', '/api'],       //接口相应的路径前缀，这类接口访问不直接跳转到登录界面，而只是提示未登录
+    ignore: ['/static'],            //不需要登录校验的路径
+    ignoreIps: ['127.0.0.1', 'localhost',"192.168.8.249","192.168.8.89"],  //访问ip白名单
+    apiPrefix: ['/pages/server/api', '/pages/k8s/api', '/api', '/k8s/api'], //接口相应的路径前缀，这类接口访问不直接跳转到登录界面，而只是提示未登录
     apiNotLoginMes: '#common.noLogin#',     //接口无登录权限的提示语
 };
 

@@ -69,20 +69,19 @@ Dao.getById = async (id) => {
 };
 
 Dao.getList = async (business_name, application_name) => {
-	const where = {}
-	if(business_name) {
-		where.f_business_name = {
-			[Sequelize.Op.like]: `%${business_name}%`
-		}
-	}
-	
-	if(application_name) {
-		where.f_application_name = {
-			[Sequelize.Op.like]: `%${application_name}%`
-		}
-	}
+    const where = {}
+    if (business_name) {
+        where.f_business_name = {
+            [Sequelize.Op.like]: `%${business_name}%`
+        }
+    }
 
-	return await dbTable.findAll({ where });
+    if (application_name) {
+        where.f_application_name = {
+            [Sequelize.Op.like]: `%${application_name}%`
+        }
+    }
+    return await dbTable.findAll({where, order: ["f_business_name", "f_application_name"]});
 };
 
 module.exports = Dao;

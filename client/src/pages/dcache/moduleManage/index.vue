@@ -23,6 +23,7 @@
         </template> 
       </let-table-column>
       <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="125px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.area')" prop="area" width="45px" ></let-table-column>
       <let-table-column :title="$t('serverList.table.th.zb')" width="45px">
         <template slot-scope="{row:{server_type}}">
           <span v-if="server_type === 'M' ">{{$t('cache.mainEngine')}}</span>
@@ -67,6 +68,7 @@
           <br>
           <let-table-operation @click="manageServant(scope.row)">{{$t('operate.servant')}}</let-table-operation>
           <let-table-operation @click="showMoreCmd(scope.row)">{{$t('operate.more')}}</let-table-operation>
+          <let-table-operation @click="showStatus(scope.row.id)">{{$t('operate.status')}}</let-table-operation>
         </template>
       </let-table-column>
       <!--批量操作-->
@@ -80,6 +82,8 @@
         <non-server-migration :disabled="!hasCheckedServer" :expand-servers="serverList"
                               v-if="serverList.length"></non-server-migration>
         <let-button theme="primary" :disabled="!hasCheckedServer" @click="switchHandler">{{$t('dcache.switch')}}
+        </let-button>
+        <let-button theme="primary" :disabled="!hasCheckedServer" @click="switchMIHandler">{{$t('dcache.switchMirrorAsMaster')}}
         </let-button>
         <offline :disabled="!hasCheckedServer" :server-list="serverList" @success-fn="getServerList"></offline>
         <batch-publish :disabled="!hasCheckedServer" :checked-servers="checkedServers" @success-fn="getServerList"></batch-publish>
@@ -241,8 +245,8 @@
         <let-table-column :title="$t('operate.servant')" prop="servant"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.adress')" prop="endpoint"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.thread')" prop="thread_num"></let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" prop="max_connections"></let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxQueue')" prop="queuecap"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.connections')" prop="max_connections"></let-table-column>
+        <let-table-column :title="$t('serverList.table.servant.capacity')" prop="queuecap"></let-table-column>
         <let-table-column :title="$t('serverList.table.servant.timeout')" prop="queuetimeout"></let-table-column>
         <let-table-column :title="$t('operate.operates')" width="90px">
           <template slot-scope="scope">
@@ -300,7 +304,7 @@
               $t('serverList.servant.error')"
           ></let-input>
         </let-form-item>
-        <let-form-item :label="$t('serverList.servant.maxConnecttions')" labelWidth="150px">
+        <let-form-item :label="$t('serverList.servant.connections')" labelWidth="150px">
           <let-input
             size="small"
             v-model="servantDetailModal.model.max_connections"
@@ -430,7 +434,7 @@
   import batchPublish from './batchPublish.vue'
   import batchOperation from './batchOperation.vue'
   import offline from './offline.vue'
-  import { hasOperation, reduceDcache, switchServer, getCacheServerList } from '@/dcache/interface.js'
+  import { hasOperation, reduceDcache, switchServer, switchMIServer, getCacheServerList } from '@/dcache/interface.js'
 
   export default {
     components: { Expand, ServerMigration, nonServerMigration, offline, batchPublish, batchOperation },
@@ -662,7 +666,48 @@
           this.$tip.error(err.message);
         }
       },
+      /**
+       * switchMIHandler
+       */
+      async switchMIHandler() {
+        try {
+          // 该模块已经有任务在迁移操作了， 不允许再缩容， 请去操作管理停止操作再缩容
+          let server = this.serverList[0];
+          let { app_name, module_name } = server;
+          let servers = this.serverList.filter(item => item.isChecked);
+          let selectedGroupNameArr = servers.map(item => item.group_name);
+          // 已选去重
+          selectedGroupNameArr = Array.from(new Set(selectedGroupNameArr));
+          if (selectedGroupNameArr.length != 1) throw new Error(this.$t('dcache.operationManage.onceSwitch'));
 
+          console.log("==>servers:", servers);
+          let imageIdc = "";
+          let masterSettingState = "active";
+          for (var i = 0; i < servers.length; i++) {
+            if (servers[i].server_type == "I") {
+              imageIdc = servers[i].area;
+              //break;
+            }
+            else if(servers[i].server_type == "M") {
+              masterSettingState = servers[i].setting_state;
+            }
+          }
+
+          if (imageIdc == "") throw new Error(this.$t('dcache.operationManage.switchMINoImage'));
+          if (masterSettingState != "inactive") throw new Error(this.$t('dcache.operationManage.switchMIMasterNotInactive'));
+
+          // 确定切换
+          await this.$confirm(this.$t('dcache.operationManage.ensureSwitchMI') + imageIdc);
+
+          // 切换
+          await switchMIServer({ appName: app_name, moduleName: module_name, groupName: selectedGroupNameArr[0], imageIdc: imageIdc });
+          this.$tip.success(this.$t('dcache.operationManage.switchSuccess'));
+          this.getServerList();
+        } catch (err) {
+          console.error(err);
+          this.$tip.error(err.message);
+        }
+      },
       /**
        * 获取最后一个分组的所有服务
        */
@@ -678,7 +723,8 @@
       checkPatchVersion() {
         let same = true;
         let obj = {};
-        this.serverList.forEach(({ patch_version }, index) => {
+        let selectLists = this.serverList.filter(item => item.isChecked === true);
+        selectLists.forEach(({ patch_version }, index) => {
           // 第一次赋值给 obj， 第二次开始检查有木有该值存在， 不存在说明存在不同的 patch_version
           if (index === 0) return obj[patch_version] = patch_version;
           if (!obj[patch_version]) same = false;
@@ -1073,6 +1119,9 @@
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
         });
+      },
+      showStatus(id) {
+        this.sendCommand(id, "status");
       },
       sendCommand(id, command, hold) {
         const loading = this.$Loading.show();

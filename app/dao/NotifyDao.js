@@ -15,7 +15,9 @@
  */
 
 const {tServerNotifys} = require('./db').db_tars;
-
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+const Db = require('../dao/db/index')
 const NotifyDao = {};
 
 
@@ -34,5 +36,16 @@ NotifyDao.getServerNotifyList = async (serverIds, curPage, pageSize) => {
 	return await tServerNotifys.findAndCountAll(options);
 };
 
+NotifyDao.getServerLastNotify = async (server_id) => {
+	let where = {};
+	where.server_id = server_id;
+	let options = {
+		where: where,
+		order: [['notifytime', 'DESC']]
+	};
+	options.limit = 1;
+	options.offset = 0;
+	return await tServerNotifys.findAll(options);
+};
 
 module.exports = NotifyDao;

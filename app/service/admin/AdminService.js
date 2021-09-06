@@ -14,7 +14,8 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const { configFPrx, configFStruct, adminRegPrx, adminRegStruct, client } = require('../util/rpcClient');
+
+const { configFPrx, adminRegPrx, client } = require('../../../rpc');
 const registry = require("@tars/registry");
 const TarsStream = require('@tars/stream');
 const crypto = require("crypto")
@@ -22,13 +23,9 @@ const _ = require('lodash')
 
 registry.setLocator(client.getProperty('locator'));
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
+const util = require('../../../tools/util');
 
-//hash number计算(不直接用taskNo前几位，不耦合)
-function getHashNumber(taskNo){
-    let buf = crypto.createHash("md5").update(taskNo +"").digest();
-    return ((buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0]) >>> 0
-}
 
 const AdminService = {};
 
@@ -74,11 +71,13 @@ AdminService.loadConfigByHost = async(server, filename, host) => {
     }
 };
 
-AdminService.doCommand = async(targets, command) => {
+AdminService.doCommand = async(targets, command ,user) => {
     let rets = [];
     for (var i = 0, len = targets.length; i < len; i++) {
         let target = targets[i];
         let ret = {};
+        target.userName = user;
+        target.command = command;
         try {
             ret = await adminRegPrx.notifyServer(target.application, target.serverName, target.nodeName, command);
         } catch (e) {
@@ -99,9 +98,32 @@ AdminService.doCommand = async(targets, command) => {
     return rets;
 };
 
+AdminService.updateFlowStatus = async(application, server_name, status, node_list) => {
+    // console.log("=========>do update...");
+    let ret = {};
+    try {
+        let nodeList = new TarsStream.List(TarsStream.String);
+        //nodeList.readFromObject(node_list);
+        for (let i = 0; i < node_list.length; i++) {
+            nodeList.push(node_list[i]);
+        }
+        // console.log("====>", application, server_name, nodeList, status);
+        ret = await adminRegPrx.updateServerFlowState(application, server_name, nodeList, status);
+    } catch (e) {
+        // console.log("======>exception:", e);
+        ret = {
+            __return: -1,
+            result: e
+        }
+    }
+
+    return ret;
+};
+
 AdminService.getTaskRsp = async(taskNo) => {
-    let ret = await adminRegPrx.getTaskRsp(taskNo,{
-        hashCode: getHashNumber(taskNo)
+//    console.log("=====>getTaskRsp, hashCode=", util.getHashNumber(taskNo));
+    let ret = await adminRegPrx.getTaskRsp(taskNo, {
+        hashCode: util.getHashNumber(taskNo)
     });
     if (ret.__return == 0) {
         return ret.taskRsp;
@@ -132,8 +154,9 @@ AdminService.addTask = async(req) => {
         });
         taskReq.taskItemReq.push(taskItemReq)
     });
-    let ret = await adminRegPrx.addTaskReq(taskReq,{
-        hashCode: getHashNumber(taskReq.taskNo)
+ //   console.log("=====>addTask, hashCode=", util.getHashNumber(taskReq.taskNo));
+    let ret = await adminRegPrx.addTaskReq(taskReq, {
+        hashCode: util.getHashNumber(taskReq.taskNo)
     });
 
     return ret.__return;
@@ -169,7 +192,7 @@ AdminService.deletePatchFile = async(application, server, patchFile) => {
 };
 
 AdminService.getFrameworkList = async() => {
- 
+
     let timeout = adminRegPrx.getTimeout();
 
     adminRegPrx.setTimeout(3000);
@@ -196,18 +219,42 @@ AdminService.checkServer = async(server) => {
     if (ret.__return === 0) {
         return 0;
     } else {
-        throw new Error(__return);
+        throw new Error(ret.__return);
     }
 };
 
 AdminService.getProfileTemplate = async(profileName) => {
-
     let ret = await adminRegPrx.getProfileTemplate(profileName);
-
     if (ret.__return === 0) {
         return ret.profileTemplate;
     } else {
-        throw new Error(__return);
+        throw new Error(ret.__return);
+    }
+};
+
+AdminService.getServerProfileTemplate = async (application, serverName, nodeName) => {
+    let ret = await adminRegPrx.getServerProfileTemplate(application, serverName, nodeName);
+    if (ret.__return === 0) {
+        return ret.profileTemplate;
+    } else {
+        throw new Error(ret.__return);
+    }
+}
+
+AdminService.getServerState = async(application, serverName, nodeName)=>{
+    let  ret = await adminRegPrx.getServerState(application,serverName,nodeName);
+    return ret;
+}
+
+AdminService.pingNodeBool = async(nodeName) => {
+    let timeout = adminRegPrx.getTimeout();
+    adminRegPrx.setTimeout(2000);
+    let ret = await adminRegPrx.pingNode(nodeName)
+    adminRegPrx.setTimeout(timeout);
+    if (ret.__return) {
+        return true;
+    } else {
+        return false;
     }
 };
 

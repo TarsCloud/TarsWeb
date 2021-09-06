@@ -1,0 +1,2008 @@
+{
+    "localeCode": "cn",
+    "localeName": "中文",
+    "version": "2.0.0",
+    "header": {
+        "tab": {
+            "tab1": "服务管理",
+            "tab2": "运维管理",
+            "tab3": "发布包管理",
+            "tab4": "cache 配置",
+            "tab5": "操作管理",
+            "tab6": "基础管理",
+            "tab7": "服务历史管理",
+            "tab8": "网关配置"
+        },
+        "dcache": {
+            "tab2": "服务创建"
+        },
+        "logout": "退出登录",
+        "modifyPass": "修改密码",
+        "userCenter": "用户中心"
+    },
+    "callChain": {
+        "sub":"查询",
+        "noResult":"暂无结果",
+        "allTrackingNumbers":"所有追踪编号:",
+        "pleaseSelectTrackingNumber":"请选择追踪编号",
+        "method":"方法:",
+        "selectMethod":"请选择方法",
+        "methodTrackingNumbers":"该方法下追踪编号:",
+        "selectMethodTrackingNumbers":"请选择方法下追踪编号",
+        "trackingNumbers":"追踪编号：",
+        "date":"日期",
+        "btime":"开始时间",
+        "etime":"结束时间",
+        "timeStamp":"时间戳",
+        "operation":"操作",
+        "detail":"详情",
+        "sbtime":"请选择开始时间",
+        "setime":"请选择结束时间",
+        "sdata":"请选择日期",
+        "searchSuc":"查询成功",
+        "stringBtime":"开始时间：",
+        "stringEtime":"结束时间：",
+        "clientTime":"client总时间：",
+        "serverTime":"server总时间：",
+        "timeFrame":"时间范围",
+        "allTime":"执行时间"
+    },
+    "deployLog": {
+        "log": "优先部署tarslog",
+        "installNode": "请先安装TarsNode",
+        "failed": "服务部署失败",
+        "sameWithRegistry": "tarslog不能和基础框架部署在相同服务器上",
+        "info": "请求优先迁移部署tarslog, 不能和基础框架部署同一台机器上",
+        "install": "迁移部署"
+    },
+    "task": {
+        "params": "参数错误",
+        "serverLimit": "tars服务, 必须要保留一个, 不能都下线",
+        "framework": "框架上部署的公共tars服务不能下线"
+    },
+    "releasePackage": {
+        "proxyList": "Proxy服务列表",
+        "routerList": "Router服务列表",
+        "accessList": "DbAccess服务列表",
+        "cacheList": "Cache服务列表",
+        "uploadPackage": "上传发布包",
+        "uploadPackageTips": "发布包与服务名称不匹配",
+        "moduleName": "模块名",
+        "uploadTime": "上传时间",
+        "default": "默认",
+        "confirmDeleteTip": "确定要删除这个发布包吗？",
+        "cacheType": "cache类型"
+    },
+    "api": {
+        "blank": {
+            "error": {
+                "message": "错误码详细说明为空"
+            },
+            "template": {
+                "id": "模板ID为空",
+                "name": "模板名称为空"
+            },
+            "parent": {
+                "template": {
+                    "name": "父模板名称为空"
+                }
+            }
+        },
+        "create": {
+            "config": {
+                "file": "创建配置文件"
+            }
+        },
+        "config": {
+            "file": {
+                "being": {
+                    "referred": "配置文件被引用"
+                }
+            }
+        },
+        "cant": {
+            "delete": {
+                "or": {
+                    "update": "不能更新/删除"
+                }
+            },
+            "update": "不能更新"
+        },
+        "nonexistent": {
+            "template": "模板不存在",
+            "parent": {
+                "template": "父模板不存在"
+            },
+            "multipart": "请求中没有上传数据"
+        },
+        "template": {
+            "being": {
+                "referred": "模板被引用"
+            }
+        },
+        "expand": {
+            "node": {
+                "status": {
+                    "existent": "已存在",
+                    "nonexistent": "未扩容"
+                }
+            }
+        },
+        "parameter": {
+            "blank": "参数{0}为空",
+            "invalid": "参数{0}格式错误"
+        },
+        "execute": {
+            "package": {
+                "script": {
+                    "error": "执行安装包打包命令报错"
+                }
+            }
+        },
+        "resource": {
+            "tarsNodeExist": "Node 已存在",
+            "downloadFail": "下载tarsnode.tgz发布包失败",
+            "registryAddressIsEmpty": "主控地址为空",
+            "machineIpIsEmpty": "节点ip为空",
+            "installFailed": "安装Node失败",
+            "uninstallFailed": "卸载Node失败",
+            "notConfig": "未找到机器配置",
+            "serverExist": "该机器上还存在服务，不允许删除node",
+            "sshFailed": "ssh链接失败",
+            "installSuccess": "安装Node成功",
+            "uninstallSuccess": "卸载Node成功"
+        }
+    },
+    "apply": {
+        "title": "应用",
+        "createTitle": "创建应用",
+        "name": "应用名",
+        "createApply": "创建应用",
+        "createRouterProxyService": "创建 router、proxy 服务",
+        "createRegionTips": "创建应用之前，请先创建地区",
+        "uploadPatchPackage": "创建应用之前，请先上传 proxy、router、dcache 发布包并设置默认",
+        "hasExist": "应用已存在",
+        "RouterConfigInfo": "Router配置信息",
+        "ProxyConfigInfo": "Proxy配置信息",
+        "install": "安装",
+        "publish": "发布",
+        "installAndPublish": "安装发布",
+        "ProxyManage": "Proxy 管理",
+        "RouterManage": "Router 管理",
+        "CacheManage": "Cache 管理",
+        "noDefaultProxyPackage": "不存在默认的Proxy发布包",
+        "noDefaultRouterPackage": "不存在默认的Router发布包",
+        "duplicateIp": "服务IP不允许重复， 请重新输入正确的服务IP",
+        "routerIp": "Router的IP不能为空",
+        "proxyIp": "Proxy的IP不能为空",
+        "dbMethod": "请选择路由数据库"
+    },
+    "module": {
+        "title": "模块",
+        "createTitle": "创建模块",
+        "update": "模块已经存在, 请选择更新方式",
+        "name": "模块名",
+        "chooseMirror": "请选择至少一个镜像地址",
+        "namingRule": "应用名+自定义名称, 只允许字母和数字",
+        "keyType": "key类型",
+        "createModule": "创建模块",
+        "createModuleService": "创建模块服务",
+        "moduleConfig": "模块配置",
+        "scenario": "应用场景",
+        "createApplyTips": "创建模块之前，请先创建应用",
+        "cacheType": "cache 类型",
+        "follower": "关注人",
+        "serverConfig": "服务配置",
+        "serverGroup": "服务组",
+        "memorySize": "内存大小（M）",
+        "deployArea": "部署地区",
+        "moduleId": "ID",
+        "moduleInfo": "Cache模块信息",
+        "serverInfo": "Cache服务信息",
+        "mainServer": "主机",
+        "backServer": "备机",
+        "mirror": "镜像",
+        "shmKey": "共享内存key(十进制)",
+        "shmKeyRule": "不设置则自动分配",
+        "MultiKeyConfig": "多字段配置",
+        "hasExist": "模块已存在",
+        "dbAccessInfo": "DbAccess服务信息",
+        "namingError": "模块名须以应用名开头，且只允许字母和数字",
+        "shmKeyError": "同一IP下不允许有相同的共享内存key",
+        "dbAccessIp": "DbAccess服务Ip",
+        "dbMethod": "请选择DbAccess Mysql实例",
+        "openBackup": "备机",
+        "closeBackup": "备机",
+        "batchCreate": "批量创建模块"
+    },
+    "MKCache": {
+        "mainKey": "主索引(mkey)",
+        "unionKey": "联合索引(ukey)",
+        "dataValue": "数据字段(value)",
+        "fieldName": "字段名",
+        "dataType": "字段类型",
+        "fieldProperty": "必选/可选",
+        "defaultValue": "默认值",
+        "maxLen": "最大长度(字节)",
+        "error": "至少需保留一项"
+    },
+    "cache": {
+        "title": "cache",
+        "cachePersistent": "cache + 持久化",
+        "cacheType": "Cache类型",
+        "persistentNumber": "持久化的总数据条数",
+        "dbDataCountUnit": "万条数据",
+        "dbAccessServantObj": "DbAccess服务的Obj信息",
+        "dbAccessServantObjEx": "Test.TestDbAccessServer.DbAccessObj",
+        "cacheTypeTip1": "内存数据库(不淘汰)",
+        "cacheTypeTip2": "临时缓存(过期淘汰)",
+        "cacheTypeTip3": "热点缓存(容量淘汰)",
+        "installFull": "全新覆盖安装",
+        "installFullInfo": "请注意共享内存的大小需要和之前保持一致, 或者清除之前的共享内存, 请谨慎操作!",
+        "installDbAccess": "安装DbAccess",
+        "installDbAccessInfo": "安装完后注意修改对应的Cache配置, 启用DbAccess并关联到当前DbAccess服务, 并重启Cache服务",
+        "installBackup": "安装备机",
+        "installMirror": "安装镜像",
+        "perRecordAvg": "数据记录平均字节数",
+        "perRecordAvgUnit": "字节Byte",
+        "totalRecord": "Cache中保存",
+        "maxReadFlow": "预估峰值读流量",
+        "maxWriteFlow": "预估峰值写流量",
+        "flowUnit": "次/秒",
+        "moduleRemark": "功能备注",
+        "mainEngine": "主机",
+        "standByEngine": "备机",
+        "mirror": "镜像",
+        "add": "添加",
+        "modification": "修改",
+        "sTypeTip1": "Value作为一个整体Buffer存储",
+        "sTypeTip2": "Value采用JCE结构体序列化, 并对应数据库表字段",
+        "accessDbName": "DbAccess Mysql实例信息",
+        "chooseAccessDb": "请选择DbAccess Mysql实例信息",
+        "inputAccessDb": "请输入DbAccess Mysql实例信息",
+        "dbaccessIp": "必须选择一个DbAccess服务的IP",
+        "db": {
+            "DBPrefix": "数据库前缀(建议不要修改)",
+            "dbNum": "分库数量",
+            "tableNum": "分表数量",
+            "tablePrefix": "表前缀(建议不要修改)",
+            "tableEngine": "表引擎",
+            "tableCharset": "表字符集",
+            "vDBInfo": "DB实例信息",
+            "dbHost": "数据库IP",
+            "dbUser": "用户名",
+            "dbPass": "密码",
+            "dbCharset": "字符集",
+            "dbPort": "端口"
+        },
+        "config": {
+            "tableTitle": "cache 配置列表",
+            "addSuccess": "添加配置成功",
+            "addConfig": "添加配置",
+            "deleteConfig": "删除配置",
+            "editConfig": "编辑配置",
+            "remark": "备注",
+            "path": "路径",
+            "item": "配置项",
+            "itemValue": "配置值",
+            "reload": "加载生效",
+            "period": "版本",
+            "configuration": "配置中心",
+            "noModuleExist": "模块不存在",
+            "value": "值",
+            "config_value": "当前值",
+            "modify_value": "修改值",
+            "edit": "编辑配置",
+            "view": "查看配置",
+            "add": "添加配置",
+            "allSelected": "全选",
+            "batchUpdate": "批量更新",
+            "batchDelete": "批量删除",
+            "addModuleConfig": "添加模块配置"
+        }
+    },
+    "dcache": {
+        "expand": "扩容",
+        "Shrinkage": "缩容",
+        "Migration": "迁移",
+        "serverMigration": "部署迁移",
+        "nonServerMigration": "非部署迁移",
+        "batchPublish": "批量发布",
+        "migrationMethod": "迁移方式",
+        "migrationMethod1": "完整数据迁移",
+        "migrationMethod2": "无数据迁移",
+        "switch": "主备切换",
+        "mirrorSwitch": "镜像主备切换",
+        "mirrorOffSwitch": "镜像切换",
+        "switchMirrorAsMaster": "镜像切主",
+        "readFail": "备机不可读",
+        "switching": "正在切换",
+        "switchSuccess": "切换成功",
+        "notSwitch": "未切换",
+        "switchFailure": "切换失败",
+        "rw": "读写",
+        "ro": "只读",
+        "imageUnavailable": "镜像不可用",
+        "auto": "自动切换",
+        "manual": "手动切换",
+        "omig": "迁移",
+        "oreset": "恢复",
+        "oswitch": "切换",
+        "amig": "一键迁移",
+        "areset": "恢复镜像状态",
+        "mirrorEmpty": "镜像 idc 为空，禁止恢复镜像状态。",
+        "noTheSamePatchVersion": "存在不同版本的服务，不允许操作",
+        "hasExpandOperation": "该模块已经有任务在迁移操作了， 不允许再扩容， 请去操作管理停止操作再扩容",
+        "hasShrinkageOperation": "该模块已经有任务在迁移操作了， 不允许再缩容， 请去操作管理停止操作再缩容",
+        "hasMigrationOperation": "该模块已经有任务在迁移操作了， 不允许再迁移， 请去操作管理停止操作再迁移",
+        "leaveOneServiceGroup": "至少留一个服务组",
+        "onlyOneServiceGroup": "只有一个服务组，不允许非部署迁移",
+        "oneGroup": "迁移服务， 只能选一个组",
+        "offline": "下线服务",
+        "cantOffline": "下线的服务中，有存活的服务，请先停止， 再下线",
+        "hasRouterPageNo": "下线的服务中，有路由页，请谨慎操作。 ",
+        "hostOfflineAllServers": "选中的服务中，有主机，将下线该模块所有服务",
+        "offlineAllBackupServers": "选中的服务中，有备机，将下线该模块所有备机服务",
+        "offlineMirrorServers": "选中的服务有镜像， 下线该模块所有的镜像服务",
+        "offlineBackupMirrorServers": "选中的服务有备机和镜像，将下线所有备机和镜像",
+        "sureOffline": "确定下线",
+        "moduleExists": "模块已经存在, 确定覆盖嘛?",
+        "applyExists": "DCache应用已经存在, 确定覆盖嘛?",
+        "operationManage": {
+            "expand": "扩容管理",
+            "shrinkage": "缩容管理",
+            "migration": "迁移管理",
+            "mainBackup": "切换管理",
+            "router": "路由管理",
+            "appName": "应用名",
+            "moduleName": "模块名",
+            "srcGroupName": "迁移源组",
+            "dstGroupName": "迁移目的组",
+            "status": "状态",
+            "beginTime": "开始时间",
+            "progress": "进度",
+            "routerPageNo": "路由页",
+            "statusText": {
+                "0": "新增迁移任务",
+                "1": "配置阶段完成",
+                "2": "发布完成",
+                "3": "正在迁移",
+                "4": "完成",
+                "5": "停止"
+            },
+            "ensureDelete": "确认删除吗？",
+            "ensureStop": "确认停止吗？",
+            "ensureRestart": "确认重启任务吗？",
+            "ensureShrinkage": "确认缩容吗？",
+            "hasShrinkage": "已经发起缩容，请到操作管理查看缩容进度",
+            "hasExpand": "已经发起扩容，请到操作管理查看扩容进度",
+            "hasServerMigration": "已经发起部署迁移，请到操作管理查看部署迁移进度",
+            "hasnonServerMigration": "已经发起非部署迁移，请到操作管理查看部署迁移进度",
+            "onceSwitch": "一次只允许一组切换",
+            "ensureSwitch": "确定切换吗？",
+            "ensureSwitchMI": "确定将镜像切换为主机吗？该操作是在主备机所在机房都挂掉的情况下才会操作, 当前要切为主的镜像IDC是：",
+            "switchMINoImage": "该组没有找到异地镜像，无法进行切换！",
+            "switchMIMasterNotInactive": "镜像切换为主时，请勾选对应主机，并确认主机当前设置状态为off(inavtive)状态才能切换镜像为主！",
+            "switchSuccess": "切换成功",
+            "groupName": "服务组",
+            "masterServer": "master server",
+            "slaveServer": "slave server",
+            "switchTime": "开始时间",
+            "modifyTime": "更新时间",
+            "dbFlag": "DB Flag",
+            "allowedOut": "允许淘汰",
+            "switchType": "切换类型",
+            "switchResult": "切换结果",
+            "groupStatus": "组状态",
+            "switchMethod": "切换方式"
+        },
+        "batch": {
+            "edit": "批量编辑",
+            "restart": "批量重启",
+            "stop": "批量停止",
+            "elegantTask": "无损任务",
+            "commonTask": "普通任务",
+            "elegantEachNum": "每批任务节点数"
+        },
+        "debug": {
+            "interfaceName": "接口名",
+            "cacheKey": "Key",
+            "cacheValue": "Value",
+            "success": "[成功]",
+            "fail": "[失败]",
+            "error": "[错误]",
+            "retCode": "返回码",
+            "dataNotExist": "【数据记录不存在】",
+            "debugResult": "测试结果",
+            "length": "数据长度",
+            "version": "数据版本",
+            "md5": "数据MD5",
+            "value": "数据Value",
+            "params": "测试参数",
+            "delConfirm": "确定要删除该条Cache记录吗？请谨慎操作！",
+            "setConfirm": "确定要【手动设置】该条Cache内容吗？如果Cache-Value数据是序列化后的二进制内容，理论上不允许该操作！"
+        },
+        "execute": "执行中...",
+        "executeSuccess": "执行成功"
+    },
+    "service": {
+        "serverName": "服务名",
+        "serverIp": "服务IP",
+        "templateFile": "服务模版",
+        "routerDbName": "路由数据库",
+        "routerDbNameTip": "提供可用的mysql实例，并设置一个希望的数据库名称，router将自动创建该数据库，并用其存储应用下各模块的路由信息。",
+        "routerDbIp": "数据库IP",
+        "routerDbPort": "数据库端口",
+        "routerDbUser": "用户名",
+        "routerDbPass": "密码",
+        "multipleIp": "服务IP(多个IP用;分隔)",
+        "isSerializated": "数据序列化",
+        "chooseRouterDb": "选择路由Mysql实例信息",
+        "inputRouterDb": "输入路由Mysql实例信息"
+    },
+    "region": {
+        "title": "地区",
+        "idcArea": "IDC地区",
+        "setArea": "异地镜像地区",
+        "list": "地区列表",
+        "label": "地区标签",
+        "modify": "修改地区",
+        "add": "新增地区",
+        "regionTips": "例如：深圳",
+        "labelTips": "例如：sz"
+    },
+    "common": {
+        "reTry": "请检查数据库连接是否正常",
+        "deploy": "基础框架上无法部署其他服务",
+        "createPerson": "创建人",
+        "baseInfo": "基本信息",
+        "nextStep": "下一步",
+        "admin": "管理员",
+        "serial": "序号",
+        "config": "配置",
+        "patch": "发布",
+        "gracePatch": "平滑发布",
+        "graceInfo": "",
+        "service": "服务",
+        "time": "时间",
+        "name": "名",
+        "true": "是",
+        "false": "否",
+        "yes": "是",
+        "no": "否",
+        "template": "模板",
+        "type": "类型",
+        "cancel": "取消",
+        "submit": "确定",
+        "choose": "选择",
+        "status": "状态",
+        "result": "结果",
+        "error": "错误",
+        "warning": "警告",
+        "success": "成功!!!",
+        "ip": "节点",
+        "systemError": "系统内部错误",
+        "noPrivilage": "没有权限",
+        "notEmpty": "不能为空",
+        "mustUnique": "数据已存在",
+        "needNumber": "必须为数字",
+        "needArray": "必须为数组",
+        "needObject": "必须为对象",
+        "needBoolean": "必须为布尔值",
+        "noLogin": "您还没有登录",
+        "nodata": "没有数据",
+        "noService": "没有服务",
+        "dcacheSystem": "访问dcache失败, 请先安装dcache",
+        "retry": "点击重试",
+        "enable": "启用",
+        "disable": "不启用",
+        "alert": "提示",
+        "networkErr": "网络错误",
+        "set": {
+            "setName": "SET名",
+            "setArea": "SET区域",
+            "setGroup": "SET组"
+        },
+        "message": "信息"
+    },
+    "operate": {
+        "update": "编辑",
+        "undeploy": "下线",
+        "restart": "重启",
+        "start": "启动",
+        "stop": "停止",
+        "pause": "暂停",
+        "restartServer": "重启服务",
+        "startServer": "启动服务",
+        "stopServer": "停止服务",
+        "resume": "恢复",
+        "add": "添加",
+        "manage": "管理",
+        "config": "配置",
+        "approval": "审批",
+        "modify": "修改",
+        "delete": "删除",
+        "more": "更多命令",
+        "getMore": "加载更多",
+        "download": "下载",
+        "operates": "操作",
+        "view": "查看",
+        "merge": "合并后",
+        "search": "查询",
+        "server": "服务管理",
+        "servant": "Servant管理",
+        "k8s": "K8S管理",
+        "viewTemplate": "查看模版",
+        "privateTemplateManage": "查看私有模版",
+        "goback": "返回",
+        "default": "默认",
+        "save": "保存",
+        "submit": "提交",
+        "status": "状态",
+        "title": {
+            "update": "编辑",
+            "add": "添加",
+            "more": "更多命令"
+        },
+        "retry": "重启任务",
+        "goto": "跳转到该服务",
+        "copy": "复制",
+        "statusView": "查看服务状态",
+        "templateView": "查看模板",
+
+        "hpa": "HPA管理",
+        "resource": "资源管理",
+        "yaml": "yaml编辑",
+        "network": "宿主资源",
+        "disk": "磁盘管理",
+        "nodeSelect": "节点筛选",
+        "copyNode": "副本伸缩"
+    },
+    "index": {
+        "rightView": {
+            "title": "选择服务",
+            "tips": "如需查看服务列表或服务实时状态<br>请先从左边菜单选择一个服务",
+            "tab": {
+                "patch": "发布管理",
+                "serviceConfig": "服务配置",
+                "setConfig": "SET配置",
+                "appConfig": "应用配置",
+                "statMonitor": "服务监控",
+                "propertyMonitor": "特性监控",
+                "alarmConfig": "告警配置",
+                "privileage": "权限管理",
+                "infDebuger": "接口调试",
+                "cacheDebug": "Cache测试",
+                "treeConfig": "调用链",
+                "averageDuration":"平均时长",
+                "trackingNumber":"调用链明细"
+            }
+        }
+    },
+    "alarmConfig": {
+        "alarmcontact": "用户联系方式配置",
+        "alarmUser": "告警接收人配置",
+        "shieldAlarm": "屏蔽告警"
+    },
+    "nodeList": {
+        "table": {
+            "th": {
+                "node_name": "节点",
+                "last_heartbeat": "最后心跳",
+                "present_state": "当前状态",
+                "tars_version": "版本",
+                "label": "标签",
+                "last_notity": "最新实时状态",
+                "load_avg5": "负载",
+                "check": "操作"
+            },
+            "edit": "编辑",
+            "check": "检查",
+            "delete": "删除"
+        },
+        "checkNode": "检查节点联通性",
+        "deleteNode": "删除节点",
+        "confirmDeleteNode": "确认删除节点吗? <br>请先在节点机上停止节点, 并下线节点上的服务"
+    },
+    "machineInfo": {
+        "title": "服务器的基本负载情况",
+        "char": {
+            "cpuUsed": "CPU使用率(%)",
+            "loadAvg1": "负载(loadAvg1)",
+            "memUsed": "内存使用率(%)",
+            "memAvailable": "剩余可用内存(M)",
+            "nodeDiskUsed": "tarsnode磁盘使用率(%)",
+            "nodeDiskAvailable": "tarsnode磁盘剩余空间(M)",
+            "rootDiskUsed": "根目录磁盘使用率(%)",
+            "rootDiskAvailable": "跟目录磁盘剩余空间(M)"
+        },
+        "pip": {
+            "title": {
+                "cpuChart": "CPU使用",
+                "memChart": "系统内存",
+                "nodediskChart": "tarsnode 路径磁盘",
+                "rootdiskChart": "系统磁盘"
+            },
+            "label": {
+                "used": "已使用",
+                "avail": "剩余"
+            },
+            "series": {
+                "name": "使用率"
+            }
+        }
+    },
+    "serverList": {
+        "title": {
+            "serverList": "服务列表",
+            "serverStatus": "服务实时状态",
+            "patchList": "版本列表",
+            "buildList": "编译列表"
+        },
+        "table": {
+            "th": {
+                "group": "组",
+                "service": "服务",
+                "ip": "节点",
+                "zb": "主备",
+                "nodeIP": "节点IP",
+                "area": "地区",
+                "podID": "pod ID",
+                "podName": "pod名称",
+                "podIP": "pod IP",
+                "enableSet": "启用Set",
+                "configStatus": "设置状态",
+                "currStatus": "当前状态",
+                "currMessage": "当前消息",
+                "flowStatus": "流量状态",
+                "processID": "进程ID",
+                "version": "版本",
+                "versionPath": "版本路径",
+                "operator": "发布人",
+                "time": "发布时间",
+                "createTime": "创建时间",
+                "createPerson": "创建人",
+                "updateTime": "更新时间",
+                "startTime": "启动时间",
+                "deleteTime": "删除时间",
+                "threadID": "线程ID",
+                "serviceID": "服务ID",
+                "result": "结果",
+                "buildID": "编译ID",
+                "buildTime": "编译时间",
+                "enableTime": "启用时间",
+                "enablePerson": "发布人",
+                "source": "来源",
+                "lastUser": "最后修改人"
+            },
+            "servant": {
+                "title": "Servants管理",
+                "adress": "绑定地址",
+                "nodeName": "节点",
+                "thread": "线程数",
+                "connections": "最大连接数",
+                "capacity": "队列最大长度",
+                "timeout": "队列超时时间(ms)"
+            },
+            "k8s": {
+                "title": "K8S管理"
+            },
+            "msg": {
+                "fail": "加载服务列表失败，是否重试?"
+            }
+        },
+        "dlg": {
+            "isBackup": "是否备机",
+            "useIdc": "启用IDC分组",
+            "groupName": "IDC组名",
+            "placeholder": {
+                "english": "全英文，全小写",
+                "num": "数字或者*号",
+                "thread": "NodeJS的>=1，其他>=3"
+            },
+            "serviceType": "服务类型",
+            "asyncThread": "异步线程数",
+            "defaultPath": "缺省路径",
+            "exePath": "EXE路径",
+            "startScript": "启动脚本",
+            "stopScript": "停止脚本",
+            "monitorScript": "监控脚本",
+            "privateTemplate": "私有模板",
+            "errMsg": {
+                "required": "所有打星号的必须填写",
+                "setName": "Set名只能为英文字母，且必须小写",
+                "setArea": "Set区域只能为英文字母，且必须小写",
+                "setGroup": "Set组必须为数字或*号",
+                "defaultPath": "缺省路径格式错误，必须为绝对路径",
+                "exePath": "EXE路径格式错误，必须为绝对路径",
+                "startScript": "启动脚本格式错误，必须为绝对路径",
+                "stopScript": "停止脚本格式错误，必须为绝对路径",
+                "monitorScript": "监控脚本格式错误，必须为绝对路径",
+                "updateSuccess": "服务更新成功",
+                "updateFailed": "服务更新失败"
+            },
+            "msg": {
+                "undeploy": "您确定要下线此服务",
+                "undeployFailed": "下线失败"
+            },
+            "title": {
+                "editService": "编辑服务",
+                "undeploy": "服务下线",
+                "taskStatus": "任务状态"
+            }
+        },
+        "tips": {
+            "treeid": "请先从左侧业务树选择一个业务",
+            "loadingError": "加载失败",
+            "paramsError": "参数错误",
+            "systemError": "系统错误",
+            "undeploy": "运行中的服务无法下线",
+            "success": "通知成功",
+            "error": "操作失败"
+        },
+        "undeploy": {
+            "failed": "下线失败",
+            "success": "下线成功"
+        },
+        "restart": {
+            "notStart": "未开始",
+            "running": "运行中",
+            "success": "成功",
+            "failed": "失败",
+            "cancel": "取消",
+            "parial": "部分成功",
+            "restartFailed": "重启失败",
+            "restartResult": "重启结果",
+            "pauseFlow": "关闭流量中（预计需要75秒）"
+        },
+        "startService": {
+            "msg": {
+                "startService": "您确定要启动此服务"
+            }
+        },
+        "restartService": {
+            "msg": {
+                "restartService": "您确定要重启此服务"
+            }
+        },
+        "stopService": {
+            "msg": {
+                "stopService": "您确定要停止此服务"
+            }
+        },
+        "servant": {
+            "obj": "OBJ名必须为全英文",
+            "thread": "线程数必须为数字,且大于0",
+            "error": "绑定地址填写错误!!! 绑定地址格式：以tcp/udp/ssl 开头, 有 -h -t -p 三个参数, -p 0-65535, -t 大于 0, -h ip格式",
+            "ip": "IP格式错误，请重新填写。",
+            "servantAddFailed": "Servant添加失败",
+            "servantUpdateFailed": "Servant更新失败",
+            "a": "您确定要删除这个Servant吗",
+            "deployService": "发布服务",
+            "upload": "上传",
+            "appService": "应用·服务名",
+            "objName": "OBJ名称",
+            "c": "全英文，前面不用加应用·服务名",
+            "numOfThread": "线程数",
+            "BindingAddress": "绑定地址",
+            "sample": "范例",
+            "connections": "最大连接数",
+            "lengthOfQueue": "队列长度",
+            "queueTimeout": "队列超时(ms)",
+            "allowIP": "允许IP",
+            "protocol": "协议",
+            "notTARS": "非TARS",
+            "treatmentGroup": "处理组",
+            "releasePackage": "发布包",
+            "comment": "备注",
+            "logLevel": "设置日志等级",
+            "pushFile": "PUSH配置文件",
+            "sendCommand": "发送自定义命令",
+            "serviceLink": "查看服务链接",
+            "taskID": "任务ID",
+            "statusCode": "返回的状态码错误，状态码",
+            "copyErr": "复制失败,浏览器不兼容"
+        },
+        "link": {
+            "nodeLog": "点击查看服务节点日志",
+            "remoteLog": "点击查看服务远程日志",
+            "cpuTuner": "点击查看服务器节点负载",
+            "invalidNode": "(node无效)"
+        }
+    },
+    "pub": {
+        "btn": {
+            "pub": "发布选中节点",
+            "pubk8s": "发布镜像",
+            "history": "历史记录"
+        },
+        "dlg": {
+            "patchType": "发布方式",
+            "ip": "待发布节点",
+            "releaseVersion": "发布版本",
+            "id": "镜像ID",
+            "image": "增加发布镜像",
+            "imageAddress": "镜像地址",
+            "add": "添加",
+            "secret": "仓库Secret",
+            "mark": "备注",
+            "upload": "上传发布包",
+            "compileAndPublish": "编译并发布",
+            "elegantPublish": "无损发布",
+            "elegantEachNum": "每批发布节点数",
+            "commomPublish": "普通发布",
+            "releasePkg": "发布包",
+            "defaultValue": "请选择",
+            "filetype": "只能上传协议文件",
+            "noConfFile": "暂无配置文件",
+            "a": "请至少选择一个服务节点",
+            "ab": "请选择发布版本",
+            "unpublished": "未发布",
+            "conf": "配置编译接口",
+            "tag": "版本接口",
+            "compiler": "编译接口",
+            "task": "查询编译进度接口",
+            "compileProgress": "编译进度",
+            "uploadPkg": "正在回传发布包，请稍候",
+            "hasModule": "需要下线该应用下所有的模块才可以下线唯一的 router、proxy 服务",
+            "cantUseApply": "下线的是仅有的节点,下线后该应用将无用"
+        },
+        "tips": {
+            "default": "发布管理只管理服务层级，请您先在左侧业务树选择服务。",
+            "tagListUrl": "请先配置SVN/GIT版本获取接口",
+            "tag": "请输入接口地址"
+        },
+        "date": "日期",
+        "select": {
+            "version": "版本号",
+            "pubTime": "发布时间",
+            "uploadTime": "上传时间",
+            "uploadUser": "上传人",
+            "remark": "上传备注"
+        }
+    },
+    "cfg": {
+        "title": {
+            "a": "配置列表",
+            "b": "引用文件列表",
+            "c": "节点配置列表",
+            "viewConf": "查看配置文件内容",
+            "viewMerged": "查看合并后内容",
+            "viewHistory": "查看配置文件变更记录",
+            "viewTemplate": "查看模版内容",
+            "viewProfileTemplate": "查看私有模版内容"
+        },
+        "btn": {
+            "add": "添加配置",
+            "addRef": "添加引用文件",
+            "pushFile": "PUSH配置文件",
+            "fileName": "文件名称",
+            "content": "文件内容",
+            "reason": "原因",
+            "lastUpdate": "最后修改时间",
+            "mod": "变更内容"
+        },
+        "table": {
+            "modCfg": "修改配置",
+            "delCfg": "删除配置",
+            "delRef": "删除引用",
+            "serviceName": "服务名称",
+            "viewMerge": "查看合并后配置",
+            "viewIpContent": "查看节点内容",
+            "mangeRefFile": "管理引用文件"
+        },
+        "msg": {
+            "chooseCfg": "请先选择服务配置",
+            "refFile": "引用文件",
+            "addError": "添加失败",
+            "delError": "删除失败",
+            "confirm": "您确定要删除这个引用文件吗",
+            "viewContent": "查看内容",
+            "confirmCfg": "您确定要删除这条配置吗",
+            "nofile": "没有文件",
+            "selectNode": "请选择节点",
+            "empty": "空"
+        },
+        "dlg": {
+            "fileName": "文件名不能为空",
+            "fileNameReg": "文件名只能包含英文字母或数字、点、下划线、短横线",
+            "contentReg": "文件内容不能为空",
+            "addSucccess": "添加成功",
+            "exists": "同名文件已经存在"
+        }
+    },
+    "monitor": {
+        "search": {
+            "a": "显示日期",
+            "b": "对比日期",
+            "start": "开始时间",
+            "end": "结束时间",
+            "master": "主调",
+            "slave": "被调",
+            "interfaceName": "接口名",
+            "masterIP": "主调IP",
+            "slaveIP": "被调IP"
+        },
+        "btn": {
+            "submit": "监控曲线"
+        },
+        "msg": {
+            "info": "系统初次搭建时，对比日无数据请将对比日期改成显示日期"
+        },
+        "table": {
+            "total": "总流量",
+            "curr": "当日",
+            "contrast": "对比日",
+            "fluctuating": "同比波动",
+            "average": "当日平均耗时",
+            "abnormal": "当日异常率",
+            "abnormalC": "对比日异常率",
+            "timeout": "当日超时率",
+            "timeoutC": "对比日超时率",
+            "errTips": "监控需要具体到服务，请您先在左侧业务树选择服务。",
+            "a": "平均耗时",
+            "b": "异常率",
+            "c": "超时率",
+            "d": "监控时间"
+        },
+        "select": {
+            "all": "全部",
+            "property": "特性",
+            "strategy": "策略"
+        },
+        "property": {
+            "property": "当日特征值",
+            "propertyC": "对比日特征值"
+        }
+    },
+    "imageService": {
+        "title": {
+            "view": "查看镜像版本"
+        },
+        "btn": {
+            "add": "添加"
+        },
+        "delete": {
+            "confirmTips": "确认删除基础镜像么?"
+        },
+        "form": {
+            "Image": "镜像地址",
+            "Count": "版本个数",
+            "SupportedType": "支持类型",
+            "CreationTime": "创建时间",
+            "Mark": "备注",
+            "ImageHolder": "请输入镜像地址",
+            "ImageTips": "镜像地址不能为空",
+            "ImageFormatTips": "镜像地址非法",
+            "SupportedTypeTips": "请选择支持的类型",
+            "Secret": "仓库验证secret",
+            "SecretTips": "请输入仓库验证secret",
+            "CreatePerson": "创建人",
+            "CreateTime": "创建时间"
+        }
+    },
+    "deployService": {
+        "title": {
+            "deploy": "部署申请",
+            "expand": "扩容",
+            "approval": "待审批",
+            "history": "已审批",
+            "undeploy": "下线服务",
+            "template": "模板管理",
+            "apply": "部署申请",
+            "nodes": "节点管理",
+            "check": "框架检查",
+            "gateway": "网关配置",
+            "image": "基础镜像管理",
+            "affinity": "亲和性管理",
+            "application": "应用管理",
+            "node": "节点管理",
+            "business": "业务管理",
+            "businessRelation": "业务关系",
+            "idcManage": "IDC分组管理",
+            "exportServer": "部署工具",
+            "configSearch": "配置检索",
+            "board": "综合看板",
+            "userLog": "操作日志"
+        },
+        "form": {
+            "app": "应用",
+            "appAdd": "输入新的应用名称",
+            "appMark": "应用备注",
+            "business": "业务名",
+            "tips": "无需加应用和服务，如MTT.HttpProxyServer.HttpProxyObj，这里只填HttpProxyObj",
+            "serviceType": "服务类型",
+            "serviceName": "服务名称",
+            "serviceMark": "服务备注",
+            "template": "模板",
+            "node_name": "节点",
+            "set": "Set分组",
+            "obj": "OBJ绑定IP",
+            "port": "端口",
+            "portType": "端口类型",
+            "placeholder": "全英文",
+            "portTips": "端口范围0~30000，您的输入超出了范围",
+            "appTips": "应用名不能为空",
+            "businessTips": "业务名不能为空",
+            "serviceTips": "服务名不能为空",
+            "serviceTypeTips": "服务类型不能为空",
+            "baseImage": "基础镜像",
+            "baseImageTips": "基础镜像不能为空",
+            "baseImageRelease": "镜像版本",
+            "baseImageReleaseTips": "请选择合适的镜像版本",
+            "templateTips": "模板不能为空",
+            "serviceFormatTips": "服务名只能包含英文字母、数字，并以字母开头",
+            "nodeTips": "节点不能为空",
+            "nodeFormatTips": "节点格式不正确，请输入正确的IP地址",
+            "setNameTips": "Set名不能为空",
+            "setAreaTips": "Set区域不能为空",
+            "setNameFormatTips": "Set名只能为英文字母，且必须小写",
+            "setAreaFormatTips": "Set区域只能为英文字母，且必须小写",
+            "setGroupTips": "Set组名不能为空",
+            "setGroupFormatTips": "Set组名只能是数字或*号",
+            "inputTips": "所有*号项都必须填写",
+            "objTips": "OBJ不能为空",
+            "deployServiceTip": "确定要布署吗？",
+            "getPort": "获取端口",
+            "applicationTip": "应用名不存在或不合法",
+            "ret": {
+                "success": "布署申请提交成功",
+                "failed": "布署申请提交失败！请联系管理员"
+            },
+            "imageName": "镜像名称",
+            "image": "镜像地址",
+            "secret": "secret",
+            "currStatus": "目前状态",
+            "mark": "备注",
+            "createPerson": "创建人",
+            "createTime": "创建时间",
+            "nameTips": "系统中已存在此服务，请更换应用名，服务名或节点后重试",
+            "portOrNetWork": "HostPort和HostNetWork不可同时存在",
+            "batchDeploy": "批量申请",
+            "id": "发布Id",
+            "phase": "阶段",
+            "message": "信息",
+            "buildId": "编译Id",
+            "delete": "确定要删除正在编译中的镜像么?",
+            "labelMatch": {
+                "labelValue": "请输入,按回车添加,最多63个",
+                "labelValid": "标签名不符合规范",
+                "labelMax": "标签最大组数为63组",
+                "labelValueValid": "标签值不符合规范",
+                "errorKey":"标签名称必填",
+                "errorValue":"标签值不可为空"
+            }
+        },
+        "table": {
+            "th": {
+                "endpoint": "OBJ绑定地址",
+                "port": "端口",
+                "protocol": "协议",
+                "threads": "线程数",
+                "replicas": "副本数",
+                "netMode": "网络模型",
+                "nodeSelector": "节点选择",
+                "stacked": "stacked",
+                "hostIpc": "HostIpc",
+                "hostNetwork": "hostNetwork",
+                "hostPort": "主机端口",
+                "generateHostPort": "自动生成端口",
+                "checkHostPort": "校验端口"
+            },
+            "tips": {
+                "ip": "OBJ绑定地址不能为空",
+                "ipFormat": "IP格式有误",
+                "empty": "参数不能为空"
+            }
+        },
+        "infos": {
+            "objNodedupErr": "Obj名称+节点 不能重复！"
+        },
+        "batchDeploy": {
+            "errFile": "该文件类型不允许上传。请上传[.yml | .yaml] 类型的文件",
+            "errConf": "请检查yaml配置是否存在问题",
+            "title": {
+                "config": "安装配置文件内容",
+                "dcacheConf": "模块安装参数信息",
+                "out": "进度日志",
+                "hasModule": "模块已经存在"
+            },
+            "btn": {
+                "clearLog": "清空日志",
+                "uploadConf": "上传安装配置参数",
+                "uploadApplyConf": "上传申请配置参数",
+                "dcacheApply": "开始安装",
+                "shutdown": "停止安装"
+            },
+            "tip": {
+                "stopSucc": "终止成功,将于下个模块开始终止"
+            }
+        },
+        "resources": {
+            "limitCpu": "CPU 限制",
+            "limitMem": "内存限制",
+            "requestCpu": "CPU 预留",
+            "requestMem": "内存预留",
+            "example": "例如",
+            "tip": {
+                "resources": "请先编辑资源管理,资源限制与预留"
+            }
+        },
+        "hpa": {
+            "form": {
+                "minReplicas": "最小副本",
+                "maxReplicas": "最大副本",
+                "resource": "资源",
+                "object": "对象",
+                "val": "值",
+                "averageValue": "平均值",
+                "averageUtilization": "平均利用率",
+                "IndicatorType": "指标类型",
+                "IndicatorName": "指标名称",
+                "targetType": "目标类型",
+                "value": "数值",
+                "objectVersion": "描述对象 API 版本",
+                "objectType": "描述对象类型",
+                "objectName": "描述对象名称",
+                "addIndicator": "添加指标",
+                "delIndicator": "删除指标"
+            },
+            "tip": {
+                "minReplicas": "请输入最小副本数,限数字",
+                "maxReplicas": "请输入最大副本数,限数字",
+                "t1": "为了在 HPA 中使用资源指标，您需要部署 metrics 服务器。",
+                "t2": "为了在 HPA 中使用自定义指标，您需要部署自定义 metrics 服务器，比如 Prometheus Adapter。",
+                "t3": "为了使用 HPA 的扩展指标，您需要部署扩展指标服务器，比如 Prometheus Adapter。",
+                "IndicatorType": "请选择指标类型",
+                "IndicatorName": "请选择指标名称",
+                "targetType": "请选择目标类型",
+                "value": "请选择数值",
+                "checkForm": "请检查表单是否正确",
+                "noIndicator": "找不到匹配的指标,请配置"
+            }
+        },
+        "disk": {
+            "addDisk": "新增一组挂载",
+            "delDisk": "删除当前组",
+            "diskName": "磁盘名称",
+            "path": "挂载路径"
+        }
+    },
+    "nodes": {
+        "node_name": "节点",
+        "nodeNameTips": "节点不能为空, 多节点以,分割",
+        "port": "SSH PORT",
+        "portTips": "SSH端口不能为空",
+        "user": "用户",
+        "password": "密码",
+        "runuser": "运行用户",
+        "runuserTips": "运行用户不能为空",
+        "btn": {
+            "manualAddNode": "手工安装节点",
+            "autoAddNode": "自动安装节点",
+            "autoUpdateNode": "批量升级节点",
+            "check": "点击开始检查框架状态",
+            "question": "有问题怎么办?"
+        },
+        "manualAddNode": {
+            "title": "操作步骤",
+            "info1": "注意1: ${webhost}是web平台地址, ${localip}是节点机ip",
+            "info2": "注意2: web平台上只有框架对应编译平台的安装包, 其他OS的安装包需要自己手工编译",
+            "OS1": {
+                "title": "Linux/Mac",
+                "step1": "在节点机上运行: wget 'http://${webhost}/get_tarsnode?ip=${localip}&runuser=${your user}' -O install_tarsnode.sh",
+                "step2": "运行: sh install_tarsnode.sh",
+                "step3": "完成安装, 安装目录: /usr/local/app"
+            },
+            "OS2": {
+                "title": "Windows",
+                "step1": "在节点机上打开浏览器: http://${webhost}/get_tarsnode?ip=${localip}",
+                "step2": "将输出保存为: install_tarsnode.sh",
+                "step3": "在节点机上下载busybox: http://${webhost}/files/busybox.exe",
+                "step4": "window命令行运行: busybox.exe install_tarsnode.sh",
+                "step5": "windows计划任务中增加监控:  c:\\tars-install\\tars\\tarsnode\\util\\monitor.bat",
+                "step6": "完成安装, 缺省目录: c:\\tars-install\\tars"
+            }
+        },
+        "add": {
+            "nodeNameTips": "节点名不能为空",
+            "title": "安装节点(暂不支持Windows)"
+        },
+        "label": {
+            "title": "编辑标签",
+            "name": "标签名称",
+            "value": "标签值",
+            "operator": "操作",
+            "delete": "删除"
+        }
+    },
+    "connectNodeList": {
+        "title": "连通性测试以及安装节点",
+        "btnInstall": "安装",
+        "btnConnect": "测试联通性",
+        "btnInstalling": "正在安装",
+        "btnInstalled": "安装完毕点击再次安装",
+        "btnClose": "关闭",
+        "execute": "正在执行, 无法关闭, 请稍后",
+        "executeConnect": "正在执行联通性测试, 请稍后",
+        "executeInstall": "正在执行安装, 请稍后",
+        "installTgzNotExists": "安装包不存在, 请检查web服务器上安装包: /usr/local/app/web/files/tarsnode.tgz",
+        "step1": "检查安装包",
+        "step2": "ssh链接",
+        "step3": "下载安装包",
+        "step4": "检查参数",
+        "step5": "安装节点",
+        "table": {
+            "th": {
+                "node_name": "节点",
+                "connect": "连通性",
+                "exists": "是否安装过",
+                "install": "安装状态"
+            }
+        },
+        "connect": {
+            "succ": "连接成功",
+            "failed": "SSH连接失败"
+        },
+        "exists": {
+            "yes": "是",
+            "no": "否"
+        },
+        "install": {
+            "connect": "正在连接",
+            "waitNew": "新安装",
+            "waitOverwrite": "覆盖安装",
+            "invalid": "无法安装",
+            "installing": "正在安装"
+        }
+    },
+    "checkTable": {
+        "table": {
+            "th": {
+                "server_name": "服务名",
+                "node_name": "节点名",
+                "obj_name": "Obj名称",
+                "status": "检查状态"
+            }
+        },
+        "restartAdminRegistry": "请检查tarsAdminRegsitry是否正常工作, 或者重启框架服务!",
+        "adminRegistryFailed": "调用tarsAdminRegistry异常",
+        "failed": "请检查服务是否正常启动",
+        "problem": "有问题怎么办?",
+        "problemDialog": {
+            "title": "常见问题",
+            "info": "当碰到服务异常, 你可以登录对应服务器, 根据需要执行以下相关命令",
+            "restartFramework": "重启框架服务: /usr/local/app/tars/tars-start.sh",
+            "stopFramework": "停止框架服务: /usr/local/app/tars/tars-stop.sh",
+            "restartServer": "重启某个组件: /usr/local/app/tars/tarsxxxx/util/start.sh"
+        }
+    },
+    "template": {
+        "search": {
+            "parentTemplate": "父模板名"
+        },
+        "btn": {
+            "addTempate": "新增模板",
+            "addApplication": "新增应用"
+        },
+        "form": {
+            "content": "模板内容"
+        },
+        "view": {
+            "title": "查看模板"
+        },
+        "add": {
+            "templateNameTips": "模板名不能为空",
+            "templateFormatTips": "模板名只能包含英文字母，数字，并以字母开头",
+            "parentTemplate": "请选择父模板",
+            "title": "新增模板"
+        },
+        "update": {
+            "title": "编辑模板",
+            "errTips": "编辑失败"
+        },
+        "delete": {
+            "confirmTips": "您确定要删除这个模板吗",
+            "title": "删除模板"
+        }
+    },
+    "gateway": {
+        "station": "站点配置",
+        "upstream": "upstream配置",
+        "globalblack": "全局黑名单配置",
+        "stationId": "站点ID",
+        "stationName": "站点名",
+        "monitorUrl": "监控URL",
+        "serverName": "服务名",
+        "pathRule": "路径规则",
+        "proxyPass": "ProxyPass",
+        "addr": "地址",
+        "weight": "权重",
+        "fusing": "熔断",
+        "fusingOn": "开启",
+        "fusingOff": "关闭",
+        "lastUpdate": "更新时间",
+        "gatewayObj": "网关控制服务Obj",
+        "switchGateway": "切换网关",
+        "btn": {
+            "addGateway": "新增站点",
+            "addUpstream": "新增Upstream",
+            "addHttpRouter": "新增路由",
+            "loadAll": "加载配置"
+        },
+        "add": {
+            "stationNameTips": "请输入站点名",
+            "idFormatTips": "站点ID只能包含英文字母、数字、点、下划线，并以字母开头，不能以Obj结尾",
+            "monitorUrlTips": "请输入监控URL",
+            "upstreamFormatTips": "upstream只能包含英文字母、数字、下划线，以字母开头，不能以Obj结尾",
+            "addrFormatTips": "请输入ip:port",
+            "weightFormatTips": "请输入权重值",
+            "serverNameTip": "支持通配符、正则表达式，为空则全匹配",
+            "pathRuleTip": "请输入路径匹配规则",
+            "proxyPassTip": "请输入ProxyPass，支持ip:port / upstream / tars obj 三种方式",
+            "title": "新增站点",
+            "upstream": "新增Upstream"
+        },
+        "update": {
+            "title": "编辑站点",
+            "routerTitle": "编辑路由",
+            "upstream": "编辑Upstream",
+            "errTips": "编辑失败"
+        },
+        "delete": {
+            "confirmTips": "您确定要删除这个站点吗",
+            "upstreamConfirmTips": "您确定要删除这个upstream吗",
+            "bwListConfirmTips": "您确定要删除这条黑/白名单配置吗",
+            "deleteUpstreamErrorTip": "删除失败，仍有关联的Router或者资源不存在",
+            "title": "删除站点"
+        },
+        "config": {
+            "title": "网关配置"
+        },
+        "bwlist": {
+            "title": {
+                "black": "黑名单",
+                "white": "白名单"
+            },
+            "ipTip": "请输入IP地址（支持通配符）"
+        },
+        "flowControl": {
+            "title": "流量控制",
+            "duration": "时间窗口(s)",
+            "durationTip": "请输入时间窗口秒数",
+            "maxFlow": "最大流量",
+            "maxFlowTip": "请输入时间窗口内最大流量",
+            "tip": "即在'时间窗口'的时间内，最多请求'最大流量'次，超出的流量会被拒绝"
+        },
+        "router": {
+            "title": "路由配置"
+        }
+    },
+    "serviceApproval": {
+        "RequestPerson": "提交人",
+        "RequestTime": "提交时间",
+        "ApprovalResult": "审批结果",
+        "RequestMark": "提交备注",
+        "ApprovalTime": "审批时间",
+        "ApprovalMark": "审批原因"
+    },
+    "serviceExpand": {
+        "title": "服务扩容",
+        "form": {
+            "tarIP": "目标IP",
+            "placeholder": "可输入多个IP，以逗号（,）、分号（;）或换行（\\n）分隔",
+            "nodeConfig": "节点配置",
+            "copyNodeConfig": "复制节点配置",
+            "preExpand": "预扩容",
+            "noExpand": "未扩容",
+            "disableSet": "不启用Set",
+            "errTips": {
+                "tarIP": "目标IP不能为空",
+                "preExpand": "扩容失败！请联系管理员",
+                "noneNodes": "请先勾选要扩容的对象",
+                "nodeCheck": "请先勾选节点",
+                "ipFormat": "请正确填写IP地址",
+                "success": "扩容成功"
+            }
+        },
+        "exists": "节点已经存在服务, 无需扩容, 请检查输入的节点",
+        "newGroup": "增加一组",
+        "removeGroup": "删除最后一组"
+    },
+    "managePackage": {
+        "title": "管理发布包",
+        "table": {
+            "th": {
+                "c1": "id",
+                "c2": "服务名称",
+                "c3": "上传时间",
+                "c4": "发布备注",
+                "c5": "发布时间",
+                "c6": "操作",
+                "c7": "上传人"
+            }
+        }
+    },
+    "historyList": {
+        "title": "发布历史",
+        "delete": "确定删除发布历史么?",
+        "table": {
+            "th": {
+                "c1": "时间",
+                "c2": "是否串行",
+                "c3": "用户",
+                "c4": "子任务详情"
+            }
+        },
+        "dlg": {
+            "th": {
+                "c1": "子任务ID",
+                "c2": "应用",
+                "c3": "服务",
+                "c4": "节点",
+                "c5": "命令",
+                "c7": "执行信息",
+                "c8": "状态"
+            }
+        }
+    },
+    "user": {
+        "op": "运维(请填写用户名, 多个用户以,分割)",
+        "dev": "开发(请填写用户名, 多个用户以,分割)",
+        "tips": {
+            "sep": "多个人用分号隔开"
+        }
+    },
+    "resource": {
+        "installRstMsg": "，TarsNode安装结果如下：",
+        "installResult": "安装结果"
+    },
+    "inf": {
+        "list": {
+            "debug": "调试",
+            "benchmark": "压测"
+        },
+        "error": {
+            "parseFail": "协议解析失败",
+            "caseToolNotExists": "协议解析工具不存在, 请检查! "
+        },
+        "title": {
+            "listTitle": "协议文件列表",
+            "dlgTitle": "上传协议文件"
+        },
+        "dlg": {
+            "selectLabel": "模块/接口/方法",
+            "inParam": "方法入参",
+            "outParam": "方法出参",
+            "tarsFile": "协议文件",
+            "deleteMsg": "您确定要删除吗？",
+            "objName": "Servant名"
+        },
+        "benchmark": {
+            "inParam": "入参结构",
+            "outParam": "出参结构",
+            "fnlist": "函数列表",
+            "nofn": "无函数记录",
+            "interface": "接口",
+            "fnname": "函数名",
+            "returnType": "返回类型",
+            "case": "用例",
+            "addCase": "添加用例",
+            "caselist": "用例列表",
+            "nocase": "无用例记录",
+            "des": "描述",
+            "inputValue": "输入参数",
+            "modifyCase": "修改",
+            "testCase": "测试",
+            "runCase": "压测",
+            "viewResult": "查看结果",
+            "deleteCase": "删除",
+            "inputValueDes": "输入参数生成说明",
+            "bmParams": "压测参数",
+            "endpoints": "endpoints",
+            "endpointsTip": "其它(例如：tcp -h 192.168.10.4 -t 60000 -p 3031，多个以换行分隔)",
+            "infTest": "接口测试",
+            "cancelTest": "取消",
+            "links": "单endpoint连接数",
+            "speed": "单endpoint速率",
+            "duration": "压测时长(s)",
+            "testResult": "压测结果",
+            "startBenchmark": "开始压测",
+            "stopBenchmark": "停止压测",
+            "refresh": "刷新",
+            "detail": "详细指标",
+            "stat": "区间分布",
+            "retStat": "返回值分布",
+            "costStat": "耗时区间分布",
+            "time": "时间",
+            "total": "总量",
+            "success": "成功",
+            "fail": "失败",
+            "successRate": "成功率",
+            "maxCost": "最大耗时(ms)",
+            "minCost": "最小耗时(ms)",
+            "avgCost": "平均耗时(ms)",
+            "sendBytes": "发送字节",
+            "recvBytes": "接收字节",
+            "deleteCaseConfirm": "确认删除此用例？",
+            "installBenchmark": "请安装压测服务",
+            "installTip": "使用压测工具前，需要先安装压测服务组件",
+            "installTutorial": "安装教程",
+            "installScript": "一键安装"
+        }
+    },
+    "publishLog": {
+        "title": "发布日志",
+        "sync": "同步PMS中...",
+        "releaseId": "发布任务ID",
+        "releaseProgress": "发布进度（%）",
+        "publishInfo": "正在后台发布中, 请稍后..."
+    },
+    "application": {
+        "btn": {
+            "add": "新增应用"
+        },
+        "form": {
+            "application": "应用名",
+            "person": "创建人",
+            "time": "创建时间",
+            "content": "应用内容"
+        },
+        "view": {
+            "title": "查看应用"
+        },
+        "add": {
+            "nameTips": "应用名不能为空",
+            "formatTips": "应用名只能包含英文字母，数字，并以字母开头",
+            "parent": "请选择父应用",
+            "title": "新增应用"
+        },
+        "update": {
+            "title": "编辑应用",
+            "errTips": "编辑失败"
+        },
+        "delete": {
+            "confirmTips": "您确定要删除这个应用吗",
+            "title": "删除应用"
+        }
+    },
+    "business": {
+        "btn": {
+            "add": "新增业务"
+        },
+        "form": {
+            "business": "业务名",
+            "showName": "业务显示名",
+            "order": "排序",
+            "person": "创建人",
+            "time": "创建时间",
+            "content": "业务内容"
+        },
+        "view": {
+            "title": "查看业务"
+        },
+        "add": {
+            "nameTips": "业务名不能为空",
+            "formatTips": "业务名只能包含英文字母，数字，并以字母开头",
+            "parent": "请选择父业务",
+            "title": "新增业务"
+        },
+        "update": {
+            "title": "编辑业务",
+            "errTips": "编辑失败"
+        },
+        "delete": {
+            "confirmTips": "您确定要删除这个业务吗",
+            "title": "删除业务"
+        }
+    },
+    "businessRelation": {
+        "btn": {
+            "add": "新增业务关联"
+        },
+        "view": {
+            "title": "查看业务"
+        },
+        "form": {
+            "person": "创建人",
+            "time": "创建时间"
+        },
+        "add": {
+            "nameTips": "业务名不能为空",
+            "formatTips": "业务名只能包含英文字母，数字，并以字母开头",
+            "title": "新增业务"
+        },
+        "update": {
+            "title": "编辑业务关系",
+            "errTips": "编辑失败"
+        },
+        "delete": {
+            "confirmTips": "您确定要删除这个业务关系吗",
+            "title": "删除业务关系"
+        }
+    },
+    "idc": {
+        "grid": {
+            "groupName": "分组名",
+            "groupNameCN": "分组中文名",
+            "ipOrder": "允许方式",
+            "allowIpRule": "IP规则列表",
+            "dennyIpRule": "IP规则黑名单",
+            "lastuser": "最后操作人",
+            "modifyTime": "新增时间"
+        },
+        "btn": {
+            "add": "新增分组"
+        },
+        "update": {
+            "title": "编辑IDC分组信息",
+            "errTips": "编辑失败",
+            "placeholder": "请输入",
+            "allowType": "默认为denny_allow,一般不用修改",
+            "addIp": "请添加ip,最后一位可使用'*'",
+            "errorIp": "请输入正确的ip,格式(1~255).(0~255).(0~255).(0~255),仅最后一组可使用'*'",
+            "exists": "不可重复添加"
+        },
+        "delete": {
+            "confirmTips": "您确定要删除这个分组吗",
+            "title": "删除IDC分组"
+        },
+        "valid": {
+            "groupName": "分组名只能包含英文字母，数字，并以字母开头"
+        }
+    },
+    "export": {
+        "errorNode": "导入node节点未在系统中维护,请检查",
+        "needConf": "是否导出配置文件",
+        "needTgz": "是否导出发布包",
+        "export": "导出",
+        "tab": {
+            "edit": "编辑导出配置",
+            "th": {
+                "exportInfo": "导出信息",
+                "exportIp": "导出ip",
+                "exportOBJIp": "导出OBJ绑定ip"
+            }
+        },
+        "form": {
+            "ipPlaceholder": "请输入ip",
+            "ipError": "请输入正确的ip",
+            "valid": "导出必须先编辑导出至ip与obj绑定ip"
+        },
+        "import": {
+            "dlg": {
+                "upload": "请上传批量发布包"
+            },
+            "btn": {
+                "uploadAndPublish": "上传发布"
+            }
+        },
+        "error": {
+            "exportUnq": "导出ip不可重复"
+        }
+    },
+    "configSearch": {
+        "form": {
+            "configContent": "检索内容",
+            "placeHolder": "请输入检索内容",
+            "searchfield": "检索关键字",
+            "replacefield": "替换内容",
+            "replace": "替换",
+            "batchPush": "批量PUSH",
+            "batchReplace": "批量替换"
+        },
+        "table": {
+            "th": {
+                "application": "应用",
+                "serverName": "服务",
+                "node": "节点",
+                "filename": "文件名称",
+                "lastTime": "最后修时间",
+                "lastUser": "最后修改人"
+            },
+            "operate": {
+                "nodeEdit": "编辑节点",
+                "batchEdit": "批量替换配置文件"
+            }
+        }
+    },
+    "userlog": {
+        "form": {
+            "operateType": "操作类型",
+            "type": {
+                "patch_tars": "发布",
+                "restart": "重启",
+                "stop": "停止",
+                "undeploy_tars": "下线",
+                "send_command": "发送命令",
+                "add_conf": "添加配置",
+                "update_conf": "修改配置",
+                "rm_conf": "删除配置",
+                "expand_server": "服务扩容",
+                "expand_module": "模块扩容"
+            }
+        },
+        "table": {
+            "time": "操作时间",
+            "app": "应用",
+            "server": "服务",
+            "node": "节点",
+            "operate": "操作",
+            "about": "详情",
+            "operator": "操作人"
+        }
+    },
+    "filter": {
+        "title": {
+            "app": "应用",
+            "serverName": "服务",
+            "business": "业务",
+            "serverId": "服务ID",
+            "adapterId": "适配器ID",
+            "adapterName": "适配器名称",
+            "port": "端口",
+            "mark": "备注",
+            "name": "名称",
+            "node": "节点",
+            "order": "排序",
+            "domain": "域名",
+            "FirstLevelDomain": "一级域名",
+            "SecondLevelDomain": "二级域名",
+            "ThirdLevelDomain": "三级域名",
+            "FourthLevelDomain": "四级域名",
+            "router": "路径",
+            "routerType": "匹配类型",
+            "diffTxt": "对比内容",
+            "nodeName": "节点",
+            "nodeAbility": "能力",
+            "nodePublic": "公用",
+            "nodeAddress": "地址",
+            "nodeInfo": "信息",
+            "startPublic": "启用公用",
+            "stopPublic": "停用公用",
+            "nodeLabels": "节点标签",
+            "nodeAffinity": "请将节点添加 tars.io/node.$Namespace 标签, 以便当前框架能管理该节点"
+        },
+        "btn": {
+            "add": "新增",
+            "addNode": "新增节点",
+            "addServer": "新增应用",
+            "addAffinity": "新增亲和性",
+            "search": "查询"
+        }
+    },
+    "table": {
+        "btn": {
+            "appList": "应用列表",
+            "deleteNode": "删除节点",
+            "deleteServer": "删除应用"
+        }
+    },
+    "dialog": {
+        "title": {
+            "add": "新增",
+            "edit": "编辑"
+        },
+        "tips": {
+            "delete": "确定要删除吗？",
+            "item": "请选择一项"
+        }
+    },
+    "ssoHeader": {
+        "tab": {
+            "tab1": "权限列表",
+            "tab2": "用户管理",
+            "tab3": "权限管理",
+            "tab4": "Token管理",
+            "tab5": "设置"
+        },
+        "modifyPass": "修改密码"
+    },
+    "login": {
+        "loginTitle": "请登录",
+        "userName": "用户名",
+        "password": "密码",
+        "captcha": "验证码",
+        "repeatPassword": "二次确认密码",
+        "login": "登录",
+        "toRegisterPage": "没有账号？前往注册",
+        "toLoginPage": "直接前往登录",
+        "userNameTips": "用户名不能为空",
+        "userNameRegTips": "用户名只能包含英文字母，数字或下划线",
+        "passwordTips": "密码不能为空",
+        "passwordNoCorrect": "密码错误",
+        "captchaTips": "验证码不能为空",
+        "userNoExist": "用户名不存在",
+        "loginFailed": "登录失败",
+        "registerTitle": "请注册",
+        "repeatPasswordTips": "二次确认密码不能为空",
+        "register": "注册",
+        "passwordDiff": "两次密码输入不一致，请修改",
+        "hasExist": "用户名已存在",
+        "registerSucc": "注册成功",
+        "registerFailed": "注册失败",
+        "getUidFailed": "获取用户信息失败",
+        "logout": "退出登录",
+        "noLogin": "您还没有登录"
+    },
+    "auth": {
+        "flag": "标志(应用名 或者 应用名.服务名)",
+        "role": "角色",
+        "uid": "用户名",
+        "privileges": "用户权限",
+        "flagTips": "标志不能为空",
+        "roleTips": "角色不能为空",
+        "uidTips": "用户不能为空",
+        "tokenTips": "token不能为空",
+        "uidPlaceholder": "可填入多个uid，用分号隔开",
+        "addPrivilege": "新增权限",
+        "delPrivilege": "删除权限",
+        "privilegeManageTitle": "权限管理",
+        "loadListError": "加载权限列表失败",
+        "selectRecord": "请选择要删除的权限",
+        "confirmDelete": "确定要删除选中的权限吗？",
+        "loadUserIdError": "加载用户列表失败",
+        "delSucc": "删除成功",
+        "delError": "删除失败",
+        "adminNotErase": "admin用户权限无法删除",
+        "addUser": "新增用户",
+        "delUser": "删除用户",
+        "userManageTitle": "用户列表",
+        "userTime": "创建时间",
+        "adminDelError": "admin用户不允许删除",
+        "token": "TOKEN",
+        "addToken": "新增Token",
+        "delToken": "删除Token",
+        "tokenManageTitle": "Token列表",
+        "tokenExpireTime": "过期时间",
+        "tokenTime": "创建时间",
+        "loadTokenError": "加载Token失败",
+        "confirmTokenDelete": "确定要删除选中的token吗?",
+        "confirmTokenTitle": "删除Token",
+        "status": "状态",
+        "operator": "操作",
+        "tokenValid": "生效",
+        "valid": "生效",
+        "notValid": "失效",
+        "setTokenValid": "确定修改Token状态吗?",
+        "setTokenError": "设置token状态失败",
+        "setTokenSucc": "修改Token状态成功",
+        "editSet": "编辑配置",
+        "setManageTitle": "配置列表",
+        "setTitle": "配置标题",
+        "setInfo": "配置信息",
+        "loadSetError": "加载配置失败",
+        "setSetValid": "确定修改配置状态吗?",
+        "setSetError": "设置配置状态失败",
+        "setSetSucc": "修改配置状态成功",
+        "about": "配置描述"
+    },
+    "pass": {
+        "title": "修改密码",
+        "adminTitle": "第一次登录 -- 设置[admin]用户密码",
+        "userName": "用户名",
+        "password": "密码",
+        "repeatPassword": "二次确认密码",
+        "modify": "修改",
+        "passwordDiff": "两次密码输入不一致，请修改",
+        "modifySucc": "密码修改成功",
+        "modifyFailed": "密码修改失败",
+        "passwordTips": "密码不能为空",
+        "repeatPasswordTips": "二次确认密码不能为空",
+        "setAdminPasswordFailed": "不允许设置Admin用户密码",
+        "toIndexPage": "跳转到我的首页"
+    },
+    "ssoCommon": {
+        "search": "查询",
+        "nextPage": "下一页",
+        "prevPage": "上一页",
+        "nodata": "没有数据",
+        "admin": "admin用户, 拥有所有权限",
+        "success": "成功",
+        "failed": "失败",
+        "confirmTitle": "系统提示",
+        "systemError": "系统内部错误",
+        "noPrivilage": "没有权限",
+        "notEmpty": "不能为空",
+        "needNumber": "必须为数字",
+        "needArray": "必须为数组",
+        "needObject": "必须为对象",
+        "needBoolean": "必须为布尔值"
+    },
+    "ldap": {
+        "alert": "开启LDAP后, 除admin用户外, 其他用户都通过ldap登录, 可以使用ldap来对接公司内其他权限验证系统!",
+        "info": "开启LDAP",
+        "url": "ldap url",
+        "basedn": "ldap basedn"
+    },
+    "localeSelect": {
+        "cn": "中文",
+        "en": "英文"
+    },
+    "routerManage": {
+        "routerModule": "业务模块管理",
+        "routerRecord": "路由记录配置",
+        "routerGroup": "服务组配置",
+        "routerServer": "服务器配置",
+        "routerTransfer": "迁移记录",
+        "moduleName": "业务模块名",
+        "version": "版本号",
+        "switchStatus": "模块状态",
+        "remark": "备注",
+        "groupName": "服务器组名",
+        "accessStatus": "访问状态",
+        "serverName": "服务器名",
+        "serverStatus": "服务类型",
+        "pri": "优先级",
+        "sourceServerName": "备份源Server",
+        "fromPageNo": "开始页",
+        "toPageNo": "结束页",
+        "routerGroupName": "路由目的服务器组名",
+        "idcArea": "IDC地区",
+        "ip": "服务器IP",
+        "binlogPort": "BinLogObj服务端口",
+        "cachePort": "cache_port服务端口",
+        "wcachePort": "wcache_port服务端口",
+        "backupPort": "backup_port服务端口",
+        "routeclientPort": "routeclient_port服务端口",
+        "transGroupName": "迁移目的服务器组名",
+        "transferedPageNo": "已迁移成功页",
+        "state": "迁移状态",
+        "time": "时间",
+        "startTime": "开始时间",
+        "endTime": "结束时间"
+    },
+    "home": {
+        "homeTab": "首页",
+        "closeAll": "关闭全部",
+        "close": "关闭",
+        "placeholder": "请输入内容…",
+        "visited": "最近访问",
+        "searchKey": "请输入 应用名/服务名/IP地址 搜索"
+    },
+    "board": {
+        "module": {
+            "FrameServices": "框架基础服务",
+            "ServiceNode": "服务节点",
+            "AbnormalServices": "异常服务列表",
+            "AlarmInfo": "告警信息",
+            "home": "首页"
+        },
+        "home": {
+            "FrameServices": "异常框架基础服务",
+            "ServiceNode": "异常节点",
+            "AbnormalServices": "异常服务列表",
+            "AlarmInfo": "当日最新告警信息",
+            "RefreshInterval": "刷新间隔",
+            "RefreshAll": "全部刷新"
+        },
+        "tip": {
+            "none": "无异常数据"
+
+        },
+        "alarm": {
+            "alarmType": {
+                "email": "邮件",
+                "sms": "短信",
+                "wechat": "微信",
+                "all": "全部"
+            },
+            "form": {
+                "startDate": "开始日期",
+                "startTime": "开始时间",
+                "endDate": "结束日期",
+                "endTime": "结束时间",
+                "alarmType": "告警方式"
+            },
+            "table": {
+                "app": "应用",
+                "server": "服务",
+                "ip": "节点",
+                "title": "标题",
+                "content": "内容",
+                "alarmTime": "告警时间",
+                "alarmType": "告警方式"
+            }
+        }
+    }
+}

@@ -163,11 +163,14 @@
       </let-form-item>
       </div>
 
+      <br>
       <let-form-item :label="$t('cache.accessDbName')" itemWidth="240px" required>
         <let-radio v-model="dbAccess.dbMethod" :label="false">{{$t('cache.inputAccessDb')}}</let-radio>
       </let-form-item>
+      <br>
 
       <span v-if="!dbAccess.dbMethod">
+
       <let-form-item :label="$t('cache.db.dbHost')" itemWidth="200px" required>
         <let-input
           size="small"
@@ -608,7 +611,7 @@
             return;
         }
         if (this.$refs.detailForm.validate()) {
-          if (this.isDbAccess() || this.isMkCache) {
+          if (this.isDbAccess() && this.isMkCache) {
             this.showMKModal = true;
           } else if (this.checkSameShmKey(this.moduleData)) {
             this.addServerConfig();
@@ -723,7 +726,6 @@
                 }
               }
             } else if(this.isBackup()) {
-
               for(var group in groupInfo) {
 
                 var hasBackup = false;

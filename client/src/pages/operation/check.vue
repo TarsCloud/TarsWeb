@@ -11,10 +11,10 @@
     <br />
 
     <let-table ref="checkLoading" :data="servers" stripe :row-class-name="tableRowClassName" :empty-msg="$t('common.nodata')">
-      <let-table-column :title="$t('checkTable.table.th.server_name')" prop="serverName"></let-table-column>
-      <let-table-column :title="$t('checkTable.table.th.node_name')" prop="nodeName"></let-table-column>
-      <let-table-column :title="$t('checkTable.table.th.obj_name')" prop="objName"></let-table-column>
-      <let-table-column :title="$t('checkTable.table.th.status')" width="100px">
+      <let-table-column :title="$t('checkTable.table.th.server_name')" prop="serverName" width="15%"></let-table-column>
+      <let-table-column :title="$t('checkTable.table.th.node_name')" prop="nodeName" width="15%"></let-table-column>
+      <let-table-column :title="$t('checkTable.table.th.obj_name')" prop="objName" width="55%"></let-table-column>
+      <let-table-column :title="$t('checkTable.table.th.status')" width="15%">
         <template slot-scope="scope">
           <span class="status">{{scope.row.status}}</span>
         </template>

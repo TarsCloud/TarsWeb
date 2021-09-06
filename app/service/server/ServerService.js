@@ -20,7 +20,7 @@ const ServerDao = require('../../dao/ServerDao');
 const AdapterDao = require('../../dao/AdapterDao');
 const ResourceDao = require('../../dao/ResourceDao');
 // const logger = require('../../logger');
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 // const ConfigService = require('../config/ConfigService');
 const AdapterService = require('../adapter/AdapterService');
 const AuthService = require('../auth/AuthService');
@@ -75,26 +75,28 @@ ServerService.getServerConfById = async(id) => {
     return await ServerDao.getServerConfById(id);
 };
 
+//通过ID获取服务信息
 ServerService.getServerConfByIds = async(ids) => {
     return await ServerDao.getServerConfByIds(ids);
 };
-ServerService.getApplicationList= async() => {
+
+ServerService.getApplicationList = async() => {
     return await ApplicationDao.getAll();
     // return await ServerDao.getApplication();
 };
 
-ServerService.getNodeList= async() => {
+ServerService.getNodeList = async() => {
     return await NodeInfoDao.getNodeList();
 };
 
 //通过应用，服务，节点获取获取服务信息
 ServerService.getServerConf = async(application, serverName, nodeName) => {
     if (nodeName && nodeName != "") {
-    return await ServerDao.getServerConf({
-        application: application,
-        serverName: serverName,
-        nodeName: nodeName
-    });
+        return await ServerDao.getServerConf({
+            application: application,
+            serverName: serverName,
+            nodeName: nodeName
+        });
     } else {
         return await ServerDao.getServerConf({
             application: application,
@@ -117,8 +119,13 @@ ServerService.getServerConfByTemplate = async(templateName) => {
 
 //通过treeNodeId查询服务列表
 ServerService.getServerConfList4Tree = async(params) => {
-    return await ServerDao.getServerConf(params);
+    if(params.isPage=="true"){
+        return await ServerDao.getServerConfAndCount(params);
+    }else {
+        return await ServerDao.getServerConf(params);
+    }
 };
+
 ServerService.getServerConfList4TreeAndCount = async(params) => {
     return await ServerDao.getServerConfAndCount(params);
 };
@@ -147,14 +154,10 @@ ServerService.isDeployWithRegistry = async(nodeNames) => {
     return false;
 };
 
-ServerService.getLogNodeNameWithRegistry = async () => {
-
+ServerService.getLogNodeNameWithRegistry = async() => {
     let registry = await ResourceDao.getRegistryAddress();
-
     let log = await ServerDao.getServerConfList('tars', 'tarslog');
-
     let nodeNames = log.map(x => { return x.node_name });
-
     for (var index in nodeNames) {
         for (var i in registry) {
             if (registry[i].locator_id.indexOf(nodeNames[index] + ':') == 0)
@@ -163,7 +166,6 @@ ServerService.getLogNodeNameWithRegistry = async () => {
     }
     return '';
 };
-
 //卸载框架上部署的log
 ServerService.undeployTarsLog = async(uid) => {
 
@@ -200,6 +202,7 @@ ServerService.batchUpdateServerConf = async(params) => {
     return await ServerDao.batchUpdateServerConf(params);
 };
 
+
 ServerService.getNodeNameList = async(params) => {
     return await ServerDao.getNodeNameList(params);
 };
@@ -210,6 +213,7 @@ ServerService.getServerNameList = async({ applicationList, serverNameList, allAt
 };
 
 ServerService.addServerConf = async(params) => {
+
     let transaction = await ServerDao.sequelize.transaction();
     try {
         let operator = params.operator;
@@ -227,15 +231,18 @@ ServerService.addServerConf = async(params) => {
         serverConf.posttime = new Date();
 
         let adapters = params.adapters;
+
         let node_name_list = [];
         for (var i = 0; i < adapters.length; i++) {
             var nn = adapters[i].node_name;
+
             if (node_name_list.indexOf(nn) != -1) {
       //          console.log("===find node name:", nn);
                 continue;
             }
             node_name_list.push(nn);
             serverConf.node_name = nn;
+
             await ServerDao.insertServerConf(serverConf, transaction);
         }
 
@@ -247,6 +254,7 @@ ServerService.addServerConf = async(params) => {
 
         for (var i = 0; i < adapters.length; i++) {
             var servant = adapters[i];
+
             let newAdapterConf = Object.assign({}, adapterConf);
             newAdapterConf = util.leftAssign(newAdapterConf, servant);
             newAdapterConf.application = serverConf.application;
@@ -276,4 +284,23 @@ ServerService.addServerConf = async(params) => {
 ServerService.getServerConfListByBatch = async (params) => {
     return await ServerDao.getServerConfListByBatch(params);
 };
+
+/**
+ * servant 查询服务信息
+ * @param params
+ * @returns {Promise<*>}
+ */
+ServerService.getServerConfByServant = async (params) =>{
+    return await ServerDao.getServerConfByServant(params);
+}
+
+/**
+ * 查询设置状态为 active 当前状态却不为active的服务
+ * @param params
+ * @returns {Promise<*>}
+ */
+ServerService.getAbnornalConf = async (params) =>{
+    return await ServerDao.getAbnornalConf(params);
+}
+
 module.exports = ServerService;

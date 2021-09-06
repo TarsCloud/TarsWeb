@@ -15,7 +15,7 @@
  */
 
 const AdapterDao = require('../../dao/AdapterDao');
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const _ = require('lodash');
 const ServerDao = require('../../dao/ServerDao');
 

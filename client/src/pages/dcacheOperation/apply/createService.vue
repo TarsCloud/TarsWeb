@@ -31,17 +31,20 @@
         </let-form-item>
 
         <br>
-        <span style="margin-left:20px;">{{$t('service.routerDbNameTip')}}</span>
+        <span style="margin-left:20px;">{{$t('service.routerDbNameTip')}}</span><br>
         <br>
         <let-form-item :label="$t('service.routerDbName')" itemWidth="240px" required>
           <let-input
             size="small"
+            style="display: inline-block"
             v-model="apply.Router.router_db_name"
             required
             :required-tip="$t('deployService.table.tips.empty')"
           >
           </let-input>
         </let-form-item>
+
+        <let-tag  theme="danger" style="margin-left:20px;">注意: 如果数据库是不区分大小写的, db名称则必须为小写字母!!</let-tag>
 
         <br>
         <let-form-item :label="$t('service.routerDbName')" itemWidth="240px" required>
@@ -207,8 +210,8 @@ import { checkServerIdentity } from 'tls';
       templateNameList () {
         return this.$ajax.getJSON('/server/api/template_name_list').then((data) => {
           this.templates = data;
-          this.apply.Router.template_file = "tars.default";
-          this.apply.Proxy.forEach(item => item.template_file = "tars.default");
+          this.apply.Router.template_file = "DCache.Router";
+          this.apply.Proxy.forEach(item => item.template_file = "DCache.Proxy");
 
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);

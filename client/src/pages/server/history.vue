@@ -8,18 +8,33 @@
         <let-table-column :title="$t('deployService.form.app')" prop="application"></let-table-column>
         <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
           <template slot-scope="scope">
-            <a href="javascript:;" @click="historyLink(scope.row.id)">{{ scope.row.server_name }}</a>
+            <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=remote'"
+               :title="$t('serverList.link.remoteLog')" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name"></let-table-column>
+        <let-table-column :title="$t('serverList.table.th.ip')" prop="node_name" width="200px">
+          <template slot-scope="scope">
+          <span v-if="scope.row.is_node_ok">
+            <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name='+ [scope.row.node_name]"
+               :title="$t('serverList.link.nodeLog')" target="_blank" class="buttonText"> {{scope.row.node_name}} </a>
+          </span>
+            <span v-else style="color: #FF0000">
+            {{scope.row.node_name}}{{$t('serverList.link.invalidNode')}}
+          </span>
+          </template>
+        </let-table-column>
         <let-table-column :title="$t('serverList.table.th.configStatus')">
           <template slot-scope="scope">
-            <span :class="scope.row.setting_state === 'active' ? 'status-active' : 'status-off'"></span>
+            <span v-if="scope.row.setting_state ==='Inactive'" style="color: #FF0000">{{scope.row.setting_state}}</span>
+            <span v-else style="color: #49CC8F">{{scope.row.setting_state}}</span>
           </template>
         </let-table-column>
         <let-table-column :title="$t('serverList.table.th.currStatus')">
           <template slot-scope="scope">
-            <span :class="scope.row.present_state === 'active' ? 'status-active' : scope.row.present_state === 'activating' ? 'status-activating' : 'status-off'"></span>
+            <span v-if="scope.row.query_ret_code !='0'" style="color: #FF0000">Inactive</span>
+            <span v-else-if="scope.row.present_state_in_node==='Active'"
+                  style="color: #49CC8F">{{ scope.row.present_state_in_node }}</span>
+            <span v-else style="color: #FF0000">{{ scope.row.present_state_in_node }}</span>
           </template>
         </let-table-column>
         <let-table-column :title="$t('serverList.table.th.processID')" prop="process_id"></let-table-column>
@@ -29,17 +44,23 @@
             <span style="word-break: break-word">{{handleNoPublishedTime(scope.row.patch_time)}}</span>
           </template>
         </let-table-column>
+        <let-table-column :title="$t('operate.operates')" width="300px">
+          <template slot-scope="scope">
+            <let-table-operation @click="historyLink(scope.row.id)">{{ $t('operate.goto') }}</let-table-operation>
+          </template>
+        </let-table-column>
       </let-table>
+      <let-button theme="primary" size="small" @click="goback" >{{ $t('operate.goback') }}</let-button>
       <let-pagination :page="pageNum" @change="gotoPage" :total="total"></let-pagination>
     </div>
 
     <div class="history_search" v-else>
       <label class="history_search_box">
-        <input v-model="historySearchKey" class="history_search_key" type="text" @blur="historySearch" @keydown.enter="historySearch" placeholder="请输入 应用名/服务名/IP地址 搜索" />
+        <input v-model="historySearchKey" class="history_search_key" type="text" @blur="historySearch" @keydown.enter="historySearch" :placeholder="$t('home.searchKey')" />
       </label>
 
       <div class="history_list_wrap">
-        <div class="history_list_title">最近访问：</div>
+        <div class="history_list_title">{{$t('home.visited')}}：</div>
         <ul class="history_list">
           <li class="history_item" v-for="item in historySearchList" :key="item">
             <a class="history_link" href="javascript:;" @click="historySearchLink(item)">{{ item }}</a>
@@ -74,7 +95,7 @@ export default {
       this.historySearch(num);
     },
     historySearch(curr_page) {
-      if(!curr_page) {
+      if(!curr_page || typeof curr_page!="number") {
         curr_page = this.pageNum || 1
       }
       let { historySearchKey } = this
@@ -92,11 +113,40 @@ export default {
       }).then((data) => {
         this.pageNum = curr_page
         this.total = Math.ceil(data.count/this.pageSize)
+        data.rows.forEach(item => {
+          item.present_state_in_node = ""
+          item.is_node_ok = true;
+          item.query_ret_code = 0;
+          item.setting_state = item.setting_state.charAt(0).toUpperCase()+item.setting_state.slice(1);
+        })
         this.serverList = data.rows
+        this.updateServerState();
         this.serverListShow = true
       }).catch((err) => {
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`)
       })
+    },
+    //tarsadmin修改服务实时状态
+    updateServerState() {
+      if (this.serverList.length != 0) {
+        let queryState = this.serverList.map((item) => {
+          return {
+            application: item.application,
+            server_name: item.server_name,
+            node_name: item.node_name
+          }
+        })
+        this.$ajax.postJSON('/server/api/server_state', {
+          queryState
+        }).then((data) => {
+          this.serverList.forEach((item) => {
+            let serverState = data.filter(app => app.application == item.application && app.server_name == item.server_name & app.node_name == item.node_name);
+            item.present_state_in_node = serverState[0].present_state_in_node;
+            item.is_node_ok = serverState[0].is_node_ok;
+            item.query_ret_code = serverState[0].query_ret_code;
+          })
+        })
+      }
     },
 
     historySearchLink(key) {
@@ -110,10 +160,15 @@ export default {
         this.$parent.getTreeData()
       })
     },
+    goback(){
+      this.serverListShow = false;
+      this.historySearchKey = "";
+    },
+
 
     updateHistorySearchKey() {
       let { historySearchKey } = this
-      let list = this.getLocalStorage('taf_history_key') || []
+      let list = this.getLocalStorage('tars_history_key') || []
 
       if(historySearchKey){
         if(list && list.length > 0) {
@@ -131,7 +186,7 @@ export default {
           list = [historySearchKey]
         }
         this.historySearchList = list.slice(0, 20)
-        this.setLocalStorage('taf_history_key', JSON.stringify(list))
+        this.setLocalStorage('tars_history_key', JSON.stringify(list))
       }else{
         this.historySearchList = list
       }
@@ -183,5 +238,9 @@ export default {
   .history_list{}
   .history_item{display:block;margin:5px 0;}
   .history_link{color:#3f5ae0;}
+
+  a:link {color: #0000EF}
+  a:visited {color: #0000EF}
+  a:hover {color: #FF0000}
 }
 </style>

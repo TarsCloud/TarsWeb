@@ -54,7 +54,7 @@
         total: 0,
         page: 1,
         // 切换类型: 0:主备切换, 1:镜像主备切换, 2:镜像切换， 3：备机不可读
-        switchTypeText: ['switch', 'mirrorSwitch', 'mirrorOffSwitch', 'readFail'],
+        switchTypeText: ['switch', 'mirrorSwitch', 'mirrorOffSwitch', 'readFail', 'switchMirrorAsMaster'],
         // 切换状态: 0:正在切换, 1:切换成功, 2:未切换, 3:切换失败
         switchResultText: ['switching', 'switchSuccess', 'notSwitch', 'switchFailure'],
         // 组的访问状态, 0标识读写，1标识只读,2镜像不可用

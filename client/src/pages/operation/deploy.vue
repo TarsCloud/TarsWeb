@@ -1,74 +1,69 @@
-
-
 <template>
-  <div class="page_operation_deploy">
-    <let-form
-      ref="form"
-      inline
-      label-position="top"
-      itemWidth="480px"
-      v-show="deployShow"
-      @submit.native.prevent="save"
-    >
-      <let-form-item :label="$t('deployService.form.app')" required>
-        <let-select id="inputApplication" v-model="model.application" size="small" filterable :notFoundText="$t('deployService.form.appAdd')">
-          <let-option v-for="d in applicationList" :key="d" :value="d">
-            {{d}}
-          </let-option>
-        </let-select>
-
-      </let-form-item>
-      <let-form-item :label="$t('deployService.form.serviceName')" required>
-        <let-input
-          size="small"
-          v-model="model.server_name"
-          :placeholder="$t('deployService.form.serviceFormatTips')"
-          required
-          :required-tip="$t('deployService.form.serviceTips')"
-          pattern="^[a-zA-Z]([a-zA-Z0-9]+)?$"
-          :pattern-tip="$t('deployService.form.serviceFormatTips')"
-        ></let-input>
-      </let-form-item>
-      <let-form-item :label="$t('deployService.form.serviceType')" required>
-        <let-select
-          size="small"
-          v-model="model.server_type"
-          required
-          :required-tip="$t('deployService.form.serviceTypeTips')"
+    <div class="page_operation_deploy">
+        <let-form
+                ref="form"
+                inline
+                label-position="top"
+                itemWidth="480px"
+                v-show="deployShow"
+                @submit.native.prevent="save"
         >
-          <let-option v-for="d in types" :key="d" :value="d">{{d}}</let-option>
-        </let-select>
-      </let-form-item>
+            <let-form-item :label="$t('deployService.form.app')" required>
+                <let-select id="inputApplication" v-model="model.application" size="small" filterable
+                            :notFoundText="$t('deployService.form.appAdd')">
+                    <let-option v-for="d in applicationList" :key="d" :value="d">
+                        {{d}}
+                    </let-option>
+                </let-select>
 
-      <let-form-item :label="$t('deployService.form.template')" required>
-        <let-select
-          size="small"
-          v-model="model.template_name"
-          required
-          :required-tip="$t('deployService.form.templateTips')"
-        >
-          <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
-        </let-select>
-      </let-form-item>
+            </let-form-item>
+            <let-form-item :label="$t('deployService.form.serviceName')" required>
+                <let-input
+                        size="small"
+                        v-model="model.server_name"
+                        :placeholder="$t('deployService.form.serviceFormatTips')"
+                        required
+                        :required-tip="$t('deployService.form.serviceTips')"
+                        pattern="^[a-zA-Z]([a-zA-Z0-9]+)?$"
+                        :pattern-tip="$t('deployService.form.serviceFormatTips')"
+                ></let-input>
+            </let-form-item>
+            <let-form-item :label="$t('deployService.form.serviceType')" required>
+                <let-select
+                        size="small"
+                        v-model="model.server_type"
+                        required
+                        :required-tip="$t('deployService.form.serviceTypeTips')"
+                >
+                    <let-option v-for="d in types" :key="d" :value="d">{{d}}</let-option>
+                </let-select>
+            </let-form-item>
 
-    <!-- 
-      <let-form-item :label="$t('serverList.table.th.ip')" required>
-        <let-select v-model="model.node_name" size="small" required filterable>
-          <let-option v-for="d in nodeList" :key="d" :value="d">
-            {{d}}
-          </let-option>
-        </let-select>
-       
-      </let-form-item> -->
+            <div style="float: right">
+                <let-button type="button" theme="primary" @click="showBatchDeployModal()">
+                    {{$t('deployService.form.batchDeploy')}}
+                </let-button>
+            </div>
 
-      <let-form-item label="SET">
-        <SetInputer
-          :enabled.sync="model.enable_set"
-          :name.sync="model.set_name"
-          :area.sync="model.set_area"
-          :group.sync="model.set_group"
-        ></SetInputer>
-      </let-form-item>
+            <let-form-item :label="$t('deployService.form.template')" required>
+                <let-select
+                        size="small"
+                        v-model="model.template_name"
+                        required
+                        :required-tip="$t('deployService.form.templateTips')"
+                >
+                    <let-option v-for="d in templates" :key="d" :value="d">{{d}}</let-option>
+                </let-select>
+            </let-form-item>
+
+            <let-form-item label="SET">
+                <SetInputer
+                        :enabled.sync="model.enable_set"
+                        :name.sync="model.set_name"
+                        :area.sync="model.set_area"
+                        :group.sync="model.set_group"
+                ></SetInputer>
+            </let-form-item>
 
       <let-form-item :label="$t('user.op')" v-show="enableAuth">
         <let-input
@@ -180,7 +175,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" width="90px">
+        <let-table-column :title="$t('serverList.servant.connections')" width="90px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -195,7 +190,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxQueue')" width="90px">
+        <let-table-column :title="$t('serverList.table.servant.capacity')" width="90px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -227,15 +222,18 @@
               v-if="props.$index"
                class="danger"
               @click="model.adapters.splice(props.$index, 1)"
-            >{{$t('operate.delete')}}</let-table-operation>
+            >{{$t('operate.delete')}}
+	    </let-table-operation>
           </template>
         </let-table-column>
       </let-table>
 
-      <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}</let-button>
-      &nbsp;&nbsp;
-      <let-button type="submit" theme="primary">{{$t('common.submit')}}</let-button>
-    </let-form>
+            <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}
+            </let-button>
+            &nbsp;&nbsp;
+            &nbsp;&nbsp;
+            <let-button type="submit" theme="primary">{{$t('common.submit')}}</let-button>
+        </let-form>
 
     <let-modal
       v-model="resultModal.show"
@@ -266,14 +264,6 @@
                 {{d}}
               </let-option>
             </let-select>
-<!--
-            <let-input
-              v-model="deployModal.node_name"
-              :placeholder="$t('nodes.nodeNameTips')"
-              required
-              :required-tip="$t('nodes.nodeNameTips')"
-            ></let-input>
--->
           </let-form-item>
 
         <let-form-item :label="$t('pub.dlg.releaseVersion')">
@@ -291,7 +281,9 @@
       </let-form> 
       <div style="width:100%;text-align: center;">
         <let-tag>{{$t('deployLog.info')}}</let-tag>
-        <let-button type="submit" theme="primary" style="margin:20px auto" @click="doDeployLog">{{$t('deployLog.install')}}</let-button>
+        <let-button type="submit" theme="primary" style="margin:20px auto" @click="doDeployLog">
+	{{$t('deployLog.install')}}
+	</let-button>
       </div>
     </div>
 
@@ -520,7 +512,11 @@ export default {
       if(this.model.application == '') {
         this.model.application = application;
       }
-
+                let appReg = new RegExp("^[a-zA-Z]([a-zA-Z0-9]+)?$");
+                if (!this.applicationList.includes(this.model.application) || !appReg.test(this.model.application)) {
+                    this.$tip.error(`${this.$t('deployService.form.applicationTip')}`);
+                    return;
+                }
       if (this.$refs.form.validate()) {
         const model = this.model;
 
@@ -605,32 +601,61 @@ export default {
 </script>
 
 <style lang="postcss">
-.page_operation_deploy {
-  .let-table {
-    margin: 20px 0 36px;
+    .page_operation_deploy {
+
+    .let-table {
+        margin: 20px 0 36px;
 
     th span.required {
-      display: inline-block;
+        display: inline-block;
 
-      &:after {
+    &
+    :after {
         color: #f56c6c;
         content: '*';
         margin-left: 4px;
-      }
     }
-    tr.err-row td{
-      background:#f56c77!important;
-      color:#FFF;
+
     }
-  }
-  .result-text{
-    margin-top: 20px;
-    margin-bottom:10px;
-  }
-  .set_inputer_item {
-    float: left;
-    margin-right: 8px;
-    width: 126px;
-  }
-}
+    tr.err-row td {
+        background: #f56c77 !important;
+        color: #FFF;
+    }
+
+    }
+    .result-text {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    .set_inputer_item {
+        float: left;
+        margin-right: 8px;
+        width: 126px;
+    }
+
+    .borderdiv {
+        border: 1px solid #84867f;
+    }
+
+    .buttonDiv {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
+    .pre_con {
+        display: block;
+        overflow: scroll;
+    }
+
+    .pre_con pre {
+        margin-left: 20px;
+        color: #2F2F97;
+        display: block;
+        word-break: break-word;
+        white-space: pre-wrap;
+    }
+
+    }
 </style>

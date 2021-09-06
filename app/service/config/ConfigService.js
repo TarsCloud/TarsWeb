@@ -16,7 +16,7 @@
 
 const ConfigDao = require('../../dao/ConfigDao');
 const ServerDao = require('../../dao/ServerDao');
-const logger = require('../../logger');
+const logger = require('../../../logger');
 
 const ConfigService = {};
 
@@ -76,7 +76,8 @@ ConfigService.addConfigFile = async (params) => {
 		set_group: params.set_group || '',
 		filename: params.filename.replace(/(^\s*)|(\s*$)/g, ''),
 		config: params.config.replace(/^\s|\s$/g, ''),
-		posttime: formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss')
+		posttime: formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss'),
+		lastuser:params.uid
 	});
 
 	let configFile;
@@ -286,13 +287,16 @@ ConfigService.getNodeConfigFile = async (params) => {
 	nodeConfigFile.forEach(config => {
 		list.push(`${config.server_name}.${config.set_name || ''}.${config.set_area || ''}.${config.set_group || ''}_${config.host}`);
 	});
-	servers = servers.filter((server, index) => {
+	servers = servers.filter(server => {
 		let key = `${params.application}.${params.server_name}.${params.set_name || ''}.${params.set_area || ''}.${params.set_group || ''}_${server.node_name}`;
+		// return !list.includes(key);
+		// let key = `${params.application}.${params.server_name}.${params.set_name || ''}.${params.set_area || ''}.${params.set_group || ''}_${server.node_name}`;
+
 		let exist = list.includes(key);
 		//只返回选中服务节点的配置，例如选中无set的服务时，不要返回带set服务的节点配置
-		if(exist){
-			nodeConfigFileList.push(nodeConfigFile[index]);
-		}
+		// if(exist){
+		// 	nodeConfigFileList.push(nodeConfigFile[index]);
+		// }
 		return !exist;
 	});
 	for (let i = 0, len = servers.length; i < len; i++) {
@@ -318,8 +322,26 @@ ConfigService.getNodeConfigFile = async (params) => {
 		};
 		await ConfigDao.insertConfigFileHistory(history).catch(e => logger.error('[insertConfigFileHistory]:', e));
 	}
-	return await nodeConfigFileList;
+	return await nodeConfigFile;
+
+	//return await nodeConfigFileList
 };
+
+/**
+ * 部署工具判断当前文件是否已经存在
+ * @param params
+ * @returns {Promise<void>}
+ */
+ConfigService.getConfigFiles = async (params) =>{
+	let nodeConfigFile = await ConfigDao.getNodeConfigFile({
+		level :2,
+		server_name: `${params.application}.${params.server_name}`,
+		set_name: params.set_name || undefined,
+		set_area: params.set_area || undefined,
+		set_group: params.set_group || undefined
+	});
+	return nodeConfigFile;
+}
 
 /**
  * 获取配置文件修改记录

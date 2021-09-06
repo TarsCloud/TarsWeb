@@ -16,7 +16,7 @@
 const { exec } = require('child_process');
 const TarsClient = require('./TarsClient');
 const TarsParser = require('./TarsParser/TarsParser');
-const { benchmarkPrx, benchmarkStruct} = require('../util/rpcClient');
+const { benchmarkPrx, benchmarkStruct} = require('../../../rpc');
 const {BenchmarkRunner} = require("./BenchmarkRunner");
 const InfTestDao = require('../../dao/InfTestDao');
 const webConf = require('../../../config/webConf');

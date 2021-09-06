@@ -216,8 +216,8 @@ export default {
     flex: 1;
     flex-flow: column;
     margin-left: 20px;
-    overflow: hidden;
-    position: relative;
+    overflow:auto;
+
 
     .empty {
       margin: 88px 0 0 calc((100% - 240px) / 2 - 108px);

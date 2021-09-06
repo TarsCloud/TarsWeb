@@ -14,19 +14,19 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const LogviewService = require('../../service/logview/LogviewService');
 const AuthService = require('../../service/auth/AuthService');
 const WebConf = require('../../../config/webConf');
-const util = require('../../tools/util');
+// const util = require('../../../tools/util');
 const fs = require('fs-extra');
 
 const LogviewController = {};
 
-LogviewController.getLogFileList = async(ctx) => {
+LogviewController.getLogFileList = async (ctx) => {
     try {
-        const { application, server_name, node_name } = ctx.paramsObj;
-   //     logger.error("======getLogFileList:", application, server_name, node_name, ctx.uid);
+        const {application, server_name, node_name} = ctx.paramsObj;
+        //     logger.error("======getLogFileList:", application, server_name, node_name, ctx.uid);
         if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
@@ -46,9 +46,9 @@ LogviewController.getLogFileList = async(ctx) => {
     }
 }
 
-LogviewController.getLogData = async(ctx) => {
+LogviewController.getLogData = async (ctx) => {
     try {
-        const { application, server_name, node_name, log_file, interface_params } = ctx.paramsObj;
+        const {application, server_name, node_name, log_file, interface_params} = ctx.paramsObj;
         if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {

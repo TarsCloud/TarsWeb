@@ -122,7 +122,14 @@
         </let-table-column>
         <let-table-column :title="$t('deployService.table.th.port')">
           <template slot-scope="scope">
-            <let-input v-model="scope.row.port"></let-input>
+            <let-input v-model="scope.row.port"
+                       type="number"
+                       :min="0"
+                       :max="65535"
+                       placeholder="0-65535"
+                       required
+                       :required-tip="$t('deployService.table.tips.empty')"
+            ></let-input>
           </template>
         </let-table-column>
         <let-table-column :title="$t('deployService.form.template')" prop="template_name"></let-table-column>

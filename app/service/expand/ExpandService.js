@@ -17,11 +17,12 @@
 const ServerDao = require('../../dao/ServerDao');
 const AdapterDao = require('../../dao/AdapterDao');
 const ConfigDao = require('../../dao/ConfigDao');
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const ServerService = require('../server/ServerService');
+const TreeService = require('../server/TreeService');
 const AuthService = require('../auth/AuthService');
 const _ = require('lodash');
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 const Sequelize = require('sequelize');
 // const resourceConf = require('../../../config/resourceConf');
 // const ResourceService = require('../resource/ResourceService');
@@ -54,9 +55,6 @@ ExpandService.preview = async (params) => {
 	let sourceServer = await ServerDao.getServerConfByName(application, serverName, params.node_name);
 	let sourceAdapter = await AdapterDao.getAdapterConf(application, serverName, params.node_name);
 	let result = [];
-
-	// console.log(sourceServer, sourceAdapter);
-
 	params.expand_nodes.forEach((expandNode) => {
 		sourceAdapter.forEach((adapter) => {
 			// adapter = adapter.dataValues;
@@ -77,9 +75,6 @@ ExpandService.preview = async (params) => {
 			preServer.obj_name = servant.substring(servant.lastIndexOf('.') + 1);
 			preServer.bind_ip = expandNode;
 			preServer.status = expandNode == sourceServer.node_name ? "#api.expand.node.status.existent#" : "#api.expand.node.status.nonexistent#";
-
-			// console.log(preServer);
-			
 			result.push(preServer);
 		});
 	});
@@ -125,9 +120,8 @@ ExpandService.expand = async (params) => {
 					});
 					server = util.leftAssign(ServerService.serverConfFields(), server);
 					let rst = await ServerDao.insertServerConf(server, transaction);
-
+					// console.log('rst', rst);
 					addServers.push(rst.dataValues);
-
 					addServersMap[`${server.application}-${server.server_name}-${server.node_name}`] = true;
 					addNodeNameMap[server.node_name] = true;
 					if (params.copy_node_config) {
@@ -256,7 +250,18 @@ ExpandService.getServerName = async (application, uid) => {
 	let serverList = [];
 
 	if (await AuthService.hasAdminAuth(uid)) {
-		serverList = ExpandService.formatToArray(await ServerDao.getServerName(application), 'server_name');
+		if (application == "DCache") {
+
+			const rst = await ServerDao.getDCacheServer('DCache');
+
+			rst.forEach((v, i) => {
+				serverList.push(v.server_name);
+			});
+			serverList.concat(TreeService.getDCacheCommonServer())
+
+		} else {
+			serverList = ExpandService.formatToArray(await ServerDao.getServerName(application), 'server_name');
+		}
 	} else {
 		let authList = await AuthService.getAuthListByUid(uid);
 		
@@ -264,23 +269,26 @@ ExpandService.getServerName = async (application, uid) => {
 			let auth = authList[i];
 			let authApplication = auth.application;
 			let authServerName = auth.serverName;
-
 			if (authServerName) {
-
 				if (authApplication == application) {
 					serverList.push(authServerName);
 				}
 			} else if (authApplication == application) {
-				let serverConfs = await ServerDao.getServerConf({
-					application: application
-				});
-				serverConfs.forEach((serverConf) => {
-					serverConf = serverConf.dataValues;
-					serverList.push(serverConf.server_name);
-				})
+				if (application == "DCache") {
+					serverList.concat(TreeService.getDCacheCommonServer());
+				}else {
+
+					let serverConfs = await ServerDao.getServerConf({
+						application: application
+					});
+
+					serverConfs.forEach((serverConf) => {
+						serverConf = serverConf.dataValues;
+						serverList.push(serverConf.server_name);
+					})
+				}
 			}
 		}
-
 		serverList = _.uniq(serverList);
 	}
 

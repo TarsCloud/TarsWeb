@@ -23,10 +23,9 @@ const _ = require('lodash');
 
 const fs = require('fs-extra');
 
+const webConf = require(path.join(cwd, './config/webConf'));
 
-const { dbConf } = require(path.join(cwd, './config/webConf'));
-
-const logger = require(path.join(cwd, './app/logger'));
+const logger = require(path.join(cwd, './logger'));
 
 const Db = {};
 
@@ -40,7 +39,7 @@ databases.forEach((database) => {
     password,
     charset,
     pool,
-  } = dbConf;
+  } = webConf.dbConf;
 
   // 初始化sequelize
   const sequelize = new Sequelize(database, user, password, {
@@ -51,7 +50,7 @@ databases.forEach((database) => {
       charset,
     },
     logging(sqlText) {
-      logger.sql(sqlText);
+      // logger.sql(sqlText);
     },
     pool: {
       max: pool.max || 10,
@@ -80,12 +79,14 @@ databases.forEach((database) => {
       tableObj[_.camelCase(tableName)] = sequelize.import(`${dbModelsPath}/${tableName}`);
       // sync 无表创建表， alter 新增字段
       // tableObj[_.camelCase(tableName)].sync();
-      await tableObj[_.camelCase(tableName)].sync({ alter: true });
+      if (webConf.webConf.alter) {
+        await tableObj[_.camelCase(tableName)].sync({ alter: true });
+      }
 
-      logger.info('sync ' + database + '.' + tableName + ' succ');
+      // logger.info('sync ' + database + '.' + tableName + ' succ');
 
     } catch (e) {
-      logger.error('sync ' + database + '.' + tableName + ' error:', e);
+      logger.info('sync ' + database + '.' + tableName + ' error:', e);
     }
   });
 

@@ -22,10 +22,12 @@ import Server from '@/pages/server/index';
 import ServerManage from '@/pages/server/manage';
 import ServerPublish from '@/pages/server/publish';
 import ServerConfig from '@/pages/server/config';
-import ServerServerMonitor from '@/pages/server/monitor-server';
-import ServerPropertyMonitor from '@/pages/server/monitor-property';
-import AuthManage from '@/pages/server/user-manage';
-import InterfaceDebuger from '@/pages/server/interface-debuger';
+
+//import AlarmConfig from '@/common/alarm';
+import AuthManage from '@/common/user-manage';
+import InterfaceDebuger from '@/common/interface-debuger';
+import ServerServerMonitor from '@/common/monitor-server';
+import ServerPropertyMonitor from '@/common/monitor-property';
 
 // 运维管理
 import Operation from '@/pages/operation/index';
@@ -34,11 +36,12 @@ import OperationExpand from '@/pages/operation/expand';
 import OperationTemplates from '@/pages/operation/templates';
 import OperationNodes from '@/pages/operation/nodes';
 import OperationCheck from '@/pages/operation/check';
-import OperationGateway from '@/pages/operation/gateway/index';
 import OperationApplication from '@/pages/operation/application';
 import OperationBusiness from '@/pages/operation/business';
 import OperationBusinessRelation from '@/pages/operation/businessRelation';
 import OperationIDCManage from '@/pages/operation/idc';
+//网关
+import OperationGateway from '@/gateway/index';
 
 
 Vue.use(Router);
@@ -106,10 +109,10 @@ export default new Router({
           path: 'check',
           component: OperationCheck,
         },
-        {
-          path: 'gateway',
-          component: OperationGateway,
-        },       
+        // {
+        //   path: 'gateway',
+        //   component: OperationGateway,
+        // },
         {
           path: 'application',
           component: OperationApplication,
@@ -127,6 +130,11 @@ export default new Router({
           component: OperationIDCManage,
         }
       ],
+    },
+    {
+      path: '/gateway',
+      name: 'Gateway',
+      component: OperationGateway,
     },
     {
       path: '*',

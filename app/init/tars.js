@@ -23,7 +23,7 @@ const compressing = require('compressing');
 var fs = require("fs")
 var path = require("path")
 const md5Sum = require('md5-file').sync;
-const logger = require('../logger')
+const logger = require('../../logger');
 
 const TarsInit = {};
 
@@ -118,7 +118,7 @@ TarsInit.insert = async(patchTmp, patchPath, filePath, file)=> {
 
         await PatchDao.insertServerPatch(params);
 
-        logger.info("parepare taf patch package succ");
+        logger.info("parepare tars patch package succ");
     }
 
 };

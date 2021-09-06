@@ -16,8 +16,8 @@
 
 const IDCDao = require('../../dao/IDCDao');
 const ServerService = require('../../service/server/ServerService');
-const logger = require('../../logger');
-const util = require('../../tools/util');
+const logger = require('../../../logger');
+const util = require('../../../tools/util');
 const IDCService = {};
 
 

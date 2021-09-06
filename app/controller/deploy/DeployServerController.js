@@ -14,52 +14,54 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const ServerService = require('../../service/server/ServerService');
 const AuthService = require('../../service/auth/AuthService');
 const webConf = require('../../../config/webConf').webConf;
 const DeployServerController = {};
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 
 const serverConfStruct = {
-	id: '',
-	application: '',
-	server_name: '',
-	node_name: '',
-	server_type: '',
-	enable_set: {
-		formatter: (value) => {
-			return value == 'Y' ? true : false;
-		}
-	},
-	set_name: '',
-	set_area: '',
-	set_group: '',
-	setting_state: '',
-	present_state: '',
-	bak_flag: {
-		formatter: (value) => {
-			return value == 0 ? false : true;
-		}
-	},
-	template_name: '',
-	profile: '',
-	async_thread_num: '',
-	base_path: '',
-	exe_path: '',
-	start_script_path: '',
-	stop_script_path: '',
-	monitor_script_path: '',
-	patch_time: util.formatTimeStamp,
-	patch_version: "",
-	process_id: '',
-	posttime: {formatter: util.formatTimeStamp}
+    id: '',
+    application: '',
+    server_name: '',
+    node_name: '',
+    server_type: '',
+    enable_set: {
+        formatter: (value) => {
+            return value == 'Y' ? true : false;
+        }
+    },
+    set_name: '',
+    set_area: '',
+    set_group: '',
+    setting_state: '',
+    present_state: '',
+    bak_flag: {
+        formatter: (value) => {
+            return value == 0 ? false : true;
+        }
+    },
+    template_name: '',
+    profile: '',
+    async_thread_num: '',
+    base_path: '',
+    exe_path: '',
+    start_script_path: '',
+    stop_script_path: '',
+    monitor_script_path: '',
+    patch_time: util.formatTimeStamp,
+    patch_version: "",
+    process_id: '',
+    posttime: { formatter: util.formatTimeStamp }
 };
 
-DeployServerController.deployServer = async (ctx) => {
+DeployServerController.deployServer = async(ctx) => {
     var params = ctx.paramsObj;
 
     let adapters = params.adapters;
+
+    //兼容老的接口
     if (params.node_name) {
         for (var i = 0; i < adapters.length; i++) {
             if (!adapters[i].node_name)
@@ -68,7 +70,7 @@ DeployServerController.deployServer = async (ctx) => {
             }
         }		
     }
-	
+
     let node_name_list = [];
     for (var i = 0; i < adapters.length; i++) {
         var nn = adapters[i].node_name;
@@ -77,28 +79,29 @@ DeployServerController.deployServer = async (ctx) => {
         }
         node_name_list.push(nn);
     }
-    if (webConf.strict && await ServerService.isDeployWithRegistry(node_name_list)) {
-		//tarsregistry节点上, 无法部署其他任何服务
-		ctx.makeResObj(500, '#common.deploy#');
-		return
-	}
 
-	try {
-		//若非admin用户，且operator中不包含当前用户，则在operator中加入当前用户
-		let hasAdminAuth = await AuthService.hasAdminAuth(ctx.uid)
-		if(!params.operator) params.operator = ""
-		if(!hasAdminAuth && params.operator.indexOf(ctx.uid)<0){
-			let operators = params.operator.split(";")
-			operators.push(ctx.uid)
-			params.operator = operators.join(";")
-		}
-		let rst = await ServerService.addServerConf(params);
-		rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
-		ctx.makeResObj(200, '', rst);
-	} catch (e) {
-		logger.error('[deployServer]', e, ctx);
-		ctx.makeErrResObj();
-	}
+    if (webConf.strict && await ServerService.isDeployWithRegistry(node_name_list)) {
+        //tarsregistry节点上, 无法部署其他任何服务
+        ctx.makeResObj(500, '#common.deploy#');
+        return
+    }
+
+    try {
+        //若非admin用户，且operator中不包含当前用户，则在operator中加入当前用户
+        let hasAdminAuth = await AuthService.hasAdminAuth(ctx.uid)
+        if (!params.operator) params.operator = ""
+        if (!hasAdminAuth && params.operator.indexOf(ctx.uid) < 0) {
+            let operators = params.operator.split(";")
+            operators.push(ctx.uid)
+            params.operator = operators.join(";")
+        }
+        let rst = await ServerService.addServerConf(params);
+        rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
+        ctx.makeResObj(200, '', rst);
+    } catch (e) {
+        logger.error('[deployServer]', e, ctx);
+        ctx.makeErrResObj();
+    }
 };
 
 DeployServerController.serverTypeList = async (ctx) => {

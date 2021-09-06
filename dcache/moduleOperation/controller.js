@@ -17,9 +17,8 @@
 const cwd = process.cwd();
 const path = require('path');
 
-const logger = require(path.join(cwd, './app/logger'));
-
-
+const logger = require(path.join(cwd, './logger'));
+// const OperateLogService = require('../../app/service/operateLog/OperateLogService')
 const Service = require('./service.js');
 
 
@@ -254,6 +253,21 @@ const Controller = {
       let rsp = await Service.switchServer({ appName, moduleName, groupName });
       // 后台切换成功，前台数据库切换
       rsp = await Service.switchMainBackup({ appName, moduleName, groupName });
+      ctx.makeResObj(200, '', rsp);
+    } catch (err) {
+      ctx.makeResObj(500, err.message);
+    }
+  },
+  /**
+     * 镜像切主
+     */
+   async switchMIServer(ctx) {
+    try {
+      const { appName, moduleName, groupName, imageIdc } = ctx.paramsObj;
+      // opt 主备切换
+      let rsp = await Service.switchMIServer({ appName, moduleName, groupName, imageIdc });
+      // 后台切换成功，前台数据库切换
+      rsp = await Service.switchMainImage({ appName, moduleName, groupName, imageIdc });
       ctx.makeResObj(200, '', rsp);
     } catch (err) {
       ctx.makeResObj(500, err.message);

@@ -5,7 +5,6 @@
       <let-tab-pane :tab="$t('module.createTitle')" tabkey="/operation/module"></let-tab-pane>
       <let-tab-pane :tab="$t('region.title')" tabkey="/operation/region"></let-tab-pane>
     </let-tabs>
-
     <router-view class="page_operation_children"></router-view>
   </div>
 </template>

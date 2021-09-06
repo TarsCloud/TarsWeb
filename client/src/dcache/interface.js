@@ -226,6 +226,26 @@ export function switchServer({ appName = '', moduleName = '', groupName = '' }) 
 }
 
 /**
+ * 镜像切主
+ * @param appName
+ * @param moduleName
+ * @param groupName
+ * @param imageIdc
+ */
+ export function switchMIServer({ appName = '', moduleName = '', groupName = '', imageIdc = '' }) {
+    return Axios({
+        method: 'post',
+        url: '/cache/switchMIServer',
+        data: {
+            appName,
+            moduleName,
+            groupName,
+            imageIdc,
+        }
+    })
+}
+
+/**
  * 查询主备切换
  * @param appName
  * @param moduleName
@@ -332,11 +352,11 @@ export function installAndPublish({ applyId, replace }) {
  * @param serverName
  */
 export function queryProperptyData({ thedate, predate, startshowtime, endshowtime, moduleName, serverName }) {
-  return Axios({
-    method: 'get',
-    url: '/cache/queryProperptyData',
-    params: { thedate, predate, startshowtime, endshowtime, moduleName, serverName }
-  })
+    return Axios({
+        method: 'get',
+        url: '/cache/queryProperptyData',
+        params: { thedate, predate, startshowtime, endshowtime, moduleName, serverName }
+    })
 }
 
 /**
@@ -361,12 +381,16 @@ export function serverPatchList({ application = 'DCache', moduleName = 'DCacheSe
     })
 }
 
-export function addTask({ serial = false, items = [{ server_id: '', command: 'patch_tars', parameters: { patch_id: 0, bak_flag: '', group_name: '' } }] }) {
+export function addTask({ serial = false, elegant = false, eachnum = 1, items = [{ server_id: '', command: 'patch_tars', parameters: { patch_id: 0, bak_flag: '', group_name: '' } }] }) {
+    //console.log("addTask===>", serial, elegant, eachnum);
     return Axios({
+
         method: 'post',
         url: '/add_task',
         data: {
             serial,
+            elegant,
+            eachnum,
             items,
         },
         headers: {

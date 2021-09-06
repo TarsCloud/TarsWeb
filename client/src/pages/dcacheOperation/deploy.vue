@@ -162,7 +162,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxConnecttions')" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.connections')" width="140px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>
@@ -177,7 +177,7 @@
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('serverList.table.servant.maxQueue')" width="140px">
+        <let-table-column :title="$t('serverList.table.servant.capacity')" width="140px">
           <template slot="head" slot-scope="props">
             <span class="required">{{props.column.title}}</span>
           </template>

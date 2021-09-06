@@ -59,6 +59,16 @@ export default {
             width: 1,
           },
         },
+        dataZoom:[
+          {
+            type:'inside',//slider表示有滑动块的，inside 表示内置的
+            show:true,
+            xAxisIndex:[0],
+            zoomOnMouseWheel:true, //鼠标滚轮直接操作
+            start:0,
+            end:100
+          }
+        ],
         data: {
           columns,
           rows: this.data,
@@ -78,6 +88,8 @@ export default {
         title: {
           show: true,
           text: this.title,
+          left: 'center',
+          top: 'bottom',
         },
         grid: {
           bottom: 40,

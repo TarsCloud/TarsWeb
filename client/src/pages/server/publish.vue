@@ -24,12 +24,16 @@
         </let-table-column>
         <let-table-column :title="$t('serverList.table.th.configStatus')">
           <template slot-scope="scope">
-            <span :class="scope.row.setting_state == 'active' ? 'status-active' : 'status-off'"></span>
+            <span v-if="scope.row.setting_state ==='Inactive'" style="color: #FF0000">{{scope.row.setting_state}}</span>
+            <span v-else style="color: #49CC8F">{{scope.row.setting_state}}</span>
           </template>
         </let-table-column>
         <let-table-column :title="$t('serverList.table.th.currStatus')">
-           <template slot-scope="scope">
-            <span :class="scope.row.present_state == 'active' ? 'status-active' : 'status-off'"></span>
+          <template slot-scope="scope">
+            <span v-if="scope.row.query_ret_code !='0'" style="color: #FF0000">Inactive</span>
+            <span v-else-if="scope.row.present_state_in_node==='Active'"
+                  style="color: #49CC8F">{{ scope.row.present_state_in_node }}</span>
+            <span v-else style="color: #FF0000">{{ scope.row.present_state_in_node }}</span>
           </template>
         </let-table-column>
         <let-table-column :title="$t('serverList.table.th.version')" prop="patch_version"></let-table-column>
@@ -39,10 +43,12 @@
           </template>
         </let-table-column>
         <let-pagination slot="pagination" align="right"
-          :total="totalPage" :page="page" @change="changePage">
+                        :total="totalPage" :page="page" @change="changePage">
         </let-pagination>
         <div slot="operations" style="margin-left: -15px;">
-          <let-button theme="primary" size="small" @click="openPublishModal">{{$t('pub.btn.pub')}}</let-button>
+          <let-button theme="primary" size="small" @click="uploadPublishModal">{{$t('pub.dlg.upload')}}</let-button>
+          &nbsp;&nbsp;
+          <let-button theme="primary" size="small" @click="openPublishModal(false)">{{$t('pub.btn.pub')}}</let-button>
           &nbsp;&nbsp;
           <let-button size="small" v-if="serverList && serverList.length > 0" @click="gotoHistory">{{$t('pub.btn.history')}}</let-button>
           &nbsp;&nbsp;
@@ -51,143 +57,153 @@
       </let-table>
       <!-- 发布服务弹出框 -->
       <let-modal
-        v-model="publishModal.show"
-        :title="$t('index.rightView.tab.patch')"
-        width="880px"
-        :footShow="false"
-        @close="closePublishModal"
-        @on-confirm="savePublishServer">
-          <let-form
+          v-model="publishModal.show"
+          :title="$t('index.rightView.tab.patch')"
+          width="880px"
+          :footShow="false"
+          @close="closePublishModal"
+          @on-confirm="savePublishServer">
+        <let-form
             v-if="publishModal.model"
             ref="publishForm"
             itemWidth="100%">
-              <let-form-item :label="$t('serverList.servant.appService')">
-                {{publishModal.model.application}}·{{publishModal.model.server_name}}
-              </let-form-item>
-              <let-form-item :label="$t('pub.dlg.ip')">
-                <div v-for="server in publishModal.model.serverList" :key="server.id">{{server.node_name}}</div>
-              </let-form-item>
-              <let-form-item :label="$t('serverList.servant.comment')">
-                <let-input v-model="publishModal.model.update_text"></let-input>
-              </let-form-item>
+          <let-form-item :label="$t('serverList.servant.appService')">
+            {{publishModal.model.application}}·{{publishModal.model.server_name}}
+          </let-form-item>
+          <let-form-item :label="$t('pub.dlg.ip')">
+            <div v-for="server in publishModal.model.serverList" :key="server.id">{{server.node_name}}</div>
+          </let-form-item>
+          <let-form-item :label="$t('serverList.servant.comment')">
+            <let-input v-model="publishModal.model.update_text"></let-input>
+          </let-form-item>
 
-              <let-form-item :label="$t('pub.dlg.patchType')" v-if="patchRadioData.length>1">
-                <let-radio-group type="button" size="small" @change="patchChange" v-model="patchType" :data="patchRadioData">
-                </let-radio-group>
-              </let-form-item>
-              <let-form-item :label="$t('pub.dlg.releaseVersion')" v-if="publishModal.model.show" >
-                <div>
-                <let-select
+          <let-form-item :label="$t('pub.dlg.patchType')" v-if="patchRadioData.length>1">
+            <let-radio-group type="button" size="small" @change="patchChange" v-model="patchType" :data="patchRadioData">
+            </let-radio-group>
+          </let-form-item>
+          <let-form-item :label="$t('pub.dlg.releaseVersion')" v-if="publishModal.model.show" >
+            <div>
+              <let-select
                   size="small"
-                  style="width:75%"
+                  style="width:87%"
                   v-model="publishModal.model.patch_id"
                   required
                   :required-tip="$t('pub.dlg.ab')"
-                >
-                <let-option v-for="(d,index) in publishModal.model.patchList" :key="d.id" :value="d.id">
-                  <span v-html="imgNew" v-if="index==0"></span><span v-else v-html="imgSpace">&emsp;</span>
-                  <span v-html="imgCur" v-if="includes(nowVersion,d.id)"></span><span v-else v-html="imgSpace"></span>
-                  {{d.id}}| {{"PubTime:"+d.publish_time}} | {{"UploadTime:"+d.upload_time+""}} |{{formatString("UploadUser:"+d.upload_user,20)}}| {{d.comment}}
-                  </let-option>
-                </let-select>
-                &nbsp;&nbsp;
-                <let-button theme="primary" size="small" @click="showUploadModal">{{$t('pub.dlg.upload')}}</let-button>
-                &nbsp;&nbsp;
-                <let-button size="small" @click="gotoPackage">{{$t('managePackage.title')}}</let-button>
+              >
+                <let-option v-for="(d,index) in publishModal.model.patchList" :key="d.id" :value="d.id"
+                            :title="d.id+'|PubTime:'+d.publish_time+'|UploadTime:'+d.upload_time+'|'+d.upload_user+'|'+d.comment">
+                  <div>
+                    <span v-html="imgNew" v-if="index==0"></span><span v-else v-html="imgSpace">&emsp;</span>
+                    <span v-html="imgCur" v-if="includes(nowVersion,d.id)"></span><span v-else v-html="imgSpace"></span>
+                    {{d.id}}| {{"PubTime:"+d.publish_time}} | {{"UploadTime:"+d.upload_time+""}} |{{d.upload_user}}| {{d.comment}}
+                  </div>
+                </let-option>
+              </let-select>
+              &nbsp; &nbsp;
+              <let-button theme="primary" size="small" @click="showUploadModal">{{$t('pub.dlg.upload')}}</let-button>
+            </div>
+          </let-form-item>
 
+          <let-form-item :label="$t('serverList.table.th.version')" v-else>
+            <let-select size="small" required :required-tip="$t('deployService.table.tips.empty')"
+                        v-model="tagVersion"
+                        requred>
+              <let-option v-for="it in tagList" :key="`${it.version}`" :value="it.path +'--'+ it.version">{{it.version}}</let-option>
+            </let-select>
+            <let-button theme="primary" size="small" class="mt10" @click="addCompileTask">{{$t('pub.dlg.compileAndPublish')}}</let-button>
+            <let-button size="small" class="mt10" @click="openPubConfModal" v-if="false">{{$t('pub.dlg.conf')}}</let-button>
+          </let-form-item>
+
+          <let-form-item >
+            <div class="elegant-switch">
+              <let-switch size="large" v-model="elegantChecked" @change="changeElegantStatus">
+                <span slot="open">{{$t('pub.dlg.elegantPublish')}}</span>
+                <span slot="close">{{$t('pub.dlg.commomPublish')}}</span>
+              </let-switch>
+              &nbsp;&nbsp;&nbsp;
+              <div class="elegant-num" v-if="elegantChecked">
+                <span class="elegant-label">{{$t('pub.dlg.elegantEachNum')}}</span>
+                <let-input-number class="elegant-box" :max="20" :min="1" :step="1"   v-model="eachNum" size="small"></let-input-number>
               </div>
-              <br/>
-                <let-button theme="primary" size="small" class="mt10" @click="savePublishServer">{{$t('common.patch')}}</let-button>
-                &nbsp;&nbsp;&nbsp;
-                <span v-if="serverList.length > 0 && serverList[0].server_type === 'tars_go'">
-                <let-button theme="sub-primary"  size="small" style="{margin-left: 5px}" class="mt10" @click="savePublishServer($event, 1)">
-                  {{$t('common.gracePatch')}}
-                </let-button>
-                  {{$t('common.graceInfo')}}
-                </span>
-              </let-form-item>
+            </div>
+          </let-form-item>
+          &nbsp;&nbsp;
+          <let-button theme="primary" size="small" class="mt10" @click="savePublishServer">{{$t('common.patch')}}</let-button>
+          &nbsp;&nbsp; &nbsp;&nbsp;
+          <let-button size="small" @click="gotoPackage">{{$t('managePackage.title')}}</let-button>
 
-              <let-form-item :label="$t('serverList.table.th.version')" v-else>
-                <let-select size="small" required :required-tip="$t('deployService.table.tips.empty')"
-                  v-model="tagVersion"
-                  requred>
-                  <let-option v-for="it in tagList" :key="`${it.version}`" :value="it.path +'--'+ it.version">{{it.version}}</let-option>
-                </let-select>
-                <let-button theme="primary" size="small" class="mt10" @click="addCompileTask">{{$t('pub.dlg.compileAndPublish')}}</let-button>
-                <let-button size="small" class="mt10" @click="openPubConfModal" v-if="false">{{$t('pub.dlg.conf')}}</let-button>
-              </let-form-item>
-            </let-form>
+        </let-form>
       </let-modal>
 
-     <!-- 上传发布包弹出框 -->
+      <!-- 上传发布包弹出框 -->
       <let-modal
-        v-model="uploadModal.show"
-        :title="$t('pub.dlg.upload')"
-        width="880px"
-        :footShow="false"
-        @on-cancel="closeUploadModal">
+          v-model="uploadModal.show"
+          :title="$t('pub.dlg.upload')"
+          width="880px"
+          :footShow="false"
+          @on-cancel="closeUploadModal">
         <let-form
-          v-if="uploadModal.model"
-          ref="uploadForm"
-          itemWidth="100%"
-          @submit.native.prevent="uploadPatchPackage">
-            <let-form-item :label="$t('pub.dlg.releasePkg')" itemWidth="400px">
-               <let-uploader
+            v-if="uploadModal.model"
+            ref="uploadForm"
+            itemWidth="100%"
+            @submit.native.prevent="uploadPatchPackage">
+          <let-form-item :label="$t('pub.dlg.releasePkg')" itemWidth="400px">
+            <let-uploader
                 :placeholder="$t('pub.dlg.defaultValue')"
                 @upload="uploadFile">{{$t('common.choose')}}
-                </let-uploader>
-                <span v-if="uploadModal.model.file">{{uploadModal.model.file.name}}</span>
-            </let-form-item>
-            <let-form-item :label="$t('serverList.servant.comment')">
-              <let-input
+            </let-uploader>
+            <span v-if="uploadModal.model.file">{{uploadModal.model.file.name}}</span>
+          </let-form-item>
+          <let-form-item :label="$t('serverList.servant.comment')">
+            <let-input
                 type="textarea"
                 :rows="3"
                 v-model="uploadModal.model.comment"
-              >
-              </let-input>
-            </let-form-item>
-            <let-button type="submit" theme="primary">{{$t('serverList.servant.upload')}}</let-button>
+            >
+            </let-input>
+          </let-form-item>
+          <let-button type="submit" theme="primary">{{$t('serverList.servant.upload')}}</let-button>
         </let-form>
       </let-modal>
       <PublishStatus ref="publishStatus"></PublishStatus>
     </div>
 
     <!-- 管理发布包 -->
-    <let-modal v-model="showPackage" 
-    width="1000px"
-    :footShow="false"
-    :title="$t('managePackage.title')"
+    <let-modal v-model="showPackage"
+               width="1000px"
+               :footShow="false"
+               :title="$t('managePackage.title')"
     >
-    <let-table ref="packageTable" :data="packageList" :empty-msg="$t('common.nodata')">
-      <let-table-column :title="$t('managePackage.table.th.c1')" prop="id"></let-table-column>
-      <let-table-column :title="$t('managePackage.table.th.c2')" prop="server"></let-table-column>
+      <let-table ref="packageTable" :data="packageList" :empty-msg="$t('common.nodata')">
+        <let-table-column :title="$t('managePackage.table.th.c1')" prop="id"></let-table-column>
+        <let-table-column :title="$t('managePackage.table.th.c2')" prop="server"></let-table-column>
         <let-table-column :title="$t('managePackage.table.th.c7')" prop="upload_user"></let-table-column>
         <let-table-column :title="$t('managePackage.table.th.c3')" prop="upload_time"></let-table-column>
-      <let-table-column :title="$t('managePackage.table.th.c4')" prop="comment"></let-table-column>
-      <let-table-column :title="$t('managePackage.table.th.c5')" prop="publish_time"></let-table-column>
-      <let-table-column :title="$t('managePackage.table.th.c6')">
-        <template slot-scope="scope">
-          <let-table-operation>
-            <a class="let-table__operation" target="_blank" :href="`/pages/server/api/download_package?id=${scope.row.id}&name=${scope.row.tgz}`">{{$t('operate.download')}}</a>
-          </let-table-operation>
-          <let-table-operation @click="deletePackage(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
-        </template>
-      </let-table-column>
-      <let-pagination slot="pagination" align="right"
-        :total="packageTotalPage" :page="packagePage" @change="changePackagePage">
-      </let-pagination>
-      <div slot="operations" style="margin-left: -15px;">
-        <let-button theme="primary" size="small" @click="showPackage=false">{{$t('operate.goback')}}</let-button>
-      </div>
-    </let-table>
-  </let-modal>
+        <let-table-column :title="$t('managePackage.table.th.c4')" prop="comment"></let-table-column>
+        <let-table-column :title="$t('managePackage.table.th.c5')" prop="publish_time"></let-table-column>
+        <let-table-column :title="$t('managePackage.table.th.c6')">
+          <template slot-scope="scope">
+            <let-table-operation>
+              <a class="let-table__operation" target="_blank" :href="`/pages/server/api/download_package?id=${scope.row.id}&name=${scope.row.tgz}`">{{$t('operate.download')}}</a>
+            </let-table-operation>
+            <let-table-operation @click="deletePackage(scope.row.id)">{{$t('operate.delete')}}</let-table-operation>
+          </template>
+        </let-table-column>
+        <let-pagination slot="pagination" align="right"
+                        :total="packageTotalPage" :page="packagePage" @change="changePackagePage">
+        </let-pagination>
+        <div slot="operations" style="margin-left: -15px;">
+          <let-button theme="primary" size="small" @click="showPackage=false">{{$t('operate.goback')}}</let-button>
+        </div>
+      </let-table>
+    </let-modal>
 
 
     <!-- 发布历史 -->
-    <let-modal v-model="showHistory" 
-      width="1200px"
-      :footShow="false"
-      :title="$t('pub.btn.history')"
+    <let-modal v-model="showHistory"
+               width="1200px"
+               :footShow="false"
+               :title="$t('pub.btn.history')"
     >
       <let-form @submit.native.prevent="getHistoryList">
         <let-form-item itemWidth="100%" :label="$t('pub.date')">
@@ -216,8 +232,8 @@
           </template>
         </let-table-column>
         <let-pagination slot="pagination" align="right"
-          :total="historyTotalPage" :page="historyPage" @change="changeHistoryPage">
-      </let-pagination>
+                        :total="historyTotalPage" :page="historyPage" @change="changeHistoryPage">
+        </let-pagination>
         <div slot="operations" style="margin-left: -15px;">
           <let-button theme="primary" size="small" @click="showHistory=false">{{$t('operate.goback')}}</let-button>
         </div>
@@ -225,49 +241,49 @@
     </let-modal>
 
 
-      <!-- 子任务详情弹出框 -->
-      <let-modal
+    <!-- 子任务详情弹出框 -->
+    <let-modal
         v-model="taskModal.show"
         :title="$t('historyList.table.th.c4')"
         width="1200px"
         :footShow="false"
         @on-cancel="taskModal.show = false">
-        <let-table
+      <let-table
           v-if="taskModal.model"
           :data="taskModal.model.items">
-          <let-table-column :title="$t('historyList.dlg.th.c1')" prop="item_no"></let-table-column>
-          <let-table-column :title="$t('historyList.dlg.th.c2')" prop="application"></let-table-column>
-          <let-table-column :title="$t('historyList.dlg.th.c3')" prop="server_name"></let-table-column>
-          <let-table-column :title="$t('historyList.dlg.th.c4')" prop="node_name"></let-table-column>
-          <let-table-column :title="$t('historyList.dlg.th.c5')" prop="command"></let-table-column>
-          <let-table-column :title="$t('monitor.search.start')" prop="start_time"></let-table-column>
-          <let-table-column :title="$t('monitor.search.end')" prop="end_time"></let-table-column>
-          <let-table-column :title="$t('common.status')" prop="status_info"></let-table-column>
-          <let-table-column :title="$t('historyList.dlg.th.c7')" prop="execute_info"></let-table-column>
-        </let-table>
-      </let-modal>
-   <!-- </let-modal> -->
+        <let-table-column :title="$t('historyList.dlg.th.c1')" prop="item_no"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c2')" prop="application"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c3')" prop="server_name"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c4')" prop="node_name"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c5')" prop="command"></let-table-column>
+        <let-table-column :title="$t('monitor.search.start')" prop="start_time"></let-table-column>
+        <let-table-column :title="$t('monitor.search.end')" prop="end_time"></let-table-column>
+        <let-table-column :title="$t('common.status')" prop="status_info"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c7')" prop="execute_info"></let-table-column>
+      </let-table>
+    </let-modal>
+    <!-- </let-modal> -->
 
-  <!-- 配置编译接口 -->
-   <let-modal
+    <!-- 配置编译接口 -->
+    <let-modal
         v-model="publishUrlConfModal.show"
         :title="$t('pub.dlg.conf')"
         width="800px"
         :footShow="true"
         @on-confirm="saveCompilerUrl"
         @on-cancel="publishUrlConfModal.show = false">
-        <let-form ref="compilerForm"
-          itemWidth="100%"
-          v-if="publishUrlConfModal.model"
-          required>
-          <let-form-item :label="$t('pub.dlg.tag')">
-            <let-input size="small"
-              v-model="publishUrlConfModal.model.tag"
-              :placeholder="$t('pub.tips.tag')"
-              :required-tip="$t('deployService.table.tips.empty')"
-              required ></let-input>
-          </let-form-item>
-        </let-form>
+      <let-form ref="compilerForm"
+                itemWidth="100%"
+                v-if="publishUrlConfModal.model"
+                required>
+        <let-form-item :label="$t('pub.dlg.tag')">
+          <let-input size="small"
+                     v-model="publishUrlConfModal.model.tag"
+                     :placeholder="$t('pub.tips.tag')"
+                     :required-tip="$t('deployService.table.tips.empty')"
+                     required ></let-input>
+        </let-form-item>
+      </let-form>
     </let-modal>
 
     <!-- 编译进度 -->
@@ -276,22 +292,22 @@
         :title="$t('pub.dlg.compileProgress')"
         width="880px"
         :footShow="false">
-        <let-table
+      <let-table
           v-if="compilerModal.model"
           :data="compilerModal.model.progress">
-            <let-table-column :title="$t('historyList.dlg.th.c2')" prop="application"></let-table-column>
-            <let-table-column :title="$t('historyList.dlg.th.c3')" prop="server_name"></let-table-column>
-            <let-table-column :title="$t('historyList.dlg.th.c4')" prop="node"></let-table-column>
-            <let-table-column :title="$t('historyList.dlg.th.c8')" prop="status">
-              <template slot-scope="scope">
-                <span v-if="scope.row.state=='1'" class="running">{{scope.row.status}}</span>
-                <span v-else-if="scope.row.state=='2'" class="success">{{scope.row.status}}</span>
-                <span v-else class="stop">{{scope.row.status}}</span>
-              </template>
-            </let-table-column>
-            <let-table-column :title="$t('monitor.search.start')" prop="start_time"></let-table-column>
-            <let-table-column :title="$t('monitor.search.end')" prop="end_time"></let-table-column>
-        </let-table>
+        <let-table-column :title="$t('historyList.dlg.th.c2')" prop="application"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c3')" prop="server_name"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c4')" prop="node"></let-table-column>
+        <let-table-column :title="$t('historyList.dlg.th.c8')" prop="status">
+          <template slot-scope="scope">
+            <span v-if="scope.row.state=='1'" class="running">{{scope.row.status}}</span>
+            <span v-else-if="scope.row.state=='2'" class="success">{{scope.row.status}}</span>
+            <span v-else class="stop">{{scope.row.status}}</span>
+          </template>
+        </let-table-column>
+        <let-table-column :title="$t('monitor.search.start')" prop="start_time"></let-table-column>
+        <let-table-column :title="$t('monitor.search.end')" prop="end_time"></let-table-column>
+      </let-table>
     </let-modal>
 
   </div>
@@ -303,8 +319,8 @@ import PublishStatus from '../publish/status';
 export default {
   name: 'ServerPublish',
   components: {
-      PublishStatus,
-    },
+    PublishStatus,
+  },
   data() {
     return {
       imgNew:"<img class=\"logo\" src=\"/static/img/new.gif\">",
@@ -315,7 +331,7 @@ export default {
       treeData: [],
       totalServerList: [],
       serverList: [],
-      isCheckedAll: false,
+      isCheckedAll: true,
       totalPage: 0,
       pageSize: 20,
       page: 1,
@@ -327,6 +343,8 @@ export default {
       publishModal: {
         show: false,
         model: null,
+        elegant: false,
+        eachnum: 1,
       },
       statusConfig: {
         0: this.$t('serverList.restart.notStart'),
@@ -378,7 +396,9 @@ export default {
       pkgUpload: {
         show : false,
         model: null
-      }
+      },
+      elegantChecked: false,
+      eachNum: 0,
     };
   },
   props: ['treeid'],
@@ -401,12 +421,16 @@ export default {
         loading.hide();
         const items = data || [];
         items.forEach((item) => {
-          item.isChecked = false;
+          item.isChecked = this.isCheckedAll;
+          item.present_state_in_node = "";
+          item.query_ret_code = 0;
+          item.setting_state = item.setting_state.charAt(0).toUpperCase()+item.setting_state.slice(1);
         });
         this.totalServerList = items;
         this.totalPage = Math.ceil(this.totalServerList.length / this.pageSize);
         this.page = 1;
         this.updateServerList();
+        this.updateServerState();
       }).catch((err) => {
         loading.hide();
         this.$confirm(err.err_msg || err.message || this.$t('serverList.table.msg.fail')).then(() => {
@@ -414,10 +438,40 @@ export default {
         });
       });
     },
+    //tarsadmin修改服务实时状态
+    updateServerState() {
+      if (this.serverList.length != 0) {
+        let queryState = this.serverList.map((item) => {
+          return {
+            application: item.application,
+            server_name: item.server_name,
+            node_name: item.node_name
+          }
+        })
+        this.$ajax.postJSON('/server/api/server_state', {
+          queryState
+        }).then((data) => {
+          this.serverList.forEach((item) => {
+            let serverState = data.filter(app => app.application == item.application && app.server_name == item.server_name & app.node_name == item.node_name);
+            item.present_state_in_node = serverState[0].present_state_in_node;
+            item.query_ret_code = serverState[0].query_ret_code;
+          })
+        })
+      }
+    },
     changePage(page) {
       this.page = page;
     },
-    openPublishModal() {
+    changeElegantStatus(status) {
+        this.checked = status;
+        if (status) {
+          this.eachNum = 1;
+        }
+    },
+    uploadPublishModal() {
+      this.openPublishModal(true);
+    },
+    openPublishModal(upload) {
       const checkedServerList = this.serverList.filter(item => item.isChecked);
       if (checkedServerList.length <= 0) {
         this.$tip.warning(this.$t('pub.dlg.a'));
@@ -443,7 +497,13 @@ export default {
       this.getPatchList(first.application, first.server_name, 1, 50).then((data) => {
         // this.packageList = data.rows;
         this.publishModal.model.patchList = data.rows;
-        window.setTimeout(() => this.publishModal.show = true, 300)
+        this.publishModal.show = true
+
+        if(upload) {
+          this.showUploadModal();
+
+        }
+        // window.setTimeout(() => this.publishModal.show = true, 300)
       });
     },
     getPatchList(application, serverName, currPage, pageSize) {
@@ -480,6 +540,8 @@ export default {
     savePublishServer(event, isGrace) {
       // 发布
       if (this.$refs.publishForm.validate()) {
+        this.publishModal.elegant = this.elegantChecked;
+        this.publishModal.eachnum = this.eachNum;
         this.publishModal.command = isGrace ? 'grace_patch_tars':"patch_tars"
         this.$refs.publishStatus.savePublishServer(this.publishModal, this.closePublishModal);
       }
@@ -504,7 +566,6 @@ export default {
       }
 
       if (this.serverList.length <= 0) {
-        this.$tip.warning(this.$t('pub.dlg.a'));
         return;
       }
       const loading = this.$Loading.show();
@@ -517,7 +578,7 @@ export default {
 
       }).catch((err)=>{
         loading.hide();
-        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);        
+        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       });
 
       this.getPatchList(first.application, first.server_name, 1, 50).then((data) => {
@@ -531,12 +592,12 @@ export default {
       const url = `/pages/server/api/download_package?id=${data.id}&name=${data.tgz}`
       // location.href = url
       window.open(url, true)
-    },    
+    },
     deletePackage(id) {
       this.$confirm(this.$t('releasePackage.confirmDeleteTip'), this.$t('common.alert')).then(() => {
-          this.$ajax.postJSON('/server/api/delete_patch_package', {id}).then((data) => {
-            this.getPackageList(this.packagePage);
-          }).catch((err) => {
+        this.$ajax.postJSON('/server/api/delete_patch_package', {id}).then((data) => {
+          this.getPackageList(this.packagePage);
+        }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       });
@@ -583,10 +644,10 @@ export default {
         this.$ajax.getJSON('/server/api/del_task', {
           task_no: taskId,
         }).then((data) => {
-            this.getHistoryList(this.page);
+          this.getHistoryList(this.page);
         }).catch((err) => {
-          
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`); 
+
+          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
         });
       });
     },
@@ -683,7 +744,7 @@ export default {
         application : this.publishModal.model.application,
         server_name : this.publishModal.model.server_name,
       }).then(data => {
-          this.publishUrlConfModal.model.tag = data.path;
+        this.publishUrlConfModal.model.tag = data.path;
       }).catch(err => {
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       })
@@ -695,7 +756,7 @@ export default {
           path: this.publishUrlConfModal.model.tag,
           application : this.publishModal.model.application,
           server_name : this.publishModal.model.server_name,
-          }).then(data => {
+        }).then(data => {
           loading.hide();
           this.$tip.success(this.$t('common.success'));
           this.publishUrlConfModal.show = false;
@@ -708,82 +769,82 @@ export default {
     },
     addCompileTask() {
       this.$ajax.getJSON('/server/api/get_compile_conf').then(data => {
-          const compileUrl = data.getVersionList;
-          if(!compileUrl) {
-            this.openPubConfModal();
-            return;
-          }else {
-            let nodes = this.publishModal.model.serverList.map(item => item.node_name);
-            let opts = {
-              application : this.publishModal.model.application,
-              server_name : this.publishModal.model.server_name,
-              node : nodes.join(';'),
-              path : this.tagVersion.split('--')[0],
-              version : this.tagVersion.split('--')[1],
-              comment : this.publishModal.model.update_text || '',
-              compileUrl : compileUrl
-            };
-            const loading = this.$Loading.show();
-            this.$ajax.postJSON('/server/api/do_compile', opts).then(data => {
-                loading.hide();
-                this.compilerModal.show = true;
-                const taskNo = typeof data === 'string' ? data : data.data;
-                this.getStatus(taskNo);
-                //this.taskStatus(taskNo);
-            }).catch(err => {
-                loading.hide();
-                this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
-            })
-          }
+        const compileUrl = data.getVersionList;
+        if(!compileUrl) {
+          this.openPubConfModal();
+          return;
+        }else {
+          let nodes = this.publishModal.model.serverList.map(item => item.node_name);
+          let opts = {
+            application : this.publishModal.model.application,
+            server_name : this.publishModal.model.server_name,
+            node : nodes.join(';'),
+            path : this.tagVersion.split('--')[0],
+            version : this.tagVersion.split('--')[1],
+            comment : this.publishModal.model.update_text || '',
+            compileUrl : compileUrl
+          };
+          const loading = this.$Loading.show();
+          this.$ajax.postJSON('/server/api/do_compile', opts).then(data => {
+            loading.hide();
+            this.compilerModal.show = true;
+            const taskNo = typeof data === 'string' ? data : data.data;
+            this.getStatus(taskNo);
+            //this.taskStatus(taskNo);
+          }).catch(err => {
+            loading.hide();
+            this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+          })
+        }
       }).catch(err => {
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       })
     },
     taskStatus(taskNo) {
-        this.getStatus(taskNo);
+      this.getStatus(taskNo);
     },
     getStatus(taskNo) {
-        const f = () => {
-          let t = null;
-          t && clearTimeout(t);
-          this.$ajax.getJSON('/server/api/compiler_task', {taskNo}).then(data =>{
-            const ret = typeof data === 'array' ? data : data.data;
-            ret[0].status = this.statusConfig[ret[0].state];
-            if(ret[0].state==1){
-                t = setTimeout(f, 2000);
-            }
-            if(this.compilerModal.model) {
-              Object.assign(this.compilerModal.model, {progress : ret})
-            }else {
-              this.compilerModal.model = {progress : ret};
-            }
-            // 编译成功后轮询发布包回传情况
-            if(ret[0].state==2){
-                const loading = this.$Loading({text:'回传发布包'});
-                loading.show();
-                this.compilerModal.show = false;
-                let timer = ()=>{
-                  this.$ajax.getJSON('/server/api/get_server_patch', {task_id : taskNo}).then(data => {
-                    if(Object.keys(data).length !== 0) {
-                      loading.hide();
-                      this.publishModal.model.patch_id = data.id;
-                      this.publishModal.show = false;
-                      this.savePublishServer();
-                    }else {
-                      setTimeout(timer, 2000);
-                    }
-                  }).catch(err => {
-                    loading.hide();
-                    this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
-                  });
+      const f = () => {
+        let t = null;
+        t && clearTimeout(t);
+        this.$ajax.getJSON('/server/api/compiler_task', {taskNo}).then(data =>{
+          const ret = typeof data === 'array' ? data : data.data;
+          ret[0].status = this.statusConfig[ret[0].state];
+          if(ret[0].state==1){
+            t = setTimeout(f, 2000);
+          }
+          if(this.compilerModal.model) {
+            Object.assign(this.compilerModal.model, {progress : ret})
+          }else {
+            this.compilerModal.model = {progress : ret};
+          }
+          // 编译成功后轮询发布包回传情况
+          if(ret[0].state==2){
+            const loading = this.$Loading({text:'回传发布包'});
+            loading.show();
+            this.compilerModal.show = false;
+            let timer = ()=>{
+              this.$ajax.getJSON('/server/api/get_server_patch', {task_id : taskNo}).then(data => {
+                if(Object.keys(data).length !== 0) {
+                  loading.hide();
+                  this.publishModal.model.patch_id = data.id;
+                  this.publishModal.show = false;
+                  this.savePublishServer();
+                }else {
+                  setTimeout(timer, 2000);
                 }
-                setTimeout(timer, 2000);
+              }).catch(err => {
+                loading.hide();
+                this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+              });
             }
-          }).catch(err =>{
-            this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
-          })
-        }
-        f();
+            setTimeout(timer, 2000);
+          }
+        }).catch(err =>{
+          this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+        })
+      }
+      f();
     },
     //数组是否包含
     includes(arr, item) {
@@ -825,13 +886,18 @@ export default {
 
 .page_server_publish {
   padding-bottom: 32px;
-  /* .mt10 {
-    margin-top: 10px;
-  } */
-  .running {
-    color:#3f5ae0
-  }
-  .success {color:#6accab}
-  .stop {color: #f56c77}
+/* .mt10 {
+  margin-top: 10px;
+} */
+.running {
+  color:#3f5ae0
+}
+.success {color:#6accab}
+.stop {color: #f56c77}
+.elegant-switch{display: block;overflow: hidden;}
+.elegant-switch .let-switch{display:block;float:left;margin-right: 10px;width:105px}
+.elegant-num{display:block;overflow: hidden;}
+.elegant-label{display:block;float: left;margin-right: 10px;}
+.elegant-box{display: block;overflow: hidden;}
 }
 </style>

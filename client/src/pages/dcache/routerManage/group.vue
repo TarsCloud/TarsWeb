@@ -86,7 +86,7 @@
             v-model="dialogModal.model.server_name"
           ></let-input>
         </let-form-item>
-        <let-form-item :label="$t('routerManage.accessStatus')" required>
+        <let-form-item :label="$t('routerManage.serverStatus')" required>
           <let-select
             size="small"
             required
@@ -137,6 +137,7 @@ export default {
       serverStatus: [
         { val: 'M', label: '主机' },
         { val: 'S', label: '备机' },
+        { val: 'I', label: '镜像' },
       ],
       isCheckedAll: false,
       tableData: [],

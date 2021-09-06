@@ -52,7 +52,8 @@ export default {
         2: this.$t('serverList.restart.success'),
         3: this.$t('serverList.restart.failed'),
         4: this.$t('serverList.restart.cancel'),
-        5: this.$t('serverList.restart.parial'),
+        //5: this.$t('serverList.restart.parial'),
+        5: this.$t('serverList.restart.pauseFlow'),
       },
       statusMap: {
         0: 'EM_T_NOT_START',
@@ -76,6 +77,7 @@ export default {
       this.closeCallback = callback;
       // 发布
       var items = [];
+      let elegant = publishModal.elegant || false;
       publishModal.model.serverList.forEach((item) => {
           items.push({
             server_id: item.id.toString(),
@@ -90,7 +92,9 @@ export default {
         });
         const loading = this.$Loading.show();
         this.$ajax.postJSON('/server/api/add_task', {
-          serial: true,
+          serial: !elegant,
+          elegant: elegant,
+          eachnum: publishModal.eachnum || 1,
           items,
         }).then((data) => {
           loading.hide();

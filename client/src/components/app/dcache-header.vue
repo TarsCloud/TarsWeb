@@ -5,7 +5,8 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <a href="/"><img class="logo" src="/static/img/tars-logo.png"></a>
+        <a v-if="enable === 'true' && show === 'true'" href="/"><img class="logo" src="/static/img/tars-logo.png"></a>
+        <a v-if="k8s === 'true'" href="/k8s.html"><img class="logo" src="/static/img/K8S.png"></a>
         <a class="active" href="/dcache.html"><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"></a>
       </div>
 
@@ -62,6 +63,9 @@
         uid: '--',
         userOptOpen: false,
         enableLogin: false,
+        k8s: this.$cookie.get('k8s') || 'false',
+        enable: this.$cookie.get('enable') || 'false',
+        show: this.$cookie.get('show') || 'false',
         localeMessages: localeMessages
       };
     },

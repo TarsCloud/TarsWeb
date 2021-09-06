@@ -21,7 +21,8 @@ const assert = require('assert');
 
 const TarsStream = require('@tars/stream');
 
-const { DCacheOptPrx, DCacheOptStruct } = require(path.join(cwd, './app/service/util/rpcClient'));
+const { DCacheOptPrx } = require(path.join(cwd, './rpc'));
+const { DCacheOptStruct } = require(path.join(cwd, './rpc/struct'));
 const Service = {};
 
 module.exports = Service;

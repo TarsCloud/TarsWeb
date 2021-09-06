@@ -24,9 +24,11 @@ const fs = require('fs-extra');
 
 const _ = require('lodash');
 
-const dbConf = require('../../../config/webConf').dbConf;
+const webConf = require('../../../config/webConf');
 
-const logger = require('../../logger');
+// const dbConf = require('../../../config/webConf').dbConf;
+
+const logger = require('../../../logger');
 
 let Db = {};
 
@@ -40,7 +42,7 @@ databases.forEach((database) => {
 		password,
 		charset,
 		pool,
-	} = dbConf;
+	} = webConf.dbConf;
 
 	const logging = process.env.NODE_ENV == "dev" ? (sqlText)=>{
 		// console.log(sqlText);
@@ -89,21 +91,25 @@ databases.forEach((database) => {
 		let tableName = dbModel.replace(/\.js$/g, '');
 		tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
 		
-		try {
+    if (webConf.webConf.alter) 
+    {
+  		try {
 
-			await tableObj[_.camelCase(tableName)].sync({ alter: true });
+  			await tableObj[_.camelCase(tableName)].sync({ alter: true });
 
-			logger.info('database ' + database + '.' + tableName + ' sync succ');
+  			logger.info('database ' + database + '.' + tableName + ' sync succ');
 
-		} catch (e) {
-			logger.info('database ' + database + '.' + tableName  + ' sync error:', e);
-
-		}
+  		} catch (e) {
+  			logger.info('database ' + database + '.' + tableName  + ' sync error:', e);
+  		}
+  }
 	});
 	Db[database] = tableObj;
 	Db[database].sequelize = sequelize;
 });
 
+if (webConf.webConf.alter) {
 Update.update(Db['db_tars'], Db['db_tars_web']);
+}
 
 module.exports = Db;

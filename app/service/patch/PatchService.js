@@ -14,6 +14,13 @@
  * specific language governing permissions and limitations under the License.
  */
 
+const fs = require('fs-extra');
+const { patchPrx } = require('../../../rpc/index');
+const { PatchStruct } = require('../../../rpc/struct');
+const TarsStream  = require("@tars/stream");
+const logger = require('../../../logger');
+const util = require('../../../tools/util');
+
 const PatchDao = require('../../dao/PatchDao');
 
 const PatchService = {};
@@ -69,6 +76,50 @@ PatchService.hasDcachePatchPackage = async () => {
 	return !!proxyDefaultPackage && !!routerDefaultPackage && !!accessDefaultPackage && !!cacheDefaultPackage && !!McacheDefaultPackage
 
 
+};
+
+PatchService.uploadToPatch = async (md5, application, module_name, uploadTgzName, localTgzPath) => {
+
+	let content = new PatchStruct.FileContent();
+	content.md5 = md5;
+	content.name = uploadTgzName;
+		
+	let fd = await fs.open(localTgzPath, "r");
+
+	let stat = fs.fstatSync(fd);
+
+	let offset = 0;
+
+	let hash = {
+        hashCode: util.getHashNumber(md5)
+	}
+	
+	do {
+		let length = Math.min(1024 * 1024 * 5, stat.size - offset);
+	
+		var buffer = Buffer.alloc(length);
+	
+		await fs.read(fd, buffer, offset, length);
+
+		content.firstChunk = offset == 0;
+		content.lastChunk = (offset + length == stat.size);
+
+		content.content = new TarsStream.BinBuffer(buffer);
+
+		let ret = await patchPrx.upload(application, module_name, content, hash);
+
+		logger.info(`uploadToPatch file: ${localTgzPath}, md5: ${md5}, size: ${stat.size}, offset: ${offset}, length: ${length}, buffer length: ${buffer.length}`);
+
+		if (ret.__return != 0) {
+            logger.error('[PatchService.upload to patch error] ret:', ret);
+			return ret.__return;
+		}
+
+		offset += length;
+
+	} while (!content.lastChunk);
+
+	return 0;
 };
 
 module.exports = PatchService;

@@ -51,8 +51,8 @@
 
 <style lang="postcss">
   .hours-filter {
+    margin-bottom: 20px;
     overflow: hidden;
-
     h4 {
       color: #9096A3;
       font-weight: 700;

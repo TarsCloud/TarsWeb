@@ -14,11 +14,11 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const logger = require('../../logger');
+const logger = require('../../../logger');
 const InfTestService = require('../../service/infTest/InfTestService');
 const AuthService = require('../../service/auth/AuthService');
 const WebConf = require('../../../config/webConf');
-const util = require('../../tools/util');
+const util = require('../../../tools/util');
 const fs = require('fs-extra');
 const AdminService = require('../../service/admin/AdminService');
 
