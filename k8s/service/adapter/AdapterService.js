@@ -39,13 +39,13 @@ const AdapterService = {};
 // };
 
 
-AdapterService.serverAdapterSelect = async (ServerId, isTaf, isTcp, limiter) => {
+AdapterService.serverAdapterSelect = async (ServerId, isTars, isTcp, limiter) => {
 
 	let v = ServerId.split(".");
 
 	let labelSelector = `${CommonService.TServerAppLabel}=${v[0]},${CommonService.TServerNameLabel}=${v[1]}`;
 	
-	if (isTaf) {
+	if (isTars) {
 		labelSelector += `,${CommonService.TSubTypeLabel}=${CommonService.TServerType1}`
 	}
 
@@ -69,7 +69,7 @@ AdapterService.serverAdapterSelect = async (ServerId, isTaf, isTcp, limiter) => 
         filterItems = [];
 
 		allItems.forEach(elem => {
-			// if (elem.name == filter.eq["AdapterId"] && elem.IsTaf == filter.eq["IsTaf"] && elem.IsTcp == filter.eq["IsTcp"]) {
+			// if (elem.name == filter.eq["AdapterId"] && elem.IsTars == filter.eq["IsTars"] && elem.IsTcp == filter.eq["IsTcp"]) {
 			if (elem.isTcp) {
 				filterItems.push(elem);
 			}
@@ -106,7 +106,7 @@ AdapterService.serverAdapterSelect = async (ServerId, isTaf, isTcp, limiter) => 
 		elem["Port"] = item.port
 		elem["Capacity"] = item.capacity
 		elem["Timeout"] = item.timeout
-		elem["IsTaf"] = item.isTaf
+		elem["IsTars"] = item.isTars
         elem["IsTcp"] = item.isTcp        
         
         result.Data.push(elem);
@@ -137,7 +137,7 @@ AdapterService.serverAdapterSelect = async (ServerId, isTaf, isTcp, limiter) => 
 // 	if(oldAdapter.IsTcp != newAdapter.IsTCP) {
 //         return false;
 // 	}
-// 	if(oldAdapter.IsTaf != newAdapter.IsTaf) {
+// 	if(oldAdapter.IsTars != newAdapter.IsTars) {
 // 		return false
 // 	}
 // 	return true
@@ -161,7 +161,7 @@ AdapterService.serverAdapterCreate = async (metadata) => {
 
 		let adapter = {};
 		adapter.name = target.Name
-		adapter.isTaf = target.IsTaf
+		adapter.isTars = target.IsTars
 		adapter.isTcp = target.IsTCP
 		adapter.timeout = target.Timeout
 		adapter.capacity = target.Capacity
@@ -208,7 +208,7 @@ AdapterService.serverAdapterUpdate = async (metadata, target) => {
 
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
 	tServerCopy.spec.tars.servants[index].name = target.Name
-	tServerCopy.spec.tars.servants[index].isTaf = target.IsTaf
+	tServerCopy.spec.tars.servants[index].isTars = target.IsTars
 	tServerCopy.spec.tars.servants[index].isTcp = target.IsTcp
 	tServerCopy.spec.tars.servants[index].timeout = target.Timeout
 	tServerCopy.spec.tars.servants[index].capacity = target.Capacity

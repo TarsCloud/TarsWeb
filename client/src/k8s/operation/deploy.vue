@@ -102,8 +102,8 @@
             <span class="required">{{props.column.title}}</span>
           </template>
           <template slot-scope="props">
-            <let-radio v-model="props.row.IsTaf" :label="true">TAF</let-radio>
-            <let-radio v-model="props.row.IsTaf" :label="false">NOT TAF</let-radio>
+            <let-radio v-model="props.row.IsTars" :label="true">TARS</let-radio>
+            <let-radio v-model="props.row.IsTars" :label="false">NOT TARS</let-radio>
           </template>
         </let-table-column>
         <let-table-column :title="$t('deployService.table.th.threads')" width="80px">
@@ -254,8 +254,8 @@
                     <span class="required">{{props.column.title}}</span>
                   </template>
                   <template slot-scope="props">
-                    <span v-if="props.row.IsTaf">TAF</span>
-                    <span v-else>NOT TAF</span>
+                    <span v-if="props.row.IsTars">TARS</span>
+                    <span v-else>NOT TARS</span>
                   </template>
                 </let-table-column>
               </let-table>
@@ -328,7 +328,7 @@ const getInitialModel = () => ({
       Capacity: 0,
       Timeout: 0,
       IsTcp: true,
-      IsTaf: false,
+      IsTars: false,
     }
   ],
   ServerOption: {
@@ -359,7 +359,7 @@ const getInitialModel = () => ({
   //   bind_ip: '',
   //   port: '',
   //   port_type: 'tcp',
-  //   protocol: 'taf',
+  //   protocol: 'tars',
   //   thread_num: 5,
   //   max_connections: 200000,
   //   queuecap: 10000,
@@ -546,7 +546,7 @@ export default {
             item.Threads = data.ServerServantElem.Threads
             item.Timeout = data.ServerServantElem.Timeout
             item.IsTcp = data.ServerServantElem.IsTcp
-            item.IsTaf = data.ServerServantElem.IsTaf
+            item.IsTars = data.ServerServantElem.IsTars
           })
         }
         if(data.ServerOption){

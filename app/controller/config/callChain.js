@@ -26,7 +26,7 @@ let locator = configs.client._property.locator;
 let endpointM = new EndpointManager(locator);
 
 callChain.getlabel = async (ctx) => {
-	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TafCallChain.WebServerObj");
+	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TarsCallChain.WebServerObj");
 	let ip = activeList[0].match(/-h (\S*) -p/);
 	let port = activeList[0].match(/-p (\S*)/)
     let servant  = `http://${ip[1]}:${port[1]}`
@@ -53,7 +53,7 @@ callChain.getlabel = async (ctx) => {
 callChain.getAverage = async (ctx) => {
 	
 
-	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TafCallChain.WebServerObj");
+	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TarsCallChain.WebServerObj");
 	let ip = activeList[0].match(/-h (\S*) -p/);
 	let port = activeList[0].match(/-p (\S*)/)
     let servant  = `http://${ip[1]}:${port[1]}`
@@ -76,7 +76,7 @@ callChain.getAverage = async (ctx) => {
 
 
 callChain.detail = async (ctx) => {
-	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TafCallChain.WebServerObj");
+	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TarsCallChain.WebServerObj");
 	let ip = activeList[0].match(/-h (\S*) -p/);
 	let port = activeList[0].match(/-p (\S*)/)
     let servant  = `http://${ip[1]}:${port[1]}`
@@ -100,7 +100,7 @@ callChain.detail = async (ctx) => {
 };
 
 callChain.detail1 = async (ctx) => {
-	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TafCallChain.WebServerObj");
+	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TarsCallChain.WebServerObj");
 	let ip = activeList[0].match(/-h (\S*) -p/);
 	let port = activeList[0].match(/-p (\S*)/)
     let servant  = `http://${ip[1]}:${port[1]}`
@@ -124,7 +124,7 @@ callChain.detail1 = async (ctx) => {
 
 
 callChain.func = async (ctx) => {
-	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TafCallChain.WebServerObj");
+	let activeList = await endpointM.getActiveEndpointFromLocator("Base.TarsCallChain.WebServerObj");
 	let ip = activeList[0].match(/-h (\S*) -p/);
 	let port = activeList[0].match(/-p (\S*)/)
     let servant  = `http://${ip[1]}:${port[1]}`

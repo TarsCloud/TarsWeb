@@ -44,16 +44,16 @@ AdapterController.ServerAdapterCreate = async(ctx) => {
  * @param  {String}  ServerId             服务ID
  */
 AdapterController.ServerAdapterSelect = async(ctx) => {
-    let { Token = '', ServerId = '', isTaf = '', isTcp = false } = ctx.paramsObj
+    let { Token = '', ServerId = '', isTars = '', isTcp = false } = ctx.paramsObj
 
     let limiter = null;
 
-    isTaf = isTaf === 'true';
+    isTars = isTars === 'true';
     isTcp = isTcp === 'true';
 
     try {
 
-        let result = await AdapterService.serverAdapterSelect(ServerId, isTaf, isTcp, limiter);
+        let result = await AdapterService.serverAdapterSelect(ServerId, isTars, isTcp, limiter);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
@@ -71,7 +71,7 @@ AdapterController.ServerAdapterSelect = async(ctx) => {
  * @param  {Number}  Connections          连接数(1024-100000)
  * @param  {Number}  Capacity             队列长度(100-100000)
  * @param  {Number}  Timeout              超时时间(0-100000)
- * @param  {Boolean} IsTaf               是否TAF(true, false)
+ * @param  {Boolean} IsTars               是否TARS(true, false)
  * @param  {Boolean} IsTcp                是否TCP(true, false)
  */
 AdapterController.ServerAdapterUpdate = async(ctx) => {
@@ -96,7 +96,7 @@ AdapterController.ServerAdapterUpdate = async(ctx) => {
             Port: ServerServant[0].Port,
             Capacity: ServerServant[0].Capacity,
             Timeout: ServerServant[0].Timeout,
-            IsTaf: ServerServant[0].IsTaf,
+            IsTars: ServerServant[0].IsTars,
             IsTcp: ServerServant[0].IsTcp,
         }
 

@@ -84,7 +84,7 @@ AffinityService.affinityListByServer = async (NodeName, ServerApp, ServerName) =
         }
 
         appArray.forEach(affinityName => {
-            if (!affinity || affinityName == affinity) {
+            if (!affinity || affinityName == affinity || affinityName.startsWith(affinity + ".")) {
 
                 if (!appNodeName.has(affinityName)) {
                     appNodeName.set(affinityName, []);

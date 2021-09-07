@@ -446,7 +446,7 @@ export default {
           ServerId,
           Id: '',
           Image: '',
-          Secret: 'taf-image-secret',
+          Secret: 'tars-image-secret',
           Mark: ''
         };
 

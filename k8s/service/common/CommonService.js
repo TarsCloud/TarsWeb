@@ -49,7 +49,7 @@ CommonService.PublicNodeLabel = "tars.io/public." + CommonService.NAMESPACE // �
 
 CommonService.TREENAME = 'tars-tree';
 CommonService.GROUP = "k8s.tars.io";
-CommonService.VERSION = "v1alpha2";
+CommonService.VERSION = "v1beta1";
 CommonService.APPROVE = "tars.io/Approve";
 CommonService.TImageTypeLabel = "tars.io/ImageType"
 CommonService.TSupportedLabel = "tars.io/Supported."
@@ -408,7 +408,7 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 				thread:     parseInt(obj.Threads),
 				connection: parseInt(obj.Connections),
 				capacity:   parseInt(obj.Capacity),
-				isTaf:      obj.IsTaf,
+				isTars:      obj.IsTars,
 				isTcp:      obj.IsTcp,
 				timeout:    parseInt(obj.Timeout),
             });
@@ -530,7 +530,7 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 		},
 	}
 
-	// console.log(tServer);
+	console.log(JSON.stringify(tServer));
 
 	return tServer
 }
@@ -543,7 +543,7 @@ CommonService.buildTDeploy = (metadata) => {
         metadata.ServerK8S.HostPort = [];//make([]*models.HostPortElem, 0, 1)
 	}
 
-	// 通过管理平台的部署都是TAF服务
+	// 通过管理平台的部署都是TARS服务
     metadata.ServerOption.ServerSubType = CommonService.TServerType1;
 
     let deployName = CommonService.getTServerName(CommonService.getServerId(metadata.ServerApp, metadata.ServerName)) + '-' + CommonService.randomString(10) + '-' + CommonService.randomString(5);
@@ -615,7 +615,7 @@ CommonService.ConvertOperatorServantToAdminK8S = (operatorServant) => {
 			serverServant[servant.name] = {
 				Capacity:    servant.capacity,
 				Connections: servant.connection,
-				IsTaf:       servant.isTaf,
+				IsTars:       servant.isTars,
 				IsTcp:       servant.isTcp,
 				Name:        servant.name,
 				Port:        servant.port,

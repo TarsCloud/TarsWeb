@@ -36,7 +36,7 @@ DefaultController.DefaultValue = async (ctx) => {
             },
             "ServerServantElem": {
                 "Port": 10000,
-                "IsTaf": true,
+                "IsTars": true,
                 "IsTcp": true,
                 "Threads": 3,
                 "Timeout": 60000,

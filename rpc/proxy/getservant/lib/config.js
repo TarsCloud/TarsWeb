@@ -8,16 +8,16 @@ const fs = require("fs");
 let config = {};
 
 
-//在tars环境 会在全局变量里面存入 服务配置 CONFIG 与 tars框架配置 TAFCONFIG 本地环境 则直接读取传入的服务配置
+//在tars环境 会在全局变量里面存入 服务配置 CONFIG 与 tars框架配置 TARSCONFIG 本地环境 则直接读取传入的服务配置
 config.loadConfig = async function (config, configFormat) {
-    if (process.env.TAF_CONFIG) {
-        let tarsdata = fs.readFileSync(process.env.TAF_CONFIG, { encoding: 'utf-8' });
+    if (process.env.TARS_CONFIG) {
+        let tarsdata = fs.readFileSync(process.env.TARS_CONFIG, { encoding: 'utf-8' });
         if (tarsdata) {
             tarsdata = parseConf(tarsdata, configFormat);
-            global.TAFCONFIG = tarsdata;
-            console.log(`TAFCONFIG ReadAnd Parse Sucesss!`);
+            global.TARSCONFIG = tarsdata;
+            console.log(`TARSCONFIG ReadAnd Parse Sucesss!`);
         }
-        //////////////////////////////////  上面是解析TAF框架配置 下面是解析服务配置
+        //////////////////////////////////  上面是解析TARS框架配置 下面是解析服务配置
         let helper = new tarsConfigHelper();
         let data = await helper.loadConfig(config, configFormat);
         data = parseConf(data, configFormat);

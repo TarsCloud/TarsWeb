@@ -34,7 +34,9 @@ K8sController.ServerK8SSelect = async (ctx) => {
  * @param  {String}  NodeSelector         节点
  */
 K8sController.ServerK8SUpdate = async (ctx) => {
-    let {Token = '', ServerId = '', Replicas = 0, NodeSelector = '',} = ctx.paramsObj
+    let {
+        Token = '', ServerId = '', Replicas = 0, NodeSelector = '', abilityAffinity
+    } = ctx.paramsObj
     Replicas = Math.floor(Replicas) || 0
     try {
         const metadata = {
@@ -43,6 +45,7 @@ K8sController.ServerK8SUpdate = async (ctx) => {
         let target = {
             Replicas,
             NodeSelector,
+            abilityAffinity
         }
         let result = await K8sService.serverK8SUpdate(metadata, target);
         ctx.makeResObj(result.ret, result.msg, result.data);

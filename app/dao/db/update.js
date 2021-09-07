@@ -2,9 +2,9 @@ const Sequelize = require('sequelize');
 
 const DbUpdate = { };
 
-DbUpdate.updateApplication = async (dbTaf, dbWeb) => {
+DbUpdate.updateApplication = async (dbTars, dbWeb) => {
 
-    let data = await dbTaf.tServerConf.findAll({
+    let data = await dbTars.tServerConf.findAll({
         attributes: [[Sequelize.literal('distinct `application`'), 'application']]
     });
 
@@ -17,10 +17,10 @@ DbUpdate.updateApplication = async (dbTaf, dbWeb) => {
 
 }
 
-DbUpdate.update = async (dbTaf, dbWeb) => {
+DbUpdate.update = async (dbTars, dbWeb) => {
 
     try {
-        await DbUpdate.updateApplication(dbTaf, dbWeb);
+        await DbUpdate.updateApplication(dbTars, dbWeb);
     } catch (e) {
         
     }

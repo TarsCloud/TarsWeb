@@ -57,6 +57,7 @@ K8sService.serverK8SSelect = async (ServerId, limiter) => {
         elem["kind"] = item.kind
         elem["version"] = item.apiVersion
         elem["name"] = item.metadata.name
+        elem["abilityAffinity"] = item.spec.k8s.abilityAffinity
         result.Data.push(elem);
     })
     return {ret: 200, msg: 'succ', data: result};
@@ -75,6 +76,10 @@ K8sService.serverK8SUpdate = async (metadata, target) => {
     if (target.NodeSelector) {
         K8S.nodeSelector = target.NodeSelector
     }
+    if (target.abilityAffinity) {
+        K8S.abilityAffinity = target.abilityAffinity
+    }
+
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
     tServerCopy.spec.k8s = K8S
     let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);

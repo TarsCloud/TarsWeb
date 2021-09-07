@@ -66,8 +66,8 @@
           </let-table-column>
           <let-table-column :title="$t('deployService.table.th.protocol')">
             <template slot-scope="props">
-              <let-radio v-model="props.row.IsTaf" :label="true" v-if="props.row.IsTaf">TAF</let-radio>
-              <let-radio v-model="props.row.IsTaf" :label="false" v-else>{{ $t('serverList.servant.notTAF') }}</let-radio>
+              <let-radio v-model="props.row.IsTars" :label="true" v-if="props.row.IsTars">TARS</let-radio>
+              <let-radio v-model="props.row.IsTars" :label="false" v-else>{{ $t('serverList.servant.notTARS') }}</let-radio>
             </template>
           </let-table-column>
           <let-table-column :title="$t('deployService.table.th.threads')" width="80px">

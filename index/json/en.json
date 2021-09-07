@@ -601,7 +601,7 @@
             "title": {
                 "cpuChart": "CPU",
                 "memChart": "MEM",
-                "nodediskChart": "TAFNODE DISK",
+                "nodediskChart": "TARSNODE DISK",
                 "rootdiskChart": "ROOT DISK"
             },
             "label": {
@@ -1050,8 +1050,10 @@
                 "labelMax": "The maximum number of label groups is 63",
                 "labelValueValid": "Label values do not conform to specifications",
                 "errorKey":"Label name is required",
-                "errorValue":"The tag value cannot be empty"
-            }
+                "errorValue":"The tag value cannot be empty",
+                "addLabel": "Add a set of tags"
+            },
+            "affinity": "Affinitive selection"
         },
         "table": {
             "th": {
@@ -1891,11 +1893,6 @@
     "localeSelect": {
         "cn": "Chinese",
         "en": "English"
-    },
-    "filter": {
-        "title": {
-            "diffTxt": "diff Text"
-        }
     },
     "routerManage": {
         "routerModule": "router Module",
