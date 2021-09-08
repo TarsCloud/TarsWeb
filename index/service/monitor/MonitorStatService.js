@@ -54,7 +54,7 @@ async function callRpc(params, the) {
 
 	let req = new monitorQueryStruct.MonitorQueryReq();
 	req.uid = uuid.v1()
-	req.dataid = "tars_stat_md"
+	req.dataid = "tars_stat"
 	req.indexs.readFromObject(['succ_count', 'timeout_count', 'exce_count', 'total_time'])
 	req.date = date;
 	req.tflag1 = startshowtime;
@@ -85,7 +85,7 @@ async function callRpc(params, the) {
 
 	let rsp = data.rsp
 
-	// console.log(rsp);
+	console.log(rsp);
 	let map = new Map()
 
 	if (data.__return != 0 || rsp.ret != 0) {

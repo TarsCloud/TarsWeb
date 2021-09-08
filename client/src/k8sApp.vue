@@ -30,7 +30,7 @@
     mounted(){
       Axios.create({baseURL: '/'})({
         method: 'get',
-        url: '/web_version'
+        url: '/k8s_version'
       }).then((response)=>{
         this.web_version = response.data
       })

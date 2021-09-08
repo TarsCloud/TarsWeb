@@ -19,7 +19,6 @@ const captcha = require('svg-captcha')
 const PageController = {}
 const package = require("../../../package.json")
 const WebConf = require("../../../config/webConf");
-
 PageController.index = async (ctx) => {
 
     if (WebConf.enable && WebConf.show) {
@@ -32,7 +31,23 @@ PageController.index = async (ctx) => {
 };
 
 PageController.version = async (ctx) => {
-	ctx.body = package.version
+
+    let version = package.version;
+    if (!WebConf.isEnableK8s()) {
+        const AdminService = require('../../../app/service/admin/AdminService');
+
+        version = {
+            webVersion: package.version,
+            frameworkVersion: await AdminService.getVersion()
+        }
+    }
+    ctx.body = version
+};
+
+PageController.k8s_version = async (ctx) => {
+
+    let version = package.version;
+    ctx.body = version
 };
 
 PageController.captcha = async (ctx) => {

@@ -13,6 +13,7 @@ const pageApiConf = [
     //首页
     ['get', '/', PageController.index],
     ['get', '/web_version', PageController.version],
+    ['get', '/k8s_version', PageController.k8s_version],
     ['get', '/captcha', PageController.captcha],
 ];
 

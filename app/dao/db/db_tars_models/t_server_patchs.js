@@ -34,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: ''
 		},
 		tgz: {
-			type: DataTypes.TEXT,
+			type: DataTypes.STRING(255),
 			allowNull: true
 		},
 		update_text: {

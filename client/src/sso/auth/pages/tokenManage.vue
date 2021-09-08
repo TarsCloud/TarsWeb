@@ -169,7 +169,7 @@ export default {
         var ids = [];
         this.tokenListShow.forEach((auth)=>{
             if(auth.isChecked === true){
-              ids.push(auth.token);
+              ids.push(auth.id);
             }
         });
         if(!ids.length){

@@ -15,7 +15,13 @@
  */
 
 
-const { configFPrx, adminRegPrx, client } = require('../../../rpc');
+const {
+    configFPrx,
+    adminRegPrx,
+    client,
+
+} = require('../../../rpc');
+const {adminRegStruct} = require('../../../rpc/struct');
 const registry = require("@tars/registry");
 const TarsStream = require('@tars/stream');
 const crypto = require("crypto")
@@ -138,6 +144,8 @@ AdminService.addTask = async(req) => {
     taskReq.taskNo = req.taskNo;
     taskReq.serial = req.serial;
     taskReq.userName = req.userName;
+    taskReq.isElegant = req.isElegant;
+    taskReq.eachNum = req.eachNum;
     req.taskItemReq.forEach((obj) => {
         let taskItemReq = new adminRegStruct.TaskItemReq();
         taskItemReq.taskNo = obj.taskNo || '';
@@ -158,6 +166,8 @@ AdminService.addTask = async(req) => {
     let ret = await adminRegPrx.addTaskReq(taskReq, {
         hashCode: util.getHashNumber(taskReq.taskNo)
     });
+
+    console.log(ret);
 
     return ret.__return;
 };
