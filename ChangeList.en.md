@@ -1,3 +1,9 @@
+## 20210909(2.4.18)
+- Adjust the directory structure to support k8s. It is not opened by default
+- The interface of call chain is added (it needs to be upgraded with the framework, and the call chain service is added), but it is not opened
+- The lossless release function is added, which needs to be combined with the (framework>=v2.4.15)
+- JSON format of return value of interface test
+- Fix the error of reading the configuration file list
 ## 20210819(2.4.17)
 - update t_server_conf add flow_state
 - change upload package name from must same to must start with server name
