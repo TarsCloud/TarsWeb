@@ -34,9 +34,7 @@ K8sController.ServerK8SSelect = async (ctx) => {
  * @param  {String}  NodeSelector         节点
  */
 K8sController.ServerK8SUpdate = async (ctx) => {
-    let {
-        Token = '', ServerId = '', Replicas = 0, NodeSelector = '', abilityAffinity
-    } = ctx.paramsObj
+    let {Token = '', ServerId = '', Replicas = 0, NodeSelector, abilityAffinity} = ctx.paramsObj
     Replicas = Math.floor(Replicas) || 0
     try {
         const metadata = {
@@ -187,6 +185,9 @@ K8sController.getObject = async (ctx) => {
         if (params.plural == "tservers") {
             delete obj.metadata.managedFields; //屏蔽managedFields信息
         }
+        if (params.plural == "tdeploys"){
+            obj = obj.apply
+        }
         ctx.makeResObj(200, "", jsYaml.dump(obj))
     } catch (e) {
         logger.error('[ServerK8SUpdateResource]', e.body ? e.body.message : e, ctx)
@@ -201,8 +202,14 @@ K8sController.updateObject = async (ctx) => {
         if (params.plural == "tservers") {
             let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
             object.metadata.managedFields = res.response.body.metadata.managedFields
+            await CommonService.replaceObject(params.plural, CommonService.getTServerName(params.ServerId), object)
         }
-        await CommonService.replaceObject(params.plural, CommonService.getTServerName(params.ServerId), object)
+        if (params.plural == "tdeploys"){
+            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
+            let tdeploy = res.body
+            tdeploy.apply = object
+            await CommonService.replaceObject(params.plural, CommonService.getTServerName(params.ServerId), tdeploy)
+        }
         ctx.makeResObj(200, "", object)
     } catch (e) {
         logger.error('[ServerK8SUpdateResource]', e.body ? e.body.message : e, ctx)

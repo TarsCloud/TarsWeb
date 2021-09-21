@@ -37,6 +37,9 @@ export default {
         refresh() { //用于编辑框需要点击一下才出数据时,可手动触发刷新
             this.$refs.yamlEdit.refresh()
         },
+        readonly() {
+            this.$refs.yamlEdit.readonly()
+        },
         show(ServerId, plural) {
             this.ServerId = ServerId
             this.plural = plural
@@ -54,6 +57,7 @@ export default {
             }).then((data) => {
                 this.$emit("flushOthers",this.ServerId)
                 this.$message.success(`${this.$t('common.success')}`);
+                this.$emit("successFun")
             }).catch((err) => {
                 this.$message.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`)
             });

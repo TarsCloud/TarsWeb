@@ -58,6 +58,9 @@ export default {
         },
         refresh() {
             this.yamlEditor.refresh();
+        },
+        readonly(){
+          this.yamlEditor.setOption("readOnly", true);
         }
     }
 }

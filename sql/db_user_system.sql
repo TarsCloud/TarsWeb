@@ -10,8 +10,6 @@
 # Dump of table t_auth
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `t_auth`;
-
 CREATE TABLE `t_auth` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `flag` varchar(128) DEFAULT NULL,
@@ -35,8 +33,6 @@ UNLOCK TABLES;
 # Dump of table t_login_temp_info
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `t_login_temp_info`;
-
 CREATE TABLE `t_login_temp_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ticket` varchar(128) DEFAULT NULL,
@@ -49,8 +45,6 @@ CREATE TABLE `t_login_temp_info` (
 
 # Dump of table t_user_info
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `t_user_info`;
 
 CREATE TABLE `t_user_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -70,8 +64,6 @@ VALUES (1,'admin','',now());
 /*!40000 ALTER TABLE `t_user_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
-DROP TABLE IF EXISTS `t_token`;
-
 CREATE TABLE `t_token` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(128) DEFAULT NULL,
@@ -83,6 +75,20 @@ CREATE TABLE `t_token` (
   KEY `uid` (`uid`),
   KEY `token` (`token`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `t_setting` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` varchar(128) DEFAULT NULL,
+  `title` varchar(128) DEFAULT NULL,
+  `info` text,
+  `about_cn` text,
+  `about_en` text,
+  `valid` int(11) NOT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `title` (`title`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

@@ -7,26 +7,14 @@ const ApprovalController = {};
  * 服务审批
  */
 ApprovalController.ServerApprovalCreate = async (ctx) => {
-    // let { Token = '', ApprovalId = 0,
-    //     ApprovalResult = false, ApprovalMark = '',
-    // } = ctx.paramsObj
-
     let metadata = ctx.paramsObj;
-
+    metadata.person = ctx.uid;
     if(`${metadata.ApprovalResult}` === 'true') {
         metadata.ApprovalResult = true
     }else if(`${metadata.ApprovalResult}` === 'false'){
         metadata.ApprovalResult = false
     }
-   
-    // console.log(metadata);
     try {
-        // const metadata = {
-        //     ApprovalId,
-        //     ApprovalResult,
-        //     ApprovalMark,
-        // }
-
         let result = await ApprovalService.serverApprovalCreate(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
 

@@ -196,55 +196,6 @@
           </let-table-column>
           <let-table-column width="10px"></let-table-column>
         </let-table>
-        <let-form-group class="let-box" title="K8S" inline label-position="top">
-          <let-form-item :label="$t('deployService.table.th.nodeSelector')" itemWidth="40%">
-            <let-select v-if="K8SNodeSelectorKind && K8SNodeSelectorKind.length > 0"
-              size="small"
-              v-model="detailModal.model.ServerK8S.NodeSelector.Kind"
-              :placeholder="$t('pub.dlg.defaultValue')"
-              required
-              :required-tip="$t('deployService.form.templateTips')"
-            >
-              <let-option v-for="d in K8SNodeSelectorKind" :key="d" :value="d">{{d}}</let-option>
-            </let-select>
-            <div style="margin-top:10px;" v-if="detailModal.model.ServerK8S.NodeSelector.Kind === 'NodeBind'">
-              <div style="margin-left:-20px;">
-                <let-form-item :label="$t('deployService.table.th.hostIpc')" itemWidth="28%">
-                  <let-radio v-model="detailModal.model.ServerK8S.HostIpc" :label="true">{{ $t('common.true') }}</let-radio>
-                  <let-radio v-model="detailModal.model.ServerK8S.HostIpc" :label="false">{{ $t('common.false') }}</let-radio>
-                </let-form-item>
-                <let-form-item :label="$t('deployService.table.th.hostNetwork')" itemWidth="28%">
-                  <let-radio v-model="detailModal.model.ServerK8S.HostNetwork" :label="true">{{ $t('common.true') }}</let-radio>
-                  <let-radio v-model="detailModal.model.ServerK8S.HostNetwork" :label="false">{{ $t('common.false') }}</let-radio>
-                </let-form-item>
-                <let-form-item :label="$t('deployService.table.th.hostPort')" itemWidth="28%">
-                  <let-radio v-model="detailModal.model.ServerK8S.showHostPort" :label="true">{{ $t('common.true') }}</let-radio>
-                  <let-radio  v-model="detailModal.model.ServerK8S.showHostPort" :label="false">{{ $t('common.false') }}</let-radio>
-                </let-form-item>
-              </div>
-              <div style="display:block;padding:0 40px 0 20px;" v-if="detailModal.model.ServerK8S.showHostPort">
-                <let-table style="margin-left:-20px;" :data="detailModal.model.ServerK8S.HostPort">
-                  <let-table-column title="OBJ">
-                    <template slot="head" slot-scope="props">
-                      <span class="required">{{props.column.title}}</span>
-                    </template>
-                    <template slot-scope="props">{{ props.row.NameRef }}</template>
-                  </let-table-column>
-                  <let-table-column :title="$t('deployService.table.th.hostPort')">
-                    <template slot="head" slot-scope="props">
-                      <span class="required">{{props.column.title}}</span>
-                    </template>
-                    <template slot-scope="props">{{ props.row.Port }}</template>
-                  </let-table-column>
-                </let-table>
-              </div>
-              <let-checkbox v-model="K8SisCheckedAll" :value="K8SisCheckedAll">{{ $t('cache.config.allSelected') }}</let-checkbox>
-              <div class="node_list">
-                <let-checkbox class="node_item" v-for="d in K8SNodeList" :key="d" :value="K8SNodeListArr.indexOf(d) > -1" @change="K8ScheckedChange(d)">{{ d }}</let-checkbox>
-              </div>
-            </div>
-          </let-form-item>
-        </let-form-group>
       </let-form>
     </let-modal>
 
@@ -405,55 +356,7 @@
           </let-table-column>
           <let-table-column width="10px"></let-table-column>
         </let-table>
-        <let-form-group class="let-box" title="K8S" inline label-position="top">
-          <let-form-item :label="$t('deployService.table.th.nodeSelector')" itemWidth="40%">
-            <let-select disabled v-if="K8SNodeSelectorKind && K8SNodeSelectorKind.length > 0"
-              size="small"
-              v-model="approvalModal.model.ServerK8S.NodeSelector.Kind"
-              :placeholder="$t('pub.dlg.defaultValue')"
-              required
-              :required-tip="$t('deployService.form.templateTips')"
-            >
-              <let-option v-for="d in K8SNodeSelectorKind" :key="d" :value="d">{{d}}</let-option>
-            </let-select>
-            <div style="margin-top:10px;" v-if="approvalModal.model.ServerK8S.NodeSelector.Kind === 'NodeBind'">
-              <div style="margin-left:-20px;">
-                <let-form-item :label="$t('deployService.table.th.hostIpc')" itemWidth="28%">
-                  <let-radio disabled v-model="approvalModal.model.ServerK8S.HostIpc" :label="true">{{ $t('common.true') }}</let-radio>
-                  <let-radio disabled v-model="approvalModal.model.ServerK8S.HostIpc" :label="false">{{ $t('common.false') }}</let-radio>
-                </let-form-item>
-                <let-form-item :label="$t('deployService.table.th.hostNetwork')" itemWidth="28%">
-                  <let-radio disabled v-model="approvalModal.model.ServerK8S.HostNetwork" :label="true">{{ $t('common.true') }}</let-radio>
-                  <let-radio disabled v-model="approvalModal.model.ServerK8S.HostNetwork" :label="false">{{ $t('common.false') }}</let-radio>
-                </let-form-item>
-                <let-form-item :label="$t('deployService.table.th.hostPort')" itemWidth="28%">
-                  <let-radio disabled v-model="approvalModal.model.ServerK8S.showHostPort" :label="true">{{ $t('common.true') }}</let-radio>
-                  <let-radio disabled v-model="approvalModal.model.ServerK8S.showHostPort" :label="false">{{ $t('common.false') }}</let-radio>
-                </let-form-item>
-              </div>
-              <div style="display:block;padding:0 40px 0 20px;" v-if="approvalModal.model.ServerK8S.showHostPort">
-                <let-table style="margin-left:-20px;" :data="approvalModal.model.ServerK8S.HostPort">
-                  <let-table-column title="OBJ">
-                    <template slot="head" slot-scope="props">
-                      <span class="required">{{props.column.title}}</span>
-                    </template>
-                    <template slot-scope="props">{{ props.row.NameRef }}</template>
-                  </let-table-column>
-                  <let-table-column :title="$t('deployService.table.th.hostPort')">
-                    <template slot="head" slot-scope="props">
-                      <span class="required">{{props.column.title}}</span>
-                    </template>
-                    <template slot-scope="props">{{ props.row.Port }}</template>
-                  </let-table-column>
-                </let-table>
-              </div>
-              <let-checkbox disabled v-model="K8SisCheckedAll" :value="K8SisCheckedAll">{{ $t('cache.config.allSelected') }}</let-checkbox>
-              <div class="node_list">
-                <let-checkbox disabled class="node_item" v-for="d in K8SNodeList" :key="d" :value="approvalModal.model.ServerK8S.NodeSelector.Value.indexOf(d) > -1" @change="K8ScheckedChange(d)">{{ d }}</let-checkbox>
-              </div>
-            </div>
-          </let-form-item>
-        </let-form-group>
+
         <div>
           <let-form-item :label="$t('serviceApproval.ApprovalResult')" required>
             <let-select
@@ -504,14 +407,6 @@ export default {
         ServerName: '',
       },
       items: [],
-      // // 分页
-      // pagination: {
-      //   page: 1,
-      //   size: 10,
-      //   total:1,
-      // },
-      K8SNetModeOptional: [],
-      K8SNodeSelectorKind: [],
       K8SisCheckedAll: false,
       K8SNodeList: [],
       K8SNodeListArr: [],
@@ -529,6 +424,12 @@ export default {
         show: false,
         model: null,
         isNew: false
+      },
+      k8sApplyModel: {
+        NodeSelector: [],
+        taf: {},
+        resources: {},
+        mounts: []
       },
     };
   },
@@ -567,34 +468,27 @@ export default {
         this.K8SisCheckedAll = false
       }
     },
-    // 切换服务实时状态页码
-    // gotoPage(num) {
-    //   // this.pagination.page = num
-    //   this.fetchData()
+    // getDefaultValue(){
+    //   let { K8SNetModeOptional, K8SNodeSelectorKind } = this
+    //   this.$ajax.getJSON('/k8s/api/default', {}).then((data) => {
+    //     if(data.K8SNetModeOptional){
+    //       K8SNetModeOptional = data.K8SNetModeOptional
+    //     }
+    //     if(data.K8SNodeSelectorKind){
+    //       K8SNodeSelectorKind = data.K8SNodeSelectorKind
+    //     }
+    //     this.K8SNetModeOptional = K8SNetModeOptional
+    //     this.K8SNodeSelectorKind = K8SNodeSelectorKind
+    //   }).catch((err) => {
+    //     this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+    //   });
     // },
-    getDefaultValue(){
-      let { K8SNetModeOptional, K8SNodeSelectorKind } = this
-      this.$ajax.getJSON('/k8s/api/default', {}).then((data) => {
-        if(data.K8SNetModeOptional){
-          K8SNetModeOptional = data.K8SNetModeOptional
-        }
-        if(data.K8SNodeSelectorKind){
-          K8SNodeSelectorKind = data.K8SNodeSelectorKind
-        }
-        this.K8SNetModeOptional = K8SNetModeOptional
-        this.K8SNodeSelectorKind = K8SNodeSelectorKind
-      }).catch((err) => {
-        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-      });
-    },
     fetchData() {
       const loading = this.$refs.table.$loading.show();
 
       return this.$ajax.getJSON('/k8s/api/deploy_select', {
         ServerApp: this.query.ServerApp,
         ServerName: this.query.ServerName,
-        // page: this.pagination.page,
-        // size: this.pagination.size,
       }).then((data) => {
         loading.hide();
         this.items = []
@@ -608,32 +502,6 @@ export default {
               servant.push(data.Data[i].ServerServant[key])
             }
             data.Data[i].ServerServant = servant
-
-            // NodeSelector Compatible
-            let selector = {}
-            if (data.Data[i].ServerK8S.NodeSelector.hasOwnProperty("NodeBind")) {
-              selector.Kind = "NodeBind"
-              selector.Value = data.Data[i].ServerK8S.NodeSelector.NodeBind.Value
-              // Check HostPort
-              if (data.Data[i].ServerK8S.HostPort.length > 0) {
-                data.Data[i].ServerK8S.showHostPort = true
-              }
-              else {
-                data.Data[i].ServerK8S.showHostPort = false
-              }
-              delete data.Data[i].ServerK8S.NodeSelector.NodeBind
-
-            } else if (data.Data[i].ServerK8S.NodeSelector.hasOwnProperty("AbilityPool")) {
-              selector.Kind = "AbilityPool"
-              selector.Value = data.Data[i].ServerK8S.NodeSelector.AbilityPool.Value
-              delete data.Data[i].ServerK8S.NodeSelector.AbilityPool
-            } else if (data.Data[i].ServerK8S.NodeSelector.hasOwnProperty("PublicPool")) {
-              selector.Kind = "PublicPool"
-              selector.Value = data.Data[i].ServerK8S.NodeSelector.PublicPool.Value
-              delete data.Data[i].ServerK8S.NodeSelector.PublicPool
-            }
-            data.Data[i].ServerK8S.NodeSelector.Kind = selector.Kind
-            data.Data[i].ServerK8S.NodeSelector.Value = selector.Value
 
             if(data.Data[i].ServerK8S.HostPort.length == 0) {
               for(var o in data.Data[i].ServerServant) {
@@ -680,7 +548,6 @@ export default {
     },
 
     editItem(d) {
-      this.K8SNodeListArr = d.ServerK8S.NodeSelector.Value || []
       this.detailModal.model = d;
       this.detailModal.show = true;
       this.detailModal.isNew = false;
@@ -701,43 +568,52 @@ export default {
         obj[item.Name] = item
       })
       data.ServerServant = obj
-
-      // console.log(data, this.K8SNodeListArr);
-
-      if(data.ServerK8S.NodeSelector.Kind === 'NodeBind'){
-        if(data.ServerK8S.HostNetwork && data.ServerK8S.showHostPort){
-          this.$tip.error(`${this.$t('deployService.form.portOrNetWork')}`)
-          return null;
-        }
-
-        if(this.K8SNodeListArr.length <= 0){
-          this.$tip.error(`${this.$t('deployService.form.nodeTips')}`)
-          return null;
-        }
-
-        data.ServerK8S.NodeSelector.NodeBind = {
-          Value: this.K8SNodeListArr
-        }
-      }
-
       return data
     },
-
     saveItem() {
       if (this.$refs.detailForm.validate()) {
         let data = this.adapterServerK8S(this.detailModal.model)
-
         if(!data) {
           return;
         }
-       
         const loading = this.$Loading.show();
 
+        this.k8sApplyModel = {
+          abilityAffinity: data.ServerK8S.abilityAffinity,
+          NodeSelector: data.ServerK8S.NodeSelector,
+          HostIpc: data.ServerK8S.HostIpc,
+          HostNetwork: data.ServerK8S.HostNetwork,
+          mounts: data.Mounts.filter(item => item.source.hasOwnProperty("tLocalVolume")),
+          resources: data.resources
+        }
+        let arr = []
+
+        debugger
+        if (data.ServerK8S.HostPort && Object.keys(data.ServerK8S.HostPort).length > 0) {
+          this.k8sApplyModel.showHostPort = true
+          data.ServerK8S.HostPort.forEach(item => {
+            arr.push({
+              obj: item.NameRef,
+              HostPort: Math.floor(item.Port),
+            })
+          })
+          this.k8sApplyModel.HostPortArr = arr
+        }
+        if (arr.length == 0) {
+          this.k8sApplyModel.showHostPort = false
+          this.k8sApplyModel.HostPortArr = [];
+          for (let key in data.ServerServant) {
+            this.k8sApplyModel.HostPortArr.push({
+              obj: key,
+              HostPort: 0
+            })
+          }
+        }
         this.$ajax.postJSON('/k8s/api/deploy_update', {
           DeployId: data.DeployId,
-          ServerK8S: data.ServerK8S,
           ServerServant: data.ServerServant,
-          ServerOption: data.ServerOption
+          ServerOption: data.ServerOption,
+          ServerK8S: this.k8sApplyModel,
         }).then(() => {
           loading.hide();
           this.fetchData().then(() => {

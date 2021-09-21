@@ -2,52 +2,53 @@
   <!--  基础信息-->
   <div class="page_operation_deploy">
     <let-form
-      ref="form"
-      inline
-      label-position="top"
-      itemWidth="480px"
-      @submit.native.prevent="save"
+        ref="form"
+        inline
+        label-position="top"
+        itemWidth="480px"
+        @submit.native.prevent="save"
     >
       <let-form-item :label="$t('deployService.form.app')" itemWidth="45%" required>
-        <let-select
-          size="small"
-          v-model="model.ServerApp"
-          :placeholder="$t('deployService.form.placeholder')"
-          required
-          :required-tip="$t('deployService.form.appTips')"
-          pattern="^[a-zA-Z0-9]+$"
-          :pattern-tip="$t('deployService.form.placeholder')"
+        <let-select :disabled="k8sApplyShow"
+                    size="small"
+                    v-model="model.ServerApp"
+                    :placeholder="$t('deployService.form.placeholder')"
+                    required
+                    :required-tip="$t('deployService.form.appTips')"
+                    pattern="^[a-zA-Z0-9]+$"
+                    :pattern-tip="$t('deployService.form.placeholder')"
         >
-          <let-option v-for="d in appList" :key="d.ServerApp" :value="d.ServerApp">{{d.ServerApp}}</let-option>
+          <let-option v-for="d in appList" :key="d.ServerApp" :value="d.ServerApp">{{ d.ServerApp }}</let-option>
         </let-select>
       </let-form-item>
       <let-form-item :label="$t('deployService.form.serviceName')" itemWidth="45%" required>
-        <let-input
-          size="small"
-          v-model="model.ServerName"
-          :placeholder="$t('deployService.form.serviceFormatTips')"
-          required
-          :required-tip="$t('deployService.form.serviceTips')"
-          pattern="^[a-zA-Z]([a-zA-Z0-9]+)?$"
-          :pattern-tip="$t('deployService.form.serviceFormatTips')"
+        <let-input :disabled="k8sApplyShow"
+                   size="small"
+                   v-model="model.ServerName"
+                   :placeholder="$t('deployService.form.serviceFormatTips')"
+                   required
+                   :required-tip="$t('deployService.form.serviceTips')"
+                   pattern="^[a-zA-Z]([a-zA-Z0-9]+)?$"
+                   :pattern-tip="$t('deployService.form.serviceFormatTips')"
         ></let-input>
       </let-form-item>
       <let-form-item :label="$t('deployService.form.template')" itemWidth="45%" required>
-        <let-select
-          size="small"
-          v-model="model.ServerOption.ServerTemplate"
-          :placeholder="$t('pub.dlg.defaultValue')"
-          required
-          :required-tip="$t('deployService.form.templateTips')"
+        <let-select :disabled="k8sApplyShow"
+                    size="small"
+                    v-model="model.ServerOption.ServerTemplate"
+                    :placeholder="$t('pub.dlg.defaultValue')"
+                    required
+                    :required-tip="$t('deployService.form.templateTips')"
         >
-          <let-option v-for="d in templates" :key="d.TemplateName" :value="d.TemplateName">{{d.TemplateName}}</let-option>
+          <let-option v-for="d in templates" :key="d.TemplateName" :value="d.TemplateName">{{ d.TemplateName }}
+          </let-option>
         </let-select>
       </let-form-item>
       <let-form-item :label="$t('deployService.form.serviceMark')" itemWidth="45%">
-        <let-input
-          size="small"
-          v-model="model.ServerMark"
-          :placeholder="$t('deployService.form.serviceMark')"
+        <let-input :disabled="k8sApplyShow"
+                   size="small"
+                   v-model="model.ServerMark"
+                   :placeholder="$t('deployService.form.serviceMark')"
         >
         </let-input>
       </let-form-item>
@@ -57,175 +58,214 @@
       <let-table :data="model.ServerServant">
         <let-table-column title="OBJ" width="150px">
           <template slot="head" slot-scope="props">
-            <span class="required">{{props.column.title}}</span>
+            <span class="required">{{ props.column.title }}</span>
           </template>
           <template slot-scope="props">
-            <let-input
-              size="small"
-              v-model="props.row.Name"
-              :placeholder="$t('deployService.form.placeholder')"
-              required
-              :required-tip="$t('deployService.form.objTips')"
-              pattern="^[a-zA-Z0-9]+$"
-              :pattern-tip="$t('deployService.form.placeholder')"
+            <let-input :disabled="k8sApplyShow"
+                       size="small"
+                       v-model="props.row.Name"
+                       :placeholder="$t('deployService.form.placeholder')"
+                       required
+                       :required-tip="$t('deployService.form.objTips')"
+                       pattern="^[a-zA-Z0-9]+$"
+                       :pattern-tip="$t('deployService.form.placeholder')"
             ></let-input>
           </template>
         </let-table-column>
         <let-table-column :title="$t('deployService.table.th.port')" width="100px">
           <template slot="head" slot-scope="props">
-            <span class="required">{{props.column.title}}</span>
+            <span class="required">{{ props.column.title }}</span>
           </template>
           <template slot-scope="props">
-            <let-input
-              size="small"
-              type="number"
-              :min="1"
-              :max="30000"
-              v-model="props.row.Port"
-              placeholder="1-30000"
-              required
-              :required-tip="$t('deployService.table.tips.empty')"
+            <let-input :disabled="k8sApplyShow"
+                       size="small"
+                       type="number"
+                       :min="1"
+                       :max="30000"
+                       v-model="props.row.Port"
+                       placeholder="1-30000"
+                       required
+                       :required-tip="$t('deployService.table.tips.empty')"
             ></let-input>
           </template>
         </let-table-column>
         <let-table-column :title="$t('deployService.form.portType')" width="150px">
           <template slot="head" slot-scope="props">
-            <span class="required">{{props.column.title}}</span>
+            <span class="required">{{ props.column.title }}</span>
           </template>
           <template slot-scope="props">
-            <let-radio v-model="props.row.IsTcp" :label="true">TCP</let-radio>
-            <let-radio v-model="props.row.IsTcp" :label="false">UDP</let-radio>
+            <let-radio v-model="props.row.IsTcp" :label="true" :disabled="k8sApplyShow">TCP</let-radio>
+            <let-radio v-model="props.row.IsTcp" :label="false" :disabled="k8sApplyShow">UDP</let-radio>
           </template>
         </let-table-column>
         <let-table-column :title="$t('deployService.table.th.protocol')" width="180px">
           <template slot="head" slot-scope="props">
-            <span class="required">{{props.column.title}}</span>
+            <span class="required">{{ props.column.title }}</span>
           </template>
           <template slot-scope="props">
-            <let-radio v-model="props.row.IsTars" :label="true">TARS</let-radio>
-            <let-radio v-model="props.row.IsTars" :label="false">NOT TARS</let-radio>
+            <let-radio v-model="props.row.IsTaf" :label="true" :disabled="k8sApplyShow">TAF</let-radio>
+            <let-radio v-model="props.row.IsTaf" :label="false" :disabled="k8sApplyShow">NOT TAF</let-radio>
           </template>
         </let-table-column>
         <let-table-column :title="$t('deployService.table.th.threads')" width="80px">
           <template slot="head" slot-scope="props">
-            <span class="required">{{props.column.title}}</span>
+            <span class="required">{{ props.column.title }}</span>
           </template>
           <template slot-scope="props">
-            <let-input
-              size="small"
-              type="number"
-              :min="0"
-              v-model="props.row.Threads"
-              required
-              :required-tip="$t('deployService.table.tips.empty')"
+            <let-input :disabled="k8sApplyShow"
+                       size="small"
+                       type="number"
+                       :min="0"
+                       v-model="props.row.Threads"
+                       required
+                       :required-tip="$t('deployService.table.tips.empty')"
             ></let-input>
           </template>
         </let-table-column>
         <let-table-column :title="$t('serverList.table.servant.connections')" width="140px">
           <template slot="head" slot-scope="props">
-            <span class="required">{{props.column.title}}</span>
+            <span class="required">{{ props.column.title }}</span>
           </template>
           <template slot-scope="props">
-            <let-input
-              size="small"
-              type="number"
-              :min="0"
-              v-model="props.row.Connections"
-              required
-              :required-tip="$t('deployService.table.tips.empty')"
+            <let-input :disabled="k8sApplyShow"
+                       size="small"
+                       type="number"
+                       :min="0"
+                       v-model="props.row.Connections"
+                       required
+                       :required-tip="$t('deployService.table.tips.empty')"
             ></let-input>
           </template>
         </let-table-column>
         <let-table-column :title="$t('serverList.table.servant.capacity')" width="140px">
           <template slot="head" slot-scope="props">
-            <span class="required">{{props.column.title}}</span>
+            <span class="required">{{ props.column.title }}</span>
           </template>
           <template slot-scope="props">
-            <let-input
-              size="small"
-              type="number"
-              :min="0"
-              v-model="props.row.Capacity"
-              required
-              :required-tip="$t('deployService.table.tips.empty')"
+            <let-input :disabled="k8sApplyShow"
+                       size="small"
+                       type="number"
+                       :min="0"
+                       v-model="props.row.Capacity"
+                       required
+                       :required-tip="$t('deployService.table.tips.empty')"
             ></let-input>
           </template>
         </let-table-column>
         <let-table-column :title="$t('serverList.table.servant.timeout')" width="140px">
           <template slot-scope="props">
-            <let-input
-              size="small"
-              type="number"
-              :min="0"
-              v-model="props.row.Timeout"
+            <let-input :disabled="k8sApplyShow"
+                       size="small"
+                       type="number"
+                       :min="0"
+                       v-model="props.row.Timeout"
             ></let-input>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('operate.operates')" width="60px">
+        <let-table-column :title="$t('operate.operates')" width="60px" v-if="!k8sApplyShow">
           <template slot-scope="props">
-            <let-table-operation @click="addAdapter(props.row)" v-if="props.$index === 0">{{$t('operate.add')}}</let-table-operation>
+            <let-table-operation @click="addAdapter(props.row)" v-if="props.$index === 0">{{ $t('operate.add') }}
+            </let-table-operation>
             <let-table-operation
-              v-if="props.$index"
-               class="danger"
-              @click="model.ServerServant.splice(props.$index, 1)"
-            >{{$t('operate.delete')}}</let-table-operation>
+                v-if="props.$index"
+                class="danger"
+                @click="model.ServerServant.splice(props.$index, 1)"
+            >{{ $t('operate.delete') }}
+            </let-table-operation>
           </template>
         </let-table-column>
       </let-table>
+      <let-button type="submit" theme="primary" v-if="!k8sApplyShow">{{ $t('common.submit') }}</let-button>
+    </let-form>
 
-      <!-- k8s group-->
-      <let-form-group class="let-box" title="K8S">
-        <let-form-item :label="$t('deployService.table.th.nodeSelector')" itemWidth="45%">
-          <let-select v-if="K8SNodeSelectorKind && K8SNodeSelectorKind.length > 0"
-            size="small"
-            v-model="model.ServerK8S.NodeSelector.Kind"
-            :placeholder="$t('pub.dlg.defaultValue')"
-            required
-            :required-tip="$t('deployService.form.templateTips')"
-          >
-            <let-option v-for="d in K8SNodeSelectorKind" :key="d" :value="d">{{d}}</let-option>
-          </let-select>
-          <let-input v-else
-            size="small"
-            :min="0"
-            v-model="model.ServerK8S.NodeSelect"
-            :placeholder="$t('deployService.form.placeholder')"
-            required
-            :required-tip="$t('deployService.table.tips.empty')"
-            :pattern-tip="$t('deployService.form.placeholder')"
-          ></let-input>
-        </let-form-item>
+    <!--完善k8s其他参数-->
+    <div v-if="k8sApplyShow">
+      <b>{{ $t('deployService.form.k8sExtra') }}</b>
+      <el-collapse v-model="activeTab" accordion style="margin-top: 5px">
+        <!--节点选择-->
+        <el-collapse-item name="0">
+          <template slot="title"><b>{{ $t('operate.nodeSelect') }}</b></template>
+          <let-form itemWidth="360px" :columns="2" class="two-columns" ref="nodeSelect">
+            <let-form-item :label="$t('deployService.form.affinity')" itemWidth="45%">
+              <el-select v-model="k8sApplyModel.abilityAffinity" size="small" style="width: 95%">
+                <el-option v-for="item in abilityAffinities" :key="item" :value="item">{{ item }}</el-option>
+              </el-select>
+            </let-form-item>
+            <let-form-item v-if="k8sApplyModel.NodeSelector.length==0" itemWidth="45%">
+              <el-button type="text" @click="addItems(0,k8sApplyModel.NodeSelector)">
+                {{ $t('deployService.form.labelMatch.addLabel') }}
+              </el-button>
+            </let-form-item>
+            <div v-for="(item,index) in k8sApplyModel.NodeSelector">
+              <let-form-item :label="$t('nodeList.table.th.label')" itemWidth="15%">
+                <el-input size="small" v-model="item.key" style="width: 95%"></el-input>
+              </let-form-item>
+              <let-form-item label="operator" itemWidth="10%">
+                <el-select v-model="item.operator" size="small" @change="changeLabelOperator" style="width: 95%">
+                  <el-option v-for="item in LabelMatchOperator" :key="item" :value="item">{{ item }}</el-option>
+                </el-select>
+              </let-form-item>
+              <let-form-item :label="$t('nodes.label.value')" itemWidth="20%">
+                <el-select :disabled="item.disableValue" style="width: 95%"
+                           v-model="item.values" multiple filterable allow-create
+                           :multiple-limit="63" default-first-option
+                           :placeholder="$t('deployService.form.labelMatch.labelValue')" size="small"
+                           @change="(val)=>{addLabelValues(val, index)}">
+                  <el-option v-for="item in item.values" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+              </let-form-item>
+              <el-button type="primary" icon="el-icon-plus" size="mini" circle
+                         @click="addItems(index,k8sApplyModel.NodeSelector)"></el-button>
+              <el-button type="danger" icon="el-icon-minus" size="mini" circle
+                         @click="delItems(index,k8sApplyModel.NodeSelector)"></el-button>
+            </div>
+          </let-form>
+        </el-collapse-item>
 
-        <div v-if="model.ServerK8S.NodeSelector.Kind === 'NodeBind'">
-          <div>
-            <let-form-item :label="$t('deployService.table.th.hostIpc')" itemWidth="15%">
-              <let-radio v-model="model.ServerK8S.HostIpc" :label="true">{{ $t('common.true') }}</let-radio>
-              <let-radio v-model="model.ServerK8S.HostIpc" :label="false">{{ $t('common.false') }}</let-radio>
+        <!--宿主机资源-->
+        <el-collapse-item name="1">
+          <template slot="title"><b>{{ $t('operate.network') }}</b></template>
+          <let-form ref="networkForm" itemWidth="360px" :columns="2" class="two-columns">
+            <let-form-item :label="$t('deployService.table.th.hostIpc')" itemWidth="25%">
+              <el-radio-group v-model="k8sApplyModel.HostIpc" @change="changeKind">
+                <el-radio :label="true">{{ $t('common.true') }}</el-radio>
+                <el-radio :label="false">{{ $t('common.false') }}</el-radio>
+              </el-radio-group>
             </let-form-item>
-            <let-form-item :label="$t('deployService.table.th.hostNetwork')" itemWidth="15%">
-              <let-radio v-model="model.ServerK8S.HostNetwork" :label="true">{{ $t('common.true') }}</let-radio>
-              <let-radio v-model="model.ServerK8S.HostNetwork" :label="false">{{ $t('common.false') }}</let-radio>
+            <let-form-item :label="$t('deployService.table.th.hostNetwork')" itemWidth="25%">
+              <el-radio-group v-model="k8sApplyModel.HostNetwork" @change="changeKind">
+                <el-radio :label="true">{{ $t('common.true') }}</el-radio>
+                <el-radio :label="false">{{ $t('common.false') }}</el-radio>
+              </el-radio-group>
             </let-form-item>
-            <let-form-item :label="$t('deployService.table.th.hostPort')" itemWidth="15%">
-              <let-radio v-model="model.ServerK8S.showHostPort" :label="true">{{ $t('common.true') }}</let-radio>
-              <let-radio v-model="model.ServerK8S.showHostPort" :label="false">{{ $t('common.false') }}</let-radio>
+            <let-form-item :label="$t('deployService.table.th.hostPort')" itemWidth="25%">
+              <el-radio-group v-model="k8sApplyModel.showHostPort" @change="changeKind">
+                <el-radio :label="true">{{ $t('common.true') }}</el-radio>
+                <el-radio :label="false">{{ $t('common.false') }}</el-radio>
+              </el-radio-group>
             </let-form-item>
-          </div>
-          <div style="display:block;padding:0 40px 0 20px;" v-if="model.ServerK8S.showHostPort">
-              <let-table style="margin:0;" :data="model.ServerServant">
+            <div v-if="k8sApplyModel.showHostPort" style="padding-right:30px;">
+              <let-table :data="k8sApplyModel.HostPortArr">
                 <let-table-column title="OBJ">
                   <template slot="head" slot-scope="props">
-                    <span class="required">{{props.column.title}}</span>
+                    <span class="required">{{ props.column.title }}</span>
                   </template>
-                  <template slot-scope="props">{{ props.row.Name }}</template>
-                </let-table-column>
-                <let-table-column :title="$t('deployService.table.th.port')">
-                  <template slot="head" slot-scope="props">
-                    <span class="required">{{props.column.title}}</span>
+                  <template slot-scope="props">
+                    <let-input
+                        size="small"
+                        v-model="props.row.obj"
+                        :placeholder="$t('deployService.form.placeholder')"
+                        required
+                        :required-tip="$t('deployService.form.objTips')"
+                        pattern="^[a-zA-Z0-9]+$"
+                        :pattern-tip="$t('deployService.form.placeholder')"
+                    ></let-input>
                   </template>
-                  <template slot-scope="props">{{ props.row.Port }}</template>
                 </let-table-column>
                 <let-table-column :title="$t('deployService.table.th.hostPort')">
+                  <template slot="head" slot-scope="props">
+                    <span class="required">{{ props.column.title }}</span>
+                  </template>
                   <template slot-scope="props">
                     <let-input size="small" type="number" :min="1" :max="65535"
                                v-model="props.row.HostPort" placeholder="1-65535"
@@ -235,64 +275,153 @@
                 </let-table-column>
                 <let-table-column>
                   <template slot-scope="props">
-                    <let-button size="small" theme="primary" class="port-button" @click="generateHostPort(props.row)">
-                      {{$t('deployService.table.th.generateHostPort')}}
+                    <let-button size="small" theme="primary" class="port-button"
+                                @click="generateHostPort(props.row)">
+                      {{ $t('deployService.table.th.checkHostPort') }}
                     </let-button>
                   </template>
                 </let-table-column>
-                <let-table-column :title="$t('deployService.form.portType')">
-                  <template slot="head" slot-scope="props">
-                    <span class="required">{{props.column.title}}</span>
-                  </template>
-                  <template slot-scope="props">
-                    <span v-if="props.row.IsTcp">TCP</span>
-                    <span v-else>UDP</span>
-                  </template>
-                </let-table-column>
-                <let-table-column :title="$t('deployService.table.th.protocol')">
-                  <template slot="head" slot-scope="props">
-                    <span class="required">{{props.column.title}}</span>
-                  </template>
-                  <template slot-scope="props">
-                    <span v-if="props.row.IsTars">TARS</span>
-                    <span v-else>NOT TARS</span>
-                  </template>
-                </let-table-column>
               </let-table>
-          </div>
-          <div>
-            <let-form-item :label="$t('deployService.table.th.nodeSelector')" itemWidth="45%" required>
-              <let-checkbox v-model="isCheckedAll" :value="isCheckedAll">{{ $t('cache.config.allSelected') }}</let-checkbox>
-              <div class="node_list">
-                <let-checkbox class="node_item" v-for="d in NodeList" :key="d" :value="NodeListArr.indexOf(d) > -1" @change="checkedChange(d)">{{ d }}</let-checkbox>
-              </div>
-            </let-form-item>
-          </div>
-        </div>
-      </let-form-group>
-      <!-- <let-button type="button" theme="sub-primary" @click="getAutoPort()">{{$t('deployService.form.getPort')}}</let-button> -->
-      <let-button type="submit" theme="primary">{{$t('common.submit')}}</let-button>
+            </div>
+          </let-form>
+        </el-collapse-item>
 
-    </let-form>
+        <!--磁盘管理-->
+        <el-collapse-item name="2">
+          <template slot="title"><b>{{ $t('operate.disk') }}</b></template>
+          <div v-if="k8sApplyModel.mounts.length==0">
+            <el-button type="text" size="mini" @click="addDisk(0,k8sApplyModel.mounts)" style="margin-left: 20px">
+              {{ $t("deployService.disk.addDisk") }}
+            </el-button>
+          </div>
+          <el-form label-position="top" label-width="120px" size="mini" ref="disk">
+            <div v-for="(disk,index) in k8sApplyModel.mounts" :key="index">
+              <el-card>
+                <el-row :gutter="18">
+                  <el-col :span="6">
+                    <el-form-item :label="$t('deployService.disk.diskName')" required>
+                      <el-input v-model="disk.name"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item :label="$t('deployService.disk.path')" required>
+                      <el-input v-model="disk.mountPath"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="18">
+                  <el-col :span="4">
+                    <el-form-item label="uid" required>
+                      <el-input v-model="disk.source.tLocalVolume.uid" placeholder="0"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-form-item label="gid" required>
+                      <el-input v-model="disk.source.tLocalVolume.gid" placeholder="0"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-form-item label="mode" required>
+                      <el-input v-model="disk.source.tLocalVolume.mode" placeholder="755"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :offset="9">
+                    <el-button type="primary" size="mini" @click="addDisk(index,k8sApplyModel.mounts)">
+                      {{ $t("deployService.disk.addDisk") }}
+                    </el-button>
+                    <el-button type="danger" size="mini" @click="delDisk(index,k8sApplyModel.mounts)"
+                               style="margin-left: 20px">
+                      {{ $t("deployService.disk.delDisk") }}
+                    </el-button>
+                  </el-col>
+                </el-row>
+              </el-card>
+            </div>
+          </el-form>
+        </el-collapse-item>
 
+        <!--资源管理-->
+        <el-collapse-item name="3">
+          <template slot="title"><b>{{ $t('operate.resource') }}</b></template>
+          <el-form label-width="100px" label-position="top" size="mini">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item :label="$t('deployService.resources.limitCpu')" itemWidth="50%">
+                  <el-input :placeholder="$t('deployService.resources.example')+':1000'"
+                            v-model="k8sApplyModel.resources.limitCpu" size="small"
+                            onkeyup="value=value.replace(/[^\d]/g,'')">
+                    <template slot="append">milli CPUs</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item :label="$t('deployService.resources.limitMem')" itemWidth="50%">
+                  <el-input :placeholder="$t('deployService.resources.example')+':128'"
+                            v-model="k8sApplyModel.resources.limitMem" size="small"
+                            onkeyup="value=value.replace(/[^\d]/g,'')">
+                    <template slot="append">MiB</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item :label="$t('deployService.resources.requestCpu')" itemWidth="50%">
+                  <el-input :placeholder="$t('deployService.resources.example')+':1000'"
+                            v-model="k8sApplyModel.resources.requestCpu" size="small"
+                            onkeyup="value=value.replace(/[^\d]/g,'')">
+                    <template slot="append">milli CPUs</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item :label="$t('deployService.resources.requestMem')" itemWidth="50%">
+                  <el-input :placeholder="$t('deployService.resources.example')+':128'"
+                            v-model="k8sApplyModel.resources.requestMem" size="small"
+                            onkeyup="value=value.replace(/[^\d]/g,'')">
+                    <template slot="append">MiB</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-collapse-item>
+      </el-collapse>
+
+      <el-button @click="editYaml" style="margin-top: 10px">yaml编辑</el-button>
+      <el-button type="primary" @click="saveK8s" style="margin-top: 10px">{{ $t('operate.save') }}</el-button>
+    </div>
 
     <let-modal
-      v-model="resultModal.show"
-      width="700px"
-      class="more-cmd"
-      :footShow="false"
-      @close="closeResultModal"
-      @on-cancel="closeResultModal">
-      <p class="result-text">{{$t('deployService.form.ret.success')}}{{$t('resource.installRstMsg')}}</p>
-      <let-table :data="resultModal.resultList" :empty-msg="$t('common.nodata')" :row-class-name="resultModal.rowClassName">
-          <let-table-column title="ip" prop="ip">
-          </let-table-column>
-          <let-table-column :title="$t('resource.installResult')" prop="rst">
-            <template slot-scope="scope">
-              <p v-text="scope.row.rst?$t('common.success'):$t('common.error')"></p>
-            </template>
-          </let-table-column>
-          <let-table-column :title="$t('common.message')" prop="msg"></let-table-column>
+        v-model="yamlModel.show"
+        width="1000px"
+        class="more-cmd"
+        :footShow="false"
+        @close="closeYamlModel"
+        @on-cancel="closeYamlModel">
+      <k8s-yaml-edit @successFun="closeYamlModel"  ref="yamlEdit"></k8s-yaml-edit>
+    </let-modal>
+
+    <let-modal
+        v-model="resultModal.show"
+        width="700px"
+        class="more-cmd"
+        :footShow="false"
+        @close="closeResultModal"
+        @on-cancel="closeResultModal">
+      <p class="result-text">{{ $t('deployService.form.ret.success') }}{{ $t('resource.installRstMsg') }}</p>
+      <let-table :data="resultModal.resultList" :empty-msg="$t('common.nodata')"
+                 :row-class-name="resultModal.rowClassName">
+        <let-table-column title="ip" prop="ip">
+        </let-table-column>
+        <let-table-column :title="$t('resource.installResult')" prop="rst">
+          <template slot-scope="scope">
+            <p v-text="scope.row.rst?$t('common.success'):$t('common.error')"></p>
+          </template>
+        </let-table-column>
+        <let-table-column :title="$t('common.message')" prop="msg"></let-table-column>
       </let-table>
     </let-modal>
 
@@ -301,6 +430,15 @@
 
 <script>
 import SetInputer from '@/components/set-inputer';
+import lodash from "lodash"
+import k8sYamlEdit from "@/k8s/inc/k8s/k8sYamlEdit";
+import jsYaml from "js-yaml";
+import k8sManger from "../inc/k8s/k8s";
+import diskManger from "../inc/k8s/disk";
+import networkMapping from "../inc/k8s/networkMapping";
+import resourceManger from "../inc/k8s/resource";
+import K8sYamlEdit from "../inc/k8s/k8sYamlEdit";
+import hpaManger from "../inc/k8s/hpa";
 
 const types = [
   'taf_cpp',
@@ -334,37 +472,6 @@ const getInitialModel = () => ({
   ServerOption: {
     ServerImportant: 0,
   },
-  ServerK8S: {
-    HostIpc: false,
-    HostNetwork: false,
-    showHostPort: false,
-    HostPort: {},
-    NodeSelector: {},
-    Replicas: 0,
-  },
-
-  // application: '',
-  // server_name: '',
-  // server_type: types[0],
-  // template_name: '',
-  // node_name: '',
-  // enable_set: false,
-  // set_name: '',
-  // set_area: '',
-  // set_group: '',
-  // operator: '',
-  // developer: '',
-  // adapters: [{
-  //   obj_name: '',
-  //   bind_ip: '',
-  //   port: '',
-  //   port_type: 'tcp',
-  //   protocol: 'tars',
-  //   thread_num: 5,
-  //   max_connections: 200000,
-  //   queuecap: 10000,
-  //   queuetimeout: 60000,
-  // }],
 });
 
 export default {
@@ -372,6 +479,7 @@ export default {
 
   components: {
     SetInputer,
+    K8sYamlEdit
   },
 
   data() {
@@ -387,24 +495,38 @@ export default {
       resultModal: {
         show: false,
         resultList: [],
-        rowClassName: (rowData)=>{
-           if(rowData && rowData.row && !rowData.row.rst){
-              return 'err-row'
-           }
-           return ''
+        rowClassName: (rowData) => {
+          0
+          if (rowData && rowData.row && !rowData.row.rst) {
+            return 'err-row'
+          }
+          return ''
         }
       },
-      K8SNetModeOptional: [],
-      K8SNodeSelectorKind: [],
+
+      DeployId: "",
+      activeTab: "0",
+      k8sApplyShow: false,
+      k8sApplyModel: {
+        NodeSelector: [],
+        tars: {},
+        resources: {},
+        mounts: []
+      },
+
+      abilityAffinities: ["AppRequired", "ServerRequired", "AppOrServerPreferred", "None"],
+      LabelMatchOperator: [],
+      yamlModel: {
+        show: false
+      }
     };
   },
-
   mounted() {
     this.getServerTemplate()
     this.getDefaultValue()
     this.getAppList()
     this.getNodeList()
-
+    // this.showK8sExtra("")
     this.$watch('model.ServerName', (val, oldVal) => {
       if (val === oldVal) {
         return;
@@ -421,22 +543,6 @@ export default {
       });
     });
   },
-
-  watch: {
-    isCheckedAll() {
-      let isCheckedAll = this.isCheckedAll;
-      if(isCheckedAll) {
-        this.NodeList.forEach(item => {
-          if(this.NodeListArr.indexOf(item) === -1){
-            this.NodeListArr.push(item)
-          }
-        })
-      }else{
-        this.NodeListArr = []
-      }
-    },
-  },
-
   methods: {
     showHostPort(data) {
       data.showHostPort = true
@@ -446,76 +552,30 @@ export default {
       data.showHostPort = false
     },
     checkedChange(val) {
-      if(this.NodeListArr.indexOf(val) > -1){
+      if (this.NodeListArr.indexOf(val) > -1) {
         this.NodeListArr.splice(this.NodeListArr.indexOf(val), 1)
-      }else{
+      } else {
         this.NodeListArr.push(val)
       }
 
-      if(this.NodeListArr.length === 0){
+      if (this.NodeListArr.length === 0) {
         this.isCheckedAll = false
       }
     },
     addAdapter(template) {
       template = this.model.ServerServant[this.model.ServerServant.length - 1]
       const Port = template.Port + 1
-      const newObj = Object.assign({}, template, { Port })
+      const newObj = Object.assign({}, template, {Port})
       this.model.ServerServant.push(Object.assign({}, newObj))
-    },
-    adapterServerK8S(model) {
-      let data = Object.assign({}, model)
-
-      // Array -> Object
-      let obj = {}
-      data.ServerServant.forEach(item => {
-        obj[item.Name] = item
-      })
-      data.ServerServant = obj
-
-      // Object -> Array
-      data.ServerK8S.HostPort = []
-      if(data.ServerK8S.NodeSelector.Kind === 'NodeBind'){
-        if(data.ServerK8S.HostNetwork && data.ServerK8S.showHostPort){
-          return this.$tip.error(`${this.$t('deployService.form.portOrNetWork')}`)
-        }
-        if(data.ServerK8S.showHostPort){
-          for(let item in data.ServerServant){
-            data.ServerK8S.HostPort.push({
-              NameRef: item,
-              Port: Math.floor(data.ServerServant[item].HostPort) || 0
-            })
-          }
-        }
-
-        // 兼容新后台接口结构
-        delete data.ServerK8S.NodeSelector.AbilityPool
-        if(this.NodeListArr.length <= 0){
-          return this.$tip.error(`${this.$t('deployService.form.nodeTips')}`)
-        }
-        data.ServerK8S.NodeSelector.NodeBind = {
-          Value: this.NodeListArr
-        }
-      } else if (data.ServerK8S.NodeSelector.Kind === 'AbilityPool') {
-        // 兼容新后台接口结构
-        delete data.ServerK8S.NodeSelector.NodeBind
-        data.ServerK8S.NodeSelector.AbilityPool = {
-          Value: []
-        }
-      }
-      return data
     },
     deploy() {
       if (this.$refs.form.validate()) {
-        let data = this.adapterServerK8S(this.model)
         this.$confirm(this.$t('deployService.form.deployServiceTip'), this.$t('common.alert')).then(() => {
           const loading = this.$Loading.show();
-          this.$ajax.postJSON('/k8s/api/deploy_create', data).then((data) => {
+          this.$ajax.postJSON('/k8s/api/deploy_create', this.model).then((data) => {
             loading.hide();
-            if(data.tars_node_rst && data.tars_node_rst.length){
-              this.showResultModal(data.tars_node_rst);
-            }else{
-              this.$tip.success(this.$t('deployService.form.ret.success'));
-            }
+            this.DeployId = data.metadata.name
+            this.showK8sExtra(data.metadata.name);
           }).catch((err) => {
             loading.hide();
             this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -532,11 +592,22 @@ export default {
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       });
     },
-    getDefaultValue(){
-      let { ServerServant, ServerOption, ServerK8S } = this.model
-      let { K8SNetModeOptional, K8SNodeSelectorKind } = this
+    save() {
+      this.deploy();
+    },
+    showResultModal(data) {
+      this.resultModal.resultList = data;
+      this.resultModal.show = true;
+    },
+    closeResultModal() {
+      this.resultModal.show = false;
+      this.resultModal.resultList = [];
+    },
+
+    getDefaultValue() {
+      let {ServerServant, ServerOption} = this.model
       this.$ajax.getJSON('/k8s/api/default', {}).then((data) => {
-        if(data.ServerServantElem){
+        if (data.ServerServantElem) {
           ServerServant.forEach(item => {
             item.Port = data.ServerServantElem.Port
             item.HostPort = data.ServerServantElem.HostPort
@@ -549,154 +620,211 @@ export default {
             item.IsTars = data.ServerServantElem.IsTars
           })
         }
-        if(data.ServerOption){
+        if (data.ServerOption) {
           ServerOption = data.ServerOption
-        }
-        if(data.ServerK8S){
-          ServerK8S = data.ServerK8S
-          ServerK8S.HostPort = {}
-          ServerK8S.showHostPort = false
-        }
-        if(data.K8SNetModeOptional){
-          K8SNetModeOptional = data.K8SNetModeOptional
-        }
-        if(data.K8SNodeSelectorKind){
-          K8SNodeSelectorKind = data.K8SNodeSelectorKind
         }
         this.model.ServerServant = ServerServant
         this.model.ServerOption = ServerOption
-        this.model.ServerK8S = ServerK8S
-        this.K8SNetModeOptional = K8SNetModeOptional
-        this.K8SNodeSelectorKind = K8SNodeSelectorKind
+        this.LabelMatchOperator = data.LabelMatchOperator
       }).catch((err) => {
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       });
     },
-    getAutoPort(){
-        const loading = this.$Loading.show();
-        var ServerServant = this.model.ServerServant;
-        var bindIps = [];
-        ServerServant.forEach((adapter) => {
-          bindIps.push(adapter.bind_ip);
-        });
-        this.$ajax.getJSON('/k8s/api/auto_port', {node_name: bindIps.join(';')}).then((data) => {
-            loading.hide();
-            data.forEach((node, index) => {
-              this.$set(ServerServant[index], 'Port', String(node.Port || ''));
-            });
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
-    },
-    save() {
-      // if (this.$refs.form.validate()) {
-        // const model = this.model;
-
-        // const loading = this.$Loading.show();
-        // this.$ajax.getJSON('/k8s/api/server_exist', {
-        //   ServerApp: model.ServerApp,
-        //   ServerName: model.ServerName,
-        //   node_name: model.ServerName,
-        // }).then((isExists) => {
-        //   loading.hide();
-        //   if (isExists) {
-        //     this.$tip.error(this.$t('deployService.form.nameTips'));
-        //   } else {
-            this.deploy();
-        //   }
-        // }).catch((err) => {
-        //   loading.hide();
-        //   this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        // });
-      // }
-    },
-
-    showResultModal(data){
-      this.resultModal.resultList = data;
-      this.resultModal.show = true;
-    },
-
-    closeResultModal(){
-      this.resultModal.show = false;
-      this.resultModal.resultList = [];
-    },
-
     getAppList() {
-      this.$ajax.getJSON('/k8s/api/application_select', { isAll: true }).then((data) => {
+      this.$ajax.getJSON('/k8s/api/application_select', {isAll: true}).then((data) => {
         this.appList = data.Data
       })
     },
-
     getNodeList() {
-      this.$ajax.getJSON('/k8s/api/node_list', { isAll: true }).then((data) => {
+      this.$ajax.getJSON('/k8s/api/node_list', {isAll: true}).then((data) => {
         this.NodeList = data
       })
     },
 
-    // 自动生成端口
-    generateHostPort(hostPort) {
-      if (this.NodeListArr.length <= 0) {
-        this.$tip.error(`${this.$t('common.error')}: 请优先选择需要绑定的节点!`);
-        return
-      }
-      this.$ajax.getJSON("/k8s/api/generate_host_port", {
-        NodeList: this.NodeListArr,
-        NodePort: hostPort.HostPort
-      }).then((res) => {
-        hostPort.HostPort = res.port
+    showK8sExtra(deployName) {
+      this.k8sApplyShow = true;
+      this.$ajax.getJSON('/k8s/api/deploy_select', {deployName: deployName}).then((data) => {
+        let deploy = lodash.cloneDeep(data.Data[0]);
+        console.log("deploy:" + JSON.stringify(deploy, null, 4));
+        this.k8sApplyModel = {
+          abilityAffinity: deploy.ServerK8S.abilityAffinity,
+          NodeSelector: deploy.ServerK8S.NodeSelector,
+          HostIpc: deploy.ServerK8S.HostIpc,
+          HostNetwork: deploy.ServerK8S.HostNetwork,
+          mounts: deploy.Mounts.filter(item => item.source.hasOwnProperty("tLocalVolume")),
+          resources: deploy.resources
+        }
+        let arr = []
+        if (deploy.ServerK8S.HostPort && Object.keys(deploy.ServerK8S.HostPort).length > 0) {
+          this.k8sApplyModel.showHostPort = true
+          deploy.ServerK8S.HostPort.forEach(item => {
+            arr.push({
+              obj: item.NameRef,
+              HostPort: Math.floor(item.Port),
+            })
+          })
+          this.k8sApplyModel.HostPortArr = arr
+        }
+        if (arr.length == 0) {
+          this.k8sApplyModel.showHostPort = false
+          this.k8sApplyModel.HostPortArr = [];
+          for (let key in deploy.ServerServant) {
+            this.k8sApplyModel.HostPortArr.push({
+              obj: key,
+              HostPort: 0
+            })
+          }
+        }
       }).catch((err) => {
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+      });
+    },
+    //节点管理
+    addItems(index, obj) {
+      if (obj.length >= 63) {
+        this.$message.error(`${this.$t('deployService.form.labelMatch.labelMax')}`);
+        return;
+      }
+      obj.splice(index + 1, 0, {"key": "", "operator": "In", "values": []})
+      this.$forceUpdate();
+    },
+    delItems(index, obj) {
+      obj.splice(index, 1);
+      this.$forceUpdate();
+    },
+    addLabelValues(val, index) {
+      let reg = /^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]?$/
+      this.labelMatchArr[index].values.forEach((item, index) => {
+        if (!reg.test(item)) {
+          this.labelMatchArr[index].values.splice(index, 1)
+          this.$message.error(`${this.$t('deployService.form.labelMatch.labelValueValid')}`);
+        }
       })
     },
+    changeLabelOperator(val) {
+      this.labelMatchArr.forEach(item => {
+        if (item.operator == "Exists" || item.operator == "DoesNotExist") {
+          this.$set(item, "disableValue", true)
+          this.$set(item, "values", [])
+        } else {
+          this.$set(item, "disableValue", false)
+        }
+      });
+    },
+    //宿主资源
+    changeKind() {
+      this.$forceUpdate()
+    },
+    // 自动生成端口
+    generateHostPort(hostPort) {
+      this.$ajax.getJSON("/k8s/api/check_host_port", {
+        NodePort: hostPort.HostPort
+      }).then((res) => {
+        let msg = ""
+        res.forEach(item => {
+          if (item.ret == -1) {//telnet 不通
+            msg += `<p>${item.node}:${item.port}: can use</p>`
+          } else {
+            msg += `<p style="color: #F56C6C">${item.node}:${item.port}: cannot use</p>`
+          }
+        })
+        this.$message.success({
+          dangerouslyUseHTMLString: true,
+          message: msg,
+        });
+      }).catch((err) => {
+        this.$message.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+      })
+    },
+    addDisk(index, obj) {
+      obj.splice(index + 1, 0, {
+        name: "",
+        source: {tLocalVolume: {uid: "", gid: "", mode: ""}},
+        mountPath: ""
+      })
+      this.$forceUpdate();
+    },
+    delDisk(index, obj) {
+      obj.splice(index, 1);
+      this.$forceUpdate();
+    },
+    saveK8s() {
+      console.log("this.model:" + JSON.stringify(this.model, null, 4));
+      console.log("this.k8sApplyModel:" + JSON.stringify(this.k8sApplyModel, null, 4));
+      this.$ajax.postJSON('/k8s/api/deploy_update', {
+        DeployId: this.DeployId,
+        ServerServant: this.model.ServerServant,
+        ServerOption: this.model.ServerOption,
+        ServerK8S: this.k8sApplyModel,
+      }).then((data) => {
+        this.$tip.success(`${this.$t('common.success')}`)
+        this.$router.replace("/operation/approval");
+      }).catch((err) => {
+        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+      });
+    },
+    editYaml(){
+      this.yamlModel.show = true;
+      this.$refs.yamlEdit.show(this.DeployId, "tdeploys")
+    },
+    closeYamlModel() {
+      this.yamlModel.show = false;
+    }
   },
 };
 </script>
 
 <style lang="postcss">
 .page_operation_deploy {
-  .let-table {
-    margin: 20px 0 36px;
 
-    th span.required {
-      display: inline-block;
+.let-table {
+  margin: 20px 0 36px;
 
-      &:after {
-        color: #f56c6c;
-        content: '*';
-        margin-left: 4px;
-      }
-    }
-    tr.err-row td{
-      background:#f56c77!important;
-      color:#FFF;
-    }
-    td{
-      padding-left:15px;
-    }
-  }
-  .result-text{
-    margin-top: 20px;
-    margin-bottom:10px;
-  }
-  .set_inputer_item {
-    float: left;
-    margin-right: 8px;
-    width: 126px;
-  }
+th span.required {
+  display: inline-block;
 
-  .node_list {
-    border: 1px solid #e1e4eb;
-    max-height: 200px;
-    margin:10px 0;
-    overflow: hidden;
-    overflow-y: auto;
-  }
+&
+:after {
+  color: #f56c6c;
+  content: '*';
+  margin-left: 4px;
+}
 
-  .node_item {
-    box-sizing:border-box;
-    padding:4px 10px;
-    width:33.33%
-  }
+}
+tr.err-row td {
+  background: #f56c77 !important;
+  color: #FFF;
+}
+
+td {
+  padding-left: 15px;
+}
+
+}
+.result-text {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.set_inputer_item {
+  float: left;
+  margin-right: 8px;
+  width: 126px;
+}
+
+.node_list {
+  border: 1px solid #e1e4eb;
+  max-height: 200px;
+  margin: 10px 0;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.node_item {
+  box-sizing: border-box;
+  padding: 4px 10px;
+  width: 33.33%
+}
+
 }
 </style>

@@ -54,24 +54,10 @@ DeployController.ServerDeployCreate = async(ctx) => {
  * @param  {String}  ServerName           服务名
  */
 DeployController.ServerDeploySelect = async(ctx) => {
-    let { Token = '', ServerApp = '', ServerName = '', Continue, } = ctx.paramsObj
-
-    // isAll = isAll == "true";
-    
-    // let pageIndex = Math.floor(page) || 1
-    // let pageSize = 10
-
-    // let limiter = null;
-    // if(!isAll){
-    //     limiter = {
-    //         offset: (pageIndex - 1) * pageSize,
-    //         rows: pageSize,
-    //     }
-    // }
-
+    let { Token = '', ServerApp = '', ServerName = '', deployName = '', } = ctx.paramsObj
     try {
 
-        let result = await DeployService.serverDeploySelect(ctx.uid, ServerApp, ServerName, Continue);
+        let result = await DeployService.serverDeploySelect(ctx.uid, ServerApp, ServerName,deployName);
         ctx.makeResObj(result.ret, result.msg, result.data)
 
     } catch (e) {
@@ -88,28 +74,14 @@ DeployController.ServerDeployUpdate = async(ctx) => {
     } = ctx.paramsObj
 
     try {
-        if (ServerK8S.NodeSelector.Kind == "PublicPool") {
-            ServerK8S.NodeSelector.PublicPool = {}
-            ServerK8S.NodeSelector.PublicPool.Value = ServerK8S.NodeSelector.Value;
-        } else if (ServerK8S.NodeSelector.Kind == "AbilityPool") {
-            ServerK8S.NodeSelector.AbilityPool = {}
-            ServerK8S.NodeSelector.AbilityPool.Value = ServerK8S.NodeSelector.Value;            
-        } else if (ServerK8S.NodeSelector.Kind == "NodeBind") {
-            ServerK8S.NodeSelector.NodeBind = {}
-            ServerK8S.NodeSelector.NodeBind.Value = ServerK8S.NodeSelector.Value;                 
-        }
-        delete ServerK8S.NodeSelector.Kind;
-        delete ServerK8S.NodeSelector.Value;
-        
         const metadata = {
             DeployId,
         }
         const target = {
-            ServerK8S,
             ServerServant,
             ServerOption,
+            ServerK8S,
         }
-
         let result = await DeployService.serverDeployUpdate(metadata, target);
         ctx.makeResObj(result.ret, result.msg, result.data);
 

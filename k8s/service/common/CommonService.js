@@ -477,24 +477,9 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 		}
     ]
 
-    let NodeSelector = {};
-	if(serverK8S.NodeSelector != null) {
-		if(serverK8S.NodeSelector.NodeBind != null) {
-            NodeSelector.nodeBind = {}
-			NodeSelector.nodeBind.values = serverK8S.NodeSelector.NodeBind.Value
-		}
-		if(serverK8S.NodeSelector.AbilityPool != null) {
-            NodeSelector.abilityPool = {}
-			NodeSelector.abilityPool.values = serverK8S.NodeSelector.AbilityPool.Value
-		}
-		if(serverK8S.NodeSelector.PublicPool != null) {
-            NodeSelector.publicPool = {}
-			NodeSelector.publicPool.values = serverK8S.NodeSelector.PublicPool.Value
-		}
-		if(serverK8S.NodeSelector.DaemonSet != null) {
-            NodeSelector.daemonSet = {}
-			NodeSelector.daemonSet.values = serverK8S.NodeSelector.DaemonSet.Value
-		}
+	let NodeSelector = [];
+	if (serverK8S.NodeSelector  && serverK8S.NodeSelector.length != 0) {
+		NodeSelector = serverK8S.NodeSelector;
 	}
 
 	let tServer = {
@@ -530,7 +515,7 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 		},
 	}
 
-	console.log(JSON.stringify(tServer));
+	// console.log(tServer);
 
 	return tServer
 }
@@ -576,32 +561,19 @@ CommonService.ConvertOperatorK8SToAdminK8S = (operatorK8S) => {
             });
         })
 	}
-
-    var nodeSelector = {};
-	if(operatorK8S.nodeSelector.nodeBind != null) {
-        nodeSelector.NodeBind = {}
-		nodeSelector.NodeBind.Value = operatorK8S.nodeSelector.nodeBind.values
-	}
-	if(operatorK8S.nodeSelector.abilityPool != null) {
-        nodeSelector.AbilityPool = {}
-		nodeSelector.AbilityPool.Value = operatorK8S.nodeSelector.abilityPool.values
-	}
-	if(operatorK8S.nodeSelector.publicPool != null) {
-        nodeSelector.PublicPool = {}
-		nodeSelector.PublicPool.Value = operatorK8S.nodeSelector.publicPool.values
-	}
-	if(operatorK8S.nodeSelector.daemonSet != null) {
-        nodeSelector.DaemonSet = {}
-		nodeSelector.DaemonSet.Value = operatorK8S.nodeSelector.daemonSet.values
+	let NodeSelector = [];
+	if (operatorK8S.nodeSelector  && operatorK8S.nodeSelector.length != 0) {
+		NodeSelector = operatorK8S.nodeSelector;
 	}
 
 	return {
-		HostIpc:      operatorK8S.hostIPC,
-		HostNetwork:  operatorK8S.hostNetwork,
+		abilityAffinity:operatorK8S.abilityAffinity,
+		HostIpc:      operatorK8S.hostIPC || false,
+		HostNetwork:  operatorK8S.hostNetwork|| false,
 		NotStacked:   operatorK8S.notStacked,
 		Replicas:     operatorK8S.replicas,
 		HostPort:     hostPort,
-		NodeSelector: nodeSelector,
+		NodeSelector: NodeSelector,
 	}
 }
 

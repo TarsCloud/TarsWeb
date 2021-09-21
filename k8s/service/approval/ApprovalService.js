@@ -21,41 +21,22 @@ const DeployService = require('../deploy/DeployService');
 const ApprovalService = {};
 
 ApprovalService.serverApprovalCreate = async (metadata) => {
-
     let tDeploy = await CommonService.getObject("tdeploys", metadata.DeployId);
     if (!tDeploy) {
         return { ret: 500, msg: 'no deploy server exists' };
 	}
-	
 	tDeploy = tDeploy.body;
-
 	if(tDeploy.approve != null) {
         return { ret: 500, msg: 'Can Not Do Duplicated Deploy' };
 	}
-
     let tDeployCopy = JSON.parse(JSON.stringify(tDeploy));
-
 	tDeployCopy.approve = {
-		person: "admin",
+		person: metadata.person||"admin",
 		time:   new Date(),
 		reason: metadata.ApprovalMark,
 		result: metadata.ApprovalResult,
 	}
-
-	if(metadata.ApprovalResult) {
-		let serverK8S = CommonService.ConvertOperatorK8SToAdminK8S(tDeployCopy.apply.k8s)
-		let serverServant = CommonService.ConvertOperatorServantToAdminK8S(tDeployCopy.apply.tars.servants)
-		let serverOption = CommonService.ConvertOperatorOptionToAdminK8S(tDeployCopy.apply)
-
-        let result = await DeployService.createServer(tDeployCopy.apply.app, tDeployCopy.apply.server, serverServant, serverK8S, serverOption);
-        if (result.ret != 200) {
-            return result;
-        }
-
-	}
-
     let data = await CommonService.replaceObject("tdeploys", tDeployCopy.metadata.name, tDeployCopy);
-    
     return { ret: 200, msg: 'succ', data: data.body };
 }
 
@@ -82,8 +63,8 @@ ApprovalService.serverApprovalSelect = async (Continue) => {
 
 	// 		if (ServerName.length > 0 && elem.apply.server.indexOf(ServerName) == -1)
 	// 			return;
-			
-    //         filterItems.push(elem);  
+
+    //         filterItems.push(elem);
     //     })
 	// // }
 
@@ -99,7 +80,7 @@ ApprovalService.serverApprovalSelect = async (Continue) => {
             return -1;
         }
 	});
-    
+
 
 	// // limiter
 	// if(limiter != null) {
@@ -116,7 +97,7 @@ ApprovalService.serverApprovalSelect = async (Continue) => {
     // result.Count["FilterCount"] = filterItems.length;
 
 	// Data填充
-    result.Data = []; 
+    result.Data = [];
     allItems.forEach(item => {
 
         // console.log(item);

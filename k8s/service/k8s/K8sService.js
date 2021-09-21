@@ -76,10 +76,9 @@ K8sService.serverK8SUpdate = async (metadata, target) => {
     if (target.NodeSelector) {
         K8S.nodeSelector = target.NodeSelector
     }
-    if (target.abilityAffinity) {
+    if (target.abilityAffinity){
         K8S.abilityAffinity = target.abilityAffinity
     }
-
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
     tServerCopy.spec.k8s = K8S
     let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
@@ -147,12 +146,24 @@ K8sService.ServerK8SUpdateDisk = async (metadata, target) => {
     }
     tServer = tServer.body;
     let K8S = tServer.spec.k8s;
-    K8S.mounts.forEach(item=>{
-        if (!item.source.hasOwnProperty("tLocalVolume")){
-            target.mounts.push(item)
+    let mounts = [];
+    if (K8S.mounts){
+        K8S.mounts.forEach(item=>{
+            if (!item.source.hasOwnProperty("tLocalVolume")){
+                mounts.push(item)
+            }
+        })
+    }
+    target.mounts.forEach(item => {
+        let tLocalVolume = item.source.tLocalVolume
+        item.source.tLocalVolume = {
+            uid: tLocalVolume.uid || "0",
+            gid: tLocalVolume.gid || "0",
+            mode: tLocalVolume.mode || "755"
         }
+        mounts.push(item)
     })
-    K8S.mounts = target.mounts;
+    K8S.mounts = mounts;
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
     tServerCopy.spec.k8s = K8S
     let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
