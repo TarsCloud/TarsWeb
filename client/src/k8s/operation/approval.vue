@@ -427,7 +427,7 @@ export default {
       },
       k8sApplyModel: {
         NodeSelector: [],
-        taf: {},
+        tars: {},
         resources: {},
         mounts: []
       },
