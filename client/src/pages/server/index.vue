@@ -173,15 +173,12 @@
         if(!v){
           return id;
         }
-        if(v.length == 1) {
-          const app = id && id.split('.')[0].substring(1)
-          return `${app}`
-        }
-        if(v.length > 1) {
-          const app = id && id.split('.')[0].substring(1)
-          const server = id && id.split('.')[id.split('.').length-1].substring(1)
-          return `${app}.${server}`
-        }
+
+        let temp_array = [];
+        v.forEach((item) => {
+          temp_array.push(item.substring(1))
+        });
+        return temp_array.join(".");
       },
       getName(val) {
         let result = ''
