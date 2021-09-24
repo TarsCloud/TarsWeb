@@ -28,7 +28,7 @@ const upload = (formData = {}, wait) => {
                 url: `${WebConf.k8s.uploadDomain}/${name}/building?wait=${wait}`,
                 method: 'POST',
                 formData: formData,
-                timeout: 600000,
+                timeout: 120*1000,
             }
             
             logger.info(`upload to image request:${options.url}`);
