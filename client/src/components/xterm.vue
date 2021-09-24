@@ -77,7 +77,7 @@ export default {
       this.term = new Terminal({
         rendererType: "canvas", //渲染类型
         convertEol: true, //启用时，光标将设置为下一行的开头
-        scrollback: 5000, //终端中的回滚量
+        scrollback: 2000, //终端中的回滚量
         disableStdin: false, //是否应禁用输入
         cursorStyle: "block", //光标样式
         cursorBlink: true, //光标闪烁
@@ -87,7 +87,7 @@ export default {
       this.term.open(document.getElementById("xterm"));
 
       //全屏
-      setTimeout(function(){this.resizeScreen()}, 100);
+      this.resizeScreen();
 
       //加载weblink组件
       this.term.loadAddon(new WebLinksAddon());
