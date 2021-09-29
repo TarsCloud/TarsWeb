@@ -31,7 +31,7 @@ LoginServer.login = async(uid, password)=> {
     } else {
         let userInfo = await LoginDao.getUserInfoByUid(uid);
         if (userInfo) {
-            if (userInfo.password !== password) {
+            if (userInfo.password !== sha1(password)) {
                 return {errMsg: '#login.passwordNoCorrect#'};
             } 
         } else {
