@@ -21,6 +21,7 @@ const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const PatchProxy = require("./proxy/PatchProxy");
 
 const { RPCStruct } = require('./service');
+const TopologyProxy = require("./topology/TopologyProxy");
 
 module.exports = {
 
@@ -33,4 +34,6 @@ module.exports = {
     DCacheOptStruct: RPCStruct(DCacheOptProxy, 'DCache'),
 
     PatchStruct: RPCStruct(PatchProxy, 'tars'),
+
+    topologyStruct:RPCStruct(TopologyProxy,'taf')
 };

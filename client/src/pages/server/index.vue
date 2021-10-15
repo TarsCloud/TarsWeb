@@ -62,7 +62,7 @@
             <let-tab-pane :tabkey="base + '/interface-debuger'" :tab="$t('index.rightView.tab.infDebuger')"
                           v-if="serverData.level === 5"></let-tab-pane>
             <let-tab-pane :tabkey="base + '/user-manage'" :tab="$t('index.rightView.tab.privileage')" v-if="serverData.level === 5"></let-tab-pane>
-            <!-- <let-tab-pane :tabkey="base + '/callChain'" :tab="$t('index.rightView.tab.treeConfig')" v-if="serverData.level === 5"></let-tab-pane> -->
+             <let-tab-pane :tabkey="base + '/callChain'" :tab="$t('index.rightView.tab.treeConfig')" v-if="serverData.level === 5"></let-tab-pane>
           </let-tabs>
 
           <router-view :is="getName(item.path)" :treeid="item.id" ref="childView" class="page_server_child"></router-view>
@@ -75,7 +75,7 @@
 
 <script>
   import manage from './manage'
-  import callChain from '@/common/callchain.vue'
+  import callChain from './callchain'
   import publish from './publish'
   import config from './config'
   import serverHistory from './history'

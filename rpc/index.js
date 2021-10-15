@@ -21,6 +21,7 @@ const ConfigFProxy = require("./proxy/ConfigFProxy");
 const DCacheOptProxy = require("./proxy/DCacheOptProxy");
 const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const PatchProxy = require("./proxy/PatchProxy");
+const TopologyProxy = require("./topology/TopologyProxy");
 const WebConf = require("../config/webConf");
 
 const { RPCClientPrx } = require('./service');
@@ -31,15 +32,18 @@ module.exports = {
     // RPCClientPrx,
 
     patchPrx : RPCClientPrx(client, PatchProxy, 'tars', 'Patch', 'tars.tarspatch.PatchObj'),
-    
+
 	adminRegPrx : RPCClientPrx(client, AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj'),
 
     configFPrx : RPCClientPrx(client, ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
 
     statQueryPrx : RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj'),
     propertyQueryPrx : RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj'),
-    
+
     DCacheOptPrx: RPCClientPrx(client, DCacheOptProxy, 'DCache', 'DCacheOpt', 'DCache.DCacheOptServer.DCacheOptObj'),
-	
+
+    topologyPrx: RPCClientPrx(client, TopologyProxy, 'tars', 'Topology', 'tars.tarstrace.TopologyObj@tcp -h 172.16.8.227 -p 9018'),
+
     client: client,
+
 };

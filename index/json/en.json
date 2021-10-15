@@ -44,7 +44,16 @@
         "stringEtime":"End time：",
         "clientTime":"Total client time：",
         "serverTime":"Total server time：",
-        "timeFrame":"time frame"
+        "timeFrame":"time frame",
+        "serverRelationship": "Service invocation relationship",
+        "nodeRelationship": "Node call relationship",
+        "relation": {
+            "need": "need",
+            "flow": "total flow",
+            "avgTime": "average time(ms)",
+            "abnormalRate":"abnormal rate",
+            "timeoutRate":"timeout rate"
+        }
     },
     "deployLog": {
         "log": "Deploy tarslog first",
