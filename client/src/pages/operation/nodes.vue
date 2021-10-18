@@ -2,7 +2,7 @@
   <div class="page_operation_templates">
     <el-form inline itemWidth="200px">
       <el-form-item :label="$t('nodes.node_name') + '：'">
-        <el-input size="small" v-model="querynode.node_name"></el-input>
+        <el-input size="small" v-model="query.node_name"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button size="small" type="submit" @click="search" theme="primary">{{
@@ -389,7 +389,7 @@ export default {
         return '';
       },
     getNodeList(curr_page) {
-      const loading = this.$refs.nodeListLoading.$loading.show();
+      // const loading = this.$refs.nodeListLoading.$loading.show();
 
       if(!curr_page) {
         curr_page = this.pageNum || 1; 
@@ -400,7 +400,7 @@ export default {
         page_size: this.pageSize,
         curr_page: curr_page,
       }).then((data) => {
-        loading.hide();
+        // loading.hide();
         this.pageNum = curr_page;
         this.total = Math.ceil(data.count/this.pageSize);
         this.nodeList = data.rows;
@@ -410,7 +410,7 @@ export default {
           x.last_reg_time = moment(x.last_reg_time).format("YYYY-MM-DD HH:mm:ss")
         });
       }).catch((err) => {
-        loading.hide();
+        // loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
       });
 

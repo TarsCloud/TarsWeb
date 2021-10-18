@@ -62,7 +62,7 @@
         ></SetInputer>
       </let-form-item>
 
-      <let-form-item :label="$t('user.op')" v-show="enableAuth">
+      <let-form-item :label="$t('user.op')" v-show="enableLogin">
         <let-input
           size="small"
           v-model="model.operator"
@@ -70,7 +70,7 @@
         ></let-input>
       </let-form-item>
 
-      <let-form-item :label="$t('user.dev')" v-show="enableAuth">
+      <let-form-item :label="$t('user.dev')" v-show="enableLogin">
         <let-input
           size="small"
           v-model="model.developer"
@@ -293,7 +293,7 @@ export default {
       templates: [],
       applyList: [],
       model: getInitialModel(),
-      enableAuth: false,
+      enableLogin: false,
       resultModal: {
         show: false,
         resultList: [],
@@ -308,8 +308,8 @@ export default {
   },
 
   mounted() {
-    this.$ajax.getJSON('/server/api/is_enable_auth').then((data) => {
-      this.enableAuth = data.enableAuth || false;
+    this.$ajax.getJSON('/server/api/isEnableLogin').then((data) => {
+      this.enableLogin = data.enableLogin || false;
     }).catch((err)=>{
 
     });

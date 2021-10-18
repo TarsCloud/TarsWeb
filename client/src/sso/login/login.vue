@@ -55,6 +55,7 @@
       <!-- <let-button type="button" @click.prevent="toRegisterPage" style="float:right;margin-right:12px;">{{$t('login.toRegisterPage')}}</let-button> -->
     </let-form>
   </div>
+  </div>
 </template>
 
 <script>
