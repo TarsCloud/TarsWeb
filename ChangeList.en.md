@@ -1,3 +1,9 @@
+
+
+## 202101018(2.4.19)
+- Fix the but that the node page does not display
+- Improve the support of call chain, open tab, and framework >= 3.0.1.
+
 ## 20210909(2.4.18)
 - Adjust the directory structure to support k8s. It is not opened by default
 - The interface of call chain is added (it needs to be upgraded with the framework, and the call chain service is added), but it is not opened

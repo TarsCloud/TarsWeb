@@ -2,7 +2,7 @@
   <div class="page_operation_templates">
     <el-form inline itemWidth="200px">
       <el-form-item :label="$t('nodes.node_name') + '：'">
-        <el-input size="small" v-model="querynode.node_name"></el-input>
+        <el-input size="small" v-model="query.node_name"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button size="small" type="submit" @click="search" theme="primary">{{
