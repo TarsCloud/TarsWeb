@@ -8,15 +8,15 @@ export function trees(data) {
     return axios.get('/home/tree',{params:data}).then(ret => ret.data);
 }
 
-export function tars_call_serve(data) {
-    return axios.get('/home/tars_call_serve',{params:data}).then(ret => ret.data);
+export function taf_call_serve(data) {
+    return axios.get('/home/taf_call_serve',{params:data}).then(ret => ret.data);
 }
 
-export function tars_call_serve1(data) {
-    return axios.get('/home/tars_call_serve1',{params:data}).then(ret => ret.data);
+export function taf_call_serve1(data) {
+    return axios.get('/home/taf_call_serve1',{params:data}).then(ret => ret.data);
 }
 
-export function tars_call_serve2(data) {
+export function taf_call_serve2(data) {
     return axios.get('/server/api/getAverage',{params:data}).then(ret => ret.data);
 }
 
@@ -38,7 +38,9 @@ export function detail(data) {
 export function func(data) {
     return axios.get('/server/api/func',{params:data}).then(ret => ret.data);
 }
-
+export function funcList(data) {
+    return axios.get('/server/api/func',{params:data}).then(ret => ret.data);
+}
 export function detail1(data) {
     return axios.get('/server/api/detail1',{params:data}).then(ret => ret.data);
 }

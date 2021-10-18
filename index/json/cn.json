@@ -45,7 +45,16 @@
         "clientTime":"client总时间：",
         "serverTime":"server总时间：",
         "timeFrame":"时间范围",
-        "allTime":"执行时间"
+        "allTime":"执行时间",
+        "serverRelationship": "服务调用关系",
+        "nodeRelationship": "节点调用关系",
+        "relation": {
+            "need": "需要",
+            "flow": "总流量",
+            "avgTime": "平均耗时(ms)",
+            "abnormalRate":"异常率",
+            "timeoutRate":"超时率"
+        }
     },
     "deployLog": {
         "log": "优先部署tarslog",

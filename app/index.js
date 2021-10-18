@@ -15,13 +15,13 @@
  */
 // const HttpController = require('../controller/http/HttpController');
 const WebConf = require('../config/webConf');
+const CallChainController = require("./controller/callchain/CallChainController");
 
 if (WebConf.enable) {
 	const ServerController = require('./controller/server/ServerController');
 	const TreeController = require('./controller/server/TreeController');
 	const NotifyController = require('./controller/notify/NotifyController');
 	const ConfigController = require('./controller/config/ConfigController');
-	const callChain = require("./controller/config/callChain")
 	const AdapterController = require('./controller/adapter/AdapterController');
 	const ExpandServerController = require('./controller/expand/ExpandServerController');
 	const DeployServerController = require('./controller/deploy/DeployServerController');
@@ -38,8 +38,7 @@ if (WebConf.enable) {
 	const InfTestController = require('./controller/infTest/InfTestController');
 	const LogviewController = require('./controller/logview/LogviewController');
 	const IDCConntroller = require('./controller/idc/IDCController');
-
-
+	const CallChainController   = require("./controller/callchain/CallChainController")
 
 	const apiConf = [
 		// 服务管理接口
@@ -160,11 +159,6 @@ if (WebConf.enable) {
 
 		// 服务配置接口
 		['get', '/unused_config_file_list', ConfigController.getUnusedApplicationConfigFile],
-        ['get', '/getlabel', callChain.getlabel],
-        ['get', '/getAverage', callChain.getAverage],
-        ['get', '/detail', callChain.detail],
-        ['get', '/detail1', callChain.detail1],
-        ['get', '/func', callChain.func],
 		['get', '/config_file_list', ConfigController.configFileList, {
 			level: 'number',
 			application: 'notEmpty'
@@ -414,41 +408,18 @@ if (WebConf.enable) {
 		}],
 
 		//压力测试
-		['get', '/get_benchmark_des', InfTestController.getBenchmarkDes, {
-			id: 'notEmpty'
-		}],
-		['get', '/get_bm_case_list', InfTestController.getBmCaseList, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['get', '/get_bm_result_by_id', InfTestController.getBmResultById, {
-			id: 'notEmpty'
-		}],
-		['post', '/upsert_bm_case', InfTestController.upsertBmCase, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['post', '/start_bencmark', InfTestController.startBencmark, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['post', '/stop_bencmark', InfTestController.stopBencmark, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['post', '/test_bencmark', InfTestController.testBencmark, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['get', '/get_endpoints', InfTestController.getEndpoints, {
-			servant: 'notEmpty'
-		}],
+		['get', '/get_benchmark_des', InfTestController.getBenchmarkDes, {id: 'notEmpty'}],
+		['get', '/get_bm_case_list', InfTestController.getBmCaseList, {servant: 'notEmpty', fn: 'notEmpty'}],
+		['get', '/get_bm_result_by_id', InfTestController.getBmResultById, {id: 'notEmpty'}],
+		['post', '/upsert_bm_case', InfTestController.upsertBmCase, {servant: 'notEmpty', fn: 'notEmpty'}],
+		['post', '/start_bencmark', InfTestController.startBencmark, {servant: 'notEmpty', fn: 'notEmpty'}],
+		['post', '/stop_bencmark', InfTestController.stopBencmark, {servant: 'notEmpty', fn: 'notEmpty'}],
+		['post', '/test_bencmark', InfTestController.testBencmark, {servant: 'notEmpty', fn: 'notEmpty'}],
+		['get', '/get_endpoints', InfTestController.getEndpoints, {servant: 'notEmpty'}],
 		['get', '/is_benchmark_installed', InfTestController.isBenchmarkInstalled],
-		['get', '/logview_list', LogviewController.getLogFileList, {
-			application: 'notEmpty',
-			server_name: 'notEmpty',
-			node_name: 'notEmpty'
-		}],
+
+		//taflogview
+		['get', '/logview_list', LogviewController.getLogFileList, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty'}],
 		['get', '/logview_data', LogviewController.getLogData, {
 			application: 'notEmpty',
 			server_name: 'notEmpty',
@@ -456,6 +427,15 @@ if (WebConf.enable) {
 			log_file: 'notEmpty',
 			interface_params: 'notEmpty'
 		}],
+
+		//调用链
+		['get', '/getAverage', CallChainController.getAverage],
+		['get', '/getAverageByFuncName', CallChainController.getAverageByFuncName],
+		['get', '/detailByTraceId', CallChainController.detailByTraceId],
+		['get', '/detailByStartEndTime', CallChainController.detailByStartEndTime],
+		['get', '/func', CallChainController.func],
+		['get', '/funcList', CallChainController.funcList],
+
 	];
 
 	const clientConf = [

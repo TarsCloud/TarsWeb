@@ -3,14 +3,14 @@
  *
  * Copyright (C) 2016THL A29 Limited, a Tencent company. All rights reserved.
  *
- * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except 
+ * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  *
  * https://opensource.org/licenses/BSD-3-Clause
  *
- * Unless required by applicable law or agreed to in writing, software distributed 
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
 const cwd = process.cwd();
@@ -90,11 +90,35 @@ let conf = {
 
 };
 
-if (process.env.NODE_ENV == "dev") {
+if (process.env.NODE_ENV == "local") {
 
     conf.dbConf = {
-        host: '127.0.0.1', // 数据库地址
-        port: '3306', // 数据库端口
+            host: '127.0.0.1', // 数据库地址
+            port: '3306', // 数据库端口
+            user: 'tarsAdmin', // 用户名
+            password: 'Tars@2019', // 密码
+            charset: 'utf8', // 数据库编码
+            pool: {
+                max: 10, // 连接池中最大连接数量
+                min: 0, // 连接池中最小连接数量
+                idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
+            }
+        },
+
+
+        conf.webConf.host = '0.0.0.0';
+    conf.webConf.port = 4001;
+    conf.webConf.alter = true;
+
+    conf.client = path.join(cwd, 'config/tars-dev.conf');
+    process.env.ENABLE_K8S = "false";
+
+}
+else if (process.env.NODE_ENV == "dev") {
+
+    conf.dbConf = {
+        host: '172.16.8.227', // 数据库地址
+        port: '3307', // 数据库端口
         user: 'tarsAdmin', // 用户名
         password: 'Tars@2019', // 密码
         charset: 'utf8', // 数据库编码
@@ -104,6 +128,7 @@ if (process.env.NODE_ENV == "dev") {
             idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
         }
     },
+
 
     conf.webConf.host = '0.0.0.0';
     conf.webConf.port = 4001;
