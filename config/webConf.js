@@ -58,7 +58,11 @@ let conf = {
         syncAllUserSchedule: '*/5 * * * *', // 全量同步LDAP用户,每5分钟同步一次
         maxInCache: 10 * 60 * 1000 // 全量LDAP用户数据在内存中最大时间,应大于同步任务的时间
     },
-
+    TopologyObj:{
+        moduleName:"tars",
+        interfaceName:"Topology",
+        servantName:"tars.tarslog.TopologyObj",
+    },
     dbConf: {
         host: 'db.tars.com', // 数据库地址
         port: '3306', // 数据库端口

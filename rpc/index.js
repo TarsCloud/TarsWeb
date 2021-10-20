@@ -42,7 +42,7 @@ module.exports = {
 
     DCacheOptPrx: RPCClientPrx(client, DCacheOptProxy, 'DCache', 'DCacheOpt', 'DCache.DCacheOptServer.DCacheOptObj'),
 
-    topologyPrx: RPCClientPrx(client, TopologyProxy, 'tars', 'Topology', 'tars.tarstrace.TopologyObj@tcp -h 172.16.8.227 -p 9018'),
+    topologyPrx: RPCClientPrx(client, TopologyProxy,  WebConf.TopologyObj.moduleName, WebConf.TopologyObj.interfaceName, WebConf.TopologyObj.servantName),
 
     client: client,
 
