@@ -8,7 +8,7 @@
         <let-table-column :title="$t('deployService.form.app')" prop="application"></let-table-column>
         <let-table-column :title="$t('serverList.table.th.service')" prop="server_name">
           <template slot-scope="scope">
-            <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name=remote'"
+            <a :href="'/static/logview/logview.html?app=' + [scope.row.application] + '&server_name=' + [scope.row.server_name] + '&node_name='+ [scope.row.node_name]"
                :title="$t('serverList.link.remoteLog')" target="_blank" class="buttonText"> {{scope.row.server_name}} </a>
           </template>
         </let-table-column>
