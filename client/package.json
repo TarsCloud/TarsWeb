@@ -20,6 +20,7 @@
     "let-ui": "^0.1.23",
     "lodash": "^4.17.14",
     "request": "^2.88.0",
+    "sha1": "^1.1.1",
     "socket.io-client": "^3.0.3",
     "svg-sprite-loader": "^4.1.6",
     "v-charts": "^1.16.8",
