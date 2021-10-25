@@ -70,7 +70,7 @@ TokenService.verifyWebIDToken = async function (id_token) {
 
 TokenService.addToken = async(name, uid, expireTime) => {
 
-    let date = Date.parse(expireTime + ":00");
+    let date = Date.parse(expireTime);
 
     let tokenStr = await TokenService.signWebIDToken({ uid: uid }, date - (new Date()).getTime());
 
