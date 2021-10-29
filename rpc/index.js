@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const client  = require("@tars/rpc/protal.js").Communicator.New();
+const client  = require("@tars/rpc/protal.js").client;
 
 const AdminRegProxy = require("./proxy/AdminRegProxy");
 const ConfigFProxy = require("./proxy/ConfigFProxy");
