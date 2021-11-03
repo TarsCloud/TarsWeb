@@ -110,7 +110,7 @@ export default {
           })
           this.serverList = data.Data
         }
-        this.pagination.total = Math.ceil(data.Count.FilterCount / this.pagination.size)
+        this.pagination.total = Math.ceil(data.Count.AllCount / this.pagination.size)
       }).catch((err) => {
         loading.hide();
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
