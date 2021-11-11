@@ -92,6 +92,7 @@ module tars
         EM_I_SUCCESS,
         EM_I_FAILED,
         EM_I_CANCEL,
+        EM_I_PAUSE_FLOW,
     };
 
     /**
@@ -133,6 +134,8 @@ module tars
         1 optional string taskNo;
         2 optional bool   serial;
         3 optional string userName;
+        4 optional bool   isElegant = false;
+        5 optional int    eachNum = 1;
     };
 
     struct TaskRsp
@@ -477,6 +480,13 @@ module tars
         * @return : 0-成功 others-失败
         */
         int getVersion(out string version);
+
+        /**
+		 * 暂停服务，关闭服务流量，无损发布用等
+		 *
+		 * @return : 0-成功 others-失败
+		 */
+		int updateServerFlowState(string application, string serverName, vector<string> nodeList, bool bActive); 
     };
 };
 
