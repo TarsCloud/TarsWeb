@@ -221,6 +221,18 @@ ConfigDao.getConfigRefByConfigId = async(configId) => {
 };
 
 
+
+ConfigDao.deleteConfigRefByConfigId = async(configId) => {
+    return await tConfigReferences.destroy({
+        where: { config_id: configId }
+    });
+};
+
+ConfigDao.deleteConfigFileByServerNameAndHost = async (server_name, host, set_name, set_area, set_group) => {
+    return await tConfigFiles.destroy({ where: { server_name: server_name, host: host, set_name: set_name, set_area: set_area, set_group: set_group } });
+};
+
+
 function filterParams(obj) {
     for (var item in obj) {
         if (!obj[item] && obj[item] !== '') {
