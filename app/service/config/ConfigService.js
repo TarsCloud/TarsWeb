@@ -528,4 +528,54 @@ ConfigService.addDefaultNodeConfigFile = (params, force) => {
 }
 
 
+/**
+ * 根据服务名（Hello.HelloSvr）、node节点、set信息，删除配置信息
+ * @param server_name, host, set_name, set_area, set_group
+ * @return {{server_name: string, host: string, set_name: string, set_area: string, set_group: string}}
+ */
+ConfigService.deleteConfigByServerNameAndHost = async (server_name, host, set_name, set_area, set_group) => {
+	await ConfigDao.deleteConfigFileByServerNameAndHost(server_name, host, set_name, set_area, set_group).then(() => {
+		return Promise.resolve(server_name, host, set_name, set_area, set_group);
+	}).catch(e => {
+		logger.error('[deleteConfigByServerNameAndHost]:', e);
+		return Promise.reject(e)
+	});
+};
+
+/**
+ * 在只有svr配置信息（level=2）的时候，删除level=2的服务配置信息
+ * @param server_name
+ * @param set_name
+ * @param set_area
+ * @param set_group
+ * @return {id}
+ */
+ConfigService.deleteSvrConfWhenNoNodeConf = async (server_name, set_name, set_area, set_group) => {
+	let nodeConfigFiles = await ConfigDao.getNodeConfigFile({
+		server_name: server_name,
+		set_name: set_name,
+		set_area: set_area,
+		set_group: set_group
+	});
+	// 没有node节点配置的时候，那么删除svr配置
+	if (nodeConfigFiles.length == 0)  
+	{
+		// 获取svr级别的配置信息
+		let svrConfigFiles = await ConfigDao.getServerConfigFile({
+			server_name: server_name,
+			set_name: set_name,
+			set_area: set_area,
+			set_group: set_group
+		});
+		for (let i = 0; i < svrConfigFiles.length; i++) {
+			let config = svrConfigFiles[i];
+			// 删除配置文件
+			let del_config_ret = await ConfigDao.deleteConfigFile(config.id);
+			// 还得删除配置文件的引用关系
+			let del_configref_ret = await ConfigDao.deleteConfigRefByConfigId(config.id);
+		}
+	}
+};
+
+
 module.exports = ConfigService;

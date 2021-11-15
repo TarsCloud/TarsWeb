@@ -17,6 +17,7 @@
 const logger = require('../../../logger');
 const AdminService = require('../../service/admin/AdminService');
 const ServerService = require('../../service/server/ServerService');
+const ConfigService = require('../../service/config/ConfigService');
 const util = require('../../../tools/util');
 const TaskDao = require('../../dao/TaskDao');
 // const KafkaDao = require('../../dao/KafkaDao');
@@ -99,6 +100,18 @@ TaskService.addTask = async(params, ticket) => {
         if (item.command === 'undeploy_tars') {
             TaskService.autoDeletePermission(serverConf.application, serverConf.server_name, params.task_no);
             TreeService.setCacheData()
+            // 删除服务的配置文件
+            // 如果是下线服务，那么需要删除删除t_config_files的数据
+			let server_name = serverConf.application + "." + serverConf.server_name;
+			let host = serverConf.node_name;
+			let set_name = serverConf.set_name || '';
+			let set_area = serverConf.set_area || '';
+			let set_group = serverConf.set_group || '';
+			let set_info = set_name+"."+set_area+"."+set_group;
+			let del_config_file_ret = await ConfigService.deleteConfigByServerNameAndHost(server_name,host,set_name,set_area,set_group);
+			logger.info("deleteConfigByServerNameAndHost server_name: ", server_name, ",host: ", host, "set: ", set_info ,",ret: ", del_config_file_ret);
+			// 删除之后，判断是否还有其他节点的配置信息，如果没有，说明没有其他节点了，那么要把server级别的配置文件删除（level=2）
+			await ConfigService.deleteSvrConfWhenNoNodeConf(server_name,set_name,set_area,set_group);
         }
     }
     let req = {
