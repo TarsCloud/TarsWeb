@@ -1,3 +1,10 @@
+## 20211115(2.4.21)
+- Add K8S Events to view.
+- Node management supports batch editing of common labels and affinity labels
+- Add the tars. Es template,notify,events ES to read from the template
+- Add K8S supports normal service maintenance
+- Add Node Details
+
 ## 20211115(2.4.20)
 
 - Bugfix undeploy server delete config files

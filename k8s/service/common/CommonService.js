@@ -29,18 +29,16 @@ const opts = {};
 kc.applyToRequest(opts);
 
 CommonService.getPath = (path) => {
-	return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
+    return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
 }
 
 const k8sCoreApi = kc.makeApiClient(k8s.CoreV1Api);
 const k8sApi = kc.makeApiClient(k8s.CustomObjectsApi);
 
 CommonService.getApi = () => {
-	return k8sCoreApi;
+    return k8sCoreApi;
 }
 
-
-CommonService.ELS = process.env.els || WebConf.k8s.els;
 CommonService.NAMESPACE = process.env.Namespace || WebConf.k8s.namespace;
 
 CommonService.NodeFramworkAbilityLabelPrefix = "tars.io/node." + CommonService.NAMESPACE // 此标签表示 该节点可以被框架使用
@@ -118,7 +116,8 @@ const cacheListener = (cache) => {
 }
 
 const watch = new k8s.Watch(kc);
-const serverListFn = () => CommonService.listObject("tservers", `${CommonService.TSubTypeLabel}=${CommonService.TServerType1}`);
+// const serverListFn = () => CommonService.listObject("tservers", `${CommonService.TSubTypeLabel}=${CommonService.TServerType1}`);
+const serverListFn = () => CommonService.listObject("tservers");
 const tServerList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/tservers`), watch, serverListFn, true);
 
 const accountListFn = () => CommonService.listObject("taccounts");
@@ -203,14 +202,15 @@ CommonService.getTreeData = async () => {
 }
 
 CommonService.getNodeList = async () => {
+    let nodes = tNodeList.list();
+    nodes = nodes.filter(item => { 
+        return item.metadata.labels.hasOwnProperty(CommonService.NodeFramworkAbilityLabelPrefix);
+    });
+    return nodes;
+}
 
-	let nodes = tNodeList.list();
-
-	nodes = nodes.filter(item => {
-		return item.metadata.labels.hasOwnProperty(CommonService.NodeFramworkAbilityLabelPrefix);
-	});
-
-	return nodes;
+CommonService.getNodeListAll = async () => {
+    return tNodeList.list();
 }
 
 CommonService.getTemplateList = async () => {

@@ -3,18 +3,31 @@
 
         <!-- 服务列表 -->
         <div class="table_head" style="height:50px">
-            <h4 style="float: left" >{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" style="font-family: iconfont  !important; cursor: pointer" @click="getServerList()"></i></h4>
+            <h4 style="float: left">{{ this.$t('serverList.title.serverList') }} <i
+                class="icon iconfont el-icon-third-shuaxin" style="font-family: iconfont  !important; cursor: pointer"
+                @click="getServerList()"></i></h4>
             <span class="btn_group" style="float: right" v-if="!isApplication">
-        <let-button theme="primary" size="small" @click="configServer">{{$t('operate.server')}}</let-button> &nbsp;
-        <let-button theme="primary" size="small" @click="manageK8S">{{$t('operate.k8s')}}</let-button> &nbsp;
-        <let-button theme="primary" size="small" @click="manageServant">{{$t('operate.servant')}}</let-button> &nbsp;
-        <let-button theme="primary" size="small" @click="viewTemplate">{{$t('operate.viewTemplate')}}</let-button> &nbsp;
-        <let-button theme="primary" size="small" @click="privateTemplateManage">{{$t('operate.privateTemplateManage')}}</let-button> &nbsp;
-        <let-button theme="primary" size="small" @click="startServer">{{$t('operate.startServer')}}</let-button> &nbsp;
-        <let-button theme="primary" size="small" @click="restartServer">{{$t('operate.restartServer')}}</let-button> &nbsp;
-        <let-button theme="primary" size="small" @click="stopServer">{{$t('operate.stopServer')}}</let-button> &nbsp;
-        <let-button theme="primary" size="small" @click="showMoreCmd">{{$t('operate.more')}}</let-button>
-      </span>
+                <let-button theme="primary" size="small" @click="manageK8S">{{ $t('operate.k8s') }}</let-button> &nbsp;
+                <let-button theme="primary" size="small" @click="configServer"
+                            :disabled="isNormal">{{ $t('operate.server') }}</let-button> &nbsp;
+                <let-button theme="primary" size="small" @click="manageServant"
+                            :disabled="isNormal">{{ $t('operate.servant') }}</let-button> &nbsp;
+                <let-button theme="primary" size="small" @click="viewTemplate"
+                            :disabled="isNormal">{{ $t('operate.viewTemplate') }}</let-button> &nbsp;
+                <let-button theme="primary" size="small"
+                            @click="privateTemplateManage" :disabled="isNormal">{{
+                        $t('operate.privateTemplateManage')
+                    }}</let-button> &nbsp;
+                <let-button theme="primary" size="small" @click="startServer"
+                            :disabled="isNormal">{{ $t('operate.startServer') }}</let-button> &nbsp;
+                <let-button theme="primary" size="small" @click="restartServer"
+                            :disabled="isNormal">{{ $t('operate.restartServer') }}</let-button> &nbsp;
+                <let-button theme="primary" size="small" @click="stopServer"
+                            :disabled="isNormal">{{ $t('operate.stopServer') }}</let-button> &nbsp;
+                <let-button theme="primary" size="small" @click="showMoreCmd" :disabled="isNormal">{{
+                        $t('operate.more')
+                    }}</let-button>
+            </span>
         </div>
 
         <div v-if="serverList" ref="serverListLoading">
@@ -39,25 +52,29 @@
                 <let-table-column :title="$t('serverList.table.th.version')" prop="ServiceVersion"></let-table-column>
                 <let-table-column :title="$t('serverList.table.th.configStatus')">
                     <template slot-scope="scope">
-                        <span :style="getState(scope.row.SettingState)">{{scope.row.SettingState}}</span>
+                        <span :style="getState(scope.row.SettingState)">{{ scope.row.SettingState }}</span>
                     </template>
                 </let-table-column>
                 <let-table-column :title="$t('serverList.table.th.currStatus')">
                     <template slot-scope="scope">
-                        <span :style="getState(scope.row.PresentState)">{{scope.row.PresentState}}</span>
+                        <span :style="getState(scope.row.PresentState)">{{ scope.row.PresentState }}</span>
                     </template>
                 </let-table-column>
                 <let-table-column :title="$t('serverList.table.th.currMessage')" width="120px">
                     <template slot-scope="scope">
                         <let-tooltip class="tooltip" placement="top" :content="scope.row.PresentMessage || ''">
-                            <let-table-operation><span class="over">{{scope.row.PresentMessage}}</span></let-table-operation>
+                            <let-table-operation><span class="over">{{ scope.row.PresentMessage }}</span>
+                            </let-table-operation>
                         </let-tooltip>
                     </template>
                 </let-table-column>
                 <let-table-column :title="$t('serverList.table.th.createTime')" prop="CreateTime"></let-table-column>
-                <let-table-column :title="$t('operate.operates')" width="80">
+                <let-table-column :title="$t('operate.operates')" width="160">
                     <template slot-scope="scope">
-                        <let-table-operation @click="deletePod(scope.row)">{{$t('operate.delete')}}</let-table-operation>
+                        <let-table-operation @click="deletePod(scope.row)">{{ $t('operate.deletePod') }}
+                        </let-table-operation>
+                        <let-table-operation @click="viewEvent(scope.row)">{{ $t('operate.viewEvent') }}
+                        </let-table-operation>
                     </template>
                 </let-table-column>
             </let-table>
@@ -65,28 +82,30 @@
 
         <!-- 服务实时状态 -->
         <div class="table_head">
-            <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" style="font-family: iconfont  !important; cursor: pointer" @click="getServerNotifyList()">&#xec08;</i></h4>
+            <h4 v-if="serverNotifyList && showOthers">{{ this.$t('serverList.title.serverStatus') }} <i
+                class="icon iconfont" style="font-family: iconfont  !important; cursor: pointer"
+                @click="getServerNotifyList()">&#xec08;</i></h4>
         </div>
         <let-table v-if="serverNotifyList && showOthers"
                    :data="serverNotifyList" stripe :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
             <let-table-column :title="$t('common.time')" width="160px">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap">{{scope.row._source.timeStr}}</span>
+                    <span style="white-space:nowrap">{{ scope.row._source.timeStr }}</span>
                 </template>
             </let-table-column>
             <let-table-column :title="$t('serverList.table.th.serviceID')" prop="AppServer">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap">{{scope.row._source.app + '.' + scope.row._source.server}}</span>
+                    <span style="white-space:nowrap">{{ scope.row._source.app + '.' + scope.row._source.server }}</span>
                 </template>
             </let-table-column>
             <let-table-column :title="$t('serverList.table.th.podName')" prop="PodName">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap">{{scope.row._source.podName}}</span>
+                    <span style="white-space:nowrap">{{ scope.row._source.podName }}</span>
                 </template>
             </let-table-column>
             <let-table-column :title="$t('serverList.table.th.source')" prop="NotifySource">
                 <template slot-scope="scope">
-                    <span style="white-space:nowrap">{{scope.row._source.source}}</span>
+                    <span style="white-space:nowrap">{{ scope.row._source.source }}</span>
                 </template>
             </let-table-column>
             <let-table-column :title="$t('serverList.table.th.result')" prop="NotifyMessage">
@@ -96,7 +115,7 @@
             </let-table-column>
         </let-table>
 
-        <div style="overflow:hidden;margin-bottom:20px;">
+        <div style="margin-bottom:20px;">
             <let-pagination align="right" style="float:right;"
                             :page="notifyPagination.page" @change="notifyGotoPage"
                             :total="notifyPagination.total">
@@ -121,9 +140,11 @@
                         v-model="configModal.model.ServerTemplate"
                         v-if="configModal.model.templates && configModal.model.templates.length"
                         required>
-                        <let-option v-for="t in configModal.model.templates" :key="t.TemplateName" :value="t.TemplateName">{{t.TemplateName}}</let-option>
+                        <let-option v-for="t in configModal.model.templates" :key="t.TemplateName"
+                                    :value="t.TemplateName">{{ t.TemplateName }}
+                        </let-option>
                     </let-select>
-                    <span v-else>{{configModal.model.ServerTemplate}}</span>
+                    <span v-else>{{ configModal.model.ServerTemplate }}</span>
                 </let-form-item>
                 <let-form-item :label="$t('serverList.dlg.asyncThread')" required>
                     <let-input
@@ -154,7 +175,9 @@
             width="1200px"
             :footShow="false"
             @close="closeServantModal">
-            <let-button size="small" theme="primary" class="tbm16" @click="configServant()">{{$t('operate.add')}} Servant</let-button>
+            <let-button size="small" theme="primary" class="tbm16" @click="configServant()">{{ $t('operate.add') }}
+                Servant
+            </let-button>
             <let-table v-if="servantModal.model" :data="servantModal.model" :empty-msg="$t('common.nodata')">
                 <let-table-column title="OBJ" prop="Name"></let-table-column>
                 <let-table-column :title="$t('deployService.table.th.port')" prop="Port"></let-table-column>
@@ -184,8 +207,11 @@
                 </let-table-column>
                 <let-table-column :title="$t('operate.operates')" width="90px">
                     <template slot-scope="scope">
-                        <let-table-operation @click="configServant(scope.row.AdapterId)">{{$t('operate.update')}}</let-table-operation>
-                        <let-table-operation class="danger" @click="deleteServant(scope.row.AdapterId)">{{$t('operate.delete')}}</let-table-operation>
+                        <let-table-operation @click="configServant(scope.row.AdapterId)">{{ $t('operate.update') }}
+                        </let-table-operation>
+                        <let-table-operation class="danger" @click="deleteServant(scope.row.AdapterId)">
+                            {{ $t('operate.delete') }}
+                        </let-table-operation>
                     </template>
                 </let-table-column>
             </let-table>
@@ -205,7 +231,7 @@
                 <let-table :data="servantAddModal.model.ServerServant">
                     <let-table-column title="OBJ" width="150px">
                         <template slot="head" slot-scope="props">
-                            <span class="required">{{props.column.title}}</span>
+                            <span class="required">{{ props.column.title }}</span>
                         </template>
                         <template slot-scope="props">
                             <let-input
@@ -221,7 +247,7 @@
                     </let-table-column>
                     <let-table-column :title="$t('deployService.table.th.port')" width="100px">
                         <template slot="head" slot-scope="props">
-                            <span class="required">{{props.column.title}}</span>
+                            <span class="required">{{ props.column.title }}</span>
                         </template>
                         <template slot-scope="props">
                             <let-input
@@ -238,7 +264,7 @@
                     </let-table-column>
                     <let-table-column :title="$t('deployService.form.portType')" width="150px">
                         <template slot="head" slot-scope="props">
-                            <span class="required">{{props.column.title}}</span>
+                            <span class="required">{{ props.column.title }}</span>
                         </template>
                         <template slot-scope="props">
                             <let-radio v-model="props.row.IsTcp" :label="true">TCP</let-radio>
@@ -247,7 +273,7 @@
                     </let-table-column>
                     <let-table-column :title="$t('deployService.table.th.protocol')" width="180px">
                         <template slot="head" slot-scope="props">
-                            <span class="required">{{props.column.title}}</span>
+                            <span class="required">{{ props.column.title }}</span>
                         </template>
                         <template slot-scope="props">
                             <let-radio v-model="props.row.IsTars" :label="true">TARS</let-radio>
@@ -256,7 +282,7 @@
                     </let-table-column>
                     <let-table-column :title="$t('deployService.table.th.threads')" width="80px">
                         <template slot="head" slot-scope="props">
-                            <span class="required">{{props.column.title}}</span>
+                            <span class="required">{{ props.column.title }}</span>
                         </template>
                         <template slot-scope="props">
                             <let-input
@@ -271,7 +297,7 @@
                     </let-table-column>
                     <let-table-column :title="$t('serverList.table.servant.connections')" width="140px">
                         <template slot="head" slot-scope="props">
-                            <span class="required">{{props.column.title}}</span>
+                            <span class="required">{{ props.column.title }}</span>
                         </template>
                         <template slot-scope="props">
                             <let-input
@@ -286,7 +312,7 @@
                     </let-table-column>
                     <let-table-column :title="$t('serverList.table.servant.capacity')" width="140px">
                         <template slot="head" slot-scope="props">
-                            <span class="required">{{props.column.title}}</span>
+                            <span class="required">{{ props.column.title }}</span>
                         </template>
                         <template slot-scope="props">
                             <let-input
@@ -311,11 +337,15 @@
                     </let-table-column>
                     <let-table-column :title="$t('operate.operates')" width="60px">
                         <template slot-scope="props">
-                            <let-table-operation @click="addAdapter(props.row)" v-if="props.$index === servantAddModal.model.ServerServant.length - 1">{{$t('operate.add')}}</let-table-operation>
+                            <let-table-operation @click="addAdapter(props.row)"
+                                                 v-if="props.$index === servantAddModal.model.ServerServant.length - 1">
+                                {{ $t('operate.add') }}
+                            </let-table-operation>
                             <let-table-operation v-else
                                                  class="danger"
                                                  @click="servantAddModal.model.ServerServant.splice(props.$index, 1)"
-                            >{{$t('operate.delete')}}</let-table-operation>
+                            >{{ $t('operate.delete') }}
+                            </let-table-operation>
                         </template>
                     </let-table-column>
                 </let-table>
@@ -413,16 +443,20 @@
             @on-cancel="closeMoreCmdModal">
             <let-form v-if="moreCmdModal.model" ref="moreCmdForm">
                 <let-form-item itemWidth="100%">
-                    <let-radio v-model="moreCmdModal.model.selected" label="setloglevel">{{$t('serverList.servant.logLevel')}}</let-radio>
+                    <let-radio v-model="moreCmdModal.model.selected" label="setloglevel">
+                        {{ $t('serverList.servant.logLevel') }}
+                    </let-radio>
                     <let-select
                         size="small"
                         :disabled="moreCmdModal.model.selected !== 'setloglevel'"
                         v-model="moreCmdModal.model.setloglevel">
-                        <let-option v-for="l in logLevels" :key="l" :value="l">{{l}}</let-option>
+                        <let-option v-for="l in logLevels" :key="l" :value="l">{{ l }}</let-option>
                     </let-select>
                 </let-form-item>
                 <let-form-item itemWidth="100%">
-                    <let-radio v-model="moreCmdModal.model.selected" label="loadconfig">{{$t('serverList.servant.pushFile')}}</let-radio>
+                    <let-radio v-model="moreCmdModal.model.selected" label="loadconfig">
+                        {{ $t('serverList.servant.pushFile') }}
+                    </let-radio>
                     <let-select
                         size="small"
                         :placeholder="moreCmdModal.model.configs && moreCmdModal.model.configs.length ? $t('pub.dlg.defaultValue') : $t('pub.dlg.noConfFile')"
@@ -430,11 +464,15 @@
               || moreCmdModal.model.selected !== 'loadconfig'"
                         v-model="moreCmdModal.model.loadconfig"
                         :required="moreCmdModal.model.selected === 'loadconfig'">
-                        <let-option v-for="l in moreCmdModal.model.configs" :key="l.filename" :value="l.filename">{{l.filename}}</let-option>
+                        <let-option v-for="l in moreCmdModal.model.configs" :key="l.filename" :value="l.filename">
+                            {{ l.filename }}
+                        </let-option>
                     </let-select>
                 </let-form-item>
                 <let-form-item itemWidth="100%">
-                    <let-radio v-model="moreCmdModal.model.selected" label="command">{{$t('serverList.servant.sendCommand')}}</let-radio>
+                    <let-radio v-model="moreCmdModal.model.selected" label="command">
+                        {{ $t('serverList.servant.sendCommand') }}
+                    </let-radio>
                     <let-input
                         size="small"
                         :disabled="moreCmdModal.model.selected !== 'command'"
@@ -443,7 +481,9 @@
                     ></let-input>
                 </let-form-item>
                 <let-form-item itemWidth="100%">
-                    <let-radio v-model="moreCmdModal.model.selected" label="connection">{{$t('serverList.servant.serviceLink')}}</let-radio>
+                    <let-radio v-model="moreCmdModal.model.selected" label="connection">
+                        {{ $t('serverList.servant.serviceLink') }}
+                    </let-radio>
                 </let-form-item>
             </let-form>
         </let-modal>
@@ -456,7 +496,10 @@
             :footShow="false"
             @close="closeDetailModal">
             <div style="padding:20px 0 0;">
-                <pre v-if="(detailModal.model && detailModal.model.detail)">{{detailModal.model.detail || $t('cfg.msg.empty')}}</pre>
+                <pre
+                    v-if="(detailModal.model && detailModal.model.detail)">{{
+                        detailModal.model.detail || $t('cfg.msg.empty')
+                    }}</pre>
                 <div class="detail-loading" ref="detailModalLoading"></div>
             </div>
         </let-modal>
@@ -482,9 +525,7 @@ export default {
                 level: 5,
                 application: '',
                 server_name: '',
-                set_name: '',
-                set_area: '',
-                set_group: '',
+                server_type: '',
             },
 
             // 服务列表
@@ -500,7 +541,7 @@ export default {
             notifyPagination: {
                 page: 1,
                 size: 10,
-                total:1,
+                total: 1,
             },
 
             // 默认参数
@@ -573,6 +614,9 @@ export default {
             }
             return this.checkServantEndpoint(this.servantDetailModal.model.endpoint);
         },
+        isNormal() {
+            return this.serverData.server_type === "normal";
+        }
     },
     methods: {
         gotoLog(data) {
@@ -585,7 +629,7 @@ export default {
         // 状态对应class
         getState(state) {
             let result = state;
-            switch(`${state}`){
+            switch (`${state}`) {
                 case 'Active':
                     result = 'color: green'
                     break;
@@ -619,10 +663,10 @@ export default {
                 }, 3000)
             }
         },
-        startServerList(){
+        startServerList() {
             this.isreloadlist = true
         },
-        stopServerList(){
+        stopServerList() {
             this.isreloadlist = false
         },
         // 获取服务列表
@@ -662,7 +706,8 @@ export default {
                 this.serverNotifyList = data.hits || [];
 
                 this.serverNotifyList.forEach(item=>{
-                    item._source.timeStr = moment(item._source.notifyTime).format("YYYY-MM-DD HH:mm:ss");;
+                    item._source.timeStr = moment(item._source.notifyTime).format("YYYY-MM-DD HH:mm:ss");
+                    
                 })
             }).catch((err) => {
                 // this.$tip.error(`${this.$t('serverList.restart.failed')}: ${err.err_msg || err.message}`);
@@ -833,17 +878,22 @@ export default {
                 this.startServerList()
             });
         },
-        deletePod(row){
-            this.$ajax.getJSON('/k8s/api/delete_pod', {
-                PodName: row.PodName
-            }).then((data) => {
-                loading.hide();
-                this.$tip.success(`${this.$t('common.success')}`);
-                this.getServerList()
-            }).catch((err) => {
-                loading.hide();
-                this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+        deletePod(row) {
+            this.$confirm(this.$t('serverList.tips.deletePod'), this.$t('common.alert')).then(() => {
+                this.$ajax.getJSON('/k8s/api/delete_pod', {
+                    PodName: row.PodName
+                }).then((data) => {
+                    this.$tip.success(`${this.$t('common.success')}`);
+                    this.getServerList()
+                }).catch((err) => {
+                    this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
+                });
             });
+        },
+        viewEvent(row) {
+            let data = Object.assign({}, row)
+            let query = {application: data.ServerApp, serverName: data.ServerName}
+            this.$router.push({path: '/operation/event', query: query});
         },
         // 查看模版
         viewTemplate() {
@@ -1227,8 +1277,16 @@ export default {
             }
         },
     },
-    created() {
+    async created() {
         this.serverData = this.$parent.getServerData();
+        if (!this.serverData.server_type) {
+            try {
+                let server = await this.$ajax.getJSON('/k8s/api/server_option_select', {ServerId: this.treeid});
+                this.$set(this.serverData, "server_type", server.Data[0].serverType);
+            } catch (e) {
+                this.$set(this.serverData, "server_type", "normal");
+            }
+        }
     },
     mounted() {
         this.getServerList();
@@ -1298,13 +1356,32 @@ label.let-radio {
 }
 }
 
-.table_head{padding:10px 0;}
-.buttonText{white-space: nowrap;}
-.dcache .let-table__operations{position:absolute;right:-15px;top:-40px;}
+.table_head {
+    padding: 10px 0;
 
-a:link {color: #0000EF}
-a:visited {color: #0000EF}
-a:hover {color: #FF0000}
+}
+
+.buttonText {
+    white-space: nowrap;
+}
+
+.dcache .let-table__operations {
+    position: absolute;
+    right: -15px;
+    top: -40px;
+}
+
+a:link {
+    color: #0000EF
+}
+
+a:visited {
+    color: #0000EF
+}
+
+a:hover {
+    color: #FF0000
+}
 
 .over { /*超出部分省略*/
     overflow : hidden;

@@ -81,7 +81,6 @@ let conf = {
 
     k8s: {
         client: path.join(cwd, 'config/k8s.conf'),     //连接k8s环境里面tars配置
-        els: 'http://es.com',
         namespace: 'tars-dev',
         apiPrefix: 'apis/k8s.tars.io/v1beta1',  // 与k8s的交互配置
         uploadDomain: 'http://tars-tarsimage/api/v1beta1/timage', // tarsimage上传交互
@@ -153,7 +152,6 @@ else if (process.env.NODE_ENV == "dev") {
     process.env.ENABLE_K8S = "true";
     conf.enable = false;
 
-    conf.k8s.els = 'http://es-dev.k8s.12345up.com/';
     conf.k8s.namespace = 'tars-dev';
     conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 }
@@ -161,12 +159,10 @@ else if (process.env.NODE_ENV == "dev") {
 if (conf.isEnableK8s() && fs.existsSync('/mnt/config/config.json')) {
     try {
         let content = require('/mnt/config/config.json');
-
         conf.dbConf = content.dbConf;
         conf.client = '/mnt/config/tars.conf';
         conf.enable = content.enable;
         conf.show = content.show;
-        conf.k8s.els = content.els;
 
     } catch (e) {
         console.log(e);

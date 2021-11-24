@@ -15,7 +15,8 @@
  */
 
 const CommonService = require('../common/CommonService');
-
+const ConfigParser = require('@tars/utils').Config;
+const logger = require('../../../logger')
 const TemplateService = {};
 
 TemplateService.buildTTemplate = (templateName, templateParent, templateContent) => {
@@ -32,7 +33,7 @@ TemplateService.buildTTemplate = (templateName, templateParent, templateContent)
 			parent:  templateParent,
 		},
     }
-    
+
     return { ret: 200, msg: "succ", data: tTemplate };
 }
 
@@ -83,9 +84,9 @@ TemplateService.templateSelect = async ( TemplateName, ParentName) => {
 
         if (ParentName.length > 0 && elem.spec.parent.indexOf(ParentName) == -1)
             return;
-        
-        filterItems.push(elem); 
-    }) 
+
+        filterItems.push(elem);
+    })
 
     allItems = filterItems;
 
@@ -96,7 +97,7 @@ TemplateService.templateSelect = async ( TemplateName, ParentName) => {
     // result.Count["FilterCount"] = filterItems.length;
 
 	// Data填充
-    result.Data = []; 
+    result.Data = [];
     filterItems.forEach(item => {
 
         let elem = {};
@@ -139,6 +140,21 @@ TemplateService.templateDelete = async (metadata) => {
     let data = await CommonService.deleteObject("ttemplates", metadata.TemplateId)
 
     return { ret: 200, msg: 'succ', data: data.body };
+}
+
+TemplateService.getEsConfig = async () => {
+    let ret = {}
+    try {
+        let esTemplate = await TemplateService.templateSelect("tars.es", "tars.default");
+        let templateContent = esTemplate.data.Data[0].TemplateContent;
+        let configParser = new ConfigParser();
+        configParser.parseText(templateContent);
+        ret = configParser.data
+    } catch (e) {
+        logger.error("[get es config error]:" + e);
+        throw new Error("get es config error")
+    }
+    return ret;
 }
 
 module.exports = TemplateService;
