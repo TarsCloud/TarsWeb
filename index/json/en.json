@@ -546,7 +546,10 @@
         "network": "Network mapping",
         "disk": "Disk management",
         "nodeSelect": "Node selection",
-        "copyNode": "copy of the slip"
+        "copyNode": "copy of the slip",
+
+        "addTestCase": "add testcase",
+        "testCaseList": "testcase list"
     },
     "index": {
         "rightView": {
@@ -1464,7 +1467,9 @@
             "outParam": "out params",
             "tarsFile": "tars file",
             "deleteMsg": "are you sure to delete this file?",
-            "objName": "Servant Name"
+            "objName": "Servant Name",
+            "testCastName": "testcase name",
+            "fileName": "file name"
         },
         "benchmark": {
             "inParam": "in params struct",
