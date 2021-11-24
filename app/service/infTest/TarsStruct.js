@@ -89,7 +89,7 @@ TarsStruct.getWrappedValue = function (context, type, json) {
 	}
 };
 TarsStruct.prototype._getDefault = function (field) {
-	var defvalue = field.defvalue;
+	var defvalue = field.defaultValue;
 	if (defvalue == null) {
 		if (field.type === "bool") {
 			defvalue = DEFAULT_BOOL;
@@ -114,7 +114,7 @@ TarsStruct.prototype.resetDefault = function () {
 	var field, defvalue;
 	for (var fieldName in this._struct.fields) {
 		if ((field = this._struct.fields[fieldName])) {
-			defvalue = field.defvalue;
+			defvalue = field.defaultValue;
 			if (defvalue == null) {
 				defvalue = this._getDefault(field);
 				if (typeof (defvalue.new) === "function") {
@@ -129,7 +129,7 @@ TarsStruct.prototype._readFrom = function (is) {
 	var field, defvalue, method;
 	for (var fieldName in this._struct.fields) {
 		if ((field = this._struct.fields[fieldName])) {
-			defvalue = field.defvalue;
+			defvalue = field.defaultValue;
 			if (defvalue == null) {
 				defvalue = this._getDefault(field);
 			}
