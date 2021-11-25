@@ -1,3 +1,10 @@
+## 20211124(2.4.21)
+- 添加k8s events查看.
+- node节点管理支持批量编辑普通标签与亲和性标签
+- 添加tars.es模板,notify,events es从模板读取
+- k8s 支持维护normal服务
+- 添加节点详情
+
 ## 20211115(2.4.20)
 
 - Bugfix undeploy server delete config files
