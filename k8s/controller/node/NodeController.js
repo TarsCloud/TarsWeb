@@ -12,12 +12,8 @@ const NodeController = {};
  * @param  {String}  CreatePerson         创建人
  */
 NodeController.NodeSelect = async(ctx) => {
-    let { Token = '', page = 1, isAll = false,
-        NodeName = '', NodeMark = '',
-    } = ctx.paramsObj
-
+    let {Token = '', page = 1, isAll = false, NodeName = '', ServerApp = '', ServerName = ''} = ctx.paramsObj
     isAll = isAll == "true";
-
     let pageIndex = Math.floor(page) || 1
     let pageSize = 10
 
@@ -28,9 +24,8 @@ NodeController.NodeSelect = async(ctx) => {
             rows: pageSize,
         }
     }
-
     try {
-        let result = await NodeService.nodeSelect(isAll, NodeName, NodeMark, limiter);
+        let result = await NodeService.nodeSelect(isAll, NodeName, ServerApp, ServerName, limiter);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
@@ -59,23 +54,16 @@ NodeController.NodeList = async(ctx) => {
 }
 
 /**
- * 启用公用节点
+ * 启用节点为taf框架节点
  * @param  {String}  Token                登录签名
  * @param  {Array}   NodeName             名称
  */
-NodeController.NodeStartPublic = async(ctx) => {
-    let { Token = '',
-        NodeName = ''
-    } = ctx.paramsObj
-    
+NodeController.openTafAbility = async (ctx) => {
+    let {Token = '', NodeName = ''} = ctx.paramsObj
     try {
-        const metadata = {
-            NodeName
-        }
-
-        let result = await NodeService.nodeStartPublic(metadata);
+        const metadata = {NodeName}
+        let result = await NodeService.openTafAbility(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
-
     } catch (e) {
         logger.error('[NodeStartPublic]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
@@ -83,24 +71,67 @@ NodeController.NodeStartPublic = async(ctx) => {
 }
 
 /**
- * 停用公用节点
+ * 关闭节点为taf框架节点
  * @param  {String}  Token                登录签名
  * @param  {Array}   NodeName             名称
  */
-NodeController.NodeStopPublic = async(ctx) => {
-    let { Token = '',
-        NodeName = '' 
-    } = ctx.paramsObj
-    
+NodeController.closeTafAbility = async (ctx) => {
+    let {Token = '', NodeName = ''} = ctx.paramsObj
     try {
-        const metadata = {
-            NodeName
-        }
-        let result = await NodeService.nodeStopPublic(metadata);
+        const metadata = {NodeName}
+        let result = await NodeService.closeTafAbility(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
-
     } catch (e) {
         logger.error('[NodeStopPublic]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+}
+
+
+NodeController.editCommonTag = async (ctx)=>{
+    let {Token = '', nodeName = "", tags = []} = ctx.paramsObj
+    try {
+        const metadata = {nodeName,tags}
+        let result = await NodeService.editCommonTag(metadata);
+        ctx.makeResObj(result.ret, result.msg, result.data);
+    } catch (e) {
+        logger.error('[editCommonTag]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+}
+NodeController.batchEditCommonTag = async (ctx)=>{
+    let {Token = '', nodeNames = [], tags = []} = ctx.paramsObj
+    try {
+        const metadata = {nodeNames,tags}
+        let result = await NodeService.batchEditCommonTag(metadata);
+        ctx.makeResObj(result.ret, result.msg, result.data);
+    } catch (e) {
+        logger.error('[batchEditCommonTag]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+}
+
+NodeController.editAbilityTag = async (ctx)=>{
+    let {Token = '', nodeName = "", tags = []} = ctx.paramsObj
+    try {
+        const metadata = {nodeName,tags}
+        let result = await NodeService.editAbilityTag(metadata);
+        ctx.makeResObj(result.ret, result.msg, result.data);
+    } catch (e) {
+        logger.error('[NodeStopPublic]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+}
+
+NodeController.batchEditAbilityTag = async (ctx)=>{
+    let {Token = '', nodeNames =[] , tags = []} = ctx.paramsObj
+    try {
+        const metadata = {nodeNames,tags}
+        console.log("metadata:" + JSON.stringify(metadata, null, 4));
+        let result = await NodeService.batchEditAbilityTag(metadata);
+        ctx.makeResObj(result.ret, result.msg, result.data);
+    } catch (e) {
+        logger.error('[batchEditAbilityTag]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
     }
 }

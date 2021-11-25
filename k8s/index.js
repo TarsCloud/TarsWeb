@@ -16,6 +16,7 @@ const TreeController = require('./controller/tree/TreeController');
 const NotifyController = require('./controller/notify/NotifyController');
 const ImageController = require('./controller/image/ImageController');
 const HPAController = require('./controller/hpa/HPAController');
+const EventController = require('./controller/event/EventController');
 
 const k8sApiConf = [
     // 目录树接口
@@ -92,8 +93,12 @@ const k8sApiConf = [
     // 节点管理 ( 创建、列表、更新、删除 )
     ['get', '/node_select', NodeController.NodeSelect],
     ['get', '/node_list', NodeController.NodeList],
-    ['post', '/node_start', NodeController.NodeStartPublic, { NodeName: 'notEmpty' }],
-    ['post', '/node_stop', NodeController.NodeStopPublic, { NodeName: 'notEmpty' }],
+    ['post', '/taf_ability_open', NodeController.openTafAbility, { NodeName: 'notEmpty' }],
+    ['post', '/taf_ability_close', NodeController.closeTafAbility, { NodeName: 'notEmpty' }],
+    ['post', '/edit_common_tag', NodeController.editCommonTag, { nodeName: 'notEmpty' }],
+    ['post', '/batch_edit_common_tag', NodeController.batchEditCommonTag, { nodeNames: 'notEmpty' }],
+    ['post', '/edit_ability_tag', NodeController.editAbilityTag, { nodeName: 'notEmpty' }],
+    ['post', '/batch_edit_ability_tag', NodeController.batchEditAbilityTag, { nodeNames: 'notEmpty' }],
 
     // 亲和性管理 ( 创建、列表、更新、删除 )
     ['get', '/affinity_list_node', AffinityController.AffinityListByNode],
@@ -150,6 +155,14 @@ const k8sApiConf = [
     ['post', '/create_hpa', HPAController.HPACreate],
     ['get', '/get_hpa', HPAController.getHPAByName],
     ['get', '/get_hpa_target', HPAController.getHPACustomTarget],
+
+    ['get', '/get_events', EventController.getEvents, {startDate: 'notEmpty', endDate: 'notEmpty'}],
+    ['get', '/get_pods', EventController.getPods, {
+        application: 'notEmpty',
+        serverName: 'notEmpty',
+        startDate: 'notEmpty',
+        endDate: 'notEmpty'
+    }],
 ];
 
 module.exports = { k8sApiConf };

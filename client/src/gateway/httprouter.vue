@@ -133,7 +133,7 @@ export default {
     },
     fetchUpstreams(){
       return this.$ajax.getJSON('/gateway/api/upstream_list', {gatewayObj: this.gatewayObj}).then((data) => {
-        let upstreams = data.rows.map((item)=>{
+        let upstreams = data.map((item)=>{
           return item.f_upstream
         })
         upstreams = Array.from(new Set(upstreams))

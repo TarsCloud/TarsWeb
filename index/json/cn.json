@@ -75,7 +75,7 @@
         "accessList": "DbAccess服务列表",
         "cacheList": "Cache服务列表",
         "uploadPackage": "上传发布包",
-    "uploadPackageTips": "发布包需要以服务名称开头",
+        "uploadPackageTips": "发布包需要以服务名称开头",
         "moduleName": "模块名",
         "uploadTime": "上传时间",
         "default": "默认",
@@ -558,14 +558,15 @@
         "copy": "复制",
         "statusView": "查看服务状态",
         "templateView": "查看模板",
-
+        "deletePod": "重建",
         "hpa": "HPA管理",
         "resource": "资源管理",
         "yaml": "yaml编辑",
         "network": "宿主资源",
         "disk": "磁盘管理",
         "nodeSelect": "节点筛选",
-        "copyNode": "副本伸缩"
+        "copyNode": "副本伸缩",
+        "viewEvent": "查看事件"
     },
     "index": {
         "rightView": {
@@ -747,7 +748,8 @@
             "systemError": "系统错误",
             "undeploy": "运行中的服务无法下线",
             "success": "通知成功",
-            "error": "操作失败"
+            "error": "操作失败",
+            "deletePod": "是否确认重建此pod"
         },
         "undeploy": {
             "failed": "下线失败",
@@ -1012,7 +1014,8 @@
             "exportServer": "部署工具",
             "configSearch": "配置检索",
             "board": "综合看板",
-            "userLog": "操作日志"
+            "userLog": "操作日志",
+            "event": "事件查询"
         },
         "form": {
             "app": "应用",
@@ -1082,7 +1085,8 @@
                 "errorValue":"标签值不可为空",
                 "addLabel": "添加一组标签"
             },
-            "affinity": "亲和性选择"
+            "affinity": "亲和性选择",
+            "k8sExtra": "完善k8s信息(可选)"
         },
         "table": {
             "th": {
@@ -1202,225 +1206,235 @@
             "OS1": {
                 "title": "Linux/Mac",
                 "step1": "在节点机上运行: wget 'http://${webhost}/get_tarsnode?ip=${localip}&runuser=${your user}' -O install_tarsnode.sh",
-        "step2": "mkdir -p /usr/local/app/tars/tarsnode",
-        "step3": "运行: sh install_tarsnode.sh",
-        "step4": "crontab中增加监控: * * * * * /usr/local/app/tars/tarsnode/util/monitor.sh",
-        "step5": "完成安装, 安装目录: /usr/local/app/tars/"
-      },
-      "OS2": {
-        "title": "Windows",
-        "step1": "在节点机上打开浏览器: http://${webhost}/get_tarsnode?ip=${localip}",
-        "step2": "将输出保存为: install_tarsnode.sh",
-        "step3": "在节点机上下载busybox: http://${webhost}/files/busybox.exe",
-        "step4": "window命令行运行: busybox.exe install_tarsnode.sh",
-        "step5": "windows计划任务中增加监控:  c:\\tars-install\\tars\\tarsnode\\util\\monitor.bat",
-        "step6": "完成安装, 缺省目录: c:\\tars-install\\tars"
-      }
+                "step2": "mkdir -p /usr/local/app/tars/tarsnode",
+                "step3": "运行: sh install_tarsnode.sh",
+                "step4": "crontab中增加监控: * * * * * /usr/local/app/tars/tarsnode/util/monitor.sh",
+                "step5": "完成安装, 安装目录: /usr/local/app/tars/"
+            },
+            "OS2": {
+                "title": "Windows",
+                "step1": "在节点机上打开浏览器: http://${webhost}/get_tarsnode?ip=${localip}",
+                "step2": "将输出保存为: install_tarsnode.sh",
+                "step3": "在节点机上下载busybox: http://${webhost}/files/busybox.exe",
+                "step4": "window命令行运行: busybox.exe install_tarsnode.sh",
+                "step5": "windows计划任务中增加监控:  c:\\tars-install\\tars\\tarsnode\\util\\monitor.bat",
+                "step6": "完成安装, 缺省目录: c:\\tars-install\\tars"
+            }
+        },
+        "add": {
+            "nodeNameTips": "节点名不能为空",
+            "title": "安装节点(暂不支持Windows)"
+        },
+        "label": {
+            "title": "编辑标签",
+            "name": "标签名称",
+            "value": "标签值",
+            "operator": "操作",
+            "delete": "删除"
+        }
     },
-    "add": {
-      "nodeNameTips": "节点名不能为空",
-      "title": "安装节点(暂不支持Windows)"
+    "connectNodeList": {
+        "title": "连通性测试以及安装节点",
+        "btnInstall": "安装",
+        "btnConnect": "测试联通性",
+        "btnInstalling": "正在安装",
+        "btnInstalled": "安装完毕点击再次安装",
+        "btnClose": "关闭",
+        "execute": "正在执行, 无法关闭, 请稍后",
+        "executeConnect": "正在执行联通性测试, 请稍后",
+        "executeInstall": "正在执行安装, 请稍后",
+        "installTgzNotExists": "安装包不存在, 请检查web服务器上安装包: /usr/local/app/web/files/tarsnode.tgz",
+        "step1":"检查安装包",
+        "step2":"ssh链接",
+        "step3":"下载安装包",
+        "step4":"检查参数",
+        "step5":"安装节点",
+        "table": {
+            "th": {
+                "node_name": "节点",
+                "connect": "连通性",
+                "exists": "是否安装过",
+                "install": "安装状态"
+            }
+        },
+        "connect": {
+            "succ": "连接成功",
+            "failed": "SSH连接失败"
+        },
+        "exists": {
+            "yes": "是",
+            "no": "否"
+        },
+        "install": {
+            "connect": "正在连接",
+            "waitNew": "新安装",
+            "waitOverwrite": "覆盖安装",
+            "invalid": "无法安装",
+            "installing": "正在安装"
+        }
     },
-    "label": {
-      "title": "编辑标签",
-      "name": "标签名称",
-      "value": "标签值",
-      "operator": "操作",
-      "delete": "删除"
-    }
-  },
-  "connectNodeList": {
-    "title": "连通性测试以及安装节点",
-    "btnInstall": "安装",
-    "btnConnect": "测试联通性",
-    "btnInstalling": "正在安装",
-    "btnInstalled": "安装完毕点击再次安装",
-    "btnClose": "关闭",
-    "execute": "正在执行, 无法关闭, 请稍后",
-    "executeConnect": "正在执行联通性测试, 请稍后",
-    "executeInstall": "正在执行安装, 请稍后",
-    "installTgzNotExists": "安装包不存在, 请检查web服务器上安装包: /usr/local/app/web/files/tarsnode.tgz",
-    "step1":"检查安装包",
-    "step2":"ssh链接",
-    "step3":"下载安装包",
-    "step4":"检查参数",
-    "step5":"安装节点",
-    "table": {
-      "th": {
-        "node_name": "节点",
-        "connect": "连通性",
-        "exists": "是否安装过",
-        "install": "安装状态"
-      }
+    "checkTable": {
+        "table": {
+            "th": {
+                "server_name": "服务名",
+                "node_name": "节点名",
+                "obj_name": "Obj名称",
+                "status": "检查状态"
+            }
+        },
+        "restartAdminRegistry": "请检查tarsAdminRegsitry是否正常工作, 或者重启框架服务!",
+        "adminRegistryFailed": "调用tarsAdminRegistry异常",
+        "failed": "请检查服务是否正常启动",
+        "problem": "有问题怎么办?",
+        "problemDialog": {
+            "title": "常见问题",
+            "info": "当碰到服务异常, 你可以登录对应服务器, 根据需要执行以下相关命令",
+            "restartFramework": "重启框架服务: /usr/local/app/tars/tars-start.sh",
+            "stopFramework": "停止框架服务: /usr/local/app/tars/tars-stop.sh",
+            "restartServer": "重启某个组件: /usr/local/app/tars/tarsxxxx/util/start.sh"
+        }
     },
-    "connect": {
-      "succ": "连接成功",
-      "failed": "SSH连接失败"
+    "template": {
+        "search": {
+            "parentTemplate": "父模板名"
+        },
+        "btn": {
+            "addTempate": "新增模板",
+            "addApplication": "新增应用"
+        },
+        "form": {
+            "content": "模板内容"
+        },
+        "view": {
+            "title": "查看模板"
+        },
+        "add": {
+            "templateNameTips": "模板名不能为空",
+            "templateFormatTips": "模板名只能包含英文字母，数字，并以字母开头",
+            "parentTemplate": "请选择父模板",
+            "title": "新增模板"
+        },
+        "update": {
+            "title": "编辑模板",
+            "errTips": "编辑失败"
+        },
+        "delete": {
+            "confirmTips": "您确定要删除这个模板吗",
+            "title": "删除模板"
+        }
     },
-    "exists": {
-      "yes": "是",
-      "no": "否"
+    "gateway":{
+        "station":"站点配置",
+        "upstream":"upstream配置",
+        "globalblack":"全局黑名单配置",
+        "stationId":"站点ID",
+        "stationName":"站点名",
+        "monitorUrl":"监控URL",
+        "serverName":"服务名",
+        "pathRule":"路径规则",
+        "proxyPass":"ProxyPass",
+        "addr":"地址",
+        "weight":"权重",
+        "fusing":"熔断",
+        "fusingOn":"开启",
+        "fusingOff":"关闭",
+        "lastUpdate":"更新时间",
+        "gatewayObj":"网关控制服务Obj",
+        "switchGateway":"切换网关",
+        "btn":{
+            "addGateway": "新增站点",
+            "addUpstream": "新增Upstream",
+            "addHttpRouter": "新增路由",
+            "loadAll": "加载配置"
+        },
+        "add": {
+            "stationNameTips": "请输入站点名",
+            "idFormatTips": "站点ID只能包含英文字母、数字、点、下划线，并以字母开头，不能以Obj结尾",
+            "monitorUrlTips": "请输入监控URL",
+            "upstreamFormatTips":"upstream只能包含英文字母、数字、下划线，以字母开头，不能以Obj结尾",
+            "addrFormatTips":"请输入ip:port",
+            "weightFormatTips":"请输入权重值",
+            "serverNameTip":"支持通配符、正则表达式，为空则全匹配",
+            "pathRuleTip":"请输入路径匹配规则",
+            "proxyPassTip":"请输入ProxyPass，支持ip:port / upstream / tars obj 三种方式",
+            "title": "新增站点",
+            "upstream": "新增Upstream"
+        },
+        "update": {
+            "title": "编辑站点",
+            "routerTitle": "编辑路由",
+            "upstream": "编辑Upstream",
+            "errTips": "编辑失败"
+        },
+        "delete": {
+            "confirmTips": "您确定要删除这个站点吗",
+            "upstreamConfirmTips": "您确定要删除这个upstream吗",
+            "bwListConfirmTips": "您确定要删除这条黑/白名单配置吗",
+            "deleteUpstreamErrorTip":"删除失败，仍有关联的Router或者资源不存在",
+            "title": "删除站点"
+        },
+        "config":{
+            "title":"网关配置"
+        },
+        "bwlist":{
+            "title":{
+                "black":"黑名单",
+                "white":"白名单"
+            },
+            "ipTip":"请输入IP地址（支持通配符）"
+        },
+        "flowControl":{
+            "title":"流量控制",
+            "duration":"时间窗口(s)",
+            "durationTip":"请输入时间窗口秒数",
+            "maxFlow":"最大流量",
+            "maxFlowTip":"请输入时间窗口内最大流量",
+            "tip":"即在'时间窗口'的时间内，最多请求'最大流量'次，超出的流量会被拒绝"
+        },
+        "router":{
+            "title":"路由配置"
+        }
     },
-    "install": {
-      "connect": "正在连接",
-      "waitNew": "新安装",
-      "waitOverwrite": "覆盖安装",
-      "invalid": "无法安装",
-      "installing": "正在安装"
-    }
-  },
-  "checkTable": {
-    "table": {
-      "th": {
-        "server_name": "服务名",
-        "node_name": "节点名",
-        "obj_name": "Obj名称",
-        "status": "检查状态"
-      }
+    "serviceApproval": {
+        "RequestPerson": "提交人",
+        "RequestTime": "提交时间",
+        "ApprovalResult": "审批结果",
+        "RequestMark": "提交备注",
+        "ApprovalTime": "审批时间",
+        "ApprovalMark": "审批原因"
     },
-    "restartAdminRegistry": "请检查tarsAdminRegsitry是否正常工作, 或者重启框架服务!",
-    "adminRegistryFailed": "调用tarsAdminRegistry异常",
-    "failed": "请检查服务是否正常启动",
-    "problem": "有问题怎么办?",
-    "problemDialog": {
-      "title": "常见问题",
-      "info": "当碰到服务异常, 你可以登录对应服务器, 根据需要执行以下相关命令",
-      "restartFramework": "重启框架服务: /usr/local/app/tars/tars-start.sh",
-      "stopFramework": "停止框架服务: /usr/local/app/tars/tars-stop.sh",
-      "restartServer": "重启某个组件: /usr/local/app/tars/tarsxxxx/util/start.sh"
-    }
-  },
-  "template": {
-    "search": {
-      "parentTemplate": "父模板名"
+    "serviceExpand": {
+        "title": "服务扩容",
+        "form": {
+            "tarIP": "目标IP",
+            "placeholder": "可输入多个IP，以逗号（,）、分号（;）或换行（\\n）分隔",
+            "nodeConfig": "节点配置",
+            "copyNodeConfig": "复制节点配置",
+            "preExpand": "预扩容",
+            "noExpand": "未扩容",
+            "disableSet": "不启用Set",
+            "errTips": {
+                "tarIP": "目标IP不能为空",
+                "preExpand": "扩容失败！请联系管理员",
+                "noneNodes": "请先勾选要扩容的对象",
+                "nodeCheck": "请先勾选节点",
+                "ipFormat": "请正确填写IP地址",
+                "success": "扩容成功"
+            }
+        },
+        "exists": "节点已经存在服务, 无需扩容, 请检查输入的节点",
+        "newGroup": "增加一组",
+        "removeGroup": "删除最后一组"
     },
-    "btn": {
-      "addTempate": "新增模板"
-    },
-    "form": {
-      "content": "模板内容"
-    },
-    "view": {
-      "title": "查看模板"
-    },
-    "add": {
-      "templateNameTips": "模板名不能为空",
-      "templateFormatTips": "模板名只能包含英文字母，数字，并以字母开头",
-      "parentTemplate": "请选择父模板",
-      "title": "新增模板"
-    },
-    "update": {
-      "title": "编辑模板",
-      "errTips": "编辑失败"
-    },
-    "delete": {
-      "confirmTips": "您确定要删除这个模板吗",
-      "title": "删除模板"
-    }
-  },
-  "gateway":{
-    "station":"站点配置",
-    "upstream":"upstream配置",
-    "globalblack":"全局黑名单配置",
-    "stationId":"站点ID",
-    "stationName":"站点名",
-    "monitorUrl":"监控URL",
-    "serverName":"服务名",
-    "pathRule":"路径规则",
-    "proxyPass":"ProxyPass",
-    "addr":"地址",
-    "weight":"权重",
-    "fusing":"熔断",
-    "fusingOn":"开启",
-    "fusingOff":"关闭",
-    "lastUpdate":"更新时间",
-    "gatewayObj":"网关控制服务Obj",
-    "switchGateway":"切换网关",
-    "btn":{
-      "addGateway": "新增站点",
-      "addUpstream": "新增Upstream",
-      "addHttpRouter": "新增路由"
-    },
-    "add": {
-      "stationNameTips": "请输入站点名",
-      "idFormatTips": "站点ID只能包含英文字母、数字、点、下划线，并以字母开头，不能以Obj结尾",
-      "monitorUrlTips": "请输入监控URL",
-      "upstreamFormatTips":"upstream只能包含英文字母、数字、下划线，以字母开头，不能以Obj结尾",
-      "addrFormatTips":"请输入ip:port",
-      "weightFormatTips":"请输入权重值",
-      "serverNameTip":"支持通配符、正则表达式，为空则全匹配",
-      "pathRuleTip":"请输入路径匹配规则",
-      "proxyPassTip":"请输入ProxyPass，支持ip:port / upstream / tars obj 三种方式",
-      "title": "新增站点",
-      "upstream": "新增Upstream"
-    },
-    "update": {
-      "title": "编辑站点",
-      "routerTitle": "编辑路由",
-      "upstream": "编辑Upstream",
-      "errTips": "编辑失败"
-    },
-    "delete": {
-      "confirmTips": "您确定要删除这个站点吗",
-      "upstreamConfirmTips": "您确定要删除这个upstream吗",
-      "bwListConfirmTips": "您确定要删除这条黑/白名单配置吗",
-      "deleteUpstreamErrorTip":"删除失败，仍有关联的Router或者资源不存在",
-      "title": "删除站点"
-    },
-    "config":{
-      "title":"网关配置"
-    },
-    "bwlist":{
-      "title":{
-        "black":"黑名单",
-        "white":"白名单"
-      },
-      "ipTip":"请输入IP地址（支持通配符）"
-    },
-    "flowControl":{
-      "title":"流量控制",
-      "duration":"时间窗口(s)",
-      "durationTip":"请输入时间窗口秒数",
-      "maxFlow":"最大流量",
-      "maxFlowTip":"请输入时间窗口内最大流量",
-      "tip":"即在'时间窗口'的时间内，最多请求'最大流量'次，超出的流量会被拒绝"
-    },
-    "router":{
-      "title":"路由配置"
-    }
-  },
-  "serviceExpand": {
-    "title": "服务扩容",
-    "form": {
-      "tarIP": "目标IP",
-      "placeholder": "可输入多个IP，以逗号（,）、分号（;）或换行（\\n）分隔",
-      "nodeConfig": "节点配置",
-      "copyNodeConfig": "复制节点配置",
-      "preExpand": "预扩容",
-      "noExpand": "未扩容",
-      "disableSet": "不启用Set",
-      "errTips": {
-        "tarIP": "目标IP不能为空",
-        "preExpand": "扩容失败！请联系管理员",
-        "noneNodes": "请先勾选要扩容的对象",
-        "nodeCheck": "请先勾选节点",
-        "ipFormat": "请正确填写IP地址",
-        "success": "扩容成功"
-      }
-    },
-    "exists": "节点已经存在服务, 无需扩容, 请检查输入的节点",
-    "newGroup": "增加一组",
-    "removeGroup": "删除最后一组"
-  },
-  "managePackage": {
-    "title": "管理发布包",
-    "table": {
-      "th": {
-        "c1": "id",
-        "c2": "服务名称",
-        "c3": "上传时间",
-        "c4": "发布备注",
-        "c5": "发布时间",
+    "managePackage": {
+        "title": "管理发布包",
+        "table": {
+            "th": {
+                "c1": "id",
+                "c2": "服务名称",
+                "c3": "上传时间",
+                "c4": "发布备注",
+                "c5": "发布时间",
                 "c6": "操作",
                 "c7": "上传人"
             }
@@ -1658,7 +1672,6 @@
         "errorNode": "导入node节点未在系统中维护,请检查",
         "needConf": "是否导出配置文件",
         "needTgz": "是否导出发布包",
-        "import": "导入",
         "export": "导出",
         "tab": {
             "edit": "编辑导出配置",
@@ -1736,6 +1749,19 @@
             "operator": "操作人"
         }
     },
+    "event": {
+        "eventLevel":"事件级别",
+        "type": {
+            "server": "服务级别",
+            "cluster": "集群级别",
+            "downtime": "错误宕机"
+        },
+        "picker": {
+            "twoHours": "近两小时",
+            "fourHours": "近四小时",
+            "inTheDay": "当天"
+        }
+    },
     "filter": {
         "title": {
             "app": "应用",
@@ -1760,19 +1786,39 @@
             "nodeName": "节点",
             "nodeAbility": "能力",
             "nodePublic": "公用",
+            "nodeFramework": "框架使用",
             "nodeAddress": "地址",
             "nodeInfo": "信息",
             "startPublic": "启用公用",
             "stopPublic": "停用公用",
             "nodeLabels": "节点标签",
-            "nodeAffinity": "请将节点添加 tars.io/node.$Namespace 标签, 以便当前框架能管理该节点"
+            "nodeAffinity": "请将节点添加 tars.io/node.$Namespace 标签, 以便当前框架能管理该节点",
+            "CommonTag":"普通标签",
+            "AbilityTag":"亲和性标签",
+            "FrameWorkTag":"框架节点标签",
+            "tagName": "标签名",
+            "tagValue": "标签值"
+        },
+        "tip": {
+            "notTaf": "自定义标签不可以tars.io开头",
+            "notNull": "该项不可为空",
+            "application": "亲和性应用名不可以为空",
+            "addAffinityGroup": "添加一组亲和性",
+            "affinityRemark": "亲和性标签tars.io/ability.$Namespace.$app.[$server],应用名为必选项"
         },
         "btn": {
             "add": "新增",
             "addNode": "新增节点",
             "addServer": "新增应用",
             "addAffinity": "新增亲和性",
-            "search": "查询"
+            "search": "查询",
+            "editTag": "编辑标签",
+            "editAffinity": "编辑亲和性",
+            "searchAffinity": "查询亲和性"
+        },
+        "dialog": {
+            "editCommonTag": "编辑普通标签",
+            "editAbilityTag": "编辑亲和性"
         }
     },
     "table": {

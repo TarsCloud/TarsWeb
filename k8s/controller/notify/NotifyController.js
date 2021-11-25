@@ -15,100 +15,48 @@
  */
 
 const logger = require('../../../logger');
-const request = require('request');
+const axios = require('axios');
 const CommonService = require('../../service/common/CommonService');
 const NotifyController = {};
 const moment = require('moment');
+const TemplateService = require("../../service/template/TemplateService")
 
-const queryNotify = (app, server, page, size) => {
-    return new Promise((resolve) => {
-        let result = {
-            ret: -1,
-            msg: 'error'
-        }
-
-        if (page <= 0) {
-            page = 1;
-        }
-        try {
-
-			let search = {
-                query: { bool: { must: [{ match: {app: app }}]} },
-                sort: [
-                    { notifyTime: "desc" }
-                ],
-                from: (page - 1) * size,
-                size: size
-			};
-
-            if (server) {
-                search.query.bool.must.push({
-                    match: {
-                    server: server
-                }});
-            }
-
-            const date = moment((new Date())).format("YYYYMMDD");
-
-            if (!CommonService.ELS.endsWith("/"))
-                CommonService.ELS += "/";
-            
-            const url = `${CommonService.ELS}notify_${CommonService.NAMESPACE}_${date}/_search`;
-       
-            // console.log(url, JSON.stringify(search));
-
-            const options = {
-                url: url,
-                method: 'POST',
-                headers: {
-                   "Content-Type":"application/json"
-                },
-				body: JSON.stringify(search),
-                timeout: 100000,
-            }
-           
-            request(options, (error, response, body) => {
-
-                try {
-                    if (!error) {
-
-                        // logger.info(`query notify response:${response.statusCode}, ${body}`);
-
-                        if (response.statusCode == 200) {
-                            let rsp = JSON.parse(response.body).hits;
-                    
-                            result.ret = 0;
-                            result.msg = "succ";
-                            result.data = rsp;
-                            resolve(result)
-                        } else {
-                            let rsp = JSON.parse(response.body);
-                            result.msg = JSON.stringify(rsp.error);
-                            resolve(result)
-
-                        }
-                    } else {
-                        result.msg = error;
-                        resolve(result)
-                    }
-                } catch (e) {
-
-                    console.log(e);
-                    result.msg = e;
-                    resolve(result)
-                }
-            })
-        } catch (e) {
-            result.msg = e.message
-            resolve(result)
-            logger.error('[queryNotify]', e)            
-        }
-    })
+const queryNotify = async (app, server, page, size) => {
+    if (page <= 0) {
+        page = 1;
+    }
+    try {
+        let search = {
+            query: {bool: {must: [{match: {app: app}}]}},
+            sort: [
+                {notifyTime: "desc"}
+            ],
+            from: (page - 1) * size,
+            size: size
+        };
+        server && (search.query.bool.must.push({match: {server: server}}))
+        let esConfig = await TemplateService.getEsConfig();
+        let esNodes = Object.keys(esConfig.tars.es.nodes)[0].split(",");
+        let url = `http://${esNodes[0]}/${esConfig.tars.es.index.notify}/_search`
+        let res = await axios({
+            url: url,
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify(search),
+            timeout: 100000,
+        });
+        return {ret: 0, msg: res.data.hits};
+    } catch (e) {
+        logger.error('[queryNotify]', e)
+        return {ret: -1, msg: e.response.data.error || e.message};
+    }
 }
 
-NotifyController.NotifySelect = async(ctx) =>{
+NotifyController.NotifySelect = async (ctx) => {
 
-	let { ServerId = '', page = 1, size = 10 } = ctx.paramsObj
+    let {ServerId = '', page = 1, size = 10} = ctx.paramsObj
     try {
 
         let app = ServerId.split('.')[0];
@@ -116,9 +64,9 @@ NotifyController.NotifySelect = async(ctx) =>{
 
         let data = await queryNotify(app, server, page, size)
 
-        if(data.ret === 0){
-            ctx.makeResObj(200, data.msg, data.data)
-        }else{
+        if (data.ret === 0) {
+            ctx.makeResObj(200, "", data.msg)
+        } else {
             ctx.makeResObj(500, data.msg)
         }
     } catch (e) {
@@ -126,5 +74,5 @@ NotifyController.NotifySelect = async(ctx) =>{
         ctx.makeResObj(500, e.body ? e.body.message : e);
     }
 }
-	
+
 module.exports = NotifyController;
