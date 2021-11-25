@@ -151,9 +151,9 @@ NodeService.doCommand = async (application, serverName, podIp, command) => {
     return rets;
 }
 
-NodeService.nodeSelect = async (isAll, NodeName, NodeMark, limiter) => {
-
-    let nodeList = await CommonService.getNodeList();
+NodeService.nodeSelect = async (isAll, NodeName, ServerApp, ServerName, limiter) => {
+    let nodeList = await CommonService.getNodeListAll();
+    let affinity = ServerName == "" ? ServerApp : ServerApp + "." + ServerName;
 
     let allItems = nodeList;
 
@@ -162,11 +162,21 @@ NodeService.nodeSelect = async (isAll, NodeName, NodeMark, limiter) => {
 
     if (!isAll) {
         filterItems = [];
-
         allItems.forEach(elem => {
-
             if (NodeName.length > 0 && elem.metadata.name.indexOf(NodeName) == -1)
                 return;
+            let abilityFlag = false;
+            if (affinity.length > 0) {
+                for (let labelsKey in elem.metadata.labels) {
+                    if (labelsKey.indexOf(CommonService.NodeAppAbilityLabelPrefix + affinity) != -1) {
+                        abilityFlag = true;
+                        break;
+                    }
+                }
+            } else {
+                abilityFlag = true;
+            }
+            if (!abilityFlag) return;
 
             filterItems.push(elem);
         });
@@ -200,32 +210,35 @@ NodeService.nodeSelect = async (isAll, NodeName, NodeMark, limiter) => {
     })
 
     filterItems.forEach(item => {
-
         let publicFlag = false;
-        let ability = [];
+        let ability = [],abilityLabels = {},commonLabels = {};
         for (let key in item.metadata.labels) {
-
             if (key.indexOf(CommonService.NodeAppAbilityLabelPrefix) == 0) {
                 ability.push(key.substr(CommonService.NodeAppAbilityLabelPrefix.length));
+                abilityLabels[key]=item.metadata.labels[key]
+            }else {
+                let commonLabel={};
+                commonLabels[key]=item.metadata.labels[key]
             }
-
-            if (key.indexOf(CommonService.PublicNodeLabel) == 0) {
+            if (key.indexOf(CommonService.NodeFramworkAbilityLabelPrefix) == 0) {
                 publicFlag = true;
             }
         }
 
-        // console.log(item.metadata.labels);
-
         let elem = {
             "NodeName": item.metadata.name,
+            "CreationTimestamp": item.metadata.creationTimestamp,
+            "Conditions": item.status.conditions,
+            "Images": item.status.images,
             "NodeAbility": ability,
             "NodeAddress": item.status.addresses,
             "NodInfo": item.status.nodeInfo,
             "NodePublic": publicFlag,
-            "Labels": item.metadata.labels
+            "Labels": item.metadata.labels,
+            "Taints": item.spec.taints || [],
+            abilityLabels,commonLabels
         }
         result.Data.push(elem);
-
     })
 
     return {ret: 200, msg: 'succ', data: result};
@@ -243,35 +256,23 @@ NodeService.nodeList = async () => {
     return {ret: 200, msg: 'succ', data: result};
 }
 
-NodeService.nodeStartPublic = async (metadata) => {
-
+NodeService.openTafAbility = async (metadata) => {
     let k8sNode = await CommonService.readNode(metadata.NodeName);
-
     if (k8sNode && k8sNode.body) {
-
         k8sNode = k8sNode.body;
-
-        k8sNode.metadata.labels[CommonService.PublicNodeLabel] = "";
-
+        k8sNode.metadata.labels[CommonService.NodeFramworkAbilityLabelPrefix] = "";
         await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
     }
-
     return {ret: 200, msg: 'succ'};
 }
 
-NodeService.nodeStopPublic = async (metadata) => {
-
+NodeService.closeTafAbility = async (metadata) => {
     let k8sNode = await CommonService.readNode(metadata.NodeName);
-
     if (k8sNode && k8sNode.body) {
-
         k8sNode = k8sNode.body;
-
-        delete k8sNode.metadata.labels[CommonService.PublicNodeLabel];
-
+        delete k8sNode.metadata.labels[CommonService.NodeFramworkAbilityLabelPrefix];
         await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
     }
-
     return {ret: 200, msg: 'succ'};
 }
 
@@ -292,6 +293,84 @@ NodeService.checkNode = async (node, port) => {
     } catch (e) {
         return {ret: -1, node, port, InternalIP}
     }
+}
+
+//编辑标签(单个可删除)
+NodeService.editCommonTag = async (metadata) => {
+    let k8sNode = await CommonService.readNode(metadata.nodeName);
+    if (k8sNode && k8sNode.body) {
+        k8sNode = k8sNode.body;
+        for (let label in k8sNode.metadata.labels) {
+            if (!label.startsWith(CommonService.NodeFramworkAbilityLabelPrefix) &&
+                !label.startsWith(CommonService.NodeAppAbilityLabelPrefix)) {
+                delete k8sNode.metadata.labels[label];
+            }
+        }
+        for (let item of metadata.tags) {
+            k8sNode.metadata.labels[item.name] = item.value;
+        }
+        await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
+    }
+    return {ret: 200, msg: 'succ'};
+}
+
+//批量操作采用覆盖策略
+NodeService.batchEditCommonTag = async (metadata) => {
+    for (let node of metadata.nodeNames) {
+        let k8sNode = await CommonService.readNode(node);
+        if (k8sNode && k8sNode.body) {
+            k8sNode = k8sNode.body;
+            for (let item of metadata.tags) {
+                if (!item.name.startsWith(CommonService.NodeFramworkAbilityLabelPrefix) &&
+                    !item.name.startsWith(CommonService.NodeAppAbilityLabelPrefix)) {
+                    k8sNode.metadata.labels[item.name] = item.value;
+                }
+            }
+            await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
+        }
+    }
+    return {ret: 200, msg: 'succ'};
+}
+
+NodeService.editAbilityTag = async (metadata) => {
+    let k8sNode = await CommonService.readNode(metadata.nodeName);
+    if (k8sNode && k8sNode.body) {
+        k8sNode = k8sNode.body;
+        for (let label in k8sNode.metadata.labels) {
+            if (label.startsWith(CommonService.NodeAppAbilityLabelPrefix)) {
+                delete k8sNode.metadata.labels[label];
+            }
+        }
+        for (let item of metadata.tags) {
+            if (!item.application) {
+                throw new Error("application can not be null")
+            }
+            let tagName = CommonService.NodeAppAbilityLabelPrefix + item.application
+            item.serverName ? tagName += `.${item.serverName}` : tagName
+            k8sNode.metadata.labels[tagName] = "";
+        }
+        await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
+    }
+    return {ret: 200, msg: 'succ'};
+}
+
+NodeService.batchEditAbilityTag = async (metadata) => {
+    for (let node of metadata.nodeNames) {
+        let k8sNode = await CommonService.readNode(node);
+        if (k8sNode && k8sNode.body) {
+            k8sNode = k8sNode.body;
+            for (let item of metadata.tags) {
+                if (!item.application) {
+                    throw new Error("application can not be null")
+                }
+                let tagName = CommonService.NodeAppAbilityLabelPrefix + item.application
+                item.serverName ? tagName += `.${item.serverName}` : tagName
+                k8sNode.metadata.labels[tagName] = "";
+            }
+            await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
+        }
+    }
+    return {ret: 200, msg: 'succ'};
 }
 
 module.exports = NodeService;
