@@ -21,6 +21,8 @@ const DELIM = /[\s\{\}=;\[\],\(\)<>]/g;
 
 class Tokenizer  {
     constructor(content, length, index) {
+        // 针对 //\n 的字符进行处理，转成 // \n，否则会导致解析报错
+        content = content.replace(/\/\/\n/g,"// \n");
         // 去掉单行和多行注释
         this.content = content.replace(/\/\/.+/g,'').replace(/\n/g,' ').replace(/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg,'');
         this.length = length || content.length;

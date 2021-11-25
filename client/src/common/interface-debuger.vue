@@ -1,7 +1,7 @@
 <template>
     <div class="page_server_debuger">
         <!-- tars文件列表 -->
-        <wrapper v-if="!showDebug && !showBm" ref="tarsFileListLoading">
+        <wrapper v-if="!showDebug && !showBm && !addTestCase && !showCaseList && !modifyTestCase" ref="tarsFileListLoading">
         <let-button size="small" theme="primary" class="add-btn" @click="openTarsUploadFileModal">{{$t('operate.add')}}</let-button>
 
         <let-table :data="tarsFileList" :title="$t('inf.title.listTitle')" :empty-msg="$t('common.nodata')">
@@ -13,7 +13,9 @@
             <template slot-scope="scope">
                 <let-table-operation @click="showDebuger(scope.row)">{{$t('inf.list.debug')}}</let-table-operation>  
                 <let-table-operation @click="showBenchmark(scope.row)">{{$t('inf.list.benchmark')}}</let-table-operation>  
+                <let-table-operation @click="getTestCaseList(scope.row)">{{$t('operate.testCaseList')}}</let-table-operation>
                 <let-table-operation @click="deleteTarsFile(scope.row.f_id)">{{$t('operate.delete')}}</let-table-operation>
+                <!-- <let-table-operation @click="gotoAddTestCase(scope.row)">{{$t('operate.addTestCase')}}</let-table-operation> -->
             </template>
             </let-table-column>
         </let-table>
@@ -90,6 +92,187 @@
                 -->
             </div>
         </let-modal>
+    
+
+
+        
+        <div v-if="addTestCase && !showCaseList">
+            <let-form class="left_align" itemWidth="530px">
+                <let-form-item :label="$t('inf.dlg.selectLabel')">
+                <let-cascader :data="contextData" required size="small" @change="getParams"></let-cascader>
+                </let-form-item>
+                <let-form-item :label="$t('inf.dlg.objName')" v-if="objList.length">
+                <let-select v-model="objName">
+                    <let-option v-for="item in objList" :value="item.servant" :key="item.servant"></let-option>
+                </let-select>
+                </let-form-item>
+            </let-form>
+
+            <!-- 用例名字 -->
+            <let-form class="left_align">
+                <let-form-item :label="$t('inf.dlg.testCastName')">
+                <let-input
+                    type="textarea"
+                    :rows="1"
+                    v-model="testCastName"
+                    :placeholder="$t('inf.dlg.testCastName')"
+                ></let-input>
+                </let-form-item>
+            </let-form>
+
+            <!-- 入参输入框 -->
+            <let-row>
+                <div class="params_container">
+                <let-col itemWidth="100%">
+                    <let-form itemWidth="100%">
+                    <let-input
+                        type="textarea"
+                        :rows="20"
+                        class="param_area div_line"
+                        v-model="inParam"
+                        :placeholder="$t('inf.dlg.inParam')"
+                    ></let-input>
+                    </let-form>
+                </let-col>
+                </div>
+            </let-row>
+
+            <div class="mt10">
+                <let-button theme="primary" @click="doAddTestCast">{{$t('operate.add')}}</let-button>
+                &nbsp;&nbsp;
+                <let-button theme="primary"  @click="addTestCase=false;showCaseList=true;">{{$t('operate.goback')}}</let-button>
+            </div>
+        </div>
+
+        
+        <!-- 测试用例 -->
+        <div v-if="showCaseList && !addTestCase">
+            <let-form class="left_align" itemWidth="530px">
+                <let-form-item :label="$t('inf.dlg.selectLabel')">
+                <let-cascader :data="contextData" required size="small" @change="getTestCaseByParams"></let-cascader>
+                </let-form-item>
+                <let-form-item :label="$t('inf.dlg.objName')" v-if="objList.length">
+                <let-select v-model="objName">
+                    <let-option v-for="item in objList" :value="item.servant" :key="item.servant"></let-option>
+                </let-select>
+                </let-form-item>
+            </let-form>
+
+            <let-table :data="testCaseList" :title="$t('inf.title.testCaseList')" :empty-msg="$t('common.nodata')">
+                <let-table-column :title="$t('inf.dlg.testCastName')" prop="test_case_name" width="100px"></let-table-column>
+                <let-table-column :title="$t('inf.dlg.objName')" prop="object_name" width="100px"></let-table-column>
+                <let-table-column :title="$t('inf.dlg.fileName')" prop="file_name" width="100px"></let-table-column>
+                <let-table-column :title="$t('module.title')" prop="module_name" width="100px"></let-table-column>
+                <let-table-column :title="$t('callChain.method')" prop="function_name" width="100px"></let-table-column>
+                <let-table-column :title="$t('nodes.user')" prop="modify_user" width="100px"></let-table-column>
+                <let-table-column :title="$t('board.alarm.table.content')" width="460px">
+                <template slot-scope="scope">
+                    <font color="red">{{scope.row.context}}</font>
+                </template>
+                </let-table-column>
+                <let-table-column :title="$t('operate.operates')" width="100px">
+                <template slot-scope="scope">
+                    <let-table-operation @click="gotoModify(scope.row)">{{$t('operate.modify')}}</let-table-operation>
+                    <let-table-operation @click="deleteTestCase(scope.row.case_id)">{{$t('operate.delete')}}</let-table-operation>
+                </template>
+                </let-table-column>
+
+                <let-table-column :title="$t('serverList.table.th.ip')" width="100px">
+                <template slot-scope="scope">
+                    <div v-for="item in totalServerList" :key="item" :value="item">
+                    <let-table-operation @click="doNodedebug(item,scope.row)">{{ item.node_name }}</let-table-operation>
+                    <br>
+                    </div>
+                </template>
+                </let-table-column>
+            </let-table>
+            <let-pagination
+                :page="pageNum"
+                @change="gotoPage"
+                style="margin-bottom: 32px;"
+                :total="total"
+            ></let-pagination>
+            <div class="mt10">
+                <let-button theme="primary" size="small" @click="gotoAddTestCase()">{{$t('operate.addTestCase')}}</let-button>
+                &nbsp;&nbsp;
+                <let-button theme="primary" size="small" @click="showCaseList=false">{{$t('operate.goback')}}</let-button>
+            </div>
+        </div>
+
+        <div v-if="modifyTestCase">
+            <let-form class="left_align" itemWidth="530px">
+                <let-form-item>
+                <span class="text-blue">{{modifyCaseItem.object_name}}</span>
+                </let-form-item>
+                <let-form-item>
+                <span class="text-blue">{{modifyCaseItem.module_name}}</span>
+                <span class="text-blue">{{modifyCaseItem.interface_name}}</span>
+                <span class="text-blue">{{modifyCaseItem.function_name}}</span>
+                </let-form-item>
+            </let-form>
+
+            <!-- 用例名字 -->
+            <let-form class="left_align">
+                <let-form-item :label="$t('inf.dlg.testCastName')">
+                <let-input
+                    type="textarea"
+                    :rows="1"
+                    v-model="testCastName"
+                    :placeholder="$t('inf.dlg.testCastName')"
+                ></let-input>
+                </let-form-item>
+            </let-form>
+
+            <!-- 入参输入框 -->
+            <let-row>
+                <div class="params_container">
+                <let-col itemWidth="100%">
+                    <let-form itemWidth="100%">
+                    <let-input
+                        type="textarea"
+                        :rows="20"
+                        class="param_area div_line"
+                        v-model="inParam"
+                        :placeholder="$t('inf.dlg.inParam')"
+                    ></let-input>
+                    </let-form>
+                </let-col>
+                </div>
+            </let-row>
+
+            <div class="mt10">
+            <let-button theme="primary" @click="doModifyTestCase">{{$t('operate.modify')}}</let-button>
+            &nbsp;&nbsp;
+            <let-button theme="primary" @click="modifyTestCase=false;showCaseList=true;">{{$t('operate.goback')}}</let-button>
+            </div>
+        </div>
+
+
+        <!--测试用例运行结果弹出框 -->
+        <let-modal
+        v-model="debugModal.show"
+        :title="$t('dcache.debug.debugResult')"
+        width="600px"
+        :footShow="false"
+        @close="closeDebugModal">
+
+        <!-- 入参输入框 -->
+        <let-row>
+            <div class="params_container">
+            <let-col itemWidth="100%">
+                <let-form itemWidth="100%">
+                <let-input
+                    type="textarea"
+                    :rows="40"
+                    class="param_area div_line"
+                    v-model="debugModal.resultParam"
+                    :placeholder="$t('dcache.debug.debugResult')"
+                ></let-input>
+                </let-form>
+            </let-col>
+            </div>
+        </let-row>
+        </let-modal>
     </div>
 </template>
 
@@ -114,12 +297,19 @@ export default {
                 set_group: '',
             },
             tarsFileList : [],
+            totalServerList: [],
 
             uploadModal : {
                 show : false,
                 model : {},
                 fileList2Show: [],
             },
+
+            debugModal: {
+                show: false,
+                resultParam: ""
+            },
+
             showDebug : false,
             showBm: false,
             showInstallBm:false,
@@ -133,9 +323,20 @@ export default {
             selectedMethods: [],
             objName : '',
             objList : [],
-            selectedId : ''
+            selectedId : '',
+            testCastName: "",
+            testCaseList: [],
+            showCaseList: false,
+            pageNum: 1,
+            pageSize: 20,
+            total: 1,
+            addTestCase: false,
+            modifyTestCase: false,
+            modifyCaseItem: {},
+            rowData : {}
         }
     },
+    props: ['treeid'],
     methods: {
         getFileList() {
             const loading = this.$Loading.show();
@@ -350,6 +551,194 @@ export default {
                 loading.hide();
                 this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
             });
+        },
+        // 删除测试用例
+        deleteTestCase(case_id) {
+            this.$confirm(this.$t("inf.dlg.deleteMsg"), this.$t("common.alert")).then(() => {
+                const loading = this.$Loading.show();
+                this.$ajax.getJSON("/server/api/delete_test_case", {
+                        case_id: case_id
+                    }).then(data => {
+                        loading.hide();
+                        this.getTestCaseListInner(this.pageNum);
+                    }).catch(err => {
+                        loading.hide();
+                        this.$tip.error(
+                            `${this.$t("common.error")}: ${err.message || err.err_msg}`
+                        );
+                    });
+            }).catch(() => {});
+        },
+        // 新增测试用例
+        gotoAddTestCase() {
+            this.addTestCase = true;
+            this.showCaseList = false;
+            this.selectedFileName = this.rowData.file_name;
+            this.inParam = '';
+            this.outParam = '';
+            this.selectedId = this.rowData.f_id;
+            this.objName = '';
+            this.testCastName = '';
+            this.selectedMethods = [];
+            this.getContextData(this.rowData.f_id);
+            this.getObjList();
+        },    
+        // 获取文件对应测试用例列表
+        getTestCaseListInner(curr_page) {
+            const loading = this.$Loading.show();
+            this.showCaseList = true;
+            this.$ajax.getJSON("/server/api/get_testcase_list", {
+                f_id: this.selectedId,
+                application: this.serverData.application,
+                server_name: this.serverData.server_name,
+                page_size: this.pageSize,
+                curr_page: curr_page
+            }).then(data => {
+                loading.hide();
+                this.pageNum = curr_page;
+                this.total = Math.ceil(data.count / this.pageSize);
+                this.testCaseList = data.rows;
+            }).catch(err => {
+                loading.hide();
+                this.$tip.error(
+                    `${this.$t("get_testcase_list.failed")}: ${err.err_msg ||
+                    err.message}`
+                );
+            });
+        },
+        // 切换服务实时状态页码
+        gotoPage(num) {
+            this.getTestCaseListInner(num);
+        },
+        getTestCaseList(row) {
+            this.rowData = row;
+            this.showCaseList = true;
+            this.testCaseList = [];
+            this.selectedFileName = row.file_name;
+            this.inParam = null;
+            this.outParam = null;
+            this.selectedId = row.f_id;
+            this.objName = null;
+            this.priorSet = null;
+            this.selectedMethods = [];
+            this.getContextData(row.f_id);
+            this.getObjList();
+            this.getTestCaseListInner(1);
+        },
+        getTestCaseByParams(value) {
+            this.selectedMethods = value;
+            if (value.length == 3) {
+                this.getTestCaseListInner(1);
+            }
+        },
+        doAddTestCast() {
+            const loading = this.$Loading.show();
+            this.$ajax
+                .postJSON("/server/api/interface_add_testcase", {
+                    f_id: this.selectedId,
+                    application: this.serverData.application,
+                    server_name: this.serverData.server_name,
+                    file_name: this.selectedFileName,
+                    module_name: this.selectedMethods[0],
+                    interface_name: this.selectedMethods[1],
+                    function_name: this.selectedMethods[2],
+                    params: this.inParam,
+                    test_case_name: this.testCastName,
+                    objName: this.objName
+                }).then(data => {
+                    loading.hide();
+                    this.addTestCase = false;
+                    this.getTestCaseListInner(this.pageNum);
+                }).catch(err => {
+                    loading.hide();
+                    this.$tip.error(
+                        `${this.$t("common.error")}: ${err.message || err.err_msg}`
+                    );
+                });
+        },
+        getServerList() {
+            // 获取服务列表
+            const loading = this.$Loading.show();
+            this.$ajax.getJSON("/server/api/server_list", {
+                tree_node_id: this.treeid
+            }).then(data => {
+                loading.hide();
+                const items = data || [];
+                items.forEach(item => {
+                    item.isChecked = false;
+                });
+                this.totalServerList = items;
+            }).catch(err => {
+                loading.hide();
+                this.$confirm(
+                    err.err_msg || err.message || this.$t("serverList.table.msg.fail")
+                ).then(() => {
+                    this.getServerList();
+                });
+            });
+        },
+        gotoModify(row) {
+            this.modifyCaseItem = row;
+            this.modifyTestCase = true;
+            this.showCaseList = false;
+            this.inParam = row.context;
+            this.testCastName = row.test_case_name;
+        },
+        doModifyTestCase() {
+            const loading = this.$Loading.show();
+            this.$ajax.postJSON("/server/api/modify_test_case", {
+                case_id: this.modifyCaseItem.case_id,
+                params: this.inParam,
+                test_case_name: this.testCastName,
+            }).then(data => {
+                loading.hide();
+                this.modifyTestCase = false;
+                this.getTestCaseListInner(this.pageNum);
+            }).catch(err => {
+                loading.hide();
+                this.$tip.error(
+                    `${this.$t("common.error")}: ${err.message || err.err_msg}`
+                );
+            });
+        },
+        doNodedebug(server, row) {
+            const loading = this.$Loading.show();
+            this.$ajax.getJSON("/server/api/adapter_conf_list", {
+                id: server.id
+            }).then(adapterData => {
+                // node到endpoint的映射
+                var obj_endpoint = {};
+                for (let tmp_data of adapterData) 
+                {
+                    obj_endpoint[tmp_data.servant]=tmp_data.endpoint;
+                }
+                //去到adapter信息  向特定节点请求服务
+                this.$ajax
+                    .postJSON("/server/api/interface_test", {
+                        id: this.selectedId,
+                        application: this.serverData.application,
+                        server_name: this.serverData.server_name,
+                        file_name: this.selectedFileName,
+                        module_name: row.module_name,
+                        interface_name: row.interface_name,
+                        function_name: row.function_name,
+                        params: row.context,
+                        objName: row.object_name + "@" + obj_endpoint[row.object_name]
+                    }).then(data => {
+                        loading.hide();
+                        this.debugModal.show = true;
+                        this.debugModal.resultParam = JSON.stringify(JSON.parse(data), null, 4);
+                    }).catch(err => {
+                        loading.hide();
+                        this.debugModal.show = true;
+                        this.debugModal.resultParam = err.message || err.err_msg;
+                    });
+            }).catch(err => {
+                loading.hide();
+                this.$tip.error(
+                    `${this.$t("serverList.restart.failed")}: ${err.err_msg || err.message}`
+                );
+            });
         }
     },
     created() {
@@ -359,6 +748,7 @@ export default {
     mounted() {
         this.getFileList();
         this.getBmInstalled();
+        this.getServerList();
     }
 }
 </script>
