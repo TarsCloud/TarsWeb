@@ -6,6 +6,7 @@
 - k8s support normal server
 - k8s add node description
 - fix gateway fetchUpstreams function error
+- add test case manage
 
 ## 20211115(2.4.20)
 
