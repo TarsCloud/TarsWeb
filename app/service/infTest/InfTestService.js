@@ -20,6 +20,7 @@ const { benchmarkPrx, benchmarkStruct} = require('../../../rpc');
 const {BenchmarkRunner} = require("./BenchmarkRunner");
 const InfTestDao = require('../../dao/InfTestDao');
 const webConf = require('../../../config/webConf');
+const TestCaseDao = require('../../dao/TestCaseDao');
 
 const fs = require('fs-extra');
 
@@ -371,6 +372,63 @@ InfTestService.stopBencmark = async(runParams)=>{
 }
 InfTestService.testBencmark = async(runParams)=>{
 	return await new BenchmarkRunner(runParams).test()
+}
+
+
+
+/**
+ * @name getTestCase 获取测试用例
+ * @param {Object} params 
+ * @param {Array} fields
+ * @returns {Object} 测试用例 
+ */
+InfTestService.getTestCase = async (params, fields) => {
+	return await TestCaseDao.getTestCase(params, fields);
+}
+
+
+/**
+ * @name addTestCase 将测试用例插入数据库
+ * @param {Object} params 
+ * @returns {Object} 插入的记录
+ */
+InfTestService.addTestCase = async (params) => {
+	await TestCaseDao.addTestCase(params);
+	delete params.context;
+	delete params.posttime;
+	return (await InfTestService.getTestCase(params, ['case_id', 'f_id', 'test_case_name', 'server_name', 'file_name', 'posttime', 'context', 'object_name', 'module_name', 'interface_name', 'function_name', 'posttime', 'modify_user']))[0];
+}
+
+
+/**
+ * @name getTestCaseList 获取测试用例列表
+ * @param {String} params 匹配字段
+ * @param {String} curPage 当前页
+ * @param {String} pageSize 每页数据条数
+ * @returns {Object} 测试用例列表
+ */
+InfTestService.getTestCaseList = async (params, curPage, pageSize) => {
+	return await TestCaseDao.getTestCaseList(params, curPage, pageSize);
+}
+
+
+/**
+ * @name deleteTestCase 从DB删除对应测试用例
+ * @param {String} case_id 用例ID
+ * @returns {Number} 删除的记录数
+ */
+InfTestService.deleteTestCase = async (case_id) => {
+	return await TestCaseDao.deleteTestCase(case_id);
+}
+
+/**
+ * @name modifyTestCase 修改对应测试用例
+ * @param {String} case_id 用例ID
+ * @param {String} test_case_name 用例名字
+ * @param {String} params 用例参数
+ */
+InfTestService.modifyTestCase = async (case_id, test_case_name, params, modify_user) => {
+	return await TestCaseDao.modifyTestCase(case_id, test_case_name, params, modify_user);
 }
 
 module.exports = InfTestService;

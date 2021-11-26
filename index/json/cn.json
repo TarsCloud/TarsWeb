@@ -566,7 +566,9 @@
         "disk": "磁盘管理",
         "nodeSelect": "节点筛选",
         "copyNode": "副本伸缩",
-        "viewEvent": "查看事件"
+        "viewEvent": "查看事件",
+        "addTestCase": "新增测试用例",
+        "testCaseList": "用例列表"
     },
     "index": {
         "rightView": {
@@ -1493,7 +1495,9 @@
             "outParam": "方法出参",
             "tarsFile": "协议文件",
             "deleteMsg": "您确定要删除吗？",
-            "objName": "Servant名"
+            "objName": "Servant名",
+            "testCastName": "用例名称",
+            "fileName": "文件名"
         },
         "benchmark": {
             "inParam": "入参结构",
