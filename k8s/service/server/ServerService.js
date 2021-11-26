@@ -190,18 +190,20 @@ ServerService.serverOptionSelect = async (ServerId, limiter) => {
     result.Count["AllCount"] = filterItems.length;
     result.Count["FilterCount"] = filterItems.length;
 
-	// Data填充
+    // Data填充
     result.Data = []; //make(models.ArrayMapInterface, 0, len(filterItems))
+    // normal 服务无spec.tars域
     filterItems.forEach(item => {
         let elem = {}; //make(map[string]interface{})
+        let tars = item.spec.tars;
         elem["ServerId"] = CommonService.getServerId(item.spec.app, item.spec.server);
         elem["ServerApp"] = item.spec.app
         elem["ServerName"] = item.spec.server
         elem["ServerImportant"] = item.spec.important
-        elem["ServerTemplate"] = item.spec.tars.template
-        elem["ServerProfile"] = item.spec.tars.profile
-        elem["AsyncThread"] = item.spec.tars.asyncThread
-
+        elem["ServerTemplate"] = tars ? tars.template || "" : ""
+        elem["ServerProfile"] = tars ? tars.profile || "" : ""
+        elem["AsyncThread"] = tars ? tars.asyncThread || "" : ""
+        elem["serverType"] = item.spec.subType
         result.Data.push(elem);
     });
 

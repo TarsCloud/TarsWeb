@@ -17,6 +17,8 @@
 const CommonService = require('../common/CommonService');
 
 const TreeService = {};
+const treeIgnore = ["tars-tarsweb"];
+
 
 TreeService.tree = async (searchKey) => {
 
@@ -29,14 +31,18 @@ TreeService.tree = async (searchKey) => {
 
         const serverApp = item.spec.app;
         const serverName = item.spec.server;
+        const serverType = item.spec.subType;
 
         if (searchKey && serverApp.indexOf(searchKey) == -1 && serverName.indexOf(searchKey) == -1) {
             return
         }
-
+        if (treeIgnore.indexOf(item.metadata.name)!=-1){
+            return;
+        }
         const server = {
             ServerId: `${serverApp}.${serverName}`,
             ServerName: serverName,
+            serverType: serverType
         }
 
         if (!allApp.has(serverApp)) {
@@ -51,11 +57,11 @@ TreeService.tree = async (searchKey) => {
 		BusinessShow: "",
 		App:          [],
     }
-    
+
     const treeData = await CommonService.getTreeData();
 
     let bussinessMap = new Map();
-    
+
     treeData.businesses.forEach((item) => {
         bussinessMap.set(item.name, {
             BusinessName: item.name,
@@ -76,7 +82,7 @@ TreeService.tree = async (searchKey) => {
         if (bussinessMap.has(businessName)) {
             businessShow = bussinessMap.get(businessName).BusinessShow;
         }
-        
+
         do {
             if (businessName == "") {
 
@@ -91,7 +97,7 @@ TreeService.tree = async (searchKey) => {
                         Server: [],
                     });
                 }
-                
+
                 break
             }
 
@@ -100,7 +106,7 @@ TreeService.tree = async (searchKey) => {
                     ServerApp: appName,
                     Server: allApp.get(appName) || [],
                 })
-                
+
             }
 
             break

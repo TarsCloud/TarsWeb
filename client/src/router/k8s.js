@@ -48,6 +48,7 @@ import OperationAffinity from '@/k8s/operation/affinity';
 import OperationApplication from '@/k8s/operation/application';
 import OperationBusiness from '@/k8s/operation/business';
 import OperationNode from '@/k8s/operation/node';
+import OperationEvent from '@/k8s/operation/event';
 
 // 网关
 import OperationGateway from '@/gateway/index';
@@ -150,6 +151,10 @@ export default new Router({
         {
           path: 'node',
           component: OperationNode,
+        },
+        {
+          path: 'event',
+          component: OperationEvent,
         },
       ],
     },

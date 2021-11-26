@@ -453,7 +453,6 @@ export default {
     this.getServerTemplate()
     this.getNodeList()
     this.fetchData();
-    this.getDefaultValue();
   },
 
   methods: {
@@ -468,21 +467,6 @@ export default {
         this.K8SisCheckedAll = false
       }
     },
-    // getDefaultValue(){
-    //   let { K8SNetModeOptional, K8SNodeSelectorKind } = this
-    //   this.$ajax.getJSON('/k8s/api/default', {}).then((data) => {
-    //     if(data.K8SNetModeOptional){
-    //       K8SNetModeOptional = data.K8SNetModeOptional
-    //     }
-    //     if(data.K8SNodeSelectorKind){
-    //       K8SNodeSelectorKind = data.K8SNodeSelectorKind
-    //     }
-    //     this.K8SNetModeOptional = K8SNetModeOptional
-    //     this.K8SNodeSelectorKind = K8SNodeSelectorKind
-    //   }).catch((err) => {
-    //     this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-    //   });
-    // },
     fetchData() {
       const loading = this.$refs.table.$loading.show();
 

@@ -36,7 +36,6 @@
                             size="small"
                             v-model="item.key"
                             :placeholder="$t('nodeList.table.th.label')"
-                            pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
                             :pattern-tip="$t('deployService.form.labelMatch.labelValid')"
                         ></let-input>
                     </let-form-item>

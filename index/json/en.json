@@ -539,14 +539,15 @@
         "copy": "copy",
         "statusView": "View Service Status",
         "templateView": "View Template",
-
+        "deletePod": "Rebuild",
         "hpa": "HPA Management",
         "resource": "Resource Management",
         "yaml": "Yaml editor",
         "network": "Network mapping",
         "disk": "Disk management",
         "nodeSelect": "Node selection",
-        "copyNode": "copy of the slip"
+        "copyNode": "copy of the slip",
+        "viewEvent": "View events"
     },
     "index": {
         "rightView": {
@@ -728,7 +729,8 @@
             "systemError": "system error",
             "undeploy": "can`t undeploy running service",
             "success": "Notification Successful",
-            "error": "Operation Failed"
+            "error": "Operation Failed",
+            "deletePod": "are you sure to rebuild this pod"
         },
         "undeploy": {
             "failed": "undeploy failed",
@@ -992,7 +994,8 @@
             "exportServer": "Deployment Tool",
             "configSearch": "Configuration Retrieval",
             "board": "Maintenance Board",
-            "userLog": "Operation log"
+            "userLog": "Operation log",
+            "event": "Event query"
         },
         "form": {
             "app": "APP",
@@ -1062,7 +1065,8 @@
                 "errorValue":"The tag value cannot be empty",
                 "addLabel": "Add a set of tags"
             },
-            "affinity": "Affinitive selection"
+            "affinity": "Affinitive selection",
+            "k8sExtra": "PERFECT K8S INFORMATION OPTIONAL"
         },
         "table": {
             "th": {
@@ -1525,6 +1529,19 @@
         "releaseProgress": "Publishing progress（%）",
         "publishInfo": "Publishing, please wait..."
     },
+    "event": {
+        "eventLevel":"Event level",
+        "type": {
+            "server": "service",
+            "cluster": "Cluster",
+            "downtime": "Error down"
+        },
+        "picker": {
+            "twoHours": "Nearly two hours",
+            "fourHours": "Nearly four hours",
+            "inTheDay": "in the day"
+        }
+    },
     "filter": {
         "title": {
             "app": "Application",
@@ -1549,20 +1566,39 @@
             "nodeName": "NodeName",
             "nodeAbility": "NodeAbility",
             "nodePublic": "NodePublic",
+            "nodeFramework": "Framework using",
             "nodeAddress": "NodeAddress",
             "nodeInfo": "NodeInfo",
             "startPublic": "start Public",
             "stopPublic": "stop Public",
             "nodeLabels": "node Labels",
-            "nodeAffinity": "please add tars.io/node.$Namespace label to node, so framework can manager the node"
-
+            "nodeAffinity": "please add tars.io/node.$Namespace label to node, so framework can manager the node",
+            "CommonTag":"Common label",
+            "AbilityTag":"Affinity label",
+            "FrameWorkTag":"Frame node label",
+            "tagName": "Tag name",
+            "tagValue": "Tag value"
+        },
+        "tip": {
+            "notTaf": "Custom labels cannot start with tars.io",
+            "notNull": "this item cannot be empty",
+            "application": "affinity application name cannot be empty",
+            "addAffinityGroup": "Add an affinity group",
+            "affinityRemark": "Affinity label 'tars.io/ability.$Namespace.$app.[$server]' ,Application Required"
         },
         "btn": {
             "add": "Add",
             "addNode": "Add Node",
             "addServer": "Add Server",
             "addAffinity": "Add Affinity",
-            "search": "Search"
+            "search": "Search",
+            "editTag": "Edit the label",
+            "editAffinity": "Edit Affinity",
+            "searchAffinity": "Query affinity"
+        },
+        "dialog": {
+            "editCommonTag": "Edit common tabs",
+            "editAbilityTag": "Edit Ability"
         }
     },
     "table": {
@@ -1902,6 +1938,11 @@
     "localeSelect": {
         "cn": "Chinese",
         "en": "English"
+    },
+    "filter": {
+        "title": {
+            "diffTxt": "diff Text"
+        }
     },
     "routerManage": {
         "routerModule": "router Module",

@@ -70,7 +70,7 @@ K8sService.serverK8SUpdate = async (metadata, target) => {
     }
     tServer = tServer.body;
     let K8S = tServer.spec.k8s
-    if (target.Replicas) {
+    if (target.Replicas!=null) {
         K8S.replicas = target.Replicas
     }
     if (target.NodeSelector) {

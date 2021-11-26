@@ -1,12 +1,12 @@
 const logger = require('../../../logger')
 const TreeService = require('../../service/tree/TreeService');
 
-const treeNode = ({ data = [] }) => {
+const treeNode = ({data = []}) => {
     let result = []
-    if(data && data.length > 0){
+    if (data && data.length > 0) {
         data.forEach((item, index) => {
             let obj = {}
-            if(item.BusinessName){
+            if (item.BusinessName) {
                 obj = {
                     id: item.BusinessName,
                     name: item.BusinessShow,
@@ -14,10 +14,11 @@ const treeNode = ({ data = [] }) => {
                     is_parent: true,
                     open: true,
                     pid: 'root',
+                    serverType: "",
                     children: [],
                 }
 
-                if(item.App && item.App.length > 0){
+                if (item.App && item.App.length > 0) {
                     let tempArr = []
                     item.App.forEach(AppItem => {
                         let obj = {
@@ -27,9 +28,10 @@ const treeNode = ({ data = [] }) => {
                             type: '1',
                             is_parent: false,
                             open: 'false',
+                            serverType: "",
                             pid: item.BusinessName,
                         }
-                        if(AppItem.Server && AppItem.Server.length > 0){
+                        if (AppItem.Server && AppItem.Server.length > 0) {
                             AppItem.Server.forEach(serverItem => {
                                 obj.children.push({
                                     id: `${AppItem.ServerApp}.${serverItem.ServerName}`,
@@ -38,6 +40,7 @@ const treeNode = ({ data = [] }) => {
                                     is_parent: false,
                                     open: 'false',
                                     pid: AppItem.ServerApp,
+                                    serverType: serverItem.serverType,
                                     children: [],
                                 })
                             })
@@ -48,10 +51,10 @@ const treeNode = ({ data = [] }) => {
                 }
 
                 result.push(obj)
-            }else{
-                if(item.App && item.App.length > 0){
+            } else {
+                if (item.App && item.App.length > 0) {
                     item.App.forEach(AppItem => {
-                        if(AppItem.ServerApp){
+                        if (AppItem.ServerApp) {
                             obj = {
                                 id: AppItem.ServerApp,
                                 name: AppItem.ServerApp,
@@ -59,9 +62,10 @@ const treeNode = ({ data = [] }) => {
                                 is_parent: true,
                                 open: true,
                                 pid: 'root',
+                                serverType: "",
                                 children: [],
                             }
-                            if(AppItem.Server && AppItem.Server.length > 0){
+                            if (AppItem.Server && AppItem.Server.length > 0) {
                                 AppItem.Server.forEach(serverItem => {
                                     obj.children.push({
                                         id: `${AppItem.ServerApp}.${serverItem.ServerName}`,
@@ -70,6 +74,7 @@ const treeNode = ({ data = [] }) => {
                                         is_parent: false,
                                         open: 'false',
                                         pid: AppItem.ServerApp,
+                                        serverType: serverItem.serverType,
                                         children: [],
                                     })
                                 })
@@ -90,20 +95,14 @@ const TreeController = {};
  * 目录树
  * @param  {String}  Token                登录签名
  */
-TreeController.ServerTree = async(ctx) => {
-    // let { Token = '' } = ctx.paramsObj
-
+TreeController.ServerTree = async (ctx) => {
     try {
-
-        const { searchKey } = ctx.paramsObj
-        
+        const {searchKey} = ctx.paramsObj
         let result = await TreeService.tree(searchKey);
-
         let treeData = treeNode({
             data: result.data,
         });
         ctx.makeResObj(result.ret, "succ", treeData)
-
     } catch (e) {
         logger.error('[ServerTree]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);

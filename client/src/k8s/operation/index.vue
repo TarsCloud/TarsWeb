@@ -9,7 +9,8 @@
       <let-tab-pane :tab="$t('deployService.title.business')" tabkey="/operation/business"></let-tab-pane>
       <let-tab-pane :tab="$t('deployService.title.application')" tabkey="/operation/application"></let-tab-pane>
       <let-tab-pane :tab="$t('deployService.title.node')" tabkey="/operation/node"></let-tab-pane>
-      <let-tab-pane :tab="$t('deployService.title.affinity')" tabkey="/operation/affinity"></let-tab-pane>
+      <let-tab-pane :tab="$t('deployService.title.event')" tabkey="/operation/event"></let-tab-pane>
+<!--      <let-tab-pane :tab="$t('deployService.title.affinity')" tabkey="/operation/affinity"></let-tab-pane>-->
       <let-tab-pane :tab="$t('deployService.title.image')" tabkey="/operation/image"></let-tab-pane>
 
     </let-tabs>

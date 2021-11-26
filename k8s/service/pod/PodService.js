@@ -121,9 +121,9 @@ PodService.podAliveSelect = async (filter) => {
 
     let filterItems = [];
     allEndpointItems.forEach(endpoint => {
-        if (endpoint.spec.subType != CommonService.TServerType1) {
-            return;
-        }
+        // if (endpoint.spec.subType != CommonService.TServerType1) {
+        //     return;
+        // }
 
         if (endpoint.status.pods.length <= 0) {
             return;
