@@ -1,9 +1,11 @@
 ## 20211124(2.4.21)
-- 添加k8s events查看.
-- node节点管理支持批量编辑普通标签与亲和性标签
-- 添加tars.es模板,notify,events es从模板读取
-- k8s 支持维护normal服务
-- 添加节点详情
+
+- add k8s events pages
+- k8s node manage support batch edit tag and affinity tag
+- k8s add tars.es template,notify,events es read from this template
+- k8s support normal server
+- k8s add node description
+- fix gateway fetchUpstreams function error
 
 ## 20211115(2.4.20)
 
