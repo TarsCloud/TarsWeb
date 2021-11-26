@@ -417,7 +417,11 @@ if (WebConf.enable) {
 		['post', '/test_bencmark', InfTestController.testBencmark, {servant: 'notEmpty', fn: 'notEmpty'}],
 		['get', '/get_endpoints', InfTestController.getEndpoints, {servant: 'notEmpty'}],
 		['get', '/is_benchmark_installed', InfTestController.isBenchmarkInstalled],
-
+		// 测试用例
+		['post', '/interface_add_testcase', InfTestController.interfaceAddCase, { f_id: 'notEmpty', test_case_name: 'notEmpty', objName: 'notEmpty', file_name: 'notEmpty', module_name: 'notEmpty', interface_name: 'notEmpty', function_name: 'notEmpty', params: 'notEmpty' }],
+		['get', '/get_testcase_list', InfTestController.getTestCaseList, { f_id: 'notEmpty' }],
+		['get', '/delete_test_case', InfTestController.deleteTestCase, { case_id: 'notEmpty' }],
+		['post', '/modify_test_case', InfTestController.modifyTestCase, { case_id: 'notEmpty', test_case_name: 'notEmpty', params: 'notEmpty' }],
 		//taflogview
 		['get', '/logview_list', LogviewController.getLogFileList, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty'}],
 		['get', '/logview_data', LogviewController.getLogData, {

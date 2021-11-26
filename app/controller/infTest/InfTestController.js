@@ -331,4 +331,100 @@ InfTestController.isBenchmarkInstalled = async (ctx) =>{
 }
 
 
+const testCaseConfStruct = {
+	case_id: '',
+	f_id: '',
+	test_case_name: '',
+	application: '',
+	server_name: '',
+	object_name: '',
+	file_name: '',
+	module_name: '',
+	interface_name: '',
+	function_name: '',
+	posttime: { formatter: util.formatTimeStamp },
+	context: "",
+	modify_user: ""
+};
+
+
+InfTestController.getTestCaseList = async (ctx) => {
+	let curPage = parseInt(ctx.paramsObj.curr_page) || 0;
+	let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
+	const { f_id, objName, application, server_name, module_name, interface_name, function_name } = ctx.paramsObj;
+	try {
+
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+		} else {
+			let rst = null;
+			// 精准匹配
+			if (module_name && interface_name && function_name) {
+				rst = await InfTestService.getTestCaseList({
+					f_id: f_id, module_name: module_name,
+					interface_name: interface_name,
+					function_name: function_name
+				}, curPage, pageSize);
+			}
+			else {
+				rst = await InfTestService.getTestCaseList({ f_id: f_id }, curPage, pageSize);
+			}
+			ctx.makeResObj(200, '', { count: rst.count, rows: util.viewFilter(rst.rows, testCaseConfStruct) });
+		}
+
+	} catch (e) {
+		logger.error('[getTestCaseList]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+InfTestController.interfaceAddCase = async (ctx) => {
+	try {
+		const { f_id, test_case_name, objName, file_name, application, server_name, module_name, interface_name, function_name, params } = ctx.paramsObj;
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+		} else {
+			let ret = await InfTestService.addTestCase({
+				f_id: f_id,
+				test_case_name: test_case_name,
+				application: application,
+				server_name: server_name,
+				object_name: objName,
+				file_name: file_name,
+				module_name: module_name,
+				interface_name: interface_name,
+				function_name: function_name,
+				context: params,
+				posttime: new Date(),
+				modify_user: ctx.uid
+			});
+			ctx.makeResObj(200, '', ret);
+		}
+	} catch (e) {
+		logger.error('[interfaceAddCase]:', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+
+InfTestController.deleteTestCase = async (ctx) => {
+	try {
+		let { case_id } = ctx.paramsObj;
+		ctx.makeResObj(200, '', await InfTestService.deleteTestCase(case_id));
+	} catch (e) {
+		logger.error('[deleteTarsFile]:', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+InfTestController.modifyTestCase = async (ctx) => {
+	try {
+		const { case_id, test_case_name, params, prior_set } = ctx.paramsObj;
+		ctx.makeResObj(200, '', await InfTestService.modifyTestCase(case_id, test_case_name, params, ctx.uid));
+	} catch (e) {
+		logger.error('[modifyTestCase]:', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
 module.exports = InfTestController;
