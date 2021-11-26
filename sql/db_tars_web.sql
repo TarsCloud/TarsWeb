@@ -117,3 +117,22 @@ CREATE TABLE `t_gateway_obj` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2020-06-20 17:02:14
+
+DROP TABLE IF EXISTS `t_tars_test_case`;
+CREATE TABLE `t_tars_test_case` (
+  `case_id` int(11) NOT NULL AUTO_INCREMENT,
+  `f_id` int(11) NOT NULL COMMENT '所属的t_tars_files记录的id',
+  `test_case_name` varchar(128) NOT NULL DEFAULT '' COMMENT '测试用例名',
+  `application` varchar(64) NOT NULL DEFAULT '' COMMENT '应用名',
+  `server_name` varchar(128) NOT NULL DEFAULT '' COMMENT '服务名',
+  `object_name` varchar(256) NOT NULL DEFAULT '',
+  `file_name` varchar(64) NOT NULL DEFAULT '' COMMENT 'tars文件名',
+  `module_name` varchar(256) NOT NULL DEFAULT '',
+  `interface_name` varchar(256) NOT NULL DEFAULT '',
+  `function_name` varchar(256) NOT NULL DEFAULT '',
+  `posttime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `context` mediumtext COMMENT '用例内容',
+  `modify_user` varchar(64) NOT NULL DEFAULT '' COMMENT '用户',
+  PRIMARY KEY (`f_id`,`test_case_name`),
+  UNIQUE KEY `case_id` (`case_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COMMENT='接口测试 测试用例表';
