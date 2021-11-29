@@ -1,12 +1,11 @@
-
 const CommonService = require('./k8s/service/common/CommonService');
 const logger = require("./logger");
 const ExecOperator = {};
 const _ = require('lodash');
 
 function originIsAllowed(origin) {
-  // put logic here to detect whether the specified origin is allowed.
-  return true;
+    // put logic here to detect whether the specified origin is allowed.
+    return true;
 }
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
@@ -24,7 +23,7 @@ let exec = async () => {
         connection.on('close', function (reasonCode, description) {
             logger.info((new Date()) + ' peer ' + connection.remoteAddress + ' disconnected.');
         });
-       
+
         let params = request.resourceURL.query;
 
         // logger.info('request:', params);
@@ -48,7 +47,7 @@ let exec = async () => {
             let pod = await CommonService.getDaemonPodByHostIp(params.NodeIP);
 
             // console.log(pod);
-            params.PodName = pod.metadata.name; 
+            params.PodName = pod.metadata.name;
 
         } else {
             sh = `#!/bin/sh 
@@ -65,9 +64,9 @@ let exec = async () => {
 
 
         command.push(sh);
-        
+
         try {
-            
+
             let pod = (await CommonService.getPod(params.PodName)).body;
 
             logger.info('PodName:', params.PodName, pod.spec.containers[0].name);
@@ -97,7 +96,7 @@ let exec = async () => {
                 connection.send(JSON.stringify(msg));
             });
 
-            connection.on('message', function(message) {
+            connection.on('message', function (message) {
 
                 if (ws && ws.readyState === 1) {
 
@@ -116,8 +115,13 @@ let exec = async () => {
                             process.stdout.emit("resize");
                             break;
                         case "ping":
+                            let rsp = {
+                                operation: "pong",
+                                data: ""
+                            };
+                            connection.send(JSON.stringify(rsp));
                             break;
-                    default:
+                        default:
                     }
                 }
             });
@@ -134,4 +138,3 @@ ExecOperator.start = () => {
 }
 
 module.exports = ExecOperator;
-
