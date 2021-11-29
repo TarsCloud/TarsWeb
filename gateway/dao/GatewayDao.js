@@ -353,12 +353,13 @@ GatewayDao.addHttpRouter = async (dbObj, params) => {
 		let hasAuth = await filter.hasAuth(params.f_station_id)
 		if(!hasAuth) throw new Error(`${params.filter_uid} has no auth to add bwlist to station ${params.f_station_id}`)
 	}
-	return await tHttpRouter.create({
+	return await tHttpRouter.upsert({
 		f_station_id: params.f_station_id,
 		f_server_name: params.f_server_name,
 		f_path_rule: params.f_path_rule,
 		f_proxy_pass: params.f_proxy_pass,
-		f_update_person: params.uid
+		f_update_person: params.uid,
+		f_valid: 1
 	});
 };
 

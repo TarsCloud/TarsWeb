@@ -133,11 +133,13 @@ export default {
     },
     fetchUpstreams(){
       return this.$ajax.getJSON('/gateway/api/upstream_list', {gatewayObj: this.gatewayObj}).then((data) => {
-        let upstreams = data.map((item)=>{
-          return item.f_upstream
-        })
-        upstreams = Array.from(new Set(upstreams))
-        this.upstreams = upstreams
+        if(data && data.rows){
+            let upstreams = data.rows.map((item)=>{
+              return item.f_upstream
+            })
+            upstreams = Array.from(new Set(upstreams))
+            this.upstreams = upstreams
+          }
       }).catch((err) => {
         this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
       });
