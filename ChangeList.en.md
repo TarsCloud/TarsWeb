@@ -1,4 +1,4 @@
-## 20211124(2.4.21)
+## 20211130(2.4.21)
 
 - add k8s events pages
 - k8s node manage support batch edit tag and affinity tag
@@ -7,6 +7,10 @@
 - k8s add node description
 - fix gateway fetchUpstreams function error
 - add test case manage
+- fix template scope warning
+- fix error when pulling upstream of gateway
+- add http gateway router, from create to upsert
+- k8s log support auto connect
 
 ## 20211115(2.4.20)
 
