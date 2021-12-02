@@ -1,3 +1,7 @@
+## 20211202(2.4.22)
+
+- merge call train to k8s(need K8SFramework v1.1.1)
+
 ## 20211130(2.4.21)
 
 - add k8s events pages
