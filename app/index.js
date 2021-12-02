@@ -15,7 +15,6 @@
  */
 // const HttpController = require('../controller/http/HttpController');
 const WebConf = require('../config/webConf');
-const CallChainController = require("./controller/callchain/CallChainController");
 
 if (WebConf.enable) {
 	const ServerController = require('./controller/server/ServerController');
@@ -38,7 +37,7 @@ if (WebConf.enable) {
 	const InfTestController = require('./controller/infTest/InfTestController');
 	const LogviewController = require('./controller/logview/LogviewController');
 	const IDCConntroller = require('./controller/idc/IDCController');
-	const CallChainController   = require("./controller/callchain/CallChainController")
+	// const CallChainController   = require("./controller/callchain/CallChainController")
 
 	const apiConf = [
 		// 服务管理接口
@@ -260,8 +259,8 @@ if (WebConf.enable) {
 		['get', '/has_dcache_patch_package', PatchController.hasDcachePatchPackage],
 
 		// 监控
-//		['get', '/tarsstat_monitor_data', MonitorController.tarsstat],
-//		['get', '/tarsproperty_monitor_data', MonitorController.tarsproperty],
+		//		['get', '/tarsstat_monitor_data', MonitorController.tarsstat],
+		//		['get', '/tarsproperty_monitor_data', MonitorController.tarsproperty],
 
 		//模板管理
 		['get', '/profile_template', TemplateController.getTemplate, {
@@ -286,11 +285,11 @@ if (WebConf.enable) {
 			parents_name: 'notEmpty',
 			profile: 'notEmpty'
 		}],
-        ['get', '/view_server_merge', TemplateController.getServerProfileTemplate, {
-            application: 'notEmpty',
-            serverName: 'notEmpty',
-            nodeName: 'notEmpty'
-        }],
+		['get', '/view_server_merge', TemplateController.getServerProfileTemplate, {
+			application: 'notEmpty',
+			serverName: 'notEmpty',
+			nodeName: 'notEmpty'
+		}],
 
 		//应用管理
 		['post', '/add_application', ApplicationController.add, {
@@ -408,22 +407,64 @@ if (WebConf.enable) {
 		}],
 
 		//压力测试
-		['get', '/get_benchmark_des', InfTestController.getBenchmarkDes, {id: 'notEmpty'}],
-		['get', '/get_bm_case_list', InfTestController.getBmCaseList, {servant: 'notEmpty', fn: 'notEmpty'}],
-		['get', '/get_bm_result_by_id', InfTestController.getBmResultById, {id: 'notEmpty'}],
-		['post', '/upsert_bm_case', InfTestController.upsertBmCase, {servant: 'notEmpty', fn: 'notEmpty'}],
-		['post', '/start_bencmark', InfTestController.startBencmark, {servant: 'notEmpty', fn: 'notEmpty'}],
-		['post', '/stop_bencmark', InfTestController.stopBencmark, {servant: 'notEmpty', fn: 'notEmpty'}],
-		['post', '/test_bencmark', InfTestController.testBencmark, {servant: 'notEmpty', fn: 'notEmpty'}],
-		['get', '/get_endpoints', InfTestController.getEndpoints, {servant: 'notEmpty'}],
+		['get', '/get_benchmark_des', InfTestController.getBenchmarkDes, {
+			id: 'notEmpty'
+		}],
+		['get', '/get_bm_case_list', InfTestController.getBmCaseList, {
+			servant: 'notEmpty',
+			fn: 'notEmpty'
+		}],
+		['get', '/get_bm_result_by_id', InfTestController.getBmResultById, {
+			id: 'notEmpty'
+		}],
+		['post', '/upsert_bm_case', InfTestController.upsertBmCase, {
+			servant: 'notEmpty',
+			fn: 'notEmpty'
+		}],
+		['post', '/start_bencmark', InfTestController.startBencmark, {
+			servant: 'notEmpty',
+			fn: 'notEmpty'
+		}],
+		['post', '/stop_bencmark', InfTestController.stopBencmark, {
+			servant: 'notEmpty',
+			fn: 'notEmpty'
+		}],
+		['post', '/test_bencmark', InfTestController.testBencmark, {
+			servant: 'notEmpty',
+			fn: 'notEmpty'
+		}],
+		['get', '/get_endpoints', InfTestController.getEndpoints, {
+			servant: 'notEmpty'
+		}],
 		['get', '/is_benchmark_installed', InfTestController.isBenchmarkInstalled],
 		// 测试用例
-		['post', '/interface_add_testcase', InfTestController.interfaceAddCase, { f_id: 'notEmpty', test_case_name: 'notEmpty', objName: 'notEmpty', file_name: 'notEmpty', module_name: 'notEmpty', interface_name: 'notEmpty', function_name: 'notEmpty', params: 'notEmpty' }],
-		['get', '/get_testcase_list', InfTestController.getTestCaseList, { f_id: 'notEmpty' }],
-		['get', '/delete_test_case', InfTestController.deleteTestCase, { case_id: 'notEmpty' }],
-		['post', '/modify_test_case', InfTestController.modifyTestCase, { case_id: 'notEmpty', test_case_name: 'notEmpty', params: 'notEmpty' }],
+		['post', '/interface_add_testcase', InfTestController.interfaceAddCase, {
+			f_id: 'notEmpty',
+			test_case_name: 'notEmpty',
+			objName: 'notEmpty',
+			file_name: 'notEmpty',
+			module_name: 'notEmpty',
+			interface_name: 'notEmpty',
+			function_name: 'notEmpty',
+			params: 'notEmpty'
+		}],
+		['get', '/get_testcase_list', InfTestController.getTestCaseList, {
+			f_id: 'notEmpty'
+		}],
+		['get', '/delete_test_case', InfTestController.deleteTestCase, {
+			case_id: 'notEmpty'
+		}],
+		['post', '/modify_test_case', InfTestController.modifyTestCase, {
+			case_id: 'notEmpty',
+			test_case_name: 'notEmpty',
+			params: 'notEmpty'
+		}],
 		//taflogview
-		['get', '/logview_list', LogviewController.getLogFileList, {application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty'}],
+		['get', '/logview_list', LogviewController.getLogFileList, {
+			application: 'notEmpty',
+			server_name: 'notEmpty',
+			node_name: 'notEmpty'
+		}],
 		['get', '/logview_data', LogviewController.getLogData, {
 			application: 'notEmpty',
 			server_name: 'notEmpty',
@@ -432,30 +473,22 @@ if (WebConf.enable) {
 			interface_params: 'notEmpty'
 		}],
 
-		//调用链
-		['get', '/getAverage', CallChainController.getAverage],
-		['get', '/getAverageByFuncName', CallChainController.getAverageByFuncName],
-		['get', '/detailByTraceId', CallChainController.detailByTraceId],
-		['get', '/detailByStartEndTime', CallChainController.detailByStartEndTime],
-		['get', '/func', CallChainController.func],
-		['get', '/funcList', CallChainController.funcList],
-
 	];
 
 	const clientConf = [
 		['get', '/get_tarsnode', ResourceController.getTarsNode],
 	];
-    module.exports = {
-        apiConf,
-        clientConf
-    };
+	module.exports = {
+		apiConf,
+		clientConf
+	};
 
 } else {
 
-    const apiConf = [];
-    const clientConf = [];
-    module.exports = {
-        apiConf,
-        clientConf
-    };
+	const apiConf = [];
+	const clientConf = [];
+	module.exports = {
+		apiConf,
+		clientConf
+	};
 }

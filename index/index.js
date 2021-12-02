@@ -3,6 +3,7 @@ const PageController = require('./controller/page/PageController');
 const AuthController = require('./controller/auth/AuthController');
 const LoginController = require('./controller/login/LoginController');
 const MonitorController = require('./controller/monitor/MonitorController');
+const CallChainController = require("./controller/callchain/CallChainController");
 
 const localeApiConf = [
     //语言包接口
@@ -24,7 +25,10 @@ const authApiConf = [
         application: 'notEmpty',
         server_name: 'notEmpty'
     }],
-    ['get', '/has_auth', AuthController.hasAuth, { application: 'notEmpty', role: 'notEmpty' }],
+    ['get', '/has_auth', AuthController.hasAuth, {
+        application: 'notEmpty',
+        role: 'notEmpty'
+    }],
 
     ['get', '/userCenter', AuthController.userCenter],
 
@@ -38,6 +42,22 @@ const monitorApiConf = [
     ['get', '/property_monitor_data', MonitorController.property]
 ]
 
-module.exports = { pageApiConf, localeApiConf, authApiConf, monitorApiConf };
+const callTrainConf = [
+    //调用链
+    ['get', '/getAverage', CallChainController.getAverage],
+    ['get', '/getAverageByFuncName', CallChainController.getAverageByFuncName],
+    ['get', '/detailByTraceId', CallChainController.detailByTraceId],
+    ['get', '/detailByStartEndTime', CallChainController.detailByStartEndTime],
+    ['get', '/func', CallChainController.func],
+    ['get', '/funcList', CallChainController.funcList],
+]
+
+module.exports = {
+    pageApiConf,
+    localeApiConf,
+    authApiConf,
+    monitorApiConf,
+    callTrainConf
+};
 
 // k8sApiConf.forEach(conf => apiConf.push(conf));

@@ -21,7 +21,9 @@ const {
     client,
 
 } = require('../../../rpc');
-const {adminRegStruct} = require('../../../rpc/struct');
+const {
+    adminRegStruct
+} = require('../../../rpc/struct');
 const registry = require("@tars/registry");
 const TarsStream = require('@tars/stream');
 const crypto = require("crypto")
@@ -35,7 +37,7 @@ const util = require('../../../tools/util');
 
 const AdminService = {};
 
-AdminService.undeploy = async(application, server, nodeName, user, info) => {
+AdminService.undeploy = async (application, server, nodeName, user, info) => {
     let ret = await adminRegPrx.undeploy(application, server, nodeName, user, info);
     if (ret.__return === 0) {
         return ret.result;
@@ -44,8 +46,8 @@ AdminService.undeploy = async(application, server, nodeName, user, info) => {
     }
 };
 
-AdminService.pingNode = async(nodeName) => {
-    
+AdminService.pingNode = async (nodeName) => {
+
     let timeout = adminRegPrx.getTimeout();
     adminRegPrx.setTimeout(2000);
     let ret = await adminRegPrx.pingNode(nodeName);
@@ -54,12 +56,14 @@ AdminService.pingNode = async(nodeName) => {
     if (ret.__return) {
         return ret.result;
     } else {
+        logger.error(`ping node: ${nodeName} error`);
+        console.log(`ping node: ${nodeName} error`);
         return false;
         // throw new Error(ret.__return);
     }
 };
 
-AdminService.loadServer = async(application, server, nodeName) => {
+AdminService.loadServer = async (application, server, nodeName) => {
     let ret = await adminRegPrx.loadServer(application, server, nodeName);
     if (ret.__return === 0) {
         return ret.result;
@@ -68,7 +72,7 @@ AdminService.loadServer = async(application, server, nodeName) => {
     }
 };
 
-AdminService.loadConfigByHost = async(server, filename, host) => {
+AdminService.loadConfigByHost = async (server, filename, host) => {
     let ret = await configFPrx.loadConfigByHost(server, filename, host);
     if (ret.__return === 0) {
         return ret.config;
@@ -77,7 +81,7 @@ AdminService.loadConfigByHost = async(server, filename, host) => {
     }
 };
 
-AdminService.doCommand = async(targets, command ,user) => {
+AdminService.doCommand = async (targets, command, user) => {
     let rets = [];
     for (var i = 0, len = targets.length; i < len; i++) {
         let target = targets[i];
@@ -104,7 +108,7 @@ AdminService.doCommand = async(targets, command ,user) => {
     return rets;
 };
 
-AdminService.updateFlowStatus = async(application, server_name, status, node_list) => {
+AdminService.updateFlowStatus = async (application, server_name, status, node_list) => {
     // console.log("=========>do update...");
     let ret = {};
     try {
@@ -126,8 +130,8 @@ AdminService.updateFlowStatus = async(application, server_name, status, node_lis
     return ret;
 };
 
-AdminService.getTaskRsp = async(taskNo) => {
-//    console.log("=====>getTaskRsp, hashCode=", util.getHashNumber(taskNo));
+AdminService.getTaskRsp = async (taskNo) => {
+    //    console.log("=====>getTaskRsp, hashCode=", util.getHashNumber(taskNo));
     let ret = await adminRegPrx.getTaskRsp(taskNo, {
         hashCode: util.getHashNumber(taskNo)
     });
@@ -138,7 +142,7 @@ AdminService.getTaskRsp = async(taskNo) => {
     }
 };
 
-AdminService.addTask = async(req) => {
+AdminService.addTask = async (req) => {
     logger.info('addTask req:', req);
     let taskReq = new adminRegStruct.TaskReq();
     taskReq.taskNo = req.taskNo;
@@ -162,7 +166,7 @@ AdminService.addTask = async(req) => {
         });
         taskReq.taskItemReq.push(taskItemReq)
     });
- //   console.log("=====>addTask, hashCode=", util.getHashNumber(taskReq.taskNo));
+    //   console.log("=====>addTask, hashCode=", util.getHashNumber(taskReq.taskNo));
     let ret = await adminRegPrx.addTaskReq(taskReq, {
         hashCode: util.getHashNumber(taskReq.taskNo)
     });
@@ -173,12 +177,12 @@ AdminService.addTask = async(req) => {
 };
 
 
-AdminService.getEndpoints = async(objName) => {
+AdminService.getEndpoints = async (objName) => {
     let ret = await registry.findObjectById(objName);
     return ret.response.return.value;
 };
 
-AdminService.getLogFileList = async(application, server, nodeName) => {
+AdminService.getLogFileList = async (application, server, nodeName) => {
     let ret = await adminRegPrx.getLogFileList(application, server, nodeName);
     if (ret.__return === 0) {
         return ret.logFileList;
@@ -187,7 +191,7 @@ AdminService.getLogFileList = async(application, server, nodeName) => {
     }
 };
 
-AdminService.getLogData = async(application, server, nodeName, logFile, cmd) => {
+AdminService.getLogData = async (application, server, nodeName, logFile, cmd) => {
     let ret = await adminRegPrx.getLogData(application, server, nodeName, logFile, cmd);
     if (ret.__return === 0) {
         return ret.fileData;
@@ -196,12 +200,12 @@ AdminService.getLogData = async(application, server, nodeName, logFile, cmd) => 
     }
 };
 
-AdminService.deletePatchFile = async(application, server, patchFile) => {
+AdminService.deletePatchFile = async (application, server, patchFile) => {
     await adminRegPrx.deletePatchFile(application, server, patchFile);
     return 0;
 };
 
-AdminService.getFrameworkList = async() => {
+AdminService.getFrameworkList = async () => {
 
     let timeout = adminRegPrx.getTimeout();
 
@@ -219,7 +223,7 @@ AdminService.getFrameworkList = async() => {
     }
 };
 
-AdminService.checkServer = async(server) => {
+AdminService.checkServer = async (server) => {
 
     let s = new adminRegStruct.FrameworkServer();
     s.readFromObject(server);
@@ -233,7 +237,7 @@ AdminService.checkServer = async(server) => {
     }
 };
 
-AdminService.getProfileTemplate = async(profileName) => {
+AdminService.getProfileTemplate = async (profileName) => {
     let ret = await adminRegPrx.getProfileTemplate(profileName);
     if (ret.__return === 0) {
         return ret.profileTemplate;
@@ -251,12 +255,12 @@ AdminService.getServerProfileTemplate = async (application, serverName, nodeName
     }
 }
 
-AdminService.getServerState = async(application, serverName, nodeName)=>{
-    let  ret = await adminRegPrx.getServerState(application,serverName,nodeName);
+AdminService.getServerState = async (application, serverName, nodeName) => {
+    let ret = await adminRegPrx.getServerState(application, serverName, nodeName);
     return ret;
 }
 
-AdminService.pingNodeBool = async(nodeName) => {
+AdminService.pingNodeBool = async (nodeName) => {
     let timeout = adminRegPrx.getTimeout();
     adminRegPrx.setTimeout(2000);
     let ret = await adminRegPrx.pingNode(nodeName)

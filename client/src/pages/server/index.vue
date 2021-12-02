@@ -170,7 +170,7 @@
 
 <script>
 import manage from "./manage";
-import callChain from "./callchain";
+import callChain from "@/common/callchain";
 import publish from "./publish";
 import config from "./config";
 import serverHistory from "./history";
