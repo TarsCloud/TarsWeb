@@ -1,8 +1,9 @@
-## 20211204(2.4.22)
+## 20211205(2.4.22)
 
 - merge call train to k8s(need K8SFramework v1.1.1)
 - Optimize interface debugging and return error information
 - Fix benchmark code merge omission
+- Fix k8s get event config error
 
 ## 20211130(2.4.21)
 
