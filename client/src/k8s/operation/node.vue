@@ -73,17 +73,19 @@
         </div>
       </let-form>
 
+      <br>
       <!--列表-->
       <el-table
         ref="table"
         :data="items"
+        width="100%"
         height="calc(100vh - 320px)"
         border
         stripe
         @selection-change="handleSelectionChange"
         highlight-current-row
       >
-        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="selection" ></el-table-column>
         <el-table-column
           :label="$t('filter.title.nodeName')"
           prop="NodeName"
@@ -125,6 +127,7 @@
             </let-switch>
           </template>
         </el-table-column>
+        <!--
         <el-table-column :label="$t('filter.title.nodeLabels')">
           <template slot-scope="scope">
             <el-tag
@@ -138,6 +141,7 @@
             </el-tag>
           </template>
         </el-table-column>
+        -->
         <el-table-column :label="$t('filter.title.AbilityTag')" width="200">
           <template slot-scope="scope">
             <el-tag
@@ -151,9 +155,9 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('filter.title.nodeAddress')" width="210">
+        <el-table-column :label="$t('filter.title.nodeAddress')" >
           <template slot-scope="scope">
-            <div
+            <span
               v-for="item in scope.row.NodeAddress"
               :key="item.NodeName"
               style="margin: 2px 2px"
@@ -161,7 +165,7 @@
               <el-tag effect="plain" type="info"
                 >{{ item.type + ":" + item.address }}
               </el-tag>
-            </div>
+            </span>
           </template>
         </el-table-column>
         <el-table-column :label="$t('operate.operates')" width="220px">
@@ -178,6 +182,7 @@
           </template>
         </el-table-column>
       </el-table>
+      <br>
       <let-pagination
         align="right"
         style="float:right;"
