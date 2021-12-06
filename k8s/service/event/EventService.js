@@ -8,8 +8,8 @@ EventService.getEvents = async (params) => {
     try {
         let esConfig = await TemplateService.getEsConfig();
         let {check, application, serverName, pod, level, startDate, endDate} = params
-        let esNodes = Object.keys(esConfig.tars.es.nodes)[0].split(",")
-        let url = `http://${esNodes[0]}/${esConfig.tars.es.index.kevent}/_search`
+        let esNodes = Object.keys(esConfig.tars.elk.nodes)[0].split(",")
+        let url = `http://${esNodes[0]}/${esConfig.tars.elk.index.kevent}/_search`
 
         let from = params.pageSize * (params.currPage - 1);
         let size = params.pageSize * 1
@@ -76,8 +76,8 @@ EventService.getPods = async (params) => {
     try {
         let esConfig = await TemplateService.getEsConfig();
         let {application, serverName,startDate, endDate} = params
-        let esNodes = esConfig.tars.es.nodes.tars_config_line_vector_value[0].split(",")
-        let url = `http://${esNodes[0]}/${esConfig.tars.es.index.kevent}/_search`
+        let esNodes = esConfig.tars.elk.nodes.tars_config_line_vector_value[0].split(",")
+        let url = `http://${esNodes[0]}/${esConfig.tars.elk.index.kevent}/_search`
 
         let appServer = `${application}-${serverName}`
         let query = {
