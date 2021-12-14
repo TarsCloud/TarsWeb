@@ -21,24 +21,29 @@ import AjaxUtil from '@/lib/ajax';
 
 let Ajax = new AjaxUtil();
 
-Ajax.ServerUrl.set('/pages');
+Ajax.ServerUrl.set('/');
 Ajax.ResultHandler.set((result) => {
-  if (result && result.ret_code === 200 && result.data != null) {
+  if (result && result.tars_ret === 0) {
     return true;
   }
   return false;
 });
 
-['getJSON', 'postJSON'].forEach((method) => {
-  const originHandler = Ajax[method];
-  Ajax[`_${method}`] = originHandler;
-  Ajax[method] = (...args) => originHandler.call(null, ...args).then(res => res.data);
-});
+// ['getJSON', 'postJSON'].forEach((method) => {
+//   const originHandler = Ajax[method];
+//   Ajax[`_${method}`] = originHandler;
+//   Ajax[method] = (...args) => originHandler.call(null, ...args).then(res => res.data);
+// });
 
-Object.defineProperty(Vue.prototype, '$ajax', {
+Ajax.call = function (obj, func, params) {
+  return Ajax.postJSON(`/${obj}/${func}`, params);
+}
+
+Object.defineProperty(Vue.prototype, '$market', {
   get() {
     return Ajax;
   },
 });
 
-export default Ajax;
+
+export default Ajax

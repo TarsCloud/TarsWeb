@@ -11,7 +11,8 @@
             "tab5": "Operation Manage",
             "tab6": "Base Manage",
             "tab7": "Services History Manage",
-            "tab8": "Gateway Config"
+            "tab8": "Gateway Config",
+            "tab9": "Service Market"
         },
         "dcache": {
             "tab2": "Create Service"

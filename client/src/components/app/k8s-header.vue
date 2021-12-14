@@ -14,6 +14,7 @@
         <let-tab-pane :tab="$t('header.tab.tab1')" tabkey="/server" :icon="serverIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab2')" tabkey="/operation" :icon="opaIcon"></let-tab-pane>
         <let-tab-pane :tab="$t('header.tab.tab8')" tabkey="/gateway" :icon="cacheIcon"></let-tab-pane>
+        <let-tab-pane :tab="$t('header.tab.tab9')" tabkey="/market" :icon="packageIcon"></let-tab-pane>
       </let-tabs>
       <div class="language-wrap">
         <let-select v-model="locale" @change="changeLocale" :clearable="false">
@@ -47,6 +48,7 @@
   import releaseIcon from '@/assets/img/package-l.png';
   import cacheIcon from '@/assets/img/cache-l.png';
   import operatorIcon from '@/assets/img/operator-l.png';
+  import packageIcon from '@/assets/img/package-l.png';
   import {localeMessages} from '@/locale/i18n';
 
 
@@ -59,6 +61,7 @@
         releaseIcon,
         cacheIcon,
         operatorIcon,
+        packageIcon,
         locale: this.$cookie.get('locale') || 'en',
         uid: '--',
         userOptOpen: false,

@@ -53,6 +53,12 @@ import OperationEvent from '@/k8s/operation/event';
 // 网关
 import OperationGateway from '@/gateway/index';
 
+
+// 市场
+import Market from '@/market/index';
+import ServiceInfo from '@/market/serviceInfo';
+
+
 import VueRouter from 'vue-router';
 
 Vue.use(Router);
@@ -92,10 +98,6 @@ export default new Router({
           path: ':treeid/interface-debuger',
           component: InterfaceDebuger,
         },
-        // {
-        //   path: ':treeid/alarm',
-        //   component: AlarmConfig,
-        // },
         {
           path: ':treeid/user-manage',
           component: AuthManage,
@@ -124,10 +126,6 @@ export default new Router({
           path: 'undeploy',
           component: OperationUndeploy,
         },
-        // {
-        //   path: 'gateway',
-        //   component: OperationGateway,
-        // },
         {
           path: 'templates',
           component: OperationTemplates,
@@ -162,6 +160,17 @@ export default new Router({
       path: '/gateway',
       name: 'Gateway',
       component: OperationGateway,
+    },
+    {
+      path: '/market',
+      name: 'Market',
+      component: Market,
+      children: [
+        {
+          path: ':serviceId/info',
+          component: ServiceInfo,
+        },
+      ],
     },
     {
       path: '*',

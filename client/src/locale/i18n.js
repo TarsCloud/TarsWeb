@@ -17,7 +17,8 @@
 import Vue from "vue";
 import VueI18n from "vue-i18n";
 import VueCookie from "vue-cookie";
-import Ajax from '@/lib/ajax';
+import Ajax from '@/plugins/ajax';
+
 Vue.use(VueI18n);
 Vue.use(VueCookie);
 
