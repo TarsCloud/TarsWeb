@@ -29,14 +29,14 @@ const opts = {};
 kc.applyToRequest(opts);
 
 CommonService.getPath = (path) => {
-    return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
+	return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
 }
 
 const k8sCoreApi = kc.makeApiClient(k8s.CoreV1Api);
 const k8sApi = kc.makeApiClient(k8s.CustomObjectsApi);
 
 CommonService.getApi = () => {
-    return k8sCoreApi;
+	return k8sCoreApi;
 }
 
 CommonService.NAMESPACE = process.env.Namespace || WebConf.k8s.namespace;
@@ -72,19 +72,18 @@ CommonService.connectPodExec = async (name, command, container) => {
 }
 
 CommonService.listNode = async () => {
-    return await k8sCoreApi.listNode("true", false);
+	return await k8sCoreApi.listNode("true", false);
 }
 
 CommonService.readNode = async (name) => {
-    return await k8sCoreApi.readNode(name);
+	return await k8sCoreApi.readNode(name);
 }
 
 CommonService.replaceNode = async (name, patch) => {
-    return await k8sCoreApi.replaceNode(name, patch);
+	return await k8sCoreApi.replaceNode(name, patch);
 }
 
 CommonService.patchNode = async (name, patch) => {
-	    // patchNode(name: string, body: object, pretty?: string, dryRun?: string, fieldManager?: string, force?: boolean, options?: {
 	return await k8sCoreApi.patchNode(name, patch, "true", undefined, "JsonPatch", undefined, {
 		headers: {
 			"Content-Type": "application/json-patch+json"
@@ -93,7 +92,7 @@ CommonService.patchNode = async (name, patch) => {
 }
 
 CommonService.listObject = async (plural, labelSelector, limit, Continue) => {
-    return await k8sApi.listNamespacedCustomObject(CommonService.GROUP, CommonService.VERSION, CommonService.NAMESPACE, plural, "true", Continue, null, labelSelector, limit);
+	return await k8sApi.listNamespacedCustomObject(CommonService.GROUP, CommonService.VERSION, CommonService.NAMESPACE, plural, "true", Continue, null, labelSelector, limit);
 }
 
 const cacheListener = (cache) => {
@@ -106,9 +105,9 @@ const cacheListener = (cache) => {
 		logger.info('delete', o.metadata.name);
 	});
 
-	cache.on('update', (o) => {
-		logger.info('update', o.metadata.name);
-	});
+	// cache.on('update', (o) => {
+	// 	logger.info('update', o.metadata.name);
+	// });
 
 	cache.on('error', (o) => {
 		logger.error('error', o);
@@ -116,7 +115,6 @@ const cacheListener = (cache) => {
 }
 
 const watch = new k8s.Watch(kc);
-// const serverListFn = () => CommonService.listObject("tservers", `${CommonService.TSubTypeLabel}=${CommonService.TServerType1}`);
 const serverListFn = () => CommonService.listObject("tservers");
 const tServerList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/tservers`), watch, serverListFn, true);
 
@@ -140,7 +138,7 @@ const getCacheList = async (cacheList, fn) => {
 		//load from cache
 		return cacheList.list();
 	} else {
-        const data = await fn();
+		const data = await fn();
 
 		return data.body.items;
 	}
@@ -198,19 +196,19 @@ CommonService.getServerList = async () => {
 }
 
 CommonService.getTreeData = async () => {
-    return (await CommonService.getObject("ttrees", CommonService.TREENAME)).body;
+	return (await CommonService.getObject("ttrees", CommonService.TREENAME)).body;
 }
 
 CommonService.getNodeList = async () => {
-    let nodes = tNodeList.list();
-    nodes = nodes.filter(item => { 
-        return item.metadata.labels.hasOwnProperty(CommonService.NodeFramworkAbilityLabelPrefix);
-    });
-    return nodes;
+	let nodes = tNodeList.list();
+	nodes = nodes.filter(item => {
+		return item.metadata.labels.hasOwnProperty(CommonService.NodeFramworkAbilityLabelPrefix);
+	});
+	return nodes;
 }
 
 CommonService.getNodeListAll = async () => {
-    return tNodeList.list();
+	return tNodeList.list();
 }
 
 CommonService.getTemplateList = async () => {
@@ -223,8 +221,8 @@ CommonService.getAccountList = async () => {
 
 CommonService.getAccount = async (uid) => {
 
-	if (WebConf.k8s.cache ) {
-		let o =  (await tAccountList.get(md5(uid, 'asString'), CommonService.NAMESPACE));
+	if (WebConf.k8s.cache) {
+		let o = (await tAccountList.get(md5(uid, 'asString'), CommonService.NAMESPACE));
 
 		if (o) {
 			return o;
@@ -242,11 +240,11 @@ CommonService.getAccount = async (uid) => {
 
 CommonService.hasAppName = async (appName) => {
 
-    let tree = await CommonService.getTreeData();
+	let tree = await CommonService.getTreeData();
 
-    let result = tree.apps.find(item => {
-        return item.name == appName;
-    });
+	let result = tree.apps.find(item => {
+		return item.name == appName;
+	});
 
 	return result != undefined;
 
@@ -300,41 +298,44 @@ CommonService.createLabelSelector = (filter) => {
 
 
 CommonService.getServerId = (serverApp, serverName) => {
-    return serverApp + "." + serverName;
+	return serverApp + "." + serverName;
 }
 
 CommonService.getTServerName = (serverId) => {
-    return serverId.replace('.', '-').toLowerCase();
+	return serverId.replace('.', '-').toLowerCase();
 }
 
 CommonService.getMetadataName = (name) => {
-    return name.replace('.', '-').toLowerCase();
+	return name.replace('.', '-').toLowerCase();
 }
 
 CommonService.randomString = (len) => {
- 　　const chars = 'abcdefghijklmnopqrstuvwxyz';
- 　　var maxPos = chars.length;
- 　　var pwd = '';
- 　　for (i = 0; i < len; i++) {
- 　　　　pwd += chars.charAt(Math.floor(Math.random() * maxPos));
- 　　}
- 　　return pwd;
+	const chars = 'abcdefghijklmnopqrstuvwxyz';
+	var maxPos = chars.length;
+	var pwd = '';
+	for (i = 0; i < len; i++) {
+		pwd += chars.charAt(Math.floor(Math.random() * maxPos));
+	}
+	return pwd;
 }
 
-CommonService.pageList = (itemsLen, limiter) =>{
+CommonService.pageList = (itemsLen, limiter) => {
 	let start = limiter.offset
-	if(start < 0) {
-        start = 0;
-	} else if(start >= itemsLen) {
-        start = itemsLen;
+	if (start < 0) {
+		start = 0;
+	} else if (start >= itemsLen) {
+		start = itemsLen;
 	}
 
 	let stop = limiter.offset + limiter.rows
-	if(stop < 0 || stop >= itemsLen) {
+	if (stop < 0 || stop >= itemsLen) {
 		stop = itemsLen
 	}
 
-    return { start: start, stop: stop }
+	return {
+		start: start,
+		stop: stop
+	}
 }
 
 CommonService.getServer = async (serverId) => {
@@ -349,21 +350,21 @@ CommonService.getServer = async (serverId) => {
 }
 
 CommonService.getDaemonPodByField = async (func) => {
-    let labelSelector = `${CommonService.TServerAppLabel}=${CommonService.TServerType1},${CommonService.TServerNameLabel}=${CommonService.TServerType1}agent`;
+	let labelSelector = `${CommonService.TServerAppLabel}=${CommonService.TServerType1},${CommonService.TServerNameLabel}=${CommonService.TServerType1}agent`;
 
-    let agents = await CommonService.listPods(labelSelector);
+	let agents = await CommonService.listPods(labelSelector);
 
-    if (!agents) {
+	if (!agents) {
 		return null;
-    }
+	}
 
 	agents = agents.body;
 
 
-    let index = -1;
-    for (let i = 0; i < agents.items.length; i++) {
+	let index = -1;
+	for (let i = 0; i < agents.items.length; i++) {
 
-        let agent = agents.items[i];
+		let agent = agents.items[i];
 
 		if (func(agent) && agent.status.phase == "Running") {
 			index = i
@@ -371,7 +372,7 @@ CommonService.getDaemonPodByField = async (func) => {
 		}
 	}
 
-	if(index == -1) {
+	if (index == -1) {
 		return null;
 	} else {
 		return agents.items[index];
@@ -380,43 +381,42 @@ CommonService.getDaemonPodByField = async (func) => {
 
 CommonService.getDaemonPodByName = async (nodeName) => {
 
-    return await CommonService.getDaemonPodByField((pod) => {
-        return pod.spec.nodeName == nodeName
-    });
+	return await CommonService.getDaemonPodByField((pod) => {
+		return pod.spec.nodeName == nodeName
+	});
 }
 
 
 CommonService.getDaemonPodByHostIp = async (hostIp) => {
 
-    return await CommonService.getDaemonPodByField((pod) => {
-        return pod.status.hostIP == hostIp
-    });
+	return await CommonService.getDaemonPodByField((pod) => {
+		return pod.status.hostIP == hostIp
+	});
 }
 
 CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, serverOption) => {
 
-    let serverId = serverApp + "." + serverName;
+	let serverId = serverApp + "." + serverName;
 
-    let Servants = [];
-	if(serverServant != null) {
-        for (let key in serverServant) {
-            let obj = serverServant[key];
+	let Servants = [];
+	if (serverServant != null) {
+		for (let key in serverServant) {
+			let obj = serverServant[key];
 
-            Servants.push({
-				name:       obj.Name,
-				port:       parseInt(obj.Port),
-				thread:     parseInt(obj.Threads),
+			Servants.push({
+				name: obj.Name,
+				port: parseInt(obj.Port),
+				thread: parseInt(obj.Threads),
 				connection: parseInt(obj.Connections),
-				capacity:   parseInt(obj.Capacity),
-				isTars:      obj.IsTars,
-				isTcp:      obj.IsTcp,
-				timeout:    parseInt(obj.Timeout),
-            });
-        }
+				capacity: parseInt(obj.Capacity),
+				isTars: obj.IsTars,
+				isTcp: obj.IsTcp,
+				timeout: parseInt(obj.Timeout),
+			});
+		}
 	}
 
-	let Env = [
-		{
+	let Env = [{
 			name: "Namespace",
 			valueFrom: {
 				fieldRef: {
@@ -445,72 +445,76 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 			valueFrom: {
 				fieldRef: {
 					apiVersion: "v1",
-					fieldPath:  `metadata.labels['${CommonService.TServerAppLabel}']`,
+					fieldPath: `metadata.labels['${CommonService.TServerAppLabel}']`,
 				},
 			},
 		}
-    ]
+	]
 
-    let HostPorts = [];
-	if(serverK8S.HostPort != null) {
-        serverK8S.HostPort.forEach(item => {
-            HostPorts.push({
-                nameRef: item.NameRef,
-                port : item.Port,
-            })
+	let HostPorts = [];
+	if (serverK8S.HostPort != null) {
+		serverK8S.HostPort.forEach(item => {
+			HostPorts.push({
+				nameRef: item.NameRef,
+				port: item.Port,
+			})
 
-        })
+		})
 
 	}
 
-	let Mounts = [
-		{
-			name:        "host-log-dir",
-			mountPath:   `/usr/local/app/${CommonService.TServerType1}/app_log`,
-			subPathExpr: "$(Namespace)/$(PodName)",
-			source: {
-				hostPath: {
-					path: `/usr/local/app/${CommonService.TServerType1}/app_log`,
-					type: "DirectoryOrCreate",
-				},
+	let Mounts = [{
+		name: "host-log-dir",
+		mountPath: `/usr/local/app/${CommonService.TServerType1}/app_log`,
+		subPathExpr: "$(Namespace)/$(PodName)",
+		source: {
+			hostPath: {
+				path: `/usr/local/app/${CommonService.TServerType1}/app_log`,
+				type: "DirectoryOrCreate",
 			},
-		}
-    ]
+		},
+	}]
+
+	if (serverK8S.Mounts && serverK8S.Mounts.length != 0) {
+		serverK8S.Mounts.forEach(m => {
+			Mounts.push(m);
+		});
+	}
 
 	let NodeSelector = [];
-	if (serverK8S.NodeSelector  && serverK8S.NodeSelector.length != 0) {
+	if (serverK8S.NodeSelector && serverK8S.NodeSelector.length != 0) {
 		NodeSelector = serverK8S.NodeSelector;
 	}
 
 	let tServer = {
-        apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
-        kind: 'TServer',
-        metadata: {
-            namespace: CommonService.NAMESPACE,
-			name:      CommonService.getTServerName(serverId),
-        },
+		apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
+		kind: 'TServer',
+		metadata: {
+			namespace: CommonService.NAMESPACE,
+			name: CommonService.getTServerName(serverId),
+		},
 		spec: {
-			app:       serverApp,
-			server:    serverName,
-			subType:   serverOption.ServerSubType,
+			app: serverApp,
+			server: serverName,
+			subType: serverOption.ServerSubType,
 			important: serverOption.ServerImportant,
 			tars: {
-				template:    serverOption.ServerTemplate,
-				profile:     serverOption.ServerProfile,
-				foreground:  false,
+				template: serverOption.ServerTemplate,
+				profile: serverOption.ServerProfile,
+				foreground: false,
 				asyncThread: serverOption.AsyncThread,
-				servants:    Servants,
+				servants: Servants,
 			},
 			k8s: {
 				// serviceAccount: "",
-				env:            Env,
-				hostIPC:        serverK8S.HostIpc,
-				hostNetwork:    serverK8S.HostNetwork,
-				hostPorts:      HostPorts,
-				mounts:         Mounts,
-				nodeSelector:   NodeSelector,
-				notStacked:     serverK8S.NotStacked,
-				replicas:       0,
+				env: Env,
+				hostIPC: serverK8S.HostIpc,
+				hostNetwork: serverK8S.HostNetwork,
+				hostPorts: HostPorts,
+				mounts: Mounts,
+				nodeSelector: NodeSelector,
+				notStacked: serverK8S.NotStacked,
+				replicas: 0,
 			},
 		},
 	}
@@ -524,80 +528,81 @@ CommonService.buildTDeploy = (metadata) => {
 
 	//部署时 Replicas的值只能为0 ,因为此时没有镜像服务镜像
 	metadata.ServerK8S.Replicas = 0
-	if(metadata.ServerK8S.HostNetwork) {
-        metadata.ServerK8S.HostPort = [];//make([]*models.HostPortElem, 0, 1)
+	if (metadata.ServerK8S.HostNetwork) {
+		metadata.ServerK8S.HostPort = []; //make([]*models.HostPortElem, 0, 1)
 	}
 
 	// 通过管理平台的部署都是TARS服务
-    metadata.ServerOption.ServerSubType = CommonService.TServerType1;
+	metadata.ServerOption.ServerSubType = CommonService.TServerType1;
 
-    let deployName = CommonService.getTServerName(CommonService.getServerId(metadata.ServerApp, metadata.ServerName)) + '-' + CommonService.randomString(10) + '-' + CommonService.randomString(5);
+	let deployName = CommonService.getTServerName(CommonService.getServerId(metadata.ServerApp, metadata.ServerName)) + '-' + CommonService.randomString(10) + '-' + CommonService.randomString(5);
 	let tServer = CommonService.buildTServer(metadata.ServerApp, metadata.ServerName, metadata.ServerServant, metadata.ServerK8S, metadata.ServerOption)
 
 	tServer.spec.mark = metadata.ServerMark;
 	tServer.spec.person = metadata.Uid;
 
 	let tDeploy = {
-        apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
-        kind: 'TDeploy',
-        metadata: {
-            namespace: CommonService.NAMESPACE,
-			name:      deployName,
+		apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
+		kind: 'TDeploy',
+		metadata: {
+			namespace: CommonService.NAMESPACE,
+			name: deployName,
 		},
 		apply: tServer.spec,
 	}
 
-    return tDeploy;
+	return tDeploy;
 }
 
 CommonService.ConvertOperatorK8SToAdminK8S = (operatorK8S) => {
 
-    let hostPort = [];
-	if(operatorK8S.hostPorts != null) {
+	let hostPort = [];
+	if (operatorK8S.hostPorts != null) {
 
-        operatorK8S.hostPorts.forEach(port => {
-            hostPort.push({
-                NameRef: port.nameRef, Port: port.port
-            });
-        })
+		operatorK8S.hostPorts.forEach(port => {
+			hostPort.push({
+				NameRef: port.nameRef,
+				Port: port.port
+			});
+		})
 	}
 	let NodeSelector = [];
-	if (operatorK8S.nodeSelector  && operatorK8S.nodeSelector.length != 0) {
+	if (operatorK8S.nodeSelector && operatorK8S.nodeSelector.length != 0) {
 		NodeSelector = operatorK8S.nodeSelector;
 	}
 
 	return {
-		abilityAffinity:operatorK8S.abilityAffinity,
-		HostIpc:      operatorK8S.hostIPC || false,
-		HostNetwork:  operatorK8S.hostNetwork|| false,
-		NotStacked:   operatorK8S.notStacked,
-		Replicas:     operatorK8S.replicas,
-		HostPort:     hostPort,
+		abilityAffinity: operatorK8S.abilityAffinity,
+		HostIpc: operatorK8S.hostIPC || false,
+		HostNetwork: operatorK8S.hostNetwork || false,
+		NotStacked: operatorK8S.notStacked,
+		Replicas: operatorK8S.replicas,
+		HostPort: hostPort,
 		NodeSelector: NodeSelector,
 	}
 }
 
 CommonService.ConvertOperatorServantToAdminK8S = (operatorServant) => {
-    let serverServant = null;
+	let serverServant = null;
 
-	if(operatorServant != null) {
-        serverServant = {};
+	if (operatorServant != null) {
+		serverServant = {};
 
-        operatorServant.forEach(servant => {
+		operatorServant.forEach(servant => {
 			serverServant[servant.name] = {
-				Capacity:    servant.capacity,
+				Capacity: servant.capacity,
 				Connections: servant.connection,
-				IsTars:       servant.isTars,
-				IsTcp:       servant.isTcp,
-				Name:        servant.name,
-				Port:        servant.port,
-				Threads:     servant.thread,
-				Timeout:     servant.timeout,
+				IsTars: servant.isTars,
+				IsTcp: servant.isTcp,
+				Name: servant.name,
+				Port: servant.port,
+				Threads: servant.thread,
+				Timeout: servant.timeout,
 			}
-        })
+		})
 	}
 
-    return serverServant;
+	return serverServant;
 }
 
 CommonService.ConvertOperatorOptionToAdminK8S = (operatorTServerSpec) => {
@@ -605,13 +610,13 @@ CommonService.ConvertOperatorOptionToAdminK8S = (operatorTServerSpec) => {
 	let serverImportant = operatorTServerSpec.important
 	let serverSubType = operatorTServerSpec.subType
 
-    return {
-        AsyncThread: asyncThread,
-        ServerImportant: serverImportant,
-        ServerProfile: operatorTServerSpec.tars.profile,
-        ServerTemplate: operatorTServerSpec.tars.template,
-        ServerSubType: serverSubType,
-    };
+	return {
+		AsyncThread: asyncThread,
+		ServerImportant: serverImportant,
+		ServerProfile: operatorTServerSpec.tars.profile,
+		ServerTemplate: operatorTServerSpec.tars.template,
+		ServerSubType: serverSubType,
+	};
 }
 
 module.exports = CommonService

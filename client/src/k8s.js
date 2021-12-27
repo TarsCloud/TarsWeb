@@ -19,25 +19,50 @@ import './assets/icon-font/iconfont.css'
 
 import './plugins/ui';
 import './plugins/ajax';
+import './plugins/market';
 
 import k8sApp from './k8sApp';
 import router from './router/k8s';
-import {i18n, loadLang} from './locale/i18n'
+
+import {
+  i18n,
+  loadLang
+} from './locale/i18n'
 
 import ElementUI from 'element-ui';
 import "./assets/theme/element-to-let/index.css"
-Vue.use(ElementUI);
+
+//代码高亮文件引入
+// import hljs from 'highlight.js'
+//样式文件,这里我选的是sublime样式，文件里面还有其他样式可供选择
+// import 'highlight.js/styles/monokai-sublime.css'
+
+import 'viewerjs/dist/viewer.css';
+import Viewer from 'v-viewer';
+Vue.use(Viewer);
+
+// Vue.directive('highlight', function (el) {
+//   let blocks = el.querySelectorAll('pre code');
+//   blocks.forEach((block) => {
+//     hljs.highlightBlock(block)
+//   })
+// })
 
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 loadLang.call(this).then(() => {
+  Vue.use(ElementUI, {
+    i18n: (key, value) => i18n.t(key, value)
+  });
+
   new Vue({
     i18n: i18n,
     el: '#app',
     router,
-    components: {k8sApp},
+    components: {
+      k8sApp
+    },
     template: '<k8sApp/>'
   });
 })
-

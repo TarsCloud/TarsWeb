@@ -43,17 +43,18 @@ import OperationIDCManage from '@/pages/operation/idc';
 //网关
 import OperationGateway from '@/gateway/index';
 
+// 市场
+import Market from '@/market/index';
+import ServiceInfo from '@/market/serviceInfo';
 
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: '/server',
       name: 'Server',
       component: Server,
-      children: [
-        {
+      children: [{
           path: ':treeid/manage',
           component: ServerManage,
         },
@@ -88,8 +89,7 @@ export default new Router({
       name: 'Operation',
       component: Operation,
       redirect: '/operation/deploy',
-      children: [
-        {
+      children: [{
           path: 'deploy',
           component: OperationDeploy,
         },
@@ -137,11 +137,23 @@ export default new Router({
       component: OperationGateway,
     },
     {
+      path: '/market',
+      name: 'Market',
+      component: Market,
+      children: [{
+        path: ':group/:name/:version',
+        component: ServiceInfo,
+      }, ],
+    },
+    {
       path: '*',
       redirect: '/server',
     },
   ],
-  scrollBehavior (to, from, savedPosition) {
-    return {x: 0, y: 0}
+  scrollBehavior(to, from, savedPosition) {
+    return {
+      x: 0,
+      y: 0
+    }
   }
 });

@@ -19,6 +19,31 @@ const ApplicationService = require('../application/ApplicationService');
 const lodash = require("lodash");
 const DeployService = {};
 
+// //安装服务
+// DeployService.installServer = async (ServerApp, ServerName, ServerServant, ServerK8S, ServerOption) => {
+
+//     let server = await CommonService.getServer(ServerApp + '.' + ServerName);
+
+//     if (server) {
+//         return {
+//             ret: 500,
+//             msg: 'server exists'
+//         };
+//     }
+//     let metadata = {
+//         ServerApp: ServerApp,
+//         BusinessName: '',
+//         AppMark: '',
+//     }
+//     await ApplicationService.applicationCreate(metadata);
+//     let tServer = await CommonService.buildTServer(ServerApp, ServerName, ServerServant, ServerK8S, ServerOption);
+//     let data = await CommonService.createObject("tservers", tServer);
+//     return {
+//         ret: 200,
+//         msg: 'succ',
+//         data: data.body
+//     };
+// }
 
 //创建服务
 DeployService.createServer = async (ServerApp, ServerName, ServerServant, ServerK8S, ServerOption) => {
@@ -26,7 +51,10 @@ DeployService.createServer = async (ServerApp, ServerName, ServerServant, Server
     let server = await CommonService.getServer(ServerApp + '.' + ServerName);
 
     if (server) {
-        return {ret: 500, msg: 'server exists'};
+        return {
+            ret: 500,
+            msg: 'server exists'
+        };
     }
     let metadata = {
         ServerApp: ServerApp,
@@ -36,7 +64,11 @@ DeployService.createServer = async (ServerApp, ServerName, ServerServant, Server
     await ApplicationService.applicationCreate(metadata);
     let tServer = await CommonService.buildTServer(ServerApp, ServerName, ServerServant, ServerK8S, ServerOption);
     let data = await CommonService.createObject("tservers", tServer);
-    return {ret: 200, msg: 'succ', data: data.body};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 //创建服务
@@ -44,7 +76,11 @@ DeployService.serverDeployCreate = async (metadata) => {
     let tDeploy = CommonService.buildTDeploy(metadata)
 
     let data = await CommonService.createObject("tdeploys", tDeploy);
-    return {ret: 200, msg: 'succ', data: data.body};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 //服务部署列表
@@ -53,7 +89,7 @@ DeployService.serverDeploySelect = async (Uid, ServerApp, ServerName, deployName
     if (deployName) {
         let deploy = await CommonService.getObject("tdeploys", deployName);
         filterItems.push(deploy.body);
-    }else{
+    } else {
         let labelSelector = `${CommonService.APPROVE}=Pending`;
         let allItems = await CommonService.listObject("tdeploys", labelSelector);
         allItems = allItems.body.items;
@@ -89,8 +125,8 @@ DeployService.serverDeploySelect = async (Uid, ServerApp, ServerName, deployName
         elem["ServerName"] = item.apply.server
 
         elem["ServerK8S"] = CommonService.ConvertOperatorK8SToAdminK8S(item.apply.k8s)
-        elem["Mounts"] = item.apply.k8s.mounts||[];
-        elem["resources"] = item.apply.k8s.resources||{};
+        elem["Mounts"] = item.apply.k8s.mounts || [];
+        elem["resources"] = item.apply.k8s.resources || {};
         elem["ServerServant"] = CommonService.ConvertOperatorServantToAdminK8S(item.apply.taf.servants)
         elem["ServerOption"] = CommonService.ConvertOperatorOptionToAdminK8S(item.apply)
 
@@ -100,14 +136,21 @@ DeployService.serverDeploySelect = async (Uid, ServerApp, ServerName, deployName
         result.Data.push(elem);
     });
 
-    return {ret: 200, msg: 'succ', data: result};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 }
 
 DeployService.serverDeployUpdate = async (metadata, target) => {
 
     let tDeploy = await CommonService.getObject("tdeploys", metadata.DeployId);
     if (!tDeploy) {
-        return {ret: 500, msg: 'no deploy server exists'};
+        return {
+            ret: 500,
+            msg: 'no deploy server exists'
+        };
     }
     tDeploy = tDeploy.body;
     let tServer = await CommonService.buildTServer(tDeploy.apply.app, tDeploy.apply.server, target.ServerServant, target.ServerK8S, target.ServerOption)
@@ -116,7 +159,7 @@ DeployService.serverDeployUpdate = async (metadata, target) => {
 
     let K8S = lodash.cloneDeep(tDeployCopy.apply.k8s)
     //修改部分k8s节点下信息
-    if (target.ServerK8S.abilityAffinity){
+    if (target.ServerK8S.abilityAffinity) {
         K8S.abilityAffinity = target.ServerK8S.abilityAffinity
     }
     if (target.ServerK8S.NodeSelector) {
@@ -129,7 +172,7 @@ DeployService.serverDeployUpdate = async (metadata, target) => {
     if (target.ServerK8S.resources.limitCpu || target.ServerK8S.resources.limitMem) {
         K8S.resources.limits = {}
         if (target.ServerK8S.resources.limitCpu) K8S.resources.limits.cpu = target.ServerK8S.resources.limitCpu + "m"
-        if (target.ServerK8S.resources.limitMem) K8S.resources.limits.memory =target.ServerK8S.resources.limitMem + "m"
+        if (target.ServerK8S.resources.limitMem) K8S.resources.limits.memory = target.ServerK8S.resources.limitMem + "m"
     }
     if (target.ServerK8S.resources.requestCpu || target.ServerK8S.resources.requestMem) {
         K8S.resources.requests = {}
@@ -139,14 +182,14 @@ DeployService.serverDeployUpdate = async (metadata, target) => {
     if (Object.keys(K8S.resources).length == 0) {
         delete K8S.resources
     }
-    let mounts=[]
-    K8S.mounts.forEach(item=>{
-        if (!item.source.hasOwnProperty("tLocalVolume")){
+    let mounts = []
+    K8S.mounts.forEach(item => {
+        if (!item.source.hasOwnProperty("tLocalVolume")) {
             mounts.push(item)
         }
     })
-    target.ServerK8S.mounts.forEach(item=>{
-        if (item.name && item.mountPath){
+    target.ServerK8S.mounts.forEach(item => {
+        if (item.name && item.mountPath) {
             mounts.push(item)
         }
     })
@@ -166,14 +209,22 @@ DeployService.serverDeployUpdate = async (metadata, target) => {
     console.log("deploy:" + JSON.stringify(deploy, null, 4));
     let data = await CommonService.replaceObject("tdeploys", deploy.metadata.name, deploy);
 
-    return {ret: 200, msg: 'succ', data: data.body};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 DeployService.serverDeployDelete = async (metadata) => {
 
     let data = await CommonService.deleteObject("tdeploys", metadata.DeployId);
 
-    return {ret: 200, msg: 'succ', data: data.body};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 module.exports = DeployService;

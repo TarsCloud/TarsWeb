@@ -23,6 +23,8 @@ let Ajax = new AjaxUtil();
 
 Ajax.ServerUrl.set('/pages');
 Ajax.ResultHandler.set((result) => {
+  // console.log(result);
+
   if (result && result.ret_code === 200 && result.data != null) {
     return true;
   }

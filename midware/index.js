@@ -38,6 +38,11 @@ const {
 	gatewayApiConf
 } = require('../gateway');
 
+const {
+	marketApiConf
+} = require('../market');
+
+
 const Router = require('koa-router');
 const _ = require('lodash');
 const noCacheMidware = require('./noCacheMidware');
@@ -86,6 +91,7 @@ dcacheApiConf.forEach(conf => apiConf.push(conf));
 ssoApiConf.forEach(conf => apiConf.push(conf));
 monitorApiConf.forEach(conf => apiConf.push(conf));
 callTrainConf.forEach(conf => apiConf.push(conf));
+marketApiConf.forEach(conf => apiConf.push(conf));
 
 //页面类型路由
 const pageRouter = new Router();
@@ -128,6 +134,12 @@ const gatewayApiRouter = new Router();
 gatewayApiRouter.prefix('/pages/gateway/api');
 getRouter(gatewayApiRouter, gatewayApiConf);
 
+//market类型路由
+const marketApiRouter = new Router();
+marketApiRouter.prefix('/pages/market/api');
+getRouter(marketApiRouter, marketApiConf);
+
+
 module.exports = {
 	pageRouter,
 	paegApiRouter,
@@ -135,5 +147,6 @@ module.exports = {
 	apiRouter,
 	k8sRouter,
 	k8sApiRouter,
-	gatewayApiRouter
+	gatewayApiRouter,
+	marketApiRouter
 };

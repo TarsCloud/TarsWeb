@@ -21,19 +21,18 @@ import AjaxUtil from '@/lib/ajax';
 
 let Ajax = new AjaxUtil();
 
-Ajax.ServerUrl.set('/');
+if (process.env.NODE_ENV != "development") {
+  Ajax.ServerUrl.set('http://api.k.tarsyun.com/json');
+} else {
+  Ajax.ServerUrl.set('http://api.dev.tarsyun.com/json');
+}
+
 Ajax.ResultHandler.set((result) => {
   if (result && result.tars_ret === 0) {
     return true;
   }
   return false;
 });
-
-// ['getJSON', 'postJSON'].forEach((method) => {
-//   const originHandler = Ajax[method];
-//   Ajax[`_${method}`] = originHandler;
-//   Ajax[method] = (...args) => originHandler.call(null, ...args).then(res => res.data);
-// });
 
 Ajax.call = function (obj, func, params) {
   return Ajax.postJSON(`/${obj}/${func}`, params);
@@ -44,6 +43,5 @@ Object.defineProperty(Vue.prototype, '$market', {
     return Ajax;
   },
 });
-
 
 export default Ajax

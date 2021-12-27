@@ -22,39 +22,39 @@
         "userCenter": "用户中心"
     },
     "callChain": {
-        "sub":"查询",
-        "noResult":"暂无结果",
-        "allTrackingNumbers":"所有追踪编号:",
-        "pleaseSelectTrackingNumber":"请选择追踪编号",
-        "method":"方法:",
-        "selectMethod":"请选择方法",
-        "methodTrackingNumbers":"该方法下追踪编号:",
-        "selectMethodTrackingNumbers":"请选择方法下追踪编号",
-        "trackingNumbers":"追踪编号：",
-        "date":"日期",
-        "btime":"开始时间",
-        "etime":"结束时间",
-        "timeStamp":"时间戳",
-        "operation":"操作",
-        "detail":"详情",
-        "sbtime":"请选择开始时间",
-        "setime":"请选择结束时间",
-        "sdata":"请选择日期",
-        "searchSuc":"查询成功",
-        "stringBtime":"开始时间：",
-        "stringEtime":"结束时间：",
-        "clientTime":"client总时间：",
-        "serverTime":"server总时间：",
-        "timeFrame":"时间范围",
-        "allTime":"执行时间",
+        "sub": "查询",
+        "noResult": "暂无结果",
+        "allTrackingNumbers": "所有追踪编号:",
+        "pleaseSelectTrackingNumber": "请选择追踪编号",
+        "method": "方法:",
+        "selectMethod": "请选择方法",
+        "methodTrackingNumbers": "该方法下追踪编号:",
+        "selectMethodTrackingNumbers": "请选择方法下追踪编号",
+        "trackingNumbers": "追踪编号：",
+        "date": "日期",
+        "btime": "开始时间",
+        "etime": "结束时间",
+        "timeStamp": "时间戳",
+        "operation": "操作",
+        "detail": "详情",
+        "sbtime": "请选择开始时间",
+        "setime": "请选择结束时间",
+        "sdata": "请选择日期",
+        "searchSuc": "查询成功",
+        "stringBtime": "开始时间：",
+        "stringEtime": "结束时间：",
+        "clientTime": "client总时间：",
+        "serverTime": "server总时间：",
+        "timeFrame": "时间范围",
+        "allTime": "执行时间",
         "serverRelationship": "服务调用关系",
         "nodeRelationship": "节点调用关系",
         "relation": {
             "need": "需要",
             "flow": "总流量",
             "avgTime": "平均耗时(ms)",
-            "abnormalRate":"异常率",
-            "timeoutRate":"超时率"
+            "abnormalRate": "异常率",
+            "timeoutRate": "超时率"
         }
     },
     "deployLog": {
@@ -587,8 +587,8 @@
                 "infDebuger": "接口调试",
                 "cacheDebug": "Cache测试",
                 "treeConfig": "调用链",
-                "averageDuration":"平均时长",
-                "trackingNumber":"调用链明细"
+                "averageDuration": "平均时长",
+                "trackingNumber": "调用链明细"
             }
         }
     },
@@ -1084,8 +1084,8 @@
                 "labelValid": "标签名不符合规范",
                 "labelMax": "标签最大组数为63组",
                 "labelValueValid": "标签值不符合规范",
-                "errorKey":"标签名称必填",
-                "errorValue":"标签值不可为空",
+                "errorKey": "标签名称必填",
+                "errorValue": "标签值不可为空",
                 "addLabel": "添加一组标签"
             },
             "affinity": "亲和性选择",
@@ -1247,11 +1247,11 @@
         "executeConnect": "正在执行联通性测试, 请稍后",
         "executeInstall": "正在执行安装, 请稍后",
         "installTgzNotExists": "安装包不存在, 请检查web服务器上安装包: /usr/local/app/web/files/tarsnode.tgz",
-        "step1":"检查安装包",
-        "step2":"ssh链接",
-        "step3":"下载安装包",
-        "step4":"检查参数",
-        "step5":"安装节点",
+        "step1": "检查安装包",
+        "step2": "ssh链接",
+        "step3": "下载安装包",
+        "step4": "检查参数",
+        "step5": "安装节点",
         "table": {
             "th": {
                 "node_name": "节点",
@@ -1326,25 +1326,25 @@
             "title": "删除模板"
         }
     },
-    "gateway":{
-        "station":"站点配置",
-        "upstream":"upstream配置",
-        "globalblack":"全局黑名单配置",
-        "stationId":"站点ID",
-        "stationName":"站点名",
-        "monitorUrl":"监控URL",
-        "serverName":"服务名",
-        "pathRule":"路径规则",
-        "proxyPass":"ProxyPass",
-        "addr":"地址",
-        "weight":"权重",
-        "fusing":"熔断",
-        "fusingOn":"开启",
-        "fusingOff":"关闭",
-        "lastUpdate":"更新时间",
-        "gatewayObj":"网关控制服务Obj",
-        "switchGateway":"切换网关",
-        "btn":{
+    "gateway": {
+        "station": "站点配置",
+        "upstream": "upstream配置",
+        "globalblack": "全局黑名单配置",
+        "stationId": "站点ID",
+        "stationName": "站点名",
+        "monitorUrl": "监控URL",
+        "serverName": "服务名",
+        "pathRule": "路径规则",
+        "proxyPass": "ProxyPass",
+        "addr": "地址",
+        "weight": "权重",
+        "fusing": "熔断",
+        "fusingOn": "开启",
+        "fusingOff": "关闭",
+        "lastUpdate": "更新时间",
+        "gatewayObj": "网关控制服务Obj",
+        "switchGateway": "切换网关",
+        "btn": {
             "addGateway": "新增站点",
             "addUpstream": "新增Upstream",
             "addHttpRouter": "新增路由",
@@ -1354,12 +1354,12 @@
             "stationNameTips": "请输入站点名",
             "idFormatTips": "站点ID只能包含英文字母、数字、点、下划线，并以字母开头，不能以Obj结尾",
             "monitorUrlTips": "请输入监控URL",
-            "upstreamFormatTips":"upstream只能包含英文字母、数字、下划线，以字母开头，不能以Obj结尾",
-            "addrFormatTips":"请输入ip:port",
-            "weightFormatTips":"请输入权重值",
-            "serverNameTip":"支持通配符、正则表达式，为空则全匹配",
-            "pathRuleTip":"请输入路径匹配规则",
-            "proxyPassTip":"请输入ProxyPass，支持ip:port / upstream / tars obj 三种方式",
+            "upstreamFormatTips": "upstream只能包含英文字母、数字、下划线，以字母开头，不能以Obj结尾",
+            "addrFormatTips": "请输入ip:port",
+            "weightFormatTips": "请输入权重值",
+            "serverNameTip": "支持通配符、正则表达式，为空则全匹配",
+            "pathRuleTip": "请输入路径匹配规则",
+            "proxyPassTip": "请输入ProxyPass，支持ip:port / upstream / tars obj 三种方式",
             "title": "新增站点",
             "upstream": "新增Upstream"
         },
@@ -1373,29 +1373,29 @@
             "confirmTips": "您确定要删除这个站点吗",
             "upstreamConfirmTips": "您确定要删除这个upstream吗",
             "bwListConfirmTips": "您确定要删除这条黑/白名单配置吗",
-            "deleteUpstreamErrorTip":"删除失败，仍有关联的Router或者资源不存在",
+            "deleteUpstreamErrorTip": "删除失败，仍有关联的Router或者资源不存在",
             "title": "删除站点"
         },
-        "config":{
-            "title":"网关配置"
+        "config": {
+            "title": "网关配置"
         },
-        "bwlist":{
-            "title":{
-                "black":"黑名单",
-                "white":"白名单"
+        "bwlist": {
+            "title": {
+                "black": "黑名单",
+                "white": "白名单"
             },
-            "ipTip":"请输入IP地址（支持通配符）"
+            "ipTip": "请输入IP地址（支持通配符）"
         },
-        "flowControl":{
-            "title":"流量控制",
-            "duration":"时间窗口(s)",
-            "durationTip":"请输入时间窗口秒数",
-            "maxFlow":"最大流量",
-            "maxFlowTip":"请输入时间窗口内最大流量",
-            "tip":"即在'时间窗口'的时间内，最多请求'最大流量'次，超出的流量会被拒绝"
+        "flowControl": {
+            "title": "流量控制",
+            "duration": "时间窗口(s)",
+            "durationTip": "请输入时间窗口秒数",
+            "maxFlow": "最大流量",
+            "maxFlowTip": "请输入时间窗口内最大流量",
+            "tip": "即在'时间窗口'的时间内，最多请求'最大流量'次，超出的流量会被拒绝"
         },
-        "router":{
-            "title":"路由配置"
+        "router": {
+            "title": "路由配置"
         }
     },
     "serviceApproval": {
@@ -1755,7 +1755,7 @@
         }
     },
     "event": {
-        "eventLevel":"事件级别",
+        "eventLevel": "事件级别",
         "type": {
             "server": "服务级别",
             "cluster": "集群级别",
@@ -1798,9 +1798,9 @@
             "stopPublic": "停用公用",
             "nodeLabels": "节点标签",
             "nodeAffinity": "请将节点添加 tars.io/node.$Namespace 标签, 以便当前框架能管理该节点",
-            "CommonTag":"普通标签",
-            "AbilityTag":"亲和性标签",
-            "FrameWorkTag":"框架节点标签",
+            "CommonTag": "普通标签",
+            "AbilityTag": "亲和性标签",
+            "FrameWorkTag": "框架节点标签",
             "tagName": "标签名",
             "tagValue": "标签值"
         },
@@ -2059,5 +2059,11 @@
                 "alarmType": "告警方式"
             }
         }
+    },
+    "market": {
+        "table": {
+            "version": "当前版本"
+        },
+        "download": "下载"
     }
 }

@@ -27,7 +27,9 @@ const helmet = require("koa-helmet");
 const staticRouter = require('koa-static-router');
 
 const WebConf = require('./config/webConf');
-const upload = multer({dest: WebConf.pkgUploadPath.path + '/'});
+const upload = multer({
+	dest: WebConf.pkgUploadPath.path + '/'
+});
 const logger = require('./logger');
 
 // const apiMidware = require('./midware/apiMidware');
@@ -52,7 +54,7 @@ app.use(limitMidware());
 const CONFIG = {
 	key: 'koa:sess',
 	maxAge: 1000 * 60 * 60 * 12, // 12小时, 设置 session 的有效时间，单位毫秒
-	autoCommit: true, 
+	autoCommit: true,
 	overwrite: true,
 	httpOnly: true,
 	signed: true,
@@ -68,7 +70,7 @@ app.use(helmet());
 
 app.use(bodyparser());
 
-app.use(upload.array('suse',5)); //这里决定了上传包的name只能叫suse。
+app.use(upload.array('suse', 5)); //这里决定了上传包的name只能叫suse。
 
 //国际化多语言中间件
 app.use(localeMidware);
@@ -81,7 +83,7 @@ preMidware.forEach((midware) => {
 //登录校验
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/web_version', '/static', '/captcha', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
-loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login','/pages/server/api/isEnableLdap']);
+loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login', '/pages/server/api/isEnableLdap']);
 
 // //上传文件不需要登录
 // if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
@@ -117,15 +119,14 @@ app.use(async (ctx, next) => {
 	}
 
 	await next();
-  });
+});
 
 app.use(loginMidware(loginConf));
 
 //安装包资源中间件
-app.use(staticRouter([
-    {
-    dir: './files',     //静态资源目录对于相对入口文件index.js的路径
-    router: '/files'    //路由命名
+app.use(staticRouter([{
+	dir: './files', //静态资源目录对于相对入口文件index.js的路径
+	router: '/files' //路由命名
 }]));
 
 //激活router
@@ -139,9 +140,15 @@ if (WebConf.enable) {
 
 app.use(async (ctx, next) => {
 	await next();
-	ctx.cookies.set('enable', WebConf.enable?"true":"false", {httpOnly: false});
-	ctx.cookies.set('show', (WebConf.enable && WebConf.show)?"true":"false", {httpOnly: false});
-	ctx.cookies.set('k8s', WebConf.isEnableK8s()?"true":"false", {httpOnly: false});
+	ctx.cookies.set('enable', WebConf.enable ? "true" : "false", {
+		httpOnly: false
+	});
+	ctx.cookies.set('show', (WebConf.enable && WebConf.show) ? "true" : "false", {
+		httpOnly: false
+	});
+	ctx.cookies.set('k8s', WebConf.isEnableK8s() ? "true" : "false", {
+		httpOnly: false
+	});
 })
 
 
@@ -154,13 +161,22 @@ const {
 	apiRouter,
 	k8sRouter,
 	k8sApiRouter,
-	gatewayApiRouter
+	gatewayApiRouter,
+	marketApiRouter
 } = require('./midware');
 
-app.use(pageRouter.routes(), pageRouter.allowedMethods({throw:true}));
-app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods({throw:true}));
-app.use(clientRouter.routes(), clientRouter.allowedMethods({throw:true}));
-app.use(apiRouter.routes(), apiRouter.allowedMethods({throw:true}));
+app.use(pageRouter.routes(), pageRouter.allowedMethods({
+	throw: true
+}));
+app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods({
+	throw: true
+}));
+app.use(clientRouter.routes(), clientRouter.allowedMethods({
+	throw: true
+}));
+app.use(apiRouter.routes(), apiRouter.allowedMethods({
+	throw: true
+}));
 if (k8sRouter) {
 	app.use(k8sRouter.routes()).use(k8sRouter.allowedMethods());
 }
@@ -168,9 +184,13 @@ if (k8sApiRouter) {
 	app.use(k8sApiRouter.routes()).use(k8sApiRouter.allowedMethods());
 }
 app.use(gatewayApiRouter.routes()).use(gatewayApiRouter.allowedMethods());
+app.use(marketApiRouter.routes()).use(marketApiRouter.allowedMethods());
+
 
 //激活静态资源中间件
-app.use(static(path.join(__dirname, './client/dist'), {maxage: 7 * 24 * 60 * 60 * 1000}));
+app.use(static(path.join(__dirname, './client/dist'), {
+	maxage: 7 * 24 * 60 * 60 * 1000
+}));
 
 app.use(router.routes()); //作用：启动路由
 app.use(router.allowedMethods());
@@ -181,4 +201,3 @@ postMidware.forEach((midware) => {
 });
 
 module.exports = app;
-

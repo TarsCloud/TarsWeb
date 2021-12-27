@@ -18,8 +18,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 // 重写路由的push方法
-const routerPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push(location){
+const routerPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(error => error)
 }
 
@@ -64,13 +64,11 @@ import VueRouter from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: '/server',
       name: 'Server',
       component: Server,
-      children: [
-        {
+      children: [{
           path: ':treeid/manage',
           component: ServerManage,
         },
@@ -109,8 +107,7 @@ export default new Router({
       name: 'Operation',
       component: Operation,
       redirect: '/operation/deploy',
-      children: [
-        {
+      children: [{
           path: 'deploy',
           component: OperationDeploy,
         },
@@ -165,19 +162,20 @@ export default new Router({
       path: '/market',
       name: 'Market',
       component: Market,
-      children: [
-        {
-          path: ':serviceId/info',
-          component: ServiceInfo,
-        },
-      ],
+      children: [{
+        path: ':group/:name/:version',
+        component: ServiceInfo,
+      }, ],
     },
     {
       path: '*',
       redirect: '/server',
     },
   ],
-  scrollBehavior (to, from, savedPosition) {
-    return {x: 0, y: 0}
+  scrollBehavior(to, from, savedPosition) {
+    return {
+      x: 0,
+      y: 0
+    }
   }
 });
