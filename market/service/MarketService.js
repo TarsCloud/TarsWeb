@@ -57,7 +57,7 @@ MarketService.install = async (deploy) => {
 	serverOption.ServerProfile = deploy.profile;
 	serverOption.AsyncThread = deploy.asyncThread;
 
-	return await DeployService.createServer(deploy.app, deploy.server, ServerServant, serverK8S, serverOption);
+	return await DeployService.install(deploy, ServerServant, serverK8S, serverOption);
 };
 
 module.exports = MarketService;

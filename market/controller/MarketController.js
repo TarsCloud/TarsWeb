@@ -36,6 +36,8 @@ MarketController.install = async (ctx) => {
 	try {
 		let y = jsYaml.load(ctx.paramsObj.deploy);
 
+		y.uid = ctx.uid;
+
 		let result = await MarketService.install(y);
 
 		ctx.makeResObj(result.ret, result.msg, result.data);

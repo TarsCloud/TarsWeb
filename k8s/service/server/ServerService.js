@@ -35,31 +35,29 @@ ServerService.searchServer = async (searchKey) => {
 
     allItems = items;
 
-	// Count填充
+    // Count填充
     let result = {};
-    // result.Count = {};
-    // result.Count["AllCount"] = allItems.length;
-    // result.Count["FilterCount"] = filterItems.length;
 
-	// Data填充
+    // Data填充
     result.Data = [];
 
     allItems.forEach(item => {
 
         let elem = {
-		    ServerId: item.spec.app + '.' + item.spec.server,
-		    ServerApp: item.spec.app,
+            ServerId: item.spec.app + '.' + item.spec.server,
+            ServerApp: item.spec.app,
             ServerName: item.spec.server,
         };
 
-		// if(item.spec.Release != null) {
-        //     elem["ServerType"] = item.spec.release.serverType;
-        // }
 
         result.Data.push(elem);
     })
 
-    return { ret: 200, msg: 'succ', data: result };
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 }
 
 ServerService.selectServer = async (ServerApp, ServerName, limiter) => {
@@ -81,90 +79,134 @@ ServerService.selectServer = async (ServerApp, ServerName, limiter) => {
 
     allItems = items;
 
-	// filter
+    // filter
     let filterItems = allItems;
 
-	// limiter
-	if(limiter != null) {
-        let { start, stop } = CommonService.pageList(filterItems.length, limiter);
+    // limiter
+    if (limiter != null) {
+        let {
+            start,
+            stop
+        } = CommonService.pageList(filterItems.length, limiter);
 
         filterItems = filterItems.slice(start, stop);
-	}
+    }
 
-	// Count填充
+    // Count填充
     let result = {};
     result.Count = {};
     result.Count["AllCount"] = allItems.length;
     result.Count["FilterCount"] = filterItems.length;
 
-	// Data填充
+    // Data填充
     result.Data = [];
 
     filterItems.forEach(item => {
-        // console.log(item);
 
         let elem = {
-		    ServerId: item.spec.app + '.' + item.spec.server,
-		    ServerApp: item.spec.app,
+            ServerId: item.spec.app + '.' + item.spec.server,
+            ServerApp: item.spec.app,
             ServerName: item.spec.server,
         };
 
-		if(item.spec.Release != null) {
+        if (item.spec.Release != null) {
             elem["ServerType"] = item.spec.release.serverType;
         }
 
         result.Data.push(elem);
     })
 
-    // console.log(result);
-    return { ret: 200, msg: 'succ', data: result };
-    // return result;
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 }
 
 ServerService.updateServer = async (metadata, target) => {
 
     let server = await CommonService.getServer(metadata.ServerId);
     if (!server) {
-        return { ret: 500, msg: 'no server' };
+        return {
+            ret: 500,
+            msg: 'no server'
+        };
     }
 
     let serverCopy = JSON.parse(JSON.stringify(server));
 
-	if(serverCopy.spec.release == null) {
+    if (serverCopy.spec.release == null) {
         serverCopy.spec.release = {};
-	}
+    }
 
-	if(serverCopy.spec.release.serverType == target.ServerType) {
-		// 服务发布时会调用，默认一定是传相同的
-        return { ret: 200, msg: 'succ', data: { Result: 0 } };
-	}
+    if (serverCopy.spec.release.serverType == target.ServerType) {
+        // 服务发布时会调用，默认一定是传相同的
+        return {
+            ret: 200,
+            msg: 'succ',
+            data: {
+                Result: 0
+            }
+        };
+    }
 
     serverCopy.spec.release.serverType = target.serverType;
 
     let data = await k8sApi.replacObject("tservers", serverCopy.metadata.name, serverCopy);
 
-    return { ret: 200, msg: 'succ', data: data.body };
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 
 ServerService.deleteServer = async (metadata) => {
 
-    metadata.ServerId.forEach(async(item)=> {
+    metadata.ServerId.forEach(async (item) => {
 
         try {
             await CommonService.deleteObject("tservers", CommonService.getTServerName(item));
         } catch (e) {
-            logger.error(e);
+            logger.error('deleteServer', e);
         }
 
         try {
-            await CommonService.deleteObject("treleases", CommonService.getTServerName(item));
+            await CommonService.deleteObject("timages", CommonService.getTServerName(item));
         } catch (e) {
-            logger.error(e);
+            logger.error('deleteServer', e);
         }
+
+        try {
+            let filter = {
+                eq: {},
+            }
+
+            filter.eq[CommonService.TServerAppLabel] = item.substr(0, item.indexOf("."));
+            filter.eq[CommonService.TServerNameLabel] = item.substr(item.indexOf(".") + 1);
+
+            let labelSelector = CommonService.createLabelSelector(filter);
+
+            let configs = await CommonService.listObject("tconfigs", labelSelector);
+
+            for (let i = 0; i < configs.body.items.length; i++) {
+                let config = configs.body.items[i];
+
+                await CommonService.deleteObject("tconfigs", config.metadata.name);
+
+            }
+
+        } catch (e) {
+            logger.error('deleteServer', e);
+        }
+
     });
 
-    return { ret: 200, msg: 'succ'};
+    return {
+        ret: 200,
+        msg: 'succ'
+    };
 }
 
 
@@ -178,23 +220,26 @@ ServerService.serverOptionSelect = async (ServerId, limiter) => {
 
     // console.log(filterItems);
 
-	// limiter
-	if (limiter != null) {
-        let { start, stop } = CommonService.pageList(filterItems.length, limiter);
+    // limiter
+    if (limiter != null) {
+        let {
+            start,
+            stop
+        } = CommonService.pageList(filterItems.length, limiter);
         filterItems = filterItems.splice(start, stop);
-	}
+    }
 
-	// Count填充
-    let result = {}; //&models.SelectResult{}
-    result.Count = {}; //make(models.MapInt)
+    // Count填充
+    let result = {};
+    result.Count = {};
     result.Count["AllCount"] = filterItems.length;
     result.Count["FilterCount"] = filterItems.length;
 
     // Data填充
-    result.Data = []; //make(models.ArrayMapInterface, 0, len(filterItems))
+    result.Data = [];
     // normal 服务无spec.tars域
     filterItems.forEach(item => {
-        let elem = {}; //make(map[string]interface{})
+        let elem = {};
         let tars = item.spec.tars;
         elem["ServerId"] = CommonService.getServerId(item.spec.app, item.spec.server);
         elem["ServerApp"] = item.spec.app
@@ -207,7 +252,11 @@ ServerService.serverOptionSelect = async (ServerId, limiter) => {
         result.Data.push(elem);
     });
 
-    return { ret: 200, msg: 'succ', data: result };
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 
 }
 
@@ -215,30 +264,38 @@ ServerService.serverOptionUpdate = async (metadata, target) => {
 
     let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
     if (!tServer) {
-        return { ret: 500, msg: "server not exists" };
+        return {
+            ret: 500,
+            msg: "server not exists"
+        };
     }
     tServer = tServer.body;
 
 
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
 
-    // console.log(tServerCopy.spec.tars, target);
-
-	tServerCopy.spec.important = target.ServerImportant
-	tServerCopy.spec.tars.template = target.ServerTemplate
-	tServerCopy.spec.tars.profile = target.ServerProfile
-	tServerCopy.spec.tars.asyncThread = target.AsyncThread
+    tServerCopy.spec.important = target.ServerImportant
+    tServerCopy.spec.tars.template = target.ServerTemplate
+    tServerCopy.spec.tars.profile = target.ServerProfile
+    tServerCopy.spec.tars.asyncThread = target.AsyncThread
 
     let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
 
-    return { ret: 200, msg: 'succ', data: data.body };
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 ServerService.serverOptionTemplate = async (metadata) => {
 
     let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
     if (!tServer) {
-        return { ret: 500, msg: "server not exists" };
+        return {
+            ret: 500,
+            msg: "server not exists"
+        };
     }
 
     tServer = tServer.body;
@@ -246,14 +303,17 @@ ServerService.serverOptionTemplate = async (metadata) => {
     let profile = tServer.spec.tars.profile;
     let templateName = tServer.spec.tars.template
 
-    let allTemplateContent = []; //make([][]byte, 0, 10)
+    let allTemplateContent = [];
     allTemplateContent.push(profile);
 
     do {
 
-        let curTemplate = await CommonService.getObject("ttemplates",templateName);
+        let curTemplate = await CommonService.getObject("ttemplates", templateName);
         if (!curTemplate) {
-            return { ret: 500, msg: "template not exists" };
+            return {
+                ret: 500,
+                msg: "template not exists"
+            };
         }
 
         curTemplate = curTemplate.body;
@@ -262,19 +322,22 @@ ServerService.serverOptionTemplate = async (metadata) => {
 
         let parentTemplateName = curTemplate.spec.parent
 
-        let parTemplate = await CommonService.getObject("ttemplates",parentTemplateName);
+        let parTemplate = await CommonService.getObject("ttemplates", parentTemplateName);
         if (!parTemplate) {
-            return { ret: 500, msg: "parent template not exists" };
+            return {
+                ret: 500,
+                msg: "parent template not exists"
+            };
         }
         parTemplate = parTemplate.body;
 
         let parentContent = parTemplate.spec.content
 
-        if(allTemplateContent.length == 1) {
+        if (allTemplateContent.length == 1) {
             allTemplateContent.push(templateContent);
         }
 
-        if(parentTemplateName == templateName) {
+        if (parentTemplateName == templateName) {
             break
         }
 
@@ -290,6 +353,10 @@ ServerService.serverOptionTemplate = async (metadata) => {
         afterJoinTemplateContent += item;
     });
 
-    return { ret: 200, msg: 'succ', data: afterJoinTemplateContent };
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: afterJoinTemplateContent
+    };
 }
 module.exports = ServerService;

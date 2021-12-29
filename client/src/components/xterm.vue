@@ -6,13 +6,14 @@
 import "xterm/css/xterm.css";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
-import { AttachAddon } from "xterm-addon-attach";
+// import { AttachAddon } from "xterm-addon-attach";
 import { WebLinksAddon } from "xterm-addon-web-links";
 
 export default {
   data() {
     return {
       pingOk: true,
+      resize: false,
       term: "",
       socket: "",
       app: "",
@@ -23,7 +24,7 @@ export default {
     };
   },
   mounted() {
-    let { app, server, pod, history, nodeip } = this;
+    // let { app, server, pod, history, nodeip } = this;
     this.app = this.getQueryVariable("ServerApp");
     this.server = this.getQueryVariable("ServerName");
     this.pod = this.getQueryVariable("PodName");
@@ -120,15 +121,19 @@ export default {
       this.term.focus();
 
       // 支持输入与粘贴方法
-      let _this = this; //一定要重新定义一个this，不然this指向会出问题
+      let _this = this;
       this.term.onData(function(key) {
         //这里key值是你输入的值，数据格式一定要找后端要！！！！
         let order = { operation: "stdin", data: key };
-        _this.socket.onsend(JSON.stringify(order)); //转换为字符串
+        _this.socket.onsend(JSON.stringify(order));
+
+        if (!_this.resize) {
+          _this.resize = true;
+          _this.resizeScreen();
+        }
       });
     },
     init(url) {
-      // console.log(url);
       // 实例化socket
       this.socket = new WebSocket(url, "echo-protocol");
       // 监听socket连接
@@ -152,6 +157,9 @@ export default {
     },
     error: function() {
       console.log("[error] Connection error");
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
     },
     close: function() {
       this.socket.close();

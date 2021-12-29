@@ -107,8 +107,7 @@ export default {
           this.serviceList = data.rsp.services;
           this.serviceList.forEach((e) => {
             e.create_time = moment(e.create_time).format("YYYY-MM-DD HH:mm:ss");
-            e.logo = e.prefix + e.logo;
-            console.log(e.prefix, e.logo);
+            e.logo = e.prefix + e.logo + "?t=" + e.updatetime;
           });
 
           this.total = data.rsp.total;

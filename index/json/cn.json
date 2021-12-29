@@ -2065,5 +2065,11 @@
             "version": "当前版本"
         },
         "download": "下载"
+    },
+    "el": {
+        "messagebox": {
+            "confirm": "确定",
+            "cancel": "取消"
+        }
     }
 }

@@ -65,7 +65,7 @@ export default {
             data.text().then((content) => {
               let y = jsYaml.load(content);
               delete y.cloud;
-              y.repo.id = "v" + new Date().getTime();
+              y.repo.id = "";
 
               this.deploy = jsYaml.dump(y);
             });

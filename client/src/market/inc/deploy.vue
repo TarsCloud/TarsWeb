@@ -34,9 +34,9 @@ export default {
         .then((data) => {
           if (data.ok) {
             data.text().then((content) => {
-              this.$nextTick(() => {
-                this.data.deploy = content;
-              });
+              this.data.deploy = content;
+
+              this.$refs.yamlEdit.refresh();
             });
           }
         })

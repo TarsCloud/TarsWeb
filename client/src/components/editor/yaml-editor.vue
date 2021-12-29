@@ -1,10 +1,11 @@
 <template>
   <div class="yaml-editor">
-    <textarea ref="textarea" id="textarea" />
+    <textarea ref="textarea" id="textarea"></textarea>
   </div>
 </template>
 
 <script>
+// import CodeMirror from "codemirror/lib/codemirror";
 import CodeMirror from "codemirror";
 import "codemirror/addon/lint/lint.css";
 import "codemirror/lib/codemirror.css";
@@ -22,6 +23,7 @@ export default {
   data() {
     return {
       yamlEditor: false,
+      diff: [],
     };
   },
   watch: {
@@ -29,7 +31,6 @@ export default {
       const editorValue = this.yamlEditor.getValue();
       if (value !== editorValue) {
         this.yamlEditor.setValue(this.value);
-        this.yamlEditor.refresh();
       }
     },
   },
@@ -39,9 +40,8 @@ export default {
       mode: "text/x-yaml", // 语法
       theme: "idea", // 编辑器主题
       lint: true, // 开启语法检查
-      Autofocus: true,
-      autoRefresh: true,
       lineWrapping: true,
+      autofocus: true,
       extraKeys: { "Ctrl-Space": "autocomplete" },
       foldGutter: true,
       gutters: ["CodeMirror-lint-markers"], // 语法检查器
@@ -51,10 +51,16 @@ export default {
       this.$emit("changed", cm.getValue());
       this.$emit("input", cm.getValue());
     });
-    // this.yamlEditor.setValue(this.value);
+    this.yamlEditor.setValue(this.value);
 
-    // console.log(this.value);
-    setTimeout(this.yamlEditor.refresh(), 100);
+    this.$nextTick(() => {
+      let that = this;
+
+      //未知, 必须要要这样才能显示 否则非要点击一次才能显示
+      setInterval(() => {
+        that.yamlEditor.refresh();
+      }, 500);
+    });
   },
   methods: {
     getValue() {
@@ -72,7 +78,7 @@ export default {
 
 <style scoped>
 .yaml-editor {
-  height: 100%;
+  height: 70%;
 }
 
 .yaml-editor >>> .CodeMirror {

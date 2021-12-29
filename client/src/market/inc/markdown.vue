@@ -31,13 +31,13 @@ export default {
   data() {
     return { html: "" };
   },
-  props: ["serviceVersion"],
+  props: ["serviceVersion", "file"],
   methods: {
     markdownToHtml(markdown) {
       this.html = marked.parse(markdown);
     },
     fetchReadme() {
-      Ajax.getPlain(this.serviceVersion.readme, {
+      Ajax.getPlain(this.file, {
         t: this.serviceVersion.update_time,
       })
         .then((data) => {

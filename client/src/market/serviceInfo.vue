@@ -28,16 +28,60 @@
             <div style="margin-bottom:5px">
               <span style="margin-bottom:10px; margin-right:10px">
                 <el-tag effect="dark" size="mini" style=" margin-right:5px"
+                  >语言</el-tag
+                ><el-tag effect="plain" type="success" size="mini">{{
+                  serviceVersion.lang
+                }}</el-tag>
+              </span>
+            </div>
+            <div style="margin-bottom:5px">
+              <span style="margin-bottom:10px; margin-right:10px">
+                <el-tag effect="dark" size="mini" style=" margin-right:5px"
+                  >贡献者</el-tag
+                ><el-tag effect="plain" type="success" size="mini">{{
+                  serviceVersion.collaborators
+                }}</el-tag>
+              </span>
+            </div>
+            <div style="margin-bottom:5px">
+              <span style="margin-bottom:10px; margin-right:10px">
+                <el-tag
+                  effect="dark"
+                  type="warning"
+                  size="mini"
+                  style=" margin-right:5px"
+                  >仓库</el-tag
+                ><el-tag
+                  effect="plain"
+                  type="warning"
+                  size="mini"
+                  style="cursor:pointer"
+                  @click="goRepository(serviceVersion.repository)"
+                  >{{ serviceVersion.repository }}</el-tag
+                >
+              </span>
+            </div>
+            <div style="margin-bottom:5px">
+              <span style="margin-bottom:10px; margin-right:10px">
+                <el-tag
+                  effect="dark"
+                  size="mini"
+                  type="danger"
+                  style=" margin-right:5px"
                   >创建</el-tag
-                ><el-tag effect="dark" type="danger" size="mini">{{
+                ><el-tag effect="plain" type="danger" size="mini">{{
                   serviceVersion.create_time
                 }}</el-tag>
               </span>
 
               <span>
-                <el-tag effect="dark" size="mini" style=" margin-right:5px"
+                <el-tag
+                  effect="dark"
+                  size="mini"
+                  type="danger"
+                  style=" margin-right:5px"
                   >更新</el-tag
-                ><el-tag effect="dark" type="danger" size="mini">{{
+                ><el-tag effect="plain" type="danger" size="mini">{{
                   serviceVersion.update_time
                 }}</el-tag>
               </span>
@@ -64,13 +108,25 @@
     <el-main v-if="serviceVersion">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="服务说明" name="readme">
-          <markdown :serviceVersion="serviceVersion"></markdown>
+          <markdown
+            :serviceVersion="serviceVersion"
+            :file="serviceVersion.readme"
+          ></markdown>
         </el-tab-pane>
         <el-tab-pane label="部署文件" name="deploy">
           <deploy :serviceVersion="serviceVersion"></deploy>
         </el-tab-pane>
         <el-tab-pane label="协议文件" name="protocols">
           <protocols :serviceVersion="serviceVersion"></protocols>
+        </el-tab-pane>
+        <el-tab-pane label="变更历史" name="changelist">
+          <markdown
+            :serviceVersion="serviceVersion"
+            :file="serviceVersion.changelist"
+          ></markdown>
+        </el-tab-pane>
+        <el-tab-pane label="日志" name="logs">
+          <logs :serviceVersion="serviceVersion"></logs>
         </el-tab-pane>
       </el-tabs>
     </el-main>
@@ -90,6 +146,8 @@ import markdown from "./inc/markdown";
 import deploy from "./inc/deploy";
 import protocols from "./inc/protocols";
 import install from "./inc/install";
+import logs from "./inc/logs";
+
 export default {
   name: "ServiceInfo",
   components: {
@@ -97,6 +155,7 @@ export default {
     deploy,
     protocols,
     install,
+    logs,
   },
   data() {
     return {
@@ -110,11 +169,17 @@ export default {
   },
   watch: {
     $route(to, from) {
-      this.loadData(to.params.group, to.params.name);
+      console.log(to, from);
+      if (to.path.startsWith("/market/")) {
+        this.loadData(to.params.group, to.params.name, to.params.version);
+      }
     },
   },
   methods: {
     handleClick() {},
+    goRepository(repository) {
+      window.open(repository);
+    },
     loadData(group, name, version) {
       this.group = group;
       this.name = name;
@@ -140,21 +205,38 @@ export default {
           },
         })
         .then((data) => {
-          this.serviceVersion = data.rsp;
-          this.serviceVersion.logo =
-            this.serviceVersion.prefix + this.serviceVersion.logo;
-          this.serviceVersion.readme =
-            this.serviceVersion.prefix + this.serviceVersion.readme;
-          this.serviceVersion.deploy =
-            this.serviceVersion.prefix + this.serviceVersion.deploy;
+          this.serviceVersion = null;
+          this.$nextTick(() => {
+            this.serviceVersion = data.rsp;
+            this.serviceVersion.logo =
+              this.serviceVersion.prefix +
+              this.serviceVersion.logo +
+              "?t=" +
+              this.serviceVersion.update_time;
+            this.serviceVersion.readme =
+              this.serviceVersion.prefix +
+              this.serviceVersion.readme +
+              "?t=" +
+              this.serviceVersion.update_time;
+            this.serviceVersion.deploy =
+              this.serviceVersion.prefix +
+              this.serviceVersion.deploy +
+              "?t=" +
+              this.serviceVersion.update_time;
+            this.serviceVersion.changelist =
+              this.serviceVersion.prefix +
+              this.serviceVersion.changelist +
+              "?t=" +
+              this.serviceVersion.update_time;
 
-          this.serviceVersion.create_time = moment(
-            this.serviceVersion.create_time
-          ).format("YYYY-MM-DD HH:mm:ss");
+            this.serviceVersion.create_time = moment(
+              this.serviceVersion.create_time
+            ).format("YYYY-MM-DD");
 
-          this.serviceVersion.update_time = moment(
-            this.serviceVersion.update_time
-          ).format("YYYY-MM-DD HH:mm:ss");
+            this.serviceVersion.update_time = moment(
+              this.serviceVersion.update_time
+            ).format("YYYY-MM-DD");
+          });
         })
         .catch((err) => {
           this.$message({

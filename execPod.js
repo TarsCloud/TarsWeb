@@ -14,9 +14,7 @@ let exec = async () => {
 
     global.wsServer.on('request', async function (request) {
 
-        var connection;
-
-        connection = request.accept('echo-protocol', request.origin);
+        let connection = request.accept('echo-protocol', request.origin);
         // console.log(connection);
         logger.info((new Date()) + ' Connection accepted');
 
@@ -62,7 +60,6 @@ let exec = async () => {
             fi`
         }
 
-
         command.push(sh);
 
         try {
@@ -73,8 +70,12 @@ let exec = async () => {
 
             let ws = await CommonService.connectPodExec(params.PodName, command, pod.spec.containers[0].name);
 
+            ws.on('close', (code, reason) => {
+                logger.error('close:', code, reason);
+            });
+
             ws.on('error', (error) => {
-                logger.error(error);
+                logger.error("error:", error);
             });
 
             ws.on('ping', (data) => {
@@ -128,6 +129,8 @@ let exec = async () => {
         } catch (e) {
 
             logger.error(e);
+
+            connection.close();
         }
 
     });

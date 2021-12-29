@@ -32,26 +32,15 @@ import {
 import ElementUI from 'element-ui';
 import "./assets/theme/element-to-let/index.css"
 
-//代码高亮文件引入
-// import hljs from 'highlight.js'
-//样式文件,这里我选的是sublime样式，文件里面还有其他样式可供选择
-// import 'highlight.js/styles/monokai-sublime.css'
-
 import 'viewerjs/dist/viewer.css';
 import Viewer from 'v-viewer';
-Vue.use(Viewer);
-
-// Vue.directive('highlight', function (el) {
-//   let blocks = el.querySelectorAll('pre code');
-//   blocks.forEach((block) => {
-//     hljs.highlightBlock(block)
-//   })
-// })
 
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 loadLang.call(this).then(() => {
+  Vue.use(Viewer);
+
   Vue.use(ElementUI, {
     i18n: (key, value) => i18n.t(key, value)
   });

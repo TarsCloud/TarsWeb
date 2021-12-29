@@ -65,14 +65,66 @@ ImageService.imageSelect = async () => {
 	return imageSelect('base');
 }
 
+ImageService.serverImageCreateWithRelease = async (deploy) => {
+
+	let name = CommonService.getTServerName(deploy.app + '-' + deploy.server);
+
+	let result = await CommonService.getObject("timages", name);
+
+	let tImage = null;
+
+	if (!result) {
+
+		tImage = {
+			apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
+			kind: 'TImage',
+			metadata: {
+				namespace: CommonService.NAMESPACE,
+				name: name,
+				labels: {}
+			},
+			imageType: 'server',
+			releases: []
+		}
+
+		tImage.metadata.labels[`${CommonService.TImageTypeLabel}`] = 'server';
+		tImage.metadata.labels[`${CommonService.TServerAppLabel}`] = deploy.app;
+		tImage.metadata.labels[`${CommonService.TServerNameLabel}`] = deploy.server;
+	} else {
+		tImage = result.body;
+	}
+
+	console.log(tImage);
+
+	tImage.releases.push({
+		id: deploy.repo.id,
+		image: deploy.repo.image,
+		secret: deploy.repo.secret,
+		mark: "from cloud",
+		createPerson: deploy.uid || 'web',
+	});
+
+	if (!result) {
+		result = await CommonService.createObject("timages", tImage);
+	} else {
+		result = await CommonService.replaceObject("timages", tImage.metadata.name, tImage);
+	}
+
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: result.body
+	};
+}
+
 ImageService.serverImageGetAndCreate = async (ServerApp, ServerName) => {
-	
+
 	let name = CommonService.getTServerName(ServerApp + '-' + ServerName);
 
 	let result = await CommonService.getObject("timages", name);
 
 	if (!result) {
-		
+
 		let tImage = {
 			apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
 			kind: 'TImage',
@@ -89,12 +141,14 @@ ImageService.serverImageGetAndCreate = async (ServerApp, ServerName) => {
 		tImage.metadata.labels[`${CommonService.TServerAppLabel}`] = ServerApp;
 		tImage.metadata.labels[`${CommonService.TServerNameLabel}`] = ServerName;
 
-		// console.log(tImage.metadata.labels);
-
 		result = await CommonService.createObject("timages", tImage);
 	}
 
-	return { ret: 200, msg: 'succ', data: result.body };
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: result.body
+	};
 }
 
 ImageService.imageCreate = async (metadata) => {
@@ -203,7 +257,11 @@ ImageService.baseImageSelect = async (metadata) => {
 		})
 	}
 
-	return { ret: 200, msg: 'succ', data: result };
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: result
+	};
 
 }
 
@@ -233,8 +291,6 @@ ImageService.imageReleaseSelect = async (metadata) => {
 		r["Secret"] = release.secret;
 		r["Mark"] = release.mark;
 		r["Image"] = release.image;
-
-		// console.log(release);
 
 		result.Data.push(r);
 	})
@@ -301,11 +357,5 @@ ImageService.imageReleaseCreate = async (metadata) => {
 		data: result.body
 	};
 }
-
-// ImageService.imageReleaseCreate = async (metadata) => {
-
-
-// }
-//         let result = await ImageService.imageAdd(ServerId, Id, Image, Secret, Mark, ctx.uid);
 
 module.exports = ImageService;

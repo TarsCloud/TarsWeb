@@ -514,7 +514,7 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 				mounts: Mounts,
 				nodeSelector: NodeSelector,
 				notStacked: serverK8S.NotStacked,
-				replicas: 0,
+				replicas: serverK8S.Replicas,
 			},
 		},
 	}

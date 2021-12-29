@@ -16,34 +16,123 @@
 const logger = require('../../../logger');
 const CommonService = require('../common/CommonService');
 const ApplicationService = require('../application/ApplicationService');
+const ImageService = require('../image/ImageService');
+const ConfigService = require('../config/ConfigService');
+
 const lodash = require("lodash");
 const DeployService = {};
 
-// //安装服务
-// DeployService.installServer = async (ServerApp, ServerName, ServerServant, ServerK8S, ServerOption) => {
+//从cloud上安装服务
+DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption) => {
 
-//     let server = await CommonService.getServer(ServerApp + '.' + ServerName);
+    let server = await CommonService.getServer(deploy.app + '.' + deploy.server);
 
-//     if (server) {
-//         return {
-//             ret: 500,
-//             msg: 'server exists'
-//         };
-//     }
-//     let metadata = {
-//         ServerApp: ServerApp,
-//         BusinessName: '',
-//         AppMark: '',
-//     }
-//     await ApplicationService.applicationCreate(metadata);
-//     let tServer = await CommonService.buildTServer(ServerApp, ServerName, ServerServant, ServerK8S, ServerOption);
-//     let data = await CommonService.createObject("tservers", tServer);
-//     return {
-//         ret: 200,
-//         msg: 'succ',
-//         data: data.body
-//     };
-// }
+    if (server) {
+        return {
+            ret: 500,
+            msg: 'server exists'
+        };
+    }
+
+    {
+        let metadata = {
+            ServerApp: deploy.app,
+            BusinessName: '',
+            AppMark: '',
+        }
+        await ApplicationService.applicationCreate(metadata);
+    }
+
+    //创建配置文件
+    {
+        let appConfig = deploy.appConfig || [];
+
+        for (let i = 0; i < appConfig.length; i++) {
+
+            let conf = appConfig[i];
+
+            const metadata = {
+                ConfigName: conf.name,
+                ConfigContent: conf.content,
+                ConfigMark: "cloud"
+            }
+
+            metadata.ServerApp = deploy.app;
+
+            metadata.Uid = deploy.uid;
+
+            await ConfigService.serverConfigCreate(metadata);
+        }
+
+        let config = deploy.config || [];
+
+        for (let i = 0; i < config.length; i++) {
+            let conf = config[i];
+            const metadata = {
+                ConfigName: conf.name,
+                ConfigContent: conf.content,
+                ConfigMark: "cloud"
+            }
+
+            metadata.ServerApp = deploy.app;
+            metadata.ServerName = deploy.server;
+
+            metadata.Uid = deploy.uid;
+
+            await ConfigService.serverConfigCreate(metadata);
+        }
+
+        let nodeConfig = deploy.nodeConfig || [];
+
+        for (let i = 0; i < nodeConfig.length; i++) {
+
+            let conf = nodeConfig[i];
+
+            const metadata = {
+                ConfigName: conf.name,
+                ConfigContent: conf.content,
+                ConfigMark: "cloud"
+            }
+
+            metadata.ServerApp = deploy.app;
+            metadata.ServerName = deploy.server;
+
+            metadata.PodSeq = deploy.podSeq;
+
+            metadata.Uid = deploy.uid;
+
+            await ConfigService.serverConfigCreate(metadata);
+
+        }
+    }
+
+    //创建timages
+    deploy.repo.id = "v-" + (new Date()).getTime();
+
+    let tImage = await ImageService.serverImageCreateWithRelease(deploy);
+    if (tImage.ret != 200) {
+        logger.error("createServerWithImage serverImageGetAndCreate error:", rst);
+        return rst;
+    }
+
+
+    //创建服务
+    let tServer = await CommonService.buildTServer(deploy.app, deploy.server, ServerServant, ServerK8S, ServerOption);
+
+    tServer.spec.release = {};
+    tServer.spec.release.source = tImage.data.metadata.name;
+    tServer.spec.release.id = deploy.repo.id;
+    tServer.spec.release.image = deploy.repo.image;
+    tServer.spec.release.secret = deploy.repo.secret;
+
+    let data = await CommonService.createObject("tservers", tServer);
+
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
+}
 
 //创建服务
 DeployService.createServer = async (ServerApp, ServerName, ServerServant, ServerK8S, ServerOption) => {
@@ -63,6 +152,7 @@ DeployService.createServer = async (ServerApp, ServerName, ServerServant, Server
     }
     await ApplicationService.applicationCreate(metadata);
     let tServer = await CommonService.buildTServer(ServerApp, ServerName, ServerServant, ServerK8S, ServerOption);
+
     let data = await CommonService.createObject("tservers", tServer);
     return {
         ret: 200,
@@ -206,7 +296,7 @@ DeployService.serverDeployUpdate = async (metadata, target) => {
     }
     let deploy = JSON.parse(JSON.stringify(tDeployCopy));
     deploy.apply.k8s = K8S
-    console.log("deploy:" + JSON.stringify(deploy, null, 4));
+    // console.log("deploy:" + JSON.stringify(deploy, null, 4));
     let data = await CommonService.replaceObject("tdeploys", deploy.metadata.name, deploy);
 
     return {
