@@ -59,7 +59,24 @@
         <div>framework:{{ framework_version }}</div>
       </div>
       <div class="user-wrap">
-        <p class="user-info" @click="userOptOpen = !userOptOpen">
+        <el-dropdown style="margin-bottom:10px;" @command="handleCommand">
+          <span class="el-dropdown-link">
+            {{ uid }}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="center" v-show="enableLogin">{{
+              $t("header.userCenter")
+            }}</el-dropdown-item>
+            <el-dropdown-item command="modifyPass" v-if="!enableLdap">{{
+              $t("header.modifyPass")
+            }}</el-dropdown-item>
+            <el-dropdown-item command="quit" v-if="!enableLdap">{{
+              $t("header.logout")
+            }}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+
+        <!-- <p class="user-info" @click="userOptOpen = !userOptOpen">
           <span class="name toe">{{ uid }} </span>
           <i
             class="let-icon let-icon-caret-down"
@@ -80,8 +97,8 @@
                 <a href="/logout">{{ $t("header.logout") }}</a>
               </div>
             </div>
-          </transition>
-        </p>
+          </transition> -->
+        <!-- </p> -->
       </div>
     </div>
   </div>
@@ -104,7 +121,7 @@ export default {
       packageIcon,
       locale: this.$cookie.get("locale") || "en",
       uid: "--",
-      userOptOpen: false,
+      // userOptOpen: false,
       enableLogin: false,
       isAdmin: false,
       localeMessages: localeMessages,
@@ -122,6 +139,16 @@ export default {
     },
     userCenter() {
       window.open("/pages/server/api/userCenter");
+    },
+    handleCommand(command) {
+      if (command == "center") {
+        location.href = "/auth.html";
+      } else if (command == "modifyPass") {
+        location.href = "/pass.html";
+      }
+      if (command == "quit") {
+        location.href = "/logout";
+      }
     },
     getLoginUid() {
       this.$ajax

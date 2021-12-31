@@ -18,6 +18,7 @@
 
         <el-dropdown style="margin-bottom:10px;" @command="handleCommand">
           <span class="el-dropdown-link">
+            <i class="el-icon-cloudy el-icon--left"></i>
             {{ uid }}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">

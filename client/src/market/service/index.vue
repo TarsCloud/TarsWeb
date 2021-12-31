@@ -38,9 +38,15 @@
               <span style="margin-bottom:10px; margin-right:10px">
                 <el-tag effect="dark" size="mini" style=" margin-right:5px"
                   >贡献者</el-tag
-                ><el-tag effect="plain" type="success" size="mini">{{
-                  serviceVersion.collaborators
-                }}</el-tag>
+                ><el-tag
+                  effect="plain"
+                  type="success"
+                  style="margin-right:5px"
+                  size="mini"
+                  v-for="u in serviceVersion.collaborators.split(',')"
+                  v-bind:key="u"
+                  >{{ u }}</el-tag
+                >
               </span>
             </div>
             <div style="margin-bottom:5px">
