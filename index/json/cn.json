@@ -2064,12 +2064,78 @@
         "table": {
             "version": "当前版本"
         },
-        "download": "下载"
+        "download": "下载",
+        "login": {
+            "loginTitle": "请登录服务市场",
+            "registerInfo": "还没有账号? ",
+            "userName": "邮箱",
+            "inputUserName": "请输入邮箱",
+            "password": "密码",
+            "passwordInfo": "密码长度必须为6到16个字符",
+            "inputPassword": "请输入密码",
+            "repeatPassword": "二次确认密码",
+            "inputRepeatPassword": "请重复上面的密码",
+            "activeCode": "邮件中的验证码",
+            "inputActiveCode": "请输入邮件中的验证码",
+            "login": "登录",
+            "forget": "密码忘记了?",
+            "findPassword": "找回",
+            "findPasswordTitle": "找回密码",
+            "resetPassword": "重置",
+            "inputPasswordAgain": "请再次输入密码",
+            "userNameRegTips": "请输入合法的邮箱地址",
+            "loginFailed": "登录失败",
+            "registerTitle": "请注册",
+            "repeatPasswordTips": "二次确认密码不能为空",
+            "register": "注册",
+            "and": "并",
+            "activated": "激活",
+            "findPasswordSucc": "请查收邮件, 并使用激活码重置密码",
+            "registerSucc": "请输入邮件中的激活码完成账号激活",
+            "inputOldPass": "请输入旧密码",
+            "inputNewPass": "请输入新密码",
+            "repeatInputNewPass": "重复输入新密码",
+            "passwordDiff": "两次密码输入不一致，请修改",
+            "captchaTips": "请输入验证码",
+            "modifyPass": "修改密码",
+            "modifySucc": "密码修改成功!",
+            "resetPass": "重置密码",
+            "captcha": "验证码",
+            "refresh": "点击刷新",
+            "notActivated": "用户还未激活",
+            "passwordNoCorrect": "密码错误!",
+            "userNoExist": "用户不存在",
+            "hasExist": "用户已经存在",
+            "hasActivated": "用户已经激活过",
+            "activatedError": "激活用户失败",
+            "resetPassError": "重置密码失败",
+            "passwordError": "修改密码失败",
+            "back": "返回",
+            "submit": "提交",
+            "activing": "激活用户",
+            "activate": "激活"
+        },
+        "ret": {
+            "0": "操作成功",
+            "-1": "系统繁忙",
+            "-2": "账号没有激活",
+            "-3": "密码不正确",
+            "-4": "用户不存在",
+            "-5": "用户已经存在",
+            "-6": "用户已经激活过了",
+            "-7": "token已经过期",
+            "-8": "非法请求",
+            "-9": "验证码错误",
+            "-10": "激活码错误"
+        }
     },
     "el": {
         "messagebox": {
             "confirm": "确定",
             "cancel": "取消"
+        },
+        "table": {
+            "emptyText": "暂无数据~~"
         }
     }
 }

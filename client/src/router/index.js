@@ -43,9 +43,9 @@ import OperationIDCManage from '@/pages/operation/idc';
 //网关
 import OperationGateway from '@/gateway/index';
 
-// 市场
-import Market from '@/market/index';
-import ServiceInfo from '@/market/serviceInfo';
+// // 市场
+// import Market from '@/market/index';
+// import ServiceInfo from '@/market/serviceInfo';
 
 Vue.use(Router);
 
@@ -136,15 +136,15 @@ export default new Router({
       name: 'Gateway',
       component: OperationGateway,
     },
-    {
-      path: '/market',
-      name: 'Market',
-      component: Market,
-      children: [{
-        path: ':group/:name/:version',
-        component: ServiceInfo,
-      }, ],
-    },
+    // {
+    //   path: '/market',
+    //   name: 'Market',
+    //   component: Market,
+    //   children: [{
+    //     path: ':group/:name/:version',
+    //     component: ServiceInfo,
+    //   }, ],
+    // },
     {
       path: '*',
       redirect: '/server',

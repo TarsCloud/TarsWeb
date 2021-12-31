@@ -937,11 +937,13 @@ export default {
 
         if (path === "manage" || !that.reloadTask) {
           that.reloadTask = setTimeout(() => {
-            if (that.isreloadlist) {
-              if (that.$parent.treeid == that.getServerId()) {
-                that.getServerList();
-                that.getServerNotifyList();
-              }
+            if (
+              that.isreloadlist &&
+              location.hash == "#/server" &&
+              that.$parent.treeid == that.getServerId()
+            ) {
+              that.getServerList();
+              that.getServerNotifyList();
             }
             that.reloadServerList();
           }, 3000);

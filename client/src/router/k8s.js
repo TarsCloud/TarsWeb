@@ -53,11 +53,17 @@ import OperationEvent from '@/k8s/operation/event';
 // 网关
 import OperationGateway from '@/gateway/index';
 
-
 // 市场
-import Market from '@/market/index';
-import ServiceInfo from '@/market/serviceInfo';
-
+import MarketIndex from '@/market/index';
+import Market from '@/market/market';
+import ServiceInfo from '@/market/service/index';
+import Login from '@/market/user/login';
+import Register from '@/market/user/register';
+import Activate from '@/market/user/activate';
+import Forget from '@/market/user/forget';
+import ModifyPass from '@/market/user/modifyPass';
+import ResetPass1 from '@/market/user/resetPass1';
+import ResetPass2 from '@/market/user/resetPass2';
 
 import VueRouter from 'vue-router';
 
@@ -160,12 +166,38 @@ export default new Router({
     },
     {
       path: '/market',
-      name: 'Market',
+      name: 'MarketIndex',
+      component: MarketIndex,
+      children: [{
+        path: 'user/login',
+        component: Login,
+      }, {
+        path: 'user/register',
+        component: Register,
+      }, {
+        path: 'user/activate',
+        component: Activate,
+      }, {
+        path: 'user/forget',
+        component: Forget,
+      }, {
+        path: 'user/modifyPass',
+        component: ModifyPass,
+      }, {
+        path: 'user/resetPass1',
+        component: ResetPass1,
+      }, {
+        path: 'user/resetPass2',
+        component: ResetPass2,
+      }]
+    },
+    {
+      path: '/market/service',
       component: Market,
       children: [{
         path: ':group/:name/:version',
         component: ServiceInfo,
-      }, ],
+      }]
     },
     {
       path: '*',

@@ -142,11 +142,11 @@
 <script>
 import moment from "moment";
 
-import markdown from "./inc/markdown";
-import deploy from "./inc/deploy";
-import protocols from "./inc/protocols";
-import install from "./inc/install";
-import logs from "./inc/logs";
+import markdown from "./markdown";
+import deploy from "./deploy";
+import protocols from "./protocols";
+import install from "./install";
+import logs from "./logs";
 
 export default {
   name: "ServiceInfo",
@@ -169,7 +169,6 @@ export default {
   },
   watch: {
     $route(to, from) {
-      console.log(to, from);
       if (to.path.startsWith("/market/")) {
         this.loadData(to.params.group, to.params.name, to.params.version);
       }

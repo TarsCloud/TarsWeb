@@ -1,11 +1,5 @@
 <template>
-  <el-table
-    :data="logs"
-    stripe
-    style="width: 100%"
-    :show-header="false"
-    @row-click="selectService"
-  >
+  <el-table :data="logs" stripe style="width: 100%" :show-header="false">
     <el-table-column :label="$t('market.table.version')">
       <template slot-scope="props">
         <el-row :gutter="24">
@@ -24,7 +18,7 @@
 export default {
   name: "Logs",
   data() {
-    return { logs: "" };
+    return { logs: [] };
   },
   props: ["serviceVersion"],
   methods: {
