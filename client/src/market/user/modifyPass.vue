@@ -147,7 +147,7 @@ export default {
                 type: "success",
               });
 
-              this.$router.push("/market/service");
+              this.$router.push("/market/list");
             })
             .catch((err) => {
               this.$message({

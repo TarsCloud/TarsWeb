@@ -169,13 +169,13 @@ ServerService.deleteServer = async (metadata) => {
         try {
             await CommonService.deleteObject("tservers", CommonService.getTServerName(item));
         } catch (e) {
-            logger.error('deleteServer', e);
+            logger.error(`deleteServer tserver ${item}`, e);
         }
 
         try {
             await CommonService.deleteObject("timages", CommonService.getTServerName(item));
         } catch (e) {
-            logger.error('deleteServer', e);
+            logger.error(`deleteServer timages ${item}`, e);
         }
 
         try {
@@ -193,12 +193,17 @@ ServerService.deleteServer = async (metadata) => {
             for (let i = 0; i < configs.body.items.length; i++) {
                 let config = configs.body.items[i];
 
-                await CommonService.deleteObject("tconfigs", config.metadata.name);
+                try {
+                    await CommonService.deleteObject("tconfigs", config.metadata.name);
+                } catch (e) {
+                    logger.error(`deleteServer tconfig item ${config.metadata.name}`, e);
+
+                }
 
             }
 
         } catch (e) {
-            logger.error('deleteServer', e);
+            logger.error(`deleteServer tconfig ${item}`, e);
         }
 
     });

@@ -37,9 +37,7 @@ export default {
       this.html = marked.parse(markdown);
     },
     fetchReadme() {
-      Ajax.getPlain(this.file, {
-        t: this.serviceVersion.update_time,
-      })
+      Ajax.getPlain(this.file)
         .then((data) => {
           if (data.ok) {
             data.text().then((content) => {

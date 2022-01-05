@@ -5,7 +5,9 @@
         <el-row :gutter="24">
           <el-col :span="24">
             <span>
-              <span>{{ props.row }}</span>
+              <span :style="getLogStyle(props.row.logLevel)">{{
+                props.row.text
+              }}</span>
             </span>
           </el-col>
         </el-row>
@@ -22,6 +24,15 @@ export default {
   },
   props: ["serviceVersion"],
   methods: {
+    getLogStyle(logLevel) {
+      if (logLevel == 1) {
+        return "color:green";
+      } else if (logLevel == 2) {
+        return "color:red";
+      } else {
+        return "";
+      }
+    },
     fetchLogs() {
       this.$market
         .call("cloud-market", "getServiceLogs", {

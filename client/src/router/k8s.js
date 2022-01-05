@@ -56,6 +56,7 @@ import OperationGateway from '@/gateway/index';
 // 市场
 import MarketIndex from '@/market/index';
 import Market from '@/market/market';
+import List from '@/market/service/list';
 import ServiceInfo from '@/market/service/index';
 import Login from '@/market/user/login';
 import Register from '@/market/user/register';
@@ -165,29 +166,29 @@ export default new Router({
       component: OperationGateway,
     },
     {
-      path: '/market',
+      path: '/market/user',
       name: 'MarketIndex',
       component: MarketIndex,
       children: [{
-        path: 'user/login',
+        path: 'login',
         component: Login,
       }, {
-        path: 'user/register',
+        path: 'register',
         component: Register,
       }, {
-        path: 'user/activate',
+        path: 'activate',
         component: Activate,
       }, {
-        path: 'user/forget',
+        path: 'forget',
         component: Forget,
       }, {
-        path: 'user/modifyPass',
+        path: 'modifyPass',
         component: ModifyPass,
       }, {
-        path: 'user/resetPass1',
+        path: 'resetPass1',
         component: ResetPass1,
       }, {
-        path: 'user/resetPass2',
+        path: 'resetPass2',
         component: ResetPass2,
       }]
     },
@@ -197,6 +198,14 @@ export default new Router({
       children: [{
         path: ':group/:name/:version',
         component: ServiceInfo,
+      }]
+    },
+    {
+      path: '/market/list',
+      component: Market,
+      children: [{
+        path: '/',
+        component: List
       }]
     },
     {

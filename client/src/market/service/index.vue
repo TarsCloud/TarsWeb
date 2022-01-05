@@ -175,7 +175,7 @@ export default {
   },
   watch: {
     $route(to, from) {
-      if (to.path.startsWith("/market/")) {
+      if (to.path.startsWith("/market/service")) {
         this.loadData(to.params.group, to.params.name, to.params.version);
       }
     },

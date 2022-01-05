@@ -200,7 +200,7 @@ export default {
                 window.localStorage.ticket = data.ticket;
                 window.localStorage.uid = this.login.uid;
 
-                this.$router.push("/market/service");
+                this.$router.push("/market/list");
               } else {
                 this.login.ticket = "";
                 this.login.isLogin = false;

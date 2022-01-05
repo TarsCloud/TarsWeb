@@ -54,6 +54,9 @@ CommonService.TSupportedLabel = "tars.io/Supported."
 CommonService.TSubTypeLabel = "tars.io/SubType"
 CommonService.TServerAppLabel = "tars.io/ServerApp"
 CommonService.TServerNameLabel = "tars.io/ServerName"
+CommonService.TServerCloudInstall = "tars.io/CloudInstall"
+CommonService.TServerCloudLogo = "tars.io/CloudLogo"
+CommonService.TServerCloudDigest = "tars.io/CloudDigest"
 CommonService.TServerType1 = "tars";
 CommonService.TServerType2 = "normal";
 CommonService.TDeployApproveLabel = "tars.io/Approve"
@@ -506,7 +509,6 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 				servants: Servants,
 			},
 			k8s: {
-				// serviceAccount: "",
 				env: Env,
 				hostIPC: serverK8S.HostIpc,
 				hostNetwork: serverK8S.HostNetwork,
@@ -515,6 +517,7 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 				nodeSelector: NodeSelector,
 				notStacked: serverK8S.NotStacked,
 				replicas: serverK8S.Replicas,
+				abilityAffinity: serverK8S.AbilityAffinity,
 			},
 		},
 	}
@@ -523,6 +526,90 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 
 	return tServer
 }
+
+CommonService.updateTServer = (tServer, serverServant, serverK8S, serverOption) => {
+
+	// let serverId = serverApp + "." + serverName;
+
+	let Servants = [];
+	if (serverServant != null) {
+		for (let key in serverServant) {
+			let obj = serverServant[key];
+
+			Servants.push({
+				name: obj.Name,
+				port: parseInt(obj.Port),
+				thread: parseInt(obj.Threads),
+				connection: parseInt(obj.Connections),
+				capacity: parseInt(obj.Capacity),
+				isTars: obj.IsTars,
+				isTcp: obj.IsTcp,
+				timeout: parseInt(obj.Timeout),
+			});
+		}
+	}
+
+	let HostPorts = [];
+	if (serverK8S.HostPort != null) {
+		serverK8S.HostPort.forEach(item => {
+			HostPorts.push({
+				nameRef: item.NameRef,
+				port: item.Port,
+			})
+		})
+	}
+
+	let Mounts = [{
+		name: "host-log-dir",
+		mountPath: `/usr/local/app/${CommonService.TServerType1}/app_log`,
+		subPathExpr: "$(Namespace)/$(PodName)",
+		source: {
+			hostPath: {
+				path: `/usr/local/app/${CommonService.TServerType1}/app_log`,
+				type: "DirectoryOrCreate",
+			},
+		},
+	}]
+
+	if (serverK8S.Mounts && serverK8S.Mounts.length != 0) {
+		serverK8S.Mounts.forEach(m => {
+			Mounts.push(m);
+		});
+	}
+
+	let NodeSelector = [];
+	if (serverK8S.NodeSelector && serverK8S.NodeSelector.length != 0) {
+		NodeSelector = serverK8S.NodeSelector;
+	}
+
+	// console.log(tServer.spec);
+	// Object.assign(tServer.spec, {
+	tServer.spec.subType = serverOption.ServerSubType;
+	tServer.spec.important = serverOption.ServerImportant;
+	tServer.spec.tars.template = serverOption.ServerTemplate || 5;
+	tServer.spec.tars.profile = serverOption.ServerProfile;
+	// tServer.spec.tars.foreground = false;
+	tServer.spec.tars.asyncThread = serverOption.AsyncThread || 3;
+	tServer.spec.tars.servants = Servants;
+
+	tServer.spec.k8s.hostPorts = HostPorts;
+	tServer.spec.k8s.mounts = Mounts;
+	tServer.spec.k8s.hostIPC = serverK8S.HostIpc;
+	tServer.spec.k8s.hostNetwork = serverK8S.HostNetwork;
+	tServer.spec.k8s.nodeSelector = NodeSelector;
+	tServer.spec.k8s.notStacked = serverK8S.NotStacked;
+	tServer.spec.k8s.replicas = serverK8S.Replicas;
+	tServer.spec.k8s.abilityAffinity = serverK8S.AbilityAffinity;
+
+	// });
+
+	console.log(JSON.parse(JSON.stringify(tServer.spec)));
+
+	// console.log(tServer);
+
+	return tServer
+}
+
 
 CommonService.buildTDeploy = (metadata) => {
 

@@ -2,21 +2,11 @@
   <div class="page_server">
     <div class="left-view">
       <div>
-        <!-- <el-dropdown>
-          <i class="el-icon-user" />
-          <span class="el-dropdown-link">
-            {{ uid }}<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>黄金糕</el-dropdown-item>
-            <el-dropdown-item>狮子头</el-dropdown-item>
-            <el-dropdown-item>螺蛳粉</el-dropdown-item>
-            <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-            <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown> -->
-
-        <el-dropdown style="margin-bottom:10px;" @command="handleCommand">
+        <el-dropdown
+          style="margin-bottom:10px;"
+          @command="handleCommand"
+          v-if="uid"
+        >
           <span class="el-dropdown-link">
             <i class="el-icon-cloudy el-icon--left"></i>
             {{ uid }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -140,7 +130,8 @@ export default {
           this.serviceList = data.rsp.services;
           this.serviceList.forEach((e) => {
             e.create_time = moment(e.create_time).format("YYYY-MM-DD HH:mm:ss");
-            e.logo = e.prefix + e.logo + "?t=" + e.updatetime;
+            e.update_time = moment(e.update_time).format("YYYY-MM-DD HH:mm:ss");
+            e.logo = e.prefix + e.logo + "?t=" + e.update_time;
           });
 
           this.total = data.rsp.total;
@@ -152,11 +143,43 @@ export default {
           });
         });
     },
+    onLogin(isLogin) {
+      if (!isLogin) {
+        this.$router.push("/market/user/login");
+      } else {
+        this.uid = window.localStorage.uid;
+        this.fetchServiceData();
+      }
+    },
+    checkLogin() {
+      let ticket = window.localStorage.ticket;
+      if (!ticket) {
+        this.onLogin(false);
+        return;
+      }
+      this.$market
+        .call("cloud-user", "isLogin", {
+          ticket: ticket,
+        })
+        .then((data) => {
+          if (!data.uid) {
+            this.onLogin(false);
+          } else {
+            window.localStorage.uid = data.uid;
+            this.onLogin(true);
+          }
+        })
+        .catch((err) => {
+          this.$message({
+            message: err,
+            type: "error",
+          });
+        });
+    },
   },
   created() {},
   mounted() {
-    this.uid = window.localStorage.uid;
-    this.fetchServiceData();
+    this.checkLogin();
   },
 };
 </script>

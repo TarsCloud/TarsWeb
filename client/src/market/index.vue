@@ -16,10 +16,10 @@ export default {
   },
   methods: {
     onLogin(isLogin) {
-      if (!isLogin && !location.hash.startsWith("#/market/user")) {
+      if (!isLogin) {
         this.$router.push("/market/user/login");
       } else if (isLogin && location.hash == "#/market") {
-        this.$router.push("/market/service");
+        this.$router.push("/market/list");
       }
     },
     checkLogin() {

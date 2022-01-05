@@ -94,7 +94,7 @@ ImageService.serverImageCreateWithRelease = async (deploy) => {
 		tImage = result.body;
 	}
 
-	console.log(tImage);
+	// console.log(tImage);
 
 	tImage.releases.push({
 		id: deploy.repo.id,

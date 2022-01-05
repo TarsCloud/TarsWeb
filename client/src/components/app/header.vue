@@ -41,7 +41,7 @@
         ></let-tab-pane>
         <let-tab-pane
           :tab="$t('header.tab.tab9')"
-          tabkey="/market"
+          tabkey="/market/list"
           :icon="packageIcon"
         ></let-tab-pane>
       </let-tabs>

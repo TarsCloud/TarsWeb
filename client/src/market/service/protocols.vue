@@ -37,10 +37,7 @@ export default {
       for (let i in this.serviceVersion.protocols) {
         new AjaxUtil()
           .getPlain(
-            this.serviceVersion.prefix + this.serviceVersion.protocols[i],
-            {
-              t: this.serviceVersion.update_time,
-            }
+            this.serviceVersion.prefix + this.serviceVersion.protocols[i]
           )
           .then((data) => {
             if (data.ok) {

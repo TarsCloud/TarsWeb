@@ -28,15 +28,13 @@ export default {
   methods: {
     fetchDeploy() {
       new AjaxUtil()
-        .getPlain(this.serviceVersion.deploy, {
-          t: this.serviceVersion.update_time,
-        })
+        .getPlain(this.serviceVersion.deploy)
         .then((data) => {
           if (data.ok) {
             data.text().then((content) => {
               this.data.deploy = content;
 
-              this.$refs.yamlEdit.refresh();
+              // this.$refs.yamlEdit.refresh();
             });
           }
         })

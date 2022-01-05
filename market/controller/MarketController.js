@@ -38,7 +38,7 @@ MarketController.install = async (ctx) => {
 
 		y.uid = ctx.uid;
 
-		let result = await MarketService.install(y);
+		let result = await MarketService.install(y, ctx.paramsObj);
 
 		ctx.makeResObj(result.ret, result.msg, result.data);
 
@@ -47,5 +47,53 @@ MarketController.install = async (ctx) => {
 		ctx.makeResObj(500, e.body ? e.body.message : e);
 	}
 }
+
+MarketController.listFromCloud = async (ctx) => {
+
+	try {
+		let result = await MarketService.listFromCloud();
+
+		console.log(result);
+
+		ctx.makeResObj(result.ret, result.msg, result.data);
+
+	} catch (e) {
+		logger.error('[listFromCloud]', e.body ? e.body.message : e, ctx)
+		ctx.makeResObj(500, e.body ? e.body.message : e);
+	}
+}
+
+MarketController.get = async (ctx) => {
+
+	try {
+		let result = await MarketService.get(ctx.paramsObj.app, ctx.paramsObj.server);
+
+		ctx.makeResObj(result.ret, result.msg, result.data);
+
+	} catch (e) {
+		logger.error('[upgrade]', e.body ? e.body.message : e, ctx)
+		ctx.makeResObj(500, e.body ? e.body.message : e);
+	}
+}
+
+
+
+MarketController.upgrade = async (ctx) => {
+
+	try {
+		let y = jsYaml.load(ctx.paramsObj.deploy);
+
+		y.uid = ctx.uid;
+
+		let result = await MarketService.upgrade(y, ctx.paramsObj);
+
+		ctx.makeResObj(result.ret, result.msg, result.data);
+
+	} catch (e) {
+		logger.error('[upgrade]', e.body ? e.body.message : e, ctx)
+		ctx.makeResObj(500, e.body ? e.body.message : e);
+	}
+}
+
 
 module.exports = MarketController;
