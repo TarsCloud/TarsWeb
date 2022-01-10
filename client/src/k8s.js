@@ -16,7 +16,7 @@
 
 import Vue from 'vue';
 import './assets/icon-font/iconfont.css'
-
+import store from "../store/store"
 import './plugins/ui';
 import './plugins/ajax';
 import './plugins/market';
@@ -49,6 +49,7 @@ loadLang.call(this).then(() => {
     i18n: i18n,
     el: '#app',
     router,
+    store,
     components: {
       k8sApp
     },

@@ -5,7 +5,6 @@
 </template>
 
 <script>
-// import CodeMirror from "codemirror/lib/codemirror";
 import CodeMirror from "codemirror";
 import "codemirror/addon/lint/lint.css";
 import "codemirror/lib/codemirror.css";
@@ -82,6 +81,6 @@ export default {
 }
 
 .yaml-editor >>> .CodeMirror {
-  min-height: 615px;
+  min-height: 500px;
 }
 </style>

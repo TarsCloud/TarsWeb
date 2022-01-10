@@ -35,6 +35,13 @@
         <el-button type="primary" @click="doInstall">安装</el-button>
       </span>
     </el-dialog>
+
+    <upgrade
+      v-if="upgradeServiceVersion"
+      ref="upgrade"
+      @upgradeSucc="upgradeSucc"
+      :serviceVersion="upgradeServiceVersion"
+    ></upgrade>
   </div>
 </template>
 
@@ -42,15 +49,18 @@
 import AjaxUtil from "@/lib/ajax";
 import YamlEditor from "@/components/editor/yaml-editor";
 import jsYaml from "js-yaml";
+import upgrade from "./upgrade";
 export default {
   name: "Install",
   components: {
     YamlEditor,
+    upgrade,
   },
   props: ["serviceVersion"],
   data() {
     return {
       dialogVisible: false,
+      upgradeServiceVersion: null,
       deploy: "",
     };
   },
@@ -58,6 +68,7 @@ export default {
     showInstall() {
       this.dialogVisible = true;
     },
+    upgradeSucc() {},
     doInstall() {
       this.$confirm("确定安装该服务么?", "提示", {
         confirmButtonText: "确定",
@@ -79,11 +90,33 @@ export default {
               this.dialogVisible = false;
             })
             .catch((err) => {
-              this.$message({
-                message: `${this.$t("common.error")}: ${err.message ||
-                  err.err_msg}`,
-                type: "error",
-              });
+              if (err.ret_code == 201) {
+                this.$confirm("服务已经存在, 是否覆盖安装?", "提示", {
+                  confirmButtonText: "覆盖安装",
+                  cancelButtonText: "取消",
+                  type: "warning",
+                })
+                  .then(() => {
+                    this.dialogVisible = false;
+                    this.upgradeServiceVersion = this.serviceVersion;
+                    let deploy = jsYaml.load(this.deploy);
+                    this.upgradeServiceVersion.installData = {
+                      group: deploy.app,
+                      name: deploy.server,
+                    };
+
+                    this.$nextTick(() => {
+                      this.$refs.upgrade.show();
+                    });
+                  })
+                  .catch();
+              } else {
+                this.$message({
+                  message: `${this.$t("common.error")}: ${err.message ||
+                    err.err_msg}`,
+                  type: "error",
+                });
+              }
             });
         })
         .catch(() => {});

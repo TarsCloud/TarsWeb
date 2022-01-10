@@ -102,6 +102,28 @@ import "@/assets/css/market.css";
 export default {
   name: "Login",
   data() {
+    // 判断是否含有大写字母/小写字母/数字
+    var passwordIsValid = (str) => {
+      var result = str.match(/^.*[A-Z]+.*$/);
+      if (result == null) return false;
+      var result = str.match(/^.*[a-z]+.*$/);
+      if (result == null) return false;
+      var result = str.match(/^.*[0-9]+.*$/);
+      if (result == null) return false;
+
+      return true;
+    };
+
+    var validatePass = (rule, value, callback) => {
+      if (value.length < 8) {
+        callback(new Error(this.$t("market.login.passwordInfo")));
+      } else if (!passwordIsValid(value)) {
+        callback(new Error(this.$t("market.login.passwordInfo")));
+      } else {
+        callback();
+      }
+    };
+
     var validateEmail = (rule, value, callback) => {
       const mailReg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       if (!value) {
@@ -143,11 +165,12 @@ export default {
             trigger: "blur",
           },
           {
-            min: 6,
+            min: 8,
             max: 16,
             message: this.$t("market.login.passwordInfo"),
             trigger: "blur",
           },
+          { validator: validatePass, trigger: "blur" },
         ],
       },
     };
@@ -178,7 +201,7 @@ export default {
       this.$router.push("/market/user/activate");
     },
     reset_pass() {
-      this.$router.push("/market/user/resetPass2");
+      this.$router.push("/market/user/resetPass");
     },
     doLogin() {
       this.$refs["ruleFormLogin"].validate((valid) => {

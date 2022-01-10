@@ -109,7 +109,7 @@ export default {
                 y.replicas = res.spec.k8s.replicas;
                 y.hostNetwork = res.spec.k8s.hostNetwork;
                 y.hostIPC = res.spec.k8s.hostIpc;
-                y.hostPorts = res.spec.k8s.hostPorts;
+                y.hostPorts = res.spec.k8s.hostPorts || [];
                 y.mounts = res.spec.k8s.mounts;
                 y.nodeSelector = res.spec.k8s.nodeSelector;
                 y.notStacked = res.spec.k8s.notStacked;

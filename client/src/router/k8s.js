@@ -63,8 +63,7 @@ import Register from '@/market/user/register';
 import Activate from '@/market/user/activate';
 import Forget from '@/market/user/forget';
 import ModifyPass from '@/market/user/modifyPass';
-import ResetPass1 from '@/market/user/resetPass1';
-import ResetPass2 from '@/market/user/resetPass2';
+import ResetPass from '@/market/user/resetPass';
 
 import VueRouter from 'vue-router';
 
@@ -185,11 +184,8 @@ export default new Router({
         path: 'modifyPass',
         component: ModifyPass,
       }, {
-        path: 'resetPass1',
-        component: ResetPass1,
-      }, {
-        path: 'resetPass2',
-        component: ResetPass2,
+        path: 'resetPass',
+        component: ResetPass,
       }]
     },
     {

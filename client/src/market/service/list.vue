@@ -12,24 +12,10 @@
             <span style="margin-left: 5px;position: absolute;">{{
               getServerName(i, j)
             }}</span>
-            <el-badge
-              style="float: right;"
-              is-dot
-              class="item"
-              v-if="isUpgrade(i, j)"
-            >
-              <el-button
-                size="small"
-                style="line-height:25px; padding: 0px 10px 0 10px"
-                @click="fetchServiceVersionData(i, j)"
-                >升级</el-button
-              >
-            </el-badge>
             <el-popover
-              v-else
               placement="bottom"
               style="float: right;"
-              v-model="visible"
+              v-model="isVisible[i + '_' + j]"
             >
               版本列表:
               <el-select
@@ -45,13 +31,28 @@
                 >
                 </el-option>
               </el-select>
+
               <el-button
                 size="small"
                 style="line-height:25px; padding: 0px 10px 0 10px"
                 @click="changeVersion(i, j)"
                 >切换</el-button
               >
+              <el-badge
+                slot="reference"
+                is-dot
+                class="item"
+                v-if="isUpgrade(i, j)"
+              >
+                <el-button
+                  size="small"
+                  style="line-height:25px; padding: 0px 10px 0 10px"
+                  @click="fetchVersionListData(i, j)"
+                  >切换版本</el-button
+                >
+              </el-badge>
               <el-button
+                v-else
                 slot="reference"
                 size="small"
                 style="line-height:25px; padding: 0px 10px 0 10px"
@@ -103,7 +104,8 @@ export default {
       row: 0,
       data: [],
       upgrade: {},
-      visible: false,
+      // visible: {},
+      isVisible: {},
       serviceVersion: null,
       upgradeServiceVersion: null,
       version: "",
@@ -124,6 +126,9 @@ export default {
 
       return this.upgrade[e.group + "-" + e.name + "-" + e.version];
     },
+    // isVisible(i, j) {
+    //   return this.visible[i + "_" + j] || false;
+    // },
     getServerLogo(i, j) {
       return this.get(i, j)["tars.io/CloudLogo"];
     },
@@ -222,7 +227,7 @@ export default {
           })
           .then((data) => {
             this.versions = data.rsp.versions;
-            this.visible = true;
+            this.isVisible[i + "_" + j] = true;
           })
           .catch((err) => {
             this.$message({
@@ -325,7 +330,6 @@ export default {
   created() {},
   mounted() {
     this.fetchInstallFromCloud();
-    // this.fetchDeploy();
   },
 };
 </script>

@@ -2,7 +2,7 @@
   <div class="page_server">
     <div class="left-view">
       <div>
-        <el-dropdown
+        <!-- <el-dropdown
           style="margin-bottom:10px;"
           @command="handleCommand"
           v-if="uid"
@@ -12,10 +12,14 @@
             {{ uid }}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="modify">修改密码</el-dropdown-item>
+            <el-dropdown-item command="harbor">设置仓库密码</el-dropdown-item>
+            <el-dropdown-item command="repo">管理仓库GROUP</el-dropdown-item>
+            <el-dropdown-item command="modify"
+              >修改服务市场密码</el-dropdown-item
+            >
             <el-dropdown-item command="quit">退出</el-dropdown-item>
           </el-dropdown-menu>
-        </el-dropdown>
+        </el-dropdown> -->
 
         <span>
           <el-input
@@ -87,15 +91,15 @@ export default {
     };
   },
   methods: {
-    handleCommand(command) {
-      if (command == "quit") {
-        window.localStorage.uid = "";
-        window.localStorage.ticket = "";
-        this.$router.push("/market/user/login");
-      } else if (command == "modify") {
-        this.$router.push("/market/user/modifyPass");
-      }
-    },
+    // handleCommand(command) {
+    //   if (command == "quit") {
+    //     window.localStorage.uid = "";
+    //     window.localStorage.ticket = "";
+    //     this.$router.push("/market/user/login");
+    //   } else if (command == "modify") {
+    //     this.$router.push("/market/user/modifyPass");
+    //   }
+    // },
     iconLoading() {
       const that = this;
       if (!that.isIconPlay) {
@@ -148,6 +152,11 @@ export default {
         this.$router.push("/market/user/login");
       } else {
         this.uid = window.localStorage.uid;
+        this.$store.commit({
+          type: "marketUid",
+          uid: this.uid,
+        });
+
         this.fetchServiceData();
       }
     },
@@ -185,7 +194,6 @@ export default {
 </script>
 
 <style>
-/* @import "../assets/css/reset.css"; */
 @import "../assets/css/variable.css";
 
 .el-icon-third-shuaxin.active {

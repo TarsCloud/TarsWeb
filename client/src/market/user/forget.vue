@@ -98,7 +98,7 @@ export default {
 
               window.localStorage.uid = this.login.uid;
 
-              this.$router.push("/market/user/resetPass2");
+              this.$router.push("/market/user/resetPass");
             })
             .catch((err) => {
               this.$message({

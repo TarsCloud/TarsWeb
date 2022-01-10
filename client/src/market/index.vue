@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     onLogin(isLogin) {
-      if (!isLogin) {
+      if (!isLogin && !location.hash.startsWith("#/market/user")) {
         this.$router.push("/market/user/login");
       } else if (isLogin && location.hash == "#/market") {
         this.$router.push("/market/list");

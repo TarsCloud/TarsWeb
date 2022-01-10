@@ -14,12 +14,21 @@ let exec = async () => {
 
     global.wsServer.on('request', async function (request) {
 
+        let ws = null;
+
         let connection = request.accept('echo-protocol', request.origin);
         // console.log(connection);
-        logger.info((new Date()) + ' Connection accepted');
+        logger.info('Connection accepted');
 
         connection.on('close', function (reasonCode, description) {
-            logger.info((new Date()) + ' peer ' + connection.remoteAddress + ' disconnected.');
+            logger.info('peer ' + connection.remoteAddress + ' disconnected.');
+
+            if (ws) {
+                //close pod shell
+                var buffer = Buffer.from("exit\r\n", 'utf8');
+                var panddingBuffer = Buffer.concat([Buffer.from('00', 'hex'), buffer]);
+                ws.send(panddingBuffer);
+            }
         });
 
         let params = request.resourceURL.query;
@@ -68,7 +77,7 @@ let exec = async () => {
 
             logger.info('PodName:', params.PodName, pod.spec.containers[0].name);
 
-            let ws = await CommonService.connectPodExec(params.PodName, command, pod.spec.containers[0].name);
+            ws = await CommonService.connectPodExec(params.PodName, command, pod.spec.containers[0].name);
 
             ws.on('close', (code, reason) => {
                 logger.error('close:', code, reason);
@@ -108,6 +117,7 @@ let exec = async () => {
                         case "stdin":
                             var buffer = Buffer.from(msg.data, 'utf8');
                             var panddingBuffer = Buffer.concat([Buffer.from('00', 'hex'), buffer]);
+                            // console.log(msg.data);
                             ws.send(panddingBuffer);
                             break;
                         case "resize":

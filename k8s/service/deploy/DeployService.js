@@ -29,7 +29,7 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
 
     if (server) {
         return {
-            ret: 500,
+            ret: 201,
             msg: 'server exists'
         };
     }

@@ -1,79 +1,116 @@
 <template>
   <div class="app_index__header">
     <div class="main-width">
-      <h1 class="hidden">TARS/K8S</h1>
+      <!-- <h1 class="hidden">TARS/K8S</h1> -->
+      <el-row :gutter="24">
+        <el-col :span="6">
+          <div class="logo-wrap">
+            <a v-if="enable === 'true' && show === 'true'" href="/"
+              ><img class="logo" src="/static/img/tars-logo.png"
+            /></a>
+            <a v-if="k8s === 'true'" :class="{ active: true }" href="/k8s.html"
+              ><img class="logo" src="/static/img/K8S.png"
+            /></a>
+            <a v-if="enable === 'true'" href="/dcache.html"
+              ><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"
+            /></a>
+          </div>
+        </el-col>
 
-      <div class="logo-wrap">
-        <a v-if="enable === 'true' && show === 'true'" href="/"
-          ><img class="logo" src="/static/img/tars-logo.png"
-        /></a>
-        <a v-if="k8s === 'true'" :class="{ active: true }" href="/k8s.html"
-          ><img class="logo" src="/static/img/K8S.png"
-        /></a>
-        <a v-if="enable === 'true'" href="/dcache.html"
-          ><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"
-        /></a>
-      </div>
+        <el-col :span="12">
+          <let-tabs
+            class="tabs"
+            :center="true"
+            @click="clickTab"
+            :activekey="$route.matched[0].path"
+          >
+            <let-tab-pane
+              :tab="$t('header.tab.tab1')"
+              tabkey="/server"
+              :icon="serverIcon"
+            ></let-tab-pane>
+            <let-tab-pane
+              :tab="$t('header.tab.tab2')"
+              tabkey="/operation"
+              :icon="opaIcon"
+            ></let-tab-pane>
+            <let-tab-pane
+              :tab="$t('header.tab.tab8')"
+              tabkey="/gateway"
+              :icon="cacheIcon"
+            ></let-tab-pane>
+            <let-tab-pane
+              :tab="$t('header.tab.tab9')"
+              tabkey="/market/list"
+              :icon="packageIcon"
+            ></let-tab-pane>
+          </let-tabs>
+        </el-col>
 
-      <let-tabs
-        class="tabs"
-        :center="true"
-        @click="clickTab"
-        :activekey="$route.matched[0].path"
-      >
-        <let-tab-pane
-          :tab="$t('header.tab.tab1')"
-          tabkey="/server"
-          :icon="serverIcon"
-        ></let-tab-pane>
-        <let-tab-pane
-          :tab="$t('header.tab.tab2')"
-          tabkey="/operation"
-          :icon="opaIcon"
-        ></let-tab-pane>
-        <let-tab-pane
-          :tab="$t('header.tab.tab8')"
-          tabkey="/gateway"
-          :icon="cacheIcon"
-        ></let-tab-pane>
-        <let-tab-pane
-          :tab="$t('header.tab.tab9')"
-          tabkey="/market/list"
-          :icon="packageIcon"
-        ></let-tab-pane>
-      </let-tabs>
-      <div class="language-wrap">
-        <let-select v-model="locale" @change="changeLocale" :clearable="false">
-          <template v-for="locale in localeMessages">
-            <let-option :value="locale.localeCode" :key="locale.localeCode">{{
-              locale.localeName
-            }}</let-option>
-          </template>
-        </let-select>
-      </div>
-
-      <div class="user-wrap">
-        <el-dropdown style="margin-bottom:10px;" @command="handleCommand">
-          <span class="el-dropdown-link">
-            {{ uid
-            }}<i
-              class="el-icon-arrow-down el-icon--right"
-              v-show="enableLogin"
-            ></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="center" v-show="enableLogin">{{
-              $t("header.userCenter")
-            }}</el-dropdown-item>
-            <el-dropdown-item command="modifyPass">{{
-              $t("header.modifyPass")
-            }}</el-dropdown-item>
-            <el-dropdown-item command="quit">{{
-              $t("header.logout")
-            }}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
+        <el-col :span="2">
+          <div class="language-wrap">
+            <let-select
+              v-model="locale"
+              @change="changeLocale"
+              :clearable="false"
+            >
+              <template v-for="locale in localeMessages">
+                <let-option
+                  :value="locale.localeCode"
+                  :key="locale.localeCode"
+                  >{{ locale.localeName }}</let-option
+                >
+              </template>
+            </let-select>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="user-wrap">
+            <el-dropdown
+              @command="handleCommand"
+              style="display: block!important;"
+            >
+              <span class="el-dropdown-link">
+                {{ uid
+                }}<i
+                  class="el-icon-arrow-down el-icon--right"
+                  v-show="enableLogin"
+                ></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="center" v-show="enableLogin">{{
+                  $t("header.userCenter")
+                }}</el-dropdown-item>
+                <el-dropdown-item command="modifyPass">{{
+                  $t("header.modifyPass")
+                }}</el-dropdown-item>
+                <el-dropdown-item command="quit">{{
+                  $t("header.logout")
+                }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <el-dropdown @command="handleMarketCommand" v-if="marketUid">
+              <span class="el-dropdown-link">
+                <i class="el-icon-cloudy el-icon--left"></i>
+                {{ marketUid.uid
+                }}<i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="harbor"
+                  >设置仓库密码</el-dropdown-item
+                >
+                <el-dropdown-item command="repo"
+                  >管理仓库GROUP</el-dropdown-item
+                >
+                <el-dropdown-item command="modify"
+                  >修改服务市场密码</el-dropdown-item
+                >
+                <el-dropdown-item command="quit">退出市场登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -109,6 +146,11 @@ export default {
       enableLdap: false,
     };
   },
+  computed: {
+    marketUid() {
+      return this.$store.state.marketUid;
+    },
+  },
   methods: {
     handleCommand(command) {
       if (command == "center") {
@@ -118,6 +160,15 @@ export default {
       }
       if (command == "quit") {
         location.href = "/logout";
+      }
+    },
+    handleMarketCommand(command) {
+      if (command == "quit") {
+        window.localStorage.uid = "";
+        window.localStorage.ticket = "";
+        this.$router.push("/market/user/login");
+      } else if (command == "modify") {
+        this.$router.push("/market/user/modifyPass");
       }
     },
     clickTab(tabkey) {
@@ -197,29 +248,20 @@ export default {
 
   .tabs .let-tabs__header {
     border-bottom: none;
-  }
-
-  .logo-wrap,
-  .user-wrap,
-  .language-wrap {
-    position: absolute;
-    top: 0;
     height: 80px;
-    width: 300px;
-    padding: 26px var(--gap-small);
   }
 
   .logo-wrap {
-    left: 0;
-    width: auto;
+    /* position: absolute; */
+    top: 0;
+    height: 80px;
+    padding: 26px var(--gap-small);
     z-index: 100;
-    padding: 0px;
-
+    /*
     a {
       display: inline-block;
       height: 80px;
       padding: 30px 20px 0;
-      position: relative;
       &.active {
         &::after {
           content: "";
@@ -236,67 +278,23 @@ export default {
         height: 25px;
       }
     }
+    */
     .logo {
       height: 28px;
     }
   }
+
   .language-wrap {
-    right: 150px;
+    /* right: 150px; */
     width: 150px;
+    height: 80px;
     padding-top: 20px;
   }
 
   .user-wrap {
-    right: 0;
-    width: 150px;
+    height: 50px;
     text-align: right;
-
-    .user-info {
-      max-width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      height: 28px;
-      cursor: pointer;
-
-      .avatar {
-        height: 100%;
-        border-radius: 50%;
-      }
-
-      .name {
-        margin: 0 8px;
-      }
-
-      .let-icon-caret-down {
-        position: relative;
-        right: auto;
-        top: auto;
-        padding-left: 0;
-        margin-top: 0;
-      }
-    }
-  }
-
-  .user-pop-wrap {
-    position: absolute;
-    right: 20px;
-    top: 55px;
-    border: 1px solid #d7dae0;
-    border-radius: 4px;
-    padding: 10px;
-    background: #fff;
-    font-size: 12px;
-  }
-
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.4s;
-  }
-
-  .fade-enter,
-  .fade-leave-to {
-    opacity: 0;
+    margin-top: 30px;
   }
 }
 </style>

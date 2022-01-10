@@ -10,14 +10,6 @@
         label-position="left"
         :rules="rules"
       >
-        <el-form-item :label="$t('market.login.userName')" prop="uid" required>
-          <el-input
-            v-model="data.uid"
-            :placeholder="$t('market.login.inputUserName')"
-            prefix-icon="el-icon-message"
-          ></el-input>
-        </el-form-item>
-
         <el-form-item
           :label="$t('market.login.inputPassword')"
           prop="password"
@@ -40,46 +32,17 @@
             show-password
           ></el-input>
         </el-form-item>
-        <el-form-item
-          :label="$t('market.login.activeCode')"
-          prop="activeCode"
-          required
+        <el-button
+          type="primary"
+          size="small"
+          round
+          @click="createDockerUser"
+          >{{ $t("market.login.resetPass") }}</el-button
         >
-          <el-input
-            :placeholder="$t('market.login.inputActiveCode')"
-            v-model="data.activeCode"
-            show-password
-          ></el-input>
-        </el-form-item>
-        <el-form-item required>
-          <div class="captcha_box">
-            <el-input
-              prefix-icon="el-icon-finished"
-              type="text"
-              :placeholder="$t('market.login.captcha')"
-              v-model="data.captcha"
-              required
-              :required-tip="$t('market.login.captchaTips')"
-              @keydown.enter="login"
-            ></el-input>
-            <img
-              class="captcha_code"
-              :title="$t('market.login.refresh')"
-              :src="data.captchaUrl"
-              @click="reloadCaptcha"
-            />
-          </div>
-        </el-form-item>
-
-        <el-button type="primary" size="small" round @click="resetPass">{{
-          $t("market.login.resetPass")
-        }}</el-button>
         <br />
         <br />
         <div class="sub_menu">
-          <a size="small" round @click="show_login">{{
-            $t("market.login.back")
-          }}</a>
+          <a size="small" round @click="back">{{ $t("market.login.back") }}</a>
         </div>
       </el-form>
     </el-card>
@@ -89,10 +52,31 @@
 <script>
 import "@/assets/css/market.css";
 
-import sha1 from "sha1";
 export default {
-  name: "ResetPass1",
+  name: "createDockerUser",
   data() {
+    // 判断是否含有大写字母/小写字母/数字
+    var passwordIsValid = (str) => {
+      var result = str.match(/^.*[A-Z]+.*$/);
+      if (result == null) return false;
+      var result = str.match(/^.*[a-z]+.*$/);
+      if (result == null) return false;
+      var result = str.match(/^.*[0-9]+.*$/);
+      if (result == null) return false;
+
+      return true;
+    };
+
+    var validatePass = (rule, value, callback) => {
+      if (value.length < 8) {
+        callback(new Error(this.$t("market.login.passwordInfo")));
+      } else if (!passwordIsValid(value)) {
+        callback(new Error(this.$t("market.login.passwordInfo")));
+      } else {
+        callback();
+      }
+    };
+
     var validateEmail = (rule, value, callback) => {
       const mailReg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       if (!value) {
@@ -118,12 +102,8 @@ export default {
     return {
       data: {
         uid: window.localStorage.uid || "",
-        activeCode: "",
         password: "",
         checkPass: "",
-        captchaUrl: "",
-        session: "",
-        captcha: "",
       },
       rules: {
         uid: [
@@ -142,11 +122,12 @@ export default {
             trigger: "blur",
           },
           {
-            min: 6,
+            min: 8,
             max: 16,
             message: this.$t("market.login.passwordInfo"),
             trigger: "blur",
           },
+          { validator: validatePass, trigger: "blur" },
         ],
         checkPass: [
           {
@@ -155,7 +136,7 @@ export default {
             trigger: "blur",
           },
           {
-            min: 6,
+            min: 8,
             max: 16,
             message: this.$t("market.login.passwordInfo"),
             trigger: "blur",
@@ -173,76 +154,23 @@ export default {
     };
   },
   methods: {
-    show_login() {
-      this.$router.push("/market/user/login");
+    back() {
+      this.$router.go(-1);
     },
-    reloadCaptcha() {
-      this.$market
-        .call("cloud-user", "captcha")
-        .then((data) => {
-          this.data.captchaUrl =
-            "data:image/svg+xml;base64," + data.ci.captchaBase64;
-          this.data.session = data.ci.session;
-        })
-        .catch((err) => {
-          this.$message({
-            message: err.err_msg,
-            type: "error",
-          });
-        });
-    },
-    resetPass: function() {
+    createDockerUser: function() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.$market
-            .call("cloud-user", "resetPassByActiveCode", {
-              rp: {
-                uid: this.data.uid,
-                activeCode: this.data.activeCode,
-                password: sha1(this.data.password),
-                captcha: this.data.captcha,
-                session: this.data.session,
-              },
+            .call("cloud-user", "createUser", {
+              password: this.data.password,
             })
-            .then((data) => {
-              this.$message({
-                message: this.$t("market.login.findPasswordSucc"),
-                type: "success",
-              });
-
-              window.localStorage.uid = this.data.uid;
-
-              this.$router.push("/market/user/login");
-            })
+            .then((data) => {})
             .catch((err) => {
               this.$message({
-                message: err,
+                message: err.err_msg,
                 type: "error",
               });
             });
-
-          // const token = this.getQueryVariable("token");
-          // this.$ajax
-          //   .postJSON("/sso/resetPass", {
-          //     password: sha1(this.data.password),
-          //     token: token,
-          //   })
-          //   .then((res) => {
-          //     this.$message({
-          //       message: this.$t("login.resetSuccAndRedirect"),
-          //       type: "success",
-          //     });
-
-          //     setTimeout(() => {
-          //       location.href = res.href;
-          //     }, 1000);
-          //   })
-          //   .catch((err) => {
-          //     this.$message({
-          //       message: this.$t("login.resetFailed"),
-          //       type: "warning",
-          //     });
-          //   });
         } else {
           return false;
         }

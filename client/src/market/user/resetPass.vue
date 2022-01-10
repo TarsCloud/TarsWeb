@@ -1,30 +1,31 @@
 <template>
   <div>
-    <!-- 注册 -->
+    <!-- 重置密码 -->
     <el-card class="box-card market_page">
-      <h1 class="top_txt">
-        {{ $t("market.login.register") }}
-      </h1>
-
+      <h1 class="top_txt">{{ $t("market.login.resetPass") }}</h1>
       <el-form
         label-width="120px"
-        :model="login"
-        ref="ruleRegisterForm"
+        :model="data"
+        ref="ruleForm"
         label-position="left"
         :rules="rules"
       >
         <el-form-item :label="$t('market.login.userName')" prop="uid" required>
           <el-input
-            v-model="login.uid"
+            v-model="data.uid"
             :placeholder="$t('market.login.inputUserName')"
             prefix-icon="el-icon-message"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('market.login.password')" prop="password">
+
+        <el-form-item
+          :label="$t('market.login.inputPassword')"
+          prop="password"
+          required
+        >
           <el-input
-            prefix-icon="el-icon-key"
             :placeholder="$t('market.login.passwordInfo')"
-            v-model="login.password"
+            v-model="data.password"
             show-password
           ></el-input>
         </el-form-item>
@@ -34,20 +35,45 @@
           required
         >
           <el-input
-            prefix-icon="el-icon-key"
             :placeholder="$t('market.login.inputRepeatPassword')"
-            v-model="login.checkPass"
+            v-model="data.checkPass"
             show-password
           ></el-input>
         </el-form-item>
-        <el-button
-          class="btn_long"
-          type="primary"
-          size="small"
-          round
-          @click="register"
-          >{{ $t("market.login.register") }}</el-button
+        <el-form-item
+          :label="$t('market.login.activeCode')"
+          prop="activeCode"
+          required
         >
+          <el-input
+            :placeholder="$t('market.login.inputActiveCode')"
+            v-model="data.activeCode"
+            show-password
+          ></el-input>
+        </el-form-item>
+        <el-form-item required>
+          <div class="captcha_box">
+            <el-input
+              prefix-icon="el-icon-finished"
+              type="text"
+              :placeholder="$t('market.login.captcha')"
+              v-model="data.captcha"
+              required
+              :required-tip="$t('market.login.captchaTips')"
+              @keydown.enter="login"
+            ></el-input>
+            <img
+              class="captcha_code"
+              :title="$t('market.login.refresh')"
+              :src="data.captchaUrl"
+              @click="reloadCaptcha"
+            />
+          </div>
+        </el-form-item>
+
+        <el-button type="primary" size="small" round @click="resetPass">{{
+          $t("market.login.resetPass")
+        }}</el-button>
         <br />
         <br />
         <div class="sub_menu">
@@ -59,11 +85,13 @@
     </el-card>
   </div>
 </template>
+
 <script>
-import sha1 from "sha1";
 import "@/assets/css/market.css";
+
+import sha1 from "sha1";
 export default {
-  name: "Register",
+  name: "ResetPass1",
   data() {
     // 判断是否含有大写字母/小写字母/数字
     var passwordIsValid = (str) => {
@@ -87,16 +115,6 @@ export default {
       }
     };
 
-    var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error(this.$t("market.login.inputPasswordAgain")));
-      } else if (value !== this.login.password) {
-        callback(new Error(this.$t("market.login.passwordDiff")));
-      } else {
-        callback();
-      }
-    };
-
     var validateEmail = (rule, value, callback) => {
       const mailReg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       if (!value) {
@@ -110,18 +128,25 @@ export default {
         }
       }, 100);
     };
-
+    var validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error(this.$t("market.login.inputPasswordAgain")));
+      } else if (value !== this.data.password) {
+        callback(new Error(this.$t("market.login.passwordDiff")));
+      } else {
+        callback();
+      }
+    };
     return {
-      login: {
-        ticket: "",
+      data: {
         uid: window.localStorage.uid || "",
-        captcha: "",
+        activeCode: "",
         password: "",
         checkPass: "",
         captchaUrl: "",
         session: "",
+        captcha: "",
       },
-
       rules: {
         uid: [
           {
@@ -158,9 +183,15 @@ export default {
             message: this.$t("market.login.passwordInfo"),
             trigger: "blur",
           },
-          { validator: validatePass, trigger: "blur" },
         ],
         checkPass: [{ validator: validatePass2, trigger: "blur" }],
+        activeCode: [
+          {
+            required: true,
+            message: this.$t("market.login.inputPassword"),
+            trigger: "blur",
+          },
+        ],
       },
     };
   },
@@ -168,34 +199,81 @@ export default {
     show_login() {
       this.$router.push("/market/user/login");
     },
-    show_activate() {
-      this.$router.push(`/market/user/activate`);
+    reloadCaptcha() {
+      this.$market
+        .call("cloud-user", "captcha")
+        .then((data) => {
+          this.data.captchaUrl =
+            "data:image/svg+xml;base64," + data.ci.captchaBase64;
+          this.data.session = data.ci.session;
+        })
+        .catch((err) => {
+          this.$message({
+            message: err.err_msg,
+            type: "error",
+          });
+        });
     },
-    register: function() {
-      this.$refs["ruleRegisterForm"].validate((valid) => {
+    resetPass: function() {
+      this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.$market
-            .call("cloud-user", "register", {
-              uid: this.login.uid,
-              password: sha1(this.login.password),
-              origin: window.location.origin,
+            .call("cloud-user", "resetPassByActiveCode", {
+              rp: {
+                uid: this.data.uid,
+                activeCode: this.data.activeCode,
+                password: sha1(this.data.password),
+                captcha: this.data.captcha,
+                session: this.data.session,
+              },
             })
             .then((data) => {
-              window.localStorage.uid = this.login.uid;
-              this.show_activate();
+              this.$message({
+                message: this.$t("market.login.findPasswordSucc"),
+                type: "success",
+              });
+
+              window.localStorage.uid = this.data.uid;
+
+              this.$router.push("/market/user/login");
             })
             .catch((err) => {
               this.$message({
-                message: err.err_msg,
+                message: err,
                 type: "error",
               });
             });
+
+          // const token = this.getQueryVariable("token");
+          // this.$ajax
+          //   .postJSON("/sso/resetPass", {
+          //     password: sha1(this.data.password),
+          //     token: token,
+          //   })
+          //   .then((res) => {
+          //     this.$message({
+          //       message: this.$t("login.resetSuccAndRedirect"),
+          //       type: "success",
+          //     });
+
+          //     setTimeout(() => {
+          //       location.href = res.href;
+          //     }, 1000);
+          //   })
+          //   .catch((err) => {
+          //     this.$message({
+          //       message: this.$t("login.resetFailed"),
+          //       type: "warning",
+          //     });
+          //   });
         } else {
           return false;
         }
       });
     },
   },
-  mounted() {},
+  mounted() {
+    this.reloadCaptcha();
+  },
 };
 </script>
