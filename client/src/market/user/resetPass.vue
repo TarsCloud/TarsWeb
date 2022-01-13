@@ -239,33 +239,10 @@ export default {
             })
             .catch((err) => {
               this.$message({
-                message: err,
+                message: this.$t("market.userRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });
-
-          // const token = this.getQueryVariable("token");
-          // this.$ajax
-          //   .postJSON("/sso/resetPass", {
-          //     password: sha1(this.data.password),
-          //     token: token,
-          //   })
-          //   .then((res) => {
-          //     this.$message({
-          //       message: this.$t("login.resetSuccAndRedirect"),
-          //       type: "success",
-          //     });
-
-          //     setTimeout(() => {
-          //       location.href = res.href;
-          //     }, 1000);
-          //   })
-          //   .catch((err) => {
-          //     this.$message({
-          //       message: this.$t("login.resetFailed"),
-          //       type: "warning",
-          //     });
-          //   });
         } else {
           return false;
         }

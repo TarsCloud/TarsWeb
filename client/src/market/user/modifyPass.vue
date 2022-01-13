@@ -175,7 +175,7 @@ export default {
             })
             .catch((err) => {
               this.$message({
-                message: err,
+                message: this.$t("market.userRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });

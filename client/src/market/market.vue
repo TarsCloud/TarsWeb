@@ -2,25 +2,6 @@
   <div class="page_server">
     <div class="left-view">
       <div>
-        <!-- <el-dropdown
-          style="margin-bottom:10px;"
-          @command="handleCommand"
-          v-if="uid"
-        >
-          <span class="el-dropdown-link">
-            <i class="el-icon-cloudy el-icon--left"></i>
-            {{ uid }}<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="harbor">设置仓库密码</el-dropdown-item>
-            <el-dropdown-item command="repo">管理仓库GROUP</el-dropdown-item>
-            <el-dropdown-item command="modify"
-              >修改服务市场密码</el-dropdown-item
-            >
-            <el-dropdown-item command="quit">退出</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown> -->
-
         <span>
           <el-input
             size="small"
@@ -91,15 +72,6 @@ export default {
     };
   },
   methods: {
-    // handleCommand(command) {
-    //   if (command == "quit") {
-    //     window.localStorage.uid = "";
-    //     window.localStorage.ticket = "";
-    //     this.$router.push("/market/user/login");
-    //   } else if (command == "modify") {
-    //     this.$router.push("/market/user/modifyPass");
-    //   }
-    // },
     iconLoading() {
       const that = this;
       if (!that.isIconPlay) {

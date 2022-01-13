@@ -2,7 +2,7 @@
   <div>
     <!-- 重置密码 -->
     <el-card class="box-card market_page">
-      <h1 class="top_txt">{{ $t("market.login.resetPass") }}</h1>
+      <h1 class="top_txt">{{ $t("market.repo.resetPass") }}</h1>
       <el-form
         label-width="120px"
         :model="data"
@@ -11,38 +11,34 @@
         :rules="rules"
       >
         <el-form-item
-          :label="$t('market.login.inputPassword')"
+          :label="$t('market.repo.inputPassword')"
           prop="password"
           required
         >
           <el-input
-            :placeholder="$t('market.login.passwordInfo')"
+            :placeholder="$t('market.repo.passwordInfo')"
             v-model="data.password"
             show-password
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('market.login.repeatPassword')"
+          :label="$t('market.repo.repeatPassword')"
           prop="checkPass"
           required
         >
           <el-input
-            :placeholder="$t('market.login.inputRepeatPassword')"
+            :placeholder="$t('market.repo.inputRepeatPassword')"
             v-model="data.checkPass"
             show-password
           ></el-input>
         </el-form-item>
-        <el-button
-          type="primary"
-          size="small"
-          round
-          @click="createDockerUser"
-          >{{ $t("market.login.resetPass") }}</el-button
-        >
+        <el-button type="primary" size="small" round @click="createRepoUser">{{
+          $t("market.repo.resetPass")
+        }}</el-button>
         <br />
         <br />
         <div class="sub_menu">
-          <a size="small" round @click="back">{{ $t("market.login.back") }}</a>
+          <a size="small" round @click="back">{{ $t("market.repo.back") }}</a>
         </div>
       </el-form>
     </el-card>
@@ -53,7 +49,7 @@
 import "@/assets/css/market.css";
 
 export default {
-  name: "createDockerUser",
+  name: "createRepoUser",
   data() {
     // 判断是否含有大写字母/小写字母/数字
     var passwordIsValid = (str) => {
@@ -69,27 +65,14 @@ export default {
 
     var validatePass = (rule, value, callback) => {
       if (value.length < 8) {
-        callback(new Error(this.$t("market.login.passwordInfo")));
+        callback(new Error(this.$t("market.repo.passwordInfo")));
       } else if (!passwordIsValid(value)) {
-        callback(new Error(this.$t("market.login.passwordInfo")));
+        callback(new Error(this.$t("market.repo.passwordInfo")));
       } else {
         callback();
       }
     };
 
-    var validateEmail = (rule, value, callback) => {
-      const mailReg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-      if (!value) {
-        return callback(new Error(this.$t("market.login.userNameRegTips")));
-      }
-      setTimeout(() => {
-        if (mailReg.test(value)) {
-          callback();
-        } else {
-          callback(new Error(this.$t("market.login.userNameRegTips")));
-        }
-      }, 100);
-    };
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error(this.$t("market.login.inputPasswordAgain")));
@@ -106,25 +89,16 @@ export default {
         checkPass: "",
       },
       rules: {
-        uid: [
-          {
-            required: true,
-            message: this.$t("market.login.inputUserName"),
-            trigger: "blur",
-          },
-          { message: this.$t("market.login.userNameRegTips"), trigger: "blur" },
-          { validator: validateEmail, trigger: "blur" },
-        ],
         password: [
           {
             required: true,
-            message: this.$t("market.login.inputPassword"),
+            message: this.$t("market.repo.inputPassword"),
             trigger: "blur",
           },
           {
             min: 8,
             max: 16,
-            message: this.$t("market.login.passwordInfo"),
+            message: this.$t("market.repo.passwordInfo"),
             trigger: "blur",
           },
           { validator: validatePass, trigger: "blur" },
@@ -132,13 +106,13 @@ export default {
         checkPass: [
           {
             required: true,
-            message: this.$t("market.login.inputPassword"),
+            message: this.$t("market.repo.inputPassword"),
             trigger: "blur",
           },
           {
             min: 8,
             max: 16,
-            message: this.$t("market.login.passwordInfo"),
+            message: this.$t("market.repo.passwordInfo"),
             trigger: "blur",
           },
         ],
@@ -146,7 +120,7 @@ export default {
         activeCode: [
           {
             required: true,
-            message: this.$t("market.login.inputPassword"),
+            message: this.$t("market.repo.inputPassword"),
             trigger: "blur",
           },
         ],
@@ -157,17 +131,26 @@ export default {
     back() {
       this.$router.go(-1);
     },
-    createDockerUser: function() {
+    createRepoUser: function() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.$market
-            .call("cloud-user", "createUser", {
+            .call("cloud-market", "createRepoUser", {
               password: this.data.password,
             })
-            .then((data) => {})
+            .then((data) => {
+              this.$message({
+                message: this.$t("market.repo.resetPassSucc"),
+                type: "success",
+              });
+
+              setTimeout(() => {
+                this.$router.go(-1);
+              }, 1000);
+            })
             .catch((err) => {
               this.$message({
-                message: err.err_msg,
+                message: this.$t("market.marketRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });
@@ -177,8 +160,6 @@ export default {
       });
     },
   },
-  mounted() {
-    this.reloadCaptcha();
-  },
+  mounted() {},
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-header>
+    <el-header class="header">
       <el-row :gutter="24" v-if="serviceVersion">
         <el-col :span="3">
           <el-avatar :size="100" :src="serviceVersion.logo"> </el-avatar>
@@ -284,7 +284,7 @@ export default {
 </script>
 
 <style>
-.el-select .el-input__inner {
+.header .el-select .el-input__inner {
   border: 0px;
 }
 .title {

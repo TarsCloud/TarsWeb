@@ -96,11 +96,9 @@
                 }}<i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="harbor"
-                  >设置仓库密码</el-dropdown-item
-                >
-                <el-dropdown-item command="repo"
-                  >管理仓库GROUP</el-dropdown-item
+                <el-dropdown-item command="pass">设置仓库密码</el-dropdown-item>
+                <el-dropdown-item command="project"
+                  >管理仓库项目</el-dropdown-item
                 >
                 <el-dropdown-item command="modify"
                   >修改服务市场密码</el-dropdown-item
@@ -167,6 +165,10 @@ export default {
         window.localStorage.uid = "";
         window.localStorage.ticket = "";
         this.$router.push("/market/user/login");
+      } else if (command == "pass") {
+        this.$router.push("/market/repo/pass");
+      } else if (command == "project") {
+        this.$router.push("/market/repo/project");
       } else if (command == "modify") {
         this.$router.push("/market/user/modifyPass");
       }

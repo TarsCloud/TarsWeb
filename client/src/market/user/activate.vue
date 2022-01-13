@@ -107,32 +107,12 @@ export default {
     console.log(this.$route.params);
 
     this.login.activeCode = this.$route.params.uid;
-    // this.activate();
   },
   methods: {
-    // getQueryVariable(variable) {
-    //   let pos = location.href.indexOf("?");
-    //   if (pos == -1) {
-    //     return "";
-    //   }
-
-    //   let query = location.href.substring(pos + 1);
-
-    //   let vars = query.split("&");
-    //   for (let i = 0; i < vars.length; i++) {
-    //     let pair = vars[i].split("=");
-
-    //     if (pair[0] == variable) {
-    //       return pair[1];
-    //     }
-    //   }
-    //   return "";
-    // },
     show_login() {
       this.$router.push("/market/user/login");
     },
     activate: function() {
-      // const token = this.getQueryVariable("token");
       this.$market
         .call("cloud-user", "activate", {
           uid: this.login.uid,
@@ -150,7 +130,7 @@ export default {
         })
         .catch((err) => {
           this.$message({
-            message: this.$t("market.login.resetFailed"),
+            message: this.$t("market.userRet." + err.tars_ret || "-1"),
             type: "warning",
           });
         });
