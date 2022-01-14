@@ -1,0 +1,42 @@
+apiVersion: k8s.tars.io/v1beta1
+kind: TServer
+metadata:
+  labels:
+    tars.io/ServerApp: debug
+    tars.io/ServerName: compiler
+    tars.io/SubType: normal
+  name: debug-compiler
+  namespace: tars-dev
+spec:
+  app: debug
+  server: compiler
+  important: 3
+  subType: normal
+  normal:
+    ports:
+      - isTcp: true
+        name: http
+        port: 4001 
+  k8s:
+    abilityAffinity: ServerRequired
+    mounts:
+      - mountPath: /data
+        name: data
+        readOnly: false
+        source:
+          tLocalVolume:
+            gid: '0'
+            mode: '755'
+            uid: '0'
+      - name: docker-sock
+        source:
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
+        mountPath: /var/run/docker.sock
+    replicas: 1
+  release:
+    source: base-compiler
+    id: v-0000001
+    image:
+      tarscloud/base-compiler

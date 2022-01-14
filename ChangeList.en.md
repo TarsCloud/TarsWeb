@@ -1,9 +1,23 @@
-## 20211124(2.4.21)
-- 添加k8s events查看.
-- node节点管理支持批量编辑普通标签与亲和性标签
-- 添加tars.es模板,notify,events es从模板读取
-- k8s 支持维护normal服务
-- 添加节点详情
+## 20211205(2.4.22)
+
+- merge call train to k8s(need K8SFramework v1.1.1)
+- Optimize interface debugging and return error information
+- Fix benchmark code merge omission
+- Fix k8s get event config error
+
+## 20211130(2.4.21)
+
+- add k8s events pages
+- k8s node manage support batch edit tag and affinity tag
+- k8s add tars.es template,notify,events es read from this template
+- k8s support normal server
+- k8s add node description
+- fix gateway fetchUpstreams function error
+- add test case manage
+- fix template scope warning
+- fix error when pulling upstream of gateway
+- add http gateway router, from create to upsert
+- k8s log support auto connect
 
 ## 20211115(2.4.20)
 

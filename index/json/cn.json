@@ -11,7 +11,8 @@
             "tab5": "操作管理",
             "tab6": "基础管理",
             "tab7": "服务历史管理",
-            "tab8": "网关配置"
+            "tab8": "网关配置",
+            "tab9": "服务市场"
         },
         "dcache": {
             "tab2": "服务创建"
@@ -21,39 +22,39 @@
         "userCenter": "用户中心"
     },
     "callChain": {
-        "sub":"查询",
-        "noResult":"暂无结果",
-        "allTrackingNumbers":"所有追踪编号:",
-        "pleaseSelectTrackingNumber":"请选择追踪编号",
-        "method":"方法:",
-        "selectMethod":"请选择方法",
-        "methodTrackingNumbers":"该方法下追踪编号:",
-        "selectMethodTrackingNumbers":"请选择方法下追踪编号",
-        "trackingNumbers":"追踪编号：",
-        "date":"日期",
-        "btime":"开始时间",
-        "etime":"结束时间",
-        "timeStamp":"时间戳",
-        "operation":"操作",
-        "detail":"详情",
-        "sbtime":"请选择开始时间",
-        "setime":"请选择结束时间",
-        "sdata":"请选择日期",
-        "searchSuc":"查询成功",
-        "stringBtime":"开始时间：",
-        "stringEtime":"结束时间：",
-        "clientTime":"client总时间：",
-        "serverTime":"server总时间：",
-        "timeFrame":"时间范围",
-        "allTime":"执行时间",
+        "sub": "查询",
+        "noResult": "暂无结果",
+        "allTrackingNumbers": "所有追踪编号:",
+        "pleaseSelectTrackingNumber": "请选择追踪编号",
+        "method": "方法:",
+        "selectMethod": "请选择方法",
+        "methodTrackingNumbers": "该方法下追踪编号:",
+        "selectMethodTrackingNumbers": "请选择方法下追踪编号",
+        "trackingNumbers": "追踪编号：",
+        "date": "日期",
+        "btime": "开始时间",
+        "etime": "结束时间",
+        "timeStamp": "时间戳",
+        "operation": "操作",
+        "detail": "详情",
+        "sbtime": "请选择开始时间",
+        "setime": "请选择结束时间",
+        "sdata": "请选择日期",
+        "searchSuc": "查询成功",
+        "stringBtime": "开始时间：",
+        "stringEtime": "结束时间：",
+        "clientTime": "client总时间：",
+        "serverTime": "server总时间：",
+        "timeFrame": "时间范围",
+        "allTime": "执行时间",
         "serverRelationship": "服务调用关系",
         "nodeRelationship": "节点调用关系",
         "relation": {
             "need": "需要",
             "flow": "总流量",
             "avgTime": "平均耗时(ms)",
-            "abnormalRate":"异常率",
-            "timeoutRate":"超时率"
+            "abnormalRate": "异常率",
+            "timeoutRate": "超时率"
         }
     },
     "deployLog": {
@@ -566,7 +567,9 @@
         "disk": "磁盘管理",
         "nodeSelect": "节点筛选",
         "copyNode": "副本伸缩",
-        "viewEvent": "查看事件"
+        "viewEvent": "查看事件",
+        "addTestCase": "新增测试用例",
+        "testCaseList": "用例列表"
     },
     "index": {
         "rightView": {
@@ -584,8 +587,8 @@
                 "infDebuger": "接口调试",
                 "cacheDebug": "Cache测试",
                 "treeConfig": "调用链",
-                "averageDuration":"平均时长",
-                "trackingNumber":"调用链明细"
+                "averageDuration": "平均时长",
+                "trackingNumber": "调用链明细"
             }
         }
     },
@@ -1081,8 +1084,8 @@
                 "labelValid": "标签名不符合规范",
                 "labelMax": "标签最大组数为63组",
                 "labelValueValid": "标签值不符合规范",
-                "errorKey":"标签名称必填",
-                "errorValue":"标签值不可为空",
+                "errorKey": "标签名称必填",
+                "errorValue": "标签值不可为空",
                 "addLabel": "添加一组标签"
             },
             "affinity": "亲和性选择",
@@ -1244,11 +1247,11 @@
         "executeConnect": "正在执行联通性测试, 请稍后",
         "executeInstall": "正在执行安装, 请稍后",
         "installTgzNotExists": "安装包不存在, 请检查web服务器上安装包: /usr/local/app/web/files/tarsnode.tgz",
-        "step1":"检查安装包",
-        "step2":"ssh链接",
-        "step3":"下载安装包",
-        "step4":"检查参数",
-        "step5":"安装节点",
+        "step1": "检查安装包",
+        "step2": "ssh链接",
+        "step3": "下载安装包",
+        "step4": "检查参数",
+        "step5": "安装节点",
         "table": {
             "th": {
                 "node_name": "节点",
@@ -1323,25 +1326,25 @@
             "title": "删除模板"
         }
     },
-    "gateway":{
-        "station":"站点配置",
-        "upstream":"upstream配置",
-        "globalblack":"全局黑名单配置",
-        "stationId":"站点ID",
-        "stationName":"站点名",
-        "monitorUrl":"监控URL",
-        "serverName":"服务名",
-        "pathRule":"路径规则",
-        "proxyPass":"ProxyPass",
-        "addr":"地址",
-        "weight":"权重",
-        "fusing":"熔断",
-        "fusingOn":"开启",
-        "fusingOff":"关闭",
-        "lastUpdate":"更新时间",
-        "gatewayObj":"网关控制服务Obj",
-        "switchGateway":"切换网关",
-        "btn":{
+    "gateway": {
+        "station": "站点配置",
+        "upstream": "upstream配置",
+        "globalblack": "全局黑名单配置",
+        "stationId": "站点ID",
+        "stationName": "站点名",
+        "monitorUrl": "监控URL",
+        "serverName": "服务名",
+        "pathRule": "路径规则",
+        "proxyPass": "ProxyPass",
+        "addr": "地址",
+        "weight": "权重",
+        "fusing": "熔断",
+        "fusingOn": "开启",
+        "fusingOff": "关闭",
+        "lastUpdate": "更新时间",
+        "gatewayObj": "网关控制服务Obj",
+        "switchGateway": "切换网关",
+        "btn": {
             "addGateway": "新增站点",
             "addUpstream": "新增Upstream",
             "addHttpRouter": "新增路由",
@@ -1351,12 +1354,12 @@
             "stationNameTips": "请输入站点名",
             "idFormatTips": "站点ID只能包含英文字母、数字、点、下划线，并以字母开头，不能以Obj结尾",
             "monitorUrlTips": "请输入监控URL",
-            "upstreamFormatTips":"upstream只能包含英文字母、数字、下划线，以字母开头，不能以Obj结尾",
-            "addrFormatTips":"请输入ip:port",
-            "weightFormatTips":"请输入权重值",
-            "serverNameTip":"支持通配符、正则表达式，为空则全匹配",
-            "pathRuleTip":"请输入路径匹配规则",
-            "proxyPassTip":"请输入ProxyPass，支持ip:port / upstream / tars obj 三种方式",
+            "upstreamFormatTips": "upstream只能包含英文字母、数字、下划线，以字母开头，不能以Obj结尾",
+            "addrFormatTips": "请输入ip:port",
+            "weightFormatTips": "请输入权重值",
+            "serverNameTip": "支持通配符、正则表达式，为空则全匹配",
+            "pathRuleTip": "请输入路径匹配规则",
+            "proxyPassTip": "请输入ProxyPass，支持ip:port / upstream / tars obj 三种方式",
             "title": "新增站点",
             "upstream": "新增Upstream"
         },
@@ -1370,29 +1373,29 @@
             "confirmTips": "您确定要删除这个站点吗",
             "upstreamConfirmTips": "您确定要删除这个upstream吗",
             "bwListConfirmTips": "您确定要删除这条黑/白名单配置吗",
-            "deleteUpstreamErrorTip":"删除失败，仍有关联的Router或者资源不存在",
+            "deleteUpstreamErrorTip": "删除失败，仍有关联的Router或者资源不存在",
             "title": "删除站点"
         },
-        "config":{
-            "title":"网关配置"
+        "config": {
+            "title": "网关配置"
         },
-        "bwlist":{
-            "title":{
-                "black":"黑名单",
-                "white":"白名单"
+        "bwlist": {
+            "title": {
+                "black": "黑名单",
+                "white": "白名单"
             },
-            "ipTip":"请输入IP地址（支持通配符）"
+            "ipTip": "请输入IP地址（支持通配符）"
         },
-        "flowControl":{
-            "title":"流量控制",
-            "duration":"时间窗口(s)",
-            "durationTip":"请输入时间窗口秒数",
-            "maxFlow":"最大流量",
-            "maxFlowTip":"请输入时间窗口内最大流量",
-            "tip":"即在'时间窗口'的时间内，最多请求'最大流量'次，超出的流量会被拒绝"
+        "flowControl": {
+            "title": "流量控制",
+            "duration": "时间窗口(s)",
+            "durationTip": "请输入时间窗口秒数",
+            "maxFlow": "最大流量",
+            "maxFlowTip": "请输入时间窗口内最大流量",
+            "tip": "即在'时间窗口'的时间内，最多请求'最大流量'次，超出的流量会被拒绝"
         },
-        "router":{
-            "title":"路由配置"
+        "router": {
+            "title": "路由配置"
         }
     },
     "serviceApproval": {
@@ -1493,7 +1496,9 @@
             "outParam": "方法出参",
             "tarsFile": "协议文件",
             "deleteMsg": "您确定要删除吗？",
-            "objName": "Servant名"
+            "objName": "Servant名",
+            "testCastName": "用例名称",
+            "fileName": "文件名"
         },
         "benchmark": {
             "inParam": "入参结构",
@@ -1750,7 +1755,7 @@
         }
     },
     "event": {
-        "eventLevel":"事件级别",
+        "eventLevel": "事件级别",
         "type": {
             "server": "服务级别",
             "cluster": "集群级别",
@@ -1793,9 +1798,9 @@
             "stopPublic": "停用公用",
             "nodeLabels": "节点标签",
             "nodeAffinity": "请将节点添加 tars.io/node.$Namespace 标签, 以便当前框架能管理该节点",
-            "CommonTag":"普通标签",
-            "AbilityTag":"亲和性标签",
-            "FrameWorkTag":"框架节点标签",
+            "CommonTag": "普通标签",
+            "AbilityTag": "亲和性标签",
+            "FrameWorkTag": "框架节点标签",
             "tagName": "标签名",
             "tagValue": "标签值"
         },
@@ -2053,6 +2058,113 @@
                 "alarmTime": "告警时间",
                 "alarmType": "告警方式"
             }
+        }
+    },
+    "market": {
+        "table": {
+            "version": "当前版本"
+        },
+        "download": "下载",
+        "login": {
+            "loginTitle": "请登录服务市场",
+            "registerInfo": "还没有账号? ",
+            "userName": "邮箱",
+            "inputUserName": "请输入邮箱",
+            "password": "密码",
+            "passwordInfo": "> 8 chars with at least 1 uppercase/lowercase/number",
+            "inputPassword": "请输入密码",
+            "repeatPassword": "二次确认密码",
+            "inputRepeatPassword": "请重复上面的密码",
+            "activeCode": "邮件中的验证码",
+            "inputActiveCode": "请输入邮件中的验证码",
+            "login": "登录",
+            "forget": "密码忘记了?",
+            "findPassword": "找回",
+            "findPasswordTitle": "找回密码",
+            "resetPassword": "重置",
+            "inputPasswordAgain": "请再次输入密码",
+            "userNameRegTips": "请输入合法的邮箱地址",
+            "loginFailed": "登录失败",
+            "registerTitle": "请注册",
+            "repeatPasswordTips": "二次确认密码不能为空",
+            "register": "注册",
+            "and": "并",
+            "activated": "激活",
+            "findPasswordSucc": "请查收邮件, 并使用激活码重置密码",
+            "registerSucc": "请输入邮件中的激活码完成账号激活",
+            "inputOldPass": "请输入旧密码",
+            "inputNewPass": "请输入新密码",
+            "repeatInputNewPass": "重复输入新密码",
+            "passwordDiff": "两次密码输入不一致，请修改",
+            "captchaTips": "请输入验证码",
+            "modifyPass": "修改密码",
+            "modifySucc": "密码修改成功!",
+            "resetPass": "重置密码",
+            "captcha": "验证码",
+            "refresh": "点击刷新",
+            "notActivated": "用户还未激活",
+            "passwordNoCorrect": "密码错误!",
+            "userNoExist": "用户不存在",
+            "hasExist": "用户已经存在",
+            "hasActivated": "用户已经激活过",
+            "activatedError": "激活用户失败",
+            "resetPassError": "重置密码失败",
+            "passwordError": "修改密码失败",
+            "back": "返回",
+            "submit": "提交",
+            "activing": "激活用户",
+            "activate": "激活"
+        },
+        "repo": {
+            "resetPass": "重置仓库密码",
+            "password": "密码",
+            "passwordInfo": "> 8 chars with at least 1 uppercase/lowercase/number",
+            "inputPassword": "请输入密码",
+            "repeatPassword": "二次确认密码",
+            "inputRepeatPassword": "请重复上面的密码",
+            "inputPasswordAgain": "请再次输入密码",
+            "back": "返回",
+            "resetPassSucc": "重置密码成功",
+            "createProjectSucc": "创建项目成功",
+            "deleteProjectSucc": "成功删除项目",
+            "createMemberSucc": "授权用户成功",
+            "deleteMemberSucc": "取消用户权限成功",
+            "deleteRepoSucc": "成功删除仓库",
+            "deleteArtifactSucc": "成功删除Artifacts"
+        },
+        "userRet": {
+            "0": "操作成功",
+            "-1": "系统繁忙",
+            "-2": "账号没有激活",
+            "-3": "密码不正确",
+            "-4": "用户不存在",
+            "-5": "用户已经存在",
+            "-6": "用户已经激活过了",
+            "-7": "token已经过期",
+            "-8": "非法请求",
+            "-9": "验证码错误",
+            "-10": "激活码错误"
+        },
+        "marketRet": {
+            "0": "操作成功",
+            "-1": "系统繁忙",
+            "-2": "版本号非法",
+            "-3": "版本已经存在",
+            "-4": "数据不存在",
+            "-5": "没有权限",
+            "-6": "参数错误",
+            "-7": "用户不存在",
+            "-8": "仓库密码不合法, 请更换一个密码",
+            "-9": "名称冲突, 请更换一个"
+        }
+    },
+    "el": {
+        "messagebox": {
+            "confirm": "确定",
+            "cancel": "取消"
+        },
+        "table": {
+            "emptyText": "暂无数据~~"
         }
     }
 }

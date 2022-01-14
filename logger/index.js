@@ -32,7 +32,9 @@ var timeStamp = () => moment().format('YYYY-MM-DD HH:mm:ss.SSS');
 var normalLogger = new winston.Logger({
 	level: 'debug',
 	transports: [
-		new winston.transports.Console({level: 'info'}),
+		new winston.transports.Console({
+			level: 'info'
+		}),
 		new winston.transports.DailyRotateFile({
 			name: 'info-file',
 			filename: path.join(loggerPath, './info.log'),
@@ -62,7 +64,9 @@ var normalLogger = new winston.Logger({
 		})
 	],
 	exceptionHandlers: [
-		new winston.transports.Console({level: 'error'}),
+		new winston.transports.Console({
+			level: 'error'
+		}),
 		new winston.transports.DailyRotateFile({
 			filename: path.join(loggerPath, './exceptions.log'),
 			datePattern: 'yyyyMMdd.',
@@ -91,8 +95,8 @@ var sqlLogger = new winston.Logger({
 /**
  * 按照用户配置的日志保留时间自动清理过期日志文件
  */
-let logFileKeepDays = webConf.logFileKeepDays || '7';  //默认保留7天日志
-let autoClearTime = webConf.autoClearTime || '2';   //默认两点自动清理过期日志
+let logFileKeepDays = webConf.logFileKeepDays || '7'; //默认保留7天日志
+let autoClearTime = webConf.autoClearTime || '2'; //默认两点自动清理过期日志
 const clearFile = async (logFileKeepDays) => {
 	let fileList = await fs.readdir(loggerPath);
 	let expireTime = moment(moment().format('YYYYMMDD'), 'YYYYMMDD').valueOf() - parseInt(logFileKeepDays) * 24 * 60 * 60 * 1000;
@@ -131,13 +135,19 @@ var logger = {
 		}
 		var content = '';
 		infos.forEach((str) => {
-			if (str instanceof Error) {    //error类，打出相应的错误信息和堆栈信息
+			if (str instanceof Error) {
+				//error类，打出相应的错误信息和堆栈信息
 				content += str.stack;
-			} else if (Object.prototype.toString.call(str) === '[object Object]' || Object.prototype.toString.call(str) === '[object Array]') {   //对象或数组，则转为string输出
+			} else if (Object.prototype.toString.call(str) === '[object Object]' || Object.prototype.toString.call(str) === '[object Array]') { //对象或数组，则转为string输出
 				if (str.request && str.response) {
 					preStr = (str.ip || '') + '|' + (str.uid || '') + '|' + preStr;
 				} else {
-					content += JSON.stringify(str);
+					// console.log(str);
+					try {
+						content += JSON.stringify(str);
+					} catch (e) {
+						console.log(str, e);
+					}
 				}
 			} else {
 				content += str;

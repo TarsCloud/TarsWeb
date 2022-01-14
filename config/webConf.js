@@ -27,7 +27,7 @@ let conf = {
         defaultLanguage: 'cn', //cn 或 en ，用户默认的语言环境
         strict: false, //true: tarslog模式(tarslog需要首先从框架上迁移走, 基础框架服务器上不能部署其他服务)
         uploadLogin: false, //上传文件是否需要登录(开发或者调试时可以放开)
-        alter: true,    //变更db结构
+        alter: true, //变更db结构
     },
     batchServer: {
         exportPath: "/usr/local/app/patchs/export",
@@ -58,11 +58,6 @@ let conf = {
         syncAllUserSchedule: '*/5 * * * *', // 全量同步LDAP用户,每5分钟同步一次
         maxInCache: 10 * 60 * 1000 // 全量LDAP用户数据在内存中最大时间,应大于同步任务的时间
     },
-    TopologyObj:{
-        moduleName:"tars",
-        interfaceName:"Topology",
-        servantName:"tars.tarslog.TopologyObj",
-    },
     dbConf: {
         host: 'db.tars.com', // 数据库地址
         port: '3306', // 数据库端口
@@ -76,17 +71,17 @@ let conf = {
         }
     },
     client: path.join(cwd, 'config/tars.conf'), //连接普通TARS环境的配置
-    enable: true,       //启用普通的版本
-    show: true,         //显示TARS tab
+    enable: true, //启用普通的版本
+    show: true, //显示TARS tab
 
     k8s: {
-        client: path.join(cwd, 'config/k8s.conf'),     //连接k8s环境里面tars配置
+        client: path.join(cwd, 'config/k8s.conf'), //连接k8s环境里面tars配置
         namespace: 'tars-dev',
-        apiPrefix: 'apis/k8s.tars.io/v1beta1',  // 与k8s的交互配置
+        apiPrefix: 'apis/k8s.tars.io/v1beta1', // 与k8s的交互配置
         uploadDomain: 'http://tars-tarsimage/api/v1beta1/timage', // tarsimage上传交互
-        cache: true,    //从cache中加载
+        cache: true, //从cache中加载
     },
-
+    market: false,
     isEnableK8s: () => {
         return process.env.ENABLE_K8S == "true" || false;
     },
@@ -96,28 +91,26 @@ let conf = {
 if (process.env.NODE_ENV == "local") {
 
     conf.dbConf = {
-            host: '127.0.0.1', // 数据库地址
-            port: '3306', // 数据库端口
-            user: 'tarsAdmin', // 用户名
-            password: 'Tars@2019', // 密码
-            charset: 'utf8', // 数据库编码
-            pool: {
-                max: 10, // 连接池中最大连接数量
-                min: 0, // 连接池中最小连接数量
-                idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
-            }
-        },
+        host: '127.0.0.1', // 数据库地址
+        port: '3306', // 数据库端口
+        user: 'tarsAdmin', // 用户名
+        password: 'Tars@2019', // 密码
+        charset: 'utf8', // 数据库编码
+        pool: {
+            max: 10, // 连接池中最大连接数量
+            min: 0, // 连接池中最小连接数量
+            idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
+        }
+    };
 
-
-        conf.webConf.host = '0.0.0.0';
+    conf.webConf.host = '0.0.0.0';
     conf.webConf.port = 4001;
     conf.webConf.alter = true;
 
     conf.client = path.join(cwd, 'config/tars-dev.conf');
     process.env.ENABLE_K8S = "false";
 
-}
-else if (process.env.NODE_ENV == "dev") {
+} else if (process.env.NODE_ENV == "dev") {
 
     conf.dbConf = {
         host: '172.16.8.227', // 数据库地址
@@ -130,7 +123,7 @@ else if (process.env.NODE_ENV == "dev") {
             min: 0, // 连接池中最小连接数量
             idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
         }
-    },
+    };
 
 
     conf.webConf.host = '0.0.0.0';
@@ -163,7 +156,7 @@ if (conf.isEnableK8s() && fs.existsSync('/mnt/config/config.json')) {
         conf.client = '/mnt/config/tars.conf';
         conf.enable = content.enable;
         conf.show = content.show;
-        
+
     } catch (e) {
         console.log(e);
     }

@@ -19,21 +19,23 @@ const ConfigFProxy = require("./proxy/ConfigFProxy");
 const DCacheOptProxy = require("./proxy/DCacheOptProxy");
 const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const PatchProxy = require("./proxy/PatchProxy");
-const WebConf = require("../config/webConf");
-const { RPCStruct } = require('./service');
+// const WebConf = require("../config/webConf");
+const {
+    RPCStruct
+} = require('./service');
 const TopologyProxy = require("./topology/TopologyProxy");
 
 module.exports = {
 
-    adminRegStruct : RPCStruct(AdminRegProxy, 'tars'),
+    adminRegStruct: RPCStruct(AdminRegProxy, 'tars'),
 
-    configFStruct : RPCStruct(ConfigFProxy, 'tars'),
+    configFStruct: RPCStruct(ConfigFProxy, 'tars'),
 
-    monitorQueryStruct : RPCStruct(MonitorQueryProxy, 'tars'),
+    monitorQueryStruct: RPCStruct(MonitorQueryProxy, 'tars'),
 
     DCacheOptStruct: RPCStruct(DCacheOptProxy, 'DCache'),
 
     PatchStruct: RPCStruct(PatchProxy, 'tars'),
 
-    topologyStruct: RPCStruct(TopologyProxy, WebConf.TopologyObj.moduleName)
+    topologyStruct: RPCStruct(TopologyProxy, 'tars')
 };

@@ -18,8 +18,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 // 重写路由的push方法
-const routerPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push(location){
+const routerPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(error => error)
 }
 
@@ -53,18 +53,32 @@ import OperationEvent from '@/k8s/operation/event';
 // 网关
 import OperationGateway from '@/gateway/index';
 
+// 市场
+import MarketIndex from '@/market/index';
+import Market from '@/market/market';
+import List from '@/market/service/list';
+import ServiceInfo from '@/market/service/index';
+
+import Login from '@/market/user/login';
+import Register from '@/market/user/register';
+import Activate from '@/market/user/activate';
+import Forget from '@/market/user/forget';
+import ModifyPass from '@/market/user/modifyPass';
+import ResetPass from '@/market/user/resetPass';
+
+import RepoPass from '@/market/repository/repoPass';
+import ListProject from '@/market/repository/index';
+
 import VueRouter from 'vue-router';
 
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: '/server',
       name: 'Server',
       component: Server,
-      children: [
-        {
+      children: [{
           path: ':treeid/manage',
           component: ServerManage,
         },
@@ -92,10 +106,6 @@ export default new Router({
           path: ':treeid/interface-debuger',
           component: InterfaceDebuger,
         },
-        // {
-        //   path: ':treeid/alarm',
-        //   component: AlarmConfig,
-        // },
         {
           path: ':treeid/user-manage',
           component: AuthManage,
@@ -107,8 +117,7 @@ export default new Router({
       name: 'Operation',
       component: Operation,
       redirect: '/operation/deploy',
-      children: [
-        {
+      children: [{
           path: 'deploy',
           component: OperationDeploy,
         },
@@ -124,10 +133,6 @@ export default new Router({
           path: 'undeploy',
           component: OperationUndeploy,
         },
-        // {
-        //   path: 'gateway',
-        //   component: OperationGateway,
-        // },
         {
           path: 'templates',
           component: OperationTemplates,
@@ -164,11 +169,66 @@ export default new Router({
       component: OperationGateway,
     },
     {
+      path: '/market/user',
+      name: 'MarketIndex',
+      component: MarketIndex,
+      children: [{
+        path: 'login',
+        component: Login,
+      }, {
+        path: 'register',
+        component: Register,
+      }, {
+        path: 'activate',
+        component: Activate,
+      }, {
+        path: 'forget',
+        component: Forget,
+      }, {
+        path: 'modifyPass',
+        component: ModifyPass,
+      }, {
+        path: 'resetPass',
+        component: ResetPass,
+      }]
+    },
+    {
+      path: '/market/repo',
+      name: 'MarketRepo',
+      component: MarketIndex,
+      children: [{
+        path: 'pass',
+        component: RepoPass,
+      }, {
+        path: 'project',
+        component: ListProject,
+      }]
+    },
+    {
+      path: '/market/service',
+      component: Market,
+      children: [{
+        path: ':group/:name/:version',
+        component: ServiceInfo,
+      }]
+    },
+    {
+      path: '/market/list',
+      component: Market,
+      children: [{
+        path: '/',
+        component: List
+      }]
+    },
+    {
       path: '*',
       redirect: '/server',
     },
   ],
-  scrollBehavior (to, from, savedPosition) {
-    return {x: 0, y: 0}
+  scrollBehavior(to, from, savedPosition) {
+    return {
+      x: 0,
+      y: 0
+    }
   }
 });

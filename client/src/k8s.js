@@ -16,28 +16,43 @@
 
 import Vue from 'vue';
 import './assets/icon-font/iconfont.css'
-
+import store from "../store/store"
 import './plugins/ui';
 import './plugins/ajax';
+import './plugins/market';
 
 import k8sApp from './k8sApp';
 import router from './router/k8s';
-import {i18n, loadLang} from './locale/i18n'
+
+import {
+  i18n,
+  loadLang
+} from './locale/i18n'
 
 import ElementUI from 'element-ui';
 import "./assets/theme/element-to-let/index.css"
-Vue.use(ElementUI);
+
+import 'viewerjs/dist/viewer.css';
+import Viewer from 'v-viewer';
 
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 loadLang.call(this).then(() => {
+  Vue.use(Viewer);
+
+  Vue.use(ElementUI, {
+    i18n: (key, value) => i18n.t(key, value)
+  });
+
   new Vue({
     i18n: i18n,
     el: '#app',
     router,
-    components: {k8sApp},
+    store,
+    components: {
+      k8sApp
+    },
     template: '<k8sApp/>'
   });
 })
-

@@ -27,15 +27,29 @@ const queryNotify = async (app, server, page, size) => {
     }
     try {
         let search = {
-            query: {bool: {must: [{match: {app: app}}]}},
-            sort: [
-                {notifyTime: "desc"}
-            ],
+            query: {
+                bool: {
+                    must: [{
+                        match: {
+                            app: app
+                        }
+                    }]
+                }
+            },
+            sort: [{
+                notifyTime: "desc"
+            }],
             from: (page - 1) * size,
             size: size
         };
-        server && (search.query.bool.must.push({match: {server: server}}))
+        server && (search.query.bool.must.push({
+            match: {
+                server: server
+            }
+        }))
+
         let esConfig = await TemplateService.getEsConfig();
+
         let esNodes = Object.keys(esConfig.tars.elk.nodes)[0].split(",");
         let url = `http://${esNodes[0]}/${esConfig.tars.elk.index.notify}/_search`
         let res = await axios({
@@ -47,16 +61,24 @@ const queryNotify = async (app, server, page, size) => {
             data: JSON.stringify(search),
             timeout: 100000,
         });
-        return {ret: 0, msg: res.data.hits};
+        return {
+            ret: 0,
+            msg: res.data.hits
+        };
     } catch (e) {
         logger.error('[queryNotify]', e)
-        return {ret: -1, msg: e.response.data.error || e.message};
+        return {
+            ret: -1,
+            msg: e.message || e.response.data.error
+        };
     }
 }
 
 NotifyController.NotifySelect = async (ctx) => {
 
-    let {ServerId = '', page = 1, size = 10} = ctx.paramsObj
+    let {
+        ServerId = '', page = 1, size = 10
+    } = ctx.paramsObj
     try {
 
         let app = ServerId.split('.')[0];

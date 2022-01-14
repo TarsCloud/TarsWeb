@@ -14,7 +14,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const client  = require("@tars/rpc/protal.js").client;
+const client = require("@tars/rpc/protal.js").client;
 
 const AdminRegProxy = require("./proxy/AdminRegProxy");
 const ConfigFProxy = require("./proxy/ConfigFProxy");
@@ -23,27 +23,53 @@ const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const PatchProxy = require("./proxy/PatchProxy");
 const TopologyProxy = require("./topology/TopologyProxy");
 const WebConf = require("../config/webConf");
+const BenchmarkAdminProxy = require("./proxy/BenchmarkAdminProxy");
+const BenchmarkNode = require("./proxy/BenchmarkNodeTars");
 
-const { RPCClientPrx } = require('./service');
+const {
+    RPCClientPrx
+} = require('./service');
 
 client.initialize(WebConf.client);
+
+//生成rpc结构体
+const RPCStruct = function(proxy, moduleName){
+    var module = proxy[moduleName];
+    var rpcStruct = {};
+    for(var p in module){
+        if(module.hasOwnProperty(p)){
+            if(typeof module[p] == 'function'){
+                if(new module[p]()._classname){
+                    rpcStruct[p] = module[p];
+                }
+            }else{
+                rpcStruct[p] = module[p];
+            }
+        }
+    }
+    return rpcStruct;
+};
 
 module.exports = {
     // RPCClientPrx,
 
-    patchPrx : RPCClientPrx(client, PatchProxy, 'tars', 'Patch', 'tars.tarspatch.PatchObj'),
+    patchPrx: RPCClientPrx(client, PatchProxy, 'tars', 'Patch', 'tars.tarspatch.PatchObj'),
 
-	adminRegPrx : RPCClientPrx(client, AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj'),
+    adminRegPrx: RPCClientPrx(client, AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj'),
 
-    configFPrx : RPCClientPrx(client, ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
+    configFPrx: RPCClientPrx(client, ConfigFProxy, 'tars', 'Config', 'tars.tarsconfig.ConfigObj'),
 
-    statQueryPrx : RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj'),
-    propertyQueryPrx : RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj'),
+    statQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj'),
+    propertyQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj'),
 
     DCacheOptPrx: RPCClientPrx(client, DCacheOptProxy, 'DCache', 'DCacheOpt', 'DCache.DCacheOptServer.DCacheOptObj'),
 
-    topologyPrx: RPCClientPrx(client, TopologyProxy,  WebConf.TopologyObj.moduleName, WebConf.TopologyObj.interfaceName, WebConf.TopologyObj.servantName),
+    topologyPrx: RPCClientPrx(client, TopologyProxy, 'tars', 'Topology', 'tars.tarslog.TopologyObj'),
 
     client: client,
+
+    benchmarkPrx : RPCClientPrx(client,BenchmarkAdminProxy, 'bm', 'Admin', 'benchmark.AdminServer.AdminObj'),
+    benchmarkStruct : RPCStruct(BenchmarkAdminProxy, 'bm'),
+    benchmarkNodeStruct : RPCStruct(BenchmarkNode, 'bm')
 
 };

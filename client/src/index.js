@@ -18,9 +18,8 @@ import Vue from 'vue';
 
 import './assets/icon-font/iconfont.css'
 import store from "../store/store"
-import vuescroll from "vuescroll";//引入vuescroll
-import "vuescroll/dist/vuescroll.css";//引入vuescroll样式
-
+import vuescroll from "vuescroll"; //引入vuescroll
+import "vuescroll/dist/vuescroll.css"; //引入vuescroll样式
 
 import ElementUI from 'element-ui';
 import "./assets/theme/element-to-let/index.css"
@@ -28,9 +27,7 @@ import "./assets/theme/element-to-let/index.css"
 import './plugins/ui';
 import './plugins/ajax';
 
-// import './plugins/charts';
-
-// Vue.prototype.$loading = null;
+import './plugins/market';
 
 import indexApp from './indexApp';
 import router from './router';
@@ -43,15 +40,20 @@ Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 loadLang.call(this).then(() => {
-  Vue.use(ElementUI);
-  Vue.use(vuescroll);//使用
+
+  Vue.use(ElementUI, {
+    i18n: (key, value) => i18n.t(key, value)
+  });
+
+  Vue.use(vuescroll); //使用
   new Vue({
     i18n: i18n,
     el: '#app',
     store,
     router,
-    components: {indexApp},
+    components: {
+      indexApp
+    },
     template: '<indexApp/>'
   });
 })
-

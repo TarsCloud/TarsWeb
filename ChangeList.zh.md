@@ -1,9 +1,23 @@
-## 20211124(2.4.21)
-- 添加k8s events查看.
-- node节点管理支持批量编辑普通标签与亲和性标签
-- 添加tars.es模板,notify,events es从模板读取
-- k8s 支持维护normal服务
+## 20211205(2.4.22)
+
+- 调用链合并到 k8s 版本, 需要配置 K8SFramework v1.1.1
+- 优化接口调试, 返回错误信息
+- 修复压力测试代码合并错误
+- 修复 k8s 中获取 event 时, 解析配置的 bug
+
+## 20211130(2.4.21)
+
+- 添加 k8s events 查看.
+- k8s 的 node 节点管理支持批量编辑普通标签与亲和性标签
+- k8s 添加 tars.es 模板,notify,events es 从模板读取
+- k8s 支持维护 normal 服务
 - 添加节点详情
+- 修复网关 fetchUpstreams 的 bug
+- 增加测试用例的管理
+- 修复 k8s 节点界面 template scope 编译警告
+- 修复网关页面拉取 upstream 的 bug
+- 添加 http 网关路由, 由 create 改成 upsert
+- k8s log 支持断线自动刷新界面
 
 ## 20211115(2.4.20)
 

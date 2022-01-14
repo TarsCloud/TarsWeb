@@ -14,24 +14,24 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const { RPCClientPrx } = require('./service');
+const {
+    RPCClientPrx
+} = require('./service');
 
-const client  = require("@tars/rpc/protal.js").Communicator.New();
+const client = require("@tars/rpc/protal.js").Communicator.New();
 
 const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
+const TopologyProxy = require("./topology/TopologyProxy");
 const WebConf = require('../config/webConf');
 
 client.initialize(WebConf.k8s.client);
 
 module.exports = {
 
-    statQueryPrx : RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj'),
-    propertyQueryPrx : RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj'),
-    
-    // statQueryPrx : RPCClientPrx(MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj@tcp -h 10.211.55.9 -p 16000'),
-    // propertyQueryPrx : RPCClientPrx(MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj@tcp -h 10.211.55.9 -p 15000'),
+    statQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj'),
+    propertyQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj'),
 
-    // monitorQueryStruct : RPCStruct(client, MonitorQueryProxy, 'tars'),
-	
+    topologyPrx: RPCClientPrx(client, TopologyProxy, 'tars', 'Topology', 'tars.tarslog.TopologyObj'),
+
     client: client
 };

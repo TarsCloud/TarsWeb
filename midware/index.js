@@ -16,18 +16,41 @@
 
 const WebConf = require('../config/webConf');
 
-const {apiConf, clientConf } = require('../app/index');
-const {dcacheApiConf } = require('../dcache');
-const {ssoApiConf } = require('../sso');
-const {pageApiConf, localeApiConf, authApiConf, monitorApiConf} = require('../index');
+const {
+	apiConf,
+	clientConf
+} = require('../app/index');
+const {
+	dcacheApiConf
+} = require('../dcache');
+const {
+	ssoApiConf
+} = require('../sso');
+const {
+	pageApiConf,
+	localeApiConf,
+	authApiConf,
+	monitorApiConf,
+	callTrainConf
+} = require('../index');
 
-const {gatewayApiConf } = require('../gateway');
+const {
+	gatewayApiConf
+} = require('../gateway');
+
+const {
+	marketApiConf
+} = require('../market');
+
 
 const Router = require('koa-router');
 const _ = require('lodash');
 const noCacheMidware = require('./noCacheMidware');
 const authMidware = require('./authMidware');
-const {paramsDealMidware, paramsCheckMidware} = require('./paramsMidware');
+const {
+	paramsDealMidware,
+	paramsCheckMidware
+} = require('./paramsMidware');
 const logger = require('../logger');
 
 const gatewayDaoMidware = require('./gatewayDaoMidware');
@@ -39,15 +62,15 @@ const getRouter = (router, routerConf) => {
 		var [method, url, controller, checkRule, validParams] = conf;
 
 		//前置参数合并校验相关中间件
-		router[method](url, paramsDealMidware(validParams));    //上下文入参出参处理中间件
-		router[method](url, paramsCheckMidware(checkRule));   //参数校验中间件
+		router[method](url, paramsDealMidware(validParams)); //上下文入参出参处理中间件
+		router[method](url, paramsCheckMidware(checkRule)); //参数校验中间件
 
-		router[method](url, authMidware);    		//admin用户采访访问的接口
+		router[method](url, authMidware); //admin用户采访访问的接口
 
-		router[method](url, noCacheMidware);       //禁用缓存中间件
+		router[method](url, noCacheMidware); //禁用缓存中间件
 
 		if (routerConf == gatewayApiConf) {
-			router[method](url, gatewayDaoMidware);	   //网关配置db获取中间件，非网关路由不做任何事情
+			router[method](url, gatewayDaoMidware); //网关配置db获取中间件，非网关路由不做任何事情
 		}
 
 		//业务逻辑控制器
@@ -67,6 +90,8 @@ authApiConf.forEach(conf => apiConf.push(conf));
 dcacheApiConf.forEach(conf => apiConf.push(conf));
 ssoApiConf.forEach(conf => apiConf.push(conf));
 monitorApiConf.forEach(conf => apiConf.push(conf));
+callTrainConf.forEach(conf => apiConf.push(conf));
+marketApiConf.forEach(conf => apiConf.push(conf));
 
 //页面类型路由
 const pageRouter = new Router();
@@ -90,7 +115,9 @@ let k8sRouter = null;
 let k8sApiRouter = null;
 //激活router
 if (WebConf.isEnableK8s()) {
-	const { k8sApiConf } = require('../k8s');
+	const {
+		k8sApiConf
+	} = require('../k8s');
 
 	//k8s接口类型路由
 	k8sRouter = new Router();
@@ -107,6 +134,12 @@ const gatewayApiRouter = new Router();
 gatewayApiRouter.prefix('/pages/gateway/api');
 getRouter(gatewayApiRouter, gatewayApiConf);
 
+//market类型路由
+const marketApiRouter = new Router();
+marketApiRouter.prefix('/pages/market/api');
+getRouter(marketApiRouter, marketApiConf);
+
+
 module.exports = {
 	pageRouter,
 	paegApiRouter,
@@ -114,5 +147,6 @@ module.exports = {
 	apiRouter,
 	k8sRouter,
 	k8sApiRouter,
-	gatewayApiRouter
+	gatewayApiRouter,
+	marketApiRouter
 };

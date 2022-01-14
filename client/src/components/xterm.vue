@@ -6,12 +6,14 @@
 import "xterm/css/xterm.css";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
-import { AttachAddon } from "xterm-addon-attach";
+// import { AttachAddon } from "xterm-addon-attach";
 import { WebLinksAddon } from "xterm-addon-web-links";
 
 export default {
   data() {
     return {
+      pingOk: true,
+      resize: false,
       term: "",
       socket: "",
       app: "",
@@ -22,29 +24,28 @@ export default {
     };
   },
   mounted() {
-    let { app, server, pod, history, nodeip } = this;
+    // let { app, server, pod, history, nodeip } = this;
     this.app = this.getQueryVariable("ServerApp");
     this.server = this.getQueryVariable("ServerName");
     this.pod = this.getQueryVariable("PodName");
     this.history = this.getQueryVariable("History");
     this.nodeip = this.getQueryVariable("NodeIP");
 
-    let query = window.location.search.substring(1)
+    let query = window.location.search.substring(1);
 
-    if(window.location.protocol == 'http:') {
+    if (window.location.protocol == "http:") {
       this.init("ws://" + window.location.host + "/shell?" + query);
-    } else if(window.location.protocol == 'https:') {
-     this.init("wss://" + window.location.host + "/shell?" + query);
-    }else{
+    } else if (window.location.protocol == "https:") {
+      this.init("wss://" + window.location.host + "/shell?" + query);
+    } else {
       console.log("unknown protocol", window.location);
     }
-
   },
   methods: {
     //节流,避免拖动时候频繁向后端请求更新
     debounce(fn, wait) {
       let timeout = null;
-      return function () {
+      return function() {
         if (timeout !== null) clearTimeout(timeout);
         timeout = setTimeout(fn, wait);
       };
@@ -61,6 +62,23 @@ export default {
           height: Math.floor(this.term.rows),
         })
       );
+    },
+    ping() {
+      if (this.pingOk) {
+        this.pingOk = false;
+        this.send(
+          JSON.stringify({
+            operation: "ping",
+          })
+        );
+
+        setTimeout(() => {
+          console.log("ping");
+          this.ping();
+        }, 5000);
+      } else {
+        location.reload();
+      }
     },
     getQueryVariable(variable) {
       let query = window.location.search.substring(1);
@@ -98,22 +116,26 @@ export default {
         this.debounce(this.resizeScreen, 1000),
         false
       );
-      
+
       //聚焦
       this.term.focus();
 
       // 支持输入与粘贴方法
-      let _this = this; //一定要重新定义一个this，不然this指向会出问题
-      this.term.onData(function (key) {
+      let _this = this;
+      this.term.onData(function(key) {
         //这里key值是你输入的值，数据格式一定要找后端要！！！！
         let order = { operation: "stdin", data: key };
-        _this.socket.onsend(JSON.stringify(order)); //转换为字符串
+        _this.socket.onsend(JSON.stringify(order));
+
+        if (!_this.resize) {
+          _this.resize = true;
+          _this.resizeScreen();
+        }
       });
     },
     init(url) {
-      // console.log(url);
       // 实例化socket
-      this.socket = new WebSocket(url, 'echo-protocol');
+      this.socket = new WebSocket(url, "echo-protocol");
       // 监听socket连接
       this.socket.onopen = this.open;
       // 监听socket错误信息
@@ -122,29 +144,40 @@ export default {
       this.socket.onmessage = this.getMessage;
       // 发送socket消息
       this.socket.onsend = this.send;
+
+      setTimeout(() => {
+        this.ping();
+      }, 5000);
     },
-    open: function () {
+    open: function() {
       this.initXterm();
-      this.term.writeln(`connecting to pod \x1B[1;3;31m ${this.pod} \x1B[0m ... \r\n`);
+      this.term.writeln(
+        `connecting to pod \x1B[1;3;31m ${this.pod} \x1B[0m ... \r\n`
+      );
     },
-    error: function () {
+    error: function() {
       console.log("[error] Connection error");
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
     },
-    close: function () {
+    close: function() {
       this.socket.close();
       console.log("[close] Connection closed cleanly");
       term.writeln("");
       window.removeEventListener("resize", this.resizeScreen);
     },
-    getMessage: function (msg) {
+    getMessage: function(msg) {
       // console.log(msg);
 
       const data = msg.data && JSON.parse(msg.data);
       if (data.operation === "stdout") {
-        this.term.write(data.data)
+        this.term.write(data.data);
+      } else if (data.operation === "pong") {
+        this.pingOk = true;
       }
     },
-    send: function (order) {
+    send: function(order) {
       this.socket.send(order);
     },
   },

@@ -11,7 +11,8 @@
             "tab5": "Operation Manage",
             "tab6": "Base Manage",
             "tab7": "Services History Manage",
-            "tab8": "Gateway Config"
+            "tab8": "Gateway Config",
+            "tab9": "Service Market"
         },
         "dcache": {
             "tab2": "Create Service"
@@ -547,7 +548,9 @@
         "disk": "Disk management",
         "nodeSelect": "Node selection",
         "copyNode": "copy of the slip",
-        "viewEvent": "View events"
+        "viewEvent": "View events",
+        "addTestCase": "add testcase",
+        "testCaseList": "testcase list"
     },
     "index": {
         "rightView": {
@@ -1468,7 +1471,9 @@
             "outParam": "out params",
             "tarsFile": "tars file",
             "deleteMsg": "are you sure to delete this file?",
-            "objName": "Servant Name"
+            "objName": "Servant Name",
+            "testCastName": "testcase name",         
+            "fileName": "file name"
         },
         "benchmark": {
             "inParam": "in params struct",
