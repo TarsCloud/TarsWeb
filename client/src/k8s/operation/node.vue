@@ -85,7 +85,7 @@
         @selection-change="handleSelectionChange"
         highlight-current-row
       >
-        <el-table-column type="selection" ></el-table-column>
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column
           :label="$t('filter.title.nodeName')"
           prop="NodeName"
@@ -127,7 +127,6 @@
             </let-switch>
           </template>
         </el-table-column>
-        <!--
         <el-table-column :label="$t('filter.title.nodeLabels')">
           <template slot-scope="scope">
             <el-tag
@@ -141,7 +140,6 @@
             </el-tag>
           </template>
         </el-table-column>
-        -->
         <el-table-column :label="$t('filter.title.AbilityTag')" width="200">
           <template slot-scope="scope">
             <el-tag
@@ -155,9 +153,9 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('filter.title.nodeAddress')" >
+        <el-table-column :label="$t('filter.title.nodeAddress')" width="210">
           <template slot-scope="scope">
-            <span
+            <div
               v-for="item in scope.row.NodeAddress"
               :key="item.NodeName"
               style="margin: 2px 2px"
@@ -165,7 +163,7 @@
               <el-tag effect="plain" type="info"
                 >{{ item.type + ":" + item.address }}
               </el-tag>
-            </span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('operate.operates')" width="220px">
@@ -182,10 +180,9 @@
           </template>
         </el-table-column>
       </el-table>
-      <br>
       <let-pagination
         align="right"
-        style="float:right;"
+        style="float: right"
         :page="pagination.page"
         @change="gotoPage"
         :total="pagination.total"
@@ -210,7 +207,7 @@
               </let-table-operation>
             </template>
             <el-table-column :label="$t('filter.title.tagName')">
-              <template slot-scope="scope">
+              <template scope="scope">
                 <el-form-item
                   :prop="'commonArr.' + scope.$index + '.name'"
                   :rules="[
@@ -227,7 +224,7 @@
               </template>
             </el-table-column>
             <el-table-column :label="$t('filter.title.tagName')">
-              <template slot-scope="scope">
+              <template scope="scope">
                 <el-input v-model="scope.row.value"></el-input>
               </template>
             </el-table-column>
@@ -286,7 +283,7 @@
               </let-table-operation>
             </template>
             <el-table-column :label="$t('filter.title.app')">
-              <template slot-scope="scope">
+              <template scope="scope">
                 <el-form-item
                   :prop="'abilityArr.' + scope.$index + '.application'"
                   :rules="[
@@ -321,7 +318,7 @@
               </template>
             </el-table-column>
             <el-table-column :label="$t('filter.title.serverName')">
-              <template slot-scope="scope">
+              <template scope="scope">
                 <el-select
                   v-model="scope.row.serverName"
                   :placeholder="$t('pub.dlg.defaultValue')"
@@ -451,13 +448,13 @@ export default {
           })
         )
         .then((data) => {
-          debugger;
           data.Data.forEach((item) => {
-            let status = "False";
-            let condition = item.Conditions.filter((v) => v.type == "Ready");
-            if (condition.length == 1) {
-              status = condition[0].status;
-            }
+            let status = "";
+            item.Conditions.forEach((v) => {
+              if (v.Type == "Ready") {
+                status = v.status;
+              }
+            });
             status == "False"
               ? (item.status = "Unavailable")
               : (item.status = "Active");

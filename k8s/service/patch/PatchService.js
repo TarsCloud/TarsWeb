@@ -234,13 +234,34 @@ PatchService.servicePoolUpdate = async (metadata) => {
 	tServerCopy.spec.release.id = readyActiveRelease.id
 	tServerCopy.spec.release.image = readyActiveRelease.image
 	tServerCopy.spec.release.secret = readyActiveRelease.secret
-
+	tServerCopy.spec.release.nodeImage = metadata.NodeImage
 	await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
 
 	return {
 		ret: 200,
 		msg: 'succ'
 	};
+}
+
+
+PatchService.ServiceNowImages = async (ServerId) => {
+
+	let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(ServerId));
+	if (!tServer) {
+		return { ret: 500, msg: "server not exists" };
+	}
+
+	tServer = tServer.body;
+
+	let elem = {};
+	if (tServer.spec.release) {
+		elem["ServerId"] = CommonService.getServerId(tServer.spec.app, tServer.spec.server)
+		elem["Id"] = tServer.spec.release.id;
+		elem["Image"] = tServer.spec.release.image
+		elem["NodeImage"] = tServer.spec.release.nodeImage
+	}
+
+    return { ret: 200, msg: 'succ', data: elem };
 }
 
 PatchService.serviceEnabledSelect = async (ServerId) => {

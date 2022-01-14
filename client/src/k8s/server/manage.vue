@@ -1,12 +1,12 @@
 <template>
   <div class="page_server_manage">
     <!-- 服务列表 -->
-    <div class="table_head" style="height:50px">
+    <div class="table_head" style="height: 50px">
       <h4 style="float: left">
         {{ this.$t("serverList.title.serverList") }}
         <i
           class="icon iconfont el-icon-third-shuaxin"
-          style="font-family: iconfont  !important; cursor: pointer"
+          style="font-family: iconfont !important; cursor: pointer"
           @click="getServerList()"
         ></i>
       </h4>
@@ -116,6 +116,7 @@
           :title="$t('serverList.table.th.podIP')"
           prop="PodIp"
         ></let-table-column>
+        <let-table-column title="pid" prop="Pid"></let-table-column>
         <let-table-column
           :title="$t('serverList.table.th.ip')"
           prop="NodeIp"
@@ -177,7 +178,7 @@
         {{ this.$t("serverList.title.serverStatus") }}
         <i
           class="icon iconfont"
-          style="font-family: iconfont  !important; cursor: pointer"
+          style="font-family: iconfont !important; cursor: pointer"
           @click="getServerNotifyList()"
           >&#xec08;</i
         >
@@ -192,7 +193,7 @@
     >
       <let-table-column :title="$t('common.time')" width="160px">
         <template slot-scope="scope">
-          <span style="white-space:nowrap">{{
+          <span style="white-space: nowrap">{{
             scope.row._source.timeStr
           }}</span>
         </template>
@@ -202,7 +203,7 @@
         prop="AppServer"
       >
         <template slot-scope="scope">
-          <span style="white-space:nowrap">{{
+          <span style="white-space: nowrap">{{
             scope.row._source.app + "." + scope.row._source.server
           }}</span>
         </template>
@@ -212,7 +213,7 @@
         prop="PodName"
       >
         <template slot-scope="scope">
-          <span style="white-space:nowrap">{{
+          <span style="white-space: nowrap">{{
             scope.row._source.podName
           }}</span>
         </template>
@@ -222,7 +223,9 @@
         prop="NotifySource"
       >
         <template slot-scope="scope">
-          <span style="white-space:nowrap">{{ scope.row._source.source }}</span>
+          <span style="white-space: nowrap">{{
+            scope.row._source.source
+          }}</span>
         </template>
       </let-table-column>
       <let-table-column
@@ -237,10 +240,10 @@
       </let-table-column>
     </let-table>
 
-    <div style="margin-bottom:20px;">
+    <div style="margin-bottom: 20px">
       <let-pagination
         align="right"
-        style="float:right;"
+        style="float: right"
         :page="notifyPagination.page"
         @change="notifyGotoPage"
         :total="notifyPagination.total"
@@ -786,7 +789,7 @@
       :footShow="false"
       @close="closeDetailModal"
     >
-      <div style="padding:20px 0 0;">
+      <div style="padding: 20px 0 0">
         <pre v-if="detailModal.model && detailModal.model.detail">{{
           detailModal.model.detail || $t("cfg.msg.empty")
         }}</pre>
@@ -1063,8 +1066,9 @@ export default {
           this.closeConfigModal();
           this.startServerList();
           this.$tip.error(
-            `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
-              err.message}`
+            `${this.$t("serverList.restart.failed")}: ${
+              err.err_msg || err.message
+            }`
           );
         });
     },
@@ -1115,7 +1119,11 @@ export default {
       this.startServerList();
     },
     // 启动服务
-    startServer() {
+    async startServer() {
+      if (await this.checkLauncherType()) {
+        this.$tip.warning(this.$t("pub.dlg.foregroundTip"));
+        return;
+      }
       this.stopServerList();
       const checkedServerList = this.checkedList.filter(
         (item) => item.isChecked
@@ -1156,7 +1164,11 @@ export default {
         });
     },
     // 重启服务
-    restartServer() {
+    async restartServer() {
+      if (await this.checkLauncherType()) {
+        this.$tip.warning(this.$t("pub.dlg.foregroundTip"));
+        return;
+      }
       this.stopServerList();
       const checkedServerList = this.checkedList.filter(
         (item) => item.isChecked
@@ -1197,7 +1209,11 @@ export default {
         });
     },
     // 停止服务
-    stopServer() {
+    async stopServer() {
+      if (await this.checkLauncherType()) {
+        this.$tip.warning(this.$t("pub.dlg.foregroundTip"));
+        return;
+      }
       this.stopServerList();
       const checkedServerList = this.checkedList.filter(
         (item) => item.isChecked
@@ -1328,8 +1344,9 @@ export default {
         })
         .catch((err) => {
           this.$tip.error(
-            `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
-              err.message}`
+            `${this.$t("serverList.restart.failed")}: ${
+              err.err_msg || err.message
+            }`
           );
         });
     },
@@ -1427,7 +1444,8 @@ export default {
     checkServantEndpoint(endpoint) {
       const tmp = endpoint.split(/\s-/);
       const regProtocol = /^tcp|udp$/i;
-      let regHost = /^h\s(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/i;
+      let regHost =
+        /^h\s(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/i;
       let regT = /^t\s([1-9]|[1-9]\d+)$/i;
       let regPort = /^p\s\d{4,5}$/i;
 
@@ -1728,6 +1746,14 @@ export default {
           checkedList.splice(index, 1);
         }
       }
+    },
+    //校验服务是否为前端启动
+    async checkLauncherType() {
+      let k8sData = await this.$ajax.getJSON("/k8s/api/server_k8s_select", {
+        ServerId: this.getServerId(),
+      });
+      let launcherType = k8sData.Data[0].launcherType;
+      return launcherType == "foreground";
     },
   },
   async created() {

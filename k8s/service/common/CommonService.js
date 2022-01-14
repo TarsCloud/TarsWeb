@@ -29,14 +29,17 @@ const opts = {};
 kc.applyToRequest(opts);
 
 CommonService.getPath = (path) => {
-	return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
+    return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
 }
 
 const k8sCoreApi = kc.makeApiClient(k8s.CoreV1Api);
 const k8sApi = kc.makeApiClient(k8s.CustomObjectsApi);
 
 CommonService.getApi = () => {
-	return k8sCoreApi;
+    return k8sCoreApi;
+}
+CommonService.getK8sApi = () => {
+    return k8sApi;
 }
 
 CommonService.NAMESPACE = process.env.Namespace || WebConf.k8s.namespace;
@@ -46,8 +49,10 @@ CommonService.NodeAppAbilityLabelPrefix = "tars.io/ability." + CommonService.NAM
 CommonService.PublicNodeLabel = "tars.io/public." + CommonService.NAMESPACE // 此标签表示 该节点可以被 tars 当做 公用节点池使用
 
 CommonService.TREENAME = 'tars-tree';
+CommonService.TFC = "tars-framework"
+CommonService.TARSNODE = "node"
 CommonService.GROUP = "k8s.tars.io";
-CommonService.VERSION = "v1beta1";
+CommonService.VERSION = "v1beta2";
 CommonService.APPROVE = "tars.io/Approve";
 CommonService.TImageTypeLabel = "tars.io/ImageType"
 CommonService.TSupportedLabel = "tars.io/Supported."
@@ -127,6 +132,9 @@ const tAccountList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NA
 const templateListFn = () => CommonService.listObject("ttemplates");
 const tTemplateList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/ttemplates`), watch, templateListFn, true);
 
+const tConfigListFn = () => CommonService.listObject("tframeworkconfigs");
+const tConfigList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/tframeworkconfigs`), watch, tConfigListFn, true);
+
 const nodeListFn = () => CommonService.listNode();
 const tNodeList = new k8s.ListWatch("/api/v1/nodes", watch, nodeListFn, true);
 
@@ -134,6 +142,7 @@ cacheListener(tServerList);
 cacheListener(tNodeList);
 cacheListener(tTemplateList);
 cacheListener(tAccountList);
+cacheListener(tConfigList);
 
 const getCacheList = async (cacheList, fn) => {
 
@@ -215,7 +224,13 @@ CommonService.getNodeListAll = async () => {
 }
 
 CommonService.getTemplateList = async () => {
-	return getCacheList(tTemplateList, templateListFn);
+    return getCacheList(tTemplateList, templateListFn);
+}
+
+CommonService.getFrameworkConfig = async () => {
+    let res = await getCacheList(tConfigList, tConfigListFn)
+    let tafFrameConfig = res.filter(item => item.metadata.name == CommonService.TFC)
+    return tafFrameConfig ? tafFrameConfig[0] : {};
 }
 
 CommonService.getAccountList = async () => {
@@ -313,13 +328,13 @@ CommonService.getMetadataName = (name) => {
 }
 
 CommonService.randomString = (len) => {
-	const chars = 'abcdefghijklmnopqrstuvwxyz';
-	var maxPos = chars.length;
-	var pwd = '';
-	for (i = 0; i < len; i++) {
-		pwd += chars.charAt(Math.floor(Math.random() * maxPos));
-	}
-	return pwd;
+ 　　const chars = 'abcdefghijklmnopqrstuvwxyz';
+ 　　var maxPos = chars.length;
+ 　　var pwd = '';
+ 　　for (i = 0; i < len; i++) {
+ 　　　　pwd += chars.charAt(Math.floor(Math.random() * maxPos));
+ 　　}
+ 　　return pwd;
 }
 
 CommonService.pageList = (itemsLen, limiter) => {
@@ -603,7 +618,7 @@ CommonService.updateTServer = (tServer, serverServant, serverK8S, serverOption) 
 
 	// });
 
-	console.log(JSON.parse(JSON.stringify(tServer.spec)));
+	//console.log(JSON.parse(JSON.stringify(tServer.spec)));
 
 	// console.log(tServer);
 

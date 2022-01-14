@@ -49,6 +49,7 @@ import OperationApplication from '@/k8s/operation/application';
 import OperationBusiness from '@/k8s/operation/business';
 import OperationNode from '@/k8s/operation/node';
 import OperationEvent from '@/k8s/operation/event';
+import OperationTfc from '@/k8s/operation/frameworkConfig';
 
 // 网关
 import OperationGateway from '@/gateway/index';
@@ -161,6 +162,10 @@ export default new Router({
           path: 'event',
           component: OperationEvent,
         },
+        {
+          path: 'tfc',
+          component: OperationTfc
+        }
       ],
     },
     {

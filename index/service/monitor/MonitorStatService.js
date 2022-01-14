@@ -19,15 +19,8 @@ const WebConf = require('../../../config/webConf');
 
 const { monitorQueryStruct } = require('../../../rpc/struct');
 
-let statQueryPrx1;
-let statQueryPrx2;
-
-if (WebConf.isEnableK8s()) {
-	statQueryPrx2 = require('../../../rpc/k8s').statQueryPrx;
-} else {
-	statQueryPrx1 = require('../../../rpc').statQueryPrx;
-}
-
+let statQueryPrx1 =  require('../../../rpc').statQueryPrx;
+let statQueryPrx2 = require('../../../rpc/k8s').statQueryPrx;
 function getStatQueryPrx(k8s) {
 	if (k8s == "true") {
 		return statQueryPrx2;

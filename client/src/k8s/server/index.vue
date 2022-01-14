@@ -31,13 +31,20 @@
           ref="trees"
         >
           <span class="custom-tree-node" slot-scope="{ node, data }">
-            <span>
-              <i
-                :class="data.serverType | serverTypeFilter"
-                v-if="data.type == 2"
-              ></i>
-              {{ data.name }}
-            </span>
+            <el-tooltip
+              :content="data.name + '(' + data.serverType + ')'"
+              placement="bottom-start"
+              effect="light"
+              :open-delay="openDelay"
+            >
+              <span>
+                <i
+                  :class="data.serverType | serverTypeFilter"
+                  v-if="data.type == 2"
+                ></i>
+                {{ data.name }}
+              </span>
+            </el-tooltip>
           </span>
         </el-tree>
         <div class="left-tree" v-if="!treeData" v-loading="loading">

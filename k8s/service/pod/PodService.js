@@ -156,7 +156,7 @@ PodService.podAliveSelect = async (filter) => {
             elem["ServerId"] = CommonService.getServerId(item.spec.app, item.spec.server)
             elem["ServerApp"] = item.spec.app
             elem["ServerName"] = item.spec.server
-
+            elem["Pid"] = pod.pid
             elem["PodId"] = pod.uid
             elem["PodName"] = pod.name
             elem["PodIp"] = pod.podIP

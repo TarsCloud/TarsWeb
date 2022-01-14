@@ -431,14 +431,7 @@
 <script>
 import SetInputer from '@/components/set-inputer';
 import lodash from "lodash"
-import k8sYamlEdit from "@/k8s/inc/k8s/k8sYamlEdit";
-import jsYaml from "js-yaml";
-import k8sManger from "../inc/k8s/k8s";
-import diskManger from "../inc/k8s/disk";
-import networkMapping from "../inc/k8s/networkMapping";
-import resourceManger from "../inc/k8s/resource";
-import K8sYamlEdit from "../inc/k8s/k8sYamlEdit";
-import hpaManger from "../inc/k8s/hpa";
+import K8sYamlEdit from "../../components/k8s-yaml-edit";
 
 const types = [
   'taf_cpp',

@@ -73,8 +73,18 @@
                     :required-tip="$t('pub.dlg.ab')"
                   >
                     <let-option v-for="d in publishModal.model.patchList" :key="d.Id" :value="d.Id">
-                      <i class="let-icon let-icon-gou let-tag_success" v-if="`${d.Enabled}` == 'true'"></i>
+                      <span v-html="imgCur" v-if="`${d.Enabled}` == 'true'"></span><span v-else v-html="imgSpace"></span>
                       <span>{{d.Id}} | {{d.CreateTime}} | {{d.Image}}</span>
+                    </let-option>
+                  </let-select>
+                </let-form-item>
+                <let-form-item :label="$t('pub.dlg.nodeImage')" required>
+                  <let-select size="small" v-model="publishModal.model.NodeImage" required
+                              :required-tip="$t('pub.dlg.nodeImageTip')">
+                    <let-option v-for="d in publishModal.model.nodeList" :key="d.Image" :value="d.Image">
+                      <span v-html="imgNew" v-if="d.isDefaultTafNode"></span><span v-else v-html="imgSpace"></span>
+                      <span v-html="imgCur" v-if="d.isCurrTafNode"></span><span v-else v-html="imgSpace"></span>
+                      <span>{{ d.Id }} | {{ d.CreateTime }} | {{ d.Image }}</span>
                     </let-option>
                   </let-select>
                 </let-form-item>
@@ -128,29 +138,30 @@
                 <let-option v-for="d in serverType" :key="d" :value="d">{{d}}</let-option>
               </let-select>
             </let-form-item>
-            <let-form-group inline>
-              <let-form-item :label="$t('deployService.form.baseImage')" required>
-                <let-select
-                  size="small"
-                  v-model="uploadModal.model.BaseImage"
-                  @change="changeBaseImage"
-                  required
-                  :required-tip="$t('deployService.form.baseImageTips')"
-                >
-                  <let-option v-for="d in baseImage" :key="d.Name" :value="d.Name">{{d.Name + '(' + d.Mark + ')'}}</let-option>
-                </let-select>
-              </let-form-item>
-              <let-form-item :label="$t('deployService.form.baseImageRelease')" required>
-                <let-select
-                  size="small"
-                  v-model="uploadModal.model.BaseImageRelease"
-                  required
-                  :required-tip="$t('deployService.form.baseImageReleaseTips')"
-                >
-                  <let-option v-for="d in baseImageRelease" :key="d.Image" :value="d.Image">{{d.Image + '(' + (d.Mark || d.Id) + ')' }}</let-option>
-                </let-select>
-              </let-form-item>
-            </let-form-group>
+            <let-form-item :label="$t('deployService.form.baseImage')" required>
+              <let-select
+                size="small"
+                v-model="uploadModal.model.BaseImage"
+                @change="changeBaseImage"
+                required
+                :required-tip="$t('deployService.form.baseImageTips')"
+              >
+                <let-option v-for="d in baseImage" :key="d.Name" :value="d.Name">{{d.Name + '(' + d.Mark + ')'}}</let-option>
+              </let-select>
+            </let-form-item>
+            <let-form-item :label="$t('deployService.form.baseImageRelease')" required>
+              <let-select
+                size="small"
+                v-model="uploadModal.model.BaseImageRelease"
+                required
+                :required-tip="$t('deployService.form.baseImageReleaseTips')">
+                <let-option v-for="d in baseImageRelease" :key="d.Image" :value="d.Image">{{d.Image + '(' + (d.Mark || d.Id) + ')' }}</let-option>
+              </let-select>
+            </let-form-item>
+            <let-form-item :label="$t('deployService.form.serverTag')">
+              <let-input type="text" size="small" v-model.trim="uploadModal.model.ServerTag"
+                         :placeholder="$t('deployService.form.serverTagTip')"> </let-input>
+            </let-form-item>
             <let-form-item :label="$t('serverList.servant.comment')">
               <let-input
                 type="textarea"
@@ -201,12 +212,17 @@ export default {
   name: 'ServerPublish',
   data() {
     return {
+      imgNew:"<img class=\"logo\" src=\"/static/img/new.gif\">",
+      imgCur:"<img class=\"logo\" src=\"/static/img/current.gif\">",
+      imgSpace:"<img class=\"logo\" src=\"/static/img/space.png\">",
+
       buildList: [],  //docker build list
       serverList: [],
       publishModal: {
         show: false,
         model: {
           patchList: [],
+          nodeList:[],
         },
       },
       reloadTask: null,
@@ -324,7 +340,7 @@ export default {
         ServerId: this.getServerId(),
       }).then((data) => {
 
-        this.getPatchEnabled().then(dataEnabled => {
+        this.getNowImages().then(dataEnabled => {
           const items = data.Data || [];
             items.forEach((item) => {
               if(item.Id == dataEnabled.Id){
@@ -346,49 +362,61 @@ export default {
         });
       });
     },
-    openPublishVersionModal() {
+    async openPublishVersionModal() {
       let ServerId = this.getServerId()
       this.publishModal.model = {
         ServerId,
         Replicas: this.serverK8S.Replicas || 1,
         show: true
       };
-      this.getPatchList(ServerId).then((data) => {
+      let patchList = await this.getPatchList(ServerId);
+      let k8sData = await this.getK8SData();
+      let nowImage = await this.getNowImages();
 
-        this.getK8SData().then(k8sData => {
-          this.publishModal.model.Replicas = k8sData.Data[0].Replicas || this.serverK8S.Replicas || 1
-        })
+      let nodeList = await this.getTafNodes(); //获取tafNode所有镜像
+      let defaultImage = await this.getNodeImage();
+      this.publishModal.model.Replicas = k8sData.Data[0].Replicas || this.serverK8S.Replicas || 1
 
-        data.Data.forEach(item=>{
-              item.CreateTime = this.formatDate(item.CreateTime);
-        });
-
-        this.getPatchEnabled().then(dataEnabled => {
-          data.Data.forEach(item => {
-
-            if(item.Id == dataEnabled.Id){
-              item.Enabled = true
-            }
-          });
-          this.publishModal.model.patchList = data.Data
-          this.publishModal.show = true
-        })
-      });
+      patchList.Data.forEach((item) => {
+        item.CreateTime = this.formatDate(item.CreateTime);
+        if (item.Image == nowImage.Image)  {
+          item.Enabled = true
+        }
+      })
+      nodeList.Data.forEach((item)=>{
+        if (item.Image == nowImage.NodeImage){
+          item.isCurrTafNode = true
+        }
+        if (item.Image == defaultImage){
+          item.isDefaultTafNode = true
+        }
+      })
+      this.publishModal.model.patchList = patchList.Data
+      this.publishModal.model.nodeList = nodeList.Data
+      this.publishModal.show = true
     },
-    getPatchList(ServerId) {
-      return this.$ajax.getJSON('/k8s/api/patch_list', {
+    async getPatchList(ServerId) {
+      return await this.$ajax.getJSON('/k8s/api/patch_list', {
         ServerId,
       });
     },
-    getPatchEnabled() {
-      return this.$ajax.getJSON('/k8s/api/patch_enabled', {
+    async getNowImages() {
+      return await this.$ajax.getJSON('/k8s/api/get_now_image', {
         ServerId: this.getServerId(),
       });
     },
-    getK8SData() {
-      return this.$ajax.getJSON('/k8s/api/server_k8s_select', {
+    async getK8SData() {
+      return await this.$ajax.getJSON('/k8s/api/server_k8s_select', {
         ServerId: this.getServerId(),
       });
+    },
+    async getTafNodes() {
+      return await this.$ajax.getJSON('/k8s/api/image_node_select');
+    },
+    async getNodeImage() {
+      let tfc = await this.$ajax.getJSON('/k8s/api/get_tfc')
+      let res = tfc.filter(item => item.column === "nodeImage.image");
+      return res.length == 1 ? res[0].value : "";
     },
     closePublishModal() {
       // 关闭发布弹出框
@@ -406,6 +434,7 @@ export default {
           Id: this.publishModal.model.Id,
           Replicas: this.publishModal.model.Replicas,
           EnableMark: this.publishModal.model.EnableMark,
+          NodeImage: this.publishModal.model.NodeImage
         }).then((data) => {
           loading.hide();
           this.getImageList()
@@ -496,6 +525,7 @@ export default {
         }
         formdata.append('ServerId', ServerId);
         formdata.append('ServerType', this.uploadModal.model.ServerType);
+        formdata.append("ServerTag", this.uploadModal.model.ServerTag)
         formdata.append('BaseImage', this.uploadModal.model.BaseImageRelease);
         formdata.append('Secret', Secret);
         formdata.append('suse', this.uploadModal.model.file);
@@ -573,5 +603,44 @@ export default {
   .stop {color: #f56c77}
 
   .btn_group .let-button + .let-button{margin-left:10px;}
+    /*服务状态*/
+    .status-active, .status-off, .status-activating {
+        display: flex;
+        align-items: center;
+
+    &:before {
+         content: "";
+         display: inline-block;
+         width: 4px;
+         height: 4px;
+         border-radius: 50%;
+         background: currentColor;
+         margin-right: 4px;
+     }
+    &:after {
+         display: inline-block;
+     }
+    }
+    .status-active {
+        color: var(--active-color);
+    &:after {
+         content: "Active";
+     }
+    }
+    .status-off {
+        color: var(--off-color);
+    &:after {
+         content: "Off";
+     }
+    }
+
+    .status-activating {
+        color: var(--off-color);
+    &:after {
+         width: 70px;
+         content: "Activating";
+     }
+    }
+    /*服务状态 end*/
 }
 </style>

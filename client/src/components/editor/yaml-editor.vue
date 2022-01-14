@@ -22,7 +22,6 @@ export default {
   data() {
     return {
       yamlEditor: false,
-      diff: [],
     };
   },
   watch: {

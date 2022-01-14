@@ -77,8 +77,8 @@ let conf = {
     k8s: {
         client: path.join(cwd, 'config/k8s.conf'), //连接k8s环境里面tars配置
         namespace: 'tars-dev',
-        apiPrefix: 'apis/k8s.tars.io/v1beta1', // 与k8s的交互配置
-        uploadDomain: 'http://tars-tarsimage/api/v1beta1/timage', // tarsimage上传交互
+        apiPrefix: 'apis/k8s.tars.io/v1beta2', // 与k8s的交互配置
+        uploadDomain: 'http://tars-tarsimage/api/v1beta2/timage', // tarsimage上传交互
         cache: true, //从cache中加载
     },
     market: false,
@@ -149,11 +149,11 @@ if (process.env.NODE_ENV == "local") {
     conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 }
 
-if (conf.isEnableK8s() && fs.existsSync('/mnt/config/config.json')) {
+if (conf.isEnableK8s() && fs.existsSync('/mnt/config/nativeDB.json')) {
     try {
-        let content = require('/mnt/config/config.json');
+        let content = require('/mnt/config/nativeDB.json');
         conf.dbConf = content.dbConf;
-        conf.client = '/mnt/config/tars.conf';
+        conf.client = '/mnt/config/nativeFramework.conf';
         conf.enable = content.enable;
         conf.show = content.show;
 

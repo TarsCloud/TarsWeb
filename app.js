@@ -40,6 +40,7 @@ const loginMidware = require('./midware/ssoMidware');
 const limitMidware = require('./midware/limitMidware');
 const router = require('koa-router')()
 const AuthService = require('./sso/service/auth/AuthService');
+const FrameworkService = require("./k8s/service/framework/FrameworkService")
 
 //信任proxy头部，支持 X-Forwarded-Host
 app.proxy = true;
@@ -84,6 +85,15 @@ preMidware.forEach((midware) => {
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/web_version', '/static', '/captcha', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
 loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login', '/pages/server/api/isEnableLdap']);
+
+//以k8s方式启动的话,生成挂载文件
+if (WebConf.isEnableK8s()) {
+    (async function () {
+        await FrameworkService.createFrameworkConfig();
+    })()
+    logger.info("init k8s env ,general tars config  success")
+}
+
 
 // //上传文件不需要登录
 // if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {

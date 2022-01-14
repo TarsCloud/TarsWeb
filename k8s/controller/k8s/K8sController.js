@@ -180,13 +180,21 @@ K8sController.ServerK8SCheckHostPort = async (ctx) => {
 K8sController.getObject = async (ctx) => {
     try {
         let params = ctx.paramsObj
-        let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
-        let obj = res.response.body;
+
+        let obj = {};//res.response.body
         if (params.plural == "tservers") {
+            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
+            obj = res.response.body
             delete obj.metadata.managedFields; //屏蔽managedFields信息
         }
         if (params.plural == "tdeploys"){
+            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
             obj = obj.apply
+        }
+        if (params.plural == "tframeworkconfigs"){
+            let res = await CommonService.getObject(params.plural, CommonService.TFC);
+            obj = res.response.body
+            delete obj.metadata.managedFields; //屏蔽managedFields信息
         }
         ctx.makeResObj(200, "", jsYaml.dump(obj))
     } catch (e) {
@@ -203,6 +211,11 @@ K8sController.updateObject = async (ctx) => {
             let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
             object.metadata.managedFields = res.response.body.metadata.managedFields
             await CommonService.replaceObject(params.plural, CommonService.getTServerName(params.ServerId), object)
+        }
+        if (params.plural == "tframeworkconfigs") {
+            let res = await CommonService.getObject(params.plural, CommonService.TFC);
+            object.metadata.managedFields = res.response.body.metadata.managedFields
+            await CommonService.replaceObject(params.plural, CommonService.TFC, object)
         }
         if (params.plural == "tdeploys"){
             let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));

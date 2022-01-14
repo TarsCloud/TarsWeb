@@ -73,8 +73,8 @@ PatchController.uploadPatchPackage = async(ctx) => {
     const that = module.exports
 
     let {
-        Token = '', ServerId = '', ServerType = '', BaseImage = '', Secret = '', CreateMark
-   ='' } = ctx.paramsObj
+        Token = '', ServerId = '', ServerType = '', BaseImage = '', Secret = '', CreateMark='',
+        ServerTag='' } = ctx.paramsObj
 
     let file = ctx.req.files[0]
 
@@ -108,6 +108,7 @@ PatchController.uploadPatchPackage = async(ctx) => {
             ServerType,
             BaseImage,
             Secret,
+            ServerTag: ServerTag || undefined,
             Mark: CreateMark,
             CreatePerson: ctx.uid,
             ServerFile: fileBuffer,
@@ -277,7 +278,7 @@ PatchController.DeleteBuild = async (ctx) => {
  */
 PatchController.ServicePoolUpdate = async(ctx) => {
 	const that = module.exports
-	let { Token = '', ServerId, Id = '', Replicas = 1, EnableMark = '' } = ctx.paramsObj
+	let { Token = '', ServerId, Id = '', Replicas = 1, EnableMark = '',NodeImage="" } = ctx.paramsObj
 
 	Replicas = Math.floor(Replicas) || 1
 	
@@ -286,6 +287,7 @@ PatchController.ServicePoolUpdate = async(ctx) => {
 			ServerId,
 			Id,
 			Replicas,
+            NodeImage,
 			EnableMark,
 		}
 
@@ -296,6 +298,25 @@ PatchController.ServicePoolUpdate = async(ctx) => {
         logger.error('[ServicePoolUpdate]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
 	}
+}
+ 
+
+/**
+ * 服务启用列表
+
+ */
+PatchController.ServiceNowImages = async(ctx) => {
+
+    let { Token = '', ServerId = '' } = ctx.paramsObj
+
+    try {
+        let result = await PatchService.ServiceNowImages(ServerId);
+		ctx.makeResObj(result.ret, result.msg, result.data);
+
+    } catch (e) {
+        logger.error('[ServiceNowImages]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
 }
     
 /**

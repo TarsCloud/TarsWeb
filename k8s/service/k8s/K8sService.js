@@ -58,6 +58,7 @@ K8sService.serverK8SSelect = async (ServerId, limiter) => {
         elem["version"] = item.apiVersion
         elem["name"] = item.metadata.name
         elem["abilityAffinity"] = item.spec.k8s.abilityAffinity
+        elem["launcherType"] = item.spec.k8s.launcherType
         result.Data.push(elem);
     })
     return {ret: 200, msg: 'succ', data: result};

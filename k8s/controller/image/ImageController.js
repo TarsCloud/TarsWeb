@@ -1,7 +1,7 @@
 const logger = require('../../../logger');
 
 const ImageService = require('../../service/image/ImageService');
-
+const CommonService = require('../../service/common/CommonService');
 const ImageController = {};
 
 ImageController.NodeImageSelect = async (ctx) => {
@@ -88,13 +88,9 @@ ImageController.ImageDelete = async (ctx) => {
     }
 }
 
-ImageController.ImageReleaseSelect = async(ctx) => {
-
-        let { Name = ''} = ctx.paramsObj
-        let metadata = {
-            Name,
-        }
-
+ImageController.ImageReleaseSelect = async (ctx) => {
+    let {Name = ''} = ctx.paramsObj
+    let metadata = {Name}
     try {
 
         let result = await ImageService.imageReleaseSelect(metadata);
@@ -103,6 +99,46 @@ ImageController.ImageReleaseSelect = async(ctx) => {
     } catch (e) {
         logger.error('[ImageSelect]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+}
+ImageController.ImageNodeSelect = async (ctx) => {
+    let metadata = {Name: CommonService.TARSNODE}
+    try {
+        let result = await ImageService.imageReleaseSelect(metadata);
+        ctx.makeResObj(result.ret, result.msg, result.data);
+    } catch (e) {
+        logger.error('[ImageNodeSelect]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+}
+
+ImageController.ImageNodeUpdate = async (ctx) => {
+    let {Id = '', Image = "", Mark = ""} = ctx.paramsObj
+    let metadata = {
+        Name: CommonService.TARSNODE,
+        Id,Image,Mark
+    }
+    try {
+        let result = await ImageService.ImageNodeUpdate(metadata);
+        ctx.makeResObj(result.ret, result.msg, result.data);
+    } catch (e) {
+        logger.error('[ImageNodeSelect]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+}
+
+ImageController.ImageNodeDelete = async (ctx) => {
+    let {Id = '', Image = "", Mark = ""} = ctx.paramsObj
+    let metadata = {
+        Name: CommonService.TARSNODE,
+        Id,Image,Mark
+    }
+    try {
+        let result = await ImageService.ImageNodeDelete(metadata);
+        ctx.makeResObj(result.ret, result.msg, result.data);
+    } catch (e) {
+        logger.error('[ImageNodeSelect]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e.message);
     }
 }
 

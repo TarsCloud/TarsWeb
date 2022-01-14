@@ -56,7 +56,7 @@ import networkMapping from "./networkMapping"
 import diskManger from "./disk"
 import resourceManger from "./resource"
 import hpaManger from "./hpa"
-import K8sYamlEdit from "./k8sYamlEdit";
+import K8sYamlEdit from "../../../components/k8s-yaml-edit";
 
 export default {
   name: 'index',

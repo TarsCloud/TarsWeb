@@ -17,6 +17,7 @@ const NotifyController = require('./controller/notify/NotifyController');
 const ImageController = require('./controller/image/ImageController');
 const HPAController = require('./controller/hpa/HPAController');
 const EventController = require('./controller/event/EventController');
+const FrameworkController = require("./controller/framework/FrameworkController")
 
 const k8sApiConf = [
     // 目录树接口
@@ -137,7 +138,7 @@ const k8sApiConf = [
     }],
 
 
-    ['get', '/patch_enabled', PatchController.ServiceEnabledSelect, { ServerId: 'notEmpty' }],
+    ['get', '/get_now_image', PatchController.ServiceNowImages, { ServerId: 'notEmpty' }],
     ['post', '/patch_publish', PatchController.ServicePoolUpdate, { Id: 'notEmpty', ServerId: 'notEmpty' }],
 
     //image管理
@@ -150,6 +151,9 @@ const k8sApiConf = [
     ['get', '/base_image_list', ImageController.BaseImageSelect, { ServerType: 'notEmpty'}],
     ['post', '/image_release_delete', ImageController.ImageReleaseDelete, { Name: 'notEmpty', Id: 'notEmpty' }],
     ['post', '/image_release_create', ImageController.ImageReleaseCreate, { Name: 'notEmpty', Image: 'notEmpty', Secret:'notEmpty'}],
+    ['get', '/image_node_select',ImageController.ImageNodeSelect],
+    ['post', '/image_node_update',ImageController.ImageNodeUpdate],
+    ['post', '/image_node_delete',ImageController.ImageNodeDelete],
 
     //HorizontalPodAutoscaler 管理
     ['post', '/create_hpa', HPAController.HPACreate],
@@ -163,6 +167,10 @@ const k8sApiConf = [
         startDate: 'notEmpty',
         endDate: 'notEmpty'
     }],
+
+    //集群管理
+    ["get","/get_tfc",FrameworkController.getFrameworkConfig],
+    ["post","/save_tfc_item",FrameworkController.saveFrameworkConfig]
 ];
 
 module.exports = { k8sApiConf };
