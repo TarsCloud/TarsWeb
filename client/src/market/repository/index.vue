@@ -106,7 +106,7 @@ export default {
       })
         .then(() => {
           this.$market
-            .call("cloud-market", "delProjectDeveloper", {
+            .call("cloud-harbor", "delProjectDeveloper", {
               project: row.name,
               uid: uid,
             })
@@ -134,7 +134,7 @@ export default {
       })
         .then(() => {
           this.$market
-            .call("cloud-market", "delProject", {
+            .call("cloud-harbor", "delProject", {
               project: row.name,
             })
             .then((data) => {
@@ -155,7 +155,7 @@ export default {
     },
     fetchProjects() {
       this.$market
-        .call("cloud-market", "getRepoProjectList")
+        .call("cloud-harbor", "getRepoProjectList")
         .then((data) => {
           this.data = data.info.gList;
           this.data.forEach((e) => {

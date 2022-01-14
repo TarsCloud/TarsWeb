@@ -81,7 +81,7 @@ let conf = {
         uploadDomain: 'http://tars-tarsimage/api/v1beta1/timage', // tarsimage上传交互
         cache: true, //从cache中加载
     },
-
+    market: false,
     isEnableK8s: () => {
         return process.env.ENABLE_K8S == "true" || false;
     },
@@ -102,7 +102,6 @@ if (process.env.NODE_ENV == "local") {
             idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
         }
     };
-
 
     conf.webConf.host = '0.0.0.0';
     conf.webConf.port = 4001;

@@ -80,7 +80,7 @@ export default {
 
         this.interval = setTimeout(() => {
           this.$market
-            .call("cloud-market", "hasProject", {
+            .call("cloud-harbor", "hasProject", {
               project: project,
             })
             .then((data) => {
@@ -101,7 +101,7 @@ export default {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.$market
-            .call("cloud-market", "createProject", {
+            .call("cloud-harbor", "createProject", {
               project: this.project.project,
             })
             .then((data) => {

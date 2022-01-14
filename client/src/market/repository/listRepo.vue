@@ -71,7 +71,7 @@ export default {
     },
     fetchRepoList() {
       this.$market
-        .call("cloud-market", "getRepositoryList", {
+        .call("cloud-harbor", "getRepositoryList", {
           project: this.project,
           page_size: this.page_size,
           page: this.page,
@@ -99,7 +99,7 @@ export default {
       })
         .then(() => {
           this.$market
-            .call("cloud-market", "delRepository", {
+            .call("cloud-harbor", "delRepository", {
               project: this.project,
               repo: row.repo.substr(this.repo.length + 1),
             })

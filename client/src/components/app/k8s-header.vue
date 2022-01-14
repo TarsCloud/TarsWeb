@@ -40,6 +40,7 @@
               :icon="cacheIcon"
             ></let-tab-pane>
             <let-tab-pane
+              v-if="enableMarket == 'true'"
               :tab="$t('header.tab.tab9')"
               tabkey="/market/list"
               :icon="packageIcon"
@@ -133,8 +134,8 @@ export default {
       operatorIcon,
       packageIcon,
       locale: this.$cookie.get("locale") || "en",
+      enableMarket: this.$cookie.get("market") || "false",
       uid: "--",
-      // userOptOpen: false,
       enableLogin: false,
       isAdmin: false,
       localeMessages: localeMessages,
@@ -201,8 +202,6 @@ export default {
       this.$ajax
         .getJSON("/server/api/is_enable_login")
         .then((data) => {
-          // console.log(data);
-
           this.enableLogin = data.enableLogin || false;
         })
         .catch((err) => {});
@@ -220,7 +219,6 @@ export default {
       this.$ajax
         .getJSON("/server/api/isAdmin")
         .then((data) => {
-          // console.log(data);
           this.isAdmin = data.admin;
         })
         .catch((err) => {});

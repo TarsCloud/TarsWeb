@@ -104,7 +104,7 @@ export default {
 
         if (results.length == 0 && queryString) {
           this.$market
-            .call("cloud-market", "searchRepoUser", {
+            .call("cloud-harbor", "searchRepoUser", {
               userId: queryString,
             })
             .then((data) => {
@@ -124,7 +124,7 @@ export default {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.$market
-            .call("cloud-market", "addProjectDeveloper", {
+            .call("cloud-harbor", "addProjectDeveloper", {
               project: this.project.project,
               uid: this.project.uid,
             })

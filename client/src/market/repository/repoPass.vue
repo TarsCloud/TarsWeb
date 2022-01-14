@@ -135,7 +135,7 @@ export default {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.$market
-            .call("cloud-market", "createRepoUser", {
+            .call("cloud-harbor", "createRepoUser", {
               password: this.data.password,
             })
             .then((data) => {

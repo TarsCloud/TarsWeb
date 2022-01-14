@@ -77,7 +77,7 @@ export default {
     },
     fetchArtifactsList() {
       this.$market
-        .call("cloud-market", "getArtifactsList", {
+        .call("cloud-harbor", "getArtifactsList", {
           project: this.project,
           repo: this.repo.substr(this.project.length + 1),
           page_size: this.page_size,
@@ -109,7 +109,7 @@ export default {
       })
         .then(() => {
           this.$market
-            .call("cloud-market", "delArtifacts", {
+            .call("cloud-harbor", "delArtifacts", {
               project: this.project,
               repo: this.repo.substr(this.project.length + 1),
               reference: row.digest,

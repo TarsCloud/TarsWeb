@@ -40,6 +40,7 @@
           :icon="cacheIcon"
         ></let-tab-pane>
         <let-tab-pane
+          v-if="enableMarket == 'true'"
           :tab="$t('header.tab.tab9')"
           tabkey="/market/list"
           :icon="packageIcon"
@@ -75,30 +76,6 @@
             }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-
-        <!-- <p class="user-info" @click="userOptOpen = !userOptOpen">
-          <span class="name toe">{{ uid }} </span>
-          <i
-            class="let-icon let-icon-caret-down"
-            :class="{ up: userOptOpen }"
-            v-show="enableLogin"
-          ></i>
-          <transition name="fade">
-            <div class="user-pop-wrap" v-show="enableLogin && userOptOpen">
-              <div>
-                <a href="/auth.html">{{ $t("header.userCenter") }}</a>
-              </div>
-              <div>
-                <a href="/pass.html" v-if="!enableLdap">{{
-                  $t("header.modifyPass")
-                }}</a>
-              </div>
-              <div>
-                <a href="/logout">{{ $t("header.logout") }}</a>
-              </div>
-            </div>
-          </transition> -->
-        <!-- </p> -->
       </div>
     </div>
   </div>
@@ -121,7 +98,6 @@ export default {
       packageIcon,
       locale: this.$cookie.get("locale") || "en",
       uid: "--",
-      // userOptOpen: false,
       enableLogin: false,
       isAdmin: false,
       localeMessages: localeMessages,
@@ -129,6 +105,7 @@ export default {
       enable: this.$cookie.get("enable") || "false",
       show: this.$cookie.get("show") || "false",
       enableLdap: false,
+      enableMarket: this.$cookie.get("market") || "false",
       web_version: "loading··",
       framework_version: "loading··",
     };
