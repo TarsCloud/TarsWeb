@@ -5,6 +5,7 @@ const CommonService = require('../common/CommonService');
 const FrameworkService = {};
 
 FrameworkService.MNTFILEPATH = "/mnt/config"
+// FrameworkService.MNTFILEPATH = "/tmp/config"
 
 FrameworkService.getFrameworkConfig = async () => {
     let data = await CommonService.getFrameworkConfig();
@@ -19,7 +20,11 @@ FrameworkService.getFrameworkConfig = async () => {
         remark: "#framework.remark.imageRegistry#",
         value: data.imageRegistry.registry
     })
-    res.push({column: "nodeImage.image", remark: "#framework.remark.nodeImage#", value: data.nodeImage.image})
+    res.push({
+        column: "nodeImage.image",
+        remark: "#framework.remark.nodeImage#",
+        value: data.nodeImage.image
+    })
     res.push({
         column: "recordLimit.tconfigHistory",
         remark: "#framework.remark.tconfigHistory#",
@@ -42,8 +47,8 @@ FrameworkService.getFrameworkConfig = async () => {
     })
     res.push({
         column: "nativeFrameworkConfig",
-        remark: "#framework.remark.nativeTafConfig#",
-        value: data.expand.nativeTafConfig
+        remark: "#framework.remark.nativeFramewokConfig#",
+        value: data.expand.nativeFramewokConfig
     })
     return res
 }
@@ -83,18 +88,20 @@ FrameworkService.saveFrameworkConfig = async (params) => {
 
 
 FrameworkService.createFrameworkConfig = async () => {
-    console.log(333)
+    // console.log(333)
     // let config = await new Promise(((resolve, reject) => {
     //     let ret = CommonService.getObject("tframeworkconfigs", CommonService.TFC);
     //     resolve(ret)
     // }))
     let config = await CommonService.getFrameworkConfig();
-    console.log(" get tfc success")
+    console.log(" get tfc success", config)
     let nativeFrameworkConfig = config.expand.nativeFrameworkConfig;
     let nativeDBConfig = config.expand.nativeDBConfig;
-    mkdirSync(FrameworkService.MNTFILEPATH);
-    fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/tars.conf`, nativeFrameworkConfig);
-    fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/config.json`, nativeDBConfig);
+    if (fs.existsSync(FrameworkService.MNTFILEPATH)) {
+        mkdirSync(FrameworkService.MNTFILEPATH);
+        fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/nativeFramework.conf`, nativeFrameworkConfig);
+        fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/nativeDB.json`, nativeDBConfig);
+    }
 }
 
 function mkdirSync(dirname) {

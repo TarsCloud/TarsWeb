@@ -851,6 +851,8 @@
             "noConfFile": "暂无配置文件",
             "a": "请至少选择一个服务节点",
             "ab": "请选择发布版本",
+            "nodeImage": "tarsnode版本",
+            "nodeImageTip": "请选择一个tarsnode的版本",
             "unpublished": "未发布",
             "conf": "配置编译接口",
             "tag": "版本接口",
@@ -859,7 +861,8 @@
             "compileProgress": "编译进度",
             "uploadPkg": "正在回传发布包，请稍候",
             "hasModule": "需要下线该应用下所有的模块才可以下线唯一的 router、proxy 服务",
-            "cantUseApply": "下线的是仅有的节点,下线后该应用将无用"
+            "cantUseApply": "下线的是仅有的节点,下线后该应用将无用",
+            "foregroundTip": "当前服务为前端启动,无法通过管理平台进行重启停止操作"
         },
         "tips": {
             "default": "发布管理只管理服务层级，请您先在左侧业务树选择服务。",
@@ -993,6 +996,24 @@
             "SecretTips": "请输入仓库验证secret",
             "CreatePerson": "创建人",
             "CreateTime": "创建时间"
+        },
+        "node": {
+            "idTip": "请输入镜像名",
+            "imageAddressTip": "请输入镜像地址",
+            "markTip": "请输入镜像描述",
+            "deleteTip": "默认node镜像不允许删除"
+        }
+    },
+    "framework": {
+        "remark": {
+            "maxBuildTime": "镜像build最大时长",
+            "imageRegistry": "镜像推送地址",
+            "nodeImage": "默认使用tarsnode地址",
+            "tconfigHistory": "配置信息最大保存条数",
+            "texitedPod": "pod 保存个数",
+            "timageRelease": "镜像保存条数",
+            "nativeDBConfig": "外部TARS框架 db配置信息",
+            "nativeFramewokConfig": "外部K8S框架 tars配置文件"
         }
     },
     "deployService": {
@@ -1007,7 +1028,9 @@
             "nodes": "节点管理",
             "check": "框架检查",
             "gateway": "网关配置",
-            "image": "基础镜像管理",
+            "image": "镜像管理",
+            "baseImage": "基础镜像管理",
+            "nodeImage": "NODE镜像管理",
             "affinity": "亲和性管理",
             "application": "应用管理",
             "node": "节点管理",
@@ -1018,7 +1041,8 @@
             "configSearch": "配置检索",
             "board": "综合看板",
             "userLog": "操作日志",
-            "event": "事件查询"
+            "event": "事件查询",
+            "framework": "集群配置"
         },
         "form": {
             "app": "应用",
@@ -1089,7 +1113,9 @@
                 "addLabel": "添加一组标签"
             },
             "affinity": "亲和性选择",
-            "k8sExtra": "完善k8s信息(可选)"
+            "k8sExtra": "完善k8s信息(可选)",
+            "serverTag": "镜像tag",
+            "serverTagTip": "镜像tag名可以不填,默认自动生成"
         },
         "table": {
             "th": {

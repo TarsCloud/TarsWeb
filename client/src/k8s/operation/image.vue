@@ -1,6 +1,6 @@
 <template>
   <div class="page_operation_approval">
-    <el-card style="margin-top: 10px">
+    <el-card style="margin-top: 10px;padding:15px">
       <div>
         <span>{{ $t("deployService.title.baseImage") }}</span>
         <el-button
@@ -45,7 +45,7 @@
       </let-table>
     </el-card>
     <!--taf node 镜像管理-->
-    <el-card style="margin-top: 10px">
+    <el-card style="margin-top: 10px;padding:15px">
       <div>
         <span>{{ $t("deployService.title.nodeImage") }}</span>
         <el-button

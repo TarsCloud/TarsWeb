@@ -73,13 +73,12 @@
         </div>
       </let-form>
 
-      <br>
+      <br />
       <!--列表-->
       <el-table
         ref="table"
         :data="items"
         width="100%"
-        height="calc(100vh - 320px)"
         border
         stripe
         @selection-change="handleSelectionChange"
@@ -91,7 +90,7 @@
           prop="NodeName"
           width="150"
         ></el-table-column>
-        <el-table-column :label="$t('common.status')" width="150">
+        <el-table-column :label="$t('common.status')" width="100">
           <template slot-scope="scope">
             <el-tag
               size="small"
@@ -111,7 +110,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="Version" width="150">
+        <el-table-column label="Version" width="100">
           <template slot-scope="scope">
             {{ scope.row.NodInfo.kubeletVersion }}
           </template>
@@ -166,14 +165,16 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('operate.operates')" width="220px">
+        <el-table-column :label="$t('operate.operates')" width="150px">
           <template slot-scope="scope">
             <let-table-operation @click="viewItem(scope.row)">
               {{ $t("operate.view") }}
             </let-table-operation>
+            <br />
             <let-table-operation @click="editCommonTag(scope.row)">
               {{ $t("filter.btn.editTag") }}
             </let-table-operation>
+            <br />
             <let-table-operation @click="editAbilityTag(scope.row)">
               {{ $t("filter.btn.editAffinity") }}
             </let-table-operation>
@@ -207,7 +208,7 @@
               </let-table-operation>
             </template>
             <el-table-column :label="$t('filter.title.tagName')">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-form-item
                   :prop="'commonArr.' + scope.$index + '.name'"
                   :rules="[
@@ -224,7 +225,7 @@
               </template>
             </el-table-column>
             <el-table-column :label="$t('filter.title.tagName')">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-input v-model="scope.row.value"></el-input>
               </template>
             </el-table-column>
@@ -283,7 +284,7 @@
               </let-table-operation>
             </template>
             <el-table-column :label="$t('filter.title.app')">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-form-item
                   :prop="'abilityArr.' + scope.$index + '.application'"
                   :rules="[
@@ -318,7 +319,7 @@
               </template>
             </el-table-column>
             <el-table-column :label="$t('filter.title.serverName')">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-select
                   v-model="scope.row.serverName"
                   :placeholder="$t('pub.dlg.defaultValue')"

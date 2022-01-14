@@ -29,17 +29,17 @@ const opts = {};
 kc.applyToRequest(opts);
 
 CommonService.getPath = (path) => {
-    return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
+	return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
 }
 
 const k8sCoreApi = kc.makeApiClient(k8s.CoreV1Api);
 const k8sApi = kc.makeApiClient(k8s.CustomObjectsApi);
 
 CommonService.getApi = () => {
-    return k8sCoreApi;
+	return k8sCoreApi;
 }
 CommonService.getK8sApi = () => {
-    return k8sApi;
+	return k8sApi;
 }
 
 CommonService.NAMESPACE = process.env.Namespace || WebConf.k8s.namespace;
@@ -224,13 +224,16 @@ CommonService.getNodeListAll = async () => {
 }
 
 CommonService.getTemplateList = async () => {
-    return getCacheList(tTemplateList, templateListFn);
+	return getCacheList(tTemplateList, templateListFn);
 }
 
 CommonService.getFrameworkConfig = async () => {
-    let res = await getCacheList(tConfigList, tConfigListFn)
-    let tafFrameConfig = res.filter(item => item.metadata.name == CommonService.TFC)
-    return tafFrameConfig ? tafFrameConfig[0] : {};
+	let res = await tConfigListFn();
+	console.log(res.body.items[0]);
+	return res.body.items[0];
+	// let res = await getCacheList(tConfigList, tConfigListFn)
+	// let tafFrameConfig = res.filter(item => item.metadata.name == CommonService.TFC)
+	// return tafFrameConfig ? tafFrameConfig[0] : {};
 }
 
 CommonService.getAccountList = async () => {
@@ -328,13 +331,13 @@ CommonService.getMetadataName = (name) => {
 }
 
 CommonService.randomString = (len) => {
- 　　const chars = 'abcdefghijklmnopqrstuvwxyz';
- 　　var maxPos = chars.length;
- 　　var pwd = '';
- 　　for (i = 0; i < len; i++) {
- 　　　　pwd += chars.charAt(Math.floor(Math.random() * maxPos));
- 　　}
- 　　return pwd;
+	const chars = 'abcdefghijklmnopqrstuvwxyz';
+	var maxPos = chars.length;
+	var pwd = '';
+	for (i = 0; i < len; i++) {
+		pwd += chars.charAt(Math.floor(Math.random() * maxPos));
+	}
+	return pwd;
 }
 
 CommonService.pageList = (itemsLen, limiter) => {
