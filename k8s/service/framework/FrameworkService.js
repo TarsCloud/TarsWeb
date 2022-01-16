@@ -2,13 +2,14 @@ const logger = require("../../../logger")
 const fs = require("fs")
 const path = require("path");
 const WebConf = require('../../../config/webConf');
-const CommonService = require('../common/CommonService');
 const FrameworkService = {};
 
 // FrameworkService.MNTFILEPATH = "/mnt/config"
 FrameworkService.MNTFILEPATH = "/tmp/tars-framework"
 
 FrameworkService.getFrameworkConfig = async () => {
+    const CommonService = require('../common/CommonService');
+
     let data = await CommonService.getFrameworkConfig();
     let res = [];
     res.push({
@@ -55,6 +56,9 @@ FrameworkService.getFrameworkConfig = async () => {
 }
 
 FrameworkService.saveFrameworkConfig = async (params) => {
+    const CommonService = require('../common/CommonService');
+
+
     let data = await CommonService.getObject("tframeworkconfigs", CommonService.TFC);
     let tfc = data.body;
     switch (params.column) {
@@ -90,8 +94,12 @@ FrameworkService.saveFrameworkConfig = async (params) => {
 
 FrameworkService.createFrameworkConfig = async () => {
 
+    // console.log("createFrameworkConfig");
+
+    const CommonService = require('../common/CommonService');
+
     let config = await CommonService.getFrameworkConfig();
-    console.log(" get tfc success", config)
+    // console.log(" get tfc success", config)
     let nativeFrameworkConfig = config.expand.nativeFrameworkConfig;
     let nativeDBConfig = config.expand.nativeDBConfig;
 
