@@ -257,28 +257,6 @@ export default {
     height: 80px;
     padding: 26px var(--gap-small);
     z-index: 100;
-    /*
-    a {
-      display: inline-block;
-      height: 80px;
-      padding: 30px 20px 0;
-      &.active {
-        &::after {
-          content: "";
-          display: inline-block;
-          height: 3px;
-          width: 100%;
-          background: #457ff5;
-          position: absolute;
-          top: 76px;
-          left: 0px;
-        }
-      }
-      .logo {
-        height: 25px;
-      }
-    }
-    */
     .logo {
       height: 28px;
     }
