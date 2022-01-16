@@ -1013,7 +1013,7 @@
             "texitedPod": "pod 保存个数",
             "timageRelease": "镜像保存条数",
             "nativeDBConfig": "外部TARS框架 db配置信息",
-            "nativeFramewokConfig": "外部K8S框架 tars配置文件"
+            "nativeFrameworkConfig": "外部TARS框架 tars配置文件"
         }
     },
     "deployService": {

@@ -994,7 +994,7 @@
             "texitedPod": "Number of pods saved",
             "timageRelease": "Number of images saved",
             "nativeDBConfig": "General taf db configuration information",
-            "nativeTafConfig": "Ordinary taf taf configuration file"
+            "nativeFramework": "Ordinary taf taf configuration file"
         }
     },
     "deployService": {

@@ -229,11 +229,11 @@ CommonService.getTemplateList = async () => {
 
 CommonService.getFrameworkConfig = async () => {
 	let res = await tConfigListFn();
-	console.log(res.body.items[0]);
-	return res.body.items[0];
+	console.log(res.body.items);
+	// return res.body.items[0];
 	// let res = await getCacheList(tConfigList, tConfigListFn)
-	// let tafFrameConfig = res.filter(item => item.metadata.name == CommonService.TFC)
-	// return tafFrameConfig ? tafFrameConfig[0] : {};
+	let frameConfig = res.body.items.filter(item => item.metadata.name == CommonService.TFC)
+	return frameConfig ? frameConfig[0] : {};
 }
 
 CommonService.getAccountList = async () => {

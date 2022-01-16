@@ -149,17 +149,17 @@ if (process.env.NODE_ENV == "local") {
     conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 }
 
-if (conf.isEnableK8s() && fs.existsSync('/mnt/config/nativeDB.json')) {
-    try {
-        let content = require('/mnt/config/nativeDB.json');
-        conf.dbConf = content.dbConf;
-        conf.client = '/mnt/config/nativeFramework.conf';
-        conf.enable = content.enable;
-        conf.show = content.show;
+// if (conf.isEnableK8s() && fs.existsSync('/mnt/config/nativeDBConfig.json')) {
+//     try {
+//         let content = require('/mnt/config/nativeDBConfig.json');
+//         conf.dbConf = content.dbConf;
+//         conf.client = '/mnt/config/nativeFramework.conf';
+//         conf.enable = content.enable;
+//         conf.show = content.show;
 
-    } catch (e) {
-        console.log(e);
-    }
-}
+//     } catch (e) {
+//         console.log(e);
+//     }
+// }
 
 module.exports = conf;

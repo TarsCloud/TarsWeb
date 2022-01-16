@@ -56,7 +56,7 @@
       </el-table>
 
       <el-dialog
-        title="Taf Framework config"
+        title="Framework config"
         width="50%"
         top="50px"
         :visible.sync="showDialog"
