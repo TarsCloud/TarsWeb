@@ -91,15 +91,14 @@ FrameworkService.saveFrameworkConfig = async (params) => {
 
 }
 
-
 FrameworkService.createFrameworkConfig = async () => {
-
-    // console.log("createFrameworkConfig");
 
     const CommonService = require('../common/CommonService');
 
     let config = await CommonService.getFrameworkConfig();
-    // console.log(" get tfc success", config)
+
+    console.log(config.expand);
+
     let nativeFrameworkConfig = config.expand.nativeFrameworkConfig;
     let nativeDBConfig = config.expand.nativeDBConfig;
 
@@ -107,14 +106,20 @@ FrameworkService.createFrameworkConfig = async () => {
 
     if (fs.existsSync(FrameworkService.MNTFILEPATH)) {
         fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/nativeFrameworkConfig.conf`, nativeFrameworkConfig);
-        fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/nativeDBConfig.json`, nativeDBConfig);
+        // fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/nativeDBConfig.json`, nativeDBConfig);
 
         try {
-            let content = `${FrameworkService.MNTFILEPATH}/nativeDBConfig.json`;
-            WebConf.dbConf = content.dbConf;
-            WebConf.client = `${FrameworkService.MNTFILEPATH}/nativeFrameworkConfig.conf`;
-            WebConf.enable = content.enable || false;
-            WebConf.show = content.show || false;
+            WebConf.enable = false;
+
+            let content = JSON.parse(nativeDBConfig); //require(`${FrameworkService.MNTFILEPATH}/nativeDBConfig.json`);
+            if (content.open) {
+                WebConf.dbConf = content.dbConf;
+                WebConf.client = `${FrameworkService.MNTFILEPATH}/nativeFrameworkConfig.conf`;
+                WebConf.enable = content.enable || false;
+                WebConf.show = content.show || false;
+            }
+
+            console.log(content, WebConf);
 
         } catch (e) {
             console.log(e);

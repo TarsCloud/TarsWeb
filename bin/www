@@ -24,7 +24,6 @@ const os = require('os');
 const WebSocketServer = require('websocket').server;
 const FrameworkService = require("../k8s/service/framework/FrameworkService")
 
-
 //获取端口
 const port = normalizePort(process.env.PORT || webConf.webConf.port || '3000');
 const enableMultiProcess = false;
@@ -32,15 +31,17 @@ const enableMultiProcess = false;
 let startServer = async () => {
 	//创建服务
 	try {
-		console.log("startServer:", webConf.isEnableK8s());
+		console.log("startServer enable K8S:", webConf.isEnableK8s());
 
 		//以k8s方式启动的话,生成挂载文件
 		if (webConf.isEnableK8s()) {
 			await FrameworkService.createFrameworkConfig();
 			console.log("init k8s env ,general tars config  success")
 		}
+		const app = require('../app');
 
 		console.log("startServer:", webConf.enable);
+
 		if (webConf.enable) {
 			const tarsInit = require('../app/init/tars');
 
@@ -69,7 +70,6 @@ let startServer = async () => {
 			});
 		} else if (cluster.isWorker || !enableMultiProcess) {
 
-			const app = require('../app');
 
 			let server = http.createServer(app.callback());
 			server.listen(port, '0.0.0.0', function () {

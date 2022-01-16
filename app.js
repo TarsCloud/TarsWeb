@@ -62,8 +62,8 @@ const CONFIG = {
 	renew: false,
 }
 app.keys = ['sessionCaptcha']
-app.use(session(CONFIG, app))
 
+app.use(session(CONFIG, app));
 
 //安全防护
 app.use(helmet());
@@ -123,6 +123,7 @@ app.use(async (ctx, next) => {
 
 app.use(loginMidware(loginConf));
 
+
 //安装包资源中间件
 app.use(staticRouter([{
 	dir: './files', //静态资源目录对于相对入口文件index.js的路径
@@ -153,7 +154,6 @@ app.use(async (ctx, next) => {
 		httpOnly: false
 	});
 })
-
 
 //激活router
 // dcache 会添加新的 page、api router， 不能提前
@@ -188,7 +188,6 @@ if (k8sApiRouter) {
 }
 app.use(gatewayApiRouter.routes()).use(gatewayApiRouter.allowedMethods());
 app.use(marketApiRouter.routes()).use(marketApiRouter.allowedMethods());
-
 
 //激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {

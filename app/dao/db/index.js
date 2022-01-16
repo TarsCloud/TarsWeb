@@ -26,8 +26,6 @@ const _ = require('lodash');
 
 const webConf = require('../../../config/webConf');
 
-// const dbConf = require('../../../config/webConf').dbConf;
-
 const logger = require('../../../logger');
 
 let Db = {};
@@ -44,7 +42,7 @@ databases.forEach((database) => {
 		pool,
 	} = webConf.dbConf;
 
-	const logging = process.env.NODE_ENV == "dev" ? (sqlText)=>{
+	const logging = process.env.NODE_ENV == "dev" ? (sqlText) => {
 		// console.log(sqlText);
 		logger.sql(sqlText)
 	} : true
@@ -68,8 +66,8 @@ databases.forEach((database) => {
 		},
 		timezone: (() => {
 			let offset = 0 - new Date().getTimezoneOffset();
-			return (offset >= 0 ? '+' : '-') + (Math.abs(parseInt(offset/60)) + '').padStart(2, '0') + ':' + (offset%60 + '').padStart(2, '0');
-		})()  //获取当前时区并做转换
+			return (offset >= 0 ? '+' : '-') + (Math.abs(parseInt(offset / 60)) + '').padStart(2, '0') + ':' + (offset % 60 + '').padStart(2, '0');
+		})() //获取当前时区并做转换
 	});
 
 	// 测试是否连接成功
@@ -90,26 +88,31 @@ databases.forEach((database) => {
 	dbModels.forEach(async function (dbModel) {
 		let tableName = dbModel.replace(/\.js$/g, '');
 		tableObj[_.camelCase(tableName)] = sequelize.import(dbModelsPath + '/' + tableName);
-		
-    if (webConf.webConf.alter) 
-    {
-  		try {
 
-  			await tableObj[_.camelCase(tableName)].sync({ alter: true });
+		if (webConf.webConf.alter) {
+			try {
 
-  			logger.info('database ' + database + '.' + tableName + ' sync succ');
+				await tableObj[_.camelCase(tableName)].sync({
+					alter: true
+				});
 
-  		} catch (e) {
-  			logger.info('database ' + database + '.' + tableName  + ' sync error:', e);
-  		}
-  }
+				logger.info('database ' + database + '.' + tableName + ' sync succ');
+
+			} catch (e) {
+				console.log('database ' + database + '.' + tableName + ' sync error:', e);
+				process.exit(-1);
+			}
+		}
 	});
+
 	Db[database] = tableObj;
 	Db[database].sequelize = sequelize;
+
+
 });
 
 if (webConf.webConf.alter) {
-Update.update(Db['db_tars'], Db['db_tars_web']);
+	Update.update(Db['db_tars'], Db['db_tars_web']);
 }
 
 module.exports = Db;
