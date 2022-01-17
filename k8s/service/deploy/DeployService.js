@@ -127,7 +127,7 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
     tServer.metadata.annotations[CommonService.TServerCloudDigest] = paramsObj.serviceVersion.digest;
 
     tServer.spec.release = {};
-    tServer.spec.release.source = tImage.data.metadata.name;
+    // tServer.spec.release.source = tImage.data.metadata.name;
     tServer.spec.release.id = deploy.repo.id;
     tServer.spec.release.image = deploy.repo.image;
     tServer.spec.release.secret = deploy.repo.secret;
@@ -175,7 +175,7 @@ DeployService.upgrade = async (deploy, ServerServant, ServerK8S, ServerOption, p
     tServer.metadata.annotations[CommonService.TServerCloudDigest] = paramsObj.serviceVersion.digest;
 
     tServer.spec.release = {};
-    tServer.spec.release.source = tImage.data.metadata.name;
+    // tServer.spec.release.source = tImage.data.metadata.name;
     tServer.spec.release.id = deploy.repo.id;
     tServer.spec.release.image = deploy.repo.image;
     tServer.spec.release.secret = deploy.repo.secret;

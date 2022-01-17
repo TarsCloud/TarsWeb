@@ -154,8 +154,14 @@ ConfigService.serverConfigSelect = async (filter) => {
 
     labelSelector += "," + CommonService.TConfigActivated + "=true";
 
+    // console.log(labelSelector);
+
     let allItems = await CommonService.listObject("tconfigs", labelSelector);
+    // console.log(allItems.body);
+
     allItems = allItems.body.items;
+    // console.log(allItems);
+
 
     // filter
     let filterItems = allItems;

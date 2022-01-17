@@ -230,7 +230,7 @@ PatchService.servicePoolUpdate = async (metadata) => {
 	}
 
 	tServerCopy.spec.k8s.replicas = metadata.Replicas || tServerCopy.spec.k8s.replicas || 1
-	tServerCopy.spec.release.source = tImage.metadata.name
+	// tServerCopy.spec.release.source = tImage.metadata.name
 	tServerCopy.spec.release.id = readyActiveRelease.id
 	tServerCopy.spec.release.image = readyActiveRelease.image
 	tServerCopy.spec.release.secret = readyActiveRelease.secret
@@ -248,7 +248,10 @@ PatchService.ServiceNowImages = async (ServerId) => {
 
 	let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(ServerId));
 	if (!tServer) {
-		return { ret: 500, msg: "server not exists" };
+		return {
+			ret: 500,
+			msg: "server not exists"
+		};
 	}
 
 	tServer = tServer.body;
@@ -261,7 +264,11 @@ PatchService.ServiceNowImages = async (ServerId) => {
 		elem["NodeImage"] = tServer.spec.release.nodeImage
 	}
 
-    return { ret: 200, msg: 'succ', data: elem };
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: elem
+	};
 }
 
 PatchService.serviceEnabledSelect = async (ServerId) => {

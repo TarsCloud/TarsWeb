@@ -145,7 +145,7 @@ if (process.env.NODE_ENV == "local") {
     process.env.ENABLE_K8S = "true";
     conf.enable = false;
 
-    conf.k8s.namespace = 'tars-test';
+    conf.k8s.namespace = 'od-prod';
     conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 }
 
