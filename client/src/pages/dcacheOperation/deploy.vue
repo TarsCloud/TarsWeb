@@ -387,7 +387,7 @@ export default {
         const model = this.model;
 
         const loading = this.$Loading.show();
-        this.$ajax.getJSON('/server/api/server_exist', {
+        this.$ajax.postJSON('/server/api/server_exist', {
           application: model.application,
           server_name: model.server_name,
           node_name: model.server_name,

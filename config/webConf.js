@@ -110,7 +110,30 @@ if (process.env.NODE_ENV == "local") {
     conf.client = path.join(cwd, 'config/tars-dev.conf');
     process.env.ENABLE_K8S = "false";
 
-} else if (process.env.NODE_ENV == "dev") {
+}
+else if (process.env.NODE_ENV == "remote") {
+
+    conf.dbConf = {
+        host: '172.30.0.4', // 数据库地址
+        port: '3306', // 数据库端口
+        user: 'tarsAdmin', // 用户名
+        password: 'Tars@2019', // 密码
+        charset: 'utf8', // 数据库编码
+        pool: {
+            max: 10, // 连接池中最大连接数量
+            min: 0, // 连接池中最小连接数量
+            idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
+        }
+    };
+
+    conf.webConf.host = '0.0.0.0';
+    conf.webConf.port = 3000;
+    conf.webConf.alter = true;
+
+    conf.client = path.join(cwd, 'config/tars-remote.conf');
+    process.env.ENABLE_K8S = "false";
+
+}else if (process.env.NODE_ENV == "dev") {
 
     conf.dbConf = {
         host: '172.16.8.227', // 数据库地址

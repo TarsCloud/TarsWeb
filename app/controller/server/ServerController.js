@@ -25,6 +25,7 @@ const util = require('../../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
 const {async} = require('q');
 const webConf = require('../../../config/webConf').webConf;
+const { flatMap } = require('lodash');
 
 const serverConfStruct = {
     id: '',
@@ -100,9 +101,19 @@ ServerController.getServerConfById = async (ctx) => {
 ServerController.serverExist = async (ctx) => {
 	let application = ctx.paramsObj.application;
 	let serverName = ctx.paramsObj.server_name;
-	let nodeName = ctx.paramsObj.node_name;
+	let nodeNames = ctx.paramsObj.node_names;
 	try {
-		ctx.makeResObj(200, '', (await ServerService.getServerConf(application, serverName, nodeName)).length > 0);
+        let data = await ServerService.getServerConf(application, serverName, '');
+
+        let exists = false;
+        data.some(d => {
+            if (nodeNames.indexOf(d.node_name) != -1) {
+                exists = true;
+                return true;
+            }
+            return false;
+        })
+		ctx.makeResObj(200, '', exists);
 	} catch (e) {
 		logger.error('[serverExist]', e, ctx);
 		ctx.makeErrResObj();

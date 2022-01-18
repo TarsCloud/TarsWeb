@@ -44,10 +44,10 @@ if (WebConf.enable) {
 		['get', '/server', ServerController.getServerConfById, {
 			id: 'notEmpty'
 		}],
-		['get', '/server_exist', ServerController.serverExist, {
+		['post', '/server_exist', ServerController.serverExist, {
 			application: 'notEmpty',
 			server_name: 'notEmpty',
-			node_name: ''
+			node_names: ''
 		}],
 		['get', '/application_list', ServerController.getApplicationList],
 		['get', '/node_list', ServerController.getNodeList],

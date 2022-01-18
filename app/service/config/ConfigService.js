@@ -299,28 +299,31 @@ ConfigService.getNodeConfigFile = async (params) => {
 		// }
 		return !exist;
 	});
-	for (let i = 0, len = servers.length; i < len; i++) {
-		let server = servers[i];
-		let newRow = {
-			server_name: `${params.application}.${params.server_name}`,
-			set_name: params.set_name,
-			set_area: params.set_area,
-			set_group: params.set_group,
-			filename: configFile.filename,
-			host: server.node_name,
-			config: '',
-			level: 3,
-			posttime: formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss')
-		};
-		let config = await ConfigDao.insertConfigFile(newRow).catch(e => logger.error('[insertConfigFile]:', e));
-		config = config.get({'plain': true});
-		let history = {
-			configid: config.id,
-			reason: 'add config',
-			content: config.config,
-			posttime: config.posttime
-		};
-		await ConfigDao.insertConfigFileHistory(history).catch(e => logger.error('[insertConfigFileHistory]:', e));
+
+	if (configFile) {
+		for (let i = 0, len = servers.length; i < len; i++) {
+			let server = servers[i];
+			let newRow = {
+				server_name: `${params.application}.${params.server_name}`,
+				set_name: params.set_name,
+				set_area: params.set_area,
+				set_group: params.set_group,
+				filename: configFile.filename,
+				host: server.node_name,
+				config: '',
+				level: 3,
+				posttime: formatToStr(new Date(), 'yyyy-mm-dd hh:mm:ss')
+			};
+			let config = await ConfigDao.insertConfigFile(newRow).catch(e => logger.error('[insertConfigFile]:', e));
+			config = config.get({ 'plain': true });
+			let history = {
+				configid: config.id,
+				reason: 'add config',
+				content: config.config,
+				posttime: config.posttime
+			};
+			await ConfigDao.insertConfigFileHistory(history).catch(e => logger.error('[insertConfigFileHistory]:', e));
+		}
 	}
 	return await nodeConfigFile;
 

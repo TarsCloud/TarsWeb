@@ -38,13 +38,13 @@
                     <let-option v-for="d in types" :key="d" :value="d">{{d}}</let-option>
                 </let-select>
             </let-form-item>
-
+<!--
             <div style="float: right">
                 <let-button type="button" theme="primary" @click="showBatchDeployModal()">
                     {{$t('deployService.form.batchDeploy')}}
                 </let-button>
             </div>
-
+-->
             <let-form-item :label="$t('deployService.form.template')" required>
                 <let-select
                         size="small"
@@ -512,22 +512,34 @@ export default {
       if(this.model.application == '') {
         this.model.application = application;
       }
-                let appReg = new RegExp("^[a-zA-Z]([a-zA-Z0-9]+)?$");
-                if (!this.applicationList.includes(this.model.application) || !appReg.test(this.model.application)) {
-                    this.$tip.error(`${this.$t('deployService.form.applicationTip')}`);
-                    return;
-                }
+
+      let appReg = new RegExp("^[a-zA-Z]([a-zA-Z0-9]+)?$");
+      if (!this.applicationList.includes(this.model.application) || !appReg.test(this.model.application)) {
+          this.$tip.error(`${this.$t('deployService.form.applicationTip')}`);
+          return;
+      }
+
       if (this.$refs.form.validate()) {
         const model = this.model;
 
         const loading = this.$Loading.show();
-        this.$ajax.getJSON('/server/api/server_exist', {
+
+        let node_names = [];
+        model.adapters.forEach(a=>{
+          node_names.push(a.node_name);
+        });
+
+        this.$ajax.postJSON('/server/api/server_exist', {
           application: model.application,
           server_name: model.server_name,
-          //node_name: model.node_name,
-        }).then((isExists) => {
+          node_names: node_names,
+        }).then((data) => {
           loading.hide();
-          if (isExists) {
+
+          // console.log(data, model.adapters);
+
+          
+          if (data) {
             this.$tip.error(this.$t('deployService.form.nameTips'));
           } else {
             this.deploy();
