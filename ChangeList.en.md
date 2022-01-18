@@ -1,3 +1,10 @@
+## 202121118(2.4.23)
+
+- Fix error prompt when deleting profile
+- Fix the bug that multiple nodes cannot be deployed at the same time when deploying services
+- Fix k8s event interface bug
+- Support K8SFramework v1.2.0
+
 ## 20211205(2.4.22)
 
 - merge call train to k8s(need K8SFramework v1.1.1)
