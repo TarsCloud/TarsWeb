@@ -76,6 +76,7 @@ export default {
       this.fetchArtifactsList();
     },
     fetchArtifactsList() {
+      this.$loading.show();
       this.$market
         .call("cloud-harbor", "getArtifactsList", {
           project: this.project,
@@ -91,16 +92,19 @@ export default {
           });
           this.total = data.info.total;
           this.artifacts = data.info.gList;
+
+          this.$loading.hide();
         })
         .catch((err) => {
           this.$message({
             message: this.$t("market.marketRet." + err.tars_ret || "-1"),
             type: "error",
           });
+          this.$loading.hide();
         });
     },
     deleteArtifact(row) {
-      console.log(row);
+      // console.log(row);
 
       this.$confirm("确定取消该Artifact么?", "提示", {
         confirmButtonText: "确定",
@@ -108,6 +112,8 @@ export default {
         type: "warning",
       })
         .then(() => {
+          this.$loading.show();
+
           this.$market
             .call("cloud-harbor", "delArtifacts", {
               project: this.project,
@@ -119,6 +125,8 @@ export default {
                 message: this.$t("market.repo.deleteArtifactSucc"),
                 type: "success",
               });
+              this.$loading.hide();
+
               this.fetchArtifactsList();
             })
             .catch((err) => {
@@ -126,6 +134,7 @@ export default {
                 message: this.$t("market.marketRet." + err.tars_ret || "-1"),
                 type: "error",
               });
+              this.$loading.hide();
             });
         })
         .catch(() => {});

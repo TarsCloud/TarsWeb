@@ -1,5 +1,13 @@
 <template>
   <div>
+    <el-button
+      style=" margin-top:20px"
+      type="primary"
+      @click="showAddProject()"
+      size="small"
+      >添加项目</el-button
+    >
+    <br />
     <el-table :data="data" stripe border style="width: 100%; margin-top:20px">
       <el-table-column prop="project" label="项目名称" min-width="150">
         <template slot-scope="scope">
@@ -42,14 +50,20 @@
     </el-table>
 
     <br />
-
-    <el-button
-      type="primary"
-      style="text-align: center"
-      @click="showAddProject()"
-      size="small"
-      >添加项目</el-button
-    >
+    <div>
+      <el-pagination
+        style="display: inline"
+        background
+        layout="prev, pager, next"
+        :total="total"
+        :page-size.sync="page_size"
+        :current-page.sync="page"
+        @current-change="changePage"
+        @prev-click="changePage"
+        @next-click="changePage"
+      >
+      </el-pagination>
+    </div>
 
     <addProject ref="addProject" @addProjectSucc="addProjectSucc"></addProject>
     <addMember ref="addMember" @addMemberSucc="addMemberSucc"></addMember>
@@ -76,6 +90,9 @@ export default {
   data() {
     return {
       data: [],
+      total: 0,
+      page_size: 2,
+      page: 1,
       closable: {},
     };
   },
@@ -153,9 +170,17 @@ export default {
         })
         .catch(() => {});
     },
+    changePage(page) {
+      this.page = page;
+      this.fetchProjects();
+    },
     fetchProjects() {
+      this.$loading.show();
       this.$market
-        .call("cloud-harbor", "getRepoProjectList")
+        .call("cloud-harbor", "getProjectList", {
+          page_size: this.page_size,
+          page: this.page,
+        })
         .then((data) => {
           this.data = data.info.gList;
           this.data.forEach((e) => {
@@ -165,8 +190,11 @@ export default {
               this.closable[u] = u != window.localStorage.uid;
             });
           });
+          this.total = data.info.total;
+          this.$loading.hide();
         })
         .catch((err) => {
+          this.$loading.hide();
           this.$message({
             message: this.$t("market.marketRet." + err.tars_ret || "-1"),
             type: "error",

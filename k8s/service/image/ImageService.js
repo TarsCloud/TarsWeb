@@ -284,15 +284,19 @@ ImageService.imageReleaseSelect = async (metadata) => {
 
 	tImage.releases.forEach(release => {
 
-		let r = {};
-		r["Id"] = release.id;
-		r["CreatePerson"] = release.createPerson;
-		r["CreateTime"] = release.createTime;
-		r["Secret"] = release.secret;
-		r["Mark"] = release.mark;
-		r["Image"] = release.image;
+		if (result.Data.findIndex((value) => {
+				return value.Image == release.image;
+			}) == -1) {
+			let r = {};
+			r["Id"] = release.id;
+			r["CreatePerson"] = release.createPerson;
+			r["CreateTime"] = release.createTime;
+			r["Secret"] = release.secret;
+			r["Mark"] = release.mark;
+			r["Image"] = release.image;
 
-		result.Data.push(r);
+			result.Data.push(r);
+		}
 	})
 
 	return {
@@ -360,69 +364,79 @@ ImageService.imageReleaseCreate = async (metadata) => {
 
 // 编辑taf node images
 ImageService.ImageNodeUpdate = async (metadata) => {
-    let node = await CommonService.getObject("timages", CommonService.TARSNODE);
-    if (!node) {
-        let tImage = {
-            apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
-            kind: 'TImage',
-            metadata: {
-                namespace: CommonService.NAMESPACE,
-                name: CommonService.TARSNODE,
-                labels: {}
-            },
-            imageType: 'node',
-            releases: [
-                {
-                    id: metadata.Id,
-                    image: metadata.Image,
-                    mark: metadata.Mark,
-                    createTime: new Date()
-                }
-            ]
-        }
-        tImage.metadata.labels[`${CommonService.TImageTypeLabel}`] = 'node';
-        let result = await CommonService.createObject("timages", tImage);
-        return {ret: 200, msg: 'succ', data: result.body};
-    } else {
-        let releases = node.body.releases;
-        let that = releases.filter(item => item.id == metadata.Id)
-        if (that.length == 0) {
-            releases.push({
-                id: metadata.Id,
-                image: metadata.Image,
-                mark: metadata.Mark,
-                createTime: new Date()
-            })
-        } else {
-            releases.forEach(item => {
-                if (item.id == metadata.Id) {
-                    item.image = metadata.Image;
-                    item.mark = metadata.Mark;
-                }
-            })
-        }
-        node.body.releases = releases;
-        let result = await CommonService.replaceObject("timages", CommonService.TARSNODE, node.body)
-        return {ret: 200, msg: 'succ', data: result.body};
-    }
+	let node = await CommonService.getObject("timages", CommonService.TARSNODE);
+	if (!node) {
+		let tImage = {
+			apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
+			kind: 'TImage',
+			metadata: {
+				namespace: CommonService.NAMESPACE,
+				name: CommonService.TARSNODE,
+				labels: {}
+			},
+			imageType: 'node',
+			releases: [{
+				id: metadata.Id,
+				image: metadata.Image,
+				mark: metadata.Mark,
+				createTime: new Date()
+			}]
+		}
+		tImage.metadata.labels[`${CommonService.TImageTypeLabel}`] = 'node';
+		let result = await CommonService.createObject("timages", tImage);
+		return {
+			ret: 200,
+			msg: 'succ',
+			data: result.body
+		};
+	} else {
+		let releases = node.body.releases;
+		let that = releases.filter(item => item.id == metadata.Id)
+		if (that.length == 0) {
+			releases.push({
+				id: metadata.Id,
+				image: metadata.Image,
+				mark: metadata.Mark,
+				createTime: new Date()
+			})
+		} else {
+			releases.forEach(item => {
+				if (item.id == metadata.Id) {
+					item.image = metadata.Image;
+					item.mark = metadata.Mark;
+				}
+			})
+		}
+		node.body.releases = releases;
+		let result = await CommonService.replaceObject("timages", CommonService.TARSNODE, node.body)
+		return {
+			ret: 200,
+			msg: 'succ',
+			data: result.body
+		};
+	}
 }
 
 
 ImageService.ImageNodeDelete = async (metadata) => {
-    let TFC = await CommonService.getFrameworkConfig();
-    if (TFC.nodeImage.image == metadata.Image){
-        throw  new Error("#imageService.node.deleteTip#")
-    }
-    let node = await CommonService.getObject("timages", CommonService.TARSNODE);
-    let releases = node.body.releases;
-    for(let i = 0; i < releases.length; i++){
-        if (releases[i].id == metadata.Id &&releases[i].image == metadata.Image){
-            releases.splice(i,1);
-            break
-        }
-    }
-    node.body.releases = releases;
-    let result = await CommonService.replaceObject("timages", CommonService.TARSNODE, node.body);
-    return {ret: 200, msg: 'succ', data: result.body};
+	let TFC = await CommonService.getFrameworkConfig();
+	if (TFC.nodeImage.image == metadata.Image) {
+		throw new Error("#imageService.node.deleteTip#")
+	}
+	let node = await CommonService.getObject("timages", CommonService.TARSNODE);
+	let releases = node.body.releases;
+	for (let i = 0; i < releases.length; i++) {
+		if (releases[i].id == metadata.Id && releases[i].image == metadata.Image) {
+			releases.splice(i, 1);
+			break
+		}
+	}
+	node.body.releases = releases;
+	let result = await CommonService.replaceObject("timages", CommonService.TARSNODE, node.body);
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: result.body
+	};
 }
 module.exports = ImageService;

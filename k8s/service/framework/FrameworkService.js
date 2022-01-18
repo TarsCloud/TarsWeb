@@ -43,6 +43,13 @@ FrameworkService.getFrameworkConfig = async () => {
         value: data.recordLimit.timageRelease
     })
     res.push({
+        column: "frameworkConfig",
+        remark: "#framework.remark.frameworkConfig#",
+        value: data.expand.frameworkConfig || JSON.stringify({
+
+        })
+    })
+    res.push({
         column: "nativeDBConfig",
         remark: "#framework.remark.nativeDBConfig#",
         value: data.expand.nativeDBConfig
@@ -58,12 +65,17 @@ FrameworkService.getFrameworkConfig = async () => {
 FrameworkService.saveFrameworkConfig = async (params) => {
     const CommonService = require('../common/CommonService');
 
-
     let data = await CommonService.getObject("tframeworkconfigs", CommonService.TFC);
     let tfc = data.body;
     switch (params.column) {
+        case "frameworkConfig":
+            tfc.expand.frameworkConfig = params.value;
+            break;
         case "nativeFrameworkConfig":
             tfc.expand.nativeFrameworkConfig = params.value;
+            break;
+        case "nativeDBConfig":
+            tfc.expand.nativeDBConfig = params.value;
             break;
         case "nativeDBConfig":
             tfc.expand.nativeDBConfig = params.value;
@@ -97,25 +109,33 @@ FrameworkService.createFrameworkConfig = async () => {
 
     let config = await CommonService.getFrameworkConfig();
 
-    console.log(config.expand);
+    // console.log(config.expand);
 
     let nativeFrameworkConfig = config.expand.nativeFrameworkConfig;
     let nativeDBConfig = config.expand.nativeDBConfig;
+
+    try {
+        let framework = JSON.parse(config.expand.frameworkConfig);
+        WebConf.market = framework.market || false;
+    } catch (e) {
+        console.log(e);
+    }
 
     mkdirSync(FrameworkService.MNTFILEPATH);
 
     if (fs.existsSync(FrameworkService.MNTFILEPATH)) {
         fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/nativeFrameworkConfig.conf`, nativeFrameworkConfig);
-        // fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/nativeDBConfig.json`, nativeDBConfig);
 
         try {
             WebConf.enable = false;
 
-            let content = JSON.parse(nativeDBConfig); //require(`${FrameworkService.MNTFILEPATH}/nativeDBConfig.json`);
-            if (content.open) {
+            let content = JSON.parse(nativeDBConfig);
+
+            WebConf.enable = content.enable || false;
+
+            if (content.enable) {
                 WebConf.dbConf = content.dbConf;
                 WebConf.client = `${FrameworkService.MNTFILEPATH}/nativeFrameworkConfig.conf`;
-                WebConf.enable = content.enable || false;
                 WebConf.show = content.show || false;
             }
 

@@ -70,6 +70,7 @@ export default {
       this.fetchRepoList();
     },
     fetchRepoList() {
+      this.$loading.show();
       this.$market
         .call("cloud-harbor", "getRepositoryList", {
           project: this.project,
@@ -83,8 +84,10 @@ export default {
           });
           this.total = data.info.total;
           this.repos = data.info.gList;
+          this.$loading.hide();
         })
         .catch((err) => {
+          this.$loading.hide();
           this.$message({
             message: this.$t("market.marketRet." + err.tars_ret || "-1"),
             type: "error",

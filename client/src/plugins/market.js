@@ -34,19 +34,6 @@ Ajax.ResultHandler.set((result) => {
   return false;
 });
 
-Ajax.StatusHandler.set((result) => {
-
-  console.log('StatusHandler:', result);
-
-  // if(result )
-  return false;
-  // if (result && result.tars_ret === 0) {
-  //   return true;
-  // }
-  // return false;
-});
-
-
 Ajax.call = function (obj, func, params) {
   Ajax.Headers.set("X-Token", window.localStorage.ticket || '');
 
