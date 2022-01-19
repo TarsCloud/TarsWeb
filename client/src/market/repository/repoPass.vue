@@ -150,7 +150,7 @@ export default {
             })
             .catch((err) => {
               this.$message({
-                message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });

@@ -89,22 +89,24 @@ export default {
         .catch((err) => {
           this.$loading.hide();
           this.$message({
-            message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+            message: this.$t("market.repoRet." + err.tars_ret || "-1"),
             type: "error",
           });
         });
     },
     deleteRepo(row) {
-      this.$confirm("确定取消该镜像仓库么?", "提示", {
+      this.$confirm("确定删除该镜像仓库么?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
+          console.log(row);
+
           this.$market
             .call("cloud-harbor", "delRepository", {
               project: this.project,
-              repo: row.repo.substr(this.repo.length + 1),
+              repo: row.name.substr(this.project.length + 1),
             })
             .then((data) => {
               this.$message({
@@ -115,7 +117,7 @@ export default {
             })
             .catch((err) => {
               this.$message({
-                message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });

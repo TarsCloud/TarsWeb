@@ -28,14 +28,14 @@ export default {
   name: "addProject",
   data() {
     var nameIsValid = (str) => {
-      var result = str.match(/^.*[A-Z]|[a-z]+.*$/);
+      var result = str.match(/^[a-z]+$/);
       if (result == null) return false;
 
       return true;
     };
     var validateProjectName = (rule, value, callback) => {
       if (!nameIsValid(value)) {
-        callback(new Error(this.$t("market.repo.projectNameInfo")));
+        callback(new Error(this.$t("market.repo.projectNameRegTips")));
       } else {
         callback();
       }

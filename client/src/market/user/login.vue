@@ -223,6 +223,11 @@ export default {
                 window.localStorage.ticket = data.ticket;
                 window.localStorage.uid = this.login.uid;
 
+                this.$store.commit({
+                  type: "marketUid",
+                  uid: window.localStorage.uid,
+                });
+
                 this.$router.push("/market/list");
               } else {
                 this.login.ticket = "";

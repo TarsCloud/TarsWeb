@@ -12,8 +12,12 @@ const store = new Vuex.Store({
         increment(state, name) {
             state.name = name
         },
+        quit(state) {
+            state.marketUid = '';
+            window.localStorage.uid = "";
+            window.localStorage.ticket = "";
+        },
         marketUid(state, uid) {
-            console.log('marketUid');
             state.marketUid = uid
         }
     }
