@@ -21,7 +21,8 @@
               <el-select
                 v-if="serviceVersion"
                 v-model="version"
-                style="width:100px"
+                style="width:100px; "
+                class="pop"
               >
                 <el-option
                   v-for="item in versions"
@@ -126,9 +127,6 @@ export default {
 
       return this.upgrade[e.group + "-" + e.name + "-" + e.version];
     },
-    // isVisible(i, j) {
-    //   return this.visible[i + "_" + j] || false;
-    // },
     getServerLogo(i, j) {
       return this.get(i, j)["tars.io/CloudLogo"];
     },
@@ -337,6 +335,10 @@ export default {
 <style>
 .list .text {
   font-size: 14px;
+}
+
+.pop .el-input__inner {
+  border: 0px;
 }
 
 .list .item {

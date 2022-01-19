@@ -16,6 +16,12 @@ export default {
   },
   methods: {
     onLogin(isLogin) {
+      if (isLogin) {
+        this.$store.commit({
+          type: "marketUid",
+          uid: window.localStorage.uid,
+        });
+      }
       if (!isLogin && !location.hash.startsWith("#/market/user")) {
         this.$router.push("/market/user/login");
       } else if (isLogin && location.hash == "#/market") {

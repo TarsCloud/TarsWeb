@@ -91,7 +91,7 @@ export default {
     return {
       data: [],
       total: 0,
-      page_size: 2,
+      page_size: 15,
       page: 1,
       closable: {},
     };
@@ -136,7 +136,7 @@ export default {
             })
             .catch((err) => {
               this.$message({
-                message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });
@@ -163,7 +163,7 @@ export default {
             })
             .catch((err) => {
               this.$message({
-                message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });
@@ -196,7 +196,7 @@ export default {
         .catch((err) => {
           this.$loading.hide();
           this.$message({
-            message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+            message: this.$t("market.repoRet." + err.tars_ret || "-1"),
             type: "error",
           });
         });

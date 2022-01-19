@@ -147,6 +147,7 @@ export default {
   },
   computed: {
     marketUid() {
+      console.log("marketUid", this.$store.state.marketUid);
       return this.$store.state.marketUid;
     },
   },
@@ -163,8 +164,10 @@ export default {
     },
     handleMarketCommand(command) {
       if (command == "quit") {
-        window.localStorage.uid = "";
-        window.localStorage.ticket = "";
+        this.$store.commit({
+          type: "quit",
+        });
+
         this.$router.push("/market/user/login");
       } else if (command == "pass") {
         this.$router.push("/market/repo/pass");
