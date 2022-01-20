@@ -67,7 +67,7 @@ UNLOCK TABLES;
 CREATE TABLE `t_token` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(128) DEFAULT NULL,
-  `token` varchar(128) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
   `valid` int(11) DEFAULT NULL,
   `expire_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
