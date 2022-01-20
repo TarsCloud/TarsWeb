@@ -64,6 +64,8 @@ VALUES (1,'admin','',now());
 /*!40000 ALTER TABLE `t_user_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
+/*!40101 set global innodb_large_prefix=1 */;
+/*!40101 set global innodb_file_format=BARRACUDA */;
 CREATE TABLE `t_token` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(128) DEFAULT NULL,
@@ -74,7 +76,7 @@ CREATE TABLE `t_token` (
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   KEY `token` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 row_format=dynamic;
 
 
 CREATE TABLE `t_setting` (
