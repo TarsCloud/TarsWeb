@@ -71,26 +71,26 @@ ServerService.serverConfFields = () => {
 };
 
 //通过ID获取服务信息
-ServerService.getServerConfById = async(id) => {
+ServerService.getServerConfById = async (id) => {
     return await ServerDao.getServerConfById(id);
 };
 
 //通过ID获取服务信息
-ServerService.getServerConfByIds = async(ids) => {
+ServerService.getServerConfByIds = async (ids) => {
     return await ServerDao.getServerConfByIds(ids);
 };
 
-ServerService.getApplicationList = async() => {
+ServerService.getApplicationList = async () => {
     return await ApplicationDao.getAll();
     // return await ServerDao.getApplication();
 };
 
-ServerService.getNodeList = async() => {
+ServerService.getNodeList = async () => {
     return await NodeInfoDao.getNodeList();
 };
 
 //通过应用，服务，节点获取获取服务信息
-ServerService.getServerConf = async(application, serverName, nodeName) => {
+ServerService.getServerConf = async (application, serverName, nodeName) => {
     if (nodeName && nodeName != "") {
         return await ServerDao.getServerConf({
             application: application,
@@ -106,31 +106,31 @@ ServerService.getServerConf = async(application, serverName, nodeName) => {
 };
 
 //通过ID获取服务信息
-ServerService.getServerConfList = async(application, serverName) => {
+ServerService.getServerConfList = async (application, serverName) => {
     return await ServerDao.getServerConfList(application, serverName);
 };
 
 
 //通过模板名获取获取服务信息
-ServerService.getServerConfByTemplate = async(templateName) => {
+ServerService.getServerConfByTemplate = async (templateName) => {
     return await ServerDao.getServerConfByTemplate(templateName);
 };
 
 
 //通过treeNodeId查询服务列表
-ServerService.getServerConfList4Tree = async(params) => {
-    if(params.isPage=="true"){
+ServerService.getServerConfList4Tree = async (params) => {
+    if (params.isPage == "true") {
         return await ServerDao.getServerConfAndCount(params);
-    }else {
+    } else {
         return await ServerDao.getServerConf(params);
     }
 };
 
-ServerService.getServerConfList4TreeAndCount = async(params) => {
+ServerService.getServerConfList4TreeAndCount = async (params) => {
     return await ServerDao.getServerConfAndCount(params);
 };
 
-ServerService.getInactiveServerConfList = async(application, serverName, nodeName, curPage, pageSize) => {
+ServerService.getInactiveServerConfList = async (application, serverName, nodeName, curPage, pageSize) => {
     return await ServerDao.getInactiveServerConfList(
         application || '',
         serverName || '',
@@ -141,7 +141,7 @@ ServerService.getInactiveServerConfList = async(application, serverName, nodeNam
 };
 
 //是否和tarsregistry同一个节点
-ServerService.isDeployWithRegistry = async(nodeNames) => {
+ServerService.isDeployWithRegistry = async (nodeNames) => {
 
     let registry = await ResourceDao.getRegistryAddress();
 
@@ -154,10 +154,12 @@ ServerService.isDeployWithRegistry = async(nodeNames) => {
     return false;
 };
 
-ServerService.getLogNodeNameWithRegistry = async() => {
+ServerService.getLogNodeNameWithRegistry = async () => {
     let registry = await ResourceDao.getRegistryAddress();
     let log = await ServerDao.getServerConfList('tars', 'tarslog');
-    let nodeNames = log.map(x => { return x.node_name });
+    let nodeNames = log.map(x => {
+        return x.node_name
+    });
     for (var index in nodeNames) {
         for (var i in registry) {
             if (registry[i].locator_id.indexOf(nodeNames[index] + ':') == 0)
@@ -167,15 +169,19 @@ ServerService.getLogNodeNameWithRegistry = async() => {
     return '';
 };
 //卸载框架上部署的log
-ServerService.undeployTarsLog = async(uid) => {
+ServerService.undeployTarsLog = async (uid) => {
 
     let log = await ServerDao.getServerConfList('tars', 'tarslog');
 
-    let tarslogIp = log.map(x => { return x.node_name });
+    let tarslogIp = log.map(x => {
+        return x.node_name
+    });
 
     let registry = await ResourceDao.getRegistryAddress();
 
-    let registryIp = registry.map(x => { return x.locator_id.split(':')[0] });
+    let registryIp = registry.map(x => {
+        return x.locator_id.split(':')[0]
+    });
 
     // 差集
     let difference = tarslogIp.concat(registryIp).filter(v => tarslogIp.includes(v) && !registryIp.includes(v))
@@ -195,24 +201,28 @@ ServerService.undeployTarsLog = async(uid) => {
     }
 };
 
-ServerService.updateServerConf = async(params) => {
+ServerService.updateServerConf = async (params) => {
     return await ServerDao.updateServerConf(params);
 };
-ServerService.batchUpdateServerConf = async(params) => {
+ServerService.batchUpdateServerConf = async (params) => {
     return await ServerDao.batchUpdateServerConf(params);
 };
 
 
-ServerService.getNodeNameList = async(params) => {
+ServerService.getNodeNameList = async (params) => {
     return await ServerDao.getNodeNameList(params);
 };
 
 // 用服务名数组去获取服务列表
-ServerService.getServerNameList = async({ applicationList, serverNameList, allAttr = false }) => {
+ServerService.getServerNameList = async ({
+    applicationList,
+    serverNameList,
+    allAttr = false
+}) => {
     return await ServerDao.getServerConf4Tree(applicationList, serverNameList, allAttr);
 };
 
-ServerService.addServerConf = async(params) => {
+ServerService.addServerConf = async (params) => {
 
     let transaction = await ServerDao.sequelize.transaction();
     try {
@@ -237,7 +247,6 @@ ServerService.addServerConf = async(params) => {
             var nn = adapters[i].node_name;
 
             if (node_name_list.indexOf(nn) != -1) {
-      //          console.log("===find node name:", nn);
                 continue;
             }
             node_name_list.push(nn);
@@ -268,7 +277,8 @@ ServerService.addServerConf = async(params) => {
         }
         await transaction.commit();
         let rst = {
-            server_conf: await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name),
+            // server_conf: await ServerDao.getServerConfByName(serverConf.application, serverConf.server_name, serverConf.node_name),
+            server_conf: await ServerDao.getServerConfByNameList(serverConf.application, serverConf.server_name, node_name_list),
             tars_node_rst: []
         };
         // if (resourceConf.enableAutoInstall) {
@@ -281,6 +291,7 @@ ServerService.addServerConf = async(params) => {
     }
 };
 
+
 ServerService.getServerConfListByBatch = async (params) => {
     return await ServerDao.getServerConfListByBatch(params);
 };
@@ -290,7 +301,7 @@ ServerService.getServerConfListByBatch = async (params) => {
  * @param params
  * @returns {Promise<*>}
  */
-ServerService.getServerConfByServant = async (params) =>{
+ServerService.getServerConfByServant = async (params) => {
     return await ServerDao.getServerConfByServant(params);
 }
 
@@ -299,7 +310,7 @@ ServerService.getServerConfByServant = async (params) =>{
  * @param params
  * @returns {Promise<*>}
  */
-ServerService.getAbnornalConf = async (params) =>{
+ServerService.getAbnornalConf = async (params) => {
     return await ServerDao.getAbnornalConf(params);
 }
 

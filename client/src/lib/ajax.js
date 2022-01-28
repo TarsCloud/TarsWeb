@@ -452,6 +452,25 @@ class AjaxUtil {
     }
 
     /**
+     * post二进制数据
+     * @param {String} url 路径
+     * @param { ReadableStream } params 二进制数据
+     * @return {Promise} 请求Promise
+     */
+    this.postBinary = (url, params) => {
+      const options = this.Options.get({
+        method: 'POST',
+        headers: this.Headers.get(),
+        body: params
+      });
+
+      return fetch(this.ServerUrl.get(this.parseUrl(url)), options)
+        .then(this.checkStatus)
+        .then(this.successCallback)
+        .catch(this.errorCallback);
+    }
+
+    /**
      * 导出文件
      * @param {String} url 路径
      * @param {Object} params 参数

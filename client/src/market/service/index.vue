@@ -94,7 +94,7 @@
             </div>
             <span class="description"
               ><el-alert
-                :title="serviceVersion.description"
+                :title="getDescription(serviceVersion)"
                 type="info"
                 :closable="false"
               ></el-alert
@@ -115,32 +115,43 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="服务说明" name="readme">
           <markdown
+            v-if="activeName == 'readme'"
             :serviceVersion="serviceVersion"
-            :file="serviceVersion.readme"
+            :file="getReadme(serviceVersion)"
           ></markdown>
         </el-tab-pane>
         <el-tab-pane label="部署文件" name="deploy">
-          <deploy :serviceVersion="serviceVersion"></deploy>
+          <deploy
+            v-if="activeName == 'deploy'"
+            :serviceVersion="serviceVersion"
+          ></deploy>
         </el-tab-pane>
         <el-tab-pane label="协议文件" name="protocols">
-          <protocols :serviceVersion="serviceVersion"></protocols>
+          <protocols
+            v-if="activeName == 'protocols'"
+            :serviceVersion="serviceVersion"
+          ></protocols>
         </el-tab-pane>
         <el-tab-pane label="变更历史" name="changelist">
           <markdown
+            v-if="activeName == 'changelist'"
             :serviceVersion="serviceVersion"
             :file="serviceVersion.changelist"
           ></markdown>
         </el-tab-pane>
         <el-tab-pane label="日志" name="logs">
-          <logs :serviceVersion="serviceVersion"></logs>
+          <logs
+            v-if="activeName == 'logs'"
+            :serviceVersion="serviceVersion"
+          ></logs>
         </el-tab-pane>
       </el-tabs>
     </el-main>
 
     <install
-      v-if="serviceVersion"
+      v-if="installServiceVersion"
       ref="install"
-      :serviceVersion="serviceVersion"
+      :serviceVersion="installServiceVersion"
     ></install>
   </div>
 </template>
@@ -169,8 +180,10 @@ export default {
       name: "",
       version: "",
       versions: [],
+      installServiceVersion: null,
       serviceVersion: null,
       activeName: "readme",
+      k8s: true,
     };
   },
   watch: {
@@ -181,7 +194,9 @@ export default {
     },
   },
   methods: {
-    handleClick() {},
+    handleClick() {
+      console.log(this.activeName);
+    },
     goRepository(repository) {
       window.open(repository);
     },
@@ -199,6 +214,18 @@ export default {
       if (open) {
         this.fetchVersionListData();
       }
+    },
+    getDescription(row) {
+      if (this.$cookie.get("locale") == "cn") {
+        return row.description_cn || row.description;
+      }
+      return row.description;
+    },
+    getReadme(row) {
+      if (this.$cookie.get("locale") == "cn") {
+        return row.readme_cn || row.readme;
+      }
+      return row.readme;
     },
     fetchServiceVersionData(version) {
       this.$market
@@ -221,6 +248,11 @@ export default {
             this.serviceVersion.readme =
               this.serviceVersion.prefix +
               this.serviceVersion.readme +
+              "?t=" +
+              this.serviceVersion.update_time;
+            this.serviceVersion.readme_cn =
+              this.serviceVersion.prefix +
+              this.serviceVersion.readme_cn +
               "?t=" +
               this.serviceVersion.update_time;
             this.serviceVersion.deploy =
@@ -269,11 +301,15 @@ export default {
         });
     },
     showInstall() {
-      this.$refs.install.showInstall();
+      this.installServiceVersion = this.serviceVersion;
+      this.$nextTick(() => {
+        this.$refs.install.showInstall();
+      });
     },
   },
   created() {},
   mounted() {
+    this.k8s = location.pathname == "/k8s.html";
     this.loadData(
       this.$route.params.group,
       this.$route.params.name,

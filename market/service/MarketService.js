@@ -63,15 +63,11 @@ MarketService.install = async (deploy, paramsObj) => {
 	return await DeployService.install(deploy, ServerServant, serverK8S, serverOption, paramsObj);
 };
 
-MarketService.listFromCloud = async () => {
+MarketService.listInstall = async () => {
 
 	let labelSelector = `${CommonService.TServerCloudInstall}`;
 
-	// console.log("listFromCloud, ", labelSelector);
-
 	let data = await CommonService.listObject("tservers", labelSelector);
-
-	// console.log(data);
 
 	let items = [];
 

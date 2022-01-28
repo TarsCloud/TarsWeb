@@ -35,7 +35,9 @@
                 <el-col :span="20">
                   <span>
                     <span>{{ props.row.group + "/" + props.row.name }}</span>
-                    <span class="overflow">{{ props.row.description }}</span>
+                    <span class="overflow">{{
+                      getDescription(props.row)
+                    }}</span>
                   </span>
                 </el-col>
               </el-row>
@@ -69,6 +71,7 @@ export default {
       total: 0,
       offset: 0,
       limit: 20,
+      k8s: true,
     };
   },
   methods: {
@@ -93,6 +96,12 @@ export default {
       this.$router.push(
         "/market/service/" + this.group + "/" + this.name + "/" + this.version
       );
+    },
+    getDescription(row) {
+      if (this.$cookie.get("locale") == "cn") {
+        return row.description_cn || row.description;
+      }
+      return row.description;
     },
     fetchServiceData() {
       this.$market
@@ -160,6 +169,7 @@ export default {
   },
   created() {},
   mounted() {
+    this.k8s = location.pathname == "/k8s.html";
     this.checkLogin();
   },
 };

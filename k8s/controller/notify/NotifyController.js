@@ -51,7 +51,10 @@ const queryNotify = async (app, server, page, size) => {
         let esConfig = await TemplateService.getEsConfig();
 
         let esNodes = Object.keys(esConfig.tars.elk.nodes)[0].split(",");
-        let url = `http://${esNodes[0]}/${esConfig.tars.elk.index.notify}/_search`
+
+        let url = `${esConfig.tars.protocol}://${esNodes[0]}/${esConfig.tars.elk.index.notify}/_search`
+        // console.log(url);
+
         let res = await axios({
             url: url,
             method: 'GET',

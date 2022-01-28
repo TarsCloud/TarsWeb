@@ -31,6 +31,8 @@ export default {
     this.history = this.getQueryVariable("History");
     this.nodeip = this.getQueryVariable("NodeIP");
 
+    document.title = this.app + "-" + this.server + "-" + this.nodeip;
+
     let query = window.location.search.substring(1);
 
     if (window.location.protocol == "http:") {

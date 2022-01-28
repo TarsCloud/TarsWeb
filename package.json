@@ -9,6 +9,7 @@
         "remote": "cross-env NODE_ENV=remote ./node_modules/.bin/nodemon bin/www",
         "dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon bin/www",
         "k8s": "cross-env NODE_ENV=k8s ./node_modules/.bin/nodemon bin/www",
+        "all": "cross-env NODE_ENV=all ./node_modules/.bin/nodemon bin/www",
         "kdev": "cross-env NODE_ENV=kdev ./node_modules/.bin/nodemon bin/www",
         "prd": "pm2 start bin/www --name=tars-node-web"
     },

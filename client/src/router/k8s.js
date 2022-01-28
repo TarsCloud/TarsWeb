@@ -54,21 +54,29 @@ import OperationTfc from '@/k8s/operation/frameworkConfig';
 // 网关
 import OperationGateway from '@/gateway/index';
 
+// // 市场
+// import MarketIndex from '@/market/index';
+// import Market from '@/market/market';
+// import List from '@/market/service/list';
+// import ServiceInfo from '@/market/service/index';
+
+// import Login from '@/market/user/login';
+// import Register from '@/market/user/register';
+// import Activate from '@/market/user/activate';
+// import Forget from '@/market/user/forget';
+// import ModifyPass from '@/market/user/modifyPass';
+// import ResetPass from '@/market/user/resetPass';
+
+// import RepoPass from '@/market/repository/repoPass';
+// import ListProject from '@/market/repository/index';
+
 // 市场
-import MarketIndex from '@/market/index';
-import Market from '@/market/market';
-import List from '@/market/service/list';
-import ServiceInfo from '@/market/service/index';
-
-import Login from '@/market/user/login';
-import Register from '@/market/user/register';
-import Activate from '@/market/user/activate';
-import Forget from '@/market/user/forget';
-import ModifyPass from '@/market/user/modifyPass';
-import ResetPass from '@/market/user/resetPass';
-
-import RepoPass from '@/market/repository/repoPass';
-import ListProject from '@/market/repository/index';
+import {
+  marketSso,
+  marketRepo,
+  marketService,
+  marketList
+} from './inc/market';
 
 import VueRouter from 'vue-router';
 
@@ -173,58 +181,10 @@ export default new Router({
       name: 'Gateway',
       component: OperationGateway,
     },
-    {
-      path: '/market/user',
-      name: 'MarketIndex',
-      component: MarketIndex,
-      children: [{
-        path: 'login',
-        component: Login,
-      }, {
-        path: 'register',
-        component: Register,
-      }, {
-        path: 'activate',
-        component: Activate,
-      }, {
-        path: 'forget',
-        component: Forget,
-      }, {
-        path: 'modifyPass',
-        component: ModifyPass,
-      }, {
-        path: 'resetPass',
-        component: ResetPass,
-      }]
-    },
-    {
-      path: '/market/repo',
-      name: 'MarketRepo',
-      component: MarketIndex,
-      children: [{
-        path: 'pass',
-        component: RepoPass,
-      }, {
-        path: 'project',
-        component: ListProject,
-      }]
-    },
-    {
-      path: '/market/service',
-      component: Market,
-      children: [{
-        path: ':group/:name/:version',
-        component: ServiceInfo,
-      }]
-    },
-    {
-      path: '/market/list',
-      component: Market,
-      children: [{
-        path: '/',
-        component: List
-      }]
-    },
+    marketSso,
+    marketRepo,
+    marketService,
+    marketList,
     {
       path: '*',
       redirect: '/server',

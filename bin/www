@@ -23,6 +23,7 @@ const cluster = require('cluster');
 const os = require('os');
 const WebSocketServer = require('websocket').server;
 const FrameworkService = require("../k8s/service/framework/FrameworkService")
+const ExecOperator = require('../execWebSocket');
 
 //获取端口
 const port = normalizePort(process.env.PORT || webConf.webConf.port || '3000');
@@ -31,16 +32,17 @@ const enableMultiProcess = false;
 let startServer = async () => {
 	//创建服务
 	try {
-		console.log("startServer enable K8S:", webConf.isEnableK8s());
 
-		//以k8s方式启动的话,生成挂载文件
-		if (webConf.isEnableK8s()) {
-			await FrameworkService.createFrameworkConfig();
-			console.log("init k8s env ,general tars config  success")
+		if (!webConf.ENABLE_LOCAL_CONFIG) {
+			//以k8s方式启动的话,生成挂载文件
+			if (webConf.isEnableK8s()) {
+				await FrameworkService.createFrameworkConfig();
+				console.log("init k8s env ,general tars config  success")
+			}
 		}
-		const app = require('../app');
+		console.log(`startServer enable K8S: ${webConf.isEnableK8s()}, enable native: ${webConf.enable}, port: ${port}`);
 
-		console.log("startServer:", webConf.enable);
+		const app = require('../app');
 
 		if (webConf.enable) {
 			const tarsInit = require('../app/init/tars');
@@ -70,30 +72,37 @@ let startServer = async () => {
 			});
 		} else if (cluster.isWorker || !enableMultiProcess) {
 
-
 			let server = http.createServer(app.callback());
 			server.listen(port, '0.0.0.0', function () {
-				logger.info('Server has been started successfully');
+				logger.info('Server has been started successfully, port:', port);
 			});
 			server.on('error', onError);
 
+			let wsServer = new WebSocketServer({
+				httpServer: server,
+				// You should not use autoAcceptConnections for production
+				// applications, as it defeats all standard cross-origin protection
+				// facilities built into the protocol and the browser.  You should
+				// *always* verify the connection's origin and decide whether or not
+				// to accept it.
+				autoAcceptConnections: false
+			});
+
+			global.wsServer = wsServer;
+
+			wsServer.on('error', onError);
+			wsServer.on('listening', onListening);
+
+			ExecOperator.start();
+
 			if (webConf.isEnableK8s()) {
-				let wsServer = new WebSocketServer({
-					httpServer: server,
-					// You should not use autoAcceptConnections for production
-					// applications, as it defeats all standard cross-origin protection
-					// facilities built into the protocol and the browser.  You should
-					// *always* verify the connection's origin and decide whether or not
-					// to accept it.
-					autoAcceptConnections: false
-				});
 
-				global.wsServer = wsServer;
+				ExecOperator.register("echo-protocol", require('../execPod'));
+			}
 
-				wsServer.on('error', onError);
-				wsServer.on('listening', onListening);
-
-				require('../execPod').start();
+			console.log(`webConf.enable: ${webConf.enable}`);
+			if (webConf.enable) {
+				ExecOperator.register("upload-protocol", require('../execUpload'));
 			}
 
 			const LdapService = require('../ldap/LdapService')

@@ -18,7 +18,7 @@ const path = require('path');
 const fs = require('fs-extra');
 
 let conf = {
-
+    ENABLE_LOCAL_CONFIG: false,
     webConf: {
         host: 'localip.tars.com',
         port: 3000, //服务启动端口
@@ -105,13 +105,13 @@ if (process.env.NODE_ENV == "local") {
 
     conf.webConf.host = '0.0.0.0';
     conf.webConf.port = 4001;
-    conf.webConf.alter = true;
+    conf.webConf.alter = false;
+    conf.market = true;
 
     conf.client = path.join(cwd, 'config/tars-dev.conf');
     process.env.ENABLE_K8S = "false";
 
-}
-else if (process.env.NODE_ENV == "remote") {
+} else if (process.env.NODE_ENV == "remote") {
 
     conf.dbConf = {
         host: '172.30.0.4', // 数据库地址
@@ -133,7 +133,7 @@ else if (process.env.NODE_ENV == "remote") {
     conf.client = path.join(cwd, 'config/tars-remote.conf');
     process.env.ENABLE_K8S = "false";
 
-}else if (process.env.NODE_ENV == "dev") {
+} else if (process.env.NODE_ENV == "dev") {
 
     conf.dbConf = {
         host: '172.16.8.227', // 数据库地址
@@ -170,19 +170,32 @@ else if (process.env.NODE_ENV == "remote") {
     // conf.market = true;
     conf.k8s.namespace = 'tars-dev';
     conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
+} else if (process.env.NODE_ENV == "all") {
+
+    conf.ENABLE_LOCAL_CONFIG = true;
+    conf.dbConf = {
+        host: '127.0.0.1', // 数据库地址
+        port: '3306', // 数据库端口
+        user: 'tarsAdmin', // 用户名
+        password: 'Tars@2019', // 密码
+        charset: 'utf8', // 数据库编码
+        pool: {
+            max: 10, // 连接池中最大连接数量
+            min: 0, // 连接池中最小连接数量
+            idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
+        }
+    };
+    conf.webConf.host = '0.0.0.0';
+    conf.webConf.port = 4001;
+
+    conf.client = path.join(cwd, 'config/tars-dev.conf');
+
+    process.env.ENABLE_K8S = "true";
+    conf.enable = true;
+    conf.market = true;
+    conf.webConf.alter = false;
+    conf.k8s.namespace = 'tars-dev';
+    conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 }
-
-// if (conf.isEnableK8s() && fs.existsSync('/mnt/config/nativeDBConfig.json')) {
-//     try {
-//         let content = require('/mnt/config/nativeDBConfig.json');
-//         conf.dbConf = content.dbConf;
-//         conf.client = '/mnt/config/nativeFramework.conf';
-//         conf.enable = content.enable;
-//         conf.show = content.show;
-
-//     } catch (e) {
-//         console.log(e);
-//     }
-// }
 
 module.exports = conf;

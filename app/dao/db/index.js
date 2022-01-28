@@ -44,7 +44,7 @@ databases.forEach((database) => {
 
 	const logging = process.env.NODE_ENV == "dev" ? (sqlText) => {
 		// console.log(sqlText);
-		logger.sql(sqlText)
+		// logger.sql(sqlText)
 	} : true
 
 	//初始化sequelize
