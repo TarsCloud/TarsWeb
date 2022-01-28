@@ -22,6 +22,7 @@ export default {
     return {
       data: {
         deploy: "",
+        k8s: true,
       },
     };
   },
@@ -48,6 +49,7 @@ export default {
   },
   created() {},
   mounted() {
+    this.k8s = location.pathname == "/k8s.html";
     this.$refs.yamlEdit.readonly();
     this.fetchDeploy();
   },

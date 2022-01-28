@@ -48,10 +48,10 @@ MarketController.install = async (ctx) => {
 	}
 }
 
-MarketController.listFromCloud = async (ctx) => {
+MarketController.listInstall = async (ctx) => {
 
 	try {
-		let result = await MarketService.listFromCloud();
+		let result = await MarketService.listInstall();
 
 		console.log(result);
 
@@ -76,8 +76,6 @@ MarketController.get = async (ctx) => {
 	}
 }
 
-
-
 MarketController.upgrade = async (ctx) => {
 
 	try {
@@ -95,5 +93,9 @@ MarketController.upgrade = async (ctx) => {
 	}
 }
 
+MarketController.uploadFiles = async (ctx) => {
+
+	console.log(ctx);
+}
 
 module.exports = MarketController;

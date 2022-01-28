@@ -36,8 +36,8 @@ export default {
     markdownToHtml(markdown) {
       this.html = marked.parse(markdown);
     },
-    fetchReadme() {
-      Ajax.getPlain(this.file)
+    fetchReadme(file) {
+      Ajax.getPlain(file)
         .then((data) => {
           if (data.ok) {
             data.text().then((content) => {
@@ -53,7 +53,9 @@ export default {
         });
     },
   },
-  created() {},
+  created() {
+    window.fetchReadme = this;
+  },
   mounted() {
     let that = this;
 
@@ -62,21 +64,21 @@ export default {
       link(href, title, text) {
         let out = "";
 
-        if (href.indexOf("#") == 0) {
+        if (href.startsWith("#")) {
           //锚点
           out =
             "<a href=\"javascript:document.getElementById('" +
             href.substring(1) +
             "').scrollIntoView();\"";
-        } else if (
-          href.indexOf("http://") == 0 ||
-          href.indexOf("https://") == 0
-        ) {
+        } else if (href.startsWith("http://") || href.startsWith("https://")) {
           out = '<a target="_black" href="' + href + '"';
         } else {
-          href = "/#" + path.join(hrefPath, href);
+          href = that.file.substr(0, that.file.lastIndexOf("/")) + "/" + href;
 
-          out = '<a href="' + href + '"';
+          out =
+            "<a javascript=':;' href='#' onclick=\"doFetchReadme('" +
+            href +
+            "')\"";
         }
 
         if (title) {
@@ -106,8 +108,12 @@ export default {
 
     marked.use({ renderer });
 
-    that.fetchReadme();
+    that.fetchReadme(this.file);
   },
+};
+
+window.doFetchReadme = (file) => {
+  window.fetchReadme.fetchReadme(file);
 };
 </script>
 

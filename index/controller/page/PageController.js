@@ -23,7 +23,7 @@ PageController.index = async (ctx) => {
 
     if (WebConf.enable && WebConf.show) {
         await ctx.redirect('/index.html');
-    } else if(WebConf.isEnableK8s()) {
+    } else if (WebConf.isEnableK8s()) {
         await ctx.redirect('/k8s.html');
     } else {
         await ctx.redirect('/index.html');
@@ -33,7 +33,7 @@ PageController.index = async (ctx) => {
 PageController.version = async (ctx) => {
 
     let version = package.version;
-    if (!WebConf.isEnableK8s()) {
+    if (WebConf.enable) {
         const AdminService = require('../../../app/service/admin/AdminService');
 
         version = {
@@ -51,7 +51,7 @@ PageController.k8s_version = async (ctx) => {
 };
 
 PageController.captcha = async (ctx) => {
-	const cap = captcha.createMathExpr({
+    const cap = captcha.createMathExpr({
         size: 4, // 验证码长度
         ignoreChars: '0o1i', // 验证码字符中排除 0o1i
         noise: 2, // 干扰线条的数量
@@ -62,7 +62,7 @@ PageController.captcha = async (ctx) => {
     })
     ctx.session.captcha = cap.text.toLocaleLowerCase();
     console.log("ctx.session:" + JSON.stringify(ctx.session, null, 4));
-	ctx.set('Content-Type', 'image/svg+xml')
+    ctx.set('Content-Type', 'image/svg+xml')
     ctx.body = cap.data
 }
 

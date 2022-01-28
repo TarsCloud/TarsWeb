@@ -79,7 +79,13 @@ module.exports = {
     //ajax请求代理
     proxy: {
       "/shell": {
-        target:  `ws://127.0.0.1:${server_port}`,
+        target: `ws://127.0.0.1:${server_port}`,
+        ws: true,
+        secure: false,
+        logLevel: 'debug',
+      },
+      "/upload": {
+        target: `ws://127.0.0.1:${server_port}`,
         ws: true,
         secure: false,
         logLevel: 'debug',

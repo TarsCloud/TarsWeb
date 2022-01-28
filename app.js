@@ -85,16 +85,6 @@ let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/web_version', '/static', '/captcha', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
 loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login', '/pages/server/api/isEnableLdap']);
 
-// //上传文件不需要登录
-// if(WebConf.webConf.uploadLogin || process.env.TARS_WEB_UPLOAD == 'true') {
-// 	loginConf.ignore.push('/pages/server/api/upload_patch_package');
-// 	loginConf.ignore.push('/pages/k8s/api/upload_patch_package');
-// 	loginConf.ignore.push('/api/upload_patch_package');
-// 	loginConf.ignore.push('/pages/server/api/upload_and_publish');
-// 	loginConf.ignore.push('/pages/k8s/api/upload_patch_package');
-// 	loginConf.ignore.push('/api/upload_and_publish');
-// }
-
 //不需要登录, 环境变量优先
 if (process.env.TARS_ENABLE_LOGIN == "false") {
 	loginConf.enableLogin = false;

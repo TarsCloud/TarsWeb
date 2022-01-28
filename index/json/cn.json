@@ -1073,7 +1073,7 @@
             "templateTips": "模板不能为空",
             "serviceFormatTips": "服务名只能包含英文字母、数字，并以字母开头",
             "nodeTips": "节点不能为空",
-            "nodeFormatTips": "节点格式不正确，请输入正确的IP地址",
+            "nodeFormatTips": "节点格式不正确，请输入正确的地址",
             "setNameTips": "Set名不能为空",
             "setAreaTips": "Set区域不能为空",
             "setNameFormatTips": "Set名只能为英文字母，且必须小写",
@@ -1083,8 +1083,10 @@
             "inputTips": "所有*号项都必须填写",
             "objTips": "OBJ不能为空",
             "deployServiceTip": "确定要布署吗？",
+            "overwriteDeployServiceTip": "已经存在服务, 确定要覆盖布署吗？",
             "getPort": "获取端口",
             "applicationTip": "应用名不存在或不合法",
+            "nodeListTip": "节点不能为空",
             "ret": {
                 "success": "布署申请提交成功",
                 "failed": "布署申请提交失败！请联系管理员"
@@ -2088,6 +2090,12 @@
         }
     },
     "market": {
+        "header": {
+            "pass": "设置仓库密码",
+            "repo": "管理仓库项目",
+            "modify": "修改服务市场密码",
+            "quit": "退出服务市场"
+        },
         "table": {
             "version": "当前版本"
         },

@@ -25,6 +25,10 @@ import TarsFormItem from '@/components/tars-form-item';
 import cn from "let-ui/lib/locale/lang/zh-CN.min";
 import en from "let-ui/lib/locale/lang/en-US.min";
 
+import {
+  Loading
+} from 'element-ui';
+
 Vue.use(letUI, {
   locale: {
     en,
@@ -34,66 +38,90 @@ Vue.use(letUI, {
 Vue.component(Icon.name, Icon);
 Vue.component(TarsFormItem.name, TarsFormItem);
 
-/* eslint-disable no-underscore-dangle */
-const LetUILoading = Vue.prototype.$Loading;
 
-function Loading(el) {
-  this.el = el;
+// Object.defineProperty(Vue.prototype, '$Loading', {
+//   get() {
+//     return Loading.service({
+//       fullscreen: true
+//     });
+//   },
+//   set(val) {
+
+//   }
+// });
+
+/* eslint-disable no-underscore-dangle */
+// const LetUILoading = Vue.prototype.$Loading;
+
+function UILoading() {
+  // this.el = el;
   this.loading = null;
 }
 
-Loading.prototype.show = function show(selector, options) {
-  if (typeof selector === 'object') {
-    options = selector;
-    selector = null;
-  }
+UILoading.prototype.show = function (text) {
+  // if (typeof selector === 'object') {
+  //   options = selector;
+  //   selector = null;
+  // }
   if (this.loading) {
     this.hide();
   }
-  const el = this.el;
-  const loading = LetUILoading({
-    fullScreen: !el,
-    target: el && selector ? el.querySelector(selector) : el,
-    boxClass: 'loading-inner',
+  // const el = this.el;
+  // const loading = LetUILoading({
+  //   fullScreen: !el,
+  //   target: el && selector ? el.querySelector(selector) : el,
+  //   boxClass: 'loading-inner',
+  //   background: 'rgba(0,0,0,0)',
+  //   color: '#fff',
+  //   size: 24,
+  //   ...options,
+  // });
+
+  let loading = Loading.service({
+    fullscreen: true,
+    text: text || "Loading",
     background: 'rgba(0,0,0,0)',
-    color: '#fff',
-    size: 24,
-    ...options,
   });
-  loading.show();
+
+  console.log('show', loading);
+
+  // loading.show();
   this.loading = loading;
   return this;
 };
 
-Loading.prototype.hide = function hide() {
+UILoading.prototype.hide = function () {
+  console.log(this.loading);
   if (this.loading) {
-    this.loading.hide();
+    this.loading.close();
     this.loading = null;
   }
   return this;
 };
 
-Loading.show = function show(...args) {
-  if (!Loading._loading) {
-    Loading._loading = new Loading();
+UILoading.show = function (text) {
+  if (!UILoading._loading) {
+    UILoading._loading = new UILoading();
   }
-  return Loading._loading.show(...args);
+  return UILoading._loading.show(text);
 };
 
-Loading.hide = function hide() {
-  if (!Loading._loading) {
-    Loading._loading = new Loading();
+UILoading.hide = function () {
+  if (!UILoading._loading) {
+    UILoading._loading = new UILoading();
   }
-  return Loading._loading.hide();
+  return UILoading._loading.hide();
 };
 
-LetUILoading.show = Loading.show;
-LetUILoading.hide = Loading.hide;
+// LetUILoading.show = UILoading.show;
+// LetUILoading.hide = UILoading.hide;
 
-Object.defineProperty(Vue.prototype, '$loading', {
+// Vue.prototype.$Loading = UILoading;
+
+Object.defineProperty(Vue.prototype, '$Loading', {
   get() {
     if (!this._loading) {
-      this._loading = new Loading(this.$el);
+      this._loading = new UILoading();
     }
     return this._loading;
   },
@@ -102,9 +130,44 @@ Object.defineProperty(Vue.prototype, '$loading', {
   }
 });
 
+Object.defineProperty(Vue.prototype, '$loading', {
+  get() {
+    if (!this._loading) {
+      this._loading = new UILoading();
+    }
+    return this._loading;
+  },
+  set(val) {
+
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+let tip = {
+  error: (msg) => {
+    Vue.prototype.$message({
+      message: msg,
+      type: "error",
+    });
+  },
+  success: (msg) => {
+    Vue.prototype.$message({
+      message: msg,
+      type: "success",
+    });
+  },
+  warning: (msg) => {
+    Vue.prototype.$message({
+      message: msg,
+      type: "warning",
+    });
+  }
+}
 Object.defineProperty(Vue.prototype, '$tip', {
   get() {
-    return this.$Notice;
+    // return this.$Notice;
+    return tip;
   },
   set(val) {
 

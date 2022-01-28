@@ -22,38 +22,38 @@
         "userCenter": "User Center"
     },
     "callChain": {
-        "sub":"query",
-        "noResult":"No result",
-        "allTrackingNumbers":"All tracking numbers:",
-        "pleaseSelectTrackingNumber":"Please select tracking number",
-        "method":"method:",
-        "selectMethod":"Please select a method",
-        "methodTrackingNumbers":"Tracking number under this method:",
-        "selectMethodTrackingNumbers":"Please select the tracking number under the method",
-        "trackingNumbers":"Tracking number：",
-        "date":"date",
-        "btime":"start time",
-        "etime":"End time",
-        "timeStamp":"time stamp",
-        "operation":"operation",
-        "detail":"details",
-        "sbtime":"Please select start time",
-        "setime":"Please select the end time",
-        "sdata":"Please select a date",
-        "searchSuc":"query was successful",
-        "stringBtime":"Start time：",
-        "stringEtime":"End time：",
-        "clientTime":"Total client time：",
-        "serverTime":"Total server time：",
-        "timeFrame":"time frame",
+        "sub": "query",
+        "noResult": "No result",
+        "allTrackingNumbers": "All tracking numbers:",
+        "pleaseSelectTrackingNumber": "Please select tracking number",
+        "method": "method:",
+        "selectMethod": "Please select a method",
+        "methodTrackingNumbers": "Tracking number under this method:",
+        "selectMethodTrackingNumbers": "Please select the tracking number under the method",
+        "trackingNumbers": "Tracking number：",
+        "date": "date",
+        "btime": "start time",
+        "etime": "End time",
+        "timeStamp": "time stamp",
+        "operation": "operation",
+        "detail": "details",
+        "sbtime": "Please select start time",
+        "setime": "Please select the end time",
+        "sdata": "Please select a date",
+        "searchSuc": "query was successful",
+        "stringBtime": "Start time：",
+        "stringEtime": "End time：",
+        "clientTime": "Total client time：",
+        "serverTime": "Total server time：",
+        "timeFrame": "time frame",
         "serverRelationship": "Service invocation relationship",
         "nodeRelationship": "Node call relationship",
         "relation": {
             "need": "need",
             "flow": "total flow",
             "avgTime": "average time(ms)",
-            "abnormalRate":"abnormal rate",
-            "timeoutRate":"timeout rate"
+            "abnormalRate": "abnormal rate",
+            "timeoutRate": "timeout rate"
         }
     },
     "deployLog": {
@@ -568,8 +568,8 @@
                 "infDebuger": "Interface Debuger",
                 "cacheDebug": "Cache Debuger",
                 "treeConfig": "Call Chain",
-                "averageDuration":"Average duration",
-                "trackingNumber":"Tracking number"
+                "averageDuration": "Average duration",
+                "trackingNumber": "Tracking number"
             }
         }
     },
@@ -1062,8 +1062,10 @@
             "inputTips": "all * must be filled",
             "objTips": "OBJ name cannot be empty",
             "deployServiceTip": "Are you sure to deploy this service?",
+            "overwriteDeployServiceTip": "service exists, Are you sure to overwrite deploy this service?",
             "getPort": "get port",
             "applicationTip": "Application name does not exist or is illegal",
+            "nodeListTip": "Node list does not be empty",
             "ret": {
                 "success": "Deployed application submitted successfully",
                 "failed": "Deployed application submission failed!Please contact your administrator"
@@ -1088,8 +1090,8 @@
                 "labelValid": "The label name does not conform to the specification",
                 "labelMax": "The maximum number of label groups is 63",
                 "labelValueValid": "Label values do not conform to specifications",
-                "errorKey":"Label name is required",
-                "errorValue":"The tag value cannot be empty",
+                "errorKey": "Label name is required",
+                "errorValue": "The tag value cannot be empty",
                 "addLabel": "Add a set of tags"
             },
             "affinity": "Affinitive selection",
@@ -1498,7 +1500,7 @@
             "tarsFile": "tars file",
             "deleteMsg": "are you sure to delete this file?",
             "objName": "Servant Name",
-            "testCastName": "testcase name",         
+            "testCastName": "testcase name",
             "fileName": "file name"
         },
         "benchmark": {
@@ -1561,7 +1563,7 @@
         "publishInfo": "Publishing, please wait..."
     },
     "event": {
-        "eventLevel":"Event level",
+        "eventLevel": "Event level",
         "type": {
             "server": "service",
             "cluster": "Cluster",
@@ -1604,9 +1606,9 @@
             "stopPublic": "stop Public",
             "nodeLabels": "node Labels",
             "nodeAffinity": "please add tars.io/node.$Namespace label to node, so framework can manager the node",
-            "CommonTag":"Common label",
-            "AbilityTag":"Affinity label",
-            "FrameWorkTag":"Frame node label",
+            "CommonTag": "Common label",
+            "AbilityTag": "Affinity label",
+            "FrameWorkTag": "Frame node label",
             "tagName": "Tag name",
             "tagValue": "Tag value"
         },
@@ -1814,7 +1816,7 @@
             }
         }
     },
-    "userlog" : {
+    "userlog": {
         "form": {
             "operateType": "Operation type",
             "type": {
@@ -1823,7 +1825,7 @@
                 "stop": "stop",
                 "undeploy_tars": "undeploy_tars",
                 "send_command": "send_command",
-                "add_conf":"add_conf",
+                "add_conf": "add_conf",
                 "update_conf": "update_conf",
                 "rm_conf": "rm_conf",
                 "expand_server": "expand_server",

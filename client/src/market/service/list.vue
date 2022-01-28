@@ -105,12 +105,12 @@ export default {
       row: 0,
       data: [],
       upgrade: {},
-      // visible: {},
       isVisible: {},
       serviceVersion: null,
       upgradeServiceVersion: null,
       version: "",
       versions: [],
+      k8s: true,
     };
   },
   methods: {
@@ -166,9 +166,11 @@ export default {
     goService(service) {
       this.$router.push("/market/service/" + service.replace(/-/g, "/"));
     },
-    fetchInstallFromCloud() {
+    fetchListInstall() {
       this.$ajax
-        .getJSON("/market/api/list_install_from_cloud")
+        .getJSON("/market/api/list_install", {
+          k8s: this.k8s,
+        })
         .then((data) => {
           this.data = data;
 
@@ -327,7 +329,9 @@ export default {
   },
   created() {},
   mounted() {
-    this.fetchInstallFromCloud();
+    this.k8s = location.pathname == "/k8s.html";
+
+    this.fetchListInstall();
   },
 };
 </script>
