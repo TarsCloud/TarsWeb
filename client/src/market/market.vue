@@ -74,6 +74,12 @@ export default {
       k8s: true,
     };
   },
+  // watch:{
+  //   $route(to,from){
+
+  //     this.checkLogin();
+  //   }
+  // },
   methods: {
     iconLoading() {
       const that = this;
@@ -170,7 +176,6 @@ export default {
   created() {},
   mounted() {
     this.k8s = location.pathname == "/k8s.html";
-    this.checkLogin();
   },
 };
 </script>
