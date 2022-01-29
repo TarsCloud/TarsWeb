@@ -30,7 +30,7 @@ const ServerService = require('../../service/server/ServerService');
 const TaskService = require('../../service/task/TaskService');
 const md5Sum = require('md5-file').sync;
 const PatchDao = require('../../dao/PatchDao');
-const WebConf = require('../../../config/WebConf');
+const WebConf = require('../../../config/webConf');
 const PatchService = {};
 
 PatchService.addServerPatch = async (params) => {

@@ -112,9 +112,10 @@ if (process.env.NODE_ENV == "local") {
     process.env.ENABLE_K8S = "false";
 
 } else if (process.env.NODE_ENV == "remote") {
+    conf.ENABLE_LOCAL_CONFIG = true;
 
     conf.dbConf = {
-        host: '172.30.0.4', // 数据库地址
+        host: '172.30.0.47', // 数据库地址
         port: '3306', // 数据库端口
         user: 'tarsAdmin', // 用户名
         password: 'Tars@2019', // 密码
@@ -127,11 +128,12 @@ if (process.env.NODE_ENV == "local") {
     };
 
     conf.webConf.host = '0.0.0.0';
-    conf.webConf.port = 3000;
-    conf.webConf.alter = true;
-
+    conf.webConf.port = 4001;
+    conf.enable = true;
+    conf.market = true;
+    conf.webConf.alter = false;
     conf.client = path.join(cwd, 'config/tars-remote.conf');
-    process.env.ENABLE_K8S = "false";
+    process.env.ENABLE_K8S = "true";
 
 } else if (process.env.NODE_ENV == "dev") {
 

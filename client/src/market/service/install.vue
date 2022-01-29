@@ -374,7 +374,7 @@ const getServerType = (lang) => {
 };
 
 export default {
-  name: "OperationDeploy",
+  name: "Install",
   components: {
     SetInputer,
     PublishStatus,
@@ -423,8 +423,9 @@ export default {
         application: this.deployObj.app,
         server_name: this.deployObj.server,
         server_type: getServerType(this.deployObj.cloud.lang),
-        template_name: this.deployObj.template_name || "tars.image",
+        template_name: this.deployObj.template_name || "tars.default",
         enable_set: false,
+        profile:'<tars>\n<application>\n<server>\npackageFormat=image\n</server>\n</application>\n</tars>\n',
         set_name: "",
         set_area: "",
         set_group: "",
@@ -641,8 +642,8 @@ export default {
       let socket = new WebSocket(url, "upload-protocol");
       // 监听socket连接
       socket.onopen = () => {
-        // let image = this.serviceVersion.prefix + this.serviceVersion.image;
-        let image = "/static/image.tgz";
+        let image = this.serviceVersion.prefix + this.serviceVersion.image;
+        // let image = "/static/image.tgz";
 
         console.log("open websocket, image:", image);
 
