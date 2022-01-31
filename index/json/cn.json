@@ -1118,7 +1118,10 @@
             "affinity": "亲和性选择",
             "k8sExtra": "完善k8s信息(可选)",
             "serverTag": "镜像tag",
-            "serverTagTip": "镜像tag名可以不填,默认自动生成"
+            "serverTagTip": "镜像tag名可以不填,默认自动生成",
+            "format": "安装包格式(tgz格式下请注意节点环境需要满足安装包的要求!)",
+            "tgz": "tgz",
+            "docker": "docker"
         },
         "table": {
             "th": {
