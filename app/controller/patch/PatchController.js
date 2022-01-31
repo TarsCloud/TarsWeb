@@ -245,32 +245,6 @@ PatchController.uploadPatchPackage = async (ctx) => {
 
 };
 
-
-// PatchController.uploadPatchPackage = async (ctx) => {
-// 	try {
-// 		let {
-// 			application,
-// 			module_name,
-// 			md5,
-// 			task_id,
-// 			comment,
-// 			package_type
-// 		} = ctx.req.body;
-
-// 		let rst = await PatchService.uploadPatchPackage(application, module_name, md5, task_id, comment, package_type, ctx.req.files[0].filename, ctx.uid);
-
-// 		if (rst.code != 200) {
-// 			ctx.makeErrResObj(rst.code, cst.err_msg);
-// 		} else {
-// 			ctx.makeResObj(200, '', rst.data);
-// 		}
-// 	} catch (e) {
-// 		logger.error('[PatchController.uploadPatchPackage]:', e, ctx);
-// 		ctx.makeErrResObj(500, e.toString());
-// 	}
-
-// };
-
 PatchController.serverPatchList = async (ctx) => {
 	let {
 		application,

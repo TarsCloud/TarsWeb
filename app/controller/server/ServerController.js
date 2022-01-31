@@ -23,9 +23,13 @@ const ServerDao = require('../../dao/ServerDao');
 const _ = require('lodash');
 const util = require('../../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
-const {async} = require('q');
+const {
+    async
+} = require('q');
 const webConf = require('../../../config/webConf').webConf;
-const { flatMap } = require('lodash');
+const {
+    flatMap
+} = require('lodash');
 
 const serverConfStruct = {
     id: '',
@@ -56,11 +60,15 @@ const serverConfStruct = {
     start_script_path: '',
     stop_script_path: '',
     monitor_script_path: '',
-    patch_time: {formatter: util.formatTimeStamp},
+    patch_time: {
+        formatter: util.formatTimeStamp
+    },
     patch_version: "",
     patch_user: '',
     process_id: '',
-    posttime: {formatter: util.formatTimeStamp},
+    posttime: {
+        formatter: util.formatTimeStamp
+    },
     enable_group: {
         formatter: (value) => {
             return value == 'Y' ? true : false;
@@ -72,6 +80,7 @@ const serverConfStruct = {
         }
     },
     flow_state: 'active',
+    label: {}
 };
 
 const ServerController = {};
@@ -99,10 +108,10 @@ ServerController.getServerConfById = async (ctx) => {
 };
 
 ServerController.serverExist = async (ctx) => {
-	let application = ctx.paramsObj.application;
-	let serverName = ctx.paramsObj.server_name;
-	let nodeNames = ctx.paramsObj.node_names;
-	try {
+    let application = ctx.paramsObj.application;
+    let serverName = ctx.paramsObj.server_name;
+    let nodeNames = ctx.paramsObj.node_names;
+    try {
         let data = await ServerService.getServerConf(application, serverName, '');
 
         let exists = false;
@@ -113,11 +122,11 @@ ServerController.serverExist = async (ctx) => {
             }
             return false;
         })
-		ctx.makeResObj(200, '', exists);
-	} catch (e) {
-		logger.error('[serverExist]', e, ctx);
-		ctx.makeErrResObj();
-	}
+        ctx.makeResObj(200, '', exists);
+    } catch (e) {
+        logger.error('[serverExist]', e, ctx);
+        ctx.makeErrResObj();
+    }
 };
 
 ServerController.getApplicationList = async (ctx) => {
@@ -158,7 +167,7 @@ ServerController.getServerConfList4Tree = async (ctx) => {
     let curPage = parseInt(ctx.paramsObj.cur_page) || 0;
     let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
     let isPage = ctx.paramsObj.is_page == undefined ? false : ctx.paramsObj.is_page;
- //   logger.info(treeNodeId + "," + curPage + "," + pageSize + "," + isPage);
+    //   logger.info(treeNodeId + "," + curPage + "," + pageSize + "," + isPage);
     try {
         let params = ServerController.formatTreeNodeId(treeNodeId);
         if (await AuthService.hasAdminAuth(ctx.uid)) {
@@ -258,15 +267,15 @@ ServerController.formatTreeNodeId = (treeNodeId) => {
         }
     });
 
-	if(serverConf.setName || serverConf.setArea || typeof serverConf.setGroup != "undefined"){
-		serverConf.enableSet = 'Y';
-	}
-	// 无set信息，且有app和servername信息时，说明是查询无set服务节点。此时要将enableSet设置为N，否则会把带set节点也查出来
-	// 不能直接非Y就设置为N，否则根据application查询下面所有节点时，会查不到任何数据
-	if(serverConf.enableSet != 'Y' && serverConf.application && serverConf.serverName){
-		serverConf.enableSet = 'N'
+    if (serverConf.setName || serverConf.setArea || typeof serverConf.setGroup != "undefined") {
+        serverConf.enableSet = 'Y';
     }
-    
+    // 无set信息，且有app和servername信息时，说明是查询无set服务节点。此时要将enableSet设置为N，否则会把带set节点也查出来
+    // 不能直接非Y就设置为N，否则根据application查询下面所有节点时，会查不到任何数据
+    if (serverConf.enableSet != 'Y' && serverConf.application && serverConf.serverName) {
+        serverConf.enableSet = 'N'
+    }
+
     return serverConf;
 };
 
@@ -298,7 +307,9 @@ ServerController.getRealtimeState = async (ctx) => {
             if (!await AuthService.hasOpeAuth(rst.application, rst.server_name, ctx.uid)) {
                 ctx.makeNotAuthResObj();
             } else {
-                ctx.makeResObj(200, '', {realtime_state: rst['present_state']});
+                ctx.makeResObj(200, '', {
+                    realtime_state: rst['present_state']
+                });
             }
         } else {
             logger.error('[getRealtimeState]', '未查询到id=' + id + '相应的服务', ctx);
@@ -354,10 +365,10 @@ ServerController.batchUpdateServerConf = async (ctx) => {
             }
             let ser = server[i];
             Object.assign(server[i], updateServer);
-            updateServer.bak_flag != undefined &&(server[i].bak_flag = server[i].isBak ? 1 : 0);
-            updateServer.enable_set != undefined &&(server[i].enable_set = server[i].enable_set ? 'Y' : 'N');
-            updateServer.ip_group_name != undefined &&(server[i].ip_group_name = server[i].ip_group_name ? 'Y' : 'N');
-            updateServer.enable_group != undefined &&(server[i].enable_group = server[i].enable_group ? 'Y' : 'N');
+            updateServer.bak_flag != undefined && (server[i].bak_flag = server[i].isBak ? 1 : 0);
+            updateServer.enable_set != undefined && (server[i].enable_set = server[i].enable_set ? 'Y' : 'N');
+            updateServer.ip_group_name != undefined && (server[i].ip_group_name = server[i].ip_group_name ? 'Y' : 'N');
+            updateServer.enable_group != undefined && (server[i].enable_group = server[i].enable_group ? 'Y' : 'N');
             if (server[i].enable_set == 'Y' && parseInt(server[i].set_group) != server[i].set_group) {
                 ctx.makeResObj(500, '#batchUpdateServerConf assign fail#');
                 return;
@@ -375,7 +386,9 @@ ServerController.batchUpdateServerConf = async (ctx) => {
 };
 
 ServerController.getServerSearch = async (ctx) => {
-    let {searchkey} = ctx.paramsObj
+    let {
+        searchkey
+    } = ctx.paramsObj
     try {
         let currPage = parseInt(ctx.paramsObj.curr_page) || 0
         let pageSize = parseInt(ctx.paramsObj.page_size) || 0
@@ -426,7 +439,7 @@ ServerController.sendCommand = async (ctx) => {
         if (!_.isEmpty(rst)) {
             let hasDevAuth = true
             for (let item in rst) {
-                hasDevAuth =  await AuthService.hasDevAuth(rst[item].application, rst[item].server_name, ctx.uid);
+                hasDevAuth = await AuthService.hasDevAuth(rst[item].application, rst[item].server_name, ctx.uid);
             }
             if (!hasDevAuth) {
                 ctx.makeNotAuthResObj();
@@ -452,12 +465,18 @@ ServerController.sendCommand = async (ctx) => {
 }
 
 ServerController.getServerNodes = async (ctx) => {
-    let {application, server_name} = ctx.paramsObj;
+    let {
+        application,
+        server_name
+    } = ctx.paramsObj;
     try {
         if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
             ctx.makeNotAuthResObj();
         } else {
-            let ret = await ServerService.getServerConfList4Tree({application, serverName: server_name});
+            let ret = await ServerService.getServerConfList4Tree({
+                application,
+                serverName: server_name
+            });
             ctx.makeResObj(200, '', ret);
         }
     } catch (e) {
@@ -484,7 +503,9 @@ ServerController.needDeployLog = async (ctx) => {
                 need = await ServerService.isDeployWithRegistry(node_names);
             }
         }
-        ctx.makeResObj(200, '', {need: need});
+        ctx.makeResObj(200, '', {
+            need: need
+        });
     } catch (e) {
         logger.error('[needDeployLog]', e, ctx);
         ctx.makeErrResObj();
@@ -513,7 +534,13 @@ ServerController.expandDeployLog = async (ctx) => {
         var params = {
             application: "tars",
             copy_node_config: true,
-            expand_preview_servers: [{bind_ip: node_name, node_name: node_name, obj_name: "LogObj", port: 0, set: ""}],
+            expand_preview_servers: [{
+                bind_ip: node_name,
+                node_name: node_name,
+                obj_name: "LogObj",
+                port: 0,
+                set: ""
+            }],
             node_name: await ServerService.getLogNodeNameWithRegistry(),
             server_name: "tarslog",
             set: ''
@@ -526,7 +553,9 @@ ServerController.expandDeployLog = async (ctx) => {
 
         let rst = await ServerService.getServerConf('tars', 'tarslog', node_name);
 
-        ctx.makeResObj(200, '', {server: rst});
+        ctx.makeResObj(200, '', {
+            server: rst
+        });
     } catch (e) {
         logger.error('[expandDeployLog]', e, ctx);
         ctx.makeErrResObj();
@@ -540,7 +569,9 @@ ServerController.getFrameworkList = async (ctx) => {
         } else {
             let ret = await AdminService.getFrameworkList();
             // console.log('getFrameworkList:', ret);
-            ctx.makeResObj(200, '', {servers: ret});
+            ctx.makeResObj(200, '', {
+                servers: ret
+            });
         }
     } catch (e) {
         logger.error('[getFrameworkList]', e, ctx);
@@ -588,7 +619,9 @@ ServerController.updateFlowStatus = async (ctx) => {
 
 ServerController.getServerState = async (ctx) => {
     try {
-        let {queryState} = ctx.paramsObj;
+        let {
+            queryState
+        } = ctx.paramsObj;
         //相同的node只pingnode一次减少时间
         let nodeList = Array.from(new Set(queryState.map((item) => {
             return item.node_name
@@ -628,7 +661,7 @@ ServerController.getServerState = async (ctx) => {
 }
 
 ServerController.getAlarmConf = async (ctx) => {
-    ctx.makeResObj(200, '',  webConf.alarmUrl|| "");
+    ctx.makeResObj(200, '', webConf.alarmUrl || "");
 };
 
 module.exports = ServerController;

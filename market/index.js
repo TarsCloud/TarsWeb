@@ -23,11 +23,6 @@ const marketApiConf = [
     ['get', '/list_install', MarketController.listInstall, {
         k8s: 'notEmpty',
     }],
-
-    ['post', '/upload_files', MarketController.uploadFiles, {
-
-    }],
-
 ];
 
 module.exports = {

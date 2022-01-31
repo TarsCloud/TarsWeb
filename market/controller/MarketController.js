@@ -15,7 +15,6 @@
  */
 
 const logger = require('../../logger');
-const MarketService = require('../service/MarketService');
 const AdminService = require('../../app/service/admin/AdminService')
 const jsYaml = require('js-yaml');
 
@@ -29,6 +28,14 @@ if (WebConf.isEnableK8s()) {
 	AuthService = require('../../app/service/auth/AuthService');
 }
 
+let getMarketService = (k8s) => {
+	console.log('getMarketService', k8s);
+	if (k8s == "true") {
+		return require('../service/MarketK8SService');
+	} else {
+		return require('../service/MarketService');
+	}
+}
 const MarketController = {};
 
 MarketController.install = async (ctx) => {
@@ -38,7 +45,7 @@ MarketController.install = async (ctx) => {
 
 		y.uid = ctx.uid;
 
-		let result = await MarketService.install(y, ctx.paramsObj);
+		let result = await getMarketService(ctx.paramsObj.k8s).install(y, ctx.paramsObj);
 
 		ctx.makeResObj(result.ret, result.msg, result.data);
 
@@ -51,9 +58,7 @@ MarketController.install = async (ctx) => {
 MarketController.listInstall = async (ctx) => {
 
 	try {
-		let result = await MarketService.listInstall();
-
-		console.log(result);
+		let result = await getMarketService(ctx.paramsObj.k8s).listInstall();
 
 		ctx.makeResObj(result.ret, result.msg, result.data);
 
@@ -66,7 +71,7 @@ MarketController.listInstall = async (ctx) => {
 MarketController.get = async (ctx) => {
 
 	try {
-		let result = await MarketService.get(ctx.paramsObj.app, ctx.paramsObj.server);
+		let result = await getMarketService(ctx.paramsObj.k8s).get(ctx.paramsObj.app, ctx.paramsObj.server);
 
 		ctx.makeResObj(result.ret, result.msg, result.data);
 
@@ -83,7 +88,7 @@ MarketController.upgrade = async (ctx) => {
 
 		y.uid = ctx.uid;
 
-		let result = await MarketService.upgrade(y, ctx.paramsObj);
+		let result = await getMarketService(ctx.paramsObj.k8s).upgrade(y, ctx.paramsObj);
 
 		ctx.makeResObj(result.ret, result.msg, result.data);
 
@@ -91,11 +96,6 @@ MarketController.upgrade = async (ctx) => {
 		logger.error('[upgrade]', e.body ? e.body.message : e, ctx)
 		ctx.makeResObj(500, e.body ? e.body.message : e);
 	}
-}
-
-MarketController.uploadFiles = async (ctx) => {
-
-	console.log(ctx);
 }
 
 module.exports = MarketController;

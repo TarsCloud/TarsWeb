@@ -13,10 +13,10 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
- 
+
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
 	return sequelize.define('t_server_conf', {
 		id: {
 			type: DataTypes.INTEGER(11),
@@ -73,20 +73,20 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: 0
 		},
 		setting_state: {
-			type: DataTypes.ENUM('active','inactive'),
+			type: DataTypes.ENUM('active', 'inactive'),
 			allowNull: false,
 			defaultValue: 'inactive'
 		},
 		present_state: {
-			type: DataTypes.ENUM('active','inactive','activating','deactivating','destroyed'),
+			type: DataTypes.ENUM('active', 'inactive', 'activating', 'deactivating', 'destroyed'),
 			allowNull: false,
 			defaultValue: 'inactive'
 		},
-        flow_state: {
-        	type: DataTypes.ENUM('active', 'inactive'),
-        	allowNull: false,
-        	defaultValue: 'active'
-        },
+		flow_state: {
+			type: DataTypes.ENUM('active', 'inactive'),
+			allowNull: false,
+			defaultValue: 'active'
+		},
 		process_id: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
@@ -100,7 +100,7 @@ module.exports = function(sequelize, DataTypes) {
 		patch_time: {
 			type: DataTypes.DATE,
 			allowNull: false,
-			defaultValue: new Date() 
+			defaultValue: new Date()
 		},
 		patch_user: {
 			type: DataTypes.STRING(128),
@@ -121,7 +121,7 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: true
 		},
 		server_type: {
-			type: DataTypes.ENUM('tars_cpp','not_tars','tars_java','tars_nodejs','tars_php','tars_go'),
+			type: DataTypes.ENUM('tars_cpp', 'not_tars', 'tars_java', 'tars_nodejs', 'tars_php', 'tars_go'),
 			allowNull: true
 		},
 		start_script_path: {
@@ -177,24 +177,13 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: '3'
 		},
 		server_important_type: {
-			type: DataTypes.ENUM('0','1','2','3','4','5'),
+			type: DataTypes.ENUM('0', '1', '2', '3', '4', '5'),
 			allowNull: true,
 			defaultValue: '0'
 		},
-		remote_log_reserve_time: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-			defaultValue: '65'
-		},
-		remote_log_compress_time: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-			defaultValue: '2'
-		},
-		remote_log_type: {
-			type: DataTypes.INTEGER(1),
-			allowNull: false,
-			defaultValue: '0'
+		source: {
+			type: DataTypes.TEXT,
+			allowNull: true,
 		}
 	}, {
 		tableName: 't_server_conf',

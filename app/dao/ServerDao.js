@@ -110,6 +110,7 @@ ServerDao.getServerConfByIds = async (ids) => {
 
 ServerDao.getServerConfList = async (application, serverName) => {
 	return await tServerConf.findAll({
+		raw: true,
 		where: {
 			application: application,
 			server_name: serverName
@@ -171,6 +172,23 @@ ServerDao.getServerConf = async (params) => {
 		options.limit = params.pageSize;
 		options.offset = params.pageSize * (params.curPage - 1);
 	}
+	return await tServerConf.findAll(options);
+};
+
+ServerDao.getServerConfBySource = async () => {
+
+	let options = {
+		where: {
+			source: {
+				[Op.ne]: '',
+			}
+		},
+		order: [
+			['application'],
+			['server_name']
+		]
+	};
+
 	return await tServerConf.findAll(options);
 };
 

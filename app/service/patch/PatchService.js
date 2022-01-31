@@ -188,8 +188,6 @@ PatchService.uploadAndPatch = async (application,
 				},
 			});
 
-			let patch = await CompileService.getServerPatchByTaskId(task_id);
-
 			data.serverIds = [];
 
 			let serverIds = util.viewFilter(await ServerService.getServerConfList4Tree({
@@ -197,31 +195,9 @@ PatchService.uploadAndPatch = async (application,
 				serverName: module_name
 			}));
 
-			let task_no = util.getUUID().toString();
-			let serial = true;
-			let items = [];
-
-
 			for (let index = 0; index < serverIds.length; index++) {
 
-				items.push({
-					server_id: serverIds[index].id,
-					command: "patch_tars",
-					parameters: {
-						patch_id: patch.id
-					}
-				});
-
 				data.serverIds.push(serverIds[index].id);
-			}
-
-			if (items.length > 0) {
-				await TaskService.addTask({
-					serial,
-					items,
-					task_no,
-					userName: uid
-				});
 			}
 
 			return {

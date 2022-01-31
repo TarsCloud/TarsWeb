@@ -4,7 +4,7 @@
     <let-modal
       v-model="finishModal.show"
       :title="$t('serverList.table.th.result')"
-      width="880px"
+      width="70%"
       @on-cancel="onClose"
       @close="onClose"
       :footShow="false"
@@ -109,7 +109,7 @@ export default {
         });
       });
 
-      console.log(items);
+      // console.log(items);
 
       const loading = this.$Loading.show();
       this.$ajax

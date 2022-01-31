@@ -64,9 +64,7 @@ ServerService.serverConfFields = () => {
         config_center_port: 0,
         async_thread_num: 3,
         server_important_type: '0',
-        remote_log_reserve_time: '65',
-        remote_log_compress_time: '2',
-        remote_log_type: 0
+        source: ''
     };
 };
 
@@ -116,6 +114,10 @@ ServerService.getServerConfByTemplate = async (templateName) => {
     return await ServerDao.getServerConfByTemplate(templateName);
 };
 
+//查询从cloud安装的服务
+ServerService.getServerConfBySource = async () => {
+    return await ServerDao.getServerConfBySource();
+};
 
 //通过treeNodeId查询服务列表
 ServerService.getServerConfList4Tree = async (params) => {
