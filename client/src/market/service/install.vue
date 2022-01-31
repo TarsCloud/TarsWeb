@@ -5,7 +5,7 @@
         ref="form"
         inline
         label-position="top"
-        itemWidth="480px"
+        itemWidth="45%"
         v-if="model"
         @submit.native.prevent="next"
       >
@@ -26,6 +26,16 @@
             </let-option>
           </let-select>
         </let-form-item>
+
+        <let-form-item :label="$t('deployService.form.format')" required>
+          <el-radio v-model="model.format" label="docker">{{
+            $t("deployService.form.docker")
+          }}</el-radio>
+          <el-radio v-model="model.format" label="tgz">{{
+            $t("deployService.form.tgz")
+          }}</el-radio>
+        </let-form-item>
+
         <br />
 
         <let-form-item :label="$t('deployService.form.app')" required>
@@ -436,7 +446,8 @@ export default {
         server_type: getServerType(deployObj.cloud.lang),
         template_name: deployObj.template_name || "tars.default",
         enable_set: false,
-        // profile:'<tars>\n<application>\n<server>\npackageFormat=image\n</server>\n</application>\n</tars>\n',
+        format: "docker",
+        profile: deployObj.profile || "",
         set_name: "",
         set_area: "",
         set_group: "",
