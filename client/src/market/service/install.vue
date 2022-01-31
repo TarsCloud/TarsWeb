@@ -32,6 +32,7 @@
           <let-input
             size="small"
             v-model="model.application"
+            :disabled="upgrade"
             :placeholder="$t('deployService.form.appAdd')"
             required
             :required-tip="$t('deployService.form.appTips')"
@@ -42,6 +43,7 @@
         <let-form-item :label="$t('deployService.form.serviceName')" required>
           <let-input
             size="small"
+            :disabled="upgrade"
             v-model="model.server_name"
             :placeholder="$t('deployService.form.serviceFormatTips')"
             required
@@ -132,18 +134,6 @@
                 v-model="props.row.node_name"
                 required
               ></let-input>
-              <!--               
-              <let-select
-                @change="nodeNameChange(props.row)"
-                v-model="props.row.node_name"
-                size="small"
-                required
-                filterable
-              >
-                <let-option v-for="d in nodeList" :key="d" :value="d">
-                  {{ d }}
-                </let-option>
-              </let-select> -->
             </template>
           </let-table-column>
           <let-table-column
@@ -384,6 +374,7 @@ export default {
     return {
       dialogVisible: false,
       dialogConfigVisible: false,
+      upgrade: false,
       types,
       applicationList: [],
       selectNodeList: [],
@@ -408,31 +399,52 @@ export default {
     this.k8s = location.pathname == "/k8s.html";
   },
   methods: {
-    showInstall() {
+    show() {
+      this.upgrade = false;
       this.dialogVisible = true;
       this.dialogConfigVisible = false;
-      this.fetchServiceVersion();
       this.fetchBaseInfo();
+
+      this.fetchServiceVersion();
     },
-    initialModel() {
-      if (this.deployObj.config && this.deployObj.config.length > 0) {
-        this.activeName = this.deployObj.config[0].name;
+    showUpgrade() {
+      this.$confirm(
+        "注意: 切换版本只会替换服务的安装包, 如果有需要, 配置文件需要自己手工变更以匹配版本",
+        "升级",
+        {
+          confirmButtonText: "升级",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          this.upgrade = true;
+
+          this.upgradeNative();
+        })
+        .catch(() => {});
+    },
+
+    initialModelK8S(deployObj) {
+      if (deployObj.config && deployObj.config.length > 0) {
+        this.activeName = deployObj.config[0].name;
       }
 
       this.model = {
-        application: this.deployObj.app,
-        server_name: this.deployObj.server,
-        server_type: getServerType(this.deployObj.cloud.lang),
-        template_name: this.deployObj.template_name || "tars.default",
+        application: deployObj.app,
+        server_name: deployObj.server,
+        server_type: getServerType(deployObj.cloud.lang),
+        template_name: deployObj.template_name || "tars.default",
         enable_set: false,
-        profile:'<tars>\n<application>\n<server>\npackageFormat=image\n</server>\n</application>\n</tars>\n',
+        // profile:'<tars>\n<application>\n<server>\npackageFormat=image\n</server>\n</application>\n</tars>\n',
         set_name: "",
         set_area: "",
         set_group: "",
         operator: "",
         developer: "",
         adapters: [],
-        config: this.deployObj.config || [],
+        source: "",
+        config: deployObj.config || [],
       };
 
       this.nodeChange(this.selectNodeList);
@@ -500,26 +512,37 @@ export default {
     },
     fetchServiceVersion() {
       const loading = this.$Loading.show();
+
       new AjaxUtil()
         .getPlain(this.serviceVersion.deploy)
         .then((data) => {
+          loading.hide();
+
           if (data.ok) {
             data.text().then((content) => {
               this.deployObj = jsYaml.load(content);
 
-              this.initialModel();
-              loading.hide();
+              this.initialModelK8S(this.deployObj);
             });
           }
         })
         .catch((err) => {
+          loading.hide();
+
           this.$message({
             message: err,
             type: "error",
           });
         });
     },
-
+    //升级native版本
+    upgradeNative() {
+      this.publishService(
+        this.serviceVersion.installData.group,
+        this.serviceVersion.installData.name
+      );
+    },
+    //发布
     deploy() {
       let objNode = [];
       for (var i = 0; i < this.model.adapters.length; i++) {
@@ -537,11 +560,25 @@ export default {
 
       const loading = this.$Loading.show();
 
+      let source = {};
+      source["tars.io/CloudLogo"] = this.serviceVersion.logo;
+      source["tars.io/ServerApp"] = this.model.application;
+      source["tars.io/ServerName"] = this.model.server_name;
+      source["tars.io/CloudInstall"] =
+        this.deployObj.cloud.group +
+        "-" +
+        this.deployObj.cloud.name +
+        "-" +
+        this.deployObj.cloud.version;
+      source["tars.io/CloudDigest"] = this.serviceVersion.digest;
+
+      this.model.source = JSON.stringify(source);
+
       this.$ajax
         .postJSON("/server/api/deploy_server_from_cloud", this.model)
         .then((data) => {
           loading.hide();
-          this.transFile(data);
+          this.publishService(this.model.application, this.model.server_name);
         })
         .catch((err) => {
           loading.hide();
@@ -585,22 +622,14 @@ export default {
         this.save();
       }
     },
-    closePublishModal() {
-      // // 关闭发布弹出框
-      // this.publishModal.show = false;
-      // // this.nowVersion = [];
-      // this.publishModal.modal = null;
-      // this.patchType = "patch";
-      // this.$refs.publishForm.resetValid();
-    },
-    savePublishServer(patchId, serverId) {
+    savePublishServer(application, server_name, patchId, serverId) {
       // 发布
       this.publishModal.elegant = this.elegantChecked || false;
       this.publishModal.eachnum = this.eachNum || 1;
       this.publishModal.command = "patch_tars";
       this.publishModal.model = {
-        application: this.model.application,
-        server_name: this.model.server_name,
+        application: application,
+        server_name: server_name,
         serverList: [],
         patch_id: patchId,
         update_text: "install from cloud",
@@ -613,37 +642,29 @@ export default {
       });
 
       // console.log(this.publishModal);
-      this.$refs.publishStatus.savePublishServer(
-        this.publishModal,
-        this.closePublishModal
-      );
+      this.$refs.publishStatus.savePublishServer(this.publishModal);
     },
-    transFile(data) {
-      // console.log(this.deployObj);
-
+    publishService(application, server_name) {
       const loading = this.$Loading.show("正在安装中, 请耐心等候...");
 
-      console.log("start", this.deployObj);
+      // console.log("start", this.deployObj);
       let url = "";
       if (window.location.protocol == "http:") {
-        url = `ws://${window.location.host}/upload?app=${this.model.application}&server=${this.model.server_name}&uid=${window.localStorage.localUid}`;
+        url = `ws://${window.location.host}/upload?app=${application}&server=${server_name}&uid=${window.localStorage.localUid}`;
       } else if (window.location.protocol == "https:") {
-        url = `wss://${window.location.host}/upload?app=${this.model.application}&server=${this.model.server_name}&uid=${window.localStorage.localUid}`;
+        url = `wss://${window.location.host}/upload?app=${application}&server=${server_name}&uid=${window.localStorage.localUid}`;
       } else {
         console.log("unknown protocol", window.location);
         return;
       }
 
-      // console.log(url);
-
       let that = this;
 
-      // 实例化socket
       let socket = new WebSocket(url, "upload-protocol");
-      // 监听socket连接
       socket.onopen = () => {
-        let image = this.serviceVersion.prefix + this.serviceVersion.image;
-        // let image = "/static/image.tgz";
+        // let image = this.serviceVersion.prefix + this.serviceVersion.image;
+        // let image = this.serviceVersion.prefix + this.serviceVersion.bin;
+        let image = "/static/image.tgz";
 
         console.log("open websocket, image:", image);
 
@@ -666,7 +687,7 @@ export default {
                     }
 
                     // controller.enqueue(value);
-                    console.log(socket);
+                    // console.log(socket);
 
                     if (socket && socket.readyState == 1) {
                       while (true) {
@@ -736,7 +757,7 @@ export default {
         } else {
           let patchId = rst.data.id;
           let serverId = rst.data.serverIds;
-          that.savePublishServer(patchId, serverId);
+          that.savePublishServer(application, server_name, patchId, serverId);
         }
       };
 

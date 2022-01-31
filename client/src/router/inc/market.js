@@ -5,9 +5,6 @@ import Market from '@/market/market';
 import List from '@/market/service/list';
 import ServiceInfo from '@/market/service/index';
 
-// import K8SList from '@/market/k8s-service/list';
-// import K8SServiceInfo from '@/market/k8s-service/index';
-
 import Login from '@/market/user/login';
 import Register from '@/market/user/register';
 import Activate from '@/market/user/activate';
@@ -65,15 +62,6 @@ const marketService = {
     }]
 }
 
-// const marketK8SService = {
-//     path: '/market/service',
-//     component: Market,
-//     children: [{
-//         path: ':group/:name/:version',
-//         component: K8SServiceInfo,
-//     }]
-// }
-
 const marketList = {
     path: '/market/list',
     component: Market,
@@ -83,21 +71,9 @@ const marketList = {
     }]
 }
 
-// const marketK8SList = {
-//     path: '/market/list',
-//     component: Market,
-//     children: [{
-//         path: '/',
-//         component: K8SList
-//     }]
-// }
-
-
 export {
     marketSso,
     marketRepo,
     marketService,
-    // marketK8SService,
     marketList,
-    // marketK8SList
 }

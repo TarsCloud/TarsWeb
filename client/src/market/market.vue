@@ -114,6 +114,7 @@ export default {
         .call("cloud-market", "getServiceBaseList", {
           req: {
             offset: this.offset,
+            native: !this.k8s,
             limit: this.limit,
           },
         })
@@ -176,6 +177,7 @@ export default {
   created() {},
   mounted() {
     this.k8s = location.pathname == "/k8s.html";
+    this.checkLogin();
   },
 };
 </script>

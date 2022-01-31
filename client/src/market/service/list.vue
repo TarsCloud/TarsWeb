@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import upgrade from "./upgrade";
+import upgrade from "./install";
 import moment from "moment";
 export default {
   name: "List",
@@ -283,8 +283,9 @@ export default {
             name: this.get(i, j)["tars.io/ServerName"],
           };
 
+          this.isVisible[i + "_" + j] = false;
           this.$nextTick(() => {
-            this.$refs.upgrade.show();
+            this.$refs.upgrade.showUpgrade();
           });
         })
         .catch((err) => {
@@ -312,12 +313,10 @@ export default {
           },
         })
         .then((data) => {
-          // console.log(data);
           this.upgrade = {};
           data.rsp.info.forEach((e) => {
             this.upgrade[e.group + "-" + e.name + "-" + e.version] = e.upgrade;
           });
-          // this.versions = data.rsp.versions;
         })
         .catch((err) => {
           this.$message({

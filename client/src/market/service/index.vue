@@ -303,7 +303,7 @@ export default {
     showInstall() {
       this.installServiceVersion = this.serviceVersion;
       this.$nextTick(() => {
-        this.$refs.install.showInstall();
+        this.$refs.install.show();
       });
     },
   },
