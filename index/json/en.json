@@ -449,6 +449,7 @@
         "createPerson": "createPerson",
         "baseInfo": "baseInfo",
         "nextStep": "nextStep",
+        "prevStep": "prevStep",
         "admin": "admin",
         "serial": "serial",
         "config": "configuration",
@@ -544,8 +545,16 @@
         "hpa": "HPA Management",
         "resource": "Resource Management",
         "yaml": "Yaml editor",
-        "network": "Network mapping",
+        "network": "Host mapping",
         "disk": "Disk management",
+        "pull": "ImagePullPolicy",
+        "stacked": "Stacked",
+        "stackedInfo": "After enable stacking, the same service will be abled to deploy on the same host",
+        "stackedInvalid": "The stack cannot be turned on if the service uses a host resource ",
+        "launcherType": "LaunchType",
+        "backgroundInfo": "The death of the background service will not lead to the reconstruction of the pod. Tarsnode will automatically pull the service",
+        "foregroundInfo": "The front desk service was restarted, resulting in the reconstruction of the pod",
+        "jobModel": "Job Model",
         "nodeSelect": "Node selection",
         "copyNode": "copy of the slip",
         "viewEvent": "View events",
@@ -1194,7 +1203,9 @@
             "addDisk": "Add a mount group",
             "delDisk": "Deleting the current group",
             "diskName": "name of disk",
-            "path": "Mount path"
+            "path": "Mount path",
+            "info": "host path: /usr/local/app/tars/host-mount/${namespace}/${service}"
+
         }
     },
     "nodes": {

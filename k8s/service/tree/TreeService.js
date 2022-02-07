@@ -20,9 +20,9 @@ const TreeService = {};
 const treeIgnore = ["tars-tarsweb"];
 
 
-TreeService.tree = async (searchKey) => {
+TreeService.tree = async (searchKey, force) => {
 
-    let serverList = await CommonService.getServerList();
+    let serverList = await CommonService.getServerList(force);
 
     //<app, serverName[]>
     let allApp = new Map();
@@ -36,7 +36,7 @@ TreeService.tree = async (searchKey) => {
         if (searchKey && serverApp.indexOf(searchKey) == -1 && serverName.indexOf(searchKey) == -1) {
             return
         }
-        if (treeIgnore.indexOf(item.metadata.name)!=-1){
+        if (treeIgnore.indexOf(item.metadata.name) != -1) {
             return;
         }
         const server = {
@@ -52,10 +52,12 @@ TreeService.tree = async (searchKey) => {
         allApp.get(serverApp).push(server);
     });
 
-    let	emptyBusiness = {
-		BusinessName: "",
-		BusinessShow: "",
-		App:          [],
+    // console.log(serverList);
+
+    let emptyBusiness = {
+        BusinessName: "",
+        BusinessShow: "",
+        App: [],
     }
 
     const treeData = await CommonService.getTreeData();
@@ -149,7 +151,11 @@ TreeService.tree = async (searchKey) => {
 
     }
 
-    return { ret: 200, msg: 'succ', data: result };
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 }
 
 module.exports = TreeService;

@@ -203,8 +203,14 @@ CommonService.deletePod = async (name) => {
 }
 
 
-CommonService.getServerList = async () => {
-	return getCacheList(tServerList, serverListFn);
+CommonService.getServerList = async (force) => {
+	if (force) {
+		const data = await serverListFn();
+
+		return data.body.items;
+	} else {
+		return getCacheList(tServerList, serverListFn);
+	}
 }
 
 CommonService.getTreeData = async () => {
@@ -522,7 +528,6 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 			tars: {
 				template: serverOption.ServerTemplate,
 				profile: serverOption.ServerProfile,
-				foreground: false,
 				asyncThread: serverOption.AsyncThread,
 				servants: Servants,
 			},
@@ -534,7 +539,10 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 				mounts: Mounts,
 				nodeSelector: NodeSelector,
 				notStacked: serverK8S.NotStacked,
+				foreground: serverK8S.launcherType || "background",
 				replicas: serverK8S.Replicas,
+				daemonSet: serverK8S.DaemonSet || false,
+				imagePullPolicy: serverK8S.imagePullPolicy || "Always",
 				abilityAffinity: serverK8S.AbilityAffinity,
 			},
 		},

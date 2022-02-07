@@ -2,6 +2,12 @@ const MarketController = require('./controller/MarketController');
 
 const marketApiConf = [
 
+    ['post', '/exists', MarketController.exists, {
+        app: 'notEmpty',
+        server: 'notEmpty',
+        k8s: 'notEmpty',
+    }],
+
     ['post', '/install', MarketController.install, {
         deploy: 'notEmpty',
         serviceVersion: 'notEmpty',

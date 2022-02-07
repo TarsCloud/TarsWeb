@@ -126,8 +126,51 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
     tServer.metadata.annotations[CommonService.TServerCloudLogo] = paramsObj.serviceVersion.logo;
     tServer.metadata.annotations[CommonService.TServerCloudDigest] = paramsObj.serviceVersion.digest;
 
+    let K8S = tServer.spec.k8s
+
+    if (deploy.resources) {
+        //resource
+        K8S.resources = {}
+        //k8s资源管理
+        if (deploy.resources.limitCpu || deploy.resources.limitMem) {
+            K8S.resources.limits = {}
+            if (deploy.resources.limitCpu) K8S.resources.limits.cpu = deploy.resources.limitCpu
+            if (deploy.resources.limitMem) K8S.resources.limits.memory = deploy.resources.limitMem
+        }
+        if (deploy.resources.requestCpu || deploy.resources.requestMem) {
+            K8S.resources.requests = {}
+            if (deploy.resources.requestCpu) K8S.resources.requests.cpu = deploy.resources.requestCpu
+            if (deploy.resources.requestMem) K8S.resources.requests.memory = deploy.resources.requestMem
+        }
+        if (Object.keys(K8S.resources).length == 0) {
+            delete K8S.resources
+        }
+    }
+
+    //disk mounts
+    if (deploy.mounts) {
+        let mounts = [];
+        if (K8S.mounts) {
+            K8S.mounts.forEach(item => {
+                if (!item.source.hasOwnProperty("tLocalVolume")) {
+                    mounts.push(item)
+                }
+            })
+        }
+        deploy.mounts.forEach(item => {
+            let tLocalVolume = item.source.tLocalVolume
+            item.source.tLocalVolume = {
+                uid: tLocalVolume.uid || "0",
+                gid: tLocalVolume.gid || "0",
+                mode: tLocalVolume.mode || "755"
+            }
+            mounts.push(item)
+        })
+        K8S.mounts = mounts;
+    }
+
+    //发布记录
     tServer.spec.release = {};
-    // tServer.spec.release.source = tImage.data.metadata.name;
     tServer.spec.release.id = deploy.repo.id;
     tServer.spec.release.image = deploy.repo.image;
     tServer.spec.release.secret = deploy.repo.secret;
@@ -142,11 +185,11 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
 }
 
 //从cloud上升级服务
-DeployService.upgrade = async (deploy, ServerServant, ServerK8S, ServerOption, paramsObj) => {
+DeployService.upgrade = async (paramsObj) => {
 
-    let server = await CommonService.getServer(deploy.app + '.' + deploy.server);
+    let tServer = await CommonService.getServer(paramsObj.serviceVersion.installData.group + '.' + paramsObj.serviceVersion.installData.name);
 
-    if (!server) {
+    if (!tServer) {
         return {
             ret: 500,
             msg: 'server not exists'
@@ -154,20 +197,21 @@ DeployService.upgrade = async (deploy, ServerServant, ServerK8S, ServerOption, p
     }
 
     //创建timages
-    deploy.repo.id = "v-" + (new Date()).getTime();
+    paramsObj.deploy.repo.id = "v-" + (new Date()).getTime();
 
-    let tImage = await ImageService.serverImageCreateWithRelease(deploy);
+    let tImage = await ImageService.serverImageCreateWithRelease(paramsObj.deploy);
     if (tImage.ret != 200) {
         logger.error("createServerWithImage serverImageGetAndCreate error:", rst);
         return rst;
     }
 
-    //创建服务
-    let tServer = (await CommonService.getObject("tservers", CommonService.getTServerName(paramsObj.serviceVersion.installData.group + "-" + paramsObj.serviceVersion.installData.name))).body;
+    tServer = tServer.body;
 
-    await CommonService.updateTServer(tServer, ServerServant, ServerK8S, ServerOption);
+    console.log(tServer);
+    // let tServer = (await CommonService.getObject("tservers", CommonService.getTServerName(paramsObj.serviceVersion.installData.group + "-" + paramsObj.serviceVersion.installData.name))).body;
 
-    // tServer.metadata.labels = {};
+    // await CommonService.updateTServer(tServer, ServerServant, ServerK8S, ServerOption);
+
     tServer.metadata.labels[CommonService.TServerCloudInstall] = paramsObj.serviceVersion.group + "-" + paramsObj.serviceVersion.name + '-' + paramsObj.serviceVersion.version;
 
     tServer.metadata.annotations = tServer.metadata.annotations || {};
@@ -175,10 +219,9 @@ DeployService.upgrade = async (deploy, ServerServant, ServerK8S, ServerOption, p
     tServer.metadata.annotations[CommonService.TServerCloudDigest] = paramsObj.serviceVersion.digest;
 
     tServer.spec.release = {};
-    // tServer.spec.release.source = tImage.data.metadata.name;
-    tServer.spec.release.id = deploy.repo.id;
-    tServer.spec.release.image = deploy.repo.image;
-    tServer.spec.release.secret = deploy.repo.secret;
+    tServer.spec.release.id = paramsObj.deploy.repo.id;
+    tServer.spec.release.image = paramsObj.deploy.repo.image;
+    tServer.spec.release.secret = paramsObj.deploy.repo.secret;
 
     let data = await CommonService.replaceObject("tservers", tServer.metadata.name, tServer);
 

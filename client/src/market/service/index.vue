@@ -148,11 +148,17 @@
       </el-tabs>
     </el-main>
 
-    <install
-      v-if="installServiceVersion"
-      ref="install"
+    <installK8S
+      v-if="installServiceVersion && k8s"
+      ref="installK8S"
       :serviceVersion="installServiceVersion"
-    ></install>
+    ></installK8S>
+
+    <installNative
+      v-if="installServiceVersion && !k8s"
+      ref="installNative"
+      :serviceVersion="installServiceVersion"
+    ></installNative>
   </div>
 </template>
 
@@ -162,7 +168,8 @@ import moment from "moment";
 import markdown from "./markdown";
 import deploy from "./deploy";
 import protocols from "./protocols";
-import install from "./install";
+import installNative from "./installNative";
+import installK8S from "./installK8S";
 import logs from "./logs";
 
 export default {
@@ -171,7 +178,8 @@ export default {
     markdown,
     deploy,
     protocols,
-    install,
+    installK8S,
+    installNative,
     logs,
   },
   data() {
@@ -195,7 +203,7 @@ export default {
   },
   methods: {
     handleClick() {
-      console.log(this.activeName);
+      // console.log(this.activeName);
     },
     goRepository(repository) {
       window.open(repository);
@@ -303,7 +311,11 @@ export default {
     showInstall() {
       this.installServiceVersion = this.serviceVersion;
       this.$nextTick(() => {
-        this.$refs.install.show();
+        if (this.k8s) {
+          this.$refs.installK8S.show();
+        } else {
+          this.$refs.installNative.show();
+        }
       });
     },
   },
