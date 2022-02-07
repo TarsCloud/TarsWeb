@@ -29,13 +29,16 @@ K8sService.serverK8SSelect = async (ServerId, limiter) => {
 
     // limiter
     if (limiter != null) {
-        let {start, stop} = CommonService.pageList(filterItems.length, limiter);
+        let {
+            start,
+            stop
+        } = CommonService.pageList(filterItems.length, limiter);
         filterItems = filterItems.slice(start, stop);
     }
     // console.log("filterItems:" + JSON.stringify(filterItems, null, 4));
     // Count填充
     let result = {}; //&models.SelectResult{}
-    result.Count = {};//make(models.MapInt)
+    result.Count = {}; //make(models.MapInt)
     result.Count["AllCount"] = filterItems.length;
     result.Count["FilterCount"] = filterItems.length;
 
@@ -51,7 +54,7 @@ K8sService.serverK8SSelect = async (ServerId, limiter) => {
         elem["NodeSelector"] = item.spec.k8s.nodeSelector
         elem["HostIpc"] = item.spec.k8s.hostIPC || false
         elem["HostNetwork"] = item.spec.k8s.hostNetwork || false
-        elem["HostPort"] = item.spec.k8s.hostPorts
+        elem["HostPort"] = item.spec.k8s.hostPorts || []
         elem["resources"] = item.spec.k8s.resources
         elem["mounts"] = item.spec.k8s.mounts || []
         elem["kind"] = item.kind
@@ -59,37 +62,68 @@ K8sService.serverK8SSelect = async (ServerId, limiter) => {
         elem["name"] = item.metadata.name
         elem["abilityAffinity"] = item.spec.k8s.abilityAffinity
         elem["launcherType"] = item.spec.k8s.launcherType
+        elem["servants"] = item.spec.tars.servants;
+        elem["subtype"] = item.spec.subType;
+        elem["imagePullPolicy"] = item.spec.k8s.imagePullPolicy;
+        elem["notStacked"] = item.spec.k8s.notStacked;
         result.Data.push(elem);
     })
-    return {ret: 200, msg: 'succ', data: result};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 }
 
 K8sService.serverK8SUpdate = async (metadata, target) => {
     let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
     if (!tServer) {
-        return {ret: 500, msg: "server not exists"};
+        return {
+            ret: 500,
+            msg: "server not exists"
+        };
     }
     tServer = tServer.body;
-    let K8S = tServer.spec.k8s
-    if (target.Replicas!=null) {
+    let K8S = tServer.spec.k8s;
+    if (target.pull) {
+        K8S.imagePullPolicy = target.pull;
+    }
+    if (target.daemonSet != null) {
+        K8S.daemonSet = target.daemonSet;
+    }
+    if (target.launcherType) {
+        K8S.launcherType = target.launcherType;
+    }
+    if (target.notStacked != null) {
+        K8S.notStacked = target.notStacked;
+    }
+
+    if (target.Replicas >= 0) {
         K8S.replicas = target.Replicas
     }
     if (target.NodeSelector) {
         K8S.nodeSelector = target.NodeSelector
     }
-    if (target.abilityAffinity){
+    if (target.abilityAffinity) {
         K8S.abilityAffinity = target.abilityAffinity
     }
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
     tServerCopy.spec.k8s = K8S
     let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
-    return {ret: 200, msg: 'succ', data: data.body};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 K8sService.ServerK8SUpdateResource = async (metadata, target) => {
     let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
     if (!tServer) {
-        return {ret: 500, msg: "server not exists"};
+        return {
+            ret: 500,
+            msg: "server not exists"
+        };
     }
     tServer = tServer.body;
     let K8S = tServer.spec.k8s
@@ -97,13 +131,13 @@ K8sService.ServerK8SUpdateResource = async (metadata, target) => {
     //k8s资源管理
     if (target.limitCpu || target.limitMem) {
         K8S.resources.limits = {}
-        if (target.limitCpu) K8S.resources.limits.cpu = target.limitCpu + "m"
-        if (target.limitMem) K8S.resources.limits.memory = target.limitMem + "m"
+        if (target.limitCpu) K8S.resources.limits.cpu = target.limitCpu
+        if (target.limitMem) K8S.resources.limits.memory = target.limitMem
     }
     if (target.requestCpu || target.requestMem) {
         K8S.resources.requests = {}
-        if (target.requestCpu) K8S.resources.requests.cpu = target.requestCpu + "m"
-        if (target.requestMem) K8S.resources.requests.memory = target.requestMem + "m"
+        if (target.requestCpu) K8S.resources.requests.cpu = target.requestCpu
+        if (target.requestMem) K8S.resources.requests.memory = target.requestMem
     }
     if (Object.keys(K8S.resources).length == 0) {
         delete K8S.resources
@@ -111,13 +145,20 @@ K8sService.ServerK8SUpdateResource = async (metadata, target) => {
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
     tServerCopy.spec.k8s = K8S
     let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
-    return {ret: 200, msg: 'succ', data: data.body};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 K8sService.ServerK8SUpdateNetwork = async (metadata, target) => {
     let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
     if (!tServer) {
-        return {ret: 500, msg: "server not exists"};
+        return {
+            ret: 500,
+            msg: "server not exists"
+        };
     }
     tServer = tServer.body;
     let K8S = tServer.spec.k8s;
@@ -137,20 +178,27 @@ K8sService.ServerK8SUpdateNetwork = async (metadata, target) => {
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
     tServerCopy.spec.k8s = K8S
     let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
-    return {ret: 200, msg: 'succ', data: data.body};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 K8sService.ServerK8SUpdateDisk = async (metadata, target) => {
     let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
     if (!tServer) {
-        return {ret: 500, msg: "server not exists"};
+        return {
+            ret: 500,
+            msg: "server not exists"
+        };
     }
     tServer = tServer.body;
     let K8S = tServer.spec.k8s;
     let mounts = [];
-    if (K8S.mounts){
-        K8S.mounts.forEach(item=>{
-            if (!item.source.hasOwnProperty("tLocalVolume")){
+    if (K8S.mounts) {
+        K8S.mounts.forEach(item => {
+            if (!item.source.hasOwnProperty("tLocalVolume")) {
                 mounts.push(item)
             }
         })
@@ -168,23 +216,36 @@ K8sService.ServerK8SUpdateDisk = async (metadata, target) => {
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
     tServerCopy.spec.k8s = K8S
     let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
-    return {ret: 200, msg: 'succ', data: data.body};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
 
 K8sService.selectAvailHostPort = async (NodeName, NodePort) => {
     let pod = await CommonService.getDaemonPodByName(NodeName)
     if (!pod) {
-        return { ret: 500, msg: 'pod not exists' };
+        return {
+            ret: 500,
+            msg: 'pod not exists'
+        };
     }
     let containers = pod.spec.containers
     if (containers.length <= 0) {
-        return { ret: 500, msg: 'pod no container' };
+        return {
+            ret: 500,
+            msg: 'pod no container'
+        };
     }
     let ports = containers[0].ports;
 
     if (ports <= 0) {
-        return { ret: 500, msg: 'pod has no host port' };
+        return {
+            ret: 500,
+            msg: 'pod has no host port'
+        };
     }
 
     // console.log(NodeName, NodePort, pod, containers);
@@ -196,15 +257,25 @@ K8sService.selectAvailHostPort = async (NodeName, NodePort) => {
     // proxy forward
     let rsp = await axios.get(`http://${hostIp}:${hostPort}/port?host=${hostIp}&port=${NodePort}`);
     if (!rsp) {
-        return { ret: 500, msg: 'pod has no host port' };
+        return {
+            ret: 500,
+            msg: 'pod has no host port'
+        };
     }
 
     // console.log(rsp);
 
     if (rsp.status == 200) {
-        return { ret: 200, msg: 'succ', data: rsp.data };
+        return {
+            ret: 200,
+            msg: 'succ',
+            data: rsp.data
+        };
     }
-    return { ret: 500, msg: 'pod can access host port' };
+    return {
+        ret: 500,
+        msg: 'pod can access host port'
+    };
 
     // // rsp, err := http.Get(fmt.Sprintf("http://%s:%d/port?host=%s&port=%d", hostIp, hostPort, hostIp, *params.Port))
     // // if err != nil {

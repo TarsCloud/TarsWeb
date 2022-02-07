@@ -419,11 +419,11 @@ export default {
     },
     showUpgrade() {
       this.$confirm(
-        "注意: 切换版本只会替换服务的安装包, 如果有需要, 配置文件需要自己手工变更以匹配版本",
-        "升级",
+        this.$t("market.deploy.exists"),
+        this.$t("market.deploy.upgrade"),
         {
-          confirmButtonText: "升级",
-          cancelButtonText: "取消",
+          confirmButtonText: this.$t("market.deploy.exists"),
+          cancelButtonText: this.$t("market.deploy.cancel"),
           type: "warning",
         }
       )

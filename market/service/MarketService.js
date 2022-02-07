@@ -17,53 +17,8 @@
 const logger = require('../../logger');
 
 const ServerService = require('../../app/service/server/ServerService');
-// const DeployService = require('../../k8s/service/deploy/DeployService');
-// const CommonService = require('../../k8s/service/common/CommonService');
 
 const MarketService = {};
-
-// MarketService.install = async (deploy, paramsObj) => {
-
-// 	let ServerServant = {}
-
-// 	deploy.servants.forEach(obj => {
-// 		ServerServant[obj.name] = {
-// 			Name: obj.name,
-// 			Port: parseInt(obj.port),
-// 			Threads: parseInt(obj.thread),
-// 			Connections: parseInt(obj.connection),
-// 			Capacity: parseInt(obj.capacity),
-// 			IsTars: obj.isTars,
-// 			IsTcp: obj.isTcp,
-// 			Timeout: parseInt(obj.timeout),
-// 		}
-// 	});
-
-// 	let serverK8S = {};
-// 	serverK8S.HostPort = [];
-// 	deploy.hostPorts.forEach(item => {
-// 		serverK8S.HostPort.push({
-// 			NameRef: item.nameRef,
-// 			Port: item.port,
-// 		})
-// 	});
-
-// 	serverK8S.NodeSelector = deploy.nodeSelector || [];
-// 	serverK8S.Mounts = deploy.mounts || [];
-// 	serverK8S.HostIpc = deploy.hostIpc || false;
-// 	serverK8S.HostNetwork = deploy.hostNetwork || false;
-// 	serverK8S.Replicas = deploy.replicas || 1;
-// 	serverK8S.NotStacked = deploy.notStacked || true;
-// 	serverK8S.AbilityAffinity = deploy.abilityAffinity || 'AppOrServerPreferred';
-
-// 	let serverOption = {};
-// 	serverOption.ServerSubType = deploy.subtype || 'tars';
-// 	serverOption.ServerTemplate = deploy.template;
-// 	serverOption.ServerProfile = deploy.profile;
-// 	serverOption.AsyncThread = deploy.asyncThread;
-
-// 	return await DeployService.install(deploy, ServerServant, serverK8S, serverOption, paramsObj);
-// };
 
 MarketService.listInstall = async () => {
 
@@ -88,75 +43,12 @@ MarketService.get = async (appliation, server_name) => {
 
 	let items = await ServerService.getServerConfList(appliation, server_name);
 
-	// console.log(data);
-
-	// let items = [];
-
-	// data.forEach(d => {
-	// 	items.push(JSON.parse(d.source));
-	// });
-
 	return {
 		ret: 200,
 		msg: 'succ',
 		data: items
 	};
-	// let data = await CommonService.getObject("tservers", CommonService.getTServerName(app + "-" + name));
 
-	// delete data.body.metadata.managedFields;
-
-	// data.body.spec.k8s.mounts = data.body.spec.k8s.mounts.filter(mount => {
-	// 	return mount.name != "host-log-dir";
-	// });
-
-	// return {
-	// 	ret: 200,
-	// 	msg: 'succ',
-	// 	data: data.body
-	// };
 };
-
-// MarketService.upgrade = async (deploy, paramsObj) => {
-
-// 	let ServerServant = {}
-
-// 	deploy.servants.forEach(obj => {
-// 		ServerServant[obj.name] = {
-// 			Name: obj.name,
-// 			Port: parseInt(obj.port),
-// 			Threads: parseInt(obj.thread),
-// 			Connections: parseInt(obj.connection),
-// 			Capacity: parseInt(obj.capacity),
-// 			IsTars: obj.isTars,
-// 			IsTcp: obj.isTcp,
-// 			Timeout: parseInt(obj.timeout),
-// 		}
-// 	});
-
-// 	let serverK8S = {};
-// 	serverK8S.HostPort = [];
-// 	deploy.hostPorts.forEach(item => {
-// 		serverK8S.HostPort.push({
-// 			NameRef: item.nameRef,
-// 			Port: item.port,
-// 		})
-// 	});
-
-// 	serverK8S.NodeSelector = deploy.nodeSelector || [];
-// 	serverK8S.Mounts = deploy.mounts || [];
-// 	serverK8S.HostIpc = deploy.hostIpc || false;
-// 	serverK8S.HostNetwork = deploy.hostNetwork || false;
-// 	serverK8S.Replicas = deploy.replicas || 1;
-// 	serverK8S.NotStacked = deploy.notStacked || true;
-// 	serverK8S.AbilityAffinity = deploy.abilityAffinity || 'AppOrServerPreferred';
-
-// 	let serverOption = {};
-// 	serverOption.ServerSubType = deploy.subtype || 'tars';
-// 	serverOption.ServerTemplate = deploy.template;
-// 	serverOption.ServerProfile = deploy.profile;
-// 	serverOption.AsyncThread = deploy.asyncThread;
-
-// 	return await DeployService.upgrade(deploy, ServerServant, serverK8S, serverOption, paramsObj);
-// };
 
 module.exports = MarketService;

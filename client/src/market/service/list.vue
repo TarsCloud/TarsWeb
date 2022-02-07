@@ -82,22 +82,31 @@
       </el-col>
     </el-row>
 
-    <upgrade
-      v-if="upgradeServiceVersion"
-      ref="upgrade"
+    <upgradeK8S
+      v-if="upgradeServiceVersion && k8s"
+      ref="upgradeK8S"
       @upgradeSucc="upgradeSucc"
       :serviceVersion="upgradeServiceVersion"
-    ></upgrade>
+    ></upgradeK8S>
+
+    <upgradeNative
+      v-if="upgradeServiceVersion && !k8s"
+      ref="upgradeNative"
+      @upgradeSucc="upgradeSucc"
+      :serviceVersion="upgradeServiceVersion"
+    ></upgradeNative>
   </div>
 </template>
 
 <script>
-import upgrade from "./install";
+import upgradeK8S from "./installK8S";
+import upgradeNative from "./installNative";
 import moment from "moment";
 export default {
   name: "List",
   components: {
-    upgrade,
+    upgradeK8S,
+    upgradeNative,
   },
   data() {
     return {
@@ -284,8 +293,13 @@ export default {
           };
 
           this.isVisible[i + "_" + j] = false;
+
           this.$nextTick(() => {
-            this.$refs.upgrade.showUpgrade();
+            if (this.k8s) {
+              this.$refs.upgradeK8S.showUpgrade();
+            } else {
+              this.$refs.upgradeNative.showUpgrade();
+            }
           });
         })
         .catch((err) => {

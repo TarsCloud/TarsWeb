@@ -467,6 +467,7 @@
         "createPerson": "创建人",
         "baseInfo": "基本信息",
         "nextStep": "下一步",
+        "prevStep": "上一步",
         "admin": "管理员",
         "serial": "序号",
         "config": "配置",
@@ -563,8 +564,16 @@
         "hpa": "HPA管理",
         "resource": "资源管理",
         "yaml": "yaml编辑",
-        "network": "宿主资源",
+        "network": "宿主机资源",
         "disk": "磁盘管理",
+        "pull": "镜像拉取",
+        "stacked": "堆叠机制",
+        "stackedInfo": "开启堆叠机制后, 同一个服务可以部署在同一台宿主机上",
+        "stackedInvalid": "如果服务使用了宿主机资源, 则无法开启堆叠",
+        "launcherType": "启动机制",
+        "backgroundInfo": "后台服务死掉, 不会导致pod重建, tarsnode会自动拉取服务",
+        "foregroundInfo": "前台服务重启, 会导致pod重建",
+        "jobModel": "服务模型",
         "nodeSelect": "节点筛选",
         "copyNode": "副本伸缩",
         "viewEvent": "查看事件",
@@ -1215,7 +1224,8 @@
             "addDisk": "新增一组挂载",
             "delDisk": "删除当前组",
             "diskName": "磁盘名称",
-            "path": "挂载路径"
+            "path": "Pod映射路径",
+            "info": "(宿主机统一在: /usr/local/app/tars/host-mount/${namespace}/${service}目录下)"
         }
     },
     "nodes": {
@@ -2171,6 +2181,14 @@
             "deleteRepoSucc": "成功删除仓库",
             "deleteArtifactSucc": "成功删除Artifacts"
         },
+        "deploy": {
+            "exists": "注意: 切换版本只会替换服务的安装包, 如果有需要, 配置文件需要自己手工变更",
+            "existsK8S": "服务已经存在, 无法重复安装",
+            "upgradeInfo": "注意: 切换版本只会替换服务镜像版本, 如果有需要, 配置文件需要自己手工变更",
+            "upgrade": "升级",
+            "cancel": "取消"
+        },
+
         "userRet": {
             "0": "操作成功",
             "-1": "系统繁忙",
