@@ -111,9 +111,8 @@ export default {
           this.$loading.hide();
         });
     },
-    deleteArtifact(row) {
-      // console.log(row);
 
+    deleteArtifact(row) {
       this.$confirm(this.$t("market.repo.deleteArtifact"), "Hint", {
         confirmButtonText: this.$t("el.messagebox.confirm"),
         cancelButtonText: this.$t("market.deploy.cancel"),
