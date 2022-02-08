@@ -17,7 +17,7 @@
               style="float: right;"
               v-model="isVisible[i + '_' + j]"
             >
-              版本列表:
+              {{ $t("market.service.versionList") }}
               <el-select
                 v-if="serviceVersion"
                 v-model="version"
@@ -37,7 +37,7 @@
                 size="small"
                 style="line-height:25px; padding: 0px 10px 0 10px"
                 @click="changeVersion(i, j)"
-                >切换</el-button
+                >{{ $t("market.service.change") }}</el-button
               >
               <el-badge
                 slot="reference"
@@ -49,7 +49,7 @@
                   size="small"
                   style="line-height:25px; padding: 0px 10px 0 10px"
                   @click="fetchVersionListData(i, j)"
-                  >切换版本</el-button
+                  >{{ $t("market.service.changeVersion") }}</el-button
                 >
               </el-badge>
               <el-button
@@ -58,7 +58,7 @@
                 size="small"
                 style="line-height:25px; padding: 0px 10px 0 10px"
                 @click="fetchVersionListData(i, j)"
-                >切换版本</el-button
+                >{{ $t("market.service.changeVersion") }}</el-button
               >
             </el-popover>
           </div>

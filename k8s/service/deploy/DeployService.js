@@ -207,11 +207,6 @@ DeployService.upgrade = async (paramsObj) => {
 
     tServer = tServer.body;
 
-    console.log(tServer);
-    // let tServer = (await CommonService.getObject("tservers", CommonService.getTServerName(paramsObj.serviceVersion.installData.group + "-" + paramsObj.serviceVersion.installData.name))).body;
-
-    // await CommonService.updateTServer(tServer, ServerServant, ServerK8S, ServerOption);
-
     tServer.metadata.labels[CommonService.TServerCloudInstall] = paramsObj.serviceVersion.group + "-" + paramsObj.serviceVersion.name + '-' + paramsObj.serviceVersion.version;
 
     tServer.metadata.annotations = tServer.metadata.annotations || {};

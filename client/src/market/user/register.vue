@@ -7,7 +7,7 @@
       </h1>
 
       <el-form
-        label-width="120px"
+        label-width="200px"
         :model="login"
         ref="ruleRegisterForm"
         label-position="left"

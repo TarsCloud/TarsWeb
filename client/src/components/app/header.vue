@@ -248,6 +248,10 @@ export default {
     }).then((response) => {
       this.web_version = response.data.webVersion;
       this.framework_version = response.data.frameworkVersion;
+      this.$store.commit({
+        type: "version",
+        version: this.web_version,
+      });
     });
 
     window.header = this;

@@ -1,7 +1,11 @@
 <template>
-  <el-dialog title="仓库列表" :visible.sync="addDialogVisible" width="80%">
+  <el-dialog
+    :title="$t('market.repo.repoList')"
+    :visible.sync="addDialogVisible"
+    width="80%"
+  >
     <el-table :data="repos" border stripe style="width: 100%">
-      <el-table-column label="镜像仓库名称" min-width="200">
+      <el-table-column :label="$t('market.repo.repoName')" min-width="200">
         <template slot-scope="scope">
           <el-link type="primary" @click="showListArtifacts(scope.row.name)">{{
             scope.row.name
@@ -10,18 +14,26 @@
       </el-table-column>
       <el-table-column prop="artifact_count" label="Artifacts">
       </el-table-column>
-      <el-table-column prop="pull_count" label="下载数" min-width="50">
+      <el-table-column
+        prop="pull_count"
+        :label="$t('market.repo.downloadCount')"
+        min-width="50"
+      >
       </el-table-column>
-      <el-table-column prop="update_time" label="变更时间" min-width="200">
+      <el-table-column
+        prop="update_time"
+        :label="$t('market.repo.updateTime')"
+        min-width="200"
+      >
       </el-table-column>
-      <el-table-column label="操作" min-width="100">
+      <el-table-column :label="$t('operate.operates')" min-width="100">
         <template slot-scope="scope">
           <el-button
             type="danger"
             style="text-align: center"
             @click="deleteRepo(scope.row)"
             size="small"
-            >删除</el-button
+            >{{ $t("operate.delete") }}</el-button
           >
         </template>
       </el-table-column>
@@ -95,9 +107,9 @@ export default {
         });
     },
     deleteRepo(row) {
-      this.$confirm("确定删除该镜像仓库么?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm(this.$t("market.repo.deleteRepo"), "Hint", {
+        confirmButtonText: this.$t("el.messagebox.confirm"),
+        cancelButtonText: this.$t("market.deploy.cancel"),
         type: "warning",
       })
         .then(() => {

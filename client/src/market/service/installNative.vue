@@ -1,6 +1,10 @@
 <template>
   <div>
-    <el-dialog title="安装" :visible.sync="dialogVisible" width="80%">
+    <el-dialog
+      :title="$t('market.service.install')"
+      :visible.sync="dialogVisible"
+      width="80%"
+    >
       <let-form
         ref="form"
         inline
@@ -14,7 +18,6 @@
             v-model="selectNodeList"
             size="small"
             multiple
-            placeholder="请选择"
             @change="nodeChange"
           >
             <let-option
@@ -656,7 +659,7 @@ export default {
       this.$refs.publishStatus.savePublishServer(this.publishModal);
     },
     publishService(application, server_name) {
-      const loading = this.$Loading.show("正在安装中, 请耐心等候...");
+      const loading = this.$Loading.show(this.$t("market.service.installing"));
 
       // console.log("start", this.deployObj);
       let url = "";

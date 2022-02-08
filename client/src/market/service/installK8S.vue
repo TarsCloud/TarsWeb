@@ -1,6 +1,10 @@
 <template>
   <div>
-    <el-dialog title="安装" :visible.sync="dialogVisible" width="80%">
+    <el-dialog
+      :title="$t('market.service.install')"
+      :visible.sync="dialogVisible"
+      width="80%"
+    >
       <let-form
         ref="form"
         inline

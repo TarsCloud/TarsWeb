@@ -17,10 +17,16 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+Vue.use(Router);
+
 // 重写路由的push方法
-const routerPush = VueRouter.prototype.push;
-VueRouter.prototype.push = function push(location) {
+const routerPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(error => error)
+}
+const routerReplace = Router.prototype.replace;
+Router.prototype.replace = function replace(location) {
+  return routerReplace.call(this, location).catch(error => error)
 }
 
 // 服务管理
@@ -54,22 +60,6 @@ import OperationTfc from '@/k8s/operation/frameworkConfig';
 // 网关
 import OperationGateway from '@/gateway/index';
 
-// // 市场
-// import MarketIndex from '@/market/index';
-// import Market from '@/market/market';
-// import List from '@/market/service/list';
-// import ServiceInfo from '@/market/service/index';
-
-// import Login from '@/market/user/login';
-// import Register from '@/market/user/register';
-// import Activate from '@/market/user/activate';
-// import Forget from '@/market/user/forget';
-// import ModifyPass from '@/market/user/modifyPass';
-// import ResetPass from '@/market/user/resetPass';
-
-// import RepoPass from '@/market/repository/repoPass';
-// import ListProject from '@/market/repository/index';
-
 // 市场
 import {
   marketSso,
@@ -78,9 +68,7 @@ import {
   marketList
 } from './inc/market';
 
-import VueRouter from 'vue-router';
 
-Vue.use(Router);
 
 export default new Router({
   routes: [{

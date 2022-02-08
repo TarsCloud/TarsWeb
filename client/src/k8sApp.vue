@@ -33,6 +33,10 @@ export default {
       url: "/k8s_version",
     }).then((response) => {
       this.web_version = response.data;
+      this.$store.commit({
+        type: "version",
+        version: this.web_version,
+      });
     });
   },
 };
