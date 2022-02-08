@@ -79,7 +79,11 @@
 
     <addProject ref="addProject" @addProjectSucc="addProjectSucc"></addProject>
     <addMember ref="addMember" @addMemberSucc="addMemberSucc"></addMember>
-    <listRepo ref="listRepo" @showListArtifacts="showListArtifacts"></listRepo>
+    <listRepo
+      ref="listRepo"
+      @showListArtifacts="showListArtifacts"
+      @closeRepo="closeRepo"
+    ></listRepo>
     <listArtifacts ref="listArtifacts"></listArtifacts>
   </div>
 </template>
@@ -116,10 +120,6 @@ export default {
         vm.$loginUtil.onLogin(false);
       } else {
         vm.$loginUtil.onLogin(true);
-
-        // if (vm.serviceList.length == 0) {
-        //   vm.fetchServiceData();
-        // }
       }
     });
   },
@@ -140,6 +140,9 @@ export default {
       this.fetchProjects();
     },
     addProjectSucc() {
+      this.fetchProjects();
+    },
+    closeRepo() {
       this.fetchProjects();
     },
     deleteMember(row, uid) {
@@ -202,7 +205,7 @@ export default {
       this.fetchProjects();
     },
     fetchProjects() {
-      this.$loading.show();
+      // this.$loading.show();
       this.$market
         .call("cloud-harbor", "getProjectList", {
           page_size: this.page_size,
@@ -218,10 +221,10 @@ export default {
             });
           });
           this.total = data.info.total;
-          this.$loading.hide();
+          // this.$loading.hide();
         })
         .catch((err) => {
-          this.$loading.hide();
+          // this.$loading.hide();
           this.$message({
             message: this.$t("market.repoRet." + err.tars_ret || "-1"),
             type: "error",

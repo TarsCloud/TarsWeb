@@ -3,6 +3,7 @@
     :title="$t('market.repo.repoList')"
     :visible.sync="addDialogVisible"
     width="80%"
+    @close="closeRepo"
   >
     <el-table :data="repos" border stripe style="width: 100%">
       <el-table-column :label="$t('market.repo.repoName')" min-width="200">
@@ -73,6 +74,9 @@ export default {
       this.project = project;
       this.fetchRepoList();
       this.addDialogVisible = true;
+    },
+    closeRepo() {
+      this.$emit("closeRepo");
     },
     showListArtifacts(repo) {
       this.$emit("showListArtifacts", this.project, repo);
