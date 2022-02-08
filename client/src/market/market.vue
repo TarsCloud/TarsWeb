@@ -156,44 +156,6 @@ export default {
           });
         });
     },
-    // onLogin(isLogin) {
-    //   if (!isLogin) {
-    //     this.$router.push("/market/user/login");
-    //   } else {
-    //     this.uid = window.localStorage.uid;
-    //     this.$store.commit({
-    //       type: "marketUid",
-    //       uid: this.uid,
-    //     });
-
-    //     this.fetchServiceData();
-    //   }
-    // },
-    // checkLogin() {
-    //   let ticket = window.localStorage.ticket;
-    //   if (!ticket) {
-    //     this.onLogin(false);
-    //     return;
-    //   }
-    //   this.$market
-    //     .call("cloud-user", "isLogin", {
-    //       ticket: ticket,
-    //     })
-    //     .then((data) => {
-    //       if (!data.uid) {
-    //         this.onLogin(false);
-    //       } else {
-    //         window.localStorage.uid = data.uid;
-    //         this.onLogin(true);
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       this.$message({
-    //         message: err,
-    //         type: "error",
-    //       });
-    //     });
-    // },
     checkVersion(version) {
       this.$market
         .call("cloud-market", "checkVersion", {
@@ -204,7 +166,10 @@ export default {
         .then((data) => {
           if (data.info.code != 0) {
             this.$message({
-              message: data.info.info_cn,
+              message:
+                this.$cookie.get("locale") == "en"
+                  ? data.info.info_en
+                  : data.info.info_cn,
               type: "error",
             });
           }
@@ -221,7 +186,6 @@ export default {
   created() {},
   mounted() {
     this.k8s = location.pathname == "/k8s.html";
-    // this.checkLogin();
   },
 };
 </script>
