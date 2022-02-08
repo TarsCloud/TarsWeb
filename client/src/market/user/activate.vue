@@ -13,7 +13,7 @@
       </div>
 
       <el-form
-        label-width="80px"
+        label-width="150px"
         :model="login"
         ref="ruleForgetForm"
         label-position="left"
@@ -45,7 +45,7 @@
           size="small"
           round
           @click="activate"
-          >{{ $t("market.login.activate") }}</el-button
+          >{{ $t("market.login.activated") }}</el-button
         >
         <br />
         <br />
@@ -104,7 +104,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route.params);
+    // console.log(this.$route.params);
 
     this.login.activeCode = this.$route.params.uid;
   },

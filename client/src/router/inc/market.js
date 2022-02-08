@@ -17,10 +17,11 @@ import ListProject from '@/market/repository/index';
 
 const marketSso = {
     path: '/market/user',
-    name: 'MarketIndex',
+    name: 'MarketUser',
     component: MarketIndex,
     children: [{
         path: 'login',
+        name: 'MarketLogin',
         component: Login,
     }, {
         path: 'register',
@@ -55,6 +56,7 @@ const marketRepo = {
 
 const marketService = {
     path: '/market/service',
+    name: 'MarketService',
     component: Market,
     children: [{
         path: ':group/:name/:version',
@@ -67,6 +69,7 @@ const marketList = {
     component: Market,
     children: [{
         path: '/',
+        name: 'MarketList',
         component: List
     }]
 }

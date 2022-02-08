@@ -2138,6 +2138,7 @@
             "register": "注册",
             "and": "并",
             "activated": "激活",
+            "activateSuccAndRedirect": "账号激活成功, 请登录",
             "findPasswordSucc": "请查收邮件, 并使用激活码重置密码",
             "registerSucc": "请输入邮件中的激活码完成账号激活",
             "inputOldPass": "请输入旧密码",
@@ -2164,6 +2165,22 @@
             "activate": "激活"
         },
         "repo": {
+            "auth": "授权用户",
+            "project": "添加项目",
+            "projectName": "项目名称",
+            "userName": "用户名",
+            "inputProjectName": "请输入项目名称",
+            "repoCount": "镜像仓库数",
+            "developer": "开发者",
+            "inputUser": "请输入用户名",
+            "updateTime": "更新时间",
+            "pushTime": "推送时间",
+            "pullTime": "拉取时间",
+            "deleteArtifact": "确定删除该Artifact么?",
+            "repoList": "仓库列表",
+            "repoName": "镜像仓库名称",
+            "downloadCount": "下载数",
+            "deleteRepo": "确定删除该镜像仓库么",
             "resetPass": "重置仓库密码",
             "password": "密码",
             "passwordInfo": "> 8 chars with at least 1 uppercase/lowercase/number",
@@ -2182,13 +2199,29 @@
             "deleteArtifactSucc": "成功删除Artifacts"
         },
         "deploy": {
-            "exists": "注意: 切换版本只会替换服务的安装包, 如果有需要, 配置文件需要自己手工变更",
+            "exists": "注意: 切换版本只会替换服务的安装包, 配置文件需要自己手工变更",
             "existsK8S": "服务已经存在, 无法重复安装",
-            "upgradeInfo": "注意: 切换版本只会替换服务镜像版本, 如果有需要, 配置文件需要自己手工变更",
+            "upgradeInfo": "注意: 切换版本只会替换服务镜像版本, 配置文件需要自己手工变更",
             "upgrade": "升级",
             "cancel": "取消"
         },
-
+        "service": {
+            "lang": "语言",
+            "developer": "贡献者",
+            "project": "仓库",
+            "create": "创建",
+            "update": "更新",
+            "install": "安装",
+            "service": "服务说明",
+            "deploy": "部署文件",
+            "protocol": "协议文件",
+            "changelist": "变更历史",
+            "log": "日志",
+            "installing": "正在安装中, 请耐心等候...",
+            "versionList": "版本列表",
+            "change": "切换",
+            "changeVersion": "切换版本"
+        },
         "userRet": {
             "0": "操作成功",
             "-1": "系统繁忙",

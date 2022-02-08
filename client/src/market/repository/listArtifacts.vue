@@ -17,18 +17,26 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="push_time" label="推送时间" min-width="100">
+      <el-table-column
+        prop="push_time"
+        label="$t('market.repo.pushTime')"
+        min-width="100"
+      >
       </el-table-column>
-      <el-table-column prop="pull_time" label="拉取时间" min-width="100">
+      <el-table-column
+        prop="pull_time"
+        label="$t('market.repo.pullTime')"
+        min-width="100"
+      >
       </el-table-column>
-      <el-table-column label="操作" min-width="80">
+      <el-table-column :label="$t('operate.operates')" min-width="80">
         <template slot-scope="scope">
           <el-button
             type="danger"
             style="text-align: center"
             @click="deleteArtifact(scope.row)"
             size="small"
-            >删除</el-button
+            >{{ $t("operate.delete") }}</el-button
           >
         </template>
       </el-table-column>
@@ -106,9 +114,9 @@ export default {
     deleteArtifact(row) {
       // console.log(row);
 
-      this.$confirm("确定取消该Artifact么?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm(this.$t("market.repo.deleteArtifact"), "Hint", {
+        confirmButtonText: this.$t("el.messagebox.confirm"),
+        cancelButtonText: this.$t("market.deploy.cancel"),
         type: "warning",
       })
         .then(() => {

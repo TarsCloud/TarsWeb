@@ -4,7 +4,7 @@
     <el-card class="box-card market_page">
       <h1 class="top_txt">{{ $t("market.login.resetPass") }}</h1>
       <el-form
-        label-width="120px"
+        label-width="200px"
         :model="data"
         ref="ruleForm"
         label-position="left"

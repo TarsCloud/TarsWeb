@@ -74,12 +74,33 @@ export default {
       k8s: true,
     };
   },
-  // watch:{
-  //   $route(to,from){
+  computed: {
+    webVersion() {
+      return this.$store.state.version;
+    },
+  },
+  watch: {
+    webVersion(newVal, oldVal) {
+      if (newVal.version && newVal.version != oldVal.version) {
+        this.checkVersion(newVal.version);
+      }
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      let ticket = window.localStorage.ticket;
 
-  //     this.checkLogin();
-  //   }
-  // },
+      if (!ticket) {
+        vm.$loginUtil.onLogin(false);
+      } else {
+        vm.$loginUtil.onLogin(true);
+
+        if (vm.serviceList.length == 0) {
+          vm.fetchServiceData();
+        }
+      }
+    });
+  },
   methods: {
     iconLoading() {
       const that = this;
@@ -135,35 +156,57 @@ export default {
           });
         });
     },
-    onLogin(isLogin) {
-      if (!isLogin) {
-        this.$router.push("/market/user/login");
-      } else {
-        this.uid = window.localStorage.uid;
-        this.$store.commit({
-          type: "marketUid",
-          uid: this.uid,
-        });
+    // onLogin(isLogin) {
+    //   if (!isLogin) {
+    //     this.$router.push("/market/user/login");
+    //   } else {
+    //     this.uid = window.localStorage.uid;
+    //     this.$store.commit({
+    //       type: "marketUid",
+    //       uid: this.uid,
+    //     });
 
-        this.fetchServiceData();
-      }
-    },
-    checkLogin() {
-      let ticket = window.localStorage.ticket;
-      if (!ticket) {
-        this.onLogin(false);
-        return;
-      }
+    //     this.fetchServiceData();
+    //   }
+    // },
+    // checkLogin() {
+    //   let ticket = window.localStorage.ticket;
+    //   if (!ticket) {
+    //     this.onLogin(false);
+    //     return;
+    //   }
+    //   this.$market
+    //     .call("cloud-user", "isLogin", {
+    //       ticket: ticket,
+    //     })
+    //     .then((data) => {
+    //       if (!data.uid) {
+    //         this.onLogin(false);
+    //       } else {
+    //         window.localStorage.uid = data.uid;
+    //         this.onLogin(true);
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       this.$message({
+    //         message: err,
+    //         type: "error",
+    //       });
+    //     });
+    // },
+    checkVersion(version) {
       this.$market
-        .call("cloud-user", "isLogin", {
-          ticket: ticket,
+        .call("cloud-market", "checkVersion", {
+          req: {
+            web: version,
+          },
         })
         .then((data) => {
-          if (!data.uid) {
-            this.onLogin(false);
-          } else {
-            window.localStorage.uid = data.uid;
-            this.onLogin(true);
+          if (data.info.code != 0) {
+            this.$message({
+              message: data.info.info_cn,
+              type: "error",
+            });
           }
         })
         .catch((err) => {
@@ -174,10 +217,11 @@ export default {
         });
     },
   },
+
   created() {},
   mounted() {
     this.k8s = location.pathname == "/k8s.html";
-    this.checkLogin();
+    // this.checkLogin();
   },
 };
 </script>

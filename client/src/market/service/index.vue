@@ -27,8 +27,9 @@
             </div>
             <div style="margin-bottom:5px">
               <span style="margin-bottom:10px; margin-right:10px">
-                <el-tag effect="dark" size="mini" style=" margin-right:5px"
-                  >语言</el-tag
+                <el-tag effect="dark" size="mini" style=" margin-right:5px">{{
+                  $t("market.service.lang")
+                }}</el-tag
                 ><el-tag effect="plain" type="success" size="mini">{{
                   serviceVersion.lang
                 }}</el-tag>
@@ -36,8 +37,9 @@
             </div>
             <div style="margin-bottom:5px">
               <span style="margin-bottom:10px; margin-right:10px">
-                <el-tag effect="dark" size="mini" style=" margin-right:5px"
-                  >贡献者</el-tag
+                <el-tag effect="dark" size="mini" style=" margin-right:5px">{{
+                  $t("market.service.developer")
+                }}</el-tag
                 ><el-tag
                   effect="plain"
                   type="success"
@@ -56,7 +58,7 @@
                   type="warning"
                   size="mini"
                   style=" margin-right:5px"
-                  >仓库</el-tag
+                  >{{ $t("market.service.project") }}</el-tag
                 ><el-tag
                   effect="plain"
                   type="warning"
@@ -74,7 +76,7 @@
                   size="mini"
                   type="danger"
                   style=" margin-right:5px"
-                  >创建</el-tag
+                  >{{ $t("market.service.create") }}</el-tag
                 ><el-tag effect="plain" type="danger" size="mini">{{
                   serviceVersion.create_time
                 }}</el-tag>
@@ -86,7 +88,7 @@
                   size="mini"
                   type="danger"
                   style=" margin-right:5px"
-                  >更新</el-tag
+                  >{{ $t("market.service.update") }}</el-tag
                 ><el-tag effect="plain" type="danger" size="mini">{{
                   serviceVersion.update_time
                 }}</el-tag>
@@ -104,7 +106,7 @@
               style="margin-top:10px; cursor: pointer"
               type="danger"
               @click="showInstall"
-              >安装</el-tag
+              >{{ $t("market.service.install") }}</el-tag
             >
           </span>
         </el-col>
@@ -113,33 +115,33 @@
 
     <el-main v-if="serviceVersion">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="服务说明" name="readme">
+        <el-tab-pane :label="$t('market.service.service')" name="readme">
           <markdown
             v-if="activeName == 'readme'"
             :serviceVersion="serviceVersion"
             :file="getReadme(serviceVersion)"
           ></markdown>
         </el-tab-pane>
-        <el-tab-pane label="部署文件" name="deploy">
+        <el-tab-pane :label="$t('market.service.deploy')" name="deploy">
           <deploy
             v-if="activeName == 'deploy'"
             :serviceVersion="serviceVersion"
           ></deploy>
         </el-tab-pane>
-        <el-tab-pane label="协议文件" name="protocols">
+        <el-tab-pane :label="$t('market.service.protocol')" name="protocols">
           <protocols
             v-if="activeName == 'protocols'"
             :serviceVersion="serviceVersion"
           ></protocols>
         </el-tab-pane>
-        <el-tab-pane label="变更历史" name="changelist">
+        <el-tab-pane :label="$t('market.service.changelist')" name="changelist">
           <markdown
             v-if="activeName == 'changelist'"
             :serviceVersion="serviceVersion"
             :file="serviceVersion.changelist"
           ></markdown>
         </el-tab-pane>
-        <el-tab-pane label="日志" name="logs">
+        <el-tab-pane :label="$t('market.service.log')" name="logs">
           <logs
             v-if="activeName == 'logs'"
             :serviceVersion="serviceVersion"

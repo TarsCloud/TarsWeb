@@ -17,6 +17,18 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+Vue.use(Router);
+
+// 重写路由的push方法
+const routerPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error => error)
+}
+const routerReplace = Router.prototype.replace;
+Router.prototype.replace = function replace(location) {
+  return routerReplace.call(this, location).catch(error => error)
+}
+
 // 服务管理
 import Server from '@/pages/server/dcacheIndex';
 
@@ -70,14 +82,13 @@ import OperationManageRouterServer from '@/pages/dcache/routerManage/server'
 import OperationManageRouterTransfer from '@/pages/dcache/routerManage/transfer'
 
 
-Vue.use(Router);
 
 export default new Router({
-    routes: [{
+  routes: [{
       path: '/server',
       name: 'Server',
       component: Server,
-            children: [{
+      children: [{
           path: ':treeid/manage',
           component: dcacheServerManage,
         },
@@ -129,13 +140,12 @@ export default new Router({
       name: 'Operation',
       component: Operation,
       redirect: '/operation/apply',
-            children: [{
+      children: [{
           path: 'apply',
           name: 'apply',
           component: Apply,
           redirect: '/operation/apply/createApply',
-          children: [
-            {
+          children: [{
               path: 'createApply',
               component: CreateApply,
             },
@@ -153,8 +163,7 @@ export default new Router({
           path: 'module',
           component: Module,
           redirect: '/operation/module/createModule',
-          children: [
-            {
+          children: [{
               path: 'createModule',
               component: CreateModule,
             },
@@ -184,8 +193,7 @@ export default new Router({
       name: 'releasePackage',
       component: releasePackage,
       redirect: '/releasePackage/proxyList',
-      children: [
-        {
+      children: [{
           path: 'proxyList',
           component: proxyList,
         },
@@ -212,38 +220,36 @@ export default new Router({
       name: 'operationManage',
       component: OperationManage,
       redirect: '/operationManage/expand',
-      children: [
-        {
+      children: [{
           path: 'mainBackup',
           component: MainBackup,
         },
         {
-                    path: 'router',
-                    component: OperationManageRouter,
-                    children: [
-                        {
-                            path: ':treeid/module',
-                            component: OperationManageRouterModule,
-                        },
-                        {
-                            path: ':treeid/record',
-                            component: OperationManageRouterRecord,
-                        },
-                        {
-                            path: ':treeid/group',
-                            component: OperationManageRouterGroup,
-                        },
-                        {
-                            path: ':treeid/server',
-                            component: OperationManageRouterServer,
-                        },
-                        {
-                            path: ':treeid/transfer',
-                            component: OperationManageRouterTransfer,
-                        },
-                    ]
-                },
-                {
+          path: 'router',
+          component: OperationManageRouter,
+          children: [{
+              path: ':treeid/module',
+              component: OperationManageRouterModule,
+            },
+            {
+              path: ':treeid/record',
+              component: OperationManageRouterRecord,
+            },
+            {
+              path: ':treeid/group',
+              component: OperationManageRouterGroup,
+            },
+            {
+              path: ':treeid/server',
+              component: OperationManageRouterServer,
+            },
+            {
+              path: ':treeid/transfer',
+              component: OperationManageRouterTransfer,
+            },
+          ]
+        },
+        {
           path: ':type',
           component: OperationManageTypeList,
         },
@@ -254,7 +260,10 @@ export default new Router({
       redirect: '/server',
     },
   ],
-  scrollBehavior (to, from, savedPosition) {
-    return {x: 0, y: 0}
+  scrollBehavior(to, from, savedPosition) {
+    return {
+      x: 0,
+      y: 0
+    }
   }
 });
