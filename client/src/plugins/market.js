@@ -27,6 +27,8 @@ if (process.env.NODE_ENV != "development") {
   Ajax.ServerUrl.set('https://api.dev.tarsyun.com/json');
 }
 
+Ajax.ServerUrl.set('https://api.k.tarsyun.com/json');
+
 Ajax.ResultHandler.set((result) => {
   if (result && result.tars_ret === 0) {
     return true;
