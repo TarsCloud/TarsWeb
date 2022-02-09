@@ -7,7 +7,7 @@ import "xterm/css/xterm.css";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 // import { AttachAddon } from "xterm-addon-attach";
-import { WebLinksAddon } from "xterm-addon-web-links";
+// import { WebLinksAddon } from "xterm-addon-web-links";
 
 export default {
   data() {
@@ -110,7 +110,7 @@ export default {
       this.resizeScreen();
 
       //加载weblink组件
-      this.term.loadAddon(new WebLinksAddon());
+      // this.term.loadAddon(new WebLinksAddon());
 
       //监听resize,当窗口拖动的时候,监听事件,实时改变xterm窗口
       window.addEventListener(
@@ -122,17 +122,10 @@ export default {
       //聚焦
       this.term.focus();
 
-      // 支持输入与粘贴方法
-      let _this = this;
+      let that = this;
       this.term.onData(function(key) {
-        //这里key值是你输入的值，数据格式一定要找后端要！！！！
         let order = { operation: "stdin", data: key };
-        _this.socket.onsend(JSON.stringify(order));
-
-        if (!_this.resize) {
-          _this.resize = true;
-          _this.resizeScreen();
-        }
+        that.socket.onsend(JSON.stringify(order));
       });
     },
     init(url) {
@@ -171,6 +164,11 @@ export default {
     },
     getMessage: function(msg) {
       // console.log(msg);
+
+      if (!this.resize) {
+        this.resize = true;
+        this.resizeScreen();
+      }
 
       const data = msg.data && JSON.parse(msg.data);
       if (data.operation === "stdout") {
