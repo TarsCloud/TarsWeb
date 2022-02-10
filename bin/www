@@ -96,8 +96,8 @@ let startServer = async () => {
 			ExecOperator.start();
 
 			if (webConf.isEnableK8s()) {
-
 				ExecOperator.register("echo-protocol", require('../execPod'));
+				ExecOperator.register("log-protocol", require('../execLog'));
 			}
 
 			console.log(`webConf.enable: ${webConf.enable}`);

@@ -664,9 +664,9 @@ export default {
       // console.log("start", this.deployObj);
       let url = "";
       if (window.location.protocol == "http:") {
-        url = `ws://${window.location.host}/upload?app=${application}&server=${server_name}&uid=${window.localStorage.localUid}`;
+        url = `ws://${window.location.host}/web/upload?app=${application}&server=${server_name}&uid=${window.localStorage.localUid}`;
       } else if (window.location.protocol == "https:") {
-        url = `wss://${window.location.host}/upload?app=${application}&server=${server_name}&uid=${window.localStorage.localUid}`;
+        url = `wss://${window.location.host}/web/upload?app=${application}&server=${server_name}&uid=${window.localStorage.localUid}`;
       } else {
         console.log("unknown protocol", window.location);
         return;

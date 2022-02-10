@@ -324,8 +324,6 @@ export default {
           this.fetchDeployObj(() => {
             this.upgradeK8S();
           });
-          // console.log(this.serviceVersion);
-          // this.upgradeK8S();
         })
         .catch(() => {});
     },
@@ -363,11 +361,9 @@ export default {
           });
         });
     },
-
-    //发布
     doInstall() {
-      this.$confirm("确定安装该服务么?", "提示", {
-        confirmButtonText: "确定",
+      this.$confirm(this.$t("market.deploy.install"), "Hint", {
+        confirmButtonText: this.$t("market.deploy.confirm"),
         cancelButtonText: this.$t("market.deploy.cancel"),
         type: "warning",
       })
@@ -386,6 +382,7 @@ export default {
                 type: "success",
               });
               this.dialogVisible = false;
+              this.$refs.install.closeDetailModel();
             })
             .catch((err) => {
               loading.hide();

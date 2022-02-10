@@ -169,7 +169,8 @@ export default {
         location.href = "/pass.html";
       }
       if (command == "quit") {
-        location.href = "/logout";
+        location.href = "/pages/server/api/logout";
+        // location.href = "/logout";
       }
     },
     handleMarketCommand(command) {
@@ -244,7 +245,7 @@ export default {
 
     Axios.create({ baseURL: "/" })({
       method: "get",
-      url: "/web_version",
+      url: "/web/web_version",
     }).then((response) => {
       this.web_version = response.data.webVersion;
       this.framework_version = response.data.frameworkVersion;

@@ -35,7 +35,7 @@ const ExecOperator = function () {
     };
 
     this.register = (protocol, func) => {
-        console.log(this, this.registers, protocol);
+        console.log(protocol);
         this.registers[protocol] = func;
     };
 }

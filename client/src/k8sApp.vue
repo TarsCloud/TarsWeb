@@ -30,7 +30,7 @@ export default {
   mounted() {
     Axios.create({ baseURL: "/" })({
       method: "get",
-      url: "/k8s_version",
+      url: "/web/k8s_version",
     }).then((response) => {
       this.web_version = response.data;
       this.$store.commit({

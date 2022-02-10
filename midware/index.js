@@ -51,7 +51,7 @@ const {
 	paramsDealMidware,
 	paramsCheckMidware
 } = require('./paramsMidware');
-const logger = require('../logger');
+// const logger = require('../logger');
 
 const gatewayDaoMidware = require('./gatewayDaoMidware');
 
@@ -95,6 +95,7 @@ marketApiConf.forEach(conf => apiConf.push(conf));
 
 //页面类型路由
 const pageRouter = new Router();
+pageRouter.prefix('/web');
 getRouter(pageRouter, pageApiConf);
 
 //节点服务器过来的请求, 获取安装tarsnode的脚本
