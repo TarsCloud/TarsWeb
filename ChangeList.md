@@ -6,6 +6,7 @@
 - Fixed k8s access to pod
 - Improved k8s management interface details
 - Delete t_server_patchs not use field
+- Fix db_user_system t_token max key length is 767 bytes
 - Merge changelist
 
 ### cn
@@ -14,6 +15,7 @@
 - 修复了 k8s 进入 pod 的功能
 - 完善了 k8s 管理界面细节
 - 删除了 t_server_patchs 不用到的字段
+- 修改 t_token 字段的长度的问题
 - 合并 changelist
 
 ## 20211218(2.4.23)
