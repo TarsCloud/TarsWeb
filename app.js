@@ -82,7 +82,7 @@ preMidware.forEach((midware) => {
 //app.use
 //登录校验
 let loginConf = require('./config/loginConf.js');
-loginConf.ignore = loginConf.ignore.concat(['/web_version', '/static', '/captcha', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico', '/pages/server/api/get_locale']);
+loginConf.ignore = loginConf.ignore.concat(['/web', '/static', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico']);
 loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login', '/pages/server/api/isEnableLdap']);
 
 //不需要登录, 环境变量优先

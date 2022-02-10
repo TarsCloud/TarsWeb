@@ -558,6 +558,10 @@
         "nodeSelect": "Node selection",
         "copyNode": "copy of the slip",
         "viewEvent": "View events",
+        "wrap": "Auto wrap",
+        "previous": "Previous containers",
+        "clear": "Clear",
+        "close": "Close",
         "addTestCase": "add testcase",
         "testCaseList": "testcase list"
     },
@@ -2178,6 +2182,8 @@
             "exists": "Note: changing the version will only replace the installation package of the service, and the configuration file needs to be changed manually",
             "existsK8S": "The service already exists and cannot be installed again",
             "upgradeInfo": "Note: changing the version will only replace the service image version, and the configuration file needs to be changed manually",
+            "install": "Confirm install this service?",
+            "confirm": "Confirm",
             "upgrade": "Upgrade",
             "cancel": "Cancel"
         },
@@ -2227,15 +2233,6 @@
             "-4": "The password is illegal. Please change a password",
             "-5": "The name has already been used. Please replace it ",
             "-6": "Failed to delete the item. The warehouse under the item must be empty"
-        }
-    },
-    "el": {
-        "messagebox": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
-        },
-        "table": {
-            "emptyText": "No data~~"
         }
     }
 }

@@ -18,11 +18,15 @@ import Vue from "vue";
 import VueI18n from "vue-i18n";
 import VueCookie from "vue-cookie";
 import Ajax from '@/plugins/ajax';
+import locale_zh from 'element-ui/lib/locale/lang/zh-CN';
+import locale_en from 'element-ui/lib/locale/lang/en';
 
 Vue.use(VueI18n);
 Vue.use(VueCookie);
 
 export const i18n = new VueI18n({});
+i18n.setLocaleMessage('cn', locale_zh);
+i18n.setLocaleMessage('en', locale_en);
 
 export var localeMessages = [];
 
@@ -32,7 +36,7 @@ export function loadLang() {
       let locale = VueCookie.get('locale');
       if (Object.prototype.toString.call(locales) == '[object Object]') {
         for (var localeCode in locales) {
-          i18n.setLocaleMessage(localeCode, locales[localeCode]);
+          i18n.mergeLocaleMessage(localeCode, locales[localeCode]);
           localeMessages.push({
             localeCode: localeCode,
             localeName: locales[localeCode]['localeName'],
@@ -49,5 +53,3 @@ export function loadLang() {
     });
   })
 };
-
-

@@ -297,9 +297,6 @@ export default {
       this.deployObj.hostNetwork = data.HostNetwork;
     },
     submit() {
-      // console.log(this.deployObj);
-      // let page=["replicas", "pull", "stacked", "launcherType", ""];
-      // console.log(this.$refs);
       for (let ref in this.$refs) {
         // console.log(ref);
         if (ref != "yamlEdit") {
@@ -310,8 +307,6 @@ export default {
       let obj = jsYaml.load(this.yamlContent);
 
       this.deployObj = Object.assign(this.deployObj, obj);
-
-      // console.log(this.deployObj);
 
       this.$emit("doInstall", this.deployObj);
     },

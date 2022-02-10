@@ -197,6 +197,45 @@ K8sController.ServerK8SCheckHostPort = async (ctx) => {
     }
 }
 
+K8sController.DescribePod = async (ctx) => {
+    try {
+        let PodName = ctx.paramsObj.PodName;
+
+        let data = await CommonService.describePod(PodName);
+
+        console.log(data.body);
+
+        ctx.makeResObj(200, '', data.body);
+    } catch (e) {
+        logger.error('[PodName]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+}
+
+// K8sController.ReadPodLog = async (ctx) => {
+//     try {
+//         // let ContainerName = ctx.paramsObj.ContainerName;
+//         let PodName = ctx.paramsObj.PodName;
+
+//         console.log(PodName);
+
+//         let data = await CommonService.describePod(PodName);
+
+//         // console.log(data.body);
+
+//         console.log(data.body.spec.containers[0].name);
+//         data = await CommonService.readPodLog(data.body.spec.containers[0].name, PodName);
+
+//         // console.log(data.body);
+
+//         ctx.makeResObj(200, '', {});
+//     } catch (e) {
+//         logger.error('[PodName]', e.body ? e.body.message : e, ctx)
+//         ctx.makeResObj(500, e.body ? e.body.message : e);
+//     }
+// }
+
+
 K8sController.getObject = async (ctx) => {
     try {
         let params = ctx.paramsObj

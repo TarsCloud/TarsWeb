@@ -36,9 +36,9 @@ export default {
     let query = window.location.search.substring(1);
 
     if (window.location.protocol == "http:") {
-      this.init("ws://" + window.location.host + "/shell?" + query);
+      this.init("ws://" + window.location.host + "/web/shell?" + query);
     } else if (window.location.protocol == "https:") {
-      this.init("wss://" + window.location.host + "/shell?" + query);
+      this.init("wss://" + window.location.host + "/web/shell?" + query);
     } else {
       console.log("unknown protocol", window.location);
     }

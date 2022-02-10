@@ -48,7 +48,7 @@
     </div>
 
     <div class="right-view">
-      <router-view ref="childView"></router-view>
+      <router-view ref="childView" v-if="isRouterAlive"></router-view>
     </div>
   </div>
 </template>
@@ -71,6 +71,7 @@ export default {
       total: 0,
       offset: 0,
       limit: 20,
+      isRouterAlive: false,
       k8s: true,
     };
   },
@@ -89,11 +90,14 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       let ticket = window.localStorage.ticket;
+      vm.isRouterAlive = false;
 
       if (!ticket) {
         vm.$loginUtil.onLogin(false);
       } else {
         vm.$loginUtil.onLogin(true);
+
+        vm.isRouterAlive = true;
 
         if (vm.serviceList.length == 0) {
           vm.fetchServiceData();

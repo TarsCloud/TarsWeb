@@ -163,7 +163,7 @@ export default {
         location.href = "/pass.html";
       }
       if (command == "quit") {
-        location.href = "/logout";
+        location.href = "/pages/server/api/logout";
       }
     },
     handleMarketCommand(command) {

@@ -83,58 +83,25 @@ module.exports = {
     port: 8088,
     //ajax请求代理
     proxy: {
-      "/shell": {
-        target: `ws://127.0.0.1:${server_port}`,
-        ws: true,
-        secure: false,
-        logLevel: 'debug',
-      },
-      "/upload": {
-        target: `ws://127.0.0.1:${server_port}`,
-        ws: true,
-        secure: false,
-        logLevel: 'debug',
-      },
-      "/pages/k8s/api": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/pages/server/api": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/pages/gateway/api": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/pages/sso/api": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/api": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/auth": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/web_version": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/k8s_version": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/captcha": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
       "/favicon.ico": {
         target: `http://127.0.0.1:${server_port}`,
         changeOrigin: false
-      }
+      },
+      "/web/*": {
+        target: `ws://127.0.0.1:${server_port}`,
+        ws: true,
+        secure: false,
+        logLevel: 'debug',
+      },
+      "/pages/*": {
+        target: `http://127.0.0.1:${server_port}`,
+        changeOrigin: false
+      },
+      "/api/*": {
+        target: `http://127.0.0.1:${server_port}`,
+        changeOrigin: false
+      },
+
     }
   }
 }

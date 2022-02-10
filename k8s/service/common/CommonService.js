@@ -13,6 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
+const stream = require('stream');
 
 const k8s = require('@kubernetes/client-node');
 const logger = require('../../../logger');
@@ -22,6 +23,8 @@ const CommonService = {};
 
 const kc = new k8s.KubeConfig();
 kc.loadFromDefault();
+
+const log = new k8s.Log(kc);
 
 const exec = new k8s.Exec(kc);
 
@@ -100,7 +103,26 @@ CommonService.patchNode = async (name, patch) => {
 }
 
 CommonService.listObject = async (plural, labelSelector, limit, Continue) => {
-	return await k8sApi.listNamespacedCustomObject(CommonService.GROUP, CommonService.VERSION, CommonService.NAMESPACE, plural, "true", Continue, null, labelSelector, limit);
+
+	return await k8sApi.listNamespacedCustomObject(CommonService.GROUP, CommonService.VERSION, CommonService.NAMESPACE, plural, "true", null, Continue, null, labelSelector, limit);
+}
+
+CommonService.describePod = async (podName) => {
+
+	return await k8sCoreApi.readNamespacedPod(podName, CommonService.NAMESPACE, true);
+}
+
+CommonService.readPodLog = async (containerName, podName, previous, logStream) => {
+
+
+	return await log.log(CommonService.NAMESPACE, podName, containerName, logStream, {
+		follow: true,
+		pretty: true,
+		previous: previous,
+		tailLines: 500,
+		timestamps: true
+
+	});
 }
 
 const cacheListener = (cache) => {

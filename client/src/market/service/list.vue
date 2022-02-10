@@ -344,7 +344,9 @@ export default {
   mounted() {
     this.k8s = location.pathname == "/k8s.html";
 
-    this.fetchListInstall();
+    if (window.localStorage.ticket) {
+      this.fetchListInstall();
+    }
   },
 };
 </script>
