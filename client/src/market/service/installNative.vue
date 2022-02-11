@@ -677,10 +677,10 @@ export default {
       let socket = new WebSocket(url, "upload-protocol");
       socket.onopen = () => {
         // let image = this.serviceVersion.prefix + this.serviceVersion.image;
-        // let image = this.serviceVersion.prefix + this.serviceVersion.bin;
-        let image = "/static/image.tgz";
+        let image = this.serviceVersion.prefix + this.serviceVersion.bin;
+        // let image = "/static/image.tgz";
 
-        console.log("open websocket, image:", image);
+        // console.log("open websocket, image:", image);
 
         let Ajax = new AjaxUtil();
         Ajax.getPlain(image)
