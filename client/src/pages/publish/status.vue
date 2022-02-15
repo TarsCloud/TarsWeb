@@ -70,7 +70,6 @@ export default {
         2: this.$t("serverList.restart.success"),
         3: this.$t("serverList.restart.failed"),
         4: this.$t("serverList.restart.cancel"),
-        //5: this.$t('serverList.restart.parial'),
         5: this.$t("serverList.restart.pauseFlow"),
       },
       statusMap: {
@@ -105,6 +104,7 @@ export default {
             bak_flag: item.bak_flag || false,
             update_text: publishModal.model.update_text || "",
             group_name: group_name,
+            run_type: item.run_type || "",
           },
         });
       });

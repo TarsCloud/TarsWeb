@@ -310,6 +310,9 @@ ServerDao.updateServerConf = async (params) => {
 	params.posttime != undefined && (updateOptions.posttime = params.posttime);
 	params.enable_group != undefined && (updateOptions.enable_group = params.enable_group);
 	params.ip_group_name != undefined && (updateOptions.ip_group_name = params.ip_group_name);
+	params.run_type != undefined && (updateOptions.run_type = params.run_type);
+
+	console.log(params, updateOptions);
 
 	return await tServerConf.update(updateOptions, {
 		where: {

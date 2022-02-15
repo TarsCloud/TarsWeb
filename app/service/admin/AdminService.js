@@ -281,4 +281,14 @@ AdminService.getVersion = async () => {
     }
 };
 
+AdminService.isSupportContainer = async () => {
+    let ret = await adminRegPrx.hasContainerRegistry();
+    if (ret.__return) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+
 module.exports = AdminService;

@@ -939,7 +939,7 @@ export default {
         .getJSON("/k8s/api/deploy_select", { deployName: deployName })
         .then((data) => {
           let deploy = lodash.cloneDeep(data.Data[0]);
-          console.log("deploy:" + JSON.stringify(deploy, null, 4));
+          // console.log("deploy:" + JSON.stringify(deploy, null, 4));
           this.k8sApplyModel = {
             abilityAffinity: deploy.ServerK8S.abilityAffinity,
             NodeSelector: deploy.ServerK8S.NodeSelector,
@@ -1061,10 +1061,10 @@ export default {
       this.$forceUpdate();
     },
     saveK8s() {
-      console.log("this.model:" + JSON.stringify(this.model, null, 4));
-      console.log(
-        "this.k8sApplyModel:" + JSON.stringify(this.k8sApplyModel, null, 4)
-      );
+      // console.log("this.model:" + JSON.stringify(this.model, null, 4));
+      // console.log(
+      //   "this.k8sApplyModel:" + JSON.stringify(this.k8sApplyModel, null, 4)
+      // );
       this.$ajax
         .postJSON("/k8s/api/deploy_update", {
           DeployId: this.DeployId,

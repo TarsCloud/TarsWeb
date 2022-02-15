@@ -439,7 +439,7 @@ export default {
         })
         .then((data) => {
           data = data.Data[0];
-          console.log(data);
+          // console.log(data);
 
           this.serverData = data;
           //1.服务信息

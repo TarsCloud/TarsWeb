@@ -486,7 +486,14 @@ module tars
 		 *
 		 * @return : 0-成功 others-失败
 		 */
-		int updateServerFlowState(string application, string serverName, vector<string> nodeList, bool bActive); 
+		int updateServerFlowState(string application, string serverName, vector<string> nodeList, bool bActive);
+
+		/**
+		 * 是否配置了仓库镜像
+		 *
+		 * @return : true: 配置了, false: 没有配置
+		 */
+		bool hasContainerRegistry();
     };
 };
 

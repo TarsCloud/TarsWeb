@@ -42,6 +42,12 @@ PatchController.uploadAndPublish = async (ctx) => {
 			package_type
 		} = ctx.req.body;
 
+		let s = await ServerService.getServerConf(application, module_name);
+		if (s.length == 0) {
+			ctx.body = "server not deploy, please check!";
+			return;
+		}
+
 		let file = ctx.req.files[0];
 		if (!file) {
 			ctx.body = "upload not files";
