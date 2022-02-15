@@ -168,14 +168,20 @@ ApplyService.overwriteApply = async function ({
   const data = await ApplyDao.createOrUpdate(['name'], {
     idc_area, set_area, admin, name, create_person, status: 1,
   });
+function decamelize(string, options) {
+    options = options || {};
+    var separator = options.separator || '_';
+    var split = options.split || /(?=[A-Z])/;
 
+    return string.split(split).join(separator).toLowerCase().replace("__","_");
+};
   // 创建应用 RouterService
   let routerOption = {
     apply_id: data.id,
     server_name: `${data.name}RouterServer`,
     server_ip: '',
     template_file: '',
-    router_db_name: `db_cache_${data.name}`,
+    router_db_name: `db_cache_${decamelize(data.name)}`,
     router_db_ip: ``,
     router_db_port: '3306',
     router_db_user: '',
