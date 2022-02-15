@@ -726,6 +726,8 @@
                 "num": "数字或者*号",
                 "thread": "NodeJS的>=1，其他>=3"
             },
+            "run_type": "运行方式",
+            "run_typeInfo": "注意: 修改运行方式, 需要重新发布程序!",
             "serviceType": "服务类型",
             "asyncThread": "异步线程数",
             "defaultPath": "缺省路径",
@@ -855,6 +857,9 @@
             "mark": "备注",
             "upload": "上传发布包",
             "compileAndPublish": "编译并发布",
+            "tgzRun": "普通方式运行",
+            "containerRun": "容器方式运行",
+            "containerInfo": "tarspatch启用了容器方式才支持容器方式运行",
             "elegantPublish": "无损发布",
             "elegantEachNum": "每批发布节点数",
             "commomPublish": "普通发布",

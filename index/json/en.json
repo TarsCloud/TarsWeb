@@ -707,6 +707,8 @@
                 "num": "number or *",
                 "thread": "Nodejs >=1,other >=3"
             },
+            "run_type": "run type",
+            "run_typeInfo": "Note: modify the run mode, you need to republish the program! ",
             "serviceType": "service type",
             "asyncThread": "async threads",
             "defaultPath": "default path",
@@ -836,6 +838,9 @@
             "secret": "Secret",
             "mark": "Mark",
             "compileAndPublish": "compile and publish",
+            "tgzRun": "Normal",
+            "containerRun": "Container",
+            "containerInfo": "After tarspatch open container model, your can use container mode run server",
             "elegantPublish": "elegant publish",
             "elegantEachNum": "each num per task",
             "commomPublish": "common publish",

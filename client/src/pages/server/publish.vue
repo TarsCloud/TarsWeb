@@ -232,10 +232,21 @@
             >
           </let-form-item>
 
+          <!-- <let-form-item>
+            <let-switch
+              size="mini"
+              v-model="runChecked"
+              @change="changeRunStatus"
+            >
+              <span slot="open">{{ $t("pub.dlg.tgzRun") }}</span>
+              <span slot="close">{{ $t("pub.dlg.containerRun") }}</span>
+            </let-switch>
+          </let-form-item> -->
+
           <let-form-item>
             <div class="elegant-switch">
               <let-switch
-                size="large"
+                size="mini"
                 v-model="elegantChecked"
                 @change="changeElegantStatus"
               >
@@ -668,10 +679,19 @@ export default {
       },
       elegantChecked: false,
       eachNum: 0,
+      // runChecked: true,
     };
   },
   props: ["treeid"],
   methods: {
+    // changeRunStatus() {
+    //   if (!this.runChecked) {
+    //     this.$Notice({
+    //       title: "tarspatch启用了容器方式才支持容器方式运行",
+    //       type: "warning",
+    //     });
+    //   }
+    // },
     getCompileConf() {
       this.$ajax
         .getJSON("/server/api/get_compile_conf")
@@ -773,6 +793,9 @@ export default {
         return;
       }
       const first = checkedServerList[0];
+
+      // console.log(this.serverList);
+
       this.publishModal.model = {
         application: first.application,
         server_name: first.server_name,
@@ -1255,7 +1278,7 @@ export default {
   },
   mounted() {
     this.getServerList();
-    this.getCompileConf();
+    // this.getCompileConf();
   },
   watch: {
     isCheckedAll() {

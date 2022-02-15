@@ -114,7 +114,8 @@ let startServer = async () => {
 			CronService.start();
 		}
 	} catch (e) {
-		logger.error(e.toString())
+		logger.error(e);
+		process.exit(-1);
 	}
 }
 

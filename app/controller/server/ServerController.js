@@ -80,7 +80,8 @@ const serverConfStruct = {
         }
     },
     flow_state: 'active',
-    label: {}
+    label: {},
+    run_type: '',
 };
 
 const ServerController = {};
@@ -324,6 +325,8 @@ ServerController.getRealtimeState = async (ctx) => {
 ServerController.updateServerConf = async (ctx) => {
     try {
         let updateServer = ctx.paramsObj;
+
+        console.log(updateServer);
         let server = await ServerService.getServerConfById(updateServer.id);
         if (!_.isEmpty(server)) {
             if (!await AuthService.hasDevAuth(server.application, server.server_name, ctx.uid)) {

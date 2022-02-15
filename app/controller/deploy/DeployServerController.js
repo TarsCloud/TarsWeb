@@ -17,6 +17,7 @@
 const logger = require('../../../logger');
 const ServerService = require('../../service/server/ServerService');
 const ConfigService = require('../../service/config/ConfigService');
+const AdminService = require('../../service/admin/AdminService');
 const AuthService = require('../../service/auth/AuthService');
 const webConf = require('../../../config/webConf').webConf;
 const DeployServerController = {};
@@ -59,7 +60,8 @@ const serverConfStruct = {
     process_id: '',
     posttime: {
         formatter: util.formatTimeStamp
-    }
+    },
+    run_type: ''
 };
 
 DeployServerController.deployServer = async (ctx) => {
@@ -100,6 +102,9 @@ DeployServerController.deployServer = async (ctx) => {
             operators.push(ctx.uid)
             params.operator = operators.join(";")
         }
+
+        console.log(params);
+
         let rst = await ServerService.addServerConf(params);
         rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
 
@@ -110,6 +115,14 @@ DeployServerController.deployServer = async (ctx) => {
         ctx.makeErrResObj();
     }
 };
+
+DeployServerController.isSupportContainer = async (ctx) => {
+    let container = await AdminService.isSupportContainer();
+
+    ctx.makeResObj(200, '', {
+        container: container
+    });
+}
 
 DeployServerController.deployServerFromCloud = async (ctx) => {
     var params = ctx.paramsObj;

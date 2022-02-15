@@ -67,14 +67,14 @@ if (WebConf.enable) {
 				id: 'notEmpty'
 			},
 			['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path',
-				'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name'
+				'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name', 'run_type'
 			]
 		],
 		['post', '/batch_update_server', ServerController.batchUpdateServerConf, {
 				id: 'notEmpty'
 			},
 			['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path',
-				'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name'
+				'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name', 'run_type'
 			]
 		],
 		['get', '/server_search', ServerController.getServerSearch],
@@ -142,6 +142,7 @@ if (WebConf.enable) {
 		}],
 
 		//上线和扩容接口
+		['get', '/is_support_container', DeployServerController.isSupportContainer],
 		['post', '/deploy_server', DeployServerController.deployServer],
 		['post', '/deploy_server_from_cloud', DeployServerController.deployServerFromCloud],
 		['get', '/server_type_list', DeployServerController.serverTypeList],

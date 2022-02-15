@@ -184,7 +184,11 @@ module.exports = function (sequelize, DataTypes) {
 		source: {
 			type: DataTypes.TEXT,
 			allowNull: true,
-		}
+		},
+		run_type: {
+			type: DataTypes.STRING(32),
+			allowNull: true
+		},
 	}, {
 		tableName: 't_server_conf',
 		timestamps: false,

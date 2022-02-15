@@ -13,7 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
- 
+
 module tars
 {
     enum ServerState
@@ -25,7 +25,6 @@ module tars
         Destroying,
         Destroyed
     };
-
 
     struct LoadInfo
     {
@@ -55,24 +54,24 @@ module tars
         5 optional bool bSucc = false;
     };
 
-    /**
-    * 预发布的进度信息
-    */
-    struct PreparePatchInfo
-    {
-        //是否正在发布
-        0 require bool bPreparePatching = false;
-        //发布百分比
-        1 require int  iPercent;
-        //最近百分比修改时间
-        2 require int  iModifyTime;
-        //版本
-        3 require string sVersion;
-        //结果描述
-        4 require string sResult;
-        //预发布结果, 0:成功，其他失败，失败原因见sResult
-        5 optional int ret = 0;
-    };
+    ///**
+    //* 预发布的进度信息
+    //*/
+    //struct PreparePatchInfo
+    //{
+    //    //是否正在发布
+    //    0 require bool bPreparePatching = false;
+    //    //发布百分比
+    //    1 require int  iPercent;
+    //    //最近百分比修改时间
+    //    2 require int  iModifyTime;
+    //    //版本
+    //    3 require string sVersion;
+    //    //结果描述
+    //    4 require string sResult;
+    //    //预发布结果, 0:成功，其他失败，失败原因见sResult
+    //    5 optional int ret = 0;
+    //};
 
     struct NodeInfo
     {
@@ -118,30 +117,31 @@ module tars
         // 带路径的发布包文件名，如果未指定filepath，则node将根据appname、servername、version、ostype等按规则组装发布包文件路径；
         // 若已指定filepath，则node从filepath下载发布包，node不检查filepath的合法性。
         11 optional string filepath;
+        12 optional string baseImage;   //使用容器发布的需要用到
     };
-    
-    struct PreparePatchRequest
-    {
-        0 require string appname;
-        1 require string servername;
-        2 require string groupname;
-        3 require string version;
-        4 require string user;
-        5 require string servertype;
-        6 require string patchobj;
-        7 require string md5;        
-        //操作系统类型，如:suse、tlinux等
-        8 require string ostype;
-        //指定的node列表进行预发布。specialNodeList为空表示发布所有节点
-        9 require vector<string> specialNodeList;        
-        // 带路径的发布包文件名，如果未指定filepath，则node将根据appname、servername、version、ostype等按规则组装发布包文件路径；
-        // 若已指定filepath，则node从filepath下载发布包，node不检查filepath的合法性。
-        10 optional string filepath;        
-    };
-    
-    //定义主键，用于node内队列的去重
-    key[PreparePatchRequest, appname, servername, version];
-        
+    //
+    //struct PreparePatchRequest
+    //{
+    //    0 require string appname;
+    //    1 require string servername;
+    //    2 require string groupname;
+    //    3 require string version;
+    //    4 require string user;
+    //    5 require string servertype;
+    //    6 require string patchobj;
+    //    7 require string md5;
+    //    //操作系统类型，如:suse、tlinux等
+    //    8 require string ostype;
+    //    //指定的node列表进行预发布。specialNodeList为空表示发布所有节点
+    //    9 require vector<string> specialNodeList;
+    //    // 带路径的发布包文件名，如果未指定filepath，则node将根据appname、servername、version、ostype等按规则组装发布包文件路径；
+    //    // 若已指定filepath，则node从filepath下载发布包，node不检查filepath的合法性。
+    //    10 optional string filepath;
+    //};
+    //
+    ////定义主键，用于node内队列的去重
+    //key[PreparePatchRequest, appname, servername, version];
+    //
 
 };
 

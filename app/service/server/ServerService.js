@@ -64,7 +64,8 @@ ServerService.serverConfFields = () => {
         config_center_port: 0,
         async_thread_num: 3,
         server_important_type: '0',
-        source: ''
+        source: '',
+        run_type: '',
     };
 };
 
