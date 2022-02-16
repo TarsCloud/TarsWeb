@@ -43,7 +43,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false,
             defaultValue: ""
         },
-        routeclient_port: {
+        routerclient_port: {
             type: DataTypes.STRING(100),
             allowNull: false,
             defaultValue: ""

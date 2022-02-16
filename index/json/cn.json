@@ -2026,7 +2026,7 @@
         "cachePort": "cache_port服务端口",
         "wcachePort": "wcache_port服务端口",
         "backupPort": "backup_port服务端口",
-        "routeclientPort": "routeclient_port服务端口",
+        "routeclientPort": "routerclient_port服务端口",
         "transGroupName": "迁移目的服务器组名",
         "transferedPageNo": "已迁移成功页",
         "state": "迁移状态",
