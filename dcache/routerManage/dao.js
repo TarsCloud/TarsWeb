@@ -149,9 +149,9 @@ module.exports = {
     return result
   },
   async serverCreate(params) {
-    const { treeid, idc_area, server_name, ip, binlog_port, cache_port, wcache_port, backup_port, routeclient_port, remark, modify_time } = params
+    const { treeid, idc_area, server_name, ip, binlog_port, cache_port, wcache_port, backup_port, routerclient_port, remark, modify_time } = params
     const dbModel = await initDB(treeid)
-    return dbModel.tRouterServer.create({ idc_area, server_name, ip, binlog_port, cache_port, wcache_port, backup_port, routeclient_port, remark, modify_time })
+    return dbModel.tRouterServer.create({ idc_area, server_name, ip, binlog_port, cache_port, wcache_port, backup_port, routerclient_port, remark, modify_time })
   },
   async serverDestroy(params) {
     const { treeid, id } = params
@@ -159,9 +159,9 @@ module.exports = {
     return dbModel.tRouterServer.destroy({ where: { id } })
   },
   async serverUpdate(params) {
-    const { treeid, id, idc_area, server_name, ip, binlog_port, cache_port, wcache_port, backup_port, routeclient_port, remark, modify_time } = params
+    const { treeid, id, idc_area, server_name, ip, binlog_port, cache_port, wcache_port, backup_port, routerclient_port, remark, modify_time } = params
     const dbModel = await initDB(treeid)
-    return dbModel.tRouterServer.update({ idc_area, server_name, ip, binlog_port, cache_port, wcache_port, backup_port, routeclient_port, remark, modify_time }, { where: { id } })
+    return dbModel.tRouterServer.update({ idc_area, server_name, ip, binlog_port, cache_port, wcache_port, backup_port, routerclient_port, remark, modify_time }, { where: { id } })
   },
   async serverFindOne(params) {
     const { treeid, id } = params

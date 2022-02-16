@@ -20,7 +20,7 @@
       <let-table-column :title="$t('routerManage.cachePort')" prop="cache_port"></let-table-column>
       <let-table-column :title="$t('routerManage.wcachePort')" prop="wcache_port"></let-table-column>
       <let-table-column :title="$t('routerManage.backupPort')" prop="backup_port"></let-table-column>
-      <let-table-column :title="$t('routerManage.routeclientPort')" prop="routeclient_port"></let-table-column>
+      <let-table-column :title="$t('routerManage.routeclientPort')" prop="routerclient_port"></let-table-column>
       <let-table-column :title="$t('routerManage.remark')" prop="remark"></let-table-column>
       <let-table-column :title="$t('operate.operates')" width="60px">
         <template slot-scope="scope">
@@ -108,7 +108,7 @@
             size="small"
             required
             :required-tip="$t('common.notEmpty')"
-            v-model="dialogModal.model.routeclient_port"
+            v-model="dialogModal.model.routerclient_port"
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('routerManage.remark')">
