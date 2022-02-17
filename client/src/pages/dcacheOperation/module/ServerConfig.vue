@@ -777,7 +777,9 @@
           this.multiKey = data.cache_version === 2 && data.mkcache_struct === 1;
 
           this.cacheVersion = data.cache_version;
-
+          if (data.cache_version === 1) {            
+            sessionStorage.setItem('mkCache', JSON.stringify(this.mkCacheStructure));
+          }
           if(this.multiKey) {
             this.dbAccess.isSerializated = true;
           }
@@ -848,7 +850,6 @@
     async created () {
       sessionStorage.clear();
       await this.getModuleConfigInfo();
-
       if(this.isDbAccess()) { 
         await this.loadAccessDb();
       }
