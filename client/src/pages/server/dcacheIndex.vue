@@ -2,7 +2,9 @@
   <div class="page_server">
     <div class="left-view">
       <div class="tree_wrap">
-        <a href="javascript:;" class="tree_icon iconfont el-icon-third-shuaxin" @click="getTreeData(1)"></a>
+        <a href="javascript:;" class="tree_icon iconfont el-icon-third-shuaxin"
+          style="font-family: iconfont  !important;z-index: 99"
+          :class="{ active: isIconPlay }" @click="getTreeData(1)"></a>
         <let-tree class="left-tree"
                   v-if="treeData && treeData.length"
                   :data="treeData"
