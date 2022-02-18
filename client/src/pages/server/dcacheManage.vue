@@ -3,7 +3,9 @@
 
     <!-- 服务列表 -->
     <div class="table_head">
-      <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+      <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin"
+      style="font-family: iconfont  !important;"
+      @click="getServerList"></i></h4>
     </div>
     
     <!-- 服务列表 -->
