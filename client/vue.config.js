@@ -1,6 +1,11 @@
 const path = require("path")
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const server_port = process.env.SERVER_PORT || '4001'
+
+process.setMaxListeners(0);
+
+require('events').EventEmitter.setMaxListeners(0);
+
 module.exports = {
   outputDir: "./dist",
   assetsDir: "./static",
@@ -78,52 +83,25 @@ module.exports = {
     port: 8088,
     //ajax请求代理
     proxy: {
-      "/shell": {
-        target:  `ws://127.0.0.1:${server_port}`,
+      "/favicon.ico": {
+        target: `http://127.0.0.1:${server_port}`,
+        changeOrigin: false
+      },
+      "/web/*": {
+        target: `ws://127.0.0.1:${server_port}`,
         ws: true,
         secure: false,
         logLevel: 'debug',
       },
-      "/pages/k8s/api": {
+      "/pages/*": {
         target: `http://127.0.0.1:${server_port}`,
         changeOrigin: false
       },
-      "/pages/server/api": {
+      "/api/*": {
         target: `http://127.0.0.1:${server_port}`,
         changeOrigin: false
       },
-      "/pages/gateway/api": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/pages/sso/api": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/api": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/auth": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/web_version": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/k8s_version": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/captcha": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/favicon.ico": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      }
+
     }
   }
 }

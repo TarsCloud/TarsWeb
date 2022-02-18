@@ -12,7 +12,6 @@
 </template>
 
 <script>
-// import Axios from "axios";
 import AppHeader from "./components/app/header";
 import AppFooter from "./components/app/footer";
 
@@ -28,15 +27,7 @@ export default {
       framework_version: "Version: loading··",
     };
   },
-  mounted() {
-    // Axios.create({baseURL: '/'})({
-    //   method: 'get',
-    //   url: '/web_version'
-    // }).then((response)=>{
-    //   this.web_version = response.data.webVersion;
-    //   this.framework_version = response.data.frameworkVersion ;
-    // })
-  },
+  mounted() {},
 };
 </script>
 

@@ -45,10 +45,6 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(255),
 			allowNull: true
 		},
-		document_complate: {
-			type: DataTypes.STRING(30),
-			allowNull: true
-		},
 		is_server_group: {
 			type: DataTypes.INTEGER(2),
 			allowNull: false,

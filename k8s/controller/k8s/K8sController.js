@@ -15,7 +15,9 @@ const K8sController = {};
 K8sController.ServerK8SSelect = async (ctx) => {
     const that = module.exports
 
-    let {Token = '', page = 1, ServerId = '', isAll = false} = ctx.paramsObj
+    let {
+        Token = '', page = 1, ServerId = '', isAll = false
+    } = ctx.paramsObj
     let limiter = null;
     try {
         let result = await K8sService.serverK8SSelect(ServerId, limiter);
@@ -34,13 +36,19 @@ K8sController.ServerK8SSelect = async (ctx) => {
  * @param  {String}  NodeSelector         节点
  */
 K8sController.ServerK8SUpdate = async (ctx) => {
-    let {Token = '', ServerId = '', Replicas = 0, NodeSelector, abilityAffinity} = ctx.paramsObj
-    Replicas = Math.floor(Replicas) || 0
+    let {
+        Token = '', ServerId = '', pull, launcherType, notStacked, daemonSet, Replicas = null, NodeSelector, abilityAffinity
+    } = ctx.paramsObj
+    Replicas = Math.floor(Replicas) || -1
     try {
         const metadata = {
             ServerId,
         }
         let target = {
+            pull,
+            launcherType,
+            notStacked,
+            daemonSet,
             Replicas,
             NodeSelector,
             abilityAffinity
@@ -55,9 +63,13 @@ K8sController.ServerK8SUpdate = async (ctx) => {
 
 //修改k8s  Tserver 资源管理
 K8sController.ServerK8SUpdateResource = async (ctx) => {
-    let {Token = '', ServerId = '', limitCpu, limitMem, requestCpu, requestMem} = ctx.paramsObj
+    let {
+        Token = '', ServerId = '', limitCpu, limitMem, requestCpu, requestMem
+    } = ctx.paramsObj
     try {
-        const metadata = {ServerId,}
+        const metadata = {
+            ServerId,
+        }
         let target = {
             limitCpu, //资源管理
             limitMem,
@@ -75,9 +87,13 @@ K8sController.ServerK8SUpdateResource = async (ctx) => {
 
 //修改k8s  Tserver 资源管理
 K8sController.ServerK8SUpdateNetwork = async (ctx) => {
-    let {Token = '', ServerId = '', HostIpc, HostNetwork, showHostPort, HostPort} = ctx.paramsObj
+    let {
+        Token = '', ServerId = '', HostIpc, HostNetwork, showHostPort, HostPort
+    } = ctx.paramsObj
     try {
-        const metadata = {ServerId}
+        const metadata = {
+            ServerId
+        }
         let target = {
             HostIpc,
             HostNetwork,
@@ -95,9 +111,13 @@ K8sController.ServerK8SUpdateNetwork = async (ctx) => {
 
 //磁盘管理
 K8sController.ServerK8SUpdateDisk = async (ctx) => {
-    let {Token = '', ServerId = '', mounts} = ctx.paramsObj
+    let {
+        Token = '', ServerId = '', mounts
+    } = ctx.paramsObj
     try {
-        const metadata = {ServerId}
+        const metadata = {
+            ServerId
+        }
         let target = {
             mounts
         }
@@ -110,7 +130,7 @@ K8sController.ServerK8SUpdateDisk = async (ctx) => {
     }
 }
 
-K8sController.ServerK8SGenerateHostPort = async(ctx) => {
+K8sController.ServerK8SGenerateHostPort = async (ctx) => {
     let NodeList = ctx.paramsObj.NodeList.split(",")
     let NodePort = ctx.paramsObj.NodePort
 
@@ -130,13 +150,13 @@ K8sController.ServerK8SGenerateHostPort = async(ctx) => {
             // 如果存在多个节点，并发请求候选节点是否符合要求
             if (NodeList.length > 1) {
                 let NodeReuqest = []
-                for (let i = 1; i < NodeList.length-1; i++) {
+                for (let i = 1; i < NodeList.length - 1; i++) {
                     NodeReuqest.push(K8sService.selectAvailHostPort(NodeList[i], NodePort));
                 }
 
-                let available  = true
+                let available = true
                 for (let i = 0; i < NodeReuqest.length; i++) {
-                    let response    = await NodeReuqest[i]
+                    let response = await NodeReuqest[i]
                     if (response.status === 500) {
                         available = false
                     } else {
@@ -167,7 +187,7 @@ K8sController.ServerK8SCheckHostPort = async (ctx) => {
         let NodeList = (await NodeService.nodeList()).data;
         let res = [];
         for (let item of NodeList) {
-            let result = await NodeService.checkNode(item,NodePort);
+            let result = await NodeService.checkNode(item, NodePort);
             res.push(result)
         }
         ctx.makeResObj(200, '', res)
@@ -177,21 +197,60 @@ K8sController.ServerK8SCheckHostPort = async (ctx) => {
     }
 }
 
+K8sController.DescribePod = async (ctx) => {
+    try {
+        let PodName = ctx.paramsObj.PodName;
+
+        let data = await CommonService.describePod(PodName);
+
+        console.log(data.body);
+
+        ctx.makeResObj(200, '', data.body);
+    } catch (e) {
+        logger.error('[PodName]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+}
+
+// K8sController.ReadPodLog = async (ctx) => {
+//     try {
+//         // let ContainerName = ctx.paramsObj.ContainerName;
+//         let PodName = ctx.paramsObj.PodName;
+
+//         console.log(PodName);
+
+//         let data = await CommonService.describePod(PodName);
+
+//         // console.log(data.body);
+
+//         console.log(data.body.spec.containers[0].name);
+//         data = await CommonService.readPodLog(data.body.spec.containers[0].name, PodName);
+
+//         // console.log(data.body);
+
+//         ctx.makeResObj(200, '', {});
+//     } catch (e) {
+//         logger.error('[PodName]', e.body ? e.body.message : e, ctx)
+//         ctx.makeResObj(500, e.body ? e.body.message : e);
+//     }
+// }
+
+
 K8sController.getObject = async (ctx) => {
     try {
         let params = ctx.paramsObj
 
-        let obj = {};//res.response.body
+        let obj = {}; //res.response.body
         if (params.plural == "tservers") {
             let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
             obj = res.response.body
             delete obj.metadata.managedFields; //屏蔽managedFields信息
         }
-        if (params.plural == "tdeploys"){
+        if (params.plural == "tdeploys") {
             let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
             obj = obj.apply
         }
-        if (params.plural == "tframeworkconfigs"){
+        if (params.plural == "tframeworkconfigs") {
             let res = await CommonService.getObject(params.plural, CommonService.TFC);
             obj = res.response.body
             delete obj.metadata.managedFields; //屏蔽managedFields信息
@@ -217,7 +276,7 @@ K8sController.updateObject = async (ctx) => {
             object.metadata.managedFields = res.response.body.metadata.managedFields
             await CommonService.replaceObject(params.plural, CommonService.TFC, object)
         }
-        if (params.plural == "tdeploys"){
+        if (params.plural == "tdeploys") {
             let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
             let tdeploy = res.body
             tdeploy.apply = object

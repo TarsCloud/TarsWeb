@@ -6,15 +6,23 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         name: "",
-        marketUid: ""
+        marketUid: "",
+        version: ""
     },
     mutations: {
         increment(state, name) {
             state.name = name
         },
+        quit(state) {
+            state.marketUid = '';
+            window.localStorage.uid = "";
+            window.localStorage.ticket = "";
+        },
         marketUid(state, uid) {
-            console.log('marketUid');
-            state.marketUid = uid
+            state.marketUid = uid;
+        },
+        version(state, version) {
+            state.version = version;
         }
     }
 })

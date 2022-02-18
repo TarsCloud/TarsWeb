@@ -22,38 +22,38 @@
         "userCenter": "User Center"
     },
     "callChain": {
-        "sub":"query",
-        "noResult":"No result",
-        "allTrackingNumbers":"All tracking numbers:",
-        "pleaseSelectTrackingNumber":"Please select tracking number",
-        "method":"method:",
-        "selectMethod":"Please select a method",
-        "methodTrackingNumbers":"Tracking number under this method:",
-        "selectMethodTrackingNumbers":"Please select the tracking number under the method",
-        "trackingNumbers":"Tracking number：",
-        "date":"date",
-        "btime":"start time",
-        "etime":"End time",
-        "timeStamp":"time stamp",
-        "operation":"operation",
-        "detail":"details",
-        "sbtime":"Please select start time",
-        "setime":"Please select the end time",
-        "sdata":"Please select a date",
-        "searchSuc":"query was successful",
-        "stringBtime":"Start time：",
-        "stringEtime":"End time：",
-        "clientTime":"Total client time：",
-        "serverTime":"Total server time：",
-        "timeFrame":"time frame",
+        "sub": "query",
+        "noResult": "No result",
+        "allTrackingNumbers": "All tracking numbers:",
+        "pleaseSelectTrackingNumber": "Please select tracking number",
+        "method": "method:",
+        "selectMethod": "Please select a method",
+        "methodTrackingNumbers": "Tracking number under this method:",
+        "selectMethodTrackingNumbers": "Please select the tracking number under the method",
+        "trackingNumbers": "Tracking number：",
+        "date": "date",
+        "btime": "start time",
+        "etime": "End time",
+        "timeStamp": "time stamp",
+        "operation": "operation",
+        "detail": "details",
+        "sbtime": "Please select start time",
+        "setime": "Please select the end time",
+        "sdata": "Please select a date",
+        "searchSuc": "query was successful",
+        "stringBtime": "Start time：",
+        "stringEtime": "End time：",
+        "clientTime": "Total client time：",
+        "serverTime": "Total server time：",
+        "timeFrame": "time frame",
         "serverRelationship": "Service invocation relationship",
         "nodeRelationship": "Node call relationship",
         "relation": {
             "need": "need",
             "flow": "total flow",
             "avgTime": "average time(ms)",
-            "abnormalRate":"abnormal rate",
-            "timeoutRate":"timeout rate"
+            "abnormalRate": "abnormal rate",
+            "timeoutRate": "timeout rate"
         }
     },
     "deployLog": {
@@ -449,6 +449,7 @@
         "createPerson": "createPerson",
         "baseInfo": "baseInfo",
         "nextStep": "nextStep",
+        "prevStep": "prevStep",
         "admin": "admin",
         "serial": "serial",
         "config": "configuration",
@@ -544,11 +545,23 @@
         "hpa": "HPA Management",
         "resource": "Resource Management",
         "yaml": "Yaml editor",
-        "network": "Network mapping",
+        "network": "Host mapping",
         "disk": "Disk management",
+        "pull": "ImagePullPolicy",
+        "stacked": "Stacked",
+        "stackedInfo": "After enable stacking, the same service will be abled to deploy on the same host",
+        "stackedInvalid": "The stack cannot be turned on if the service uses a host resource ",
+        "launcherType": "LaunchType",
+        "backgroundInfo": "The death of the background service will not lead to the reconstruction of the pod. Tarsnode will automatically pull the service",
+        "foregroundInfo": "The front desk service was restarted, resulting in the reconstruction of the pod",
+        "jobModel": "Job Model",
         "nodeSelect": "Node selection",
         "copyNode": "copy of the slip",
         "viewEvent": "View events",
+        "wrap": "Auto wrap",
+        "previous": "Previous containers",
+        "clear": "Clear",
+        "close": "Close",
         "addTestCase": "add testcase",
         "testCaseList": "testcase list"
     },
@@ -568,8 +581,8 @@
                 "infDebuger": "Interface Debuger",
                 "cacheDebug": "Cache Debuger",
                 "treeConfig": "Call Chain",
-                "averageDuration":"Average duration",
-                "trackingNumber":"Tracking number"
+                "averageDuration": "Average duration",
+                "trackingNumber": "Tracking number"
             }
         }
     },
@@ -1062,8 +1075,10 @@
             "inputTips": "all * must be filled",
             "objTips": "OBJ name cannot be empty",
             "deployServiceTip": "Are you sure to deploy this service?",
+            "overwriteDeployServiceTip": "service exists, Are you sure to overwrite deploy this service?",
             "getPort": "get port",
             "applicationTip": "Application name does not exist or is illegal",
+            "nodeListTip": "Node list does not be empty",
             "ret": {
                 "success": "Deployed application submitted successfully",
                 "failed": "Deployed application submission failed!Please contact your administrator"
@@ -1088,14 +1103,17 @@
                 "labelValid": "The label name does not conform to the specification",
                 "labelMax": "The maximum number of label groups is 63",
                 "labelValueValid": "Label values do not conform to specifications",
-                "errorKey":"Label name is required",
-                "errorValue":"The tag value cannot be empty",
+                "errorKey": "Label name is required",
+                "errorValue": "The tag value cannot be empty",
                 "addLabel": "Add a set of tags"
             },
             "affinity": "Affinitive selection",
             "k8sExtra": "PERFECT K8S INFORMATION OPTIONAL",
             "serverTag": "Image tag",
-            "serverTagTip": "The image tag name is automatically generated by default"
+            "serverTagTip": "The image tag name is automatically generated by default",
+            "format": "Install package format(in tgz format, the nodes environment needs to require the requirements of the tgz!)",
+            "tgz": "tgz",
+            "docker": "docker"
         },
         "table": {
             "th": {
@@ -1189,7 +1207,9 @@
             "addDisk": "Add a mount group",
             "delDisk": "Deleting the current group",
             "diskName": "name of disk",
-            "path": "Mount path"
+            "path": "Mount path",
+            "info": "host path: /usr/local/app/tars/host-mount/${namespace}/${service}"
+
         }
     },
     "nodes": {
@@ -1498,7 +1518,7 @@
             "tarsFile": "tars file",
             "deleteMsg": "are you sure to delete this file?",
             "objName": "Servant Name",
-            "testCastName": "testcase name",         
+            "testCastName": "testcase name",
             "fileName": "file name"
         },
         "benchmark": {
@@ -1561,7 +1581,7 @@
         "publishInfo": "Publishing, please wait..."
     },
     "event": {
-        "eventLevel":"Event level",
+        "eventLevel": "Event level",
         "type": {
             "server": "service",
             "cluster": "Cluster",
@@ -1604,9 +1624,9 @@
             "stopPublic": "stop Public",
             "nodeLabels": "node Labels",
             "nodeAffinity": "please add tars.io/node.$Namespace label to node, so framework can manager the node",
-            "CommonTag":"Common label",
-            "AbilityTag":"Affinity label",
-            "FrameWorkTag":"Frame node label",
+            "CommonTag": "Common label",
+            "AbilityTag": "Affinity label",
+            "FrameWorkTag": "Frame node label",
             "tagName": "Tag name",
             "tagValue": "Tag value"
         },
@@ -1814,7 +1834,7 @@
             }
         }
     },
-    "userlog" : {
+    "userlog": {
         "form": {
             "operateType": "Operation type",
             "type": {
@@ -1823,7 +1843,7 @@
                 "stop": "stop",
                 "undeploy_tars": "undeploy_tars",
                 "send_command": "send_command",
-                "add_conf":"add_conf",
+                "add_conf": "add_conf",
                 "update_conf": "update_conf",
                 "rm_conf": "rm_conf",
                 "expand_server": "expand_server",
@@ -2061,6 +2081,158 @@
                 "alarmTime": "Alarm Time",
                 "alarmType": "Alarm Type"
             }
+        }
+    },
+    "market": {
+        "header": {
+            "pass": "Set Registry Rassord",
+            "repo": "Manage Registry Repository",
+            "modify": "Modify Market Password",
+            "quit": "Quit Market"
+        },
+        "table": {
+            "version": "Current Version"
+        },
+        "download": "Download",
+        "login": {
+            "loginTitle": "Please Login",
+            "registerInfo": "No account yet?",
+            "userName": "Email",
+            "inputUserName": "Please input email",
+            "password": "Password",
+            "passwordInfo": "> 8 chars with at least 1 uppercase/lowercase/number",
+            "inputPassword": "Please input password",
+            "repeatPassword": "Repeat input password",
+            "inputRepeatPassword": "Please repeat password",
+            "activeCode": "Active code in email",
+            "inputActiveCode": "Please input active code",
+            "login": "Login",
+            "forget": "Forget password?",
+            "findPassword": "Find password",
+            "findPasswordTitle": "Find Password",
+            "resetPassword": "Reset password",
+            "inputPasswordAgain": "Input password again",
+            "userNameRegTips": "Please input valid email",
+            "loginFailed": "Login failed",
+            "registerTitle": "Please register",
+            "repeatPasswordTips": "Confirmation password cannot be empty",
+            "register": "Register",
+            "and": "and",
+            "activated": "Active",
+            "activateSuccAndRedirect": "Account activation succeeded, please log in",
+            "findPasswordSucc": "Check the email and use the activation code to reset your password",
+            "registerSucc": "Enter the activation code in the email to complete account activation",
+            "inputOldPass": "Input old password",
+            "inputNewPass": "Input new password",
+            "repeatInputNewPass": "Repeat new password",
+            "passwordDiff": "Two passwords are different, please modify",
+            "captchaTips": "Input verify code",
+            "modifyPass": "Modify password",
+            "modifySucc": "Modify password success!",
+            "resetPass": "Reset password",
+            "captcha": "VerifyCode",
+            "refresh": "Refresh",
+            "notActivated": "User not activated yet",
+            "passwordNoCorrect": "Password not correct!",
+            "userNoExist": "User not exists",
+            "hasExist": "User has exists",
+            "hasActivated": "User has been activated",
+            "activatedError": "Failed to activate user",
+            "resetPassError": "Failed to reset password",
+            "passwordError": "Failed to modify password",
+            "back": "Back",
+            "submit": "Submit",
+            "activing": "Active user"
+        },
+        "repo": {
+            "auth": "Authorized user",
+            "inputUser": "Input user name",
+            "project": "Add project",
+            "projectName": "Project name",
+            "userName": "User name",
+            "inputProjectName": "Please input project name",
+            "repoCount": "Count",
+            "developer": "Developer",
+            "updateTime": "Update Time",
+            "pushTime": "Push Time",
+            "pullTime": "Pull Time",
+            "deleteArtifact": "Confirm to delete this artifact?",
+            "repoList": "Repository list",
+            "repoName": "Repository name",
+            "downloadCount": "Download",
+            "deleteRepo": "Confirm to delete the repository",
+            "resetPass": "Reset registry password",
+            "password": "Password",
+            "passwordInfo": "> 8 chars with at least 1 uppercase/lowercase/number",
+            "inputPassword": "Input password",
+            "repeatPassword": "Repeat password",
+            "inputRepeatPassword": "Repeat password",
+            "inputPasswordAgain": "Repeat password again",
+            "back": "Back",
+            "projectNameRegTips": "project name must be lowercase",
+            "resetPassSucc": "Reset password success",
+            "createProjectSucc": "Create project success",
+            "deleteProjectSucc": "Delete project success",
+            "createMemberSucc": "Authorized user success",
+            "deleteMemberSucc": "User permission cancelled success",
+            "deleteRepoSucc": "Delete Repository success",
+            "deleteArtifactSucc": "Delete Artifacts success"
+        },
+        "deploy": {
+            "exists": "Note: changing the version will only replace the installation package of the service, and the configuration file needs to be changed manually",
+            "existsK8S": "The service already exists and cannot be installed again",
+            "upgradeInfo": "Note: changing the version will only replace the service image version, and the configuration file needs to be changed manually",
+            "install": "Confirm install this service?",
+            "confirm": "Confirm",
+            "upgrade": "Upgrade",
+            "cancel": "Cancel"
+        },
+        "service": {
+            "lang": "Language",
+            "developer": "Developer",
+            "project": "Project",
+            "create": "Create",
+            "update": "Update",
+            "install": "Install",
+            "service": "README",
+            "deploy": "Deploy",
+            "protocol": "Protocols",
+            "changelist": "Changelist",
+            "log": "Logs",
+            "installing": "Installing, please wait...",
+            "versionList": "Version List",
+            "change": "Change",
+            "changeVersion": "Change Version"
+        },
+        "userRet": {
+            "0": "Success",
+            "-1": "System busy",
+            "-2": "Account not activated",
+            "-3": "Incorrect password",
+            "-4": "User not exists",
+            "-5": "User has exsit",
+            "-6": "The user has been activated",
+            "-7": "The token has expired",
+            "-8": "Illegal request",
+            "-9": "Verification code error",
+            "-10": "Activation code error"
+        },
+        "marketRet": {
+            "0": "Success",
+            "-1": "System busy",
+            "-2": "Version Illegal",
+            "-3": "Version has exist",
+            "-4": "Data not exists",
+            "-5": "No auth"
+        },
+        "repoRet": {
+            "0": "Success",
+            "-1": "System busy",
+            "-2": "No auth",
+            "-3": "User not exists",
+            "-4": "The password is illegal. Please change a password",
+            "-5": "The name has already been used. Please replace it ",
+            "-6": "Failed to delete the item. The warehouse under the item must be empty"
         }
     }
 }

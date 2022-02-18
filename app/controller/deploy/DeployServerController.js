@@ -16,10 +16,14 @@
 
 const logger = require('../../../logger');
 const ServerService = require('../../service/server/ServerService');
+const ConfigService = require('../../service/config/ConfigService');
 const AuthService = require('../../service/auth/AuthService');
 const webConf = require('../../../config/webConf').webConf;
 const DeployServerController = {};
 const util = require('../../../tools/util');
+const {
+    contentSecurityPolicy
+} = require('koa-helmet');
 
 const serverConfStruct = {
     id: '',
@@ -53,10 +57,12 @@ const serverConfStruct = {
     patch_time: util.formatTimeStamp,
     patch_version: "",
     process_id: '',
-    posttime: { formatter: util.formatTimeStamp }
+    posttime: {
+        formatter: util.formatTimeStamp
+    }
 };
 
-DeployServerController.deployServer = async(ctx) => {
+DeployServerController.deployServer = async (ctx) => {
     var params = ctx.paramsObj;
 
     let adapters = params.adapters;
@@ -64,11 +70,10 @@ DeployServerController.deployServer = async(ctx) => {
     //兼容老的接口
     if (params.node_name) {
         for (var i = 0; i < adapters.length; i++) {
-            if (!adapters[i].node_name)
-            {
+            if (!adapters[i].node_name) {
                 adapters[i].node_name = params.node_name;
             }
-        }		
+        }
     }
 
     let node_name_list = [];
@@ -97,6 +102,8 @@ DeployServerController.deployServer = async(ctx) => {
         }
         let rst = await ServerService.addServerConf(params);
         rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
+
+
         ctx.makeResObj(200, '', rst);
     } catch (e) {
         logger.error('[deployServer]', e, ctx);
@@ -104,14 +111,70 @@ DeployServerController.deployServer = async(ctx) => {
     }
 };
 
+DeployServerController.deployServerFromCloud = async (ctx) => {
+    var params = ctx.paramsObj;
+
+    let adapters = params.adapters;
+
+    let node_name_list = [];
+    for (var i = 0; i < adapters.length; i++) {
+        var nn = adapters[i].node_name;
+        if (node_name_list.indexOf(nn)) {
+            continue;
+        }
+        node_name_list.push(nn);
+    }
+
+    if (webConf.strict && await ServerService.isDeployWithRegistry(node_name_list)) {
+        //tarsregistry节点上, 无法部署其他任何服务
+        ctx.makeResObj(500, '#common.deploy#');
+        return
+    }
+
+    try {
+        //若非admin用户，且operator中不包含当前用户，则在operator中加入当前用户
+        let hasAdminAuth = await AuthService.hasAdminAuth(ctx.uid)
+        if (!params.operator) params.operator = ""
+        if (!hasAdminAuth && params.operator.indexOf(ctx.uid) < 0) {
+            let operators = params.operator.split(";")
+            operators.push(ctx.uid)
+            params.operator = operators.join(";")
+        }
+
+        let rst = await ServerService.addServerConf(params);
+
+        rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
+
+        params.config.forEach(config => {
+            let data = {
+                force: true,
+                application: params.application,
+                server_name: params.server_name,
+                level: 5,
+                filename: config.name,
+                config: config.content,
+                uid: ctx.uid
+            };
+
+            ConfigService.addConfigFile(data);
+        })
+
+        ctx.makeResObj(200, '', rst);
+        // ctx.makeResObj(200, '', {});
+    } catch (e) {
+        logger.error('[deployServerFromCloud]', e, ctx);
+        ctx.makeErrResObj();
+    }
+};
+
 DeployServerController.serverTypeList = async (ctx) => {
-	try {
-		let ServerTypeList = ['tars_cpp', 'tars_java', 'tars_nodejs', 'tars_php', 'tars_go'];
-		ctx.makeResObj(200, '', ServerTypeList);
-	} catch (e) {
-		logger.error('[serverTypeList]', e, ctx);
-		ctx.makeErrResObj();
-	}
+    try {
+        let ServerTypeList = ['tars_cpp', 'tars_java', 'tars_nodejs', 'tars_php', 'tars_go'];
+        ctx.makeResObj(200, '', ServerTypeList);
+    } catch (e) {
+        logger.error('[serverTypeList]', e, ctx);
+        ctx.makeErrResObj();
+    }
 };
 
 

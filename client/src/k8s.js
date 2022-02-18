@@ -17,7 +17,6 @@
 import Vue from 'vue';
 import './assets/icon-font/iconfont.css'
 import store from "../store/store"
-import './plugins/ui';
 import './plugins/ajax';
 import './plugins/market';
 
@@ -32,6 +31,9 @@ import {
 import ElementUI from 'element-ui';
 
 import "./assets/theme/element-to-let/index.css"
+
+import './plugins/ui';
+
 
 import 'viewerjs/dist/viewer.css';
 import Viewer from 'v-viewer';

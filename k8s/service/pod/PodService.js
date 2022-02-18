@@ -20,14 +20,11 @@ const PodService = {};
 
 PodService.searchPod = async (searchKey, c) => {
 
-    // console.log(searchKey);
-
-    let allEndpointItems = await CommonService.listObject("tendpoints");//, undefined, 5, c);
+    let allEndpointItems = await CommonService.listObject("tendpoints"); //, undefined, 5, c);
 
     c = allEndpointItems.body.metadata.continue;
 
     allEndpointItems = allEndpointItems.body.items;
-
 
     let filterItems = [];
     allEndpointItems.forEach(endpoint => {
@@ -106,7 +103,11 @@ PodService.searchPod = async (searchKey, c) => {
         })
     })
 
-    return {ret: 200, msg: 'succ', data: result};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 
 }
 
@@ -115,16 +116,13 @@ PodService.podAliveSelect = async (filter) => {
 
     let labelSelector = CommonService.createLabelSelector(filter);
 
+    let filterItems = [];
+
     let allEndpointItems = await CommonService.listObject("tendpoints", labelSelector);
 
     allEndpointItems = allEndpointItems.body.items;
 
-    let filterItems = [];
     allEndpointItems.forEach(endpoint => {
-        // if (endpoint.spec.subType != CommonService.TServerType1) {
-        //     return;
-        // }
-
         if (endpoint.status.pods.length <= 0) {
             return;
         }
@@ -142,9 +140,7 @@ PodService.podAliveSelect = async (filter) => {
         }
     });
 
-    // Count填充
     let result = {};
-    // Data填充
     result.Data = [];
     filterItems.forEach(item => {
         if (item.status.pods.length <= 0) {
@@ -192,7 +188,11 @@ PodService.podAliveSelect = async (filter) => {
         })
     })
 
-    return {ret: 200, msg: 'succ', data: result};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 }
 
 PodService.podPerishedSelect = async (serverId) => {
@@ -245,13 +245,20 @@ PodService.podPerishedSelect = async (serverId) => {
         result.Data.push(elem);
     });
 
-    return {ret: 200, msg: 'succ', data: result};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 
 }
 
 PodService.deletePod = async (PodName) => {
-   let data =  await CommonService.deletePod(PodName);
-    return {ret: 200, msg: 'succ'};
+    let data = await CommonService.deletePod(PodName);
+    return {
+        ret: 200,
+        msg: 'succ'
+    };
 }
 
 

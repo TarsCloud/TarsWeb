@@ -467,6 +467,7 @@
         "createPerson": "创建人",
         "baseInfo": "基本信息",
         "nextStep": "下一步",
+        "prevStep": "上一步",
         "admin": "管理员",
         "serial": "序号",
         "config": "配置",
@@ -563,11 +564,23 @@
         "hpa": "HPA管理",
         "resource": "资源管理",
         "yaml": "yaml编辑",
-        "network": "宿主资源",
+        "network": "宿主机资源",
         "disk": "磁盘管理",
+        "pull": "镜像拉取",
+        "stacked": "堆叠机制",
+        "stackedInfo": "开启堆叠机制后, 同一个服务可以部署在同一台宿主机上",
+        "stackedInvalid": "如果服务使用了宿主机资源, 则无法开启堆叠",
+        "launcherType": "启动机制",
+        "backgroundInfo": "后台服务死掉, 不会导致pod重建, tarsnode会自动拉取服务",
+        "foregroundInfo": "前台服务重启, 会导致pod重建",
+        "jobModel": "服务模型",
         "nodeSelect": "节点筛选",
         "copyNode": "副本伸缩",
         "viewEvent": "查看事件",
+        "wrap": "自动换行",
+        "previous": "以前的容器",
+        "clear": "清除屏幕",
+        "close": "关闭",
         "addTestCase": "新增测试用例",
         "testCaseList": "用例列表"
     },
@@ -1073,7 +1086,7 @@
             "templateTips": "模板不能为空",
             "serviceFormatTips": "服务名只能包含英文字母、数字，并以字母开头",
             "nodeTips": "节点不能为空",
-            "nodeFormatTips": "节点格式不正确，请输入正确的IP地址",
+            "nodeFormatTips": "节点格式不正确，请输入正确的地址",
             "setNameTips": "Set名不能为空",
             "setAreaTips": "Set区域不能为空",
             "setNameFormatTips": "Set名只能为英文字母，且必须小写",
@@ -1083,8 +1096,10 @@
             "inputTips": "所有*号项都必须填写",
             "objTips": "OBJ不能为空",
             "deployServiceTip": "确定要布署吗？",
+            "overwriteDeployServiceTip": "已经存在服务, 确定要覆盖布署吗？",
             "getPort": "获取端口",
             "applicationTip": "应用名不存在或不合法",
+            "nodeListTip": "节点不能为空",
             "ret": {
                 "success": "布署申请提交成功",
                 "failed": "布署申请提交失败！请联系管理员"
@@ -1116,7 +1131,10 @@
             "affinity": "亲和性选择",
             "k8sExtra": "完善k8s信息(可选)",
             "serverTag": "镜像tag",
-            "serverTagTip": "镜像tag名可以不填,默认自动生成"
+            "serverTagTip": "镜像tag名可以不填,默认自动生成",
+            "format": "安装包格式(tgz格式下请注意节点环境需要满足安装包的要求!)",
+            "tgz": "tgz",
+            "docker": "docker"
         },
         "table": {
             "th": {
@@ -1210,7 +1228,8 @@
             "addDisk": "新增一组挂载",
             "delDisk": "删除当前组",
             "diskName": "磁盘名称",
-            "path": "挂载路径"
+            "path": "Pod映射路径",
+            "info": "(宿主机统一在: /usr/local/app/tars/host-mount/${namespace}/${service}目录下)"
         }
     },
     "nodes": {
@@ -2088,6 +2107,12 @@
         }
     },
     "market": {
+        "header": {
+            "pass": "设置仓库密码",
+            "repo": "管理仓库项目",
+            "modify": "修改服务市场密码",
+            "quit": "退出服务市场"
+        },
         "table": {
             "version": "当前版本"
         },
@@ -2117,6 +2142,7 @@
             "register": "注册",
             "and": "并",
             "activated": "激活",
+            "activateSuccAndRedirect": "账号激活成功, 请登录",
             "findPasswordSucc": "请查收邮件, 并使用激活码重置密码",
             "registerSucc": "请输入邮件中的激活码完成账号激活",
             "inputOldPass": "请输入旧密码",
@@ -2143,6 +2169,22 @@
             "activate": "激活"
         },
         "repo": {
+            "auth": "授权用户",
+            "project": "添加项目",
+            "projectName": "项目名称",
+            "userName": "用户名",
+            "inputProjectName": "请输入项目名称",
+            "repoCount": "镜像仓库数",
+            "developer": "开发者",
+            "inputUser": "请输入用户名",
+            "updateTime": "更新时间",
+            "pushTime": "推送时间",
+            "pullTime": "拉取时间",
+            "deleteArtifact": "确定删除该Artifact么?",
+            "repoList": "仓库列表",
+            "repoName": "镜像仓库名称",
+            "downloadCount": "下载数",
+            "deleteRepo": "确定删除该镜像仓库么",
             "resetPass": "重置仓库密码",
             "password": "密码",
             "passwordInfo": "> 8 chars with at least 1 uppercase/lowercase/number",
@@ -2151,6 +2193,7 @@
             "inputRepeatPassword": "请重复上面的密码",
             "inputPasswordAgain": "请再次输入密码",
             "back": "返回",
+            "projectNameRegTips": "项目名称必须是小写字母",
             "resetPassSucc": "重置密码成功",
             "createProjectSucc": "创建项目成功",
             "deleteProjectSucc": "成功删除项目",
@@ -2158,6 +2201,32 @@
             "deleteMemberSucc": "取消用户权限成功",
             "deleteRepoSucc": "成功删除仓库",
             "deleteArtifactSucc": "成功删除Artifacts"
+        },
+        "deploy": {
+            "exists": "注意: 切换版本只会替换服务的安装包, 配置文件需要自己手工变更",
+            "existsK8S": "服务已经存在, 无法重复安装",
+            "upgradeInfo": "注意: 切换版本只会替换服务镜像版本, 配置文件需要自己手工变更",
+            "install": "确定安装该服务么",
+            "confirm": "确定",
+            "upgrade": "升级",
+            "cancel": "取消"
+        },
+        "service": {
+            "lang": "语言",
+            "developer": "贡献者",
+            "project": "仓库",
+            "create": "创建",
+            "update": "更新",
+            "install": "安装",
+            "service": "服务说明",
+            "deploy": "部署文件",
+            "protocol": "协议文件",
+            "changelist": "变更历史",
+            "log": "日志",
+            "installing": "正在安装中, 请耐心等候...",
+            "versionList": "版本列表",
+            "change": "切换",
+            "changeVersion": "切换版本"
         },
         "userRet": {
             "0": "操作成功",
@@ -2178,20 +2247,16 @@
             "-2": "版本号非法",
             "-3": "版本已经存在",
             "-4": "数据不存在",
-            "-5": "没有权限",
-            "-6": "参数错误",
-            "-7": "用户不存在",
-            "-8": "仓库密码不合法, 请更换一个密码",
-            "-9": "名称冲突, 请更换一个"
-        }
-    },
-    "el": {
-        "messagebox": {
-            "confirm": "确定",
-            "cancel": "取消"
+            "-5": "没有权限"
         },
-        "table": {
-            "emptyText": "暂无数据~~"
+        "repoRet": {
+            "0": "操作成功",
+            "-1": "系统繁忙",
+            "-2": "没有权限",
+            "-3": "用户不存在",
+            "-4": "仓库密码不合法, 请更换一个密码",
+            "-5": "名称冲突, 请更换一个",
+            "-6": "删除项目失败, 项目下仓库必须为空"
         }
     }
 }

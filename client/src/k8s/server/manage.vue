@@ -101,7 +101,13 @@
         <let-table-column
           :title="$t('deployService.form.serviceName')"
           prop="ServerName"
-        ></let-table-column>
+        >
+          <template slot-scope="scope">
+            <let-table-operation @click="readPodLog(scope.row.PodName)">{{
+              scope.row.ServerName
+            }}</let-table-operation>
+          </template>
+        </let-table-column>
         <let-table-column
           :title="$t('serverList.table.th.podName')"
           prop="PodName"
@@ -150,7 +156,9 @@
               :content="scope.row.PresentMessage || ''"
             >
               <let-table-operation
-                ><span class="over">{{ scope.row.PresentMessage }}</span>
+                ><span class="over" @click="describePod(scope.row)">{{
+                  scope.row.PresentMessage
+                }}</span>
               </let-table-operation>
             </let-tooltip>
           </template>
@@ -796,6 +804,58 @@
         <div class="detail-loading" ref="detailModalLoading"></div>
       </div>
     </let-modal>
+
+    <let-modal
+      v-model="showPodYaml"
+      title="Pod"
+      width="70%"
+      :footShow="false"
+      @close="closePodYaml"
+    >
+      <div style="padding: 20px 0 0">
+        <yaml-editor
+          v-if="showPodYaml"
+          v-model="podYaml"
+          style="margin: 1px"
+          ref="yamlEdit"
+        ></yaml-editor>
+      </div>
+    </let-modal>
+
+    <let-modal
+      v-model="showPodLog"
+      :title="podName + '(Stdout)'"
+      width="80%"
+      height="60%"
+      :footShow="false"
+      @close="closePodLog"
+    >
+      <div v-if="showPodLog" class="pre log-body">
+        <div v-for="l in podLog" :key="l.id" class="log-msg">
+          <span class="log-date">{{ l.time }}</span>
+          <span :class="wrap ? 'wrap-lines' : ''" style="color:27aa5e">{{
+            l.message
+          }}</span>
+        </div>
+      </div>
+      <let-checkbox v-model="wrap" @change="changeWrap">{{
+        $t("operate.wrap")
+      }}</let-checkbox>
+      &nbsp;&nbsp;
+      <let-checkbox v-model="previous" @change="changePrevious">{{
+        $t("operate.previous")
+      }}</let-checkbox>
+
+      <span style="float:right">
+        <let-button size="mini" theme="primary" @click="clearScreen">{{
+          $t("operate.clear")
+        }}</let-button>
+        &nbsp;&nbsp;
+        <let-button size="mini" @click="showPodLog = false">{{
+          $t("operate.close")
+        }}</let-button>
+      </span>
+    </let-modal>
   </div>
 </template>
 
@@ -803,12 +863,15 @@
 import wrapper from "@/components/section-wrappper";
 import moment from "moment";
 import k8sManager from "@/k8s/inc/k8s/index";
+import YamlEditor from "@/components/editor/yaml-editor";
+import jsYaml from "js-yaml";
 
 export default {
   name: "ServerManage",
   components: {
     wrapper,
     k8sManager,
+    YamlEditor,
   },
   data() {
     return {
@@ -878,8 +941,16 @@ export default {
         currentServer: null,
       },
 
-      // 失败重试次数
-      // failCount :0,
+      showPodYaml: false,
+      podYaml: null,
+
+      podName: "",
+      wrap: false,
+      previous: false,
+      showPodLog: false,
+      podLog: [],
+
+      socket: null,
 
       isCheckedAll: false,
       checkedList: [],
@@ -913,6 +984,92 @@ export default {
     },
     getServerId() {
       return this.treeid;
+    },
+    changeWrap() {},
+    changePrevious() {
+      this.podLog = [];
+
+      this.readPodLog(this.podName);
+    },
+    clearScreen() {
+      this.podLog = [];
+    },
+    closePodLog() {
+      this.podLog = [];
+    },
+    readPodLog(PodName) {
+      // console.log(row);
+      this.podName = PodName;
+      let url = "";
+      if (window.location.protocol == "http:") {
+        url = `ws://${window.location.host}/web/log?podName=${PodName}&previous=${this.previous}`;
+      } else if (window.location.protocol == "https:") {
+        url = `wss://${window.location.host}/web/log?podName=${PodName}&previous=${this.previous}`;
+      } else {
+        console.log("unknown protocol", window.location);
+        return;
+      }
+
+      let that = this;
+
+      if (this.socket) {
+        this.socket.close();
+      }
+      this.socket = new WebSocket(url, "log-protocol");
+      this.socket.onopen = () => {
+        that.showPodLog = true;
+        that.podLog = [];
+      };
+
+      this.socket.onerror = () => {
+        console.log("[error] Connection error");
+        that.socket = null;
+      };
+
+      this.socket.close = () => {
+        console.log("[close] Connection closed cleanly");
+        that.socket = null;
+      };
+      // 监听socket消息
+      this.socket.onmessage = (msg) => {
+        let pos = msg.data.indexOf(" ");
+
+        that.podLog.push({
+          id: that.podLog.length,
+          time: moment(msg.data.substring(0, pos)).format(
+            "YYYY-MM-DD HH:mm:ss"
+          ),
+          message: msg.data.substring(pos),
+        });
+      };
+
+      // 发送socket消息
+      this.socket.onsend = (data) => {
+        that.socket.send(data);
+      };
+    },
+    closePodYaml() {
+      this.podYaml = null;
+    },
+
+    describePod(row) {
+      const loading = this.$loading.show();
+      this.$ajax
+        .getJSON("/k8s/api/describe_pod", {
+          PodName: row.PodName,
+        })
+        .then((data) => {
+          this.podYaml = jsYaml.dump(data);
+          this.showPodYaml = true;
+
+          this.$nextTick(() => {
+            this.$refs.yamlEdit.readonly();
+            loading.hide();
+          });
+        })
+        .catch((err) => {
+          loading.hide();
+        });
     },
     // 状态对应class
     getState(state) {
@@ -961,13 +1118,11 @@ export default {
     },
     // 获取服务列表
     getServerList() {
-      // const loading = this.$Loading.show();
       this.$ajax
         .getJSON("/k8s/api/pod_list", {
           ServerId: this.getServerId(),
         })
         .then((data) => {
-          // loading.hide();
           this.serverList = [];
           if (data.hasOwnProperty("Data")) {
             data.Data.forEach((item) => {
@@ -1066,9 +1221,8 @@ export default {
           this.closeConfigModal();
           this.startServerList();
           this.$tip.error(
-            `${this.$t("serverList.restart.failed")}: ${
-              err.err_msg || err.message
-            }`
+            `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
+              err.message}`
           );
         });
     },
@@ -1344,9 +1498,8 @@ export default {
         })
         .catch((err) => {
           this.$tip.error(
-            `${this.$t("serverList.restart.failed")}: ${
-              err.err_msg || err.message
-            }`
+            `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
+              err.message}`
           );
         });
     },
@@ -1444,8 +1597,7 @@ export default {
     checkServantEndpoint(endpoint) {
       const tmp = endpoint.split(/\s-/);
       const regProtocol = /^tcp|udp$/i;
-      let regHost =
-        /^h\s(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/i;
+      let regHost = /^h\s(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/i;
       let regT = /^t\s([1-9]|[1-9]\d+)$/i;
       let regPort = /^p\s\d{4,5}$/i;
 
@@ -1869,6 +2021,43 @@ export default {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+  }
+
+  .log-body {
+    height: 450px;
+  }
+
+  .wrap-lines {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .pre {
+    background-color: #454545;
+    padding: 10px;
+    white-space: pre-wrap;
+    overflow: auto;
+    margin: 1em 0px;
+    display: block;
+  }
+
+  .log-body .log-msg {
+    color: #27aa5e;
+    line-height: initial;
+    white-space: pre;
+    width: calc(100vw - 150px);
+  }
+
+  .log-body .log-date {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #8b959c;
+    padding-right: 10px;
   }
 }
 </style>

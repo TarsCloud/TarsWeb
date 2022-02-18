@@ -97,14 +97,18 @@
                 }}<i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="pass">设置仓库密码</el-dropdown-item>
-                <el-dropdown-item command="project"
-                  >管理仓库项目</el-dropdown-item
-                >
-                <el-dropdown-item command="modify"
-                  >修改服务市场密码</el-dropdown-item
-                >
-                <el-dropdown-item command="quit">退出市场登录</el-dropdown-item>
+                <el-dropdown-item command="pass">{{
+                  $t("market.header.pass")
+                }}</el-dropdown-item>
+                <el-dropdown-item command="project">{{
+                  $t("market.header.repo")
+                }}</el-dropdown-item>
+                <el-dropdown-item command="modify">{{
+                  $t("market.header.modify")
+                }}</el-dropdown-item>
+                <el-dropdown-item command="quit">{{
+                  $t("market.header.quit")
+                }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -147,6 +151,7 @@ export default {
   },
   computed: {
     marketUid() {
+      // console.log("marketUid", this.$store.state.marketUid);
       return this.$store.state.marketUid;
     },
   },
@@ -158,13 +163,15 @@ export default {
         location.href = "/pass.html";
       }
       if (command == "quit") {
-        location.href = "/logout";
+        location.href = "/pages/server/api/logout";
       }
     },
     handleMarketCommand(command) {
       if (command == "quit") {
-        window.localStorage.uid = "";
-        window.localStorage.ticket = "";
+        this.$store.commit({
+          type: "quit",
+        });
+
         this.$router.push("/market/user/login");
       } else if (command == "pass") {
         this.$router.push("/market/repo/pass");
@@ -252,16 +259,36 @@ export default {
   }
 
   .logo-wrap {
-    /* position: absolute; */
-    top: 0;
-    height: 80px;
-    padding: 26px var(--gap-small);
+    left: 0;
+    width: auto;
     z-index: 100;
+    padding: 0px;
+
+    a {
+      display: inline-block;
+      height: 80px;
+      padding: 30px 20px 0;
+      position: relative;
+      &.active {
+        &::after {
+          content: "";
+          display: inline-block;
+          height: 3px;
+          width: 100%;
+          background: #457ff5;
+          position: absolute;
+          top: 76px;
+          left: 0px;
+        }
+      }
+      .logo {
+        height: 25px;
+      }
+    }
     .logo {
       height: 28px;
     }
   }
-
   .language-wrap {
     /* right: 150px; */
     width: 150px;

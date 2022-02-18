@@ -27,8 +27,9 @@
             </div>
             <div style="margin-bottom:5px">
               <span style="margin-bottom:10px; margin-right:10px">
-                <el-tag effect="dark" size="mini" style=" margin-right:5px"
-                  >语言</el-tag
+                <el-tag effect="dark" size="mini" style=" margin-right:5px">{{
+                  $t("market.service.lang")
+                }}</el-tag
                 ><el-tag effect="plain" type="success" size="mini">{{
                   serviceVersion.lang
                 }}</el-tag>
@@ -36,8 +37,9 @@
             </div>
             <div style="margin-bottom:5px">
               <span style="margin-bottom:10px; margin-right:10px">
-                <el-tag effect="dark" size="mini" style=" margin-right:5px"
-                  >贡献者</el-tag
+                <el-tag effect="dark" size="mini" style=" margin-right:5px">{{
+                  $t("market.service.developer")
+                }}</el-tag
                 ><el-tag
                   effect="plain"
                   type="success"
@@ -56,7 +58,7 @@
                   type="warning"
                   size="mini"
                   style=" margin-right:5px"
-                  >仓库</el-tag
+                  >{{ $t("market.service.project") }}</el-tag
                 ><el-tag
                   effect="plain"
                   type="warning"
@@ -74,7 +76,7 @@
                   size="mini"
                   type="danger"
                   style=" margin-right:5px"
-                  >创建</el-tag
+                  >{{ $t("market.service.create") }}</el-tag
                 ><el-tag effect="plain" type="danger" size="mini">{{
                   serviceVersion.create_time
                 }}</el-tag>
@@ -86,7 +88,7 @@
                   size="mini"
                   type="danger"
                   style=" margin-right:5px"
-                  >更新</el-tag
+                  >{{ $t("market.service.update") }}</el-tag
                 ><el-tag effect="plain" type="danger" size="mini">{{
                   serviceVersion.update_time
                 }}</el-tag>
@@ -94,7 +96,7 @@
             </div>
             <span class="description"
               ><el-alert
-                :title="serviceVersion.description"
+                :title="getDescription(serviceVersion)"
                 type="info"
                 :closable="false"
               ></el-alert
@@ -104,7 +106,7 @@
               style="margin-top:10px; cursor: pointer"
               type="danger"
               @click="showInstall"
-              >安装</el-tag
+              >{{ $t("market.service.install") }}</el-tag
             >
           </span>
         </el-col>
@@ -113,35 +115,52 @@
 
     <el-main v-if="serviceVersion">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="服务说明" name="readme">
+        <el-tab-pane :label="$t('market.service.service')" name="readme">
           <markdown
+            v-if="activeName == 'readme'"
             :serviceVersion="serviceVersion"
-            :file="serviceVersion.readme"
+            :file="getReadme(serviceVersion)"
           ></markdown>
         </el-tab-pane>
-        <el-tab-pane label="部署文件" name="deploy">
-          <deploy :serviceVersion="serviceVersion"></deploy>
+        <el-tab-pane :label="$t('market.service.deploy')" name="deploy">
+          <deploy
+            v-if="activeName == 'deploy'"
+            :serviceVersion="serviceVersion"
+          ></deploy>
         </el-tab-pane>
-        <el-tab-pane label="协议文件" name="protocols">
-          <protocols :serviceVersion="serviceVersion"></protocols>
+        <el-tab-pane :label="$t('market.service.protocol')" name="protocols">
+          <protocols
+            v-if="activeName == 'protocols'"
+            :serviceVersion="serviceVersion"
+          ></protocols>
         </el-tab-pane>
-        <el-tab-pane label="变更历史" name="changelist">
+        <el-tab-pane :label="$t('market.service.changelist')" name="changelist">
           <markdown
+            v-if="activeName == 'changelist'"
             :serviceVersion="serviceVersion"
             :file="serviceVersion.changelist"
           ></markdown>
         </el-tab-pane>
-        <el-tab-pane label="日志" name="logs">
-          <logs :serviceVersion="serviceVersion"></logs>
+        <el-tab-pane :label="$t('market.service.log')" name="logs">
+          <logs
+            v-if="activeName == 'logs'"
+            :serviceVersion="serviceVersion"
+          ></logs>
         </el-tab-pane>
       </el-tabs>
     </el-main>
 
-    <install
-      v-if="serviceVersion"
-      ref="install"
-      :serviceVersion="serviceVersion"
-    ></install>
+    <installK8S
+      v-if="installServiceVersion && k8s"
+      ref="installK8S"
+      :serviceVersion="installServiceVersion"
+    ></installK8S>
+
+    <installNative
+      v-if="installServiceVersion && !k8s"
+      ref="installNative"
+      :serviceVersion="installServiceVersion"
+    ></installNative>
   </div>
 </template>
 
@@ -151,7 +170,8 @@ import moment from "moment";
 import markdown from "./markdown";
 import deploy from "./deploy";
 import protocols from "./protocols";
-import install from "./install";
+import installNative from "./installNative";
+import installK8S from "./installK8S";
 import logs from "./logs";
 
 export default {
@@ -160,7 +180,8 @@ export default {
     markdown,
     deploy,
     protocols,
-    install,
+    installK8S,
+    installNative,
     logs,
   },
   data() {
@@ -169,8 +190,10 @@ export default {
       name: "",
       version: "",
       versions: [],
+      installServiceVersion: null,
       serviceVersion: null,
       activeName: "readme",
+      k8s: true,
     };
   },
   watch: {
@@ -181,7 +204,9 @@ export default {
     },
   },
   methods: {
-    handleClick() {},
+    handleClick() {
+      // console.log(this.activeName);
+    },
     goRepository(repository) {
       window.open(repository);
     },
@@ -199,6 +224,18 @@ export default {
       if (open) {
         this.fetchVersionListData();
       }
+    },
+    getDescription(row) {
+      if (this.$cookie.get("locale") == "cn") {
+        return row.description_cn || row.description;
+      }
+      return row.description;
+    },
+    getReadme(row) {
+      if (this.$cookie.get("locale") == "cn") {
+        return row.readme_cn || row.readme;
+      }
+      return row.readme;
     },
     fetchServiceVersionData(version) {
       this.$market
@@ -221,6 +258,11 @@ export default {
             this.serviceVersion.readme =
               this.serviceVersion.prefix +
               this.serviceVersion.readme +
+              "?t=" +
+              this.serviceVersion.update_time;
+            this.serviceVersion.readme_cn =
+              this.serviceVersion.prefix +
+              this.serviceVersion.readme_cn +
               "?t=" +
               this.serviceVersion.update_time;
             this.serviceVersion.deploy =
@@ -269,11 +311,19 @@ export default {
         });
     },
     showInstall() {
-      this.$refs.install.showInstall();
+      this.installServiceVersion = this.serviceVersion;
+      this.$nextTick(() => {
+        if (this.k8s) {
+          this.$refs.installK8S.show();
+        } else {
+          this.$refs.installNative.show();
+        }
+      });
     },
   },
   created() {},
   mounted() {
+    this.k8s = location.pathname == "/k8s.html";
     this.loadData(
       this.$route.params.group,
       this.$route.params.name,

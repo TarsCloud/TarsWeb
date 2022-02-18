@@ -5,20 +5,28 @@
       type="primary"
       @click="showAddProject()"
       size="small"
-      >添加项目</el-button
+      >{{ $t("market.repo.project") }}</el-button
     >
     <br />
     <el-table :data="data" stripe border style="width: 100%; margin-top:20px">
-      <el-table-column prop="project" label="项目名称" min-width="150">
+      <el-table-column
+        prop="project"
+        :label="$t('market.repo.projectName')"
+        min-width="150"
+      >
         <template slot-scope="scope">
           <el-link type="primary" @click="showListRepo(scope.row.name)">{{
             scope.row.name
           }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="repo_count" label="镜像仓库数" min-width="100">
+      <el-table-column
+        prop="repo_count"
+        :label="$t('market.repo.repoCount')"
+        min-width="100"
+      >
       </el-table-column>
-      <el-table-column label="开发者" min-width="800px">
+      <el-table-column :label="$t('market.repo.developer')" min-width="800px">
         <template slot-scope="props">
           <el-tag
             v-for="tag in props.row.uids"
@@ -34,16 +42,20 @@
           >
         </template>
       </el-table-column>
-      <el-table-column prop="update_time" label="更新时间" min-width="200">
+      <el-table-column
+        prop="update_time"
+        :label="$t('market.repo.updateTime')"
+        min-width="200"
+      >
       </el-table-column>
-      <el-table-column label="操作" min-width="150">
+      <el-table-column :label="$t('operate.operates')" min-width="150">
         <template slot-scope="scope">
           <el-button
             type="danger"
             style="text-align: center"
             @click="deleteProject(scope.row)"
             size="small"
-            >删除</el-button
+            >{{ $t("operate.delete") }}</el-button
           >
         </template>
       </el-table-column>
@@ -67,7 +79,11 @@
 
     <addProject ref="addProject" @addProjectSucc="addProjectSucc"></addProject>
     <addMember ref="addMember" @addMemberSucc="addMemberSucc"></addMember>
-    <listRepo ref="listRepo" @showListArtifacts="showListArtifacts"></listRepo>
+    <listRepo
+      ref="listRepo"
+      @showListArtifacts="showListArtifacts"
+      @closeRepo="closeRepo"
+    ></listRepo>
     <listArtifacts ref="listArtifacts"></listArtifacts>
   </div>
 </template>
@@ -91,10 +107,21 @@ export default {
     return {
       data: [],
       total: 0,
-      page_size: 2,
+      page_size: 15,
       page: 1,
       closable: {},
     };
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      let ticket = window.localStorage.ticket;
+
+      if (!ticket) {
+        vm.$loginUtil.onLogin(false);
+      } else {
+        vm.$loginUtil.onLogin(true);
+      }
+    });
   },
   methods: {
     showAddProject() {
@@ -113,6 +140,9 @@ export default {
       this.fetchProjects();
     },
     addProjectSucc() {
+      this.fetchProjects();
+    },
+    closeRepo() {
       this.fetchProjects();
     },
     deleteMember(row, uid) {
@@ -136,7 +166,7 @@ export default {
             })
             .catch((err) => {
               this.$message({
-                message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });
@@ -163,7 +193,7 @@ export default {
             })
             .catch((err) => {
               this.$message({
-                message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });
@@ -175,7 +205,7 @@ export default {
       this.fetchProjects();
     },
     fetchProjects() {
-      this.$loading.show();
+      // this.$loading.show();
       this.$market
         .call("cloud-harbor", "getProjectList", {
           page_size: this.page_size,
@@ -191,12 +221,12 @@ export default {
             });
           });
           this.total = data.info.total;
-          this.$loading.hide();
+          // this.$loading.hide();
         })
         .catch((err) => {
-          this.$loading.hide();
+          // this.$loading.hide();
           this.$message({
-            message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+            message: this.$t("market.repoRet." + err.tars_ret || "-1"),
             type: "error",
           });
         });

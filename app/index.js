@@ -143,6 +143,7 @@ if (WebConf.enable) {
 
 		//上线和扩容接口
 		['post', '/deploy_server', DeployServerController.deployServer],
+		['post', '/deploy_server_from_cloud', DeployServerController.deployServerFromCloud],
 		['get', '/server_type_list', DeployServerController.serverTypeList],
 		['post', '/expand_server_preview', ExpandServerController.expandServerPreview, {
 				application: 'notEmpty',

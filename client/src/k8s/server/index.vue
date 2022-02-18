@@ -315,7 +315,7 @@ export default {
     },
     treeSearch(type) {
       this.iconLoading();
-      this.getTreeData(this.treeSearchKey, type);
+      this.getTreeData(this.treeSearchKey, type, true);
     },
     // 处理接口返回数据
     handleData(res, isFirstLayer) {
@@ -340,13 +340,14 @@ export default {
         }
       });
     },
-    getTreeData(key, type) {
+    getTreeData(key, type, force) {
       this.treeData = null;
       this.$nextTick(() => {
         this.loading = true;
         this.$ajax
           .getJSON("/k8s/api/tree", {
             searchKey: key || "",
+            force: force,
             type,
           })
           .then((res) => {

@@ -121,7 +121,7 @@
       highlight-current-row
       v-loading="loading"
     >
-      <el-table-column label="kind" width="200" show-overflow-tooltip>
+      <el-table-column label="kind" width="100" show-overflow-tooltip>
         <template slot-scope="scope">{{
           scope.row.involvedObject.kind || ""
         }}</template>
@@ -131,7 +131,7 @@
           scope.row.involvedObject.namespace || ""
         }}</template>
       </el-table-column>
-      <el-table-column label="name" width="200" show-overflow-tooltip>
+      <el-table-column label="name" width="150" show-overflow-tooltip>
         <template slot-scope="scope">{{
           scope.row.involvedObject.name || ""
         }}</template>
@@ -140,7 +140,7 @@
       <el-table-column
         label="reason"
         prop="reason"
-        width="200"
+        width="150"
       ></el-table-column>
       <el-table-column
         label="message"

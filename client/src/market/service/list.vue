@@ -17,11 +17,12 @@
               style="float: right;"
               v-model="isVisible[i + '_' + j]"
             >
-              版本列表:
+              {{ $t("market.service.versionList") }}
               <el-select
                 v-if="serviceVersion"
                 v-model="version"
-                style="width:100px"
+                style="width:100px; "
+                class="pop"
               >
                 <el-option
                   v-for="item in versions"
@@ -36,7 +37,7 @@
                 size="small"
                 style="line-height:25px; padding: 0px 10px 0 10px"
                 @click="changeVersion(i, j)"
-                >切换</el-button
+                >{{ $t("market.service.change") }}</el-button
               >
               <el-badge
                 slot="reference"
@@ -48,7 +49,7 @@
                   size="small"
                   style="line-height:25px; padding: 0px 10px 0 10px"
                   @click="fetchVersionListData(i, j)"
-                  >切换版本</el-button
+                  >{{ $t("market.service.changeVersion") }}</el-button
                 >
               </el-badge>
               <el-button
@@ -57,7 +58,7 @@
                 size="small"
                 style="line-height:25px; padding: 0px 10px 0 10px"
                 @click="fetchVersionListData(i, j)"
-                >切换版本</el-button
+                >{{ $t("market.service.changeVersion") }}</el-button
               >
             </el-popover>
           </div>
@@ -81,22 +82,31 @@
       </el-col>
     </el-row>
 
-    <upgrade
-      v-if="upgradeServiceVersion"
-      ref="upgrade"
+    <upgradeK8S
+      v-if="upgradeServiceVersion && k8s"
+      ref="upgradeK8S"
       @upgradeSucc="upgradeSucc"
       :serviceVersion="upgradeServiceVersion"
-    ></upgrade>
+    ></upgradeK8S>
+
+    <upgradeNative
+      v-if="upgradeServiceVersion && !k8s"
+      ref="upgradeNative"
+      @upgradeSucc="upgradeSucc"
+      :serviceVersion="upgradeServiceVersion"
+    ></upgradeNative>
   </div>
 </template>
 
 <script>
-import upgrade from "./upgrade";
+import upgradeK8S from "./installK8S";
+import upgradeNative from "./installNative";
 import moment from "moment";
 export default {
   name: "List",
   components: {
-    upgrade,
+    upgradeK8S,
+    upgradeNative,
   },
   data() {
     return {
@@ -104,12 +114,12 @@ export default {
       row: 0,
       data: [],
       upgrade: {},
-      // visible: {},
       isVisible: {},
       serviceVersion: null,
       upgradeServiceVersion: null,
       version: "",
       versions: [],
+      k8s: true,
     };
   },
   methods: {
@@ -126,9 +136,6 @@ export default {
 
       return this.upgrade[e.group + "-" + e.name + "-" + e.version];
     },
-    // isVisible(i, j) {
-    //   return this.visible[i + "_" + j] || false;
-    // },
     getServerLogo(i, j) {
       return this.get(i, j)["tars.io/CloudLogo"];
     },
@@ -168,9 +175,11 @@ export default {
     goService(service) {
       this.$router.push("/market/service/" + service.replace(/-/g, "/"));
     },
-    fetchInstallFromCloud() {
+    fetchListInstall() {
       this.$ajax
-        .getJSON("/market/api/list_install_from_cloud")
+        .getJSON("/market/api/list_install", {
+          k8s: this.k8s,
+        })
         .then((data) => {
           this.data = data;
 
@@ -283,8 +292,14 @@ export default {
             name: this.get(i, j)["tars.io/ServerName"],
           };
 
+          this.isVisible[i + "_" + j] = false;
+
           this.$nextTick(() => {
-            this.$refs.upgrade.show();
+            if (this.k8s) {
+              this.$refs.upgradeK8S.showUpgrade();
+            } else {
+              this.$refs.upgradeNative.showUpgrade();
+            }
           });
         })
         .catch((err) => {
@@ -312,12 +327,10 @@ export default {
           },
         })
         .then((data) => {
-          // console.log(data);
           this.upgrade = {};
           data.rsp.info.forEach((e) => {
             this.upgrade[e.group + "-" + e.name + "-" + e.version] = e.upgrade;
           });
-          // this.versions = data.rsp.versions;
         })
         .catch((err) => {
           this.$message({
@@ -329,7 +342,11 @@ export default {
   },
   created() {},
   mounted() {
-    this.fetchInstallFromCloud();
+    this.k8s = location.pathname == "/k8s.html";
+
+    if (window.localStorage.ticket) {
+      this.fetchListInstall();
+    }
   },
 };
 </script>
@@ -337,6 +354,10 @@ export default {
 <style>
 .list .text {
   font-size: 14px;
+}
+
+.pop .el-input__inner {
+  border: 0px;
 }
 
 .list .item {

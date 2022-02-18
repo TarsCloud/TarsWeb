@@ -17,6 +17,19 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+Vue.use(Router);
+
+// 重写路由的push方法
+const routerPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error => error)
+}
+
+const routerReplace = Router.prototype.replace;
+Router.prototype.replace = function replace(location) {
+  return routerReplace.call(this, location).catch(error => error)
+}
+
 // 服务管理
 import Server from '@/pages/server/index';
 import ServerManage from '@/pages/server/manage';
@@ -43,11 +56,14 @@ import OperationIDCManage from '@/pages/operation/idc';
 //网关
 import OperationGateway from '@/gateway/index';
 
-// // 市场
-// import Market from '@/market/index';
-// import ServiceInfo from '@/market/serviceInfo';
+// 市场
+import {
+  marketSso,
+  marketRepo,
+  marketService,
+  marketList
+} from './inc/market';
 
-Vue.use(Router);
 
 export default new Router({
   routes: [{
@@ -109,10 +125,6 @@ export default new Router({
           path: 'check',
           component: OperationCheck,
         },
-        // {
-        //   path: 'gateway',
-        //   component: OperationGateway,
-        // },
         {
           path: 'application',
           component: OperationApplication,
@@ -136,15 +148,10 @@ export default new Router({
       name: 'Gateway',
       component: OperationGateway,
     },
-    // {
-    //   path: '/market',
-    //   name: 'Market',
-    //   component: Market,
-    //   children: [{
-    //     path: ':group/:name/:version',
-    //     component: ServiceInfo,
-    //   }, ],
-    // },
+    marketSso,
+    marketRepo,
+    marketService,
+    marketList,
     {
       path: '*',
       redirect: '/server',

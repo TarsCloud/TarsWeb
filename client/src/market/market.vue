@@ -35,7 +35,9 @@
                 <el-col :span="20">
                   <span>
                     <span>{{ props.row.group + "/" + props.row.name }}</span>
-                    <span class="overflow">{{ props.row.description }}</span>
+                    <span class="overflow">{{
+                      getDescription(props.row)
+                    }}</span>
                   </span>
                 </el-col>
               </el-row>
@@ -46,7 +48,7 @@
     </div>
 
     <div class="right-view">
-      <router-view ref="childView"></router-view>
+      <router-view ref="childView" v-if="isRouterAlive"></router-view>
     </div>
   </div>
 </template>
@@ -69,7 +71,39 @@ export default {
       total: 0,
       offset: 0,
       limit: 20,
+      isRouterAlive: false,
+      k8s: true,
     };
+  },
+  computed: {
+    webVersion() {
+      return this.$store.state.version;
+    },
+  },
+  watch: {
+    webVersion(newVal, oldVal) {
+      if (newVal.version && newVal.version != oldVal.version) {
+        this.checkVersion(newVal.version);
+      }
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      let ticket = window.localStorage.ticket;
+      vm.isRouterAlive = false;
+
+      if (!ticket) {
+        vm.$loginUtil.onLogin(false);
+      } else {
+        vm.$loginUtil.onLogin(true);
+
+        vm.isRouterAlive = true;
+
+        if (vm.serviceList.length == 0) {
+          vm.fetchServiceData();
+        }
+      }
+    });
   },
   methods: {
     iconLoading() {
@@ -94,11 +128,18 @@ export default {
         "/market/service/" + this.group + "/" + this.name + "/" + this.version
       );
     },
+    getDescription(row) {
+      if (this.$cookie.get("locale") == "cn") {
+        return row.description_cn || row.description;
+      }
+      return row.description;
+    },
     fetchServiceData() {
       this.$market
         .call("cloud-market", "getServiceBaseList", {
           req: {
             offset: this.offset,
+            native: !this.k8s,
             limit: this.limit,
           },
         })
@@ -119,35 +160,22 @@ export default {
           });
         });
     },
-    onLogin(isLogin) {
-      if (!isLogin) {
-        this.$router.push("/market/user/login");
-      } else {
-        this.uid = window.localStorage.uid;
-        this.$store.commit({
-          type: "marketUid",
-          uid: this.uid,
-        });
-
-        this.fetchServiceData();
-      }
-    },
-    checkLogin() {
-      let ticket = window.localStorage.ticket;
-      if (!ticket) {
-        this.onLogin(false);
-        return;
-      }
+    checkVersion(version) {
       this.$market
-        .call("cloud-user", "isLogin", {
-          ticket: ticket,
+        .call("cloud-market", "checkVersion", {
+          req: {
+            web: version,
+          },
         })
         .then((data) => {
-          if (!data.uid) {
-            this.onLogin(false);
-          } else {
-            window.localStorage.uid = data.uid;
-            this.onLogin(true);
+          if (data.info.code != 0) {
+            this.$message({
+              message:
+                this.$cookie.get("locale") == "en"
+                  ? data.info.info_en
+                  : data.info.info_cn,
+              type: "error",
+            });
           }
         })
         .catch((err) => {
@@ -158,9 +186,10 @@ export default {
         });
     },
   },
+
   created() {},
   mounted() {
-    this.checkLogin();
+    this.k8s = location.pathname == "/k8s.html";
   },
 };
 </script>

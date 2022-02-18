@@ -1,16 +1,21 @@
 <template>
   <el-dialog
-    title="授权用户"
+    :title="$t('market.repo.auth')"
     :visible.sync="project.addDialogVisible"
     width="500px"
   >
     <el-form :rules="rules" :model="project" ref="ruleForm">
-      <el-form-item required label="用户名" prop="uid" label-width="200">
+      <el-form-item
+        required
+        :label="$t('market.repo.userName')"
+        prop="uid"
+        label-width="200"
+      >
         <el-autocomplete
           style="width:100%"
           v-model="project.uid"
           :fetch-suggestions="searchUserName"
-          placeholder="请输入用户名"
+          :placeholder="$t('market.repo.inputUser')"
           :trigger-on-focus="false"
           @select="handleSelect"
           :suffix-icon="suffixIcon"
@@ -19,12 +24,14 @@
     </el-form>
 
     <div slot="footer" class="dialog-footer">
-      <el-button @click="project.addDialogVisible = false">取 消</el-button>
+      <el-button @click="project.addDialogVisible = false">{{
+        $t("market.deploy.cancel")
+      }}</el-button>
       <el-button
         type="primary"
         @click="submit"
         :disabled="suffixIcon != 'el-icon-check'"
-        >授权用户</el-button
+        >{{ $t("market.repo.auth") }}</el-button
       >
     </div>
   </el-dialog>
@@ -138,7 +145,7 @@ export default {
             })
             .catch((err) => {
               this.$message({
-                message: this.$t("market.marketRet." + err.tars_ret || "-1"),
+                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
                 type: "error",
               });
             });

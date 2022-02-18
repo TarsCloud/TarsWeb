@@ -15,45 +15,8 @@
  */
 
 const logger = require('../../../logger');
-// const CommonService = require('../../service/common/CommonService');
 const NodeService = require('../../service/node/NodeService');
 const ServerService = require('../../service/server/ServerService');
-// const util = require('../../tools/util');
-
-// const serverConfStruct = {
-// 	id: '',
-// 	application: '',
-// 	server_name: '',
-// 	node_name: '',
-// 	server_type: '',
-// 	enable_set: {
-// 		formatter: (value) => {
-// 			return value == 'Y' ? true : false;
-// 		}
-// 	},
-// 	set_name: '',
-// 	set_area: '',
-// 	set_group: '',
-// 	setting_state: '',
-// 	present_state: '',
-// 	bak_flag: {
-// 		formatter: (value) => {
-// 			return value == 0 ? false : true;
-// 		}
-// 	},
-// 	template_name: '',
-// 	profile: '',
-// 	async_thread_num: '',
-// 	base_path: '',
-// 	exe_path: '',
-// 	start_script_path: '',
-// 	stop_script_path: '',
-// 	monitor_script_path: '',
-// 	patch_time: {formatter: util.formatTimeStamp},
-// 	patch_version: "",
-// 	process_id: '',
-// 	posttime: {formatter: util.formatTimeStamp}
-// };
 
 const ServerController = {};
 
@@ -64,7 +27,7 @@ ServerController.sendCommand = async (ctx) => {
 	let podIp = params.podIp
 	let command = params.command
 
-	try{
+	try {
 		let ret
 		switch (`${command}`) {
 			case 'StartServer':
@@ -81,50 +44,27 @@ ServerController.sendCommand = async (ctx) => {
 				break;
 		}
 		ctx.makeResObj(200, '', ret);
-	}catch(e) {
+	} catch (e) {
 		logger.error('[sendCommand]', e.body ? e.body.message : e, ctx)
 		ctx.makeResObj(500, e.body ? e.body.message : e);
 	}
 }
 
-// ServerController.getServerSearch = async (ctx) => {
-//     let {searchkey} = ctx.paramsObj
-//     try {
-//         let currPage = parseInt(ctx.paramsObj.curr_page) || 0
-//         let pageSize = parseInt(ctx.paramsObj.page_size) || 0
-// 		let rst = await ServerService.searchServer(searchkey.trim());
-
-// 		console.log(rst);
-
-//         // let rows = util.viewFilter(ret.rows, serverConfStruct) || []
-
-//         // rows.forEach(server => {
-//         //     server.id = server.application + '.' + server.server_name;
-//         // })
-//         ctx.makeResObj(200, '', {
-//             // count: ret.count,
-// 			rows: rst.data
-//         })
-//     } catch (e) {
-//         logger.error('[getServerSearch]', e, ctx);
-//         ctx.makeErrResObj();
-//     }
-// }
-
-
 /**
  * 服务列表
  */
-ServerController.ServerSelect = async(ctx) => {
-	let { Token = '', ServerApp = '', ServerName = '', page = 1 , isAll} = ctx.paramsObj
+ServerController.ServerSelect = async (ctx) => {
+	let {
+		Token = '', ServerApp = '', ServerName = '', page = 1, isAll
+	} = ctx.paramsObj
 
 	let pageIndex = Math.floor(page) || 1
 	let pageSize = 10
 
-	isAll = isAll=="true"
+	isAll = isAll == "true"
 
 	let limiter = null
-	if (!isAll){
+	if (!isAll) {
 		limiter = {
 			offset: (pageIndex - 1) * pageSize,
 			rows: pageSize,
@@ -145,9 +85,10 @@ ServerController.ServerSelect = async(ctx) => {
 /**
  * 服务更新
  */
-ServerController.ServerUpdate = async(ctx) => {
-	let { Token = '', ServerId = '',
-		ServerType = '', ServerMark = '',
+ServerController.ServerUpdate = async (ctx) => {
+	let {
+		Token = '', ServerId = '',
+			ServerType = '', ServerMark = '',
 	} = ctx.paramsObj
 	const that = module.exports
 
@@ -174,7 +115,9 @@ ServerController.ServerUpdate = async(ctx) => {
  * @param  {Array}   ServerId             服务ID
  */
 ServerController.ServerUndeploy = async (ctx) => {
-	let { Token = '', ServerId = [] } = ctx.paramsObj
+	let {
+		Token = '', ServerId = []
+	} = ctx.paramsObj
 
 	try {
 		const metadata = {
@@ -194,22 +137,24 @@ ServerController.ServerUndeploy = async (ctx) => {
  * @param  {String}  Token                登录签名
  * @param  {String}  ServerId             服务
  */
-ServerController.ServerOptionSelect = async(ctx) => {
-	const that = module.exports
-	let { Token = '', ServerId = ''} = ctx.paramsObj
+ServerController.ServerOptionSelect = async (ctx) => {
+		const that = module.exports
+		let {
+			Token = '', ServerId = ''
+		} = ctx.paramsObj
 
 
-	let limiter = null;
+		let limiter = null;
 
-	try {
-		let result = await ServerService.serverOptionSelect(ServerId, limiter);
-		ctx.makeResObj(result.ret, result.msg, result.data);
+		try {
+			let result = await ServerService.serverOptionSelect(ServerId, limiter);
+			ctx.makeResObj(result.ret, result.msg, result.data);
 
-	} catch (e) {
-		logger.error('[ServerOptionSelect]', e.body ? e.body.message : e, ctx)
-		ctx.makeResObj(500, e.body ? e.body.message : e);
-	}
-},
+		} catch (e) {
+			logger.error('[ServerOptionSelect]', e.body ? e.body.message : e, ctx)
+			ctx.makeResObj(500, e.body ? e.body.message : e);
+		}
+	},
 	/**
 	 * 服务编辑列表
 	 * @param  {String}  Token                 登录签名
@@ -225,109 +170,118 @@ ServerController.ServerOptionSelect = async(ctx) => {
 	 * @param  {Number}  RemoteLogReserveTime  远程日志保留时间
 	 * @param  {Number}  RemoteLogCompressTIme 远程日志压缩时间
 	 */
-	ServerController.ServerOptionUpdate = async(ctx) => {
-		const that = module.exports
-		let { Token = '', ServerId = '',
-			ServerImportant = 0, ServerTemplate = '', ServerProfile = '',
-			AsyncThread = '',
-		} = ctx.paramsObj
+	ServerController.ServerOptionUpdate = async (ctx) => {
+			const that = module.exports
+			let {
+				Token = '', ServerId = '',
+					ServerImportant = 0, ServerTemplate = '', ServerProfile = '',
+					AsyncThread = '',
+			} = ctx.paramsObj
 
-		if (AsyncThread === '') {
-			AsyncThread = 3
-		} else {
-			AsyncThread = parseInt(AsyncThread)
-		}
-
-		try {
-			const metadata = {
-				ServerId,
-			}
-			let target = {
-				ServerTemplate,
-				ServerProfile,
-				AsyncThread,
-				ServerImportant,
-			}
-
-			let result = await ServerService.serverOptionUpdate(metadata, target);
-			ctx.makeResObj(result.ret, result.msg, result.data);
-
-		} catch (e) {
-			logger.error('[ServerOptionUpdate]', e.body ? e.body.message : e, ctx)
-			ctx.makeResObj(500, e.body ? e.body.message : e);
-		}
-	},
-	/**
-	 * 查看服务模版内容
-	 * @param  {String}  Token                登录签名
-	 * @param  {String}  ServerId             服务ID
-	 */
-	ServerController.ServerOptionTemplate = async(ctx) => {
-		const that = module.exports
-		let { Token = '', ServerId = '' } = ctx.paramsObj
-
-		let metadata = {
-			ServerId: ServerId
-		}
-
-		try {
-
-			let result = await ServerService.serverOptionTemplate(metadata);
-			ctx.makeResObj(result.ret, result.msg, result.data);
-
-		} catch (e) {
-			logger.error('[ServerOptionTemplate]', e.body ? e.body.message : e, ctx)
-			ctx.makeResObj(500, e.body ? e.body.message : e);
-		}
-	},
-
-	/**
-	 * 命令
-	 * @param  {String}  Token                登录签名
-	 * @param  {String}  command              命令名称 (StartServer, StopServer)
-	 * @param  {String}  server_ids           服务ID
-	 */
-	ServerController.Command = async (ctx) => {
-		let { Token = '', command = '', server_ids = [] } = ctx.paramsObj
-
-		try {
-			let ServerApp = '', ServerName = ''
-			if (ServerId.indexOf('.') === -1) {
-				ServerApp = ServerId
+			if (AsyncThread === '') {
+				AsyncThread = 3
 			} else {
-				ServerApp = ServerId.substring(0, ServerId.indexOf('.'))
-				ServerName = ServerId.substring(ServerId.indexOf('.') + 1, ServerId.length)
+				AsyncThread = parseInt(AsyncThread)
 			}
 
-			if(!ServerApp || !ServerName){
-				return ctx.makeResObj(500, 'ServerId Error')
-			}
+			try {
+				const metadata = {
+					ServerId,
+				}
+				let target = {
+					ServerTemplate,
+					ServerProfile,
+					AsyncThread,
+					ServerImportant,
+				}
 
-			const method = 'do'
-			const action = {
-				key: command,
-				value: {
-					ServerApp,
-					ServerName,
-					PodIps,
-				},
-			}
+				let result = await ServerService.serverOptionUpdate(metadata, target);
+				ctx.makeResObj(result.ret, result.msg, result.data);
 
-			const params = {
-				kind: 'Command',
-				token: Token,
-				action,
+			} catch (e) {
+				logger.error('[ServerOptionUpdate]', e.body ? e.body.message : e, ctx)
+				ctx.makeResObj(500, e.body ? e.body.message : e);
 			}
-			let result = await ajax({ method, params })
-			if(result && result.ret === 0){
-				ctx.makeResObj(200, result.msg, result.data)
-			}else{
-				ctx.makeResObj(500, result.msg)
+		},
+		/**
+		 * 查看服务模版内容
+		 * @param  {String}  Token                登录签名
+		 * @param  {String}  ServerId             服务ID
+		 */
+		ServerController.ServerOptionTemplate = async (ctx) => {
+				const that = module.exports
+				let {
+					Token = '', ServerId = ''
+				} = ctx.paramsObj
+
+				let metadata = {
+					ServerId: ServerId
+				}
+
+				try {
+
+					let result = await ServerService.serverOptionTemplate(metadata);
+					ctx.makeResObj(result.ret, result.msg, result.data);
+
+				} catch (e) {
+					logger.error('[ServerOptionTemplate]', e.body ? e.body.message : e, ctx)
+					ctx.makeResObj(500, e.body ? e.body.message : e);
+				}
+			},
+
+			/**
+			 * 命令
+			 * @param  {String}  Token                登录签名
+			 * @param  {String}  command              命令名称 (StartServer, StopServer)
+			 * @param  {String}  server_ids           服务ID
+			 */
+			ServerController.Command = async (ctx) => {
+				let {
+					Token = '', command = '', server_ids = []
+				} = ctx.paramsObj
+
+				try {
+					let ServerApp = '',
+						ServerName = ''
+					if (ServerId.indexOf('.') === -1) {
+						ServerApp = ServerId
+					} else {
+						ServerApp = ServerId.substring(0, ServerId.indexOf('.'))
+						ServerName = ServerId.substring(ServerId.indexOf('.') + 1, ServerId.length)
+					}
+
+					if (!ServerApp || !ServerName) {
+						return ctx.makeResObj(500, 'ServerId Error')
+					}
+
+					const method = 'do'
+					const action = {
+						key: command,
+						value: {
+							ServerApp,
+							ServerName,
+							PodIps,
+						},
+					}
+
+					const params = {
+						kind: 'Command',
+						token: Token,
+						action,
+					}
+					let result = await ajax({
+						method,
+						params
+					})
+					if (result && result.ret === 0) {
+						ctx.makeResObj(200, result.msg, result.data)
+					} else {
+						ctx.makeResObj(500, result.msg)
+					}
+				} catch (e) {
+					logger.error('[Command]', e.body ? e.body.message : e, ctx)
+					ctx.makeResObj(500, e.body ? e.body.message : e);
+				}
 			}
-		} catch (e) {
-			logger.error('[Command]', e.body ? e.body.message : e, ctx)
-			ctx.makeResObj(500, e.body ? e.body.message : e);
-		}
-	}
 
 module.exports = ServerController;

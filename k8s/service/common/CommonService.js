@@ -13,6 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
+const stream = require('stream');
 
 const k8s = require('@kubernetes/client-node');
 const logger = require('../../../logger');
@@ -22,6 +23,8 @@ const CommonService = {};
 
 const kc = new k8s.KubeConfig();
 kc.loadFromDefault();
+
+const log = new k8s.Log(kc);
 
 const exec = new k8s.Exec(kc);
 
@@ -100,7 +103,26 @@ CommonService.patchNode = async (name, patch) => {
 }
 
 CommonService.listObject = async (plural, labelSelector, limit, Continue) => {
-	return await k8sApi.listNamespacedCustomObject(CommonService.GROUP, CommonService.VERSION, CommonService.NAMESPACE, plural, "true", Continue, null, labelSelector, limit);
+
+	return await k8sApi.listNamespacedCustomObject(CommonService.GROUP, CommonService.VERSION, CommonService.NAMESPACE, plural, "true", null, Continue, null, labelSelector, limit);
+}
+
+CommonService.describePod = async (podName) => {
+
+	return await k8sCoreApi.readNamespacedPod(podName, CommonService.NAMESPACE, true);
+}
+
+CommonService.readPodLog = async (containerName, podName, previous, logStream) => {
+
+
+	return await log.log(CommonService.NAMESPACE, podName, containerName, logStream, {
+		follow: true,
+		pretty: true,
+		previous: previous,
+		tailLines: 500,
+		timestamps: true
+
+	});
 }
 
 const cacheListener = (cache) => {
@@ -203,8 +225,14 @@ CommonService.deletePod = async (name) => {
 }
 
 
-CommonService.getServerList = async () => {
-	return getCacheList(tServerList, serverListFn);
+CommonService.getServerList = async (force) => {
+	if (force) {
+		const data = await serverListFn();
+
+		return data.body.items;
+	} else {
+		return getCacheList(tServerList, serverListFn);
+	}
 }
 
 CommonService.getTreeData = async () => {
@@ -522,7 +550,6 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 			tars: {
 				template: serverOption.ServerTemplate,
 				profile: serverOption.ServerProfile,
-				foreground: false,
 				asyncThread: serverOption.AsyncThread,
 				servants: Servants,
 			},
@@ -534,7 +561,10 @@ CommonService.buildTServer = (serverApp, serverName, serverServant, serverK8S, s
 				mounts: Mounts,
 				nodeSelector: NodeSelector,
 				notStacked: serverK8S.NotStacked,
+				foreground: serverK8S.launcherType || "background",
 				replicas: serverK8S.Replicas,
+				daemonSet: serverK8S.DaemonSet || false,
+				imagePullPolicy: serverK8S.imagePullPolicy || "Always",
 				abilityAffinity: serverK8S.AbilityAffinity,
 			},
 		},

@@ -1,14 +1,19 @@
 <template>
   <el-dialog
-    title="添加项目"
+    :title="$t('market.repo.project')"
     :visible.sync="project.addDialogVisible"
     width="500px"
   >
     <el-form :rules="rules" :model="project" ref="ruleForm">
-      <el-form-item required label="项目名称" prop="project" label-width="200">
+      <el-form-item
+        required
+        :label="$t('market.repo.projectName')"
+        prop="project"
+        label-width="200"
+      >
         <el-input
           v-model="project.project"
-          placeholder="请输入项目名称"
+          :placeholder="$t('market.repo.inputProjectName')"
           maxlength="40"
           @input="inputProjectName"
           :suffix-icon="suffixIcon"
@@ -17,8 +22,12 @@
     </el-form>
 
     <div slot="footer" class="dialog-footer">
-      <el-button @click="project.addDialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="submit">添加项目</el-button>
+      <el-button @click="project.addDialogVisible = false">{{
+        $t("market.deploy.cancel")
+      }}</el-button>
+      <el-button type="primary" @click="submit">{{
+        $t("market.repo.project")
+      }}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -28,14 +37,14 @@ export default {
   name: "addProject",
   data() {
     var nameIsValid = (str) => {
-      var result = str.match(/^.*[A-Z]|[a-z]+.*$/);
+      var result = str.match(/^[a-z]+$/);
       if (result == null) return false;
 
       return true;
     };
     var validateProjectName = (rule, value, callback) => {
       if (!nameIsValid(value)) {
-        callback(new Error(this.$t("market.repo.projectNameInfo")));
+        callback(new Error(this.$t("market.repo.projectNameRegTips")));
       } else {
         callback();
       }
