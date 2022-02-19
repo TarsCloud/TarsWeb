@@ -82,6 +82,7 @@ const serverConfStruct = {
     flow_state: 'active',
     label: {},
     run_type: '',
+    base_image_id: ''
 };
 
 const ServerController = {};

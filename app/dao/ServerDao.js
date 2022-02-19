@@ -311,8 +311,9 @@ ServerDao.updateServerConf = async (params) => {
 	params.enable_group != undefined && (updateOptions.enable_group = params.enable_group);
 	params.ip_group_name != undefined && (updateOptions.ip_group_name = params.ip_group_name);
 	params.run_type != undefined && (updateOptions.run_type = params.run_type);
+	params.base_image_id != undefined && (updateOptions.base_image_id = params.base_image_id);
 
-	console.log(params, updateOptions);
+	// console.log(params, updateOptions);
 
 	return await tServerConf.update(updateOptions, {
 		where: {
@@ -458,6 +459,15 @@ ServerDao.destroy = async (where = {}) => {
 	return tServerConf.destroy({
 		where
 	})
+};
+
+ServerDao.findBaseImageId = async (imageId) => {
+	return await tServerConf.findOne({
+		raw: true,
+		where: {
+			base_image_id: imageId,
+		}
+	});
 };
 
 module.exports = ServerDao;

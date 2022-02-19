@@ -88,13 +88,28 @@
           :placeholder="$t('user.tips.sep')"
         ></let-input>
       </let-form-item>
-      <let-form-item v-if="is_support_container">
-        <let-switch size="mini" v-model="runType" @change="changeRunType">
-          <span slot="open">{{ $t("pub.dlg.tgzRun") }}</span>
-          <span slot="close">{{ $t("pub.dlg.containerRun") }}</span>
-        </let-switch>
+      <let-form-item :label="$t('deployService.form.run_type')">
+        <let-radio-group
+          size="small"
+          v-model="runType"
+          @change="changeRunType"
+          :data="[
+            { value: true, text: $t('pub.dlg.tgzRun') },
+            { value: false, text: $t('pub.dlg.containerRun') },
+          ]"
+        >
+        </let-radio-group>
       </let-form-item>
-
+      <let-form-item
+        :label="$t('deployService.form.baseImageId')"
+        v-if="model.run_type == 'container'"
+      >
+        <let-select size="small" v-model="model.base_image_id">
+          <let-option v-for="i in baseImageList" :key="i.id" :value="i.id">{{
+            i.registry + "(" + i.image + ")"
+          }}</let-option>
+        </let-select>
+      </let-form-item>
       <let-table :data="model.adapters">
         <let-table-column title="OBJ">
           <template slot="head" slot-scope="props">
@@ -407,6 +422,7 @@ const getInitialModel = () => ({
   operator: "",
   developer: "",
   run_type: "",
+  base_image_id: "",
   adapters: [
     {
       obj_name: "",
@@ -432,10 +448,10 @@ export default {
   data() {
     return {
       types,
-      is_support_container: false,
       applicationList: [],
       nodeList: [],
       all_templates: [],
+      baseImageList: [],
       templates: [],
       runType: true,
       model: getInitialModel(),
@@ -465,7 +481,6 @@ export default {
   watch: {
     runType: function() {
       this.model.run_type = this.runType ? "" : "container";
-      // console.log(this.model.run_type);
     },
   },
   mounted() {
@@ -513,14 +528,15 @@ export default {
       });
 
     this.$ajax
-      .getJSON("/server/api/is_support_container")
+      .getJSON("/server/api/base_image_list")
       .then((data) => {
-        this.is_support_container = data.container;
-        if (this.is_support_container) {
-          this.runType = false;
-        }
+        this.baseImageList = data;
       })
-      .catch((err) => {});
+      .catch((err) => {
+        this.$tip.error(
+          `${this.$t("common.error")}: ${err.message || err.err_msg}`
+        );
+      });
 
     this.$watch("props.row.node_name", (val, oldVal) => {
       if (val === oldVal) {

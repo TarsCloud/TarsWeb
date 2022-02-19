@@ -17,97 +17,113 @@
 module tars
 {
 
-struct FileInfo
-{
+    struct FileInfo
+    {
+        /**
+        * 文件路径, 相对listFileInfo中path的路径
+        **/
+        0 require string path;
+
+        /**
+        * 文件大小, 字节数
+        **/
+        1 require int size;
+
+        /** 
+        * 文件是否可执行
+        */
+        2 require bool canExec;
+
+        /**
+        * 该文件的MD5值
+        */
+        3 optional string md5;
+    };
+
+    struct FileContent
+    {
+        /**
+        * 文件md5，文件id并校验最终文件准确性
+        **/
+        0 require string md5;
+        /**
+        * 文件名称
+        **/
+        1 require string name;
+        /**
+        * 是否第一个包(默认串行)
+        **/
+        2 require bool firstChunk;
+        /**
+        * 是否最后一个包(默认串行)
+        **/
+        3 require bool lastChunk;
+        /**
+        * 文件内容
+        **/
+        4 require vector<byte> content;
+    };
+
     /**
-    * 文件路径, 相对listFileInfo中path的路径
+     * 发布镜像
+      */
+    struct PatchImage
+    {
+        0 optional string registry;
+        1 optional string username;
+        2 optional string password;
+        3 optional string baseImage;
+    };
+
+    /**
+    *
+    * 发布服务的接口
+    *
     **/
-    0 require string path;
+    interface Patch
+    {
+        /**
+        * 获取路径下所有文件列表信息
+        * @param path, 目录路径, 路径中不能包含..
+        * @param vector<FileInfo>, 文件列表信息
+        * @return int, 返回0表示path是目录, 1表示path是文件, -1表示路径错误
+        */
+        int listFileInfo(string path, out vector<FileInfo> vf);
 
-    /**
-    * 文件大小, 字节数
-    **/
-    1 require int size;
+        /**
+        * 下载文件
+        * @param file, 文件路径
+        * @param pos, 从什么位置开始下载
+        * @param vector<byte>, 文件内容
+        * @param int, 0:读取表示成功, 1:读取到文件末尾了, <0: 读取失败
+        */
+        int download(string file, int pos, out vector<byte> vb);
 
-    /** 
-    * 文件是否可执行
-    */
-    2 require bool canExec;
+        /**
+        * 准备好需要patch的文件
+        * @param patchFile, 需要发布的文件名
+        * @return int, 0: 成功, <0: 失败
+        */
+        int preparePatchFile(string app, string serverName, string patchFile, out string result);
 
-    /**
-    * 该文件的MD5值
-    */
-    3 optional string md5;
-};
+        /**
+        * 删除发布文件
+        * @return int, 0: 成功, <0: 失败
+        */
+        int deletePatchFile(string app, string serverName, string patchFile);
 
+        /**
+        * 将准备好的 patchFile 编译成 Docker 镜像, 需要在 preparePatchFile 成功后调用
+        * @return int, 0: 成功, <0: 失败
+        */
+        int preparePatchImage(string app, string serverName, string serverVersion, PatchImage patchImage, out string result);
 
-struct FileContent
-{
-    /**
-    * 文件md5，文件id并校验最终文件准确性
-    **/
-    0 require string md5;
-    /**
-    * 文件名称
-    **/
-    1 require string name;
-    /**
-    * 是否第一个包(默认串行)
-    **/
-    2 require bool firstChunk;
-    /**
-    * 是否最后一个包(默认串行)
-    **/
-    3 require bool lastChunk;
-    /**
-    * 文件内容
-    **/
-    4 require vector<byte> content;
-};
-
-/**
- *
- * 发布服务的接口
- *
- **/
-interface Patch
-{
-    /**
-    * 获取路径下所有文件列表信息
-    * @param path, 目录路径, 路径中不能包含..
-    * @param vector<FileInfo>, 文件列表信息
-    * @return int, 返回0表示path是目录, 1表示path是文件, -1表示路径错误
-    */
-    int listFileInfo(string path, out vector<FileInfo> vf);
-
-    /**
-    * 下载文件
-    * @param file, 文件路径
-    * @param pos, 从什么位置开始下载
-    * @param vector<byte>, 文件内容
-    * @param int, 0:读取表示成功, 1:读取到文件末尾了, <0: 读取失败
-    */
-    int download(string file, int pos, out vector<byte> vb);
-
-    /**
-    * 准备好需要patch的文件
-    * @param patchFile, 需要发布的文件名
-    * @return int, 0: 成功, <0: 失败
-    */
-    int preparePatchFile(string app, string serverName, string patchFile);
-
-    /**
-    * 删除发布文件
-    * @return int, 0: 成功, <0: 失败
-    */
-    int deletePatchFile(string app, string serverName, string patchFile);
-
-    /**
+        /**
         * 上传文件
         * @param content, 文件分片
         * @param int, 0:上传成功, <0: 上传失败
         */
-    int upload(string app, string serverName, FileContent content);
-};
+        int upload(string app, string serverName, FileContent content);
+    };
 
 }; 

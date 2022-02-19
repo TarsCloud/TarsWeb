@@ -1,12 +1,22 @@
 <template>
   <div class="page_server_publish">
     <!-- 服务列表 -->
+    <div class="table_head">
+      <h4>
+        {{ this.$t("serverList.title.serverList") }}
+        <i
+          class="icon iconfont el-icon-third-shuaxin"
+          style="font-family: iconfont  !important;"
+          @click="getServerList()"
+        ></i>
+      </h4>
+    </div>
+
     <div>
       <let-table
         ref="table"
         v-if="serverList && serverList.length > 0"
         :data="serverList"
-        :title="$t('serverList.title.serverList')"
         :empty-msg="$t('common.noService')"
       >
         <let-table-column>
@@ -200,7 +210,7 @@
               >
             </div>
           </let-form-item>
-
+          <!-- 
           <let-form-item :label="$t('serverList.table.th.version')" v-else>
             <let-select
               size="small"
@@ -230,17 +240,6 @@
               v-if="false"
               >{{ $t("pub.dlg.conf") }}</let-button
             >
-          </let-form-item>
-
-          <!-- <let-form-item>
-            <let-switch
-              size="mini"
-              v-model="runChecked"
-              @change="changeRunStatus"
-            >
-              <span slot="open">{{ $t("pub.dlg.tgzRun") }}</span>
-              <span slot="close">{{ $t("pub.dlg.containerRun") }}</span>
-            </let-switch>
           </let-form-item> -->
 
           <let-form-item>
@@ -523,7 +522,7 @@
     <!-- </let-modal> -->
 
     <!-- 配置编译接口 -->
-    <let-modal
+    <!-- <let-modal
       v-model="publishUrlConfModal.show"
       :title="$t('pub.dlg.conf')"
       width="800px"
@@ -547,10 +546,10 @@
           ></let-input>
         </let-form-item>
       </let-form>
-    </let-modal>
+    </let-modal> -->
 
     <!-- 编译进度 -->
-    <let-modal
+    <!-- <let-modal
       v-model="compilerModal.show"
       :title="$t('pub.dlg.compileProgress')"
       width="880px"
@@ -592,7 +591,7 @@
           prop="end_time"
         ></let-table-column>
       </let-table>
-    </let-modal>
+    </let-modal> -->
   </div>
 </template>
 
@@ -629,21 +628,23 @@ export default {
         elegant: false,
         eachnum: 1,
       },
-      statusConfig: {
-        0: this.$t("serverList.restart.notStart"),
-        1: this.$t("serverList.restart.running"),
-        2: this.$t("serverList.restart.success"),
-        3: this.$t("serverList.restart.failed"),
-        4: this.$t("serverList.restart.cancel"),
-        5: this.$t("serverList.restart.parial"),
-      },
+      // statusConfig: {
+      //   0: this.$t("serverList.restart.notStart"),
+      //   1: this.$t("serverList.restart.preparing"),
+      //   2: this.$t("serverList.restart.running"),
+      //   3: this.$t("serverList.restart.success"),
+      //   4: this.$t("serverList.restart.failed"),
+      //   5: this.$t("serverList.restart.cancel"),
+      //   6: this.$t("serverList.restart.pauseFlow"),
+      // },
       statusMap: {
         0: "EM_T_NOT_START",
-        1: "EM_T_RUNNING",
-        2: "EM_T_SUCCESS",
-        3: "EM_T_FAILED",
-        4: "EM_T_CANCEL",
-        5: "EM_T_PARIAL",
+        1: "EM_T_PREPARE",
+        2: "EM_T_RUNNING",
+        3: "EM_T_SUCCESS",
+        4: "EM_T_FAILED",
+        5: "EM_T_CANCEL",
+        6: "EM_T_PARIAL",
       },
       showHistory: false,
       startTime: "",
@@ -663,16 +664,16 @@ export default {
       },
       patchType: "patch",
       patchRadioData: [{ value: "patch", text: this.$t("pub.dlg.upload") }],
-      tagList: [],
-      tagVersion: "",
-      publishUrlConfModal: {
-        show: false,
-        model: { tag: "", compiler: "", task: "" },
-      },
-      compilerModal: {
-        show: false,
-        model: null,
-      },
+      // tagList: [],
+      // tagVersion: "",
+      // publishUrlConfModal: {
+      //   show: false,
+      //   model: { tag: "", compiler: "", task: "" },
+      // },
+      // compilerModal: {
+      //   show: false,
+      //   model: null,
+      // },
       pkgUpload: {
         show: false,
         model: null,
@@ -692,23 +693,23 @@ export default {
     //     });
     //   }
     // },
-    getCompileConf() {
-      this.$ajax
-        .getJSON("/server/api/get_compile_conf")
-        .then((data) => {
-          if (data.enable) {
-            this.patchRadioData.push({
-              value: "compile",
-              text: this.$t("pub.dlg.compileAndPublish"),
-            });
-          }
-        })
-        .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
-        });
-    },
+    // getCompileConf() {
+    //   this.$ajax
+    //     .getJSON("/server/api/get_compile_conf")
+    //     .then((data) => {
+    //       if (data.enable) {
+    //         this.patchRadioData.push({
+    //           value: "compile",
+    //           text: this.$t("pub.dlg.compileAndPublish"),
+    //         });
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       this.$tip.error(
+    //         `${this.$t("common.error")}: ${err.message || err.err_msg}`
+    //       );
+    //     });
+    // },
     getServerList() {
       // 获取服务列表
       const loading = this.$Loading.show();
@@ -1095,170 +1096,170 @@ export default {
         this.publishModal.model.show = true;
       } else {
         this.publishModal.model.show = false;
-        this.getCodeVersion();
+        // this.getCodeVersion();
       }
     },
-    getCodeVersion() {
-      this.$ajax
-        .get("/server/api/get_tag_list", {
-          application: this.publishModal.model.application,
-          server_name: this.publishModal.model.server_name,
-        })
-        .then((data) => {
-          if (data.data == "") {
-            this.openPubConfModal();
-          } else {
-            this.tagList = data.data;
-          }
-        })
-        .catch((e) => {
-          this.tagList = [];
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.err_msg || err.message}`
-          );
-        });
-    },
-    openPubConfModal() {
-      this.publishUrlConfModal.show = true;
-      this.$ajax
-        .getJSON("/server/api/get_tag_conf", {
-          application: this.publishModal.model.application,
-          server_name: this.publishModal.model.server_name,
-        })
-        .then((data) => {
-          this.publishUrlConfModal.model.tag = data.path;
-        })
-        .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.err_msg || err.message}`
-          );
-        });
-    },
-    saveCompilerUrl() {
-      if (this.$refs.compilerForm.validate()) {
-        const loading = this.$Loading.show();
-        this.$ajax
-          .getJSON("/server/api/set_tag_conf", {
-            path: this.publishUrlConfModal.model.tag,
-            application: this.publishModal.model.application,
-            server_name: this.publishModal.model.server_name,
-          })
-          .then((data) => {
-            loading.hide();
-            this.$tip.success(this.$t("common.success"));
-            this.publishUrlConfModal.show = false;
-            this.getCodeVersion();
-          })
-          .catch((err) => {
-            loading.hide();
-            this.$tip.error(
-              `${this.$t("common.error")}: ${err.err_msg || err.message}`
-            );
-          });
-      }
-    },
-    addCompileTask() {
-      this.$ajax
-        .getJSON("/server/api/get_compile_conf")
-        .then((data) => {
-          const compileUrl = data.getVersionList;
-          if (!compileUrl) {
-            this.openPubConfModal();
-            return;
-          } else {
-            let nodes = this.publishModal.model.serverList.map(
-              (item) => item.node_name
-            );
-            let opts = {
-              application: this.publishModal.model.application,
-              server_name: this.publishModal.model.server_name,
-              node: nodes.join(";"),
-              path: this.tagVersion.split("--")[0],
-              version: this.tagVersion.split("--")[1],
-              comment: this.publishModal.model.update_text || "",
-              compileUrl: compileUrl,
-            };
-            const loading = this.$Loading.show();
-            this.$ajax
-              .postJSON("/server/api/do_compile", opts)
-              .then((data) => {
-                loading.hide();
-                this.compilerModal.show = true;
-                const taskNo = typeof data === "string" ? data : data.data;
-                this.getStatus(taskNo);
-                //this.taskStatus(taskNo);
-              })
-              .catch((err) => {
-                loading.hide();
-                this.$tip.error(
-                  `${this.$t("common.error")}: ${err.err_msg || err.message}`
-                );
-              });
-          }
-        })
-        .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.err_msg || err.message}`
-          );
-        });
-    },
-    taskStatus(taskNo) {
-      this.getStatus(taskNo);
-    },
-    getStatus(taskNo) {
-      const f = () => {
-        let t = null;
-        t && clearTimeout(t);
-        this.$ajax
-          .getJSON("/server/api/compiler_task", { taskNo })
-          .then((data) => {
-            const ret = typeof data === "array" ? data : data.data;
-            ret[0].status = this.statusConfig[ret[0].state];
-            if (ret[0].state == 1) {
-              t = setTimeout(f, 2000);
-            }
-            if (this.compilerModal.model) {
-              Object.assign(this.compilerModal.model, { progress: ret });
-            } else {
-              this.compilerModal.model = { progress: ret };
-            }
-            // 编译成功后轮询发布包回传情况
-            if (ret[0].state == 2) {
-              const loading = this.$Loading({ text: "回传发布包" });
-              loading.show();
-              this.compilerModal.show = false;
-              let timer = () => {
-                this.$ajax
-                  .getJSON("/server/api/get_server_patch", { task_id: taskNo })
-                  .then((data) => {
-                    if (Object.keys(data).length !== 0) {
-                      loading.hide();
-                      this.publishModal.model.patch_id = data.id;
-                      this.publishModal.show = false;
-                      this.savePublishServer();
-                    } else {
-                      setTimeout(timer, 2000);
-                    }
-                  })
-                  .catch((err) => {
-                    loading.hide();
-                    this.$tip.error(
-                      `${this.$t("common.error")}: ${err.err_msg ||
-                        err.message}`
-                    );
-                  });
-              };
-              setTimeout(timer, 2000);
-            }
-          })
-          .catch((err) => {
-            this.$tip.error(
-              `${this.$t("common.error")}: ${err.err_msg || err.message}`
-            );
-          });
-      };
-      f();
-    },
+    // getCodeVersion() {
+    //   this.$ajax
+    //     .get("/server/api/get_tag_list", {
+    //       application: this.publishModal.model.application,
+    //       server_name: this.publishModal.model.server_name,
+    //     })
+    //     .then((data) => {
+    //       if (data.data == "") {
+    //         this.openPubConfModal();
+    //       } else {
+    //         this.tagList = data.data;
+    //       }
+    //     })
+    //     .catch((e) => {
+    //       this.tagList = [];
+    //       this.$tip.error(
+    //         `${this.$t("common.error")}: ${err.err_msg || err.message}`
+    //       );
+    //     });
+    // },
+    // openPubConfModal() {
+    //   this.publishUrlConfModal.show = true;
+    //   this.$ajax
+    //     .getJSON("/server/api/get_tag_conf", {
+    //       application: this.publishModal.model.application,
+    //       server_name: this.publishModal.model.server_name,
+    //     })
+    //     .then((data) => {
+    //       this.publishUrlConfModal.model.tag = data.path;
+    //     })
+    //     .catch((err) => {
+    //       this.$tip.error(
+    //         `${this.$t("common.error")}: ${err.err_msg || err.message}`
+    //       );
+    //     });
+    // },
+    // saveCompilerUrl() {
+    //   if (this.$refs.compilerForm.validate()) {
+    //     const loading = this.$Loading.show();
+    //     this.$ajax
+    //       .getJSON("/server/api/set_tag_conf", {
+    //         path: this.publishUrlConfModal.model.tag,
+    //         application: this.publishModal.model.application,
+    //         server_name: this.publishModal.model.server_name,
+    //       })
+    //       .then((data) => {
+    //         loading.hide();
+    //         this.$tip.success(this.$t("common.success"));
+    //         this.publishUrlConfModal.show = false;
+    //         this.getCodeVersion();
+    //       })
+    //       .catch((err) => {
+    //         loading.hide();
+    //         this.$tip.error(
+    //           `${this.$t("common.error")}: ${err.err_msg || err.message}`
+    //         );
+    //       });
+    //   }
+    // },
+    // addCompileTask() {
+    //   this.$ajax
+    //     .getJSON("/server/api/get_compile_conf")
+    //     .then((data) => {
+    //       const compileUrl = data.getVersionList;
+    //       if (!compileUrl) {
+    //         this.openPubConfModal();
+    //         return;
+    //       } else {
+    //         let nodes = this.publishModal.model.serverList.map(
+    //           (item) => item.node_name
+    //         );
+    //         let opts = {
+    //           application: this.publishModal.model.application,
+    //           server_name: this.publishModal.model.server_name,
+    //           node: nodes.join(";"),
+    //           path: this.tagVersion.split("--")[0],
+    //           version: this.tagVersion.split("--")[1],
+    //           comment: this.publishModal.model.update_text || "",
+    //           compileUrl: compileUrl,
+    //         };
+    //         const loading = this.$Loading.show();
+    //         this.$ajax
+    //           .postJSON("/server/api/do_compile", opts)
+    //           .then((data) => {
+    //             loading.hide();
+    //             this.compilerModal.show = true;
+    //             const taskNo = typeof data === "string" ? data : data.data;
+    //             this.getStatus(taskNo);
+    //             //this.taskStatus(taskNo);
+    //           })
+    //           .catch((err) => {
+    //             loading.hide();
+    //             this.$tip.error(
+    //               `${this.$t("common.error")}: ${err.err_msg || err.message}`
+    //             );
+    //           });
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       this.$tip.error(
+    //         `${this.$t("common.error")}: ${err.err_msg || err.message}`
+    //       );
+    //     });
+    // },
+    // taskStatus(taskNo) {
+    //   this.getStatus(taskNo);
+    // },
+    // getStatus(taskNo) {
+    //   const f = () => {
+    //     let t = null;
+    //     t && clearTimeout(t);
+    //     this.$ajax
+    //       .getJSON("/server/api/compiler_task", { taskNo })
+    //       .then((data) => {
+    //         const ret = typeof data === "array" ? data : data.data;
+    //         ret[0].status = this.statusConfig[ret[0].state];
+    //         if (ret[0].state == 1) {
+    //           t = setTimeout(f, 2000);
+    //         }
+    //         if (this.compilerModal.model) {
+    //           Object.assign(this.compilerModal.model, { progress: ret });
+    //         } else {
+    //           this.compilerModal.model = { progress: ret };
+    //         }
+    //         // 编译成功后轮询发布包回传情况
+    //         if (ret[0].state == 2) {
+    //           const loading = this.$Loading({ text: "回传发布包" });
+    //           loading.show();
+    //           this.compilerModal.show = false;
+    //           let timer = () => {
+    //             this.$ajax
+    //               .getJSON("/server/api/get_server_patch", { task_id: taskNo })
+    //               .then((data) => {
+    //                 if (Object.keys(data).length !== 0) {
+    //                   loading.hide();
+    //                   this.publishModal.model.patch_id = data.id;
+    //                   this.publishModal.show = false;
+    //                   this.savePublishServer();
+    //                 } else {
+    //                   setTimeout(timer, 2000);
+    //                 }
+    //               })
+    //               .catch((err) => {
+    //                 loading.hide();
+    //                 this.$tip.error(
+    //                   `${this.$t("common.error")}: ${err.err_msg ||
+    //                     err.message}`
+    //                 );
+    //               });
+    //           };
+    //           setTimeout(timer, 2000);
+    //         }
+    //       })
+    //       .catch((err) => {
+    //         this.$tip.error(
+    //           `${this.$t("common.error")}: ${err.err_msg || err.message}`
+    //         );
+    //       });
+    //   };
+    //   f();
+    // },
     //数组是否包含
     includes(arr, item) {
       if (arr.includes(String(item))) {
@@ -1299,10 +1300,17 @@ export default {
 
 .page_server_publish {
   padding-bottom: 32px;
+
+  .icon.iconfont {
+    font-size: 10px;
+    cursor: pointer;
+    vertical-align: 0em;
+  }
+
   /* .mt10 {
   margin-top: 10px;
 } */
-  .running {
+  /* .running {
     color: #3f5ae0;
   }
   .success {
@@ -1310,7 +1318,7 @@ export default {
   }
   .stop {
     color: #f56c77;
-  }
+  } */
   .elegant-switch {
     display: block;
     overflow: hidden;
