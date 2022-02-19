@@ -19,7 +19,7 @@
           </div>
         </el-col>
 
-        <el-col :span="10">
+        <el-col :span="9">
           <let-tabs
             class="tabs"
             :center="true"
@@ -66,10 +66,18 @@
             </let-select>
           </div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3" style="text-align:center">
           <div class="version-wrap">
             <div>web:{{ web_version }}</div>
             <div>framework:{{ framework_version }}</div>
+            <el-link
+              style="font-size:9px"
+              href="https://doc.tarsyun.com"
+              target="_blank"
+              >{{
+                locale == "cn" ? "Tars在线文档" : "Tars Online Doc"
+              }}</el-link
+            >
           </div>
         </el-col>
         <el-col :span="4">
@@ -275,12 +283,12 @@ export default {
     border-bottom: none;
     height: 80px;
   }
+
   .version-wrap {
-    /* position: absolute; */
     top: 0;
+    font-size: 12px;
     height: 80px;
-    width: 150px;
-    padding: 20px var(--gap-small);
+    padding: 15px var(--gap-small);
   }
 
   .logo-wrap {
@@ -316,8 +324,6 @@ export default {
   }
 
   .language-wrap {
-    /* right: 150px; */
-    width: 150px;
     height: 80px;
     padding-top: 20px;
   }

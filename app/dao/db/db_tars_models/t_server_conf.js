@@ -189,6 +189,10 @@ module.exports = function (sequelize, DataTypes) {
 			type: DataTypes.STRING(32),
 			allowNull: true
 		},
+		base_image_id: {
+			type: DataTypes.INTEGER(11),
+			allowNull: false,
+		}
 	}, {
 		tableName: 't_server_conf',
 		timestamps: false,

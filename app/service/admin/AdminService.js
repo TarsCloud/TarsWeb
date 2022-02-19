@@ -281,14 +281,17 @@ AdminService.getVersion = async () => {
     }
 };
 
-AdminService.isSupportContainer = async () => {
-    let ret = await adminRegPrx.hasContainerRegistry();
-    if (ret.__return) {
-        return true;
+AdminService.forceDockerLogin = async (nodeName) => {
+    let timeout = adminRegPrx.getTimeout();
+    adminRegPrx.setTimeout(10000);
+    let ret = await adminRegPrx.forceDockerLogin(nodeName);
+    adminRegPrx.setTimeout(timeout);
+
+    if (ret.__return === 0) {
+        return ret.result;
     } else {
-        return false;
+        throw new Error(ret.__return);
     }
 };
-
 
 module.exports = AdminService;

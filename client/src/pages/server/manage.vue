@@ -524,15 +524,26 @@
             ]"
           >
           </let-radio-group>
-          <!--           
-          <let-switch
-            size="mini"
+        </let-form-item>
+
+        <let-form-item
+          :label="$t('deployService.form.baseImageId')"
+          v-if="!configModal.model.run_type_bool"
+        >
+          <let-checkbox
+            v-model="batchEditConf.itemEnable.run_type_bool"
+            v-show="!batchEditConf.show"
+            class="form_item_disabled"
+          />
+          <let-select
+            size="small"
             v-bind:disabled="!batchEditConf.itemEnable.run_type_bool"
-            v-model="configModal.model.run_type_bool"
+            v-model="configModal.model.base_image_id"
           >
-            <span slot="open">{{ $t("pub.dlg.tgzRun") }}</span>
-            <span slot="close">{{ $t("pub.dlg.containerRun") }}</span>
-          </let-switch> -->
+            <let-option v-for="i in baseImageList" :key="i.id" :value="i.id">{{
+              i.registry + "(" + i.image + ")"
+            }}</let-option>
+          </let-select>
         </let-form-item>
 
         <let-form-item :label="$t('serverList.dlg.asyncThread')" required>
@@ -566,7 +577,10 @@
           <let-input
             size="small"
             class="form_item_style"
-            v-bind:disabled="!batchEditConf.itemEnable.base_path"
+            v-bind:disabled="
+              !batchEditConf.itemEnable.base_path ||
+                !configModal.model.run_type_bool
+            "
             v-model="configModal.model.base_path"
           ></let-input>
         </let-form-item>
@@ -580,7 +594,10 @@
           <let-input
             size="small"
             class="form_item_style"
-            v-bind:disabled="!batchEditConf.itemEnable.exe_path"
+            v-bind:disabled="
+              !batchEditConf.itemEnable.exe_path ||
+                !configModal.model.run_type_bool
+            "
             v-model="configModal.model.exe_path"
           ></let-input>
         </let-form-item>
@@ -594,7 +611,10 @@
           <let-input
             size="small"
             class="form_item_style"
-            v-bind:disabled="!batchEditConf.itemEnable.start_script_path"
+            v-bind:disabled="
+              !batchEditConf.itemEnable.start_script_path ||
+                !configModal.model.run_type_bool
+            "
             v-model="configModal.model.start_script_path"
           ></let-input>
         </let-form-item>
@@ -608,7 +628,10 @@
           <let-input
             size="small"
             class="form_item_style"
-            v-bind:disabled="!batchEditConf.itemEnable.stop_script_path"
+            v-bind:disabled="
+              !batchEditConf.itemEnable.stop_script_path ||
+                !configModal.model.run_type_bool
+            "
             v-model="configModal.model.stop_script_path"
           ></let-input>
         </let-form-item>
@@ -625,7 +648,10 @@
           <let-input
             style="width: 664px"
             size="small"
-            v-bind:disabled="!batchEditConf.itemEnable.monitor_script_path"
+            v-bind:disabled="
+              !batchEditConf.itemEnable.monitor_script_path ||
+                !configModal.model.run_type_bool
+            "
             v-model="configModal.model.monitor_script_path"
           ></let-input>
         </let-form-item>
@@ -1013,6 +1039,7 @@ const batchConfigModel = {
   ip_group_name: "",
   run_type: "",
   run_type_bool: true,
+  base_image_id: "",
 };
 
 export default {
@@ -1037,6 +1064,8 @@ export default {
       serverList: [],
       // 分组列表
       groupList: [],
+      //基础镜像
+      baseImageList: [],
 
       // 操作历史列表
       serverNotifyList: [],
@@ -1131,11 +1160,18 @@ export default {
     },
   },
   methods: {
-    changeRunType(value) {
-      this.$Notice({
-        title: this.$t("serverList.dlg.run_typeInfo"),
-        type: "warning",
-      });
+    changeRunType() {
+      if (
+        !this.configModal.model.run_type_bool &&
+        this.baseImageList.length == 0
+      ) {
+        this.configModal.model.run_type_bool = true;
+
+        this.$Notice({
+          message: this.$t("deployService.form.containRunInfo"),
+          type: "warning",
+        });
+      }
     },
     // 获取服务列表
     getServerList(server_curr_page) {
@@ -1337,6 +1373,13 @@ export default {
             data.templates = [];
             this.configModal.model = data;
           }
+
+          if (
+            !this.configModal.model.base_image_id &&
+            this.baseImageList.length > 0
+          ) {
+            this.configModal.model.base_image_id = this.baseImageList[0].id;
+          }
         })
         .catch((err) => {
           loading.hide();
@@ -1396,11 +1439,10 @@ export default {
         }
         if (!this.configModal.model.run_type_bool) {
           this.configModal.model.run_type = "container";
+        } else {
+          this.configModal.model.run_type = "";
         }
-        // console.log(
-        //   "this.configModal.model:" +
-        //     JSON.stringify(this.configModal.model, null, 4)
-        // );
+
         var url = flag
           ? "/server/api/update_server"
           : "/server/api/batch_update_server";
@@ -2054,6 +2096,17 @@ export default {
     this.serverData = this.$parent.getServerData();
   },
   mounted() {
+    this.$ajax
+      .getJSON("/server/api/base_image_list")
+      .then((data) => {
+        this.baseImageList = data;
+      })
+      .catch((err) => {
+        this.$tip.error(
+          `${this.$t("common.error")}: ${err.message || err.err_msg}`
+        );
+      });
+
     this.getServerList();
     this.getServerNotifyList(1);
   },

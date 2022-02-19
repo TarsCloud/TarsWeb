@@ -116,4 +116,10 @@ export default {
     margin-left: 16px;
   }
 }
+
+.icon.iconfont {
+  font-size: 10px;
+  cursor: pointer;
+  vertical-align: 0em;
+}
 </style>

@@ -616,10 +616,11 @@
                 "node_name": "节点",
                 "last_heartbeat": "最后心跳",
                 "present_state": "当前状态",
-                "tars_version": "版本",
+                "version": "版本",
                 "label": "标签",
                 "last_notity": "最新实时状态",
                 "load_avg5": "负载",
+                "result": "结果",
                 "check": "操作"
             },
             "edit": "编辑",
@@ -775,6 +776,7 @@
         },
         "restart": {
             "notStart": "未开始",
+            "preparing": "正在准备发布包",
             "running": "运行中",
             "success": "成功",
             "failed": "失败",
@@ -995,7 +997,8 @@
             "view": "查看镜像版本"
         },
         "btn": {
-            "add": "添加"
+            "add": "添加",
+            "docker": "强制节点登录仓库"
         },
         "delete": {
             "confirmTips": "确认删除基础镜像么?"
@@ -1012,7 +1015,16 @@
             "SupportedTypeTips": "请选择支持的类型",
             "Secret": "仓库验证secret",
             "SecretTips": "请输入仓库验证secret",
+            "DeleteRegistryTips": "确定删除仓库地址么?",
+            "NotDeleteRegistryTips": "仓库被镜像引用, 无法删除",
+            "DeleteImageTips": "确定删除镜像么?",
+            "NotDeleteImageTips": "镜像被服务引用, 无法删除",
+            "Choose": "必须选择某些节点",
+            "Registry": "仓库地址",
+            "UserName": "仓库用户",
+            "Password": "仓库密码",
             "CreatePerson": "创建人",
+            "UpdateTime": "更新时间",
             "CreateTime": "创建时间"
         },
         "node": {
@@ -1049,6 +1061,7 @@
             "gateway": "网关配置",
             "image": "镜像管理",
             "baseImage": "基础镜像管理",
+            "baseRegistry": "仓库管理",
             "nodeImage": "NODE镜像管理",
             "affinity": "亲和性管理",
             "application": "应用管理",
@@ -1138,6 +1151,9 @@
             "serverTag": "镜像tag",
             "serverTagTip": "镜像tag名可以不填,默认自动生成",
             "format": "安装包格式(tgz格式下请注意节点环境需要满足安装包的要求!)",
+            "run_type": "运行方式",
+            "baseImageId": "运行容器",
+            "containRunInfo": "开启容器运行模式请先配置好基础镜像",
             "tgz": "tgz",
             "docker": "docker"
         },

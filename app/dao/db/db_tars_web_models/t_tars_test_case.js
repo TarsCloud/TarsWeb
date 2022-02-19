@@ -21,7 +21,7 @@ module.exports = function (sequelize, DataTypes) {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
 			autoIncrement: true,
-			unique: true
+			unique: "case_id"
 		},
 		f_id: {
 			type: DataTypes.INTEGER(11),

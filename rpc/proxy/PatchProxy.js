@@ -181,6 +181,66 @@ tars.FileContent.create = function (is) {
     return tars.FileContent._readFrom(is);
 };
 
+tars.PatchImage = function() {
+    this.registry = "";
+    this.username = "";
+    this.password = "";
+    this.baseImage = "";
+    this._classname = "tars.PatchImage";
+};
+tars.PatchImage._classname = "tars.PatchImage";
+tars.PatchImage._write = function (os, tag, value) { os.writeStruct(tag, value); };
+tars.PatchImage._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+tars.PatchImage._readFrom = function (is) {
+    var tmp = new tars.PatchImage;
+    tmp.registry = is.readString(0, false, "");
+    tmp.username = is.readString(1, false, "");
+    tmp.password = is.readString(2, false, "");
+    tmp.baseImage = is.readString(3, false, "");
+    return tmp;
+};
+tars.PatchImage.prototype._writeTo = function (os) {
+    os.writeString(0, this.registry);
+    os.writeString(1, this.username);
+    os.writeString(2, this.password);
+    os.writeString(3, this.baseImage);
+};
+tars.PatchImage.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+tars.PatchImage.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+tars.PatchImage.prototype.toObject = function() { 
+    return {
+        "registry" : this.registry,
+        "username" : this.username,
+        "password" : this.password,
+        "baseImage" : this.baseImage
+    };
+};
+tars.PatchImage.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "registry") && (this.registry = json.registry);
+    _hasOwnProperty.call(json, "username") && (this.username = json.username);
+    _hasOwnProperty.call(json, "password") && (this.password = json.password);
+    _hasOwnProperty.call(json, "baseImage") && (this.baseImage = json.baseImage);
+    return this;
+};
+tars.PatchImage.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+tars.PatchImage.new = function () {
+    return new tars.PatchImage();
+};
+tars.PatchImage.create = function (is) {
+    return tars.PatchImage._readFrom(is);
+};
+
 var __tars_Patch$deletePatchFile$IF = {
     "name" : "deletePatchFile",
     "return" : "int32",
@@ -435,6 +495,10 @@ var __tars_Patch$preparePatchFile$IF = {
         "name" : "patchFile",
         "class" : "string",
         "direction" : "in"
+    }, {
+        "name" : "result",
+        "class" : "string",
+        "direction" : "out"
     }]
 };
 
@@ -453,7 +517,10 @@ var __tars_Patch$preparePatchFile$ID = function (data) {
             "request" : data.request,
             "response" : {
                 "costtime" : data.request.costtime,
-                "return" : is.readInt32(0, true, 0)
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "result" : is.readString(4, true, "")
+                }
             }
         };
     } catch (e) {
@@ -477,7 +544,10 @@ var __tars_Patch$preparePatchFile$PD = function (data) {
             "request" : data.request,
             "response" : {
                 "costtime" : data.request.costtime,
-                "return" : tup.readInt32("", 0)
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "result" : tup.readString("result")
+                }
             }
         };
     } catch (e) {
@@ -498,6 +568,101 @@ tars.PatchProxy.prototype.preparePatchFile = function (app, serverName, patchFil
     }
 };
 tars.PatchProxy.preparePatchFile = __tars_Patch$preparePatchFile$IF;
+
+var __tars_Patch$preparePatchImage$IF = {
+    "name" : "preparePatchImage",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "app",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "serverName",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "serverVersion",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "patchImage",
+        "class" : "tars.PatchImage",
+        "direction" : "in"
+    }, {
+        "name" : "result",
+        "class" : "string",
+        "direction" : "out"
+    }]
+};
+
+var __tars_Patch$preparePatchImage$IE = function (app, serverName, serverVersion, patchImage) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, app);
+    os.writeString(2, serverName);
+    os.writeString(3, serverVersion);
+    os.writeStruct(4, patchImage);
+    return os.getBinBuffer();
+};
+
+var __tars_Patch$preparePatchImage$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "result" : is.readString(5, true, "")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __tars_Patch$preparePatchImage$PE = function (app, serverName, serverVersion, patchImage, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("app", app);
+    tup.writeString("serverName", serverName);
+    tup.writeString("serverVersion", serverVersion);
+    tup.writeStruct("patchImage", patchImage);
+    return tup;
+};
+
+var __tars_Patch$preparePatchImage$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "result" : tup.readString("result")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __tars_Patch$preparePatchImage$ER = function (data) {
+    throw _makeError(data, "Call Patch::preparePatchImage failed");
+};
+
+tars.PatchProxy.prototype.preparePatchImage = function (app, serverName, serverVersion, patchImage) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("preparePatchImage", __tars_Patch$preparePatchImage$PE(app, serverName, serverVersion, patchImage, version), arguments[arguments.length - 1], __tars_Patch$preparePatchImage$IF).then(__tars_Patch$preparePatchImage$PD, __tars_Patch$preparePatchImage$ER);
+    } else {
+        return this._worker.tars_invoke("preparePatchImage", __tars_Patch$preparePatchImage$IE(app, serverName, serverVersion, patchImage), arguments[arguments.length - 1], __tars_Patch$preparePatchImage$IF).then(__tars_Patch$preparePatchImage$ID, __tars_Patch$preparePatchImage$ER);
+    }
+};
+tars.PatchProxy.preparePatchImage = __tars_Patch$preparePatchImage$IF;
 
 var __tars_Patch$upload$IF = {
     "name" : "upload",

@@ -1,39 +1,80 @@
 <template>
   <div class="page_operation_business">
-    <let-form inline itemWidth="200px" @submit.native.prevent="search">
-      <let-form-item :label="$t('business.form.business')">
-        <let-input size="small" v-model="query.f_name"></let-input>
-      </let-form-item>
-      <let-form-item>
-        <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
-      </let-form-item>
+    <el-form inline itemWidth="200px" @submit.native.prevent="search">
+      <el-form-item :label="$t('business.form.business')">
+        <el-input size="small" v-model="query.f_name"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button size="small" @click="search" type="primary">{{
+          $t("operate.search")
+        }}</el-button>
+      </el-form-item>
       <div style="float: right">
-        <let-button size="small" theme="primary" style="float: right" @click="addItem">{{$t('business.btn.add')}}</let-button>
+        <i
+          class="icon iconfont el-icon-third-shuaxin"
+          style="font-family: iconfont  !important;margin:10px"
+          @click="fetchData()"
+        ></i>
+
+        <el-button
+          size="small"
+          type="primary"
+          style="float: right"
+          @click="addItem"
+          >{{ $t("business.btn.add") }}</el-button
+        >
       </div>
-    </let-form>
+    </el-form>
 
     <let-table ref="table" :data="items" :empty-msg="$t('common.nodata')">
-      <let-table-column :title="$t('business.form.business')" prop="f_name"></let-table-column>
-      <let-table-column :title="$t('business.form.showName')" prop="f_show_name"></let-table-column>
-      <let-table-column :title="$t('business.form.order')" prop="f_order"></let-table-column>
-      <let-table-column :title="$t('business.form.person')" prop="f_create_person"></let-table-column>
-      <let-table-column :title="$t('business.form.time')" prop="f_create_time"></let-table-column>
+      <let-table-column
+        :title="$t('business.form.business')"
+        prop="f_name"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('business.form.showName')"
+        prop="f_show_name"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('business.form.order')"
+        prop="f_order"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('business.form.person')"
+        prop="f_create_person"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('business.form.time')"
+        prop="f_create_time"
+      ></let-table-column>
       <let-table-column :title="$t('operate.operates')">
         <template slot-scope="scope">
-          <let-table-operation @click="editItem(scope.row)">{{$t('operate.update')}}</let-table-operation>
-          <let-table-operation @click="removeItem(scope.row)">{{$t('operate.delete')}}</let-table-operation>
+          <let-table-operation @click="editItem(scope.row)">{{
+            $t("operate.update")
+          }}</let-table-operation>
+          <let-table-operation @click="removeItem(scope.row)">{{
+            $t("operate.delete")
+          }}</let-table-operation>
         </template>
       </let-table-column>
     </let-table>
 
-    <let-modal v-model="viewModal.show" :title="$t('business.view.title')" width="800px">
-      <pre v-if="viewModal.model">{{viewModal.model.profile}}</pre>
+    <let-modal
+      v-model="viewModal.show"
+      :title="$t('business.view.title')"
+      width="800px"
+    >
+      <pre v-if="viewModal.model">{{ viewModal.model.profile }}</pre>
       <div slot="foot"></div>
     </let-modal>
 
     <let-modal
       v-model="detailModal.show"
-      :title="detailModal.isNew ? this.$t('business.add.title') : this.$t('business.update.title')"
+      :title="
+        detailModal.isNew
+          ? this.$t('business.add.title')
+          : this.$t('business.update.title')
+      "
       width="800px"
       @on-confirm="saveItem"
       @on-cancel="closeDetailModal"
@@ -77,12 +118,12 @@
 
 <script>
 export default {
-  name: 'OperationApplication',
+  name: "OperationApplication",
 
   data() {
     return {
       query: {
-        f_name: '',
+        f_name: "",
       },
       items: [],
       viewModal: {
@@ -92,7 +133,7 @@ export default {
       detailModal: {
         show: false,
         model: null,
-        isNew: false
+        isNew: false,
       },
     };
   },
@@ -104,13 +145,18 @@ export default {
   methods: {
     fetchData() {
       const loading = this.$refs.table.$loading.show();
-      return this.$ajax.getJSON('/server/api/query_business', this.query).then((data) => {
-        loading.hide();
-        this.items = data;
-      }).catch((err) => {
-        loading.hide();
-        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-      });
+      return this.$ajax
+        .getJSON("/server/api/query_business", this.query)
+        .then((data) => {
+          loading.hide();
+          this.items = data;
+        })
+        .catch((err) => {
+          loading.hide();
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.message || err.err_msg}`
+          );
+        });
     },
 
     search() {
@@ -142,34 +188,51 @@ export default {
     saveItem() {
       if (this.$refs.detailForm.validate()) {
         const model = this.detailModal.model;
-        const url = model.f_id ? '/server/api/update_business' : '/server/api/add_business';
+        const url = model.f_id
+          ? "/server/api/update_business"
+          : "/server/api/add_business";
 
         const loading = this.$Loading.show();
-        this.$ajax.postJSON(url, model).then(() => {
-          loading.hide();
-          this.$tip.success(this.$t('common.success'));
-          this.closeDetailModal();
-          this.fetchData();
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
+        this.$ajax
+          .postJSON(url, model)
+          .then(() => {
+            loading.hide();
+            this.$tip.success(this.$t("common.success"));
+            this.closeDetailModal();
+            this.fetchData();
+          })
+          .catch((err) => {
+            loading.hide();
+            this.$tip.error(
+              `${this.$t("common.error")}: ${err.message || err.err_msg}`
+            );
+          });
       }
     },
 
     removeItem(d) {
-      this.$confirm(this.$t('business.delete.confirmTips'), this.$t('common.alert')).then(() => {
-        const loading = this.$Loading.show();
-        this.$ajax.getJSON('/server/api/delete_business', { f_id: d.f_id }).then(() => {
-          loading.hide();
-          this.fetchData().then(() => {
-            this.$tip.success(this.$t('common.success'));
-          });
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
-      }).catch(() => {});
+      this.$confirm(
+        this.$t("business.delete.confirmTips"),
+        this.$t("common.alert")
+      )
+        .then(() => {
+          const loading = this.$Loading.show();
+          this.$ajax
+            .getJSON("/server/api/delete_business", { f_id: d.f_id })
+            .then(() => {
+              loading.hide();
+              this.fetchData().then(() => {
+                this.$tip.success(this.$t("common.success"));
+              });
+            })
+            .catch((err) => {
+              loading.hide();
+              this.$tip.error(
+                `${this.$t("common.error")}: ${err.message || err.err_msg}`
+              );
+            });
+        })
+        .catch(() => {});
     },
   },
 };
@@ -178,7 +241,7 @@ export default {
 <style>
 .page_operation_business {
   pre {
-    color: #909FA3;
+    color: #909fa3;
     margin-top: 32px;
   }
 

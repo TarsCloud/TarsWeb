@@ -1,43 +1,79 @@
 <template>
   <div class="page_operation_templates">
-    
-    <let-form inline itemWidth="200px" @submit.native.prevent="search">
-      <let-form-item :label="$t('deployService.form.template')">
-        <let-input size="small" v-model="query.template_name"></let-input>
-      </let-form-item>
-      <let-form-item :label="$t('template.search.parentTemplate')">
-        <let-input size="small" v-model="query.parents_name"></let-input>
-      </let-form-item>
-      <let-form-item>
-        <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
-      </let-form-item>
-      <div style="float: right">
-        <let-button size="small" theme="primary" @click="addItem">{{$t('template.btn.addTempate')}}</let-button>
-      </div>
-    </let-form>
+    <el-form inline itemWidth="200px" style="display: inline">
+      <el-form-item :label="$t('deployService.form.template')">
+        <el-input size="small" v-model="query.template_name"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('template.search.parentTemplate')">
+        <el-input size="small" v-model="query.parents_name"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button size="small" @click="search" type="primary">{{
+          $t("operate.search")
+        }}</el-button>
+      </el-form-item>
+      <span style="float: right">
+        <i
+          class="icon iconfont el-icon-third-shuaxin"
+          style="font-family: iconfont  !important;margin:10px"
+          @click="fetchData()"
+        ></i>
+
+        <el-button size="small" type="primary" @click="addItem">{{
+          $t("template.btn.addTempate")
+        }}</el-button>
+      </span>
+    </el-form>
 
     <let-table ref="table" :data="items" :empty-msg="$t('common.nodata')">
-      <let-table-column :title="$t('deployService.form.template')" prop="template_name" width="25%"></let-table-column>
-      <let-table-column :title="$t('template.search.parentTemplate')" prop="parents_name" width="25%"></let-table-column>
-      <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="posttime"></let-table-column>
+      <let-table-column
+        :title="$t('deployService.form.template')"
+        prop="template_name"
+        width="25%"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('template.search.parentTemplate')"
+        prop="parents_name"
+        width="25%"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('cfg.btn.lastUpdate')"
+        prop="posttime"
+      ></let-table-column>
       <let-table-column :title="$t('operate.operates')" width="300px">
         <template slot-scope="scope">
-          <let-table-operation @click="mergeItem(scope.row)">{{$t('operate.merge')}}</let-table-operation>
-          <let-table-operation @click="viewItem(scope.row)">{{$t('operate.view')}}</let-table-operation>
-          <let-table-operation @click="editItem(scope.row)">{{$t('operate.update')}}</let-table-operation>
-          <let-table-operation @click="removeItem(scope.row)">{{$t('operate.delete')}}</let-table-operation>
+          <let-table-operation @click="mergeItem(scope.row)">{{
+            $t("operate.merge")
+          }}</let-table-operation>
+          <let-table-operation @click="viewItem(scope.row)">{{
+            $t("operate.view")
+          }}</let-table-operation>
+          <let-table-operation @click="editItem(scope.row)">{{
+            $t("operate.update")
+          }}</let-table-operation>
+          <let-table-operation @click="removeItem(scope.row)">{{
+            $t("operate.delete")
+          }}</let-table-operation>
         </template>
       </let-table-column>
     </let-table>
 
-    <let-modal v-model="viewModal.show" :title="$t('template.view.title')" width="800px">
-      <pre v-if="viewModal.model">{{viewModal.model.profile}}</pre>
+    <let-modal
+      v-model="viewModal.show"
+      :title="$t('template.view.title')"
+      width="800px"
+    >
+      <pre v-if="viewModal.model">{{ viewModal.model.profile }}</pre>
       <div slot="foot"></div>
     </let-modal>
 
     <let-modal
       v-model="detailModal.show"
-      :title="detailModal.isNew ? this.$t('template.add.title') : this.$t('template.update.title')"
+      :title="
+        detailModal.isNew
+          ? this.$t('template.add.title')
+          : this.$t('template.update.title')
+      "
       width="800px"
       @on-confirm="saveItem"
       @on-cancel="closeDetailModal"
@@ -62,12 +98,13 @@
             required
             :required-tip="$t('deployService.table.tips.empty')"
           >
-            <let-option value>{{$t('pub.dlg.defaultValue')}}</let-option>
+            <let-option value>{{ $t("pub.dlg.defaultValue") }}</let-option>
             <let-option
               v-for="d in items"
               :key="d.id"
               :value="d.template_name"
-            >{{d.template_name}}</let-option>
+              >{{ d.template_name }}</let-option
+            >
           </let-select>
         </let-form-item>
         <let-form-item :label="$t('template.form.content')" required>
@@ -87,13 +124,13 @@
 
 <script>
 export default {
-  name: 'OperationTemplates',
+  name: "OperationTemplates",
 
   data() {
     return {
       query: {
-        template_name: '',
-        parents_name: '',
+        template_name: "",
+        parents_name: "",
       },
       items: [],
       viewModal: {
@@ -103,7 +140,7 @@ export default {
       detailModal: {
         show: false,
         model: null,
-        isNew: false
+        isNew: false,
       },
     };
   },
@@ -115,13 +152,18 @@ export default {
   methods: {
     fetchData() {
       const loading = this.$refs.table.$loading.show();
-      return this.$ajax.getJSON('/server/api/query_profile_template', this.query).then((data) => {
-        loading.hide();
-        this.items = data;
-      }).catch((err) => {
-        loading.hide();
-        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-      });
+      return this.$ajax
+        .getJSON("/server/api/query_profile_template", this.query)
+        .then((data) => {
+          loading.hide();
+          this.items = data;
+        })
+        .catch((err) => {
+          loading.hide();
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.message || err.err_msg}`
+          );
+        });
     },
 
     search() {
@@ -152,48 +194,72 @@ export default {
     },
     mergeItem(model) {
       const loading = this.$Loading.show();
-        this.$ajax.getJSON('/server/api/get_merge_profile_template', {template_name:model.template_name}).then((data) => {
+      this.$ajax
+        .getJSON("/server/api/get_merge_profile_template", {
+          template_name: model.template_name,
+        })
+        .then((data) => {
           loading.hide();
           // console.log(data);
           model.profile = data.template;
           this.viewModal.model = model;
           this.viewModal.show = true;
-        }).catch((err) => {
+        })
+        .catch((err) => {
           loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.message || err.err_msg}`
+          );
         });
     },
     saveItem() {
       if (this.$refs.detailForm.validate()) {
         const model = this.detailModal.model;
-        const url = model.id ? '/server/api/update_profile_template' : '/server/api/add_profile_template';
+        const url = model.id
+          ? "/server/api/update_profile_template"
+          : "/server/api/add_profile_template";
 
         const loading = this.$Loading.show();
-        this.$ajax.postJSON(url, model).then(() => {
-          loading.hide();
-          this.$tip.success(this.$t('common.success'));
-          this.closeDetailModal();
-          this.fetchData();
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
+        this.$ajax
+          .postJSON(url, model)
+          .then(() => {
+            loading.hide();
+            this.$tip.success(this.$t("common.success"));
+            this.closeDetailModal();
+            this.fetchData();
+          })
+          .catch((err) => {
+            loading.hide();
+            this.$tip.error(
+              `${this.$t("common.error")}: ${err.message || err.err_msg}`
+            );
+          });
       }
     },
 
     removeItem(d) {
-      this.$confirm(this.$t('template.delete.confirmTips'), this.$t('common.alert')).then(() => {
-        const loading = this.$Loading.show();
-        this.$ajax.getJSON('/server/api/delete_profile_template', { id: d.id }).then(() => {
-          loading.hide();
-          this.fetchData().then(() => {
-            this.$tip.success(this.$t('common.success'));
-          });
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
-      }).catch(() => {});
+      this.$confirm(
+        this.$t("template.delete.confirmTips"),
+        this.$t("common.alert")
+      )
+        .then(() => {
+          const loading = this.$Loading.show();
+          this.$ajax
+            .getJSON("/server/api/delete_profile_template", { id: d.id })
+            .then(() => {
+              loading.hide();
+              this.fetchData().then(() => {
+                this.$tip.success(this.$t("common.success"));
+              });
+            })
+            .catch((err) => {
+              loading.hide();
+              this.$tip.error(
+                `${this.$t("common.error")}: ${err.message || err.err_msg}`
+              );
+            });
+        })
+        .catch(() => {});
     },
   },
 };
@@ -202,7 +268,7 @@ export default {
 <style>
 .page_operation_templates {
   pre {
-    color: #909FA3;
+    color: #909fa3;
     margin-top: 32px;
   }
 

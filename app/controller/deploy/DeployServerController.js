@@ -116,14 +116,6 @@ DeployServerController.deployServer = async (ctx) => {
     }
 };
 
-DeployServerController.isSupportContainer = async (ctx) => {
-    let container = await AdminService.isSupportContainer();
-
-    ctx.makeResObj(200, '', {
-        container: container
-    });
-}
-
 DeployServerController.deployServerFromCloud = async (ctx) => {
     var params = ctx.paramsObj;
 

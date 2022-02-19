@@ -26,17 +26,17 @@ if (WebConf.enable) {
 	const DeployServerController = require('./controller/deploy/DeployServerController');
 	const TaskController = require('./controller/task/TaskController');
 	const PatchController = require('./controller/patch/PatchController');
-	const MonitorController = require('./controller/monitor/MonitorController');
+	// const MonitorController = require('./controller/monitor/MonitorController');
 	const TemplateController = require('./controller/template/TemplateController');
 	const ApplicationController = require('./controller/application/ApplicationController');
 	const BusinessController = require('./controller/business/BusinessController');
 	const BusinessRelationController = require('./controller/businessRelation/BusinessRelationController');
 	const ResourceController = require('./controller/resource/ResourceController');
-	// const GatewayController = require('../controller/gateway/GatewayController');
 
 	const InfTestController = require('./controller/infTest/InfTestController');
 	const LogviewController = require('./controller/logview/LogviewController');
-	const IDCConntroller = require('./controller/idc/IDCController');
+	const IDCController = require('./controller/idc/IDCController');
+	const ImageController = require('./controller/image/ImageController');
 	// const CallChainController   = require("./controller/callchain/CallChainController")
 
 	const apiConf = [
@@ -67,14 +67,14 @@ if (WebConf.enable) {
 				id: 'notEmpty'
 			},
 			['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path',
-				'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name', 'run_type'
+				'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name', 'run_type', 'base_image_id'
 			]
 		],
 		['post', '/batch_update_server', ServerController.batchUpdateServerConf, {
 				id: 'notEmpty'
 			},
 			['id', 'isBak', 'template_name', 'server_type', 'enable_set', 'set_name', 'set_area', 'set_group', 'async_thread_num', 'base_path', 'exe_path',
-				'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name', 'run_type'
+				'start_script_path', 'stop_script_path', 'monitor_script_path', 'profile', 'enable_group', 'ip_group_name', 'run_type', 'base_image_id'
 			]
 		],
 		['get', '/server_search', ServerController.getServerSearch],
@@ -142,7 +142,6 @@ if (WebConf.enable) {
 		}],
 
 		//上线和扩容接口
-		['get', '/is_support_container', DeployServerController.isSupportContainer],
 		['post', '/deploy_server', DeployServerController.deployServer],
 		['post', '/deploy_server_from_cloud', DeployServerController.deployServerFromCloud],
 		['get', '/server_type_list', DeployServerController.serverTypeList],
@@ -156,7 +155,6 @@ if (WebConf.enable) {
 		],
 		['post', '/expand_server', ExpandServerController.expandServer],
 		['get', '/cascade_select_server', ExpandServerController.selectAppServer],
-
 
 		// 服务配置接口
 		['get', '/unused_config_file_list', ConfigController.getUnusedApplicationConfigFile],
@@ -237,32 +235,29 @@ if (WebConf.enable) {
 		['get', '/get_server_patch', PatchController.getServerPatchByTaskId, {
 			task_id: 'notEmpty'
 		}],
-		['get', '/get_tag_list', PatchController.getTagList, {
-			application: 'notEmpty',
-			server_name: 'notEmpty'
-		}],
-		['get', '/get_tag_conf', PatchController.getCodeInfConf, {
-			application: 'notEmpty',
-			server_name: 'notEmpty'
-		}],
-		['get', '/set_tag_conf', PatchController.setCodeInfConf, {
-			path: 'notEmpty',
-			application: 'notEmpty',
-			server_name: 'notEmpty'
-		}],
-		['post', '/do_compile', PatchController.doCompile],
-		['get', '/compiler_task', PatchController.compilerTask],
-		['get', '/get_compile_conf', PatchController.getCompilerConf],
+		// ['get', '/get_tag_list', PatchController.getTagList, {
+		// 	application: 'notEmpty',
+		// 	server_name: 'notEmpty'
+		// }],
+		// ['get', '/get_tag_conf', PatchController.getCodeInfConf, {
+		// 	application: 'notEmpty',
+		// 	server_name: 'notEmpty'
+		// }],
+		// ['get', '/set_tag_conf', PatchController.setCodeInfConf, {
+		// 	path: 'notEmpty',
+		// 	application: 'notEmpty',
+		// 	server_name: 'notEmpty'
+		// }],
+		// ['post', '/do_compile', PatchController.doCompile],
+		// ['get', '/compiler_task', PatchController.compilerTask],
+		// ['get', '/get_compile_conf', PatchController.getCompilerConf],
+
 		['get', '/download_package', PatchController.downloadPackage, {
 			id: 'notEmpty'
 		}],
 		['post', '/delete_patch_package', PatchController.deletePatchPackage],
 		['post', '/set_patch_package_default', PatchController.setPatchPackageDefault],
 		['get', '/has_dcache_patch_package', PatchController.hasDcachePatchPackage],
-
-		// 监控
-		//		['get', '/tarsstat_monitor_data', MonitorController.tarsstat],
-		//		['get', '/tarsproperty_monitor_data', MonitorController.tarsproperty],
 
 		//模板管理
 		['get', '/profile_template', TemplateController.getTemplate, {
@@ -332,19 +327,19 @@ if (WebConf.enable) {
 		['get', '/query_business_relation', BusinessRelationController.getList],
 
 		//IDC分组管理
-		['get', '/query_idc', IDCConntroller.getIDCGroupList],
-		['get', '/dict_idc', IDCConntroller.getIDCGroupDict],
-		['post', '/add_idc', IDCConntroller.addIDCGroup, {
+		['get', '/query_idc', IDCController.getIDCGroupList],
+		['get', '/dict_idc', IDCController.getIDCGroupDict],
+		['post', '/add_idc', IDCController.addIDCGroup, {
 				group_name: 'notEmpty',
 				group_name_cn: 'notEmpty',
 				ip_order: 'notEmpty'
 			},
 			['group_name', 'group_name_cn', 'ip_order', 'allowList', 'dennyList']
 		],
-		['get', '/delete_idc', IDCConntroller.deleteIDCGroup, {
+		['get', '/delete_idc', IDCController.deleteIDCGroup, {
 			group_id: 'notEmpty'
 		}],
-		['post', '/update_idc', IDCConntroller.updateIDCGroup, {
+		['post', '/update_idc', IDCController.updateIDCGroup, {
 				group_id: 'notEmpty',
 				group_name: 'notEmpty',
 				group_name_cn: 'notEmpty',
@@ -353,7 +348,46 @@ if (WebConf.enable) {
 			['group_id', 'group_name', 'group_name_cn', 'ip_order', 'allowList', 'dennyList']
 		],
 
+		//基础镜像
+		['get', '/base_registry', ImageController.getRegistryList],
+		['post', '/add_registry', ImageController.addRegistry, {
+				registry: 'notEmpty'
+			},
+			["registry", "username", "password", "remark"]
+		],
+		['post', '/update_registry', ImageController.updateRegistry, {
+				id: 'notEmpty',
+				registry: 'notEmpty',
+			},
+			['id', "registry", "username", "password", "remark"]
+		],
+		['post', '/delete_registry', ImageController.deleteRegistry, {
+			id: 'notEmpty'
+		}],
 
+		['get', '/base_image', ImageController.getImageList],
+		['post', '/add_image', ImageController.addImage, {
+				image: 'notEmpty',
+				registryId: 'notEmpty',
+				remark: 'notEmpty',
+			},
+			["image", "registryId", "remark"]
+		],
+		['post', '/update_image', ImageController.updateImage, {
+				id: 'notEmpty',
+				image: 'notEmpty',
+				registryId: 'notEmpty',
+				remark: 'notEmpty',
+			},
+			["id", "image", "registryId", "remark"]
+		],
+		['post', '/delete_image', ImageController.deleteImage, {
+			id: 'notEmpty'
+		}],
+		['get', '/base_image_list', ImageController.getImageRegistryList],
+		['post', '/force_docker_login', ImageController.forceDockerLogin, {
+			nodeName: 'notEmpty'
+		}],
 
 		//资源管理
 		['get', '/list_tars_node', ResourceController.listTarsNode],

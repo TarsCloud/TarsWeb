@@ -19,13 +19,13 @@
           prop="node_name"
           width="200px"
         ></let-table-column>
-        <let-table-column :title="$t('common.status')" width="120px">
+        <let-table-column :title="$t('common.status')" width="180px">
           <template slot-scope="scope">
             <let-tag
               :theme="
-                scope.row.status == 2
+                scope.row.status == 3
                   ? 'success'
-                  : scope.row.status == 3
+                  : scope.row.status == 4
                   ? 'danger'
                   : ''
               "
@@ -33,7 +33,7 @@
             >
               {{
                 statusConfig[scope.row.status] +
-                  (scope.row.status != 2 && scope.row.status != 3
+                  (scope.row.status != 3 && scope.row.status != 4
                     ? scope.row.desc
                     : "")
               }}
@@ -57,6 +57,7 @@ export default {
   data() {
     return {
       closeCallback: null,
+      timerId: null,
       finishModal: {
         show: false,
         model: {
@@ -66,20 +67,23 @@ export default {
       },
       statusConfig: {
         0: this.$t("serverList.restart.notStart"),
-        1: this.$t("serverList.restart.running"),
-        2: this.$t("serverList.restart.success"),
-        3: this.$t("serverList.restart.failed"),
-        4: this.$t("serverList.restart.cancel"),
-        5: this.$t("serverList.restart.pauseFlow"),
+        1: this.$t("serverList.restart.preparing"),
+        2: this.$t("serverList.restart.running"),
+        3: this.$t("serverList.restart.success"),
+        4: this.$t("serverList.restart.failed"),
+        5: this.$t("serverList.restart.cancel"),
+        6: this.$t("serverList.restart.pauseFlow"),
       },
       statusMap: {
         0: "EM_T_NOT_START",
-        1: "EM_T_RUNNING",
-        2: "EM_T_SUCCESS",
-        3: "EM_T_FAILED",
-        4: "EM_T_CANCEL",
-        5: "EM_T_PARIAL",
+        1: "EM_T_PREPARE",
+        2: "EM_T_RUNNING",
+        3: "EM_T_SUCCESS",
+        4: "EM_T_FAILED",
+        5: "EM_T_CANCEL",
+        6: "EM_T_PARIAL",
       },
+      endStatus: [3, 4],
     };
   },
   methods: {
@@ -87,6 +91,7 @@ export default {
       if (this.closeCallback) {
         this.closeCallback();
       }
+      clearTimeout(this.timerId);
     },
     savePublishServer(publishModal, callback, group_name, patch_id) {
       group_name = group_name || "";
@@ -135,8 +140,8 @@ export default {
         });
     },
     getTaskRepeat(taskId) {
-      let timerId;
-      timerId && clearTimeout(timerId);
+      // let timerId;
+      this.timerId && clearTimeout(this.timerId);
       const getTask = () => {
         this.$ajax
           .getJSON("/server/api/task", {
@@ -145,7 +150,7 @@ export default {
           .then((data) => {
             let done = true;
             data.items.forEach((item) => {
-              if (![2, 3].includes(item.status)) {
+              if (!this.endStatus.includes(item.status)) {
                 done = false;
               }
 
@@ -156,12 +161,13 @@ export default {
               }
             });
             done
-              ? clearTimeout(timerId)
-              : (timerId = setTimeout(getTask, 2000));
+              ? clearTimeout(this.timerId)
+              : (this.timerId = setTimeout(getTask, 2000));
             this.finishModal.model.items = data.items;
           })
           .catch((err) => {
-            clearTimeout(timerId);
+            clearTimeout(this.timerId);
+            this.timerId = null;
             this.$tip.error(
               `${this.$t("common.error")}: ${err.message || err.err_msg}`
             );

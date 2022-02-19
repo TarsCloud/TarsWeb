@@ -88,11 +88,12 @@ tars.EMTaskCommand._read  = function(is, tag, def) { return is.readInt32(tag, tr
 
 tars.EMTaskStatus = {
     "EM_T_NOT_START" : 0,
-    "EM_T_RUNNING" : 1,
-    "EM_T_SUCCESS" : 2,
-    "EM_T_FAILED" : 3,
-    "EM_T_CANCEL" : 4,
-    "EM_T_PARIAL" : 5
+    "EM_T_PREPARE" : 1,
+    "EM_T_RUNNING" : 2,
+    "EM_T_SUCCESS" : 3,
+    "EM_T_FAILED" : 4,
+    "EM_T_CANCEL" : 5,
+    "EM_T_PARIAL" : 6
 };
 tars.EMTaskStatus._classname = "tars.EMTaskStatus";
 tars.EMTaskStatus._write = function(os, tag, val) { return os.writeInt32(tag, val); };
@@ -100,11 +101,12 @@ tars.EMTaskStatus._read  = function(is, tag, def) { return is.readInt32(tag, tru
 
 tars.EMTaskItemStatus = {
     "EM_I_NOT_START" : 0,
-    "EM_I_RUNNING" : 1,
-    "EM_I_SUCCESS" : 2,
-    "EM_I_FAILED" : 3,
-    "EM_I_CANCEL" : 4,
-    "EM_I_PAUSE_FLOW" : 5
+    "EM_I_PREPARE" : 1,
+    "EM_I_RUNNING" : 2,
+    "EM_I_SUCCESS" : 3,
+    "EM_I_FAILED" : 4,
+    "EM_I_CANCEL" : 5,
+    "EM_I_PAUSE_FLOW" : 6
 };
 tars.EMTaskItemStatus._classname = "tars.EMTaskItemStatus";
 tars.EMTaskItemStatus._write = function(os, tag, val) { return os.writeInt32(tag, val); };
@@ -422,6 +424,7 @@ tars.TaskRsp = function() {
     this.userName = "";
     this.status = tars.EMTaskStatus.EM_T_NOT_START;
     this.createTime = "";
+    this.executeLog = "";
     this._classname = "tars.TaskRsp";
 };
 tars.TaskRsp._classname = "tars.TaskRsp";
@@ -435,6 +438,7 @@ tars.TaskRsp._readFrom = function (is) {
     tmp.userName = is.readString(3, false, "");
     tmp.status = is.readInt32(4, false, tars.EMTaskStatus.EM_T_NOT_START);
     tmp.createTime = is.readString(5, false, "");
+    tmp.executeLog = is.readString(6, false, "");
     return tmp;
 };
 tars.TaskRsp.prototype._writeTo = function (os) {
@@ -444,6 +448,7 @@ tars.TaskRsp.prototype._writeTo = function (os) {
     os.writeString(3, this.userName);
     os.writeInt32(4, this.status);
     os.writeString(5, this.createTime);
+    os.writeString(6, this.executeLog);
 };
 tars.TaskRsp.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -461,7 +466,8 @@ tars.TaskRsp.prototype.toObject = function() {
         "serial" : this.serial,
         "userName" : this.userName,
         "status" : this.status,
-        "createTime" : this.createTime
+        "createTime" : this.createTime,
+        "executeLog" : this.executeLog
     };
 };
 tars.TaskRsp.prototype.readFromObject = function(json) { 
@@ -471,6 +477,7 @@ tars.TaskRsp.prototype.readFromObject = function(json) {
     _hasOwnProperty.call(json, "userName") && (this.userName = json.userName);
     _hasOwnProperty.call(json, "status") && (this.status = json.status);
     _hasOwnProperty.call(json, "createTime") && (this.createTime = json.createTime);
+    _hasOwnProperty.call(json, "executeLog") && (this.executeLog = json.executeLog);
     return this;
 };
 tars.TaskRsp.prototype.toBinBuffer = function () {
@@ -606,83 +613,6 @@ tars.AdminRegProxy.prototype.addTaskReq = function (taskReq) {
     }
 };
 tars.AdminRegProxy.addTaskReq = __tars_AdminReg$addTaskReq$IF;
-
-var __tars_AdminReg$batchPatch$IF = {
-    "name" : "batchPatch",
-    "return" : "int32",
-    "arguments" : [{
-        "name" : "req",
-        "class" : "tars.PatchRequest",
-        "direction" : "in"
-    }, {
-        "name" : "result",
-        "class" : "string",
-        "direction" : "out"
-    }]
-};
-
-var __tars_AdminReg$batchPatch$IE = function (req) {
-    var os = new TarsStream.TarsOutputStream();
-    os.writeStruct(1, req);
-    return os.getBinBuffer();
-};
-
-var __tars_AdminReg$batchPatch$ID = function (data) {
-    try {
-        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
-        return {
-            "request" : data.request,
-            "response" : {
-                "costtime" : data.request.costtime,
-                "return" : is.readInt32(0, true, 0),
-                "arguments" : {
-                    "result" : is.readString(2, true, "")
-                }
-            }
-        };
-    } catch (e) {
-        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
-    }
-};
-
-var __tars_AdminReg$batchPatch$PE = function (req, __$PROTOCOL$VERSION) {
-    var tup = new TarsStream.UniAttribute();
-    tup.tupVersion = __$PROTOCOL$VERSION;
-    tup.writeStruct("req", req);
-    return tup;
-};
-
-var __tars_AdminReg$batchPatch$PD = function (data) {
-    try {
-        var tup = data.response.tup;
-        return {
-            "request" : data.request,
-            "response" : {
-                "costtime" : data.request.costtime,
-                "return" : tup.readInt32("", 0),
-                "arguments" : {
-                    "result" : tup.readString("result")
-                }
-            }
-        };
-    } catch (e) {
-        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
-    }
-};
-
-var __tars_AdminReg$batchPatch$ER = function (data) {
-    throw _makeError(data, "Call AdminReg::batchPatch failed");
-};
-
-tars.AdminRegProxy.prototype.batchPatch = function (req) {
-    var version = this._worker.version;
-    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-        return this._worker.tup_invoke("batchPatch", __tars_AdminReg$batchPatch$PE(req, version), arguments[arguments.length - 1], __tars_AdminReg$batchPatch$IF).then(__tars_AdminReg$batchPatch$PD, __tars_AdminReg$batchPatch$ER);
-    } else {
-        return this._worker.tars_invoke("batchPatch", __tars_AdminReg$batchPatch$IE(req), arguments[arguments.length - 1], __tars_AdminReg$batchPatch$IF).then(__tars_AdminReg$batchPatch$ID, __tars_AdminReg$batchPatch$ER);
-    }
-};
-tars.AdminRegProxy.batchPatch = __tars_AdminReg$batchPatch$IF;
 
 var __tars_AdminReg$checkServer$IF = {
     "name" : "checkServer",
@@ -829,6 +759,83 @@ tars.AdminRegProxy.prototype.deletePatchFile = function (application, serverName
     }
 };
 tars.AdminRegProxy.deletePatchFile = __tars_AdminReg$deletePatchFile$IF;
+
+var __tars_AdminReg$forceDockerLogin$IF = {
+    "name" : "forceDockerLogin",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "nodeName",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "result",
+        "class" : "list(string)",
+        "direction" : "out"
+    }]
+};
+
+var __tars_AdminReg$forceDockerLogin$IE = function (nodeName) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, nodeName);
+    return os.getBinBuffer();
+};
+
+var __tars_AdminReg$forceDockerLogin$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "result" : is.readList(2, true, TarsStream.List(TarsStream.String))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __tars_AdminReg$forceDockerLogin$PE = function (nodeName, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("nodeName", nodeName);
+    return tup;
+};
+
+var __tars_AdminReg$forceDockerLogin$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "result" : tup.readList("result", TarsStream.List(TarsStream.String))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __tars_AdminReg$forceDockerLogin$ER = function (data) {
+    throw _makeError(data, "Call AdminReg::forceDockerLogin failed");
+};
+
+tars.AdminRegProxy.prototype.forceDockerLogin = function (nodeName) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("forceDockerLogin", __tars_AdminReg$forceDockerLogin$PE(nodeName, version), arguments[arguments.length - 1], __tars_AdminReg$forceDockerLogin$IF).then(__tars_AdminReg$forceDockerLogin$PD, __tars_AdminReg$forceDockerLogin$ER);
+    } else {
+        return this._worker.tars_invoke("forceDockerLogin", __tars_AdminReg$forceDockerLogin$IE(nodeName), arguments[arguments.length - 1], __tars_AdminReg$forceDockerLogin$IF).then(__tars_AdminReg$forceDockerLogin$ID, __tars_AdminReg$forceDockerLogin$ER);
+    }
+};
+tars.AdminRegProxy.forceDockerLogin = __tars_AdminReg$forceDockerLogin$IF;
 
 var __tars_AdminReg$getAllApplicationNames$IF = {
     "name" : "getAllApplicationNames",
@@ -2234,67 +2241,6 @@ tars.AdminRegProxy.prototype.getVersion = function () {
     }
 };
 tars.AdminRegProxy.getVersion = __tars_AdminReg$getVersion$IF;
-
-var __tars_AdminReg$hasContainerRegistry$IF = {
-    "name" : "hasContainerRegistry",
-    "return" : "bool",
-    "arguments" : []
-};
-
-var __tars_AdminReg$hasContainerRegistry$IE = function () {
-    var os = new TarsStream.TarsOutputStream();
-    return os.getBinBuffer();
-};
-
-var __tars_AdminReg$hasContainerRegistry$ID = function (data) {
-    try {
-        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
-        return {
-            "request" : data.request,
-            "response" : {
-                "costtime" : data.request.costtime,
-                "return" : is.readBoolean(0, true, true)
-            }
-        };
-    } catch (e) {
-        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
-    }
-};
-
-var __tars_AdminReg$hasContainerRegistry$PE = function (__$PROTOCOL$VERSION) {
-    var tup = new TarsStream.UniAttribute();
-    tup.tupVersion = __$PROTOCOL$VERSION;
-    return tup;
-};
-
-var __tars_AdminReg$hasContainerRegistry$PD = function (data) {
-    try {
-        var tup = data.response.tup;
-        return {
-            "request" : data.request,
-            "response" : {
-                "costtime" : data.request.costtime,
-                "return" : tup.readBoolean("", false)
-            }
-        };
-    } catch (e) {
-        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
-    }
-};
-
-var __tars_AdminReg$hasContainerRegistry$ER = function (data) {
-    throw _makeError(data, "Call AdminReg::hasContainerRegistry failed");
-};
-
-tars.AdminRegProxy.prototype.hasContainerRegistry = function () {
-    var version = this._worker.version;
-    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-        return this._worker.tup_invoke("hasContainerRegistry", __tars_AdminReg$hasContainerRegistry$PE(version), arguments[arguments.length - 1], __tars_AdminReg$hasContainerRegistry$IF).then(__tars_AdminReg$hasContainerRegistry$PD, __tars_AdminReg$hasContainerRegistry$ER);
-    } else {
-        return this._worker.tars_invoke("hasContainerRegistry", __tars_AdminReg$hasContainerRegistry$IE(), arguments[arguments.length - 1], __tars_AdminReg$hasContainerRegistry$IF).then(__tars_AdminReg$hasContainerRegistry$ID, __tars_AdminReg$hasContainerRegistry$ER);
-    }
-};
-tars.AdminRegProxy.hasContainerRegistry = __tars_AdminReg$hasContainerRegistry$IF;
 
 var __tars_AdminReg$loadServer$IF = {
     "name" : "loadServer",

@@ -36,7 +36,6 @@ import ServerManage from '@/pages/server/manage';
 import ServerPublish from '@/pages/server/publish';
 import ServerConfig from '@/pages/server/config';
 
-//import AlarmConfig from '@/common/alarm';
 import AuthManage from '@/common/user-manage';
 import InterfaceDebuger from '@/common/interface-debuger';
 import ServerServerMonitor from '@/common/monitor-server';
@@ -53,6 +52,8 @@ import OperationApplication from '@/pages/operation/application';
 import OperationBusiness from '@/pages/operation/business';
 import OperationBusinessRelation from '@/pages/operation/businessRelation';
 import OperationIDCManage from '@/pages/operation/idc';
+import OperationImage from '@/pages/operation/image';
+
 //网关
 import OperationGateway from '@/gateway/index';
 
@@ -140,6 +141,10 @@ export default new Router({
         {
           path: 'idc',
           component: OperationIDCManage,
+        },
+        {
+          path: 'image',
+          component: OperationImage
         }
       ],
     },

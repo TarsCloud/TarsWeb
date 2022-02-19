@@ -75,7 +75,8 @@ module tars
     */
     enum EMTaskStatus {
         EM_T_NOT_START,
-        EM_T_RUNNING,
+		EM_T_PREPARE,
+		EM_T_RUNNING,
         EM_T_SUCCESS,
         EM_T_FAILED,
         EM_T_CANCEL,
@@ -88,7 +89,8 @@ module tars
     enum EMTaskItemStatus
     {
         EM_I_NOT_START,
-        EM_I_RUNNING,
+		EM_I_PREPARE,		//正在准备发布文件或镜像
+		EM_I_RUNNING,
         EM_I_SUCCESS,
         EM_I_FAILED,
         EM_I_CANCEL,
@@ -146,6 +148,7 @@ module tars
         3 optional string userName;
         4 optional EMTaskStatus status;
         5 optional string createTime;
+		6 optional string executeLog;
     };
 
     struct FrameworkServer
@@ -345,16 +348,6 @@ module tars
         * @return 0: 成功, <0: 失败
         */
         int undeploy(string application, string serverName, string nodeName, string user,  out string log);
-       
-        /**
-         * 批量发布服务
-         *
-         * @param vector<PatchRequest>: 批量发布的请求
-         * @param out result : 结果描述
-         *
-         * @return : 返回值详见tarsErrCode枚举值
-         */
-        int batchPatch(PatchRequest req, out string result);
 
         /**
          * 更新发布状态
@@ -489,11 +482,10 @@ module tars
 		int updateServerFlowState(string application, string serverName, vector<string> nodeList, bool bActive);
 
 		/**
-		 * 是否配置了仓库镜像
-		 *
-		 * @return : true: 配置了, false: 没有配置
+		 * 强制node执行docker登录逻辑
+		 * @return 0: 成功, others: 失败
 		 */
-		bool hasContainerRegistry();
+		int forceDockerLogin(string nodeName, out vector<string> result);
     };
 };
 
