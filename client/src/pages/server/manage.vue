@@ -143,10 +143,20 @@
         </template>
       </let-table-column>
 
-      <let-table-column
-        :title="$t('serverList.table.th.processID')"
-        prop="process_id"
-      ></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.processID')">
+        <template slot-scope="scope">
+          {{ scope.row.process_id }}
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="Run In Container"
+            placement="top-start"
+          >
+            <i class="icon iconfont el-icon-files"></i>
+          </el-tooltip>
+        </template>
+      </let-table-column>
+
       <let-table-column
         :title="$t('serverList.table.th.version')"
         prop="patch_version"
@@ -1350,10 +1360,14 @@ export default {
         });
     },
     // 获取服务数据
-    getServerConfig(id) {
+    async getServerConfig(id) {
       const loading = this.$loading.show({
         target: this.$refs.configFormLoading,
       });
+
+      let data = await this.$ajax.getJSON("/server/api/base_image_list");
+
+      this.baseImageList = data;
 
       this.$ajax
         .getJSON("/server/api/server", {
@@ -2096,17 +2110,6 @@ export default {
     this.serverData = this.$parent.getServerData();
   },
   mounted() {
-    this.$ajax
-      .getJSON("/server/api/base_image_list")
-      .then((data) => {
-        this.baseImageList = data;
-      })
-      .catch((err) => {
-        this.$tip.error(
-          `${this.$t("common.error")}: ${err.message || err.err_msg}`
-        );
-      });
-
     this.getServerList();
     this.getServerNotifyList(1);
   },
