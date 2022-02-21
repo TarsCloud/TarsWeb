@@ -29,7 +29,7 @@ module.exports = function (sequelize, DataTypes) {
 			allowNull: true,
 		},
 		username: {
-			type: DataTypes.STRING(128),
+			type: DataTypes.STRING(64),
 			allowNull: true
 		},
 		password: {
@@ -37,7 +37,7 @@ module.exports = function (sequelize, DataTypes) {
 			allowNull: true
 		},
 		remark: {
-			type: DataTypes.STRING(64),
+			type: DataTypes.STRING(255),
 			allowNull: true
 		},
 		create_time: {
