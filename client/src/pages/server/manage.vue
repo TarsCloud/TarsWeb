@@ -150,6 +150,7 @@
             class="item"
             effect="dark"
             content="Run In Container"
+            v-if="scope.row.run_type == 'container'"
             placement="top-start"
           >
             <i class="icon iconfont el-icon-files"></i>
