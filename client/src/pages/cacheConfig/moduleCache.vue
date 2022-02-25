@@ -1,6 +1,8 @@
 <template>
   <section class="moduleCache">
-    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin" @click="getServerList"></i></h4>
+    <h4>{{this.$t('serverList.title.serverList')}} <i class="icon iconfont el-icon-third-shuaxin"
+    style="font-family: iconfont  !important;"
+    @click="getServerList"></i></h4>
     <br>
     <!-- 服务列表 -->
     <let-table v-if="serverList" :data="serverList" :empty-msg="$t('common.nodata')" ref="serverListLoading">
