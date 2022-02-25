@@ -3,12 +3,16 @@
 ### en
 
 - K8s relevant interfaces add refresh buttons to optimize the experience
+- fix dcache router manage page bug
 - Native version supports container operation, match tarsframework v3.0.4
+- Fix the bug that adding token in user center fails in some MySQL versions
 
 ### cn
 
 - k8s 相关界面增加刷新按钮, 优化体验
-- native 版本支持容器化运行, 需要配置 TarsFramework v3.0.4
+- 修复 dcache 路由管理界面的 bug
+- native 版本支持容器化运行, 匹配 TarsFramework v3.0.4
+- 修复用户中心添加 token 在某些 mysql 版本下失败的 bug
 
 ## 20220210(2.4.24)
 
