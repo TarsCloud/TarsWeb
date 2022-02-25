@@ -11,6 +11,13 @@
         <let-button size="small" type="submit" theme="primary">{{
           $t("operate.search")
         }}</let-button>
+        <span>
+          <i
+            class="icon iconfont el-icon-third-shuaxin"
+            style="font-family: iconfont  !important;margin:10px"
+            @click="fetchData()"
+          ></i>
+        </span>
       </let-form-item>
     </let-form>
 

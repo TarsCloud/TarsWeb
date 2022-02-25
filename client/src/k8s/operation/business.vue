@@ -11,30 +11,66 @@
         <let-input size="small" v-model="query.BusinessMark"></let-input>
       </let-form-item>
       <let-form-item>
-        <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
+        <let-button size="small" type="submit" theme="primary">{{
+          $t("operate.search")
+        }}</let-button>
         &nbsp;&nbsp;&nbsp;
-        <let-button size="small" theme="primary" @click="addItem">{{$t('filter.btn.add')}}</let-button>
+        <let-button size="small" theme="primary" @click="addItem">{{
+          $t("filter.btn.add")
+        }}</let-button>
+        <span>
+          <i
+            class="icon iconfont el-icon-third-shuaxin"
+            style="font-family: iconfont  !important;margin:10px"
+            @click="fetchData()"
+          ></i>
+        </span>
       </let-form-item>
     </let-form>
 
     <let-table ref="table" :data="items" :empty-msg="$t('common.nodata')">
-      <let-table-column :title="$t('filter.title.business')" prop="BusinessName" width="20%"></let-table-column>
-      <let-table-column :title="$t('filter.title.name')" prop="BusinessShow" width="20%"></let-table-column>
-      <let-table-column :title="$t('filter.title.mark')" prop="BusinessMark" width="20%"></let-table-column>
-      <let-table-column :title="$t('filter.title.order')" prop="BusinessOrder"></let-table-column>
+      <let-table-column
+        :title="$t('filter.title.business')"
+        prop="BusinessName"
+        width="20%"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('filter.title.name')"
+        prop="BusinessShow"
+        width="20%"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('filter.title.mark')"
+        prop="BusinessMark"
+        width="20%"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('filter.title.order')"
+        prop="BusinessOrder"
+      ></let-table-column>
       <let-table-column :title="$t('operate.operates')" width="180px">
         <template slot-scope="scope">
-          <let-table-operation @click="appListItem(scope.row)">{{$t('table.btn.appList')}}</let-table-operation>
-          <let-table-operation @click="editItem(scope.row)">{{$t('operate.update')}}</let-table-operation>
-          <let-table-operation @click="removeItem(scope.row)">{{$t('operate.delete')}}</let-table-operation>
+          <let-table-operation @click="appListItem(scope.row)">{{
+            $t("table.btn.appList")
+          }}</let-table-operation>
+          <let-table-operation @click="editItem(scope.row)">{{
+            $t("operate.update")
+          }}</let-table-operation>
+          <let-table-operation @click="removeItem(scope.row)">{{
+            $t("operate.delete")
+          }}</let-table-operation>
         </template>
       </let-table-column>
     </let-table>
 
     <div style="overflow:hidden;">
-      <let-pagination align="right" style="float:right;"
-        :page="pagination.page" @change="gotoPage"
-        :total="pagination.total">
+      <let-pagination
+        align="right"
+        style="float:right;"
+        :page="pagination.page"
+        @change="gotoPage"
+        :total="pagination.total"
+      >
       </let-pagination>
       <!-- <div style="float:left;">
         <let-button theme="primary" size="small" @click="configServer">{{$t('operate.update')}}</let-button>
@@ -43,14 +79,22 @@
       </div> -->
     </div>
 
-    <let-modal v-model="viewModal.show" :title="$t('template.view.title')" width="800px">
-      <pre v-if="viewModal.model">{{viewModal.model.TemplateContent}}</pre>
+    <let-modal
+      v-model="viewModal.show"
+      :title="$t('template.view.title')"
+      width="800px"
+    >
+      <pre v-if="viewModal.model">{{ viewModal.model.TemplateContent }}</pre>
       <div slot="foot"></div>
     </let-modal>
 
     <let-modal
       v-model="detailModal.show"
-      :title="detailModal.isNew ? this.$t('dialog.title.add') : this.$t('dialog.title.edit')"
+      :title="
+        detailModal.isNew
+          ? this.$t('dialog.title.add')
+          : this.$t('dialog.title.edit')
+      "
       width="800px"
       @on-confirm="saveItem"
       @on-cancel="closeDetailModal"
@@ -94,7 +138,11 @@
 
     <let-modal
       v-model="AppModal.show"
-      :title="AppModal.isNew ? this.$t('dialog.title.add') : this.$t('dialog.title.edit')"
+      :title="
+        AppModal.isNew
+          ? this.$t('dialog.title.add')
+          : this.$t('dialog.title.edit')
+      "
       width="800px"
       @on-confirm="appListSaveItem"
       @on-cancel="closeAppModal"
@@ -119,9 +167,18 @@
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('filter.title.app')">
-          <let-checkbox v-model="isCheckedAll" :value="isCheckedAll">全选</let-checkbox>
+          <let-checkbox v-model="isCheckedAll" :value="isCheckedAll"
+            >全选</let-checkbox
+          >
           <div class="checkbox_list">
-            <let-checkbox class="checkbox_item" v-for="d in AppList" :key="d.ServerApp" :value="checkBoxAddList.indexOf(d.ServerApp) > -1" @change="checkedChange(d.ServerApp)">{{ d.ServerApp }}</let-checkbox>
+            <let-checkbox
+              class="checkbox_item"
+              v-for="d in AppList"
+              :key="d.ServerApp"
+              :value="checkBoxAddList.indexOf(d.ServerApp) > -1"
+              @change="checkedChange(d.ServerApp)"
+              >{{ d.ServerApp }}</let-checkbox
+            >
           </div>
 
           <!-- <let-select
@@ -154,7 +211,7 @@
 
 <script>
 export default {
-  name: 'BaseBusiness',
+  name: "BaseBusiness",
 
   data() {
     return {
@@ -162,9 +219,9 @@ export default {
       checkBoxAddList: [],
       checkBoxDelList: [],
       query: {
-        BusinessName: '',
-        BusinessShow: '',
-        BusinessMark: '',
+        BusinessName: "",
+        BusinessShow: "",
+        BusinessMark: "",
       },
       items: [],
       AppList: [],
@@ -172,7 +229,7 @@ export default {
       pagination: {
         page: 1,
         size: 10,
-        total:1,
+        total: 1,
       },
       viewModal: {
         show: false,
@@ -181,15 +238,15 @@ export default {
       detailModal: {
         show: false,
         model: null,
-        isNew: false
+        isNew: false,
       },
       AppServerArr: [],
-      AppServerStr: '',
+      AppServerStr: "",
       AppServerDeleteArr: [],
       AppModal: {
         show: false,
         model: null,
-        isNew: false
+        isNew: false,
       },
     };
   },
@@ -201,57 +258,67 @@ export default {
   watch: {
     isCheckedAll() {
       let isCheckedAll = this.isCheckedAll;
-      if(isCheckedAll) {
-        this.AppList.forEach(item => {
-          if(this.checkBoxAddList.indexOf(item.ServerApp) === -1){
-            this.checkBoxAddList.push(item.ServerApp)
+      if (isCheckedAll) {
+        this.AppList.forEach((item) => {
+          if (this.checkBoxAddList.indexOf(item.ServerApp) === -1) {
+            this.checkBoxAddList.push(item.ServerApp);
           }
-          this.checkBoxDelList = []
-        })
-      }else{
-        this.AppList.forEach(item => {
-          if(this.checkBoxDelList.indexOf(item.ServerApp) === -1){
-            this.checkBoxDelList.push(item.ServerApp)
+          this.checkBoxDelList = [];
+        });
+      } else {
+        this.AppList.forEach((item) => {
+          if (this.checkBoxDelList.indexOf(item.ServerApp) === -1) {
+            this.checkBoxDelList.push(item.ServerApp);
           }
-          this.checkBoxAddList = []
-        })
+          this.checkBoxAddList = [];
+        });
       }
     },
   },
 
   methods: {
     checkedChange(val) {
-      if(this.checkBoxAddList.indexOf(val) === -1){
-        this.checkBoxAddList.push(val)
-        this.checkBoxDelList.splice(this.checkBoxDelList.indexOf(val), 1)
-      }else{
-        this.checkBoxDelList.push(val)
-        this.checkBoxAddList.splice(this.checkBoxAddList.indexOf(val), 1)
+      if (this.checkBoxAddList.indexOf(val) === -1) {
+        this.checkBoxAddList.push(val);
+        this.checkBoxDelList.splice(this.checkBoxDelList.indexOf(val), 1);
+      } else {
+        this.checkBoxDelList.push(val);
+        this.checkBoxAddList.splice(this.checkBoxAddList.indexOf(val), 1);
       }
 
-      if(this.checkBoxAddList.length === 0){
-        this.isCheckedAll = false
+      if (this.checkBoxAddList.length === 0) {
+        this.isCheckedAll = false;
       }
     },
     gotoPage(num) {
-      this.pagination.page = num
-      this.fetchData()
+      this.pagination.page = num;
+      this.fetchData();
     },
     fetchData() {
       const loading = this.$refs.table.$loading.show();
-      
-      return this.$ajax.getJSON('/k8s/api/business_select', Object.assign(this.query, {
-        isAll: false,
-        page: this.pagination.page,
-        size: this.pagination.size,
-      })).then((data) => {
-        loading.hide();
-        this.items = data.Data
-        this.pagination.total = Math.ceil(data.Count.AllCount / this.pagination.size)
-      }).catch((err) => {
-        loading.hide();
-        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-      });
+
+      return this.$ajax
+        .getJSON(
+          "/k8s/api/business_select",
+          Object.assign(this.query, {
+            isAll: false,
+            page: this.pagination.page,
+            size: this.pagination.size,
+          })
+        )
+        .then((data) => {
+          loading.hide();
+          this.items = data.Data;
+          this.pagination.total = Math.ceil(
+            data.Count.AllCount / this.pagination.size
+          );
+        })
+        .catch((err) => {
+          loading.hide();
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.message || err.err_msg}`
+          );
+        });
     },
 
     search() {
@@ -272,7 +339,7 @@ export default {
     },
 
     addItem() {
-      this.checkBoxAddList = []
+      this.checkBoxAddList = [];
       this.detailModal.model = {};
       this.detailModal.show = true;
       this.detailModal.isNew = true;
@@ -284,7 +351,7 @@ export default {
     },
 
     editItem(d) {
-      this.checkBoxAddList = d.AppServer || []
+      this.checkBoxAddList = d.AppServer || [];
       this.detailModal.model = d;
       this.detailModal.show = true;
       this.detailModal.isNew = false;
@@ -293,60 +360,86 @@ export default {
     saveItem() {
       if (this.$refs.detailForm.validate()) {
         const model = this.detailModal.model;
-        const url = this.detailModal.isNew ? '/k8s/api/business_create' : '/k8s/api/business_update';
+        const url = this.detailModal.isNew
+          ? "/k8s/api/business_create"
+          : "/k8s/api/business_update";
 
         const loading = this.$Loading.show();
-        this.$ajax.postJSON(url, model).then(() => {
-          loading.hide();
-          this.$tip.success(this.$t('common.success'));
-          this.closeDetailModal();
-          this.fetchData();
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
+        this.$ajax
+          .postJSON(url, model)
+          .then(() => {
+            loading.hide();
+            this.$tip.success(this.$t("common.success"));
+            this.closeDetailModal();
+            this.fetchData();
+          })
+          .catch((err) => {
+            loading.hide();
+            this.$tip.error(
+              `${this.$t("common.error")}: ${err.message || err.err_msg}`
+            );
+          });
       }
     },
 
     removeItem(d) {
-      this.$confirm(this.$t('template.delete.confirmTips'), this.$t('common.alert')).then(() => {
-        const loading = this.$Loading.show();
-        this.$ajax.getJSON('/k8s/api/business_delete', { BusinessName: d.BusinessName }).then(() => {
-          loading.hide();
-          this.fetchData().then(() => {
-            this.$tip.success(this.$t('common.success'));
-          });
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
-      }).catch(() => {});
+      this.$confirm(
+        this.$t("template.delete.confirmTips"),
+        this.$t("common.alert")
+      )
+        .then(() => {
+          const loading = this.$Loading.show();
+          this.$ajax
+            .getJSON("/k8s/api/business_delete", {
+              BusinessName: d.BusinessName,
+            })
+            .then(() => {
+              loading.hide();
+              this.fetchData().then(() => {
+                this.$tip.success(this.$t("common.success"));
+              });
+            })
+            .catch((err) => {
+              loading.hide();
+              this.$tip.error(
+                `${this.$t("common.error")}: ${err.message || err.err_msg}`
+              );
+            });
+        })
+        .catch(() => {});
     },
 
     getAppList() {
-      this.$ajax.getJSON('/k8s/api/application_select', {
-        isAll: true,
-      }).then((data) => {
-        this.AppList = data.Data
-      })
+      this.$ajax
+        .getJSON("/k8s/api/application_select", {
+          isAll: true,
+        })
+        .then((data) => {
+          this.AppList = data.Data;
+        });
     },
 
     appListItem(d) {
-      this.getAppList()
+      this.getAppList();
       const loading = this.$refs.table.$loading.show();
-      return this.$ajax.postJSON('/k8s/api/business_list_app', {
-        BusinessNames: [d.BusinessName],
-      }).then((data) => {
-        loading.hide();
-        this.appListEditItem(data[0])
-      }).catch((err) => {
-        loading.hide();
-        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-      });
+      return this.$ajax
+        .postJSON("/k8s/api/business_list_app", {
+          BusinessNames: [d.BusinessName],
+        })
+        .then((data) => {
+          loading.hide();
+          this.appListEditItem(data[0]);
+        })
+        .catch((err) => {
+          loading.hide();
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.message || err.err_msg}`
+          );
+        });
     },
 
     appListEditItem(d) {
-      this.checkBoxAddList = d.App || []
+      this.checkBoxAddList = d.App || [];
       this.AppModal.model = d;
       this.AppModal.show = true;
       this.AppModal.isNew = false;
@@ -355,24 +448,31 @@ export default {
     appListSaveItem() {
       if (this.$refs.AppForm.validate()) {
         const model = this.AppModal.model;
-        const url = this.AppModal.isNew ? '/k8s/api/business_add_app' : '/k8s/api/business_add_app';
+        const url = this.AppModal.isNew
+          ? "/k8s/api/business_add_app"
+          : "/k8s/api/business_add_app";
 
         const loading = this.$Loading.show();
 
-        if(this.checkBoxAddList && this.checkBoxAddList.length > 0){
-          this.$ajax.postJSON(url, {
-            BusinessName: model.BusinessName,
-            AppNames: this.checkBoxAddList,
-          }).then(() => {
-            loading.hide();
-            this.$tip.success(this.$t('common.success'));
-            this.closeAppModal();
-            this.fetchData();
-          }).catch((err) => {
-            loading.hide();
-            this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-          });
-        }else{
+        if (this.checkBoxAddList && this.checkBoxAddList.length > 0) {
+          this.$ajax
+            .postJSON(url, {
+              BusinessName: model.BusinessName,
+              AppNames: this.checkBoxAddList,
+            })
+            .then(() => {
+              loading.hide();
+              this.$tip.success(this.$t("common.success"));
+              this.closeAppModal();
+              this.fetchData();
+            })
+            .catch((err) => {
+              loading.hide();
+              this.$tip.error(
+                `${this.$t("common.error")}: ${err.message || err.err_msg}`
+              );
+            });
+        } else {
           loading.hide();
           this.closeAppModal();
         }
@@ -385,7 +485,7 @@ export default {
 <style>
 .page_base_business {
   pre {
-    color: #909FA3;
+    color: #909fa3;
     margin-top: 32px;
   }
 
@@ -401,9 +501,9 @@ export default {
   }
 
   .checkbox_item {
-    box-sizing:border-box;
-    padding:4px 10px;
-    width:33.33%
+    box-sizing: border-box;
+    padding: 4px 10px;
+    width: 33.33%;
   }
 }
 </style>

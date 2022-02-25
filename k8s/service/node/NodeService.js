@@ -15,8 +15,12 @@
  */
 
 const NodeProxy = require("../../../rpc/k8s-proxy/NodeProxy");
-const {RPCClientPrx} = require('../../../rpc/service');
-const {client} = require('../../../rpc/k8s');
+const {
+    RPCClientPrx
+} = require('../../../rpc/service');
+const {
+    client
+} = require('../../../rpc/k8s');
 const CommonService = require('../common/CommonService');
 const logger = require('../../../logger');
 const Telnet = require('telnet-client')
@@ -181,24 +185,23 @@ NodeService.nodeSelect = async (isAll, NodeName, ServerApp, ServerName, limiter)
             filterItems.push(elem);
         });
     }
+    let result = {
+        Data: [],
+        Count: {},
+    }
+    result.Count["AllCount"] = allItems.length;
 
     allItems = filterItems;
 
     // limiter
     if (limiter != null) {
-        let {start, stop} = CommonService.pageList(filterItems.length, limiter);
+        let {
+            start,
+            stop
+        } = CommonService.pageList(filterItems.length, limiter);
 
         filterItems = filterItems.slice(start, stop);
     }
-
-    // nodeDetails := nodeLabelRecord.ListNodeDetail()
-
-    let result = {
-        Data: [],
-        Count: {},
-    }
-    result.Count["AllCount"] = filterItems.length;
-    result.Count["FilterCount"] = allItems.length;
 
     nodeList.sort(function (e1, e2) {
         if (e1.metadata.name < e2.metadata.name) {
@@ -211,14 +214,16 @@ NodeService.nodeSelect = async (isAll, NodeName, ServerApp, ServerName, limiter)
 
     filterItems.forEach(item => {
         let publicFlag = false;
-        let ability = [],abilityLabels = {},commonLabels = {};
+        let ability = [],
+            abilityLabels = {},
+            commonLabels = {};
         for (let key in item.metadata.labels) {
             if (key.indexOf(CommonService.NodeAppAbilityLabelPrefix) == 0) {
                 ability.push(key.substr(CommonService.NodeAppAbilityLabelPrefix.length));
-                abilityLabels[key]=item.metadata.labels[key]
-            }else {
-                let commonLabel={};
-                commonLabels[key]=item.metadata.labels[key]
+                abilityLabels[key] = item.metadata.labels[key]
+            } else {
+                let commonLabel = {};
+                commonLabels[key] = item.metadata.labels[key]
             }
             if (key.indexOf(CommonService.NodeFramworkAbilityLabelPrefix) == 0) {
                 publicFlag = true;
@@ -236,12 +241,17 @@ NodeService.nodeSelect = async (isAll, NodeName, ServerApp, ServerName, limiter)
             "NodePublic": publicFlag,
             "Labels": item.metadata.labels,
             "Taints": item.spec.taints || [],
-            abilityLabels,commonLabels
+            abilityLabels,
+            commonLabels
         }
         result.Data.push(elem);
     })
 
-    return {ret: 200, msg: 'succ', data: result};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 }
 
 NodeService.nodeList = async () => {
@@ -253,7 +263,11 @@ NodeService.nodeList = async () => {
         result.push(node.metadata.name);
     });
 
-    return {ret: 200, msg: 'succ', data: result};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result
+    };
 }
 
 NodeService.openTafAbility = async (metadata) => {
@@ -263,7 +277,10 @@ NodeService.openTafAbility = async (metadata) => {
         k8sNode.metadata.labels[CommonService.NodeFramworkAbilityLabelPrefix] = "";
         await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
     }
-    return {ret: 200, msg: 'succ'};
+    return {
+        ret: 200,
+        msg: 'succ'
+    };
 }
 
 NodeService.closeTafAbility = async (metadata) => {
@@ -273,7 +290,10 @@ NodeService.closeTafAbility = async (metadata) => {
         delete k8sNode.metadata.labels[CommonService.NodeFramworkAbilityLabelPrefix];
         await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
     }
-    return {ret: 200, msg: 'succ'};
+    return {
+        ret: 200,
+        msg: 'succ'
+    };
 }
 
 NodeService.checkNode = async (node, port) => {
@@ -289,13 +309,23 @@ NodeService.checkNode = async (node, port) => {
         let connection = new Telnet();
         await connection.connect(telnetParam);
         await connection.end()
-        return {ret: 0, node, port, InternalIP}
+        return {
+            ret: 0,
+            node,
+            port,
+            InternalIP
+        }
     } catch (e) {
-        return {ret: -1, node, port, InternalIP}
+        return {
+            ret: -1,
+            node,
+            port,
+            InternalIP
+        }
     }
 }
 
-//±à¼­±êÇ©(µ¥¸ö¿ÉÉ¾³ý)
+//ï¿½à¼­ï¿½ï¿½Ç©(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½)
 NodeService.editCommonTag = async (metadata) => {
     let k8sNode = await CommonService.readNode(metadata.nodeName);
     if (k8sNode && k8sNode.body) {
@@ -311,10 +341,13 @@ NodeService.editCommonTag = async (metadata) => {
         }
         await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
     }
-    return {ret: 200, msg: 'succ'};
+    return {
+        ret: 200,
+        msg: 'succ'
+    };
 }
 
-//ÅúÁ¿²Ù×÷²ÉÓÃ¸²¸Ç²ßÂÔ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½Ç²ï¿½ï¿½ï¿½
 NodeService.batchEditCommonTag = async (metadata) => {
     for (let node of metadata.nodeNames) {
         let k8sNode = await CommonService.readNode(node);
@@ -329,7 +362,10 @@ NodeService.batchEditCommonTag = async (metadata) => {
             await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
         }
     }
-    return {ret: 200, msg: 'succ'};
+    return {
+        ret: 200,
+        msg: 'succ'
+    };
 }
 
 NodeService.editAbilityTag = async (metadata) => {
@@ -351,7 +387,10 @@ NodeService.editAbilityTag = async (metadata) => {
         }
         await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
     }
-    return {ret: 200, msg: 'succ'};
+    return {
+        ret: 200,
+        msg: 'succ'
+    };
 }
 
 NodeService.batchEditAbilityTag = async (metadata) => {
@@ -370,7 +409,10 @@ NodeService.batchEditAbilityTag = async (metadata) => {
             await CommonService.replaceNode(k8sNode.metadata.name, k8sNode);
         }
     }
-    return {ret: 200, msg: 'succ'};
+    return {
+        ret: 200,
+        msg: 'succ'
+    };
 }
 
 module.exports = NodeService;

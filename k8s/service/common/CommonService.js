@@ -180,11 +180,12 @@ const getCacheList = async (cacheList, fn) => {
 
 CommonService.replaceObject = async (plural, name, object, group, version) => {
 	return await k8sApi.replaceNamespacedCustomObject(group || CommonService.GROUP, version || CommonService.VERSION,
-		CommonService.NAMESPACE, plural, name, object, undefined, "JsonPatch", false, {
-			headers: {
-				"Content-Type": "application/json-patch+json"
-			}
-		});
+		CommonService.NAMESPACE, plural, name, object);
+	// , undefined, undefined, {
+	// 	headers: {
+	// 		"Content-Type": "application/json"
+	// 	}
+	// });
 }
 
 CommonService.createObject = async (plural, object, group, version) => {
