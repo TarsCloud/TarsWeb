@@ -6,13 +6,22 @@
 <template>
   <div class="page_framework_config">
     <template>
-      <el-button
-        size="mini"
-        style="width:100px; margin: 10px 0 5px 0;float: right; "
-        type="primary"
-        @click="showYaml"
-        >{{ $t("operate.yaml") }}
-      </el-button>
+      <span>
+        <el-button
+          size="mini"
+          style="width:100px; margin: 10px 0 5px 0;"
+          type="primary"
+          @click="showYaml"
+          >{{ $t("operate.yaml") }}
+        </el-button>
+        <span>
+          <i
+            class="icon iconfont el-icon-third-shuaxin"
+            style="font-family: iconfont  !important;margin:10px"
+            @click="getTfc()"
+          ></i>
+        </span>
+      </span>
       <el-table :data="config" style="width: 100%" stripe border>
         <el-table-column
           prop="column"

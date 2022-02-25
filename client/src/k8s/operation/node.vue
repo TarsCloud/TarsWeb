@@ -37,40 +37,51 @@
             ></el-option>
           </el-select>
         </let-form-item>
-        <let-form-item>
-          <let-button size="small" type="submit" theme="primary">{{
-            $t("filter.btn.searchAffinity")
-          }}</let-button>
-        </let-form-item>
-        <let-form-item itemWidth="600px">
-          <el-tag effect="plain" style="margin-right: 10px">
-            {{ $t("filter.title.CommonTag") }}
-          </el-tag>
-          <el-tag effect="plain" type="warning" style="margin-right: 10px">
-            {{ $t("filter.title.FrameWorkTag") }}
-          </el-tag>
-        </let-form-item>
-        <div style="float: right;margin-top: 30px">
+        <let-form-item itemWidth="200px">
           <let-button
             size="small"
             type="submit"
             theme="primary"
-            style="margin-right: 10px"
-            @click="batchEditCommon"
-            :disabled="!batchEnabled"
+            style="padding-right:20px"
+            >{{ $t("filter.btn.searchAffinity") }}</let-button
           >
-            {{ $t("filter.btn.editTag") }}
-          </let-button>
-          <let-button
-            size="small"
-            type="submit"
-            theme="primary"
-            :disabled="!batchEnabled"
-            @click="batchEditAffinity"
-          >
-            {{ $t("filter.btn.editAffinity") }}
-          </let-button>
-        </div>
+          <span>
+            <i
+              class="icon iconfont el-icon-third-shuaxin"
+              style="font-family: iconfont  !important;margin:10px"
+              @click="fetchData()"
+            ></i>
+          </span>
+        </let-form-item>
+        <let-form-item itemWidth="600px" style="float: right;">
+          <span style="float: right;margin-top: 30px">
+            <el-tag effect="plain" style="margin-right: 10px">
+              {{ $t("filter.title.CommonTag") }}
+            </el-tag>
+            <el-tag effect="plain" type="warning" style="margin-right: 10px">
+              {{ $t("filter.title.FrameWorkTag") }}
+            </el-tag>
+            <let-button
+              size="small"
+              type="submit"
+              theme="primary"
+              style="margin-right: 10px"
+              @click="batchEditCommon"
+              :disabled="!batchEnabled"
+            >
+              {{ $t("filter.btn.editTag") }}
+            </let-button>
+            <let-button
+              size="small"
+              type="submit"
+              theme="primary"
+              :disabled="!batchEnabled"
+              @click="batchEditAffinity"
+            >
+              {{ $t("filter.btn.editAffinity") }}
+            </let-button>
+          </span>
+        </let-form-item>
       </let-form>
 
       <br />
@@ -167,7 +178,10 @@
         </el-table-column>
         <el-table-column :label="$t('operate.operates')" width="150px">
           <template slot-scope="scope">
-            <let-table-operation @click="viewItem(scope.row)">
+            <let-table-operation
+              style="padding-left:10px"
+              @click="viewItem(scope.row)"
+            >
               {{ $t("operate.view") }}
             </let-table-operation>
             <br />
@@ -438,7 +452,8 @@ export default {
     },
     gotoPage(num) {
       this.pagination.page = num;
-      this.getServerList();
+      this.fetchData();
+      // this.getServerList();
     },
     fetchData() {
       return this.$ajax

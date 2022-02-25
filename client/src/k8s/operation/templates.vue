@@ -8,21 +8,49 @@
         <let-input size="small" v-model="query.parents_name"></let-input>
       </let-form-item>
       <let-form-item>
-        <let-button size="small" type="submit" theme="primary">{{$t('operate.search')}}</let-button>
+        <let-button size="small" type="submit" theme="primary">{{
+          $t("operate.search")
+        }}</let-button>
         &nbsp;&nbsp;&nbsp;
-        <let-button size="small" theme="primary" @click="addItem">{{$t('template.btn.addTempate')}}</let-button>
+        <let-button size="small" theme="primary" @click="addItem">{{
+          $t("template.btn.addTempate")
+        }}</let-button>
+        <span>
+          <i
+            class="icon iconfont el-icon-third-shuaxin"
+            style="font-family: iconfont  !important;margin:10px"
+            @click="fetchData()"
+          ></i>
+        </span>
       </let-form-item>
     </let-form>
 
     <let-table ref="table" :data="items" :empty-msg="$t('common.nodata')">
-      <let-table-column :title="$t('deployService.form.template')" prop="TemplateName" width="25%"></let-table-column>
-      <let-table-column :title="$t('template.search.parentTemplate')" prop="TemplateParent" width="25%"></let-table-column>
-      <let-table-column :title="$t('cfg.btn.lastUpdate')" prop="UpdateTime"></let-table-column>
+      <let-table-column
+        :title="$t('deployService.form.template')"
+        prop="TemplateName"
+        width="25%"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('template.search.parentTemplate')"
+        prop="TemplateParent"
+        width="25%"
+      ></let-table-column>
+      <let-table-column
+        :title="$t('cfg.btn.lastUpdate')"
+        prop="UpdateTime"
+      ></let-table-column>
       <let-table-column :title="$t('operate.operates')" width="180px">
         <template slot-scope="scope">
-          <let-table-operation @click="viewItem(scope.row)">{{$t('operate.view')}}</let-table-operation>
-          <let-table-operation @click="editItem(scope.row)">{{$t('operate.update')}}</let-table-operation>
-          <let-table-operation @click="removeItem(scope.row)">{{$t('operate.delete')}}</let-table-operation>
+          <let-table-operation @click="viewItem(scope.row)">{{
+            $t("operate.view")
+          }}</let-table-operation>
+          <let-table-operation @click="editItem(scope.row)">{{
+            $t("operate.update")
+          }}</let-table-operation>
+          <let-table-operation @click="removeItem(scope.row)">{{
+            $t("operate.delete")
+          }}</let-table-operation>
         </template>
       </let-table-column>
     </let-table>
@@ -34,14 +62,22 @@
       </let-pagination>
     </div> -->
 
-    <let-modal v-model="viewModal.show" :title="$t('template.view.title')" width="800px">
-      <pre v-if="viewModal.model">{{viewModal.model.TemplateContent}}</pre>
+    <let-modal
+      v-model="viewModal.show"
+      :title="$t('template.view.title')"
+      width="800px"
+    >
+      <pre v-if="viewModal.model">{{ viewModal.model.TemplateContent }}</pre>
       <div slot="foot"></div>
     </let-modal>
 
     <let-modal
       v-model="detailModal.show"
-      :title="detailModal.isNew ? this.$t('template.add.title') : this.$t('template.update.title')"
+      :title="
+        detailModal.isNew
+          ? this.$t('template.add.title')
+          : this.$t('template.update.title')
+      "
       width="800px"
       @on-confirm="saveItem"
       @on-cancel="closeDetailModal"
@@ -66,12 +102,13 @@
             required
             :required-tip="$t('deployService.table.tips.empty')"
           >
-            <let-option value>{{$t('pub.dlg.defaultValue')}}</let-option>
+            <let-option value>{{ $t("pub.dlg.defaultValue") }}</let-option>
             <let-option
               v-for="d in items"
               :key="d.id"
               :value="d.TemplateName"
-            >{{d.TemplateName}}</let-option>
+              >{{ d.TemplateName }}</let-option
+            >
           </let-select>
         </let-form-item>
         <let-form-item :label="$t('deployService.form.serviceMark')">
@@ -98,15 +135,15 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from "moment";
 export default {
-  name: 'OperationTemplates',
+  name: "OperationTemplates",
 
   data() {
     return {
       query: {
-        template_name: '',
-        parents_name: '',
+        template_name: "",
+        parents_name: "",
       },
       items: [],
       // // 分页
@@ -122,7 +159,7 @@ export default {
       detailModal: {
         show: false,
         model: null,
-        isNew: false
+        isNew: false,
       },
     };
   },
@@ -133,25 +170,32 @@ export default {
 
   methods: {
     gotoPage(num) {
-      this.pagination.page = num
-      this.fetchData()
+      this.pagination.page = num;
+      this.fetchData();
     },
     fetchData() {
       const loading = this.$refs.table.$loading.show();
-      return this.$ajax.getJSON('/k8s/api/template_select', {
-        TemplateName: this.query.template_name,
-        ParentName: this.query.parents_name,
-      }).then((data) => {
-        loading.hide();
-        this.items = data.Data
-        this.items.forEach(item=>{
-          item.UpdateTime = moment(item.UpdateTime).format("YYYY-MM-DD HH:mm:ss");
+      return this.$ajax
+        .getJSON("/k8s/api/template_select", {
+          TemplateName: this.query.template_name,
+          ParentName: this.query.parents_name,
+        })
+        .then((data) => {
+          loading.hide();
+          this.items = data.Data;
+          this.items.forEach((item) => {
+            item.UpdateTime = moment(item.UpdateTime).format(
+              "YYYY-MM-DD HH:mm:ss"
+            );
+          });
+          // this.pagination.total = Math.ceil(data.Count.AllCount / this.pagination.size)
+        })
+        .catch((err) => {
+          loading.hide();
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.message || err.err_msg}`
+          );
         });
-        // this.pagination.total = Math.ceil(data.Count.AllCount / this.pagination.size)
-      }).catch((err) => {
-        loading.hide();
-        this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-      });
     },
 
     search() {
@@ -185,35 +229,52 @@ export default {
     saveItem() {
       if (this.$refs.detailForm.validate()) {
         const model = this.detailModal.model;
-        
-        const url = model.TemplateId ? '/k8s/api/template_update' : '/k8s/api/template_create';
+
+        const url = model.TemplateId
+          ? "/k8s/api/template_update"
+          : "/k8s/api/template_create";
 
         const loading = this.$Loading.show();
-        this.$ajax.postJSON(url, model).then(() => {
-          loading.hide();
-          this.$tip.success(this.$t('common.success'));
-          this.closeDetailModal();
-          this.fetchData();
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
+        this.$ajax
+          .postJSON(url, model)
+          .then(() => {
+            loading.hide();
+            this.$tip.success(this.$t("common.success"));
+            this.closeDetailModal();
+            this.fetchData();
+          })
+          .catch((err) => {
+            loading.hide();
+            this.$tip.error(
+              `${this.$t("common.error")}: ${err.message || err.err_msg}`
+            );
+          });
       }
     },
 
     removeItem(d) {
-      this.$confirm(this.$t('template.delete.confirmTips'), this.$t('common.alert')).then(() => {
-        const loading = this.$Loading.show();
-        this.$ajax.getJSON('/k8s/api/template_delete', { TemplateId: d.TemplateId }).then(() => {
-          loading.hide();
-          this.fetchData().then(() => {
-            this.$tip.success(this.$t('common.success'));
-          });
-        }).catch((err) => {
-          loading.hide();
-          this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-        });
-      }).catch(() => {});
+      this.$confirm(
+        this.$t("template.delete.confirmTips"),
+        this.$t("common.alert")
+      )
+        .then(() => {
+          const loading = this.$Loading.show();
+          this.$ajax
+            .getJSON("/k8s/api/template_delete", { TemplateId: d.TemplateId })
+            .then(() => {
+              loading.hide();
+              this.fetchData().then(() => {
+                this.$tip.success(this.$t("common.success"));
+              });
+            })
+            .catch((err) => {
+              loading.hide();
+              this.$tip.error(
+                `${this.$t("common.error")}: ${err.message || err.err_msg}`
+              );
+            });
+        })
+        .catch(() => {});
     },
   },
 };
@@ -222,7 +283,7 @@ export default {
 <style>
 .page_operation_templates {
   pre {
-    color: #909FA3;
+    color: #909fa3;
     margin-top: 32px;
   }
 

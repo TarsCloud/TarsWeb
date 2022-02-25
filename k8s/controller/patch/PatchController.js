@@ -15,11 +15,11 @@ const upload = (formData = {}, wait) => {
             msg: 'error'
         }
 
-        if(Object.keys(formData).length === 0){
+        if (Object.keys(formData).length === 0) {
             result.msg = '[rpc_upload]: argument invalid'
             return resolve(result)
         }
-       
+
         try {
 
             let name = `${formData.ServerApp}-${formData.ServerName}`.toLowerCase();
@@ -28,9 +28,9 @@ const upload = (formData = {}, wait) => {
                 url: `${WebConf.k8s.uploadDomain}/${name}/building?wait=${wait}`,
                 method: 'POST',
                 formData: formData,
-                timeout: 120*1000,
+                timeout: 120 * 1000,
             }
-            
+
             logger.info(`upload to image request:${options.url}`);
 
             request(options, (error, response, body) => {
@@ -61,7 +61,7 @@ const upload = (formData = {}, wait) => {
         } catch (e) {
             result.msg = e.message
             resolve(result)
-            logger.error('[rpc_update]', e)            
+            logger.error('[rpc_update]', e)
         }
     })
 }
@@ -69,17 +69,18 @@ const upload = (formData = {}, wait) => {
 /**
  * 发布包上传
  */
-PatchController.uploadPatchPackage = async(ctx) => {
+PatchController.uploadPatchPackage = async (ctx) => {
     const that = module.exports
 
     let {
-        Token = '', ServerId = '', ServerType = '', BaseImage = '', Secret = '', CreateMark='',
-        ServerTag='' } = ctx.paramsObj
+        Token = '', ServerId = '', ServerType = '', BaseImage = '', Secret = '', CreateMark = '',
+            ServerTag = ''
+    } = ctx.paramsObj
 
     let file = ctx.req.files[0]
 
     try {
-        if(!file){
+        if (!file) {
             return ctx.makeResObj(500, 'no files')
         }
 
@@ -108,7 +109,7 @@ PatchController.uploadPatchPackage = async(ctx) => {
             ServerType,
             BaseImage,
             Secret,
-            ServerTag: ServerTag || undefined,
+            ServerTag: ServerTag || 'v-' + (new Date()).getTime(),
             Mark: CreateMark,
             CreatePerson: ctx.uid,
             ServerFile: fileBuffer,
@@ -116,11 +117,11 @@ PatchController.uploadPatchPackage = async(ctx) => {
 
         logger.info('[uploadPatchPackage] upload to tars-image: ', uploadData);
 
-        if(uploadData && uploadData.ret === 0){
+        if (uploadData && uploadData.ret === 0) {
 
             ctx.makeResObj(200, uploadData.msg);
 
-        }else{
+        } else {
             ctx.makeResObj(500, uploadData.msg)
         }
     } catch (e) {
@@ -128,19 +129,21 @@ PatchController.uploadPatchPackage = async(ctx) => {
         ctx.makeResObj(500, e.body ? e.body.message : e);
     }
 }
-   
+
 
 /**
  * 上传并发布
  */
-PatchController.uploadAndPatch = async(ctx) => {
+PatchController.uploadAndPatch = async (ctx) => {
     const that = module.exports
 
-    let { Token = '', application = '', module_name = '', server_type = 'cpp', base_image='', secret='', comment=''} = ctx.paramsObj
+    let {
+        Token = '', application = '', module_name = '', server_type = 'cpp', base_image = '', secret = '', comment = ''
+    } = ctx.paramsObj
     let file = ctx.req.files[0]
 
     try {
-        if(!file){
+        if (!file) {
             return ctx.makeResObj(500, 'no files')
         }
         let baseUploadPath = WebConf.pkgUploadPath.path
@@ -168,8 +171,8 @@ PatchController.uploadAndPatch = async(ctx) => {
         }, true)
 
         logger.info('[uploadPatchPackage] upload to tars-image: ', uploadData);
-        
-        if(uploadData.ret === 0 ){
+
+        if (uploadData.ret === 0) {
 
             logger.info(`check build docker process`);
 
@@ -182,7 +185,7 @@ PatchController.uploadAndPatch = async(ctx) => {
             let rst = await PatchService.servicePoolUpdate(metadata);
 
             ctx.makeResObj(rst.ret, rst.msg);
-        }else{
+        } else {
             ctx.makeResObj(500, uploadData.msg)
         }
     } catch (e) {
@@ -196,20 +199,22 @@ PatchController.uploadAndPatch = async(ctx) => {
  * @param  {String}  Token                登录签名
  * @param  {Number}  BuildId              编译ID
  */
-PatchController.uploadPatchStatus = async(ctx) => {
+PatchController.uploadPatchStatus = async (ctx) => {
     const that = module.exports
 
-    let { Token = '', ServerId = '', BuildId = 0 } = ctx.paramsObj
+    let {
+        Token = '', ServerId = '', BuildId = 0
+    } = ctx.paramsObj
 
     try {
 
-    	let result = await CommonService.getObject("timages", CommonService.getTServerName(ServerId));
+        let result = await CommonService.getObject("timages", CommonService.getTServerName(ServerId));
 
         let buildStatusData = result.body.Build.Running;
 
-        if(buildStatusData && buildStatusData.ret === 0 && buildStatusData.data){
+        if (buildStatusData && buildStatusData.ret === 0 && buildStatusData.data) {
             ctx.makeResObj(200, buildStatusData.msg, buildStatusData.data)
-        }else{
+        } else {
             ctx.makeResObj(500, buildStatusData.msg)
         }
     } catch (e) {
@@ -223,19 +228,21 @@ PatchController.uploadPatchStatus = async(ctx) => {
  * @param  {String}  Token                登录签名
  * @param  {String}  ServerId             服务名
  */
-PatchController.ServicePoolSelect = async(ctx) => {
-	const that = module.exports
+PatchController.ServicePoolSelect = async (ctx) => {
+    const that = module.exports
 
-	let { Token = '', ServerId = ''} = ctx.paramsObj
+    let {
+        Token = '', ServerId = ''
+    } = ctx.paramsObj
 
-	try {
-		let result = await PatchService.servicePoolSelect(ServerId);
-		ctx.makeResObj(result.ret, result.msg, result.data);
+    try {
+        let result = await PatchService.servicePoolSelect(ServerId);
+        ctx.makeResObj(result.ret, result.msg, result.data);
 
-	} catch (e) {
+    } catch (e) {
         logger.error('[ServicePoolSelect]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
-	}
+    }
 }
 
 PatchController.BuildSelect = async (ctx) => {
@@ -276,60 +283,66 @@ PatchController.DeleteBuild = async (ctx) => {
  * @param  {Number}  ServiceId            版本ID
  * @param  {Number}  EnableMark           备注
  */
-PatchController.ServicePoolUpdate = async(ctx) => {
-	const that = module.exports
-	let { Token = '', ServerId, Id = '', Replicas = 1, EnableMark = '',NodeImage="" } = ctx.paramsObj
+PatchController.ServicePoolUpdate = async (ctx) => {
+    const that = module.exports
+    let {
+        Token = '', ServerId, Id = '', Replicas = 1, EnableMark = '', NodeImage = ""
+    } = ctx.paramsObj
 
-	Replicas = Math.floor(Replicas) || 1
-	
-	try {
-		const metadata = {
-			ServerId,
-			Id,
-			Replicas,
+    Replicas = Math.floor(Replicas) || 1
+
+    try {
+        const metadata = {
+            ServerId,
+            Id,
+            Replicas,
             NodeImage,
-			EnableMark,
-		}
+            EnableMark,
+        }
 
-		let result = await PatchService.servicePoolUpdate(metadata);
-		ctx.makeResObj(result.ret, result.msg, result.data);
+        let result = await PatchService.servicePoolUpdate(metadata);
+        ctx.makeResObj(result.ret, result.msg, result.data);
 
-	} catch (e) {
+    } catch (e) {
         logger.error('[ServicePoolUpdate]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
-	}
+    }
 }
- 
+
 
 /**
  * 服务启用列表
 
  */
-PatchController.ServiceNowImages = async(ctx) => {
+PatchController.ServiceNowImages = async (ctx) => {
 
-    let { Token = '', ServerId = '' } = ctx.paramsObj
+    let {
+        Token = '', ServerId = ''
+    } = ctx.paramsObj
 
     try {
         let result = await PatchService.ServiceNowImages(ServerId);
-		ctx.makeResObj(result.ret, result.msg, result.data);
+        ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
         logger.error('[ServiceNowImages]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
     }
 }
-    
+
 /**
  * 服务启用列表
 
  */
-PatchController.ServiceEnabledSelect = async(ctx) => {
+PatchController.ServiceEnabledSelect = async (ctx) => {
 
-    let { Token = '', ServerId = '' } = ctx.paramsObj
+    let {
+        Token = '', ServerId = ''
+    } = ctx.paramsObj
 
     try {
         let result = await PatchService.serviceEnabledSelect(ServerId);
-		ctx.makeResObj(result.ret, result.msg, result.data);
+        ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
         logger.error('[ServiceEnabledSelect]', e.body ? e.body.message : e, ctx)

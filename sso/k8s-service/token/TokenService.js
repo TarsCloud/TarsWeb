@@ -10,7 +10,9 @@ TokenService.getTokenList = async (uid) => {
     let account = await UserService.getTAccount(uid);
 
     if (!account) {
-        return {errMsg: 'user not exists'}        
+        return {
+            errMsg: 'user not exists'
+        }
     }
 
     let data = [];
@@ -26,7 +28,7 @@ TokenService.getTokenList = async (uid) => {
     })
 
     return data;
-}; 
+};
 
 
 // 登陆成功，签发id_token
@@ -45,22 +47,31 @@ TokenService.signWebIDToken = function (claims, expireTime) {
 TokenService.verifyWebIDToken = async function (id_token) {
     // 解析id_token拿到签名算法和key，并验证该id_token是否有效
     return new Promise(async (resolve, reject) => {
-        jwt.verify(id_token, secret, function(err, claims) {
+        jwt.verify(id_token, secret, function (err, claims) {
             if (err) {
                 // verify 3种错误：
                 // 0、是否过期(TokenExpiredError)；
-                if (err instanceof  jwt.TokenExpiredError) {
-                    resolve({code: -1, uid: null})
+                if (err instanceof jwt.TokenExpiredError) {
+                    resolve({
+                        code: -1,
+                        uid: null
+                    })
                     return
                 }
                 // 1、是否被篡改，是否Web下发(JsonWebTokenError)；
-                if (err instanceof  jwt.JsonWebTokenError) {
-                    resolve({code: -2, uid: null})
+                if (err instanceof jwt.JsonWebTokenError) {
+                    resolve({
+                        code: -2,
+                        uid: null
+                    })
                     return
                 }
                 // 2、是否已生效(NotBeforeError)
-                if (err instanceof  jwt.NotBeforeError) {
-                    resolve({code: -3, uid: null})
+                if (err instanceof jwt.NotBeforeError) {
+                    resolve({
+                        code: -3,
+                        uid: null
+                    })
                     return
                 }
             }
@@ -70,16 +81,20 @@ TokenService.verifyWebIDToken = async function (id_token) {
     })
 }
 
-TokenService.addToken = async(name, uid, expireTime) => {
+TokenService.addToken = async (name, uid, expireTime) => {
 
     let date = Date.parse(expireTime + ":00");
 
-    let tokenStr = await TokenService.signWebIDToken({ uid: uid }, date - (new Date()).getTime());
+    let tokenStr = await TokenService.signWebIDToken({
+        uid: uid
+    }, date - (new Date()).getTime());
 
     let account = await UserService.getTAccount(uid);
 
     if (!account) {
-        return {errMsg: 'user not exists'}        
+        return {
+            errMsg: 'user not exists'
+        }
     }
 
     let token = {
@@ -93,16 +108,17 @@ TokenService.addToken = async(name, uid, expireTime) => {
     account.spec.authentication.tokens.push(token);
 
     return await UserService.replaceTAccount(uid, account);
-
 };
 
 
-TokenService.deleteToken = async(uid, tokens) => {
+TokenService.deleteToken = async (uid, tokens) => {
 
     let account = await UserService.getTAccount(uid);
 
     if (!account) {
-        return {errMsg: 'user not exists'}        
+        return {
+            errMsg: 'user not exists'
+        }
     }
 
     if (tokens && tokens.length > 0) {
@@ -118,11 +134,13 @@ TokenService.deleteToken = async(uid, tokens) => {
 };
 
 TokenService.setTokenValid = async (uid, token, valid) => {
-   
+
     let account = await UserService.getTAccount(uid);
 
     if (!account) {
-        return {errMsg: 'user not exists'}        
+        return {
+            errMsg: 'user not exists'
+        }
     }
 
     account.spec.authentication.tokens.forEach(item => {
@@ -131,7 +149,7 @@ TokenService.setTokenValid = async (uid, token, valid) => {
             item.valid = (1 == valid);
         }
     });
-    
+
     return await UserService.replaceTAccount(uid, account);
 };
 
