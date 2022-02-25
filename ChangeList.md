@@ -1,3 +1,15 @@
+## 20220225(2.4.25)
+
+### en
+
+- K8s relevant interfaces add refresh buttons to optimize the experience
+- Native version supports container operation, match tarsframework v3.0.4
+
+### cn
+
+- k8s 相关界面增加刷新按钮, 优化体验
+- native 版本支持容器化运行, 需要配置 TarsFramework v3.0.4
+
 ## 20220210(2.4.24)
 
 ### en
