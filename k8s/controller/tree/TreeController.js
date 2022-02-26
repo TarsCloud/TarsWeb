@@ -1,7 +1,9 @@
 const logger = require('../../../logger')
 const TreeService = require('../../service/tree/TreeService');
 
-const treeNode = ({data = []}) => {
+const treeNode = ({
+    data = []
+}) => {
     let result = []
     if (data && data.length > 0) {
         data.forEach((item, index) => {
@@ -97,8 +99,11 @@ const TreeController = {};
  */
 TreeController.ServerTree = async (ctx) => {
     try {
-        const {searchKey} = ctx.paramsObj
-        let result = await TreeService.tree(searchKey);
+        const {
+            searchKey,
+            force
+        } = ctx.paramsObj
+        let result = await TreeService.tree(searchKey, force);
         let treeData = treeNode({
             data: result.data,
         });
