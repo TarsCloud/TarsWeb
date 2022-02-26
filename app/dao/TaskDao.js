@@ -14,43 +14,58 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const {tTask, tTaskItem} = require('./db').db_tars;
+const {
+	tTask,
+	tTaskItem
+} = require('./db').db_tars;
 const Sequelize = require('sequelize');
 const moment = require('moment');
 const Op = Sequelize.Op;
 
-tTask.belongsTo(tTaskItem, {foreignKey: 'task_no', as: 'taskItem', targetKey: 'task_no'});
+//tTask.belongsTo(tTaskItem, {foreignKey: 'task_no', as: 'taskItem', targetKey: 'task_no'});
 
 module.exports = {
 	delTask: async (task_no) => {
 		await tTask.destroy({
-			where: {task_no: task_no}
+			where: {
+				task_no: task_no
+			}
 		});
 
 		await tTaskItem.destroy({
-			where: {task_no: task_no}
+			where: {
+				task_no: task_no
+			}
 		})
 	},
 	getTask: async (params) => {
 		let whereObj = {};
-		params.application && Object.assign(whereObj, {'$taskItem.application$': params.application});
-		params.server_name && Object.assign(whereObj, {'$taskItem.server_name$': params.server_name});
-		params.command && Object.assign(whereObj, {'$taskItem.command$': params.command});
+		params.application && Object.assign(whereObj, {
+			'$taskItem.application$': params.application
+		});
+		params.server_name && Object.assign(whereObj, {
+			'$taskItem.server_name$': params.server_name
+		});
+		params.command && Object.assign(whereObj, {
+			'$taskItem.command$': params.command
+		});
 		if (params.from) {
 			whereObj.create_time = {
-				[Op.gte] : params.from
+				[Op.gte]: params.from
 				// ['$gte'] = params.from
 			};
 		}
 		if (params.to) {
 			whereObj.create_time = {
-				[Op.lte] : moment(params.to + " 23:59:59", "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm:ss")
+				[Op.lte]: moment(params.to + " 23:59:59", "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm:ss")
 			};
 			// whereObj.create_time['$lte'] = params.to
 		}
 		let opts = {
 			attribute: ['task_no', 'serial', 'create_time', 'user_name'],
-			order: [['create_time', 'desc']],
+			order: [
+				['create_time', 'desc']
+			],
 			where: whereObj,
 			include: {
 				model: tTaskItem,
