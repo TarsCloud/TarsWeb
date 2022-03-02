@@ -2103,6 +2103,11 @@
         }
     },
     "market": {
+        "index": {
+            "search": "Please enter a search keyword",
+            "directory": "Directory",
+            "backTop": "Back To Top"
+        },
         "header": {
             "pass": "Set Registry Rassord",
             "repo": "Manage Registry Repository",

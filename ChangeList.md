@@ -1,4 +1,4 @@
-## 20220226(2.4.25)
+## 20220302(2.4.25)
 
 ### en
 
@@ -7,6 +7,7 @@
 - Native version supports container operation, match tarsframework v3.0.4
 - Fix the bug that adding token in user center fails in some MySQL versions
 - Remove t_task foreign key
+- fix bug in container deploy
 
 ### cn
 
@@ -15,6 +16,7 @@
 - native 版本支持容器化运行, 匹配 TarsFramework v3.0.4
 - 修复用户中心添加 token 在某些 mysql 版本下失败的 bug
 - 去掉 t_task 表的外键
+- 修复容器部署时的 bug
 
 ## 20220210(2.4.24)
 

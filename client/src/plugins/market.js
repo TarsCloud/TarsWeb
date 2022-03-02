@@ -42,7 +42,7 @@ Ajax.call = function (obj, func, params) {
   return Ajax.postJSON(`/${obj}/${func}`, params);
 }
 
-Object.defineProperty(Vue.prototype, '$market', {
+Object.defineProperty(Vue.prototype, '$cloud', {
   get() {
     return Ajax;
   },
@@ -82,7 +82,7 @@ class LoginUtil {
       this.onLogin(false);
       return;
     }
-    this.vue.$market
+    this.vue.$cloud
       .call("cloud-user", "isLogin", {
         ticket: ticket,
       })

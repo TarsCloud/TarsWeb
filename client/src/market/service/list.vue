@@ -196,7 +196,7 @@ export default {
     },
     fetchServiceVersionData(i, j, callback) {
       let service = this.getUpgrade(this.get(i, j));
-      this.$market
+      this.$cloud
         .call("cloud-market", "getServiceVersion", {
           req: {
             group: service.group,
@@ -227,7 +227,7 @@ export default {
       this.fetchServiceVersionData(i, j, () => {
         let data = this.getUpgrade(this.get(i, j));
 
-        this.$market
+        this.$cloud
           .call("cloud-market", "getServiceVersionList", {
             req: {
               group: data.group,
@@ -248,7 +248,7 @@ export default {
     },
     changeVersion(i, j) {
       let service = this.getUpgrade(this.get(i, j));
-      this.$market
+      this.$cloud
         .call("cloud-market", "getServiceVersion", {
           req: {
             group: service.group,
@@ -320,7 +320,7 @@ export default {
         info.push(v);
       });
 
-      this.$market
+      this.$cloud
         .call("cloud-market", "checkUpgrade", {
           req: {
             info: info,

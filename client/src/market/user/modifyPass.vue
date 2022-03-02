@@ -159,7 +159,7 @@ export default {
     modifyPass() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.$market
+          this.$cloud
             .call("cloud-user", "resetPass", {
               ticket: window.localStorage.ticket,
               oldPassword: sha1(this.data.oldPassword),

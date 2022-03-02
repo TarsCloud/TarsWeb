@@ -28,6 +28,7 @@ import './plugins/ui';
 import './plugins/ajax';
 
 import './plugins/market';
+import $ from "n-zepto";
 
 import indexApp from './indexApp';
 import router from './router';

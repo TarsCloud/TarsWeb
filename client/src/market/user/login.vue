@@ -177,7 +177,7 @@ export default {
   },
   methods: {
     reloadCaptcha() {
-      this.$market
+      this.$cloud
         .call("cloud-user", "captcha")
         .then((data) => {
           this.login.captchaUrl =
@@ -206,7 +206,7 @@ export default {
     doLogin() {
       this.$refs["ruleFormLogin"].validate((valid) => {
         if (valid) {
-          this.$market
+          this.$cloud
             .call("cloud-user", "login", {
               li: {
                 uid: this.login.uid,

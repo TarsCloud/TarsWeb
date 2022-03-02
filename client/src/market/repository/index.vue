@@ -152,7 +152,7 @@ export default {
         type: "warning",
       })
         .then(() => {
-          this.$market
+          this.$cloud
             .call("cloud-harbor", "delProjectDeveloper", {
               project: row.name,
               uid: uid,
@@ -180,7 +180,7 @@ export default {
         type: "warning",
       })
         .then(() => {
-          this.$market
+          this.$cloud
             .call("cloud-harbor", "delProject", {
               project: row.name,
             })
@@ -206,7 +206,7 @@ export default {
     },
     fetchProjects() {
       // this.$loading.show();
-      this.$market
+      this.$cloud
         .call("cloud-harbor", "getProjectList", {
           page_size: this.page_size,
           page: this.page,

@@ -134,7 +134,7 @@ export default {
     createRepoUser: function() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.$market
+          this.$cloud
             .call("cloud-harbor", "createRepoUser", {
               password: this.data.password,
             })

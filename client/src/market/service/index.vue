@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width:75%">
     <el-header class="header">
       <el-row :gutter="24" v-if="serviceVersion">
         <el-col :span="3">
@@ -238,7 +238,7 @@ export default {
       return row.readme;
     },
     fetchServiceVersionData(version) {
-      this.$market
+      this.$cloud
         .call("cloud-market", "getServiceVersion", {
           req: {
             group: this.group,
@@ -293,7 +293,7 @@ export default {
         });
     },
     fetchVersionListData() {
-      this.$market
+      this.$cloud
         .call("cloud-market", "getServiceVersionList", {
           req: {
             group: this.group,

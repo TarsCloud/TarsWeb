@@ -200,7 +200,7 @@ export default {
       this.$router.push("/market/user/login");
     },
     reloadCaptcha() {
-      this.$market
+      this.$cloud
         .call("cloud-user", "captcha")
         .then((data) => {
           this.data.captchaUrl =
@@ -217,7 +217,7 @@ export default {
     resetPass: function() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.$market
+          this.$cloud
             .call("cloud-user", "resetPassByActiveCode", {
               rp: {
                 uid: this.data.uid,

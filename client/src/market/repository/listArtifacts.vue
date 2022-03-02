@@ -85,7 +85,7 @@ export default {
     },
     fetchArtifactsList() {
       this.$loading.show();
-      this.$market
+      this.$cloud
         .call("cloud-harbor", "getArtifactsList", {
           project: this.project,
           repo: this.repo.substr(this.project.length + 1),
@@ -121,7 +121,7 @@ export default {
         .then(() => {
           this.$loading.show();
 
-          this.$market
+          this.$cloud
             .call("cloud-harbor", "delArtifacts", {
               project: this.project,
               repo: this.repo.substr(this.project.length + 1),

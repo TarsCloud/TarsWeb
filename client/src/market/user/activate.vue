@@ -113,7 +113,7 @@ export default {
       this.$router.push("/market/user/login");
     },
     activate: function() {
-      this.$market
+      this.$cloud
         .call("cloud-user", "activate", {
           uid: this.login.uid,
           activeCode: this.login.activeCode,

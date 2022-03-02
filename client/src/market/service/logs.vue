@@ -34,7 +34,7 @@ export default {
       }
     },
     fetchLogs() {
-      this.$market
+      this.$cloud
         .call("cloud-market", "getServiceLogs", {
           req: {
             group: this.serviceVersion.group,

@@ -2128,6 +2128,11 @@
         }
     },
     "market": {
+        "index": {
+            "search": "请输入搜索关键字",
+            "directory": "本页目录",
+            "backTop": "回到顶部"
+        },
         "header": {
             "pass": "设置仓库密码",
             "repo": "管理仓库项目",

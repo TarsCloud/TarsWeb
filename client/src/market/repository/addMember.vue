@@ -110,7 +110,7 @@ export default {
         };
 
         if (results.length == 0 && queryString) {
-          this.$market
+          this.$cloud
             .call("cloud-harbor", "searchRepoUser", {
               userId: queryString,
             })
@@ -130,7 +130,7 @@ export default {
     submit() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.$market
+          this.$cloud
             .call("cloud-harbor", "addProjectDeveloper", {
               project: this.project.project,
               uid: this.project.uid,

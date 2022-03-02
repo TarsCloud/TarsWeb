@@ -87,7 +87,7 @@ export default {
     },
     fetchRepoList() {
       this.$loading.show();
-      this.$market
+      this.$cloud
         .call("cloud-harbor", "getRepositoryList", {
           project: this.project,
           page_size: this.page_size,
@@ -119,7 +119,7 @@ export default {
         .then(() => {
           console.log(row);
 
-          this.$market
+          this.$cloud
             .call("cloud-harbor", "delRepository", {
               project: this.project,
               repo: row.name.substr(this.project.length + 1),

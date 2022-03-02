@@ -135,7 +135,7 @@ export default {
       return row.description;
     },
     fetchServiceData() {
-      this.$market
+      this.$cloud
         .call("cloud-market", "getServiceBaseList", {
           req: {
             offset: this.offset,
@@ -161,7 +161,7 @@ export default {
         });
     },
     checkVersion(version) {
-      this.$market
+      this.$cloud
         .call("cloud-market", "checkVersion", {
           req: {
             web: version,

@@ -34,6 +34,7 @@ import "./assets/theme/element-to-let/index.css"
 
 import './plugins/ui';
 
+import $ from "n-zepto";
 
 import 'viewerjs/dist/viewer.css';
 import Viewer from 'v-viewer';

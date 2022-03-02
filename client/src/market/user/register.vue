@@ -174,7 +174,7 @@ export default {
     register: function() {
       this.$refs["ruleRegisterForm"].validate((valid) => {
         if (valid) {
-          this.$market
+          this.$cloud
             .call("cloud-user", "register", {
               uid: this.login.uid,
               password: sha1(this.login.password),

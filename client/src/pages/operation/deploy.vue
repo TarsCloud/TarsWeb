@@ -88,7 +88,10 @@
           :placeholder="$t('user.tips.sep')"
         ></let-input>
       </let-form-item>
-      <let-form-item :label="$t('deployService.form.run_type')">
+      <let-form-item
+        :label="$t('deployService.form.run_type')"
+        v-if="baseImageList.length > 0"
+      >
         <let-radio-group
           size="small"
           v-model="runType"
@@ -422,7 +425,7 @@ const getInitialModel = () => ({
   operator: "",
   developer: "",
   run_type: "",
-  base_image_id: "",
+  base_image_id: 0,
   adapters: [
     {
       obj_name: "",
@@ -531,6 +534,9 @@ export default {
       .getJSON("/server/api/base_image_list")
       .then((data) => {
         this.baseImageList = data;
+        if (this.baseImageList.length > 0) {
+          this.model.base_image_id = this.baseImageList[0].id;
+        }
       })
       .catch((err) => {
         this.$tip.error(

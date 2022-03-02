@@ -20,6 +20,7 @@
     "let-ui": "^0.1.23",
     "lodash": "^4.17.14",
     "marked": "^4.0.8",
+    "n-zepto": "^1.2.0",
     "request": "^2.88.0",
     "sha1": "^1.1.1",
     "socket.io-client": "^3.0.3",

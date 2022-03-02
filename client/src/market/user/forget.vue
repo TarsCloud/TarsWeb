@@ -85,7 +85,7 @@ export default {
     forget() {
       this.$refs["ruleForgetForm"].validate((valid) => {
         if (valid) {
-          this.$market
+          this.$cloud
             .call("cloud-user", "forget", {
               uid: this.login.uid,
               origin: window.location.origin,
