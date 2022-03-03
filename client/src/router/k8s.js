@@ -45,7 +45,7 @@ import ServerPropertyMonitor from '@/common/monitor-property';
 // 运维管理
 import Operation from '@/k8s/operation/index';
 import OperationDeploy from '@/k8s/operation/deploy';
-import OperationApproval from '@/k8s/operation/approval';
+// import OperationApproval from '@/k8s/operation/approval';
 import OperationHistory from '@/k8s/operation/history';
 import OperationUndeploy from '@/k8s/operation/undeploy';
 import OperationTemplates from '@/k8s/operation/templates';
@@ -118,10 +118,10 @@ export default new Router({
           path: 'deploy',
           component: OperationDeploy,
         },
-        {
-          path: 'approval',
-          component: OperationApproval,
-        },
+        // {
+        //   path: 'approval',
+        //   component: OperationApproval,
+        // },
         {
           path: 'history',
           component: OperationHistory,

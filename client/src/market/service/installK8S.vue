@@ -262,22 +262,8 @@ export default {
       dialogVisible: false,
       dialogConfigVisible: false,
       upgrade: false,
-      // templates: [
-      //   "tars.cpp",
-      //   "tars.go",
-      //   "tars.nodejs",
-      //   "tars.java",
-      //   "tars.php",
-      // ],
-      // abilityAffinities: [
-      //   "AppRequired",
-      //   "ServerRequired",
-      //   "AppOrServerPreferred",
-      //   "None",
-      // ],
       deployObj: null,
       activeName: null,
-      // enableLogin: false,
       k8s: true,
     };
   },

@@ -1,6 +1,6 @@
 const DefaultController = require('./controller/default/DefaultController');
 const AdapterController = require('./controller/adapter/AdapterController');
-const AffinityController = require('./controller/affinity/AffinityController');
+// const AffinityController = require('./controller/affinity/AffinityController');
 const ApplicationController = require('./controller/application/ApplicationController');
 const ApprovalController = require('./controller/approval/ApprovalController');
 const BusinessController = require('./controller/business/BusinessController');
@@ -69,23 +69,23 @@ const k8sApiConf = [
         TemplateId: 'notEmpty'
     }],
 
-    // 服务部署 ( 创建、创建列表、删除、审批、审批列表 )
-    ['post', '/deploy_create', DeployController.ServerDeployCreate, {
-        ServerApp: 'notEmpty',
-        ServerName: 'notEmpty'
-    }],
-    ['get', '/deploy_select', DeployController.ServerDeploySelect],
-    ['post', '/deploy_update', DeployController.ServerDeployUpdate, {
-        DeployId: 'notEmpty'
-    }],
-    ['get', '/deploy_delete', DeployController.ServerDeployDelete, {
-        DeployId: 'notEmpty'
-    }],
-    ['post', '/approval_create', ApprovalController.ServerApprovalCreate, {
-        ServerApp: 'notEmpty',
-        ServerName: 'notEmpty'
-    }],
-    ['get', '/approval_select', ApprovalController.ServerApprovalSelect],
+    // // 服务部署 ( 创建、创建列表、删除、审批、审批列表 )
+    // ['post', '/deploy_create', DeployController.ServerDeployCreate, {
+    //     ServerApp: 'notEmpty',
+    //     ServerName: 'notEmpty'
+    // }],
+    // ['get', '/deploy_select', DeployController.ServerDeploySelect],
+    // ['post', '/deploy_update', DeployController.ServerDeployUpdate, {
+    //     DeployId: 'notEmpty'
+    // }],
+    // ['get', '/deploy_delete', DeployController.ServerDeployDelete, {
+    //     DeployId: 'notEmpty'
+    // }],
+    // ['post', '/approval_create', ApprovalController.ServerApprovalCreate, {
+    //     ServerApp: 'notEmpty',
+    //     ServerName: 'notEmpty'
+    // }],
+    // ['get', '/approval_select', ApprovalController.ServerApprovalSelect],
 
     ['get', '/exists', DeployController.exists, {
         app: 'notEmpty',
@@ -195,25 +195,25 @@ const k8sApiConf = [
         nodeNames: 'notEmpty'
     }],
 
-    // 亲和性管理 ( 创建、列表、更新、删除 )
-    ['get', '/affinity_list_node', AffinityController.AffinityListByNode],
-    ['get', '/affinity_list_server', AffinityController.AffinityListByServer],
-    ['post', '/affinity_add_server', AffinityController.AffinityAddServer, {
-        NodeName: 'notEmpty',
-        ServerApp: 'notEmpty'
-    }],
-    ['post', '/affinity_add_node', AffinityController.AffinityAddNode, {
-        NodeName: 'notEmpty',
-        ServerApp: 'notEmpty'
-    }],
-    ['post', '/affinity_del_server', AffinityController.AffinityDeleteServer, {
-        NodeName: 'notEmpty',
-        ServerApp: 'notEmpty'
-    }],
-    ['post', '/affinity_del_node', AffinityController.AffinityDeleteNode, {
-        NodeName: 'notEmpty',
-        ServerApp: 'notEmpty'
-    }],
+    // // 亲和性管理 ( 创建、列表、更新、删除 )
+    // ['get', '/affinity_list_node', AffinityController.AffinityListByNode],
+    // ['get', '/affinity_list_server', AffinityController.AffinityListByServer],
+    // ['post', '/affinity_add_server', AffinityController.AffinityAddServer, {
+    //     NodeName: 'notEmpty',
+    //     ServerApp: 'notEmpty'
+    // }],
+    // ['post', '/affinity_add_node', AffinityController.AffinityAddNode, {
+    //     NodeName: 'notEmpty',
+    //     ServerApp: 'notEmpty'
+    // }],
+    // ['post', '/affinity_del_server', AffinityController.AffinityDeleteServer, {
+    //     NodeName: 'notEmpty',
+    //     ServerApp: 'notEmpty'
+    // }],
+    // ['post', '/affinity_del_node', AffinityController.AffinityDeleteNode, {
+    //     NodeName: 'notEmpty',
+    //     ServerApp: 'notEmpty'
+    // }],
 
     // 服务K8S ( 列表、更新 )
     ['get', '/server_k8s_select', K8sController.ServerK8SSelect, {
