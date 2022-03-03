@@ -87,6 +87,18 @@ const k8sApiConf = [
     }],
     ['get', '/approval_select', ApprovalController.ServerApprovalSelect],
 
+    ['get', '/exists', DeployController.exists, {
+        app: 'notEmpty',
+        server: 'notEmpty',
+    }],
+    ['post', '/install', DeployController.install, {
+        deploy: 'notEmpty',
+    }],
+    ['post', '/upgrade', DeployController.upgrade, {
+        deploy: 'notEmpty',
+        cloud: 'notEmpty',
+    }],
+
     // 服务配置文件 ( 创建、列表、更新、删除 )
     ['post', '/server_config_create', ConfigController.ServerConfigCreate],
     ['get', '/server_config_select', ConfigController.ServerConfigSelect, {
@@ -164,10 +176,10 @@ const k8sApiConf = [
     // 节点管理 ( 创建、列表、更新、删除 )
     ['get', '/node_select', NodeController.NodeSelect],
     ['get', '/node_list', NodeController.NodeList],
-    ['post', '/taf_ability_open', NodeController.openTafAbility, {
+    ['post', '/ability_open', NodeController.openTafAbility, {
         NodeName: 'notEmpty'
     }],
-    ['post', '/taf_ability_close', NodeController.closeTafAbility, {
+    ['post', '/ability_close', NodeController.closeTafAbility, {
         NodeName: 'notEmpty'
     }],
     ['post', '/edit_common_tag', NodeController.editCommonTag, {

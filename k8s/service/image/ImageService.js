@@ -65,7 +65,7 @@ ImageService.imageSelect = async () => {
 	return imageSelect('base');
 }
 
-ImageService.serverImageCreateWithRelease = async (deploy) => {
+ImageService.serverImageCreateWithRelease = async (deploy, mark) => {
 
 	let name = CommonService.getTServerName(deploy.app + '-' + deploy.server);
 
@@ -100,7 +100,7 @@ ImageService.serverImageCreateWithRelease = async (deploy) => {
 		id: deploy.repo.id,
 		image: deploy.repo.image,
 		secret: deploy.repo.secret,
-		mark: "from cloud",
+		mark: mark || "cloud",
 		createPerson: deploy.uid || 'web',
 	});
 

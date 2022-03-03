@@ -49,7 +49,7 @@ CommonService.NAMESPACE = process.env.Namespace || WebConf.k8s.namespace;
 
 CommonService.NodeFramworkAbilityLabelPrefix = "tars.io/node." + CommonService.NAMESPACE // 此标签表示 该节点可以被框架使用
 CommonService.NodeAppAbilityLabelPrefix = "tars.io/ability." + CommonService.NAMESPACE + "." // 此标签表示 该节点可以被某个具体app节点池使用 tars.io/ability.$Namespace.$App
-CommonService.PublicNodeLabel = "tars.io/public." + CommonService.NAMESPACE // 此标签表示 该节点可以被 tars 当做 公用节点池使用
+CommonService.SupportLocalVolume = "tars.io/SupportLocalVolume" // 此标签表示 该节点可以被某个具体app节点池使用 tars.io/ability.$Namespace.$App
 
 CommonService.TREENAME = 'tars-tree';
 CommonService.TFC = "tars-framework"
@@ -248,8 +248,23 @@ CommonService.getNodeList = async () => {
 	return nodes;
 }
 
-CommonService.getNodeListAll = async () => {
-	return tNodeList.list();
+CommonService.getNodeListAll = async (localPV, hold) => {
+	let nodes = tNodeList.list();
+	if (localPV) {
+		nodes = nodes.filter(item => {
+			return item.metadata.labels.hasOwnProperty(CommonService.SupportLocalVolume);
+
+		});
+	}
+
+	if (hold) {
+		nodes = nodes.filter(item => {
+			return item.metadata.labels.hasOwnProperty(CommonService.NodeFramworkAbilityLabelPrefix);
+
+		});
+	}
+	return nodes;
+	// return tNodeList.list();
 }
 
 CommonService.getTemplateList = async () => {

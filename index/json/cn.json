@@ -1856,13 +1856,9 @@
             "routerType": "匹配类型",
             "diffTxt": "对比内容",
             "nodeName": "节点",
-            "nodeAbility": "能力",
-            "nodePublic": "公用",
-            "nodeFramework": "框架使用",
+            "nodeFramework": "可部署",
             "nodeAddress": "地址",
             "nodeInfo": "信息",
-            "startPublic": "启用公用",
-            "stopPublic": "停用公用",
             "nodeLabels": "节点标签",
             "nodeAffinity": "请将节点添加 tars.io/node.$Namespace 标签, 以便当前框架能管理该节点",
             "CommonTag": "普通标签",
@@ -1876,7 +1872,8 @@
             "notNull": "该项不可为空",
             "application": "亲和性应用名不可以为空",
             "addAffinityGroup": "添加一组亲和性",
-            "affinityRemark": "亲和性标签tars.io/ability.$Namespace.$app.[$server],应用名为必选项"
+            "affinityRemark": "亲和性标签tars.io/ability.$Namespace.$app.[$server],应用名为必选项",
+            "frameworkUse": "调整节点是否被当前名字空间的TARS使用, 会影响服务的部署, 调整时请仔细确认!"
         },
         "btn": {
             "add": "新增",

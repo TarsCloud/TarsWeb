@@ -50,7 +50,7 @@ import OperationHistory from '@/k8s/operation/history';
 import OperationUndeploy from '@/k8s/operation/undeploy';
 import OperationTemplates from '@/k8s/operation/templates';
 import OperationImage from '@/k8s/operation/image';
-import OperationAffinity from '@/k8s/operation/affinity';
+// import OperationAffinity from '@/k8s/operation/affinity';
 import OperationApplication from '@/k8s/operation/application';
 import OperationBusiness from '@/k8s/operation/business';
 import OperationNode from '@/k8s/operation/node';
@@ -138,10 +138,10 @@ export default new Router({
           path: 'image',
           component: OperationImage,
         },
-        {
-          path: 'affinity',
-          component: OperationAffinity,
-        },
+        // {
+        //   path: 'affinity',
+        //   component: OperationAffinity,
+        // },
         {
           path: 'application',
           component: OperationApplication,

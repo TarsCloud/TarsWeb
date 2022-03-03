@@ -76,7 +76,7 @@ const getRouter = (router, routerConf) => {
 		//业务逻辑控制器
 		router[method](url, async (ctx, next) => {
 
-			// logger.info('call', url);
+			// console.log('call', url, controller);
 			await controller.call({}, ctx);
 			await next();
 

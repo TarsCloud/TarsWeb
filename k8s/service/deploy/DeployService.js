@@ -22,8 +22,7 @@ const ConfigService = require('../config/ConfigService');
 const lodash = require("lodash");
 const DeployService = {};
 
-//从cloud上安装服务
-DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, paramsObj) => {
+DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, cloud) => {
 
     let server = await CommonService.getServer(deploy.app + '.' + deploy.server);
 
@@ -43,6 +42,8 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
         await ApplicationService.applicationCreate(metadata);
     }
 
+    let mark = cloud ? "cloud" : "manual";
+
     //创建配置文件
     {
         let appConfig = deploy.appConfig || [];
@@ -54,7 +55,7 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
             const metadata = {
                 ConfigName: conf.name,
                 ConfigContent: conf.content,
-                ConfigMark: "cloud"
+                ConfigMark: mark
             }
 
             metadata.ServerApp = deploy.app;
@@ -71,7 +72,7 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
             const metadata = {
                 ConfigName: conf.name,
                 ConfigContent: conf.content,
-                ConfigMark: "cloud"
+                ConfigMark: mark
             }
 
             metadata.ServerApp = deploy.app;
@@ -91,7 +92,7 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
             const metadata = {
                 ConfigName: conf.name,
                 ConfigContent: conf.content,
-                ConfigMark: "cloud"
+                ConfigMark: mark
             }
 
             metadata.ServerApp = deploy.app;
@@ -106,25 +107,16 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
         }
     }
 
-    //创建timages
-    deploy.repo.id = "v-" + (new Date()).getTime();
-
-    let tImage = await ImageService.serverImageCreateWithRelease(deploy);
-    if (tImage.ret != 200) {
-        logger.error("createServerWithImage serverImageGetAndCreate error:", rst);
-        return rst;
-    }
-
-
     //创建服务
     let tServer = await CommonService.buildTServer(deploy.app, deploy.server, ServerServant, ServerK8S, ServerOption);
 
-    tServer.metadata.labels = {};
-    tServer.metadata.labels[CommonService.TServerCloudInstall] = paramsObj.serviceVersion.group + "-" + paramsObj.serviceVersion.name + '-' + paramsObj.serviceVersion.version;
-
-    tServer.metadata.annotations = tServer.metadata.annotations || {};
-    tServer.metadata.annotations[CommonService.TServerCloudLogo] = paramsObj.serviceVersion.logo;
-    tServer.metadata.annotations[CommonService.TServerCloudDigest] = paramsObj.serviceVersion.digest;
+    if (cloud) {
+        tServer.metadata.labels = {};
+        tServer.metadata.labels[CommonService.TServerCloudInstall] = cloud.group + "-" + cloud.name + '-' + cloud.version;
+        tServer.metadata.annotations = tServer.metadata.annotations || {};
+        tServer.metadata.annotations[CommonService.TServerCloudLogo] = cloud.logo;
+        tServer.metadata.annotations[CommonService.TServerCloudDigest] = cloud.digest;
+    }
 
     let K8S = tServer.spec.k8s
 
@@ -169,11 +161,23 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
         K8S.mounts = mounts;
     }
 
-    //发布记录
-    tServer.spec.release = {};
-    tServer.spec.release.id = deploy.repo.id;
-    tServer.spec.release.image = deploy.repo.image;
-    tServer.spec.release.secret = deploy.repo.secret;
+    //web部署, image可能不存在, 只是用来占位
+    if (deploy.repo.image) {
+        //创建timages
+        deploy.repo.id = "v-" + (new Date()).getTime();
+
+        let tImage = await ImageService.serverImageCreateWithRelease(deploy, mark);
+        if (tImage.ret != 200) {
+            logger.error("createServerWithImage serverImageGetAndCreate error:", rst);
+            return rst;
+        }
+
+        //发布记录
+        tServer.spec.release = {};
+        tServer.spec.release.id = deploy.repo.id;
+        tServer.spec.release.image = deploy.repo.image;
+        tServer.spec.release.secret = deploy.repo.secret;
+    }
 
     let data = await CommonService.createObject("tservers", tServer);
 
@@ -185,9 +189,9 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, p
 }
 
 //从cloud上升级服务
-DeployService.upgrade = async (paramsObj) => {
+DeployService.upgrade = async (deploy, cloud) => {
 
-    let tServer = await CommonService.getServer(paramsObj.serviceVersion.installData.group + '.' + paramsObj.serviceVersion.installData.name);
+    let tServer = await CommonService.getServer(cloud.installData.group + '.' + cloud.installData.name);
 
     if (!tServer) {
         return {
@@ -197,9 +201,9 @@ DeployService.upgrade = async (paramsObj) => {
     }
 
     //创建timages
-    paramsObj.deploy.repo.id = "v-" + (new Date()).getTime();
+    deploy.repo.id = "v-" + (new Date()).getTime();
 
-    let tImage = await ImageService.serverImageCreateWithRelease(paramsObj.deploy);
+    let tImage = await ImageService.serverImageCreateWithRelease(deploy, "cloud");
     if (tImage.ret != 200) {
         logger.error("createServerWithImage serverImageGetAndCreate error:", rst);
         return rst;
@@ -207,16 +211,16 @@ DeployService.upgrade = async (paramsObj) => {
 
     tServer = tServer.body;
 
-    tServer.metadata.labels[CommonService.TServerCloudInstall] = paramsObj.serviceVersion.group + "-" + paramsObj.serviceVersion.name + '-' + paramsObj.serviceVersion.version;
+    tServer.metadata.labels[CommonService.TServerCloudInstall] = cloud.group + "-" + cloud.name + '-' + cloud.version;
 
     tServer.metadata.annotations = tServer.metadata.annotations || {};
-    tServer.metadata.annotations[CommonService.TServerCloudLogo] = paramsObj.serviceVersion.logo;
-    tServer.metadata.annotations[CommonService.TServerCloudDigest] = paramsObj.serviceVersion.digest;
+    tServer.metadata.annotations[CommonService.TServerCloudLogo] = cloud.logo;
+    tServer.metadata.annotations[CommonService.TServerCloudDigest] = cloud.digest;
 
     tServer.spec.release = {};
-    tServer.spec.release.id = paramsObj.deploy.repo.id;
-    tServer.spec.release.image = paramsObj.deploy.repo.image;
-    tServer.spec.release.secret = paramsObj.deploy.repo.secret;
+    tServer.spec.release.id = deploy.repo.id;
+    tServer.spec.release.image = deploy.repo.image;
+    tServer.spec.release.secret = deploy.repo.secret;
 
     let data = await CommonService.replaceObject("tservers", tServer.metadata.name, tServer);
 
@@ -310,7 +314,7 @@ DeployService.serverDeploySelect = async (Uid, ServerApp, ServerName, deployName
         elem["ServerK8S"] = CommonService.ConvertOperatorK8SToAdminK8S(item.apply.k8s)
         elem["Mounts"] = item.apply.k8s.mounts || [];
         elem["resources"] = item.apply.k8s.resources || {};
-        elem["ServerServant"] = CommonService.ConvertOperatorServantToAdminK8S(item.apply.taf.servants)
+        elem["ServerServant"] = CommonService.ConvertOperatorServantToAdminK8S(item.apply.tars.servants)
         elem["ServerOption"] = CommonService.ConvertOperatorOptionToAdminK8S(item.apply)
 
         elem["RequestPerson"] = Uid;

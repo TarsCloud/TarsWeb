@@ -1,6 +1,8 @@
 <template>
   <!--  基础信息-->
   <div class="page_operation_deploy">
+    <baseInfo @next="next" v-if="deployObj" :deployObj="deployObj"></baseInfo>
+    <!--       
     <let-form
       ref="form"
       inline
@@ -79,10 +81,10 @@
           :placeholder="$t('deployService.form.serviceMark')"
         >
         </let-input>
-      </let-form-item>
+      </let-form-item> -->
 
-      <!-- OBJ的table-->
-      <let-table :data="model.ServerServant">
+    <!-- OBJ的table-->
+    <!-- <let-table :data="model.ServerServant">
         <let-table-column title="OBJ" width="150px">
           <template slot="head" slot-scope="props">
             <span class="required">{{ props.column.title }}</span>
@@ -259,13 +261,12 @@
       <let-button type="submit" theme="primary" v-if="!k8sApplyShow">{{
         $t("common.submit")
       }}</let-button>
-    </let-form>
+    </let-form> -->
 
     <!--完善k8s其他参数-->
-    <div v-if="k8sApplyShow">
+    <!-- <div v-if="k8sApplyShow">
       <b>{{ $t("deployService.form.k8sExtra") }}</b>
       <el-collapse v-model="activeTab" accordion style="margin-top: 5px">
-        <!--节点选择-->
         <el-collapse-item name="0">
           <template slot="title"
             ><b>{{ $t("operate.nodeSelect") }}</b></template
@@ -372,10 +373,10 @@
               ></el-button>
             </div>
           </let-form>
-        </el-collapse-item>
+        </el-collapse-item> -->
 
-        <!--宿主机资源-->
-        <el-collapse-item name="1">
+    <!--宿主机资源-->
+    <!-- <el-collapse-item name="1">
           <template slot="title"
             ><b>{{ $t("operate.network") }}</b></template
           >
@@ -473,10 +474,10 @@
               </let-table>
             </div>
           </let-form>
-        </el-collapse-item>
+        </el-collapse-item> -->
 
-        <!--磁盘管理-->
-        <el-collapse-item name="2">
+    <!--磁盘管理-->
+    <!-- <el-collapse-item name="2">
           <template slot="title"
             ><b>{{ $t("operate.disk") }}</b></template
           >
@@ -564,10 +565,10 @@
               </el-card>
             </div>
           </el-form>
-        </el-collapse-item>
+        </el-collapse-item> -->
 
-        <!--资源管理-->
-        <el-collapse-item name="3">
+    <!--资源管理-->
+    <!-- <el-collapse-item name="3">
           <template slot="title"
             ><b>{{ $t("operate.resource") }}</b></template
           >
@@ -651,9 +652,9 @@
       <el-button @click="editYaml" style="margin-top: 10px">yaml编辑</el-button>
       <el-button type="primary" @click="saveK8s" style="margin-top: 10px">{{
         $t("operate.save")
-      }}</el-button>
-    </div>
-
+      }}</el-button> -->
+    <!-- </div> -->
+    <!-- 
     <let-modal
       v-model="yamlModel.show"
       width="1000px"
@@ -666,9 +667,9 @@
         @successFun="closeYamlModel"
         ref="yamlEdit"
       ></k8s-yaml-edit>
-    </let-modal>
+    </let-modal> -->
 
-    <let-modal
+    <!-- <let-modal
       v-model="resultModal.show"
       width="700px"
       class="more-cmd"
@@ -698,397 +699,452 @@
           prop="msg"
         ></let-table-column>
       </let-table>
-    </let-modal>
+    </let-modal> -->
+
+    <install
+      ref="install"
+      v-if="show"
+      :deployObj="deployObj"
+      @doInstall="doInstall"
+    ></install>
   </div>
 </template>
 
 <script>
-import SetInputer from "@/components/set-inputer";
-import lodash from "lodash";
-import K8sYamlEdit from "../../components/k8s-yaml-edit";
+// import SetInputer from "@/components/set-inputer";
+// import lodash from "lodash";
+// import K8sYamlEdit from "../../components/k8s-yaml-edit";
 
-const types = [
-  "taf_cpp",
-  "taf_java",
-  "taf_php",
-  "taf_node",
-  "not_taf",
-  "taf_go",
-];
+// const types = [
+//   "tars_cpp",
+//   "tars_java",
+//   "tars_php",
+//   "tars_nodejs",
+//   "tars_go",
+// ];
 
 const getInitialModel = () => ({
-  ServerApp: "",
-  ServerName: "",
-  // ServerType: types[0],
-  // ServerTemplate: '',
-  ServerMark: "",
-  ServerServant: [
+  app: "",
+  server: "",
+  template: "",
+  profile: "",
+  servants: [
     {
-      Name: "",
-      Port: "",
-      HostPort: 0,
-      showHostPort: false,
-      Threads: 0,
-      Connections: 0,
-      Capacity: 0,
-      Timeout: 0,
-      IsTcp: true,
-      IsTars: false,
+      name: "",
+      port: 10000,
+      isTars: true,
+      isTcp: true,
+      thread: 2,
+      capacity: 100000,
+      connection: 10000,
+      timeout: 30000,
     },
   ],
-  ServerOption: {
-    ServerImportant: 0,
-  },
+  replicas: 2,
+  hostNetwork: false,
+  hostIPC: false,
+  hostPorts: [],
+  new: true,
 });
+
+import baseInfo from "@/k8s/inc/k8s/base";
+import install from "@/k8s/inc/k8s/install";
 
 export default {
   name: "OperationDeploy",
 
   components: {
-    SetInputer,
-    K8sYamlEdit,
+    baseInfo,
+    install,
   },
 
   data() {
     return {
-      types,
+      // types,
       templates: [],
       appList: [],
-      isCheckedAll: false,
-      NodeList: [],
-      NodeListArr: [],
-      model: getInitialModel(),
-      enableAuth: false,
-      resultModal: {
-        show: false,
-        resultList: [],
-        rowClassName: (rowData) => {
-          0;
-          if (rowData && rowData.row && !rowData.row.rst) {
-            return "err-row";
-          }
-          return "";
-        },
-      },
+      // isCheckedAll: false,
+      show: false,
+      // NodeList: [],
+      // NodeListArr: [],
+      deployObj: getInitialModel(),
+      // enableAuth: false,
+      // deployObj: {},
+      // resultModal: {
+      //   show: false,
+      //   resultList: [],
+      //   rowClassName: (rowData) => {
+      //     0;
+      //     if (rowData && rowData.row && !rowData.row.rst) {
+      //       return "err-row";
+      //     }
+      //     return "";
+      //   },
+      // },
 
-      DeployId: "",
-      activeTab: "0",
-      k8sApplyShow: false,
-      k8sApplyModel: {
-        NodeSelector: [],
-        tars: {},
-        resources: {},
-        mounts: [],
-      },
+      // DeployId: "",
+      // activeTab: "0",
+      // k8sApplyShow: false,
+      // k8sApplyModel: {
+      //   NodeSelector: [],
+      //   tars: {},
+      //   resources: {},
+      //   mounts: [],
+      // },
 
-      abilityAffinities: [
-        "AppRequired",
-        "ServerRequired",
-        "AppOrServerPreferred",
-        "None",
-      ],
-      LabelMatchOperator: [],
-      yamlModel: {
-        show: false,
-      },
+      // abilityAffinities: [
+      //   "AppRequired",
+      //   "ServerRequired",
+      //   "AppOrServerPreferred",
+      //   "None",
+      // ],
+      // LabelMatchOperator: [],
+      // yamlModel: {
+      //   show: false,
+      // },
     };
   },
   mounted() {
-    this.getServerTemplate();
-    this.getDefaultValue();
-    this.getAppList();
-    this.getNodeList();
+    // this.getServerTemplate();
+    // this.getDefaultValue();
+    // this.getAppList();
+    // this.getNodeList();
     // this.showK8sExtra("")
-    this.$watch("model.ServerName", (val, oldVal) => {
-      if (val === oldVal) {
-        return;
-      }
-    });
-
-    this.$watch("model.node_name", (val, oldVal) => {
-      if (val === oldVal) {
-        return;
-      }
-
-      this.model.ServerServant.forEach((d) => {
-        d.bind_ip = val; // eslint-disable-line no-param-reassign
-      });
-    });
+    // this.$watch("model.ServerName", (val, oldVal) => {
+    //   if (val === oldVal) {
+    //     return;
+    //   }
+    // });
+    // this.$watch("model.node_name", (val, oldVal) => {
+    //   if (val === oldVal) {
+    //     return;
+    //   }
+    //   this.model.ServerServant.forEach((d) => {
+    //     d.bind_ip = val; // eslint-disable-line no-param-reassign
+    //   });
+    // });
   },
   methods: {
-    showHostPort(data) {
-      data.showHostPort = true;
-    },
-    hideHostPort(data) {
-      data.HostPort = 0;
-      data.showHostPort = false;
-    },
-    checkedChange(val) {
-      if (this.NodeListArr.indexOf(val) > -1) {
-        this.NodeListArr.splice(this.NodeListArr.indexOf(val), 1);
-      } else {
-        this.NodeListArr.push(val);
-      }
+    // showHostPort(data) {
+    //   data.showHostPort = true;
+    // },
+    // hideHostPort(data) {
+    //   data.HostPort = 0;
+    //   data.showHostPort = false;
+    // },
+    // checkedChange(val) {
+    //   if (this.NodeListArr.indexOf(val) > -1) {
+    //     this.NodeListArr.splice(this.NodeListArr.indexOf(val), 1);
+    //   } else {
+    //     this.NodeListArr.push(val);
+    //   }
 
-      if (this.NodeListArr.length === 0) {
-        this.isCheckedAll = false;
-      }
+    //   if (this.NodeListArr.length === 0) {
+    //     this.isCheckedAll = false;
+    //   }
+    // },
+    next(deployObj) {
+      console.log(deployObj);
+
+      this.deployObj = deployObj;
+
+      this.show = true;
+
+      this.$nextTick(() => {
+        // this.deployObj = deployObj;
+
+        this.$refs.install.show();
+      });
     },
-    addAdapter(template) {
-      template = this.model.ServerServant[this.model.ServerServant.length - 1];
-      const Port = template.Port + 1;
-      const newObj = Object.assign({}, template, { Port });
-      this.model.ServerServant.push(Object.assign({}, newObj));
-    },
-    deploy() {
-      if (this.$refs.form.validate()) {
-        this.$confirm(
-          this.$t("deployService.form.deployServiceTip"),
-          this.$t("common.alert")
-        ).then(() => {
+
+    // deploy() {
+    //   if (this.$refs.form.validate()) {
+    //     this.$confirm(
+    //       this.$t("deployService.form.deployServiceTip"),
+    //       this.$t("common.alert")
+    //     ).then(() => {
+    //       const loading = this.$Loading.show();
+    //       this.$ajax
+    //         .postJSON("/k8s/api/deploy_create", this.deployObj)
+    //         .then((data) => {
+    //           loading.hide();
+    //           this.DeployId = data.metadata.name;
+    //           this.showK8sExtra(data.metadata.name);
+    //         })
+    //         .catch((err) => {
+    //           loading.hide();
+    //           this.$tip.error(
+    //             `${this.$t("common.error")}: ${err.message || err.err_msg}`
+    //           );
+    //         });
+    //     });
+    //   }
+    // },
+    // getServerTemplate() {
+    //   this.$ajax
+    //     .getJSON("/k8s/api/template_select", {
+    //       isAll: true,
+    //     })
+    //     .then((data) => {
+    //       this.templates = data.Data;
+    //     })
+    //     .catch((err) => {
+    //       this.$tip.error(
+    //         `${this.$t("common.error")}: ${err.message || err.err_msg}`
+    //       );
+    //     });
+    // },
+    // save() {
+    //   this.deploy();
+    // },
+    // showResultModal(data) {
+    //   this.resultModal.resultList = data;
+    //   this.resultModal.show = true;
+    // },
+    // closeResultModal() {
+    //   this.resultModal.show = false;
+    //   this.resultModal.resultList = [];
+    // },
+
+    // getDefaultValue() {
+    //   let { ServerServant, ServerOption } = this.model;
+    //   this.$ajax
+    //     .getJSON("/k8s/api/default", {})
+    //     .then((data) => {
+    //       if (data.ServerServantElem) {
+    //         ServerServant.forEach((item) => {
+    //           item.Port = data.ServerServantElem.Port;
+    //           item.HostPort = data.ServerServantElem.HostPort;
+    //           item.showHostPort = false;
+    //           item.Capacity = data.ServerServantElem.Capacity;
+    //           item.Connections = data.ServerServantElem.Connections;
+    //           item.Threads = data.ServerServantElem.Threads;
+    //           item.Timeout = data.ServerServantElem.Timeout;
+    //           item.IsTcp = data.ServerServantElem.IsTcp;
+    //           item.IsTars = data.ServerServantElem.IsTars;
+    //         });
+    //       }
+    //       if (data.ServerOption) {
+    //         ServerOption = data.ServerOption;
+    //       }
+    //       this.model.ServerServant = ServerServant;
+    //       this.model.ServerOption = ServerOption;
+    //       this.LabelMatchOperator = data.LabelMatchOperator;
+    //     })
+    //     .catch((err) => {
+    //       this.$tip.error(
+    //         `${this.$t("common.error")}: ${err.message || err.err_msg}`
+    //       );
+    //     });
+    // },
+    doInstall() {
+      this.$confirm(this.$t("market.deploy.install"), "Hint", {
+        confirmButtonText: this.$t("market.deploy.confirm"),
+        cancelButtonText: this.$t("market.deploy.cancel"),
+        type: "warning",
+      })
+        .then(() => {
           const loading = this.$Loading.show();
           this.$ajax
-            .postJSON("/k8s/api/deploy_create", this.model)
-            .then((data) => {
+            .postJSON("/k8s/api/install", {
+              deploy: this.deployObj,
+            })
+            .then((res) => {
               loading.hide();
-              this.DeployId = data.metadata.name;
-              this.showK8sExtra(data.metadata.name);
+              this.$message({
+                message: `${this.$t("common.success")}`,
+                type: "success",
+              });
+              this.dialogVisible = false;
+              this.$refs.install.closeDetailModel();
             })
             .catch((err) => {
               loading.hide();
-              this.$tip.error(
-                `${this.$t("common.error")}: ${err.message || err.err_msg}`
-              );
+              if (err.ret_code == 201) {
+                this.$message({
+                  showClose: true,
+                  message: this.$t("market.deploy.existsK8S"),
+                  type: "warning",
+                });
+              } else {
+                this.$message({
+                  message: err,
+                  type: "error",
+                });
+              }
             });
-        });
-      }
-    },
-    getServerTemplate() {
-      this.$ajax
-        .getJSON("/k8s/api/template_select", {
-          isAll: true,
         })
-        .then((data) => {
-          this.templates = data.Data;
-        })
-        .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
-        });
+        .catch(() => {});
     },
-    save() {
-      this.deploy();
-    },
-    showResultModal(data) {
-      this.resultModal.resultList = data;
-      this.resultModal.show = true;
-    },
-    closeResultModal() {
-      this.resultModal.show = false;
-      this.resultModal.resultList = [];
-    },
+    // getAppList() {
+    //   this.$ajax
+    //     .getJSON("/k8s/api/application_select", { isAll: true })
+    //     .then((data) => {
+    //       this.appList = data.Data;
+    //     });
+    // },
+    // getNodeList() {
+    //   this.$ajax.getJSON("/k8s/api/node_list", { isAll: true }).then((data) => {
+    //     this.NodeList = data;
+    //   });
+    // },
 
-    getDefaultValue() {
-      let { ServerServant, ServerOption } = this.model;
-      this.$ajax
-        .getJSON("/k8s/api/default", {})
-        .then((data) => {
-          if (data.ServerServantElem) {
-            ServerServant.forEach((item) => {
-              item.Port = data.ServerServantElem.Port;
-              item.HostPort = data.ServerServantElem.HostPort;
-              item.showHostPort = false;
-              item.Capacity = data.ServerServantElem.Capacity;
-              item.Connections = data.ServerServantElem.Connections;
-              item.Threads = data.ServerServantElem.Threads;
-              item.Timeout = data.ServerServantElem.Timeout;
-              item.IsTcp = data.ServerServantElem.IsTcp;
-              item.IsTars = data.ServerServantElem.IsTars;
-            });
-          }
-          if (data.ServerOption) {
-            ServerOption = data.ServerOption;
-          }
-          this.model.ServerServant = ServerServant;
-          this.model.ServerOption = ServerOption;
-          this.LabelMatchOperator = data.LabelMatchOperator;
-        })
-        .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
-        });
-    },
-    getAppList() {
-      this.$ajax
-        .getJSON("/k8s/api/application_select", { isAll: true })
-        .then((data) => {
-          this.appList = data.Data;
-        });
-    },
-    getNodeList() {
-      this.$ajax.getJSON("/k8s/api/node_list", { isAll: true }).then((data) => {
-        this.NodeList = data;
-      });
-    },
-
-    showK8sExtra(deployName) {
-      this.k8sApplyShow = true;
-      this.$ajax
-        .getJSON("/k8s/api/deploy_select", { deployName: deployName })
-        .then((data) => {
-          let deploy = lodash.cloneDeep(data.Data[0]);
-          // console.log("deploy:" + JSON.stringify(deploy, null, 4));
-          this.k8sApplyModel = {
-            abilityAffinity: deploy.ServerK8S.abilityAffinity,
-            NodeSelector: deploy.ServerK8S.NodeSelector,
-            HostIpc: deploy.ServerK8S.HostIpc,
-            HostNetwork: deploy.ServerK8S.HostNetwork,
-            mounts: deploy.Mounts.filter((item) =>
-              item.source.hasOwnProperty("tLocalVolume")
-            ),
-            resources: deploy.resources,
-          };
-          let arr = [];
-          if (
-            deploy.ServerK8S.HostPort &&
-            Object.keys(deploy.ServerK8S.HostPort).length > 0
-          ) {
-            this.k8sApplyModel.showHostPort = true;
-            deploy.ServerK8S.HostPort.forEach((item) => {
-              arr.push({
-                obj: item.NameRef,
-                HostPort: Math.floor(item.Port),
-              });
-            });
-            this.k8sApplyModel.HostPortArr = arr;
-          }
-          if (arr.length == 0) {
-            this.k8sApplyModel.showHostPort = false;
-            this.k8sApplyModel.HostPortArr = [];
-            for (let key in deploy.ServerServant) {
-              this.k8sApplyModel.HostPortArr.push({
-                obj: key,
-                HostPort: 0,
-              });
-            }
-          }
-        })
-        .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
-        });
-    },
-    //节点管理
-    addItems(index, obj) {
-      if (obj.length >= 63) {
-        this.$message.error(
-          `${this.$t("deployService.form.labelMatch.labelMax")}`
-        );
-        return;
-      }
-      obj.splice(index + 1, 0, { key: "", operator: "In", values: [] });
-      this.$forceUpdate();
-    },
-    delItems(index, obj) {
-      obj.splice(index, 1);
-      this.$forceUpdate();
-    },
-    addLabelValues(val, index) {
-      let reg = /^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]?$/;
-      this.labelMatchArr[index].values.forEach((item, index) => {
-        if (!reg.test(item)) {
-          this.labelMatchArr[index].values.splice(index, 1);
-          this.$message.error(
-            `${this.$t("deployService.form.labelMatch.labelValueValid")}`
-          );
-        }
-      });
-    },
-    changeLabelOperator(val) {
-      this.labelMatchArr.forEach((item) => {
-        if (item.operator == "Exists" || item.operator == "DoesNotExist") {
-          this.$set(item, "disableValue", true);
-          this.$set(item, "values", []);
-        } else {
-          this.$set(item, "disableValue", false);
-        }
-      });
-    },
-    //宿主资源
-    changeKind() {
-      this.$forceUpdate();
-    },
-    // 自动生成端口
-    generateHostPort(hostPort) {
-      this.$ajax
-        .getJSON("/k8s/api/check_host_port", {
-          NodePort: hostPort.HostPort,
-        })
-        .then((res) => {
-          let msg = "";
-          res.forEach((item) => {
-            if (item.ret == -1) {
-              //telnet 不通
-              msg += `<p>${item.node}:${item.port}: can use</p>`;
-            } else {
-              msg += `<p style="color: #F56C6C">${item.node}:${item.port}: cannot use</p>`;
-            }
-          });
-          this.$message.success({
-            dangerouslyUseHTMLString: true,
-            message: msg,
-          });
-        })
-        .catch((err) => {
-          this.$message.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
-        });
-    },
-    addDisk(index, obj) {
-      obj.splice(index + 1, 0, {
-        name: "",
-        source: { tLocalVolume: { uid: "", gid: "", mode: "" } },
-        mountPath: "",
-      });
-      this.$forceUpdate();
-    },
-    delDisk(index, obj) {
-      obj.splice(index, 1);
-      this.$forceUpdate();
-    },
-    saveK8s() {
-      // console.log("this.model:" + JSON.stringify(this.model, null, 4));
-      // console.log(
-      //   "this.k8sApplyModel:" + JSON.stringify(this.k8sApplyModel, null, 4)
-      // );
-      this.$ajax
-        .postJSON("/k8s/api/deploy_update", {
-          DeployId: this.DeployId,
-          ServerServant: this.model.ServerServant,
-          ServerOption: this.model.ServerOption,
-          ServerK8S: this.k8sApplyModel,
-        })
-        .then((data) => {
-          this.$tip.success(`${this.$t("common.success")}`);
-          this.$router.replace("/operation/approval");
-        })
-        .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
-        });
-    },
-    editYaml() {
-      this.yamlModel.show = true;
-      this.$refs.yamlEdit.show(this.DeployId, "tdeploys");
-    },
-    closeYamlModel() {
-      this.yamlModel.show = false;
-    },
+    // showK8sExtra(deployName) {
+    //   this.k8sApplyShow = true;
+    //   this.$ajax
+    //     .getJSON("/k8s/api/deploy_select", { deployName: deployName })
+    //     .then((data) => {
+    //       let deploy = lodash.cloneDeep(data.Data[0]);
+    //       // console.log("deploy:" + JSON.stringify(deploy, null, 4));
+    //       this.k8sApplyModel = {
+    //         abilityAffinity: deploy.ServerK8S.abilityAffinity,
+    //         NodeSelector: deploy.ServerK8S.NodeSelector,
+    //         HostIpc: deploy.ServerK8S.HostIpc,
+    //         HostNetwork: deploy.ServerK8S.HostNetwork,
+    //         mounts: deploy.Mounts.filter((item) =>
+    //           item.source.hasOwnProperty("tLocalVolume")
+    //         ),
+    //         resources: deploy.resources,
+    //       };
+    //       let arr = [];
+    //       if (
+    //         deploy.ServerK8S.HostPort &&
+    //         Object.keys(deploy.ServerK8S.HostPort).length > 0
+    //       ) {
+    //         this.k8sApplyModel.showHostPort = true;
+    //         deploy.ServerK8S.HostPort.forEach((item) => {
+    //           arr.push({
+    //             obj: item.NameRef,
+    //             HostPort: Math.floor(item.Port),
+    //           });
+    //         });
+    //         this.k8sApplyModel.HostPortArr = arr;
+    //       }
+    //       if (arr.length == 0) {
+    //         this.k8sApplyModel.showHostPort = false;
+    //         this.k8sApplyModel.HostPortArr = [];
+    //         for (let key in deploy.ServerServant) {
+    //           this.k8sApplyModel.HostPortArr.push({
+    //             obj: key,
+    //             HostPort: 0,
+    //           });
+    //         }
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       this.$tip.error(
+    //         `${this.$t("common.error")}: ${err.message || err.err_msg}`
+    //       );
+    //     });
+    // },
+    // //节点管理
+    // addItems(index, obj) {
+    //   if (obj.length >= 63) {
+    //     this.$message.error(
+    //       `${this.$t("deployService.form.labelMatch.labelMax")}`
+    //     );
+    //     return;
+    //   }
+    //   obj.splice(index + 1, 0, { key: "", operator: "In", values: [] });
+    //   this.$forceUpdate();
+    // },
+    // delItems(index, obj) {
+    //   obj.splice(index, 1);
+    //   this.$forceUpdate();
+    // },
+    // addLabelValues(val, index) {
+    //   let reg = /^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]?$/;
+    //   this.labelMatchArr[index].values.forEach((item, index) => {
+    //     if (!reg.test(item)) {
+    //       this.labelMatchArr[index].values.splice(index, 1);
+    //       this.$message.error(
+    //         `${this.$t("deployService.form.labelMatch.labelValueValid")}`
+    //       );
+    //     }
+    //   });
+    // },
+    // changeLabelOperator(val) {
+    //   this.labelMatchArr.forEach((item) => {
+    //     if (item.operator == "Exists" || item.operator == "DoesNotExist") {
+    //       this.$set(item, "disableValue", true);
+    //       this.$set(item, "values", []);
+    //     } else {
+    //       this.$set(item, "disableValue", false);
+    //     }
+    //   });
+    // },
+    // //宿主资源
+    // changeKind() {
+    //   this.$forceUpdate();
+    // },
+    // // 自动生成端口
+    // generateHostPort(hostPort) {
+    //   this.$ajax
+    //     .getJSON("/k8s/api/check_host_port", {
+    //       NodePort: hostPort.HostPort,
+    //     })
+    //     .then((res) => {
+    //       let msg = "";
+    //       res.forEach((item) => {
+    //         if (item.ret == -1) {
+    //           //telnet 不通
+    //           msg += `<p>${item.node}:${item.port}: can use</p>`;
+    //         } else {
+    //           msg += `<p style="color: #F56C6C">${item.node}:${item.port}: cannot use</p>`;
+    //         }
+    //       });
+    //       this.$message.success({
+    //         dangerouslyUseHTMLString: true,
+    //         message: msg,
+    //       });
+    //     })
+    //     .catch((err) => {
+    //       this.$message.error(
+    //         `${this.$t("common.error")}: ${err.message || err.err_msg}`
+    //       );
+    //     });
+    // },
+    // addDisk(index, obj) {
+    //   obj.splice(index + 1, 0, {
+    //     name: "",
+    //     source: { tLocalVolume: { uid: "", gid: "", mode: "" } },
+    //     mountPath: "",
+    //   });
+    //   this.$forceUpdate();
+    // },
+    // delDisk(index, obj) {
+    //   obj.splice(index, 1);
+    //   this.$forceUpdate();
+    // },
+    // saveK8s() {
+    //   // console.log("this.model:" + JSON.stringify(this.model, null, 4));
+    //   // console.log(
+    //   //   "this.k8sApplyModel:" + JSON.stringify(this.k8sApplyModel, null, 4)
+    //   // );
+    //   this.$ajax
+    //     .postJSON("/k8s/api/deploy_update", {
+    //       DeployId: this.DeployId,
+    //       ServerServant: this.model.ServerServant,
+    //       ServerOption: this.model.ServerOption,
+    //       ServerK8S: this.k8sApplyModel,
+    //     })
+    //     .then((data) => {
+    //       this.$tip.success(`${this.$t("common.success")}`);
+    //       this.$router.replace("/operation/approval");
+    //     })
+    //     .catch((err) => {
+    //       this.$tip.error(
+    //         `${this.$t("common.error")}: ${err.message || err.err_msg}`
+    //       );
+    //     });
+    // },
+    // editYaml() {
+    //   this.yamlModel.show = true;
+    //   this.$refs.yamlEdit.show(this.DeployId, "tdeploys");
+    // },
+    // closeYamlModel() {
+    //   this.yamlModel.show = false;
+    // },
   },
 };
 </script>

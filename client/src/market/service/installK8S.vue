@@ -5,7 +5,9 @@
       :visible.sync="dialogVisible"
       width="80%"
     >
-      <let-form
+      <baseInfo @next="next" v-if="deployObj" :deployObj="deployObj"></baseInfo>
+
+      <!-- <let-form
         ref="form"
         inline
         label-position="top"
@@ -188,7 +190,7 @@
         <let-button type="submit" theme="primary">{{
           $t("common.submit")
         }}</let-button>
-      </let-form>
+      </let-form> -->
     </el-dialog>
 
     <el-dialog
@@ -246,34 +248,36 @@
 <script>
 import AjaxUtil from "@/lib/ajax";
 import jsYaml from "js-yaml";
+import baseInfo from "@/k8s/inc/k8s/base";
 import install from "@/k8s/inc/k8s/install";
 
 export default {
   name: "Install",
   components: {
     install,
+    baseInfo,
   },
   data() {
     return {
       dialogVisible: false,
       dialogConfigVisible: false,
       upgrade: false,
-      templates: [
-        "tars.cpp",
-        "tars.go",
-        "tars.nodejs",
-        "tars.java",
-        "tars.php",
-      ],
-      abilityAffinities: [
-        "AppRequired",
-        "ServerRequired",
-        "AppOrServerPreferred",
-        "None",
-      ],
+      // templates: [
+      //   "tars.cpp",
+      //   "tars.go",
+      //   "tars.nodejs",
+      //   "tars.java",
+      //   "tars.php",
+      // ],
+      // abilityAffinities: [
+      //   "AppRequired",
+      //   "ServerRequired",
+      //   "AppOrServerPreferred",
+      //   "None",
+      // ],
       deployObj: null,
       activeName: null,
-      enableLogin: false,
+      // enableLogin: false,
       k8s: true,
     };
   },
@@ -292,8 +296,19 @@ export default {
     upgradeK8S() {
       const loading = this.$Loading.show();
       this.$ajax
-        .postJSON("/market/api/upgrade", {
+        .postJSON("/k8s/api/upgrade", {
           deploy: this.deployObj,
+          cloud: {
+            installData: {
+              group: this.serviceVersion.installData.group,
+              name: this.serviceVersion.installData.name,
+            },
+            group: this.serviceVersion.group,
+            name: this.serviceVersion.name,
+            version: this.serviceVersion.version,
+            logo: this.serviceVersion.logo,
+            digest: this.serviceVersion.digest,
+          },
           serviceVersion: this.serviceVersion,
           k8s: this.k8s,
         })
@@ -370,10 +385,15 @@ export default {
         .then(() => {
           const loading = this.$Loading.show();
           this.$ajax
-            .postJSON("/market/api/install", {
+            .postJSON("/k8s/api/install", {
               deploy: this.deployObj,
-              serviceVersion: this.serviceVersion,
-              k8s: this.k8s,
+              cloud: {
+                group: this.serviceVersion.group,
+                name: this.serviceVersion.name,
+                version: this.serviceVersion.version,
+                logo: this.serviceVersion.logo,
+                digest: this.serviceVersion.digest,
+              },
             })
             .then((res) => {
               loading.hide();
@@ -406,32 +426,16 @@ export default {
       this.dialogVisible = true;
       this.dialogConfigVisible = false;
     },
-    next() {
-      this.$ajax
-        .postJSON("/market/api/exists", {
-          app: this.deployObj.app,
-          server: this.deployObj.server,
-          k8s: this.k8s,
-        })
-        .then((data) => {
-          if (data) {
-            this.$message({
-              showClose: true,
-              message: this.$t("market.deploy.existsK8S"),
-              type: "warning",
-            });
-            return;
-          }
+    next(deployObj) {
+      this.deployObj = deployObj;
 
-          this.dialogVisible = false;
+      this.dialogVisible = false;
 
-          if (this.activeName) {
-            this.dialogConfigVisible = true;
-          } else {
-            this.save();
-          }
-        })
-        .catch((err) => {});
+      if (this.activeName) {
+        this.dialogConfigVisible = true;
+      } else {
+        this.save();
+      }
     },
     save() {
       this.dialogConfigVisible = false;
@@ -441,11 +445,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.set_inputer_item {
-  float: left;
-  margin-right: 8px;
-  width: 126px;
-}
-</style>

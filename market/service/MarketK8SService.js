@@ -15,68 +15,11 @@
  */
 
 const logger = require('../../logger');
-const DeployService = require('../../k8s/service/deploy/DeployService');
+// const DeployService = require('../../k8s/service/deploy/DeployService');
 const CommonService = require('../../k8s/service/common/CommonService');
 
 const MarketService = {};
 
-MarketService.exists = async (app, server) => {
-	let obj = await CommonService.getServer(app + '.' + server);
-
-	return {
-		ret: 200,
-		msg: obj ? 'server exists' : 'server not exists',
-		data: obj ? true : false
-	};
-}
-
-MarketService.install = async (deploy, paramsObj) => {
-
-	let ServerServant = {}
-
-	// console.log(deploy);
-
-	deploy.servants.forEach(obj => {
-		ServerServant[obj.name] = {
-			Name: obj.name,
-			Port: parseInt(obj.port),
-			Threads: parseInt(obj.thread),
-			Connections: parseInt(obj.connection),
-			Capacity: parseInt(obj.capacity),
-			IsTars: obj.isTars,
-			IsTcp: obj.isTcp,
-			Timeout: parseInt(obj.timeout),
-		}
-	});
-
-	let serverK8S = {};
-	serverK8S.HostPort = [];
-	deploy.hostPorts.forEach(item => {
-		serverK8S.HostPort.push({
-			NameRef: item.nameRef,
-			Port: item.port,
-		})
-	});
-
-	serverK8S.NodeSelector = deploy.nodeSelector || [];
-	serverK8S.Mounts = deploy.mounts || [];
-	serverK8S.HostIpc = deploy.hostIpc || false;
-	serverK8S.HostNetwork = deploy.hostNetwork || false;
-	serverK8S.Replicas = deploy.replicas || 1;
-	serverK8S.NotStacked = deploy.notStacked || true;
-	serverK8S.AbilityAffinity = deploy.abilityAffinity || 'AppOrServerPreferred';
-	serverK8S.DaemonSet = deploy.daemonSet || false;
-	serverK8S.LauncherType = deploy.launcherType || "background";
-	serverK8S.ImagePullPolicy = deploy.imagePullPolicy || "Always";
-
-	let serverOption = {};
-	serverOption.ServerSubType = deploy.subtype || 'tars';
-	serverOption.ServerTemplate = deploy.template;
-	serverOption.ServerProfile = deploy.profile;
-	serverOption.AsyncThread = deploy.asyncThread;
-
-	return await DeployService.install(deploy, ServerServant, serverK8S, serverOption, paramsObj);
-};
 
 MarketService.listInstall = async () => {
 
@@ -117,9 +60,9 @@ MarketService.get = async (app, name) => {
 	};
 };
 
-MarketService.upgrade = async (paramsObj) => {
+// MarketService.upgrade = async (paramsObj) => {
 
-	return await DeployService.upgrade(paramsObj);
-};
+// 	return await DeployService.upgrade(paramsObj.deploy, paramsObj.cloud);
+// };
 
 module.exports = MarketService;

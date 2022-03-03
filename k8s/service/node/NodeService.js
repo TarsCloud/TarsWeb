@@ -155,8 +155,8 @@ NodeService.doCommand = async (application, serverName, podIp, command) => {
     return rets;
 }
 
-NodeService.nodeSelect = async (isAll, NodeName, ServerApp, ServerName, limiter) => {
-    let nodeList = await CommonService.getNodeListAll();
+NodeService.nodeSelect = async (isAll, NodeName, ServerApp, ServerName, localPV, hold, limiter) => {
+    let nodeList = await CommonService.getNodeListAll(localPV, hold);
     let affinity = ServerName == "" ? ServerApp : ServerApp + "." + ServerName;
 
     let allItems = nodeList;
@@ -270,7 +270,7 @@ NodeService.nodeList = async () => {
     };
 }
 
-NodeService.openTafAbility = async (metadata) => {
+NodeService.openAbility = async (metadata) => {
     let k8sNode = await CommonService.readNode(metadata.NodeName);
     if (k8sNode && k8sNode.body) {
         k8sNode = k8sNode.body;
@@ -283,7 +283,7 @@ NodeService.openTafAbility = async (metadata) => {
     };
 }
 
-NodeService.closeTafAbility = async (metadata) => {
+NodeService.closeAbility = async (metadata) => {
     let k8sNode = await CommonService.readNode(metadata.NodeName);
     if (k8sNode && k8sNode.body) {
         k8sNode = k8sNode.body;

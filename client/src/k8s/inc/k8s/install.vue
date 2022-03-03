@@ -218,6 +218,7 @@ export default {
     show() {
       this.getDefaultValue();
 
+      this.deployObj.repo = this.deployObj.repo || {};
       this.deployObj.repo.id = "";
       this.deployObj.replicas = this.deployObj.replicas || 1;
       this.deployObj.daemonSet = this.deployObj.daemonSet || false;

@@ -5,14 +5,14 @@
         :tab="$t('deployService.title.deploy')"
         tabkey="/operation/deploy"
       ></let-tab-pane>
-      <let-tab-pane
+      <!-- <let-tab-pane
         :tab="$t('deployService.title.approval')"
         tabkey="/operation/approval"
-      ></let-tab-pane>
-      <let-tab-pane
+      ></let-tab-pane> -->
+      <!-- <let-tab-pane
         :tab="$t('deployService.title.history')"
         tabkey="/operation/history"
-      ></let-tab-pane>
+      ></let-tab-pane> -->
       <let-tab-pane
         :tab="$t('deployService.title.undeploy')"
         tabkey="/operation/undeploy"

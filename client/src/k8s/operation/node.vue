@@ -54,6 +54,22 @@
           </span>
         </let-form-item>
         <let-form-item itemWidth="600px" style="float: right;">
+          <el-tag
+            @click="chooseHold"
+            :effect="hold ? 'dark' : 'plain'"
+            type="warning"
+            style="margin-top: 30px; margin-right: 10px; cursor: pointer"
+          >
+            Hold
+          </el-tag>
+          <el-tag
+            @click="chooseLocalPV"
+            :effect="localPV ? 'dark' : 'plain'"
+            type="warning"
+            style="margin-top: 30px; margin-right: 10px; cursor: pointer"
+          >
+            LocalPV
+          </el-tag>
           <span style="float: right;margin-top: 30px">
             <el-tag effect="plain" style="margin-right: 10px">
               {{ $t("filter.title.CommonTag") }}
@@ -418,12 +434,14 @@ export default {
       serList: [],
 
       showDetail: false,
+      localPV: false,
+      hold: false,
       nodeDetail: {},
     };
   },
   filters: {
     tagType(val) {
-      if (val.startsWith("taf.io/node")) {
+      if (val.startsWith("tars.io")) {
         return "warning";
       } else {
         return "";
@@ -455,6 +473,14 @@ export default {
       this.fetchData();
       // this.getServerList();
     },
+    chooseHold() {
+      this.hold = !this.hold;
+      this.fetchData();
+    },
+    chooseLocalPV() {
+      this.localPV = !this.localPV;
+      this.fetchData();
+    },
     fetchData() {
       return this.$ajax
         .getJSON(
@@ -462,6 +488,8 @@ export default {
           Object.assign(this.query, {
             page: this.pagination.page,
             size: this.pagination.size,
+            localPV: this.localPV,
+            hold: this.hold,
           })
         )
         .then((data) => {
@@ -499,8 +527,8 @@ export default {
       this.commonTagDialog.model.commonArr = [];
       for (let key in row.Labels) {
         if (
-          !key.startsWith("taf.io/node") &&
-          !key.startsWith("taf.io/ability")
+          !key.startsWith("tars.io/node") &&
+          !key.startsWith("tars.io/ability")
         ) {
           this.commonTagDialog.model.commonArr.push({
             name: key,
@@ -641,37 +669,45 @@ export default {
       this.showDetail = false;
       this.fetchData();
     },
-    // taf框架节点开关
+    // 框架节点开关
     changeStatus(val) {
       if (val.NodePublic) {
         if (val.Labels.hasOwnProperty("node-role.kubernetes.io/master")) {
           this.fetchData();
           return;
         } else {
-          this.addTafTag(val.NodeName);
+          this.addTag(val.NodeName);
         }
       } else {
-        this.delTafTag(val.NodeName);
+        this.delTag(val.NodeName);
       }
     },
-    addTafTag(NodeName) {
-      this.$ajax
-        .postJSON("/k8s/api/taf_ability_open", {
-          NodeName,
-        })
+    addTag(NodeName) {
+      this.$confirm(this.$t("market.deploy.install"), "Hint", {
+        confirmButtonText: this.$t("market.deploy.confirm"),
+        cancelButtonText: this.$t("market.deploy.cancel"),
+        type: "warning",
+      })
         .then(() => {
-          this.$tip.success(this.$t("common.success"));
-          this.fetchData();
+          this.$ajax
+            .postJSON("/k8s/api/ability_open", {
+              NodeName,
+            })
+            .then(() => {
+              this.$tip.success(this.$t("common.success"));
+              this.fetchData();
+            })
+            .catch((err) => {
+              this.$tip.error(
+                `${this.$t("common.error")}: ${err.message || err.err_msg}`
+              );
+            });
         })
-        .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
-        });
+        .catch();
     },
-    delTafTag(NodeName) {
+    delTag(NodeName) {
       this.$ajax
-        .postJSON("/k8s/api/taf_ability_close", {
+        .postJSON("/k8s/api/ability_close", {
           NodeName,
         })
         .then(() => {
@@ -746,7 +782,7 @@ export default {
       // 默认的方式新增的会不校验
       if (pars === "") {
         callback(new Error(`${this.$t("filter.tip.notNull")}`));
-      } else if (pars.toLowerCase().startsWith("taf.io")) {
+      } else if (pars.toLowerCase().startsWith("tars.io")) {
         callback(new Error(`${this.$t("filter.tip.notTaf")}`));
       } else {
         callback();

@@ -11,21 +11,25 @@ const NodeController = {};
  * @param  {String}  CreateTime           创建时间
  * @param  {String}  CreatePerson         创建人
  */
-NodeController.NodeSelect = async(ctx) => {
-    let {Token = '', page = 1, isAll = false, NodeName = '', ServerApp = '', ServerName = ''} = ctx.paramsObj
+NodeController.NodeSelect = async (ctx) => {
+    let {
+        Token = '', page = 1, isAll = false, NodeName = '', ServerApp = '', ServerName = '', localPV = false, hold = false
+    } = ctx.paramsObj
     isAll = isAll == "true";
+    localPV = localPV == "true";
+    hold = hold == "true";
     let pageIndex = Math.floor(page) || 1
     let pageSize = 10
 
     let limiter = null;
-    if(!isAll){
+    if (!isAll) {
         limiter = {
             offset: (pageIndex - 1) * pageSize,
             rows: pageSize,
         }
     }
     try {
-        let result = await NodeService.nodeSelect(isAll, NodeName, ServerApp, ServerName, limiter);
+        let result = await NodeService.nodeSelect(isAll, NodeName, ServerApp, ServerName, localPV, hold, limiter);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
@@ -38,8 +42,9 @@ NodeController.NodeSelect = async(ctx) => {
  * 节点列表
  * @param  {String}  Token                登录签名
  */
-NodeController.NodeList = async(ctx) => {
-    let { Token = '',
+NodeController.NodeList = async (ctx) => {
+    let {
+        Token = '',
 
     } = ctx.paramsObj
 
@@ -58,14 +63,18 @@ NodeController.NodeList = async(ctx) => {
  * @param  {String}  Token                登录签名
  * @param  {Array}   NodeName             名称
  */
-NodeController.openTafAbility = async (ctx) => {
-    let {Token = '', NodeName = ''} = ctx.paramsObj
+NodeController.openAbility = async (ctx) => {
+    let {
+        Token = '', NodeName = ''
+    } = ctx.paramsObj
     try {
-        const metadata = {NodeName}
-        let result = await NodeService.openTafAbility(metadata);
+        const metadata = {
+            NodeName
+        }
+        let result = await NodeService.openAbility(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
     } catch (e) {
-        logger.error('[NodeStartPublic]', e.body ? e.body.message : e, ctx)
+        logger.error('[openAbility]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
     }
 }
@@ -75,23 +84,32 @@ NodeController.openTafAbility = async (ctx) => {
  * @param  {String}  Token                登录签名
  * @param  {Array}   NodeName             名称
  */
-NodeController.closeTafAbility = async (ctx) => {
-    let {Token = '', NodeName = ''} = ctx.paramsObj
+NodeController.closeAbility = async (ctx) => {
+    let {
+        Token = '', NodeName = ''
+    } = ctx.paramsObj
     try {
-        const metadata = {NodeName}
-        let result = await NodeService.closeTafAbility(metadata);
+        const metadata = {
+            NodeName
+        }
+        let result = await NodeService.closeAbility(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
     } catch (e) {
-        logger.error('[NodeStopPublic]', e.body ? e.body.message : e, ctx)
+        logger.error('[closeAbility]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
     }
 }
 
 
-NodeController.editCommonTag = async (ctx)=>{
-    let {Token = '', nodeName = "", tags = []} = ctx.paramsObj
+NodeController.editCommonTag = async (ctx) => {
+    let {
+        Token = '', nodeName = "", tags = []
+    } = ctx.paramsObj
     try {
-        const metadata = {nodeName,tags}
+        const metadata = {
+            nodeName,
+            tags
+        }
         let result = await NodeService.editCommonTag(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
     } catch (e) {
@@ -99,10 +117,15 @@ NodeController.editCommonTag = async (ctx)=>{
         ctx.makeResObj(500, e.body ? e.body.message : e);
     }
 }
-NodeController.batchEditCommonTag = async (ctx)=>{
-    let {Token = '', nodeNames = [], tags = []} = ctx.paramsObj
+NodeController.batchEditCommonTag = async (ctx) => {
+    let {
+        Token = '', nodeNames = [], tags = []
+    } = ctx.paramsObj
     try {
-        const metadata = {nodeNames,tags}
+        const metadata = {
+            nodeNames,
+            tags
+        }
         let result = await NodeService.batchEditCommonTag(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
     } catch (e) {
@@ -111,10 +134,15 @@ NodeController.batchEditCommonTag = async (ctx)=>{
     }
 }
 
-NodeController.editAbilityTag = async (ctx)=>{
-    let {Token = '', nodeName = "", tags = []} = ctx.paramsObj
+NodeController.editAbilityTag = async (ctx) => {
+    let {
+        Token = '', nodeName = "", tags = []
+    } = ctx.paramsObj
     try {
-        const metadata = {nodeName,tags}
+        const metadata = {
+            nodeName,
+            tags
+        }
         let result = await NodeService.editAbilityTag(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
     } catch (e) {
@@ -123,10 +151,15 @@ NodeController.editAbilityTag = async (ctx)=>{
     }
 }
 
-NodeController.batchEditAbilityTag = async (ctx)=>{
-    let {Token = '', nodeNames =[] , tags = []} = ctx.paramsObj
+NodeController.batchEditAbilityTag = async (ctx) => {
+    let {
+        Token = '', nodeNames = [], tags = []
+    } = ctx.paramsObj
     try {
-        const metadata = {nodeNames,tags}
+        const metadata = {
+            nodeNames,
+            tags
+        }
         console.log("metadata:" + JSON.stringify(metadata, null, 4));
         let result = await NodeService.batchEditAbilityTag(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
