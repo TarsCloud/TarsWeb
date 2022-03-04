@@ -108,18 +108,21 @@ Object.defineProperty(Vue.prototype, '$loading', {
 let tip = {
   error: (msg) => {
     Vue.prototype.$message({
+      showClose: true,
       message: msg,
       type: "error",
     });
   },
   success: (msg) => {
     Vue.prototype.$message({
+      showClose: true,
       message: msg,
       type: "success",
     });
   },
   warning: (msg) => {
     Vue.prototype.$message({
+      showClose: true,
       message: msg,
       type: "warning",
     });

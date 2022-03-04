@@ -14,10 +14,12 @@
  * specific language governing permissions and limitations under the License.
  */
 const stream = require('stream');
-
+const axios = require('axios');
 const k8s = require('@kubernetes/client-node');
 const logger = require('../../../logger');
 const WebConf = require('../../../config/webConf');
+const request = require('request-promise');
+
 let md5 = require('md5');
 const CommonService = {};
 
@@ -31,9 +33,8 @@ const exec = new k8s.Exec(kc);
 const opts = {};
 kc.applyToRequest(opts);
 
-CommonService.getPath = (path) => {
-	return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
-}
+
+// console.log(k8sApi.basePath);
 
 const k8sCoreApi = kc.makeApiClient(k8s.CoreV1Api);
 const k8sApi = kc.makeApiClient(k8s.CustomObjectsApi);
@@ -43,6 +44,90 @@ CommonService.getApi = () => {
 }
 CommonService.getK8sApi = () => {
 	return k8sApi;
+}
+
+CommonService.getPath = (path) => {
+	return `/${WebConf.k8s.apiPrefix}/namespaces/${path}`;
+}
+
+// https: //104.197.5.247/api/v1/namespaces/kube-system/services/https:elasticsearch-logging/proxy/_cluster/health?pretty=true
+// CommonService.getServiceHttpPath = (schema, port, service, path) => {
+
+// 	return `${kc.getCurrentCluster().server}/api/v1/namespaces/${CommonService.NAMESPACE}/services/${schema}:${service}:${port}/proxy/${path}`;
+// }
+
+// console.log(opts);
+CommonService.request = async (schema, service, path, body) => {
+
+	let data = {};
+
+	let url = '';
+
+	if (!process.env.KUBERNETES_SERVICE_HOST) {
+		Object.assign(data, opts);
+
+		url = `${kc.getCurrentCluster().server}/api/v1/namespaces/${CommonService.NAMESPACE}/services/${schema}:${service}/proxy/${path}`;
+	} else {
+		url = `${schema}://${service}/${path}`
+	}
+
+	data.headers = {
+		"Content-Type": "application/json"
+	};
+
+	data.json = body;
+
+	return await request.post(url, data);
+}
+
+CommonService.upload = async (name, formData, wait) => {
+	let data = {};
+	let url = '';
+
+	if (!process.env.KUBERNETES_SERVICE_HOST) {
+		Object.assign(data, opts);
+		url = `${kc.getCurrentCluster().server}/api/v1/namespaces/${CommonService.NAMESPACE}/services/http:tars-tarsimage:80/proxy/${WebConf.k8s.upload}/${name}/building?wait=${wait}`;
+		// url = CommonService.getServiceHttpPath("http", "http", "tars-tarsimage", `${WebConf.k8s.upload}/${name}/building?wait=${wait}`);
+	} else {
+		url = `http://tars-tarsimage/${WebConf.k8s.upload}/${name}/building?wait=${wait}`;
+	}
+
+	data.formData = formData;
+	data.timeout = 120 * 1000;
+
+	// const options = {
+	// 	formData: formData,
+	// 	timeout: 120 * 1000,
+	// }
+	logger.info(`upload to image request:${url}`);
+
+	return await request.post(url, data);
+
+	// request(options, (error, response, body) => {
+	// 	logger.info(`upload to image response error: `, error, response, body);
+
+	// 	if (!error && (response.statusCode == 201 || response.statusCode == 200)) {
+
+	// 		logger.info(`rsp: ${body}`);
+
+	// 		const rsp = JSON.parse(body);
+
+	// 		result.ret = 0
+	// 		result.msg = rsp.message;
+	// 		result.result = rsp.result;
+
+	// 		resolve(result)
+	// 	} else {
+	// 		if (error && error.hasOwnProperty("message")) {
+	// 			result.msg = error.message
+	// 		} else {
+	// 			result.msg = response.body.toString()
+	// 		}
+	// 		logger.warn('[rpc_upload]', body)
+
+	// 		resolve(result)
+	// 	}
+	// })
 }
 
 CommonService.NAMESPACE = process.env.Namespace || WebConf.k8s.namespace;
@@ -113,7 +198,6 @@ CommonService.describePod = async (podName) => {
 }
 
 CommonService.readPodLog = async (containerName, podName, previous, logStream) => {
-
 
 	return await log.log(CommonService.NAMESPACE, podName, containerName, logStream, {
 		follow: true,

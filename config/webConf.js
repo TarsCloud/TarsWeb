@@ -78,7 +78,7 @@ let conf = {
         client: path.join(cwd, 'config/k8s.conf'), //连接k8s环境里面tars配置
         namespace: 'tars-dev',
         apiPrefix: 'apis/k8s.tars.io/v1beta2', // 与k8s的交互配置
-        uploadDomain: 'http://tars-tarsimage/api/v1beta2/timage', // tarsimage上传交互
+        upload: 'api/v1beta2/timage', // tarsimage上传交互
         cache: true, //从cache中加载
     },
     market: false,

@@ -414,12 +414,10 @@ export default {
         return i.Name == this.uploadModal.model.BaseImage;
       })[0].Release;
 
-      // console.log(this.baseImageRelease[0]);
-
       this.$set(
         this.uploadModal.model,
         "BaseImageRelease",
-        this.baseImageRelease[this.baseImageRelease.length - 1].Image
+        this.baseImageRelease[0].Image
       );
     },
     // 状态对应class
@@ -447,7 +445,7 @@ export default {
             that.getBuildList();
           }
           that.reloadBuildList();
-        }, 3000);
+        }, 1000);
       }
     },
     getBuildList() {
@@ -462,6 +460,14 @@ export default {
           });
 
           this.buildList = data.Data;
+
+          let pos = this.buildList.findIndex((v) => {
+            return v.Phase != "Done";
+          });
+
+          if (pos == -1) {
+            this.reloadTask = false;
+          }
         })
         .catch((err) => {
           this.$tip.error(
@@ -538,7 +544,7 @@ export default {
       let k8sData = await this.getK8SData();
       let nowImage = await this.getNowImages();
 
-      let nodeList = await this.getTafNodes(); //获取tafNode所有镜像
+      let nodeList = await this.getImageNodes(); //获取tafNode所有镜像
       let defaultImage = await this.getNodeImage();
       this.publishModal.model.Replicas =
         k8sData.Data[0].Replicas || this.serverK8S.Replicas || 1;
@@ -576,7 +582,7 @@ export default {
         ServerId: this.getServerId(),
       });
     },
-    async getTafNodes() {
+    async getImageNodes() {
       return await this.$ajax.getJSON("/k8s/api/image_node_select");
     },
     async getNodeImage() {
@@ -708,7 +714,11 @@ export default {
         }
         formdata.append("ServerId", ServerId);
         formdata.append("ServerType", this.uploadModal.model.ServerType);
-        formdata.append("ServerTag", this.uploadModal.model.ServerTag);
+        formdata.append(
+          "ServerTag",
+          this.uploadModal.model.ServerTag ||
+            `v-${formatDate(new Date(), "YYYYMMDDHHmmss")}`
+        );
         formdata.append("BaseImage", this.uploadModal.model.BaseImageRelease);
         formdata.append("Secret", Secret);
         formdata.append("suse", this.uploadModal.model.file);
@@ -760,13 +770,6 @@ export default {
             );
           });
       }
-    },
-    // 处理未发布时间显示
-    handleNoPublishedTime(timeStr, noPubTip = this.$t("pub.dlg.unpublished")) {
-      if (timeStr === "0000:00:00 00:00:00") {
-        return noPubTip;
-      }
-      return timeStr;
     },
   },
   mounted() {

@@ -253,8 +253,26 @@ ImageService.baseImageSelect = async (metadata) => {
 				elem["Release"].push(r);
 			})
 
+			elem.Release.sort((a, b) => {
+				if (a.CreateTime == b.CreateTime) {
+					return 0;
+				}
+
+				return a.CreateTime > b.CreateTime ? -1 : 1;
+			})
+
 			result.Data.push(elem);
 		})
+
+		// result.Data.sort((a, b) => {
+		// 	if (a.CreateTime == b.CreateTime) {
+		// 		return 0;
+		// 	}
+
+		// 	return a.CreateTime > b.CreateTime ? -1 : 1;
+		// })
+
+		// console.log(result.Data);
 	}
 
 	return {

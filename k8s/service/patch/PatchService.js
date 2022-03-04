@@ -108,7 +108,6 @@ PatchService.servicePoolSelect = async (ServerId) => {
 
 	let allItems = tImages.body;
 
-
 	let result = {};
 
 	// Data填充
@@ -230,7 +229,6 @@ PatchService.servicePoolUpdate = async (metadata) => {
 	}
 
 	tServerCopy.spec.k8s.replicas = metadata.Replicas || tServerCopy.spec.k8s.replicas || 1
-	// tServerCopy.spec.release.source = tImage.metadata.name
 	tServerCopy.spec.release.id = readyActiveRelease.id
 	tServerCopy.spec.release.image = readyActiveRelease.image
 	tServerCopy.spec.release.secret = readyActiveRelease.secret

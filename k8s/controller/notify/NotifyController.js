@@ -52,21 +52,11 @@ const queryNotify = async (app, server, page, size) => {
 
         let esNodes = Object.keys(esConfig.tars.elk.nodes)[0].split(",");
 
-        let url = `${esConfig.tars.protocol}://${esNodes[0]}/${esConfig.tars.elk.index.notify}/_search`
-        // console.log(url);
+        let res = await CommonService.request(esConfig.tars.protocol, esNodes[0], `${esConfig.tars.elk.index.notify}/_search`, search);
 
-        let res = await axios({
-            url: url,
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: JSON.stringify(search),
-            timeout: 100000,
-        });
         return {
             ret: 0,
-            msg: res.data.hits
+            msg: res.hits
         };
     } catch (e) {
         logger.error('[queryNotify]', e)

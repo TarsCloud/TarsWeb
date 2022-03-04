@@ -2,68 +2,58 @@ const logger = require('../../../logger')
 const PatchService = require('../../service/patch/PatchService');
 const fs = require('fs');
 const PatchController = {};
-const request = require('request');
 const CommonService = require('../../service/common/CommonService');
 const WebConf = require('../../../config/webConf');
 const util = require('../../../tools/util');
 const ImageService = require('../../service/image/ImageService');
 
-const upload = (formData = {}, wait) => {
-    return new Promise((resolve) => {
-        let result = {
-            ret: -1,
-            msg: 'error'
-        }
+const upload = async (formData = {}, wait) => {
 
-        if (Object.keys(formData).length === 0) {
-            result.msg = '[rpc_upload]: argument invalid'
-            return resolve(result)
-        }
+    let result = {
+        ret: -1,
+        msg: 'error'
+    }
 
-        try {
+    if (Object.keys(formData).length === 0) {
+        result.msg = '[rpc_upload]: argument invalid'
+        return result;
+    }
 
-            let name = `${formData.ServerApp}-${formData.ServerName}`.toLowerCase();
+    try {
 
-            const options = {
-                url: `${WebConf.k8s.uploadDomain}/${name}/building?wait=${wait}`,
-                method: 'POST',
-                formData: formData,
-                timeout: 120 * 1000,
+        let name = `${formData.ServerApp}-${formData.ServerName}`.toLowerCase();
+
+        let response = await CommonService.upload(name, formData, wait);
+
+        response = JSON.parse(response);
+
+        logger.info("response:", typeof (response), response.status);
+        // console.log("response:", typeof (response), response.status);
+
+        if (response.status == 201 || response.status == 200) {
+
+            result.ret = 0;
+            result.msg = response.message;
+            result.result = response.result;
+
+            return result;
+        } else {
+
+            if (response && response.hasOwnProperty("message")) {
+                result.msg = response.message
+            } else {
+                result.msg = "error"
             }
 
-            logger.info(`upload to image request:${options.url}`);
-
-            request(options, (error, response, body) => {
-                logger.info(`upload to image response error: `, error, response, body);
-
-                if (!error && (response.statusCode == 201 || response.statusCode == 200)) {
-
-                    logger.info(`rsp: ${body}`);
-
-                    const rsp = JSON.parse(body);
-
-                    result.ret = 0
-                    result.msg = rsp.message;
-                    result.result = rsp.result;
-
-                    resolve(result)
-                } else {
-                    if (error && error.hasOwnProperty("message")) {
-                        result.msg = error.message
-                    } else {
-                        result.msg = response.body.toString()
-                    }
-                    logger.warn('[rpc_upload]', body)
-
-                    resolve(result)
-                }
-            })
-        } catch (e) {
-            result.msg = e.message
-            resolve(result)
-            logger.error('[rpc_update]', e)
+            return result;
         }
-    })
+
+    } catch (e) {
+        result.ret = -1;
+        result.msg = e.message;
+        logger.error('[upload]', e);
+        return result;
+    }
 }
 
 /**
