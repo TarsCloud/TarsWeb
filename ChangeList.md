@@ -1,3 +1,23 @@
+## 20220305(2.4.26)
+
+### en
+
+- Fix k8s call train ui bug
+- k8s manage server page show server subtype
+- notify & tarsimage use k8s api http proxy when not deploy in k8s
+- During k8s deployment, web deployment and cloud market deployment are unified into the same process
+- Fix the bug of creating framework config at startup
+- Fix the bug of viewing k8s information of normal service type
+
+### cn
+
+- 修复 k8s 调用链界面的 bug
+- k8s 服务管理界面显示服务类型
+- 当部署在 k8s 外部时, 访问 tarsnotify & tarsimage 使用 k8s api 的代理, 方便调试
+- k8s 部署时, 将 web 部署和云市场部署, 统一到同一个流程中
+- 修复启动时创建 framework config 的 bug
+- 修复 normal 服务类型查看 k8s 信息的 bug
+
 ## 20220302(2.4.25)
 
 ### en
