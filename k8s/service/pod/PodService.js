@@ -149,6 +149,9 @@ PodService.podAliveSelect = async (filter) => {
 
         item.status.pods.forEach(pod => {
             let elem = {};
+
+            // console.log(item);
+
             elem["ServerId"] = CommonService.getServerId(item.spec.app, item.spec.server)
             elem["ServerApp"] = item.spec.app
             elem["ServerName"] = item.spec.server
@@ -162,6 +165,7 @@ PodService.podAliveSelect = async (filter) => {
             elem["CreateTime"] = pod.startTime
             elem["PresentMessage"] = pod.presentMessage;
             elem["ServiceVersion"] = '';
+            elem["SubType"] = item.spec.subType;
 
             if (pod.containerStatuses && pod.containerStatuses.length > 0) {
 

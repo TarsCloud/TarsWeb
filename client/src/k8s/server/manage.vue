@@ -94,6 +94,28 @@
             ></let-checkbox>
           </template>
         </let-table-column>
+        <let-table-column :title="$t('deployService.form.app')">
+          <template slot-scope="scope">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              v-if="scope.row.SubType == 'normal'"
+              content="Normal Server"
+              placement="top"
+            >
+              <i class="el-icon-menu"></i>
+            </el-tooltip>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              v-if="scope.row.SubType == 'tars'"
+              content="Tars Server(manage by tarsnode)"
+              placement="top"
+            >
+              <i class="el-icon-monitor"></i>
+            </el-tooltip>
+          </template>
+        </let-table-column>
         <let-table-column
           :title="$t('deployService.form.app')"
           prop="ServerApp"
@@ -122,7 +144,11 @@
           :title="$t('serverList.table.th.podIP')"
           prop="PodIp"
         ></let-table-column>
-        <let-table-column title="pid" prop="Pid"></let-table-column>
+        <let-table-column title="pid">
+          <template slot-scope="scope" v-if="scope.row.SubType == 'tars'">
+            {{ scope.row.Pid }}
+          </template>
+        </let-table-column>
         <let-table-column
           :title="$t('serverList.table.th.ip')"
           prop="NodeIp"
