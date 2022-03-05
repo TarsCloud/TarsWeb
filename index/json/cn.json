@@ -1087,6 +1087,7 @@
             "serviceMark": "服务备注",
             "template": "模板",
             "node_name": "节点",
+            "subtype": "类型",
             "set": "Set分组",
             "obj": "OBJ绑定IP",
             "port": "端口",

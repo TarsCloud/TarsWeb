@@ -23,6 +23,10 @@ import './plugins/market';
 import k8sApp from './k8sApp';
 import router from './router/k8s';
 
+//调用链需要
+import vuescroll from "vuescroll"; //引入vuescroll
+import "vuescroll/dist/vuescroll.css"; //引入vuescroll样式
+
 import {
   i18n,
   loadLang
@@ -48,6 +52,8 @@ loadLang.call(this).then(() => {
   Vue.use(ElementUI, {
     i18n: (key, value) => i18n.t(key, value)
   });
+
+  Vue.use(vuescroll); //使用
 
   new Vue({
     i18n: i18n,

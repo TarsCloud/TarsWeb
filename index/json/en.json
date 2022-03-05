@@ -1066,6 +1066,7 @@
             "node_name": "Node",
             "set": "Set grouping",
             "obj": "OBJ binds IP",
+            "subtype": "Type",
             "port": "port",
             "portType": "PortType",
             "placeholder": "Only supports English letters",

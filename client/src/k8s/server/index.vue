@@ -245,9 +245,12 @@ export default {
     },
   },
   watch: {
-    treeid: function(treeid) {
-      // eslint-disable-line
+    treeid() {
       this.serverData = this.getServerData();
+      this.$store.commit({
+        type: "increment",
+        name: this.serverData,
+      });
       // this.isTrueTreeLevel();
     },
     $route(to, from) {
@@ -256,6 +259,7 @@ export default {
       }
     },
   },
+
   directives: {
     vscroll: {
       componentUpdated(el) {

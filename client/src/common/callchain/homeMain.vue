@@ -51,7 +51,7 @@
           </div>
           <div :id="'exportModal-' + svgId + '-' + index" class="exportModal">
             <let-modal
-              title="甘特图"
+              title="Gantt chart"
               v-model="exportModal"
               width="80%"
               @close="closeModel"

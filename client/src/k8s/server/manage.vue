@@ -94,7 +94,7 @@
             ></let-checkbox>
           </template>
         </let-table-column>
-        <let-table-column :title="$t('deployService.form.app')">
+        <let-table-column :title="$t('deployService.form.subtype')">
           <template slot-scope="scope">
             <el-tooltip
               class="item"
