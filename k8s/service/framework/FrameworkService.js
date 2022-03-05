@@ -114,35 +114,39 @@ FrameworkService.createFrameworkConfig = async () => {
     let nativeFrameworkConfig = config.expand.nativeFrameworkConfig;
     let nativeDBConfig = config.expand.nativeDBConfig;
 
-    try {
-        let framework = JSON.parse(config.expand.frameworkConfig);
-        WebConf.market = framework.market || false;
-    } catch (e) {
-        console.log(e);
-    }
-
     mkdirSync(FrameworkService.MNTFILEPATH);
 
-    if (fs.existsSync(FrameworkService.MNTFILEPATH)) {
+    WebConf.enable = false;
+
+    if (fs.existsSync(FrameworkService.MNTFILEPATH) && nativeFrameworkConfig) {
         fs.writeFileSync(`${FrameworkService.MNTFILEPATH}/nativeFrameworkConfig.conf`, nativeFrameworkConfig);
 
         try {
-            WebConf.enable = false;
-
-            let content = JSON.parse(nativeDBConfig);
-
-            WebConf.enable = content.enable || false;
-
-            if (content.enable) {
-                WebConf.dbConf = content.dbConf;
-                WebConf.client = `${FrameworkService.MNTFILEPATH}/nativeFrameworkConfig.conf`;
-                WebConf.show = content.show || false;
-            }
-
-            console.log(content, WebConf);
-
+            let framework = JSON.parse(config.expand.frameworkConfig);
+            WebConf.market = framework.market || false;
         } catch (e) {
+            WebConf.market = false;
             console.log(e);
+        }
+
+        if (nativeDBConfig) {
+            try {
+
+                let content = JSON.parse(nativeDBConfig);
+
+                WebConf.enable = content.enable || false;
+
+                if (content.enable) {
+                    WebConf.dbConf = content.dbConf;
+                    WebConf.client = `${FrameworkService.MNTFILEPATH}/nativeFrameworkConfig.conf`;
+                    WebConf.show = content.show || false;
+                }
+
+                // console.log(content, WebConf);
+
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
 }

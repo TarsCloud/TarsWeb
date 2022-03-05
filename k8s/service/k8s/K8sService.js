@@ -46,6 +46,7 @@ K8sService.serverK8SSelect = async (ServerId, limiter) => {
     result.Data = []; //make(models.ArrayMapInterface, 0, len(filterItems))
 
     filterItems.forEach(item => {
+
         let elem = {};
         elem["ServerId"] = CommonService.getServerId(item.spec.app, item.spec.server)
         elem["ServerApp"] = item.spec.app
@@ -62,8 +63,14 @@ K8sService.serverK8SSelect = async (ServerId, limiter) => {
         elem["name"] = item.metadata.name
         elem["abilityAffinity"] = item.spec.k8s.abilityAffinity
         elem["launcherType"] = item.spec.k8s.launcherType
-        elem["servants"] = item.spec.tars.servants;
-        elem["subtype"] = item.spec.subType;
+
+        if (item.spec.tars) {
+            elem["servants"] = item.spec.tars.servants
+        } else {
+            elem["normal"] = item.spec.normal;
+
+        }
+        elem["subType"] = item.spec.subType;
         elem["imagePullPolicy"] = item.spec.k8s.imagePullPolicy;
         elem["notStacked"] = item.spec.k8s.notStacked;
         result.Data.push(elem);
@@ -177,6 +184,7 @@ K8sService.ServerK8SUpdateNetwork = async (metadata, target) => {
     }
     let tServerCopy = JSON.parse(JSON.stringify(tServer));
     tServerCopy.spec.k8s = K8S
+
     let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
     return {
         ret: 200,

@@ -17,7 +17,7 @@
 const CommonService = require('../common/CommonService');
 
 const TreeService = {};
-const treeIgnore = ["tars-tarsweb"];
+// const treeIgnore = ["tars-tarsweb"];
 
 
 TreeService.tree = async (searchKey, force) => {
@@ -36,9 +36,9 @@ TreeService.tree = async (searchKey, force) => {
         if (searchKey && serverApp.indexOf(searchKey) == -1 && serverName.indexOf(searchKey) == -1) {
             return
         }
-        if (treeIgnore.indexOf(item.metadata.name) != -1) {
-            return;
-        }
+        // if (treeIgnore.indexOf(item.metadata.name) != -1) {
+        //     return;
+        // }
         const server = {
             ServerId: `${serverApp}.${serverName}`,
             ServerName: serverName,

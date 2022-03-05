@@ -139,24 +139,6 @@ export default {
 
       this.$forceUpdate();
     },
-    // adapterServerK8S(model) {
-    //     let data = Object.assign({}, model)
-    //     if (data.HostNetwork && data.showHostPort) {
-    //         return this.$message.error(`${this.$t('deployService.form.portOrNetWork')}`)
-    //     }
-    //     if (data.showHostPort) {
-    //         data.HostPort = []
-    //         if (data.HostPortArr) {
-    //             data.HostPortArr.forEach(item => {
-    //                 data.HostPort.push({
-    //                     "NameRef": item.obj,
-    //                     "Port": Math.floor(item.HostPort)
-    //                 })
-    //             })
-    //         }
-    //     }
-    //     return data
-    // },
     change() {
       let index = this.HostPortArr.findIndex((value) => {
         return value.open;

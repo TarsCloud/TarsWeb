@@ -344,7 +344,6 @@ export default {
         });
     },
     saveResource(sourceModel) {
-      // console.log("saveResource", sourceModel);
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update_resource", sourceModel)
         .then((res) => {
@@ -479,22 +478,39 @@ export default {
           data.showHostPort = false;
           if (data) {
             data.HostPortArr = [];
-            data.servants.forEach((item) => {
-              let index = data.HostPort.findIndex((value) => {
-                return value.nameRef == item.name;
-              });
 
-              data.HostPortArr.push({
-                obj: item.name,
-                HostPort: index != -1 ? data.HostPort[index].port : item.port,
-                open: index != -1,
+            if (data.subType == "tars") {
+              data.servants.forEach((item) => {
+                let index = data.HostPort.findIndex((value) => {
+                  return value.nameRef == item.name;
+                });
+
+                data.HostPortArr.push({
+                  obj: item.name,
+                  HostPort: index != -1 ? data.HostPort[index].port : item.port,
+                  open: index != -1,
+                });
               });
-            });
+            } else {
+              data.normal.ports.forEach((port) => {
+                let index = data.HostPort.findIndex((value) => {
+                  return value.port == port.port;
+                });
+
+                data.HostPortArr.push({
+                  obj: port.name,
+                  HostPort: index != -1 ? data.HostPort[index].port : port.port,
+                  open: index != -1,
+                });
+              });
+            }
+
             data.showHostPort =
               data.HostPortArr.findIndex((value) => {
                 return value.open;
               }) != -1;
           }
+
           data.NodeSelector = data.NodeSelector;
           this.labelMatchArr = data.NodeSelector;
           this.labelMatchArr.forEach((item) => {
