@@ -121,13 +121,13 @@ export const transTree = function (obj, sourceArr, targetArr, servers, clientTim
             csDataArr.push(item.csData);
         }
         if (!!srDataArr) {
-            srDataArr.push(item.csData);
+            srDataArr.push(item.srData);
         }
         if (!!ssDataArr) {
-            ssDataArr.push(item.csData);
+            ssDataArr.push(item.ssData);
         }
         if (!!crDataArr) {
-            crDataArr.push(item.csData);
+            crDataArr.push(item.crData);
         }
 
     })
