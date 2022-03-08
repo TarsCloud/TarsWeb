@@ -1,6 +1,6 @@
 <template>
   <el-table :data="logs" stripe style="width: 100%" :show-header="false">
-    <el-table-column :label="$t('market.table.version')">
+    <el-table-column :label="$t('cloud.table.version')">
       <template slot-scope="props">
         <el-row :gutter="24">
           <el-col :span="24">
@@ -46,10 +46,7 @@ export default {
           this.logs = data.logs;
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showCloudError("marketRet", err);
         });
     },
   },

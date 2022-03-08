@@ -19,13 +19,13 @@
       </el-table-column>
       <el-table-column
         prop="push_time"
-        label="$t('market.repo.pushTime')"
+        label="$t('cloud.repo.pushTime')"
         min-width="100"
       >
       </el-table-column>
       <el-table-column
         prop="pull_time"
-        label="$t('market.repo.pullTime')"
+        label="$t('cloud.repo.pullTime')"
         min-width="100"
       >
       </el-table-column>
@@ -104,18 +104,15 @@ export default {
           this.$loading.hide();
         })
         .catch((err) => {
-          this.$message({
-            message: this.$t("market.repoRet." + err.tars_ret || "-1"),
-            type: "error",
-          });
+          this.$common.showCloudError("repoRet", err);
           this.$loading.hide();
         });
     },
 
     deleteArtifact(row) {
-      this.$confirm(this.$t("market.repo.deleteArtifact"), "Hint", {
+      this.$confirm(this.$t("cloud.repo.deleteArtifact"), "Hint", {
         confirmButtonText: this.$t("el.messagebox.confirm"),
-        cancelButtonText: this.$t("market.deploy.cancel"),
+        cancelButtonText: this.$t("cloud.deploy.cancel"),
         type: "warning",
       })
         .then(() => {
@@ -128,19 +125,14 @@ export default {
               reference: row.digest,
             })
             .then((data) => {
-              this.$message({
-                message: this.$t("market.repo.deleteArtifactSucc"),
-                type: "success",
-              });
+              this.$common.showSucc(this.$t("cloud.repo.deleteArtifactSucc"));
+
               this.$loading.hide();
 
               this.fetchArtifactsList();
             })
             .catch((err) => {
-              this.$message({
-                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
-                type: "error",
-              });
+              this.$common.showCloudError("repoRet", err);
               this.$loading.hide();
             });
         })

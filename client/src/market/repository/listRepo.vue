@@ -1,12 +1,12 @@
 <template>
   <el-dialog
-    :title="$t('market.repo.repoList')"
+    :title="$t('cloud.repo.repoList')"
     :visible.sync="addDialogVisible"
     width="80%"
     @close="closeRepo"
   >
     <el-table :data="repos" border stripe style="width: 100%">
-      <el-table-column :label="$t('market.repo.repoName')" min-width="200">
+      <el-table-column :label="$t('cloud.repo.repoName')" min-width="200">
         <template slot-scope="scope">
           <el-link type="primary" @click="showListArtifacts(scope.row.name)">{{
             scope.row.name
@@ -17,13 +17,13 @@
       </el-table-column>
       <el-table-column
         prop="pull_count"
-        :label="$t('market.repo.downloadCount')"
+        :label="$t('cloud.repo.downloadCount')"
         min-width="50"
       >
       </el-table-column>
       <el-table-column
         prop="update_time"
-        :label="$t('market.repo.updateTime')"
+        :label="$t('cloud.repo.updateTime')"
         min-width="200"
       >
       </el-table-column>
@@ -104,16 +104,13 @@ export default {
         })
         .catch((err) => {
           this.$loading.hide();
-          this.$message({
-            message: this.$t("market.repoRet." + err.tars_ret || "-1"),
-            type: "error",
-          });
+          this.$common.showCloudError("repoRet", err);
         });
     },
     deleteRepo(row) {
-      this.$confirm(this.$t("market.repo.deleteRepo"), "Hint", {
+      this.$confirm(this.$t("cloud.repo.deleteRepo"), "Hint", {
         confirmButtonText: this.$t("el.messagebox.confirm"),
-        cancelButtonText: this.$t("market.deploy.cancel"),
+        cancelButtonText: this.$t("cloud.deploy.cancel"),
         type: "warning",
       })
         .then(() => {
@@ -125,17 +122,12 @@ export default {
               repo: row.name.substr(this.project.length + 1),
             })
             .then((data) => {
-              this.$message({
-                message: this.$t("market.repo.deleteRepoSucc"),
-                type: "success",
-              });
+              this.$common.showSucc(this.$t("cloud.repo.deleteRepoSucc"));
+
               this.fetchRepoList();
             })
             .catch((err) => {
-              this.$message({
-                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
-                type: "error",
-              });
+              this.$common.showCloudError("repoRet", err);
             });
         })
         .catch(() => {});

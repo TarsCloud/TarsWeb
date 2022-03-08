@@ -17,8 +17,10 @@
 import Vue from 'vue';
 import './assets/icon-font/iconfont.css'
 import store from "../store/store"
+
 import './plugins/ajax';
-import './plugins/market';
+import './plugins/common';
+import './plugins/cloud';
 
 import k8sApp from './k8sApp';
 import router from './router/k8s';

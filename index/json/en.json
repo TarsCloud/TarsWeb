@@ -2095,7 +2095,7 @@
             }
         }
     },
-    "market": {
+    "cloud": {
         "index": {
             "search": "Please enter a search keyword",
             "directory": "Directory",
@@ -2177,6 +2177,8 @@
             "repoList": "Repository list",
             "repoName": "Repository name",
             "downloadCount": "Download",
+            "deleteAuth": "Are you sure to cancel the permission of this user?",
+            "deleteProj": "Confirm to delete this project??",
             "deleteRepo": "Confirm to delete the repository",
             "resetPass": "Reset registry password",
             "password": "Password",
@@ -2216,10 +2218,34 @@
             "protocol": "Protocols",
             "changelist": "Changelist",
             "log": "Logs",
+            "commet": "Issues",
             "installing": "Installing, please wait...",
             "versionList": "Version List",
             "change": "Change",
             "changeVersion": "Change Version"
+        },
+        "commet": {
+            "add": "Post Issue",
+            "user": "Post User",
+            "title": "Title",
+            "content": "Content",
+            "createTime": "Post Time",
+            "replyTime": "Reply Time",
+            "count": "Replies",
+            "inputTitle": "Please input title",
+            "inputContent": "Please input content",
+            "deletePost": "Are you sure you want to delete the current post?",
+            "reply": "Reply"
+
+        },
+        "commetRet": {
+            "0": "Success",
+            "-1": "System busy",
+            "-2": "User not exists",
+            "-3": "Storage system error",
+            "-4": "Create post id error",
+            "-5": "No permission",
+            "-6": "Invalid parameter"
         },
         "userRet": {
             "0": "Success",

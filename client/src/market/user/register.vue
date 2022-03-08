@@ -3,7 +3,7 @@
     <!-- 注册 -->
     <el-card class="box-card market_page">
       <h1 class="top_txt">
-        {{ $t("market.login.register") }}
+        {{ $t("cloud.login.register") }}
       </h1>
 
       <el-form
@@ -13,29 +13,29 @@
         label-position="left"
         :rules="rules"
       >
-        <el-form-item :label="$t('market.login.userName')" prop="uid" required>
+        <el-form-item :label="$t('cloud.login.userName')" prop="uid" required>
           <el-input
             v-model="login.uid"
-            :placeholder="$t('market.login.inputUserName')"
+            :placeholder="$t('cloud.login.inputUserName')"
             prefix-icon="el-icon-message"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('market.login.password')" prop="password">
+        <el-form-item :label="$t('cloud.login.password')" prop="password">
           <el-input
             prefix-icon="el-icon-key"
-            :placeholder="$t('market.login.passwordInfo')"
+            :placeholder="$t('cloud.login.passwordInfo')"
             v-model="login.password"
             show-password
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('market.login.repeatPassword')"
+          :label="$t('cloud.login.repeatPassword')"
           prop="checkPass"
           required
         >
           <el-input
             prefix-icon="el-icon-key"
-            :placeholder="$t('market.login.inputRepeatPassword')"
+            :placeholder="$t('cloud.login.inputRepeatPassword')"
             v-model="login.checkPass"
             show-password
           ></el-input>
@@ -46,13 +46,13 @@
           size="small"
           round
           @click="register"
-          >{{ $t("market.login.register") }}</el-button
+          >{{ $t("cloud.login.register") }}</el-button
         >
         <br />
         <br />
         <div class="sub_menu">
           <a size="small" round @click="show_login">{{
-            $t("market.login.back")
+            $t("cloud.login.back")
           }}</a>
         </div>
       </el-form>
@@ -79,9 +79,9 @@ export default {
 
     var validatePass = (rule, value, callback) => {
       if (value.length < 8) {
-        callback(new Error(this.$t("market.login.passwordInfo")));
+        callback(new Error(this.$t("cloud.login.passwordInfo")));
       } else if (!passwordIsValid(value)) {
-        callback(new Error(this.$t("market.login.passwordInfo")));
+        callback(new Error(this.$t("cloud.login.passwordInfo")));
       } else {
         callback();
       }
@@ -89,9 +89,9 @@ export default {
 
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error(this.$t("market.login.inputPasswordAgain")));
+        callback(new Error(this.$t("cloud.login.inputPasswordAgain")));
       } else if (value !== this.login.password) {
-        callback(new Error(this.$t("market.login.passwordDiff")));
+        callback(new Error(this.$t("cloud.login.passwordDiff")));
       } else {
         callback();
       }
@@ -100,13 +100,13 @@ export default {
     var validateEmail = (rule, value, callback) => {
       const mailReg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       if (!value) {
-        return callback(new Error(this.$t("market.login.userNameRegTips")));
+        return callback(new Error(this.$t("cloud.login.userNameRegTips")));
       }
       setTimeout(() => {
         if (mailReg.test(value)) {
           callback();
         } else {
-          callback(new Error(this.$t("market.login.userNameRegTips")));
+          callback(new Error(this.$t("cloud.login.userNameRegTips")));
         }
       }, 100);
     };
@@ -126,22 +126,22 @@ export default {
         uid: [
           {
             required: true,
-            message: this.$t("market.login.inputUserName"),
+            message: this.$t("cloud.login.inputUserName"),
             trigger: "blur",
           },
-          { message: this.$t("market.login.userNameRegTips"), trigger: "blur" },
+          { message: this.$t("cloud.login.userNameRegTips"), trigger: "blur" },
           { validator: validateEmail, trigger: "blur" },
         ],
         password: [
           {
             required: true,
-            message: this.$t("market.login.inputPassword"),
+            message: this.$t("cloud.login.inputPassword"),
             trigger: "blur",
           },
           {
             min: 8,
             max: 16,
-            message: this.$t("market.login.passwordInfo"),
+            message: this.$t("cloud.login.passwordInfo"),
             trigger: "blur",
           },
           { validator: validatePass, trigger: "blur" },
@@ -149,13 +149,13 @@ export default {
         checkPass: [
           {
             required: true,
-            message: this.$t("market.login.inputPassword"),
+            message: this.$t("cloud.login.inputPassword"),
             trigger: "blur",
           },
           {
             min: 8,
             max: 16,
-            message: this.$t("market.login.passwordInfo"),
+            message: this.$t("cloud.login.passwordInfo"),
             trigger: "blur",
           },
           { validator: validatePass, trigger: "blur" },
@@ -185,10 +185,7 @@ export default {
               this.show_activate();
             })
             .catch((err) => {
-              this.$message({
-                message: this.$t("market.userRet." + err.tars_ret || "-1"),
-                type: "error",
-              });
+              this.$common.showCloudError("userRet", err);
             });
         } else {
           return false;

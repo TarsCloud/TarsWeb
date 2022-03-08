@@ -110,16 +110,16 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="pass">{{
-                  $t("market.header.pass")
+                  $t("cloud.header.pass")
                 }}</el-dropdown-item>
                 <el-dropdown-item command="project">{{
-                  $t("market.header.repo")
+                  $t("cloud.header.repo")
                 }}</el-dropdown-item>
                 <el-dropdown-item command="modify">{{
-                  $t("market.header.modify")
+                  $t("cloud.header.modify")
                 }}</el-dropdown-item>
                 <el-dropdown-item command="quit">{{
-                  $t("market.header.quit")
+                  $t("cloud.header.quit")
                 }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

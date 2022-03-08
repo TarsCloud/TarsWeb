@@ -1,196 +1,11 @@
 <template>
   <div>
     <el-dialog
-      :title="$t('market.service.install')"
+      :title="$t('cloud.service.install')"
       :visible.sync="dialogVisible"
       width="80%"
     >
       <baseInfo @next="next" v-if="deployObj" :deployObj="deployObj"></baseInfo>
-
-      <!-- <let-form
-        ref="form"
-        inline
-        label-position="top"
-        itemWidth="30%"
-        v-if="deployObj"
-        @submit.native.prevent="next"
-      >
-        <let-form-item :label="$t('deployService.form.app')" required>
-          <let-input
-            size="small"
-            v-model="deployObj.app"
-            :placeholder="$t('deployService.form.appAdd')"
-            required
-            :required-tip="$t('deployService.form.appTips')"
-            pattern="^[a-zA-Z]([a-zA-Z0-9]+)?$"
-            :pattern-tip="$t('deployService.form.applicationTip')"
-          ></let-input>
-        </let-form-item>
-        <let-form-item :label="$t('deployService.form.serviceName')" required>
-          <let-input
-            size="small"
-            v-model="deployObj.server"
-            :placeholder="$t('deployService.form.serviceFormatTips')"
-            required
-            :required-tip="$t('deployService.form.serviceTips')"
-            pattern="^[a-zA-Z]([a-zA-Z0-9]+)?$"
-            :pattern-tip="$t('deployService.form.serviceFormatTips')"
-          ></let-input>
-        </let-form-item>
-        <let-form-item :label="$t('deployService.form.template')" required>
-          <let-select
-            size="small"
-            v-model="deployObj.template"
-            required
-            :required-tip="$t('deployService.form.templateTips')"
-          >
-            <let-option v-for="d in templates" :key="d" :value="d">{{
-              d
-            }}</let-option>
-          </let-select>
-        </let-form-item>
-        <let-table :data="deployObj.servants">
-          <let-table-column title="OBJ" width="150px">
-            <template slot="head" slot-scope="props">
-              <span class="required">{{ props.column.title }}</span>
-            </template>
-            <template slot-scope="props">
-              <let-input
-                size="small"
-                disabled
-                v-model="props.row.name"
-                :placeholder="$t('deployService.form.placeholder')"
-                required
-                :required-tip="$t('deployService.form.objTips')"
-                pattern="^[a-zA-Z0-9]+$"
-                :pattern-tip="$t('deployService.form.placeholder')"
-              ></let-input>
-            </template>
-          </let-table-column>
-          <let-table-column
-            :title="$t('deployService.table.th.port')"
-            width="90px"
-          >
-            <template slot="head" slot-scope="props">
-              <span class="required">{{ props.column.title }}</span>
-            </template>
-            <template slot-scope="props">
-              <let-input
-                size="small"
-                type="number"
-                :min="0"
-                :max="65535"
-                v-model="props.row.port"
-                placeholder="0-65535"
-                required
-                :required-tip="$t('deployService.table.tips.empty')"
-              ></let-input>
-            </template>
-          </let-table-column>
-          <let-table-column
-            :title="$t('deployService.form.portType')"
-            width="150px"
-          >
-            <template slot="head" slot-scope="props">
-              <span class="required">{{ props.column.title }}</span>
-            </template>
-            <template slot-scope="props">
-              <let-radio disabled v-model="props.row.isTcp" :label="true"
-                >TCP</let-radio
-              >
-              <let-radio disabled v-model="props.row.isTcp" :label="false"
-                >UDP</let-radio
-              >
-            </template>
-          </let-table-column>
-          <let-table-column
-            :title="$t('deployService.table.th.protocol')"
-            width="180px"
-          >
-            <template slot="head" slot-scope="props">
-              <span class="required">{{ props.column.title }}</span>
-            </template>
-            <template slot-scope="props">
-              <let-radio disabled v-model="props.row.isTars" :label="true"
-                >TARS</let-radio
-              >
-              <let-radio disabled v-model="props.row.isTars" :label="false">{{
-                $t("serverList.servant.notTARS")
-              }}</let-radio>
-            </template>
-          </let-table-column>
-          <let-table-column
-            :title="$t('deployService.table.th.threads')"
-            width="60px"
-          >
-            <template slot="head" slot-scope="props">
-              <span class="required">{{ props.column.title }}</span>
-            </template>
-            <template slot-scope="props">
-              <let-input
-                size="small"
-                type="number"
-                :min="0"
-                v-model="props.row.thread"
-                required
-                :required-tip="$t('deployService.table.tips.empty')"
-              ></let-input>
-            </template>
-          </let-table-column>
-          <let-table-column
-            :title="$t('serverList.servant.connections')"
-            width="90px"
-          >
-            <template slot="head" slot-scope="props">
-              <span class="required">{{ props.column.title }}</span>
-            </template>
-            <template slot-scope="props">
-              <let-input
-                size="small"
-                type="number"
-                :min="0"
-                v-model="props.row.connection"
-                required
-                :required-tip="$t('deployService.table.tips.empty')"
-              ></let-input>
-            </template>
-          </let-table-column>
-          <let-table-column
-            :title="$t('serverList.table.servant.capacity')"
-            width="90px"
-          >
-            <template slot="head" slot-scope="props">
-              <span class="required">{{ props.column.title }}</span>
-            </template>
-            <template slot-scope="props">
-              <let-input
-                size="small"
-                type="number"
-                :min="0"
-                v-model="props.row.capacity"
-                required
-                :required-tip="$t('deployService.table.tips.empty')"
-              ></let-input>
-            </template>
-          </let-table-column>
-          <let-table-column
-            :title="$t('serverList.table.servant.timeout')"
-            width="120px"
-          >
-            <template slot-scope="props">
-              <let-input
-                size="small"
-                type="number"
-                :min="0"
-                v-model="props.row.timeout"
-              ></let-input>
-            </template>
-          </let-table-column>
-        </let-table>
-        <let-button type="submit" theme="primary">{{
-          $t("common.submit")
-        }}</let-button>
-      </let-form> -->
     </el-dialog>
 
     <el-dialog
@@ -300,22 +115,21 @@ export default {
         })
         .then((res) => {
           loading.hide();
-          this.$message({
-            message: `${this.$t("common.success")}`,
-            type: "success",
-          });
+
+          this.$common.showSucc();
         })
         .catch((err) => {
           loading.hide();
+          this.$common.showError(err);
         });
     },
     showUpgrade() {
       this.$confirm(
-        this.$t("market.deploy.upgradeInfo"),
-        this.$t("market.deploy.upgrade"),
+        this.$t("cloud.deploy.upgradeInfo"),
+        this.$t("cloud.deploy.upgrade"),
         {
-          confirmButtonText: this.$t("market.deploy.upgrade"),
-          cancelButtonText: this.$t("market.deploy.cancel"),
+          confirmButtonText: this.$t("cloud.deploy.upgrade"),
+          cancelButtonText: this.$t("cloud.deploy.cancel"),
           type: "warning",
         }
       )
@@ -356,16 +170,13 @@ export default {
         .catch((err) => {
           loading.hide();
 
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showError(err);
         });
     },
     doInstall() {
-      this.$confirm(this.$t("market.deploy.install"), "Hint", {
-        confirmButtonText: this.$t("market.deploy.confirm"),
-        cancelButtonText: this.$t("market.deploy.cancel"),
+      this.$confirm(this.$t("cloud.deploy.install"), "Hint", {
+        confirmButtonText: this.$t("cloud.deploy.confirm"),
+        cancelButtonText: this.$t("cloud.deploy.cancel"),
         type: "warning",
       })
         .then(() => {
@@ -383,26 +194,16 @@ export default {
             })
             .then((res) => {
               loading.hide();
-              this.$message({
-                message: `${this.$t("common.success")}`,
-                type: "success",
-              });
+              this.$common.showSucc();
               this.dialogVisible = false;
               this.$refs.install.closeDetailModel();
             })
             .catch((err) => {
               loading.hide();
               if (err.ret_code == 201) {
-                this.$message({
-                  showClose: true,
-                  message: this.$t("market.deploy.existsK8S"),
-                  type: "warning",
-                });
+                this.$common.showWarning(this.$t("cloud.deploy.existsK8S"));
               } else {
-                this.$message({
-                  message: err,
-                  type: "error",
-                });
+                this.$common.showError(err);
               }
             });
         })

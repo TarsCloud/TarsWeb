@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      :title="$t('market.service.install')"
+      :title="$t('cloud.service.install')"
       :visible.sync="dialogVisible"
       width="80%"
     >
@@ -422,11 +422,11 @@ export default {
     },
     showUpgrade() {
       this.$confirm(
-        this.$t("market.deploy.exists"),
-        this.$t("market.deploy.upgrade"),
+        this.$t("cloud.deploy.exists"),
+        this.$t("cloud.deploy.upgrade"),
         {
-          confirmButtonText: this.$t("market.deploy.exists"),
-          cancelButtonText: this.$t("market.deploy.cancel"),
+          confirmButtonText: this.$t("cloud.deploy.exists"),
+          cancelButtonText: this.$t("cloud.deploy.cancel"),
           type: "warning",
         }
       )
@@ -497,9 +497,7 @@ export default {
           this.applicationList = data;
         })
         .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
+          this.$common.showError(err);
         });
 
       this.$ajax
@@ -508,9 +506,7 @@ export default {
           this.nodeList = data;
         })
         .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
+          this.$common.showError(err);
         });
 
       this.$ajax
@@ -519,9 +515,7 @@ export default {
           this.templates = data;
         })
         .catch((err) => {
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
+          this.$common.showError(err);
         });
     },
     fetchServiceVersion() {
@@ -543,10 +537,7 @@ export default {
         .catch((err) => {
           loading.hide();
 
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showError(err);
         });
     },
     //升级native版本
@@ -565,7 +556,7 @@ export default {
           "-" +
           this.model.adapters[i].node_name;
         if (objNode.indexOf(oo) != -1) {
-          this.$tip.error(`${this.$t("deployService.infos.objNodedupErr")}`);
+          this.$common.showError(this.$t("deployService.infos.objNodedupErr"));
           return;
         } else {
           objNode.push(oo);
@@ -596,9 +587,7 @@ export default {
         })
         .catch((err) => {
           loading.hide();
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
+          this.$common.showError(err);
         });
     },
     getAutoPort() {
@@ -618,14 +607,12 @@ export default {
         })
         .catch((err) => {
           loading.hide();
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
+          this.$common.showError(err);
         });
     },
     next() {
       if (this.selectNodeList.length == 0) {
-        this.$tip.error(`${this.$t("deployService.form.nodeListTip")}`);
+        this.$common.showError(this.$t("deployService.form.nodeListTip"));
         return;
       }
       this.dialogVisible = false;
@@ -659,7 +646,7 @@ export default {
       this.$refs.publishStatus.savePublishServer(this.publishModal);
     },
     publishService(application, server_name) {
-      const loading = this.$Loading.show(this.$t("market.service.installing"));
+      const loading = this.$Loading.show(this.$t("cloud.service.installing"));
 
       // console.log("start", this.deployObj);
       let url = "";
@@ -676,11 +663,7 @@ export default {
 
       let socket = new WebSocket(url, "upload-protocol");
       socket.onopen = () => {
-        // let image = this.serviceVersion.prefix + this.serviceVersion.image;
         let image = this.serviceVersion.prefix + this.serviceVersion.bin;
-        // let image = "/static/image.tgz";
-
-        // console.log("open websocket, image:", image);
 
         let Ajax = new AjaxUtil();
         Ajax.getPlain(image)
@@ -713,12 +696,8 @@ export default {
                           break;
                         }
                       }
-                      // socket.send(value);
                     } else {
-                      that.$message({
-                        message: that.$t("common.error"),
-                        type: "error",
-                      });
+                      this.$common.showError();
                       controller.close();
                       return;
                     }
@@ -732,11 +711,7 @@ export default {
             });
           })
           .catch((err) => {
-            that.$message({
-              message: `${that.$t("common.error")}: ${err.message ||
-                err.err_msg}`,
-              type: "error",
-            });
+            this.$common.showError(err);
           });
       };
 
@@ -764,10 +739,7 @@ export default {
         let rst = JSON.parse(msg.data);
 
         if (rst.code != 200) {
-          that.$message({
-            message: `${that.$t("common.error")}`,
-            type: "error",
-          });
+          this.$common.showError();
         } else {
           let patchId = rst.data.id;
           let serverId = rst.data.serverIds;
@@ -814,21 +786,11 @@ export default {
             }
           })
           .catch((err) => {
+            this.$common.showError(err);
             loading.hide();
-            this.$tip.error(
-              `${this.$t("common.error")}: ${err.message || err.err_msg}`
-            );
           });
       }
     },
   },
 };
 </script>
-
-<style>
-.set_inputer_item {
-  float: left;
-  margin-right: 8px;
-  width: 126px;
-}
-</style>

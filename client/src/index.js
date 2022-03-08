@@ -28,8 +28,9 @@ import "./assets/theme/element-to-let/index.css"
 
 import './plugins/ui';
 import './plugins/ajax';
+import './plugins/common';
+import './plugins/cloud';
 
-import './plugins/market';
 import $ from "n-zepto";
 
 import indexApp from './indexApp';

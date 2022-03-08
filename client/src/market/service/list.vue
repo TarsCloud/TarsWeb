@@ -17,7 +17,7 @@
               style="float: right;"
               v-model="isVisible[i + '_' + j]"
             >
-              {{ $t("market.service.versionList") }}
+              {{ $t("cloud.service.versionList") }}
               <el-select
                 v-if="serviceVersion"
                 v-model="version"
@@ -37,7 +37,7 @@
                 size="small"
                 style="line-height:25px; padding: 0px 10px 0 10px"
                 @click="changeVersion(i, j)"
-                >{{ $t("market.service.change") }}</el-button
+                >{{ $t("cloud.service.change") }}</el-button
               >
               <el-badge
                 slot="reference"
@@ -49,7 +49,7 @@
                   size="small"
                   style="line-height:25px; padding: 0px 10px 0 10px"
                   @click="fetchVersionListData(i, j)"
-                  >{{ $t("market.service.changeVersion") }}</el-button
+                  >{{ $t("cloud.service.changeVersion") }}</el-button
                 >
               </el-badge>
               <el-button
@@ -58,7 +58,7 @@
                 size="small"
                 style="line-height:25px; padding: 0px 10px 0 10px"
                 @click="fetchVersionListData(i, j)"
-                >{{ $t("market.service.changeVersion") }}</el-button
+                >{{ $t("cloud.service.changeVersion") }}</el-button
               >
             </el-popover>
           </div>
@@ -188,10 +188,7 @@ export default {
           this.fetchCheckUpgrade();
         })
         .catch((err) => {
-          this.$message({
-            message: err.err_msg,
-            type: "error",
-          });
+          this.$common.showError(err);
         });
     },
     fetchServiceVersionData(i, j, callback) {
@@ -217,10 +214,7 @@ export default {
           });
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showCloudError("marketRet", err);
         });
     },
     fetchVersionListData(i, j) {
@@ -239,10 +233,7 @@ export default {
             this.isVisible[i + "_" + j] = true;
           })
           .catch((err) => {
-            this.$message({
-              message: err,
-              type: "error",
-            });
+            this.$common.showCloudError("marketRet", err);
           });
       });
     },
@@ -303,10 +294,7 @@ export default {
           });
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showCloudError("marketRet", err);
         });
     },
     upgradeSucc() {
@@ -333,10 +321,7 @@ export default {
           });
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showCloudError("marketRet", err);
         });
     },
   },
