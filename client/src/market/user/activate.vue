@@ -2,13 +2,13 @@
   <div>
     <el-card class="box-card market_page">
       <el-alert
-        :title="$t('market.login.registerSucc')"
+        :title="$t('cloud.login.registerSucc')"
         type="success"
       ></el-alert>
 
       <div>
         <h1 class="top_txt">
-          {{ $t("market.login.activing") }}
+          {{ $t("cloud.login.activing") }}
         </h1>
       </div>
 
@@ -19,22 +19,22 @@
         label-position="left"
         :rules="rules"
       >
-        <el-form-item :label="$t('market.login.userName')" prop="uid" required>
+        <el-form-item :label="$t('cloud.login.userName')" prop="uid" required>
           <el-input
             v-model="login.uid"
-            :placeholder="$t('market.login.inputUserName')"
+            :placeholder="$t('cloud.login.inputUserName')"
             prefix-icon="el-icon-message"
           ></el-input>
         </el-form-item>
 
         <el-form-item
-          :label="$t('market.login.activeCode')"
+          :label="$t('cloud.login.activeCode')"
           prop="activeCode"
           required
         >
           <el-input
             v-model="login.activeCode"
-            :placeholder="$t('market.login.inputActiveCode')"
+            :placeholder="$t('cloud.login.inputActiveCode')"
             prefix-icon="el-icon-bell"
           ></el-input>
         </el-form-item>
@@ -45,13 +45,13 @@
           size="small"
           round
           @click="activate"
-          >{{ $t("market.login.activated") }}</el-button
+          >{{ $t("cloud.login.activated") }}</el-button
         >
         <br />
         <br />
         <div class="sub_menu">
           <a size="small" round @click="show_login">{{
-            $t("market.login.back")
+            $t("cloud.login.back")
           }}</a>
         </div>
       </el-form>
@@ -67,13 +67,13 @@ export default {
     var validateEmail = (rule, value, callback) => {
       const mailReg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       if (!value) {
-        return callback(new Error(this.$t("market.login.userNameRegTips")));
+        return callback(new Error(this.$t("cloud.login.userNameRegTips")));
       }
       setTimeout(() => {
         if (mailReg.test(value)) {
           callback();
         } else {
-          callback(new Error(this.$t("market.login.userNameRegTips")));
+          callback(new Error(this.$t("cloud.login.userNameRegTips")));
         }
       }, 100);
     };
@@ -87,16 +87,16 @@ export default {
         uid: [
           {
             required: true,
-            message: this.$t("market.login.inputUserName"),
+            message: this.$t("cloud.login.inputUserName"),
             trigger: "blur",
           },
-          { message: this.$t("market.login.userNameRegTips"), trigger: "blur" },
+          { message: this.$t("cloud.login.userNameRegTips"), trigger: "blur" },
           { validator: validateEmail, trigger: "blur" },
         ],
         activeCode: [
           {
             required: true,
-            message: this.$t("market.login.inputActiveCode"),
+            message: this.$t("cloud.login.inputActiveCode"),
             trigger: "blur",
           },
         ],
@@ -119,20 +119,14 @@ export default {
           activeCode: this.login.activeCode,
         })
         .then(() => {
-          this.$message({
-            message: this.$t("market.login.activateSuccAndRedirect"),
-            type: "success",
-          });
+          this.$common.showSucc(this.$t("cloud.login.activateSuccAndRedirect"));
 
           setTimeout(() => {
             this.$router.push("/market/user/login");
           }, 1000);
         })
         .catch((err) => {
-          this.$message({
-            message: this.$t("market.userRet." + err.tars_ret || "-1"),
-            type: "warning",
-          });
+          this.$common.showCloudError("userRet", err);
         });
     },
   },

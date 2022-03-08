@@ -384,9 +384,7 @@ export default {
         this.applicationList = data;
       })
       .catch((err) => {
-        this.$tip.error(
-          `${this.$t("common.error")}: ${err.message || err.err_msg}`
-        );
+        this.$common.showError(err);
       });
 
     this.$ajax
@@ -395,9 +393,7 @@ export default {
         this.nodeList = data;
       })
       .catch((err) => {
-        this.$tip.error(
-          `${this.$t("common.error")}: ${err.message || err.err_msg}`
-        );
+        this.$common.showError(err);
       });
 
     this.$ajax
@@ -409,9 +405,7 @@ export default {
         this.model.template_name = data[0];
       })
       .catch((err) => {
-        this.$tip.error(
-          `${this.$t("common.error")}: ${err.message || err.err_msg}`
-        );
+        this.$common.showError(err);
       });
 
     this.$watch("props.row.node_name", (val, oldVal) => {
@@ -442,7 +436,7 @@ export default {
           "-" +
           this.model.adapters[i].node_name;
         if (objNode.indexOf(oo) != -1) {
-          this.$tip.error(`${this.$t("deployService.infos.objNodedupErr")}`);
+          this.$common.showError(this.$t("deployService.infos.objNodedupErr"));
           return;
         } else {
           objNode.push(oo);
@@ -462,16 +456,14 @@ export default {
             if (data.tars_node_rst && data.tars_node_rst.length) {
               this.showResultModal(data.tars_node_rst);
             } else {
-              this.$tip.success(this.$t("deployService.form.ret.success"));
+              this.$common.showSucc(this.$t("deployService.form.ret.success"));
             }
             this.model = getInitialModel();
             this.model.template_name = this.templates[0];
           })
           .catch((err) => {
             loading.hide();
-            this.$tip.error(
-              `${this.$t("common.error")}: ${err.message || err.err_msg}`
-            );
+            this.$common.showError(err);
           });
       });
     },
@@ -492,9 +484,7 @@ export default {
         })
         .catch((err) => {
           loading.hide();
-          this.$tip.error(
-            `${this.$t("common.error")}: ${err.message || err.err_msg}`
-          );
+          this.$common.showError(err);
         });
     },
     save() {
@@ -511,7 +501,9 @@ export default {
         !this.applicationList.includes(this.model.application) ||
         !appReg.test(this.model.application)
       ) {
-        this.$tip.error(`${this.$t("deployService.form.applicationTip")}`);
+        this.$common.showError(
+          `${this.$t("deployService.form.applicationTip")}`
+        );
         return;
       }
 
@@ -535,16 +527,16 @@ export default {
             loading.hide();
 
             if (data) {
-              this.$tip.error(this.$t("deployService.form.nameTips"));
+              this.$common.showError(
+                `${this.$t("deployService.form.nameTips")}`
+              );
             } else {
               this.deploy();
             }
           })
           .catch((err) => {
             loading.hide();
-            this.$tip.error(
-              `${this.$t("common.error")}: ${err.message || err.err_msg}`
-            );
+            this.$common.showError(err);
           });
       }
     },

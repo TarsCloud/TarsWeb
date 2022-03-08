@@ -683,9 +683,9 @@ export default {
       }
     },
     addTag(NodeName) {
-      this.$confirm(this.$t("market.deploy.install"), "Hint", {
-        confirmButtonText: this.$t("market.deploy.confirm"),
-        cancelButtonText: this.$t("market.deploy.cancel"),
+      this.$confirm(this.$t("cloud.deploy.install"), "Hint", {
+        confirmButtonText: this.$t("cloud.deploy.confirm"),
+        cancelButtonText: this.$t("cloud.deploy.cancel"),
         type: "warning",
       })
         .then(() => {

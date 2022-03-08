@@ -1,13 +1,13 @@
 <template>
   <el-dialog
-    :title="$t('market.repo.auth')"
+    :title="$t('cloud.repo.auth')"
     :visible.sync="project.addDialogVisible"
     width="500px"
   >
     <el-form :rules="rules" :model="project" ref="ruleForm">
       <el-form-item
         required
-        :label="$t('market.repo.userName')"
+        :label="$t('cloud.repo.userName')"
         prop="uid"
         label-width="200"
       >
@@ -15,7 +15,7 @@
           style="width:100%"
           v-model="project.uid"
           :fetch-suggestions="searchUserName"
-          :placeholder="$t('market.repo.inputUser')"
+          :placeholder="$t('cloud.repo.inputUser')"
           :trigger-on-focus="false"
           @select="handleSelect"
           :suffix-icon="suffixIcon"
@@ -25,13 +25,13 @@
 
     <div slot="footer" class="dialog-footer">
       <el-button @click="project.addDialogVisible = false">{{
-        $t("market.deploy.cancel")
+        $t("cloud.deploy.cancel")
       }}</el-button>
       <el-button
         type="primary"
         @click="submit"
         :disabled="suffixIcon != 'el-icon-check'"
-        >{{ $t("market.repo.auth") }}</el-button
+        >{{ $t("cloud.repo.auth") }}</el-button
       >
     </div>
   </el-dialog>
@@ -44,13 +44,13 @@ export default {
     var validateEmail = (rule, value, callback) => {
       const mailReg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       if (!value) {
-        return callback(new Error(this.$t("market.login.userNameRegTips")));
+        return callback(new Error(this.$t("cloud.login.userNameRegTips")));
       }
       setTimeout(() => {
         if (mailReg.test(value)) {
           callback();
         } else {
-          callback(new Error(this.$t("market.login.userNameRegTips")));
+          callback(new Error(this.$t("cloud.login.userNameRegTips")));
         }
       }, 100);
     };
@@ -68,10 +68,10 @@ export default {
         uid: [
           {
             required: true,
-            message: this.$t("market.login.inputUserName"),
+            message: this.$t("cloud.login.inputUserName"),
             trigger: "blur",
           },
-          { message: this.$t("market.login.userNameRegTips"), trigger: "blur" },
+          { message: this.$t("cloud.login.userNameRegTips"), trigger: "blur" },
           { validator: validateEmail, trigger: "blur" },
         ],
       },
@@ -118,7 +118,9 @@ export default {
               this.uids = data.uids;
               doCallback(this.uids);
             })
-            .catch((err) => {});
+            .catch((err) => {
+              this.$common.showCloudError("repoRet", err);
+            });
         } else {
           doCallback(results || []);
         }
@@ -136,18 +138,12 @@ export default {
               uid: this.project.uid,
             })
             .then((data) => {
-              this.$message({
-                message: this.$t("market.repo.createMemberSucc"),
-                type: "success",
-              });
+              this.$common.showSucc(this.$t("cloud.repo.createMemberSucc"));
 
               this.closeDialog();
             })
             .catch((err) => {
-              this.$message({
-                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
-                type: "error",
-              });
+              this.$common.showCloudError("repoRet", err);
             });
         }
       });

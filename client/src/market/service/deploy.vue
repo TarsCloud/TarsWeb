@@ -34,16 +34,11 @@ export default {
           if (data.ok) {
             data.text().then((content) => {
               this.data.deploy = content;
-
-              // this.$refs.yamlEdit.refresh();
             });
           }
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showError(err);
         });
     },
   },

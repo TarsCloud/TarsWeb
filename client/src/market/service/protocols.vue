@@ -3,7 +3,7 @@
     <el-tabs type="border-card">
       <el-tab-pane v-for="p in protocols" :label="p.name" :key="p.name">
         <el-tag type="success" @click="download(p.name)">{{
-          $t("market.download")
+          $t("cloud.download")
         }}</el-tag>
         <br />
         <br />
@@ -50,10 +50,7 @@ export default {
             }
           })
           .catch((err) => {
-            this.$message({
-              message: err,
-              type: "error",
-            });
+            this.$common.showError(err);
           });
       }
     },

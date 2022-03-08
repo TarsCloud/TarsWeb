@@ -1,19 +1,19 @@
 <template>
   <el-dialog
-    :title="$t('market.repo.project')"
+    :title="$t('cloud.repo.project')"
     :visible.sync="project.addDialogVisible"
     width="500px"
   >
     <el-form :rules="rules" :model="project" ref="ruleForm">
       <el-form-item
         required
-        :label="$t('market.repo.projectName')"
+        :label="$t('cloud.repo.projectName')"
         prop="project"
         label-width="200"
       >
         <el-input
           v-model="project.project"
-          :placeholder="$t('market.repo.inputProjectName')"
+          :placeholder="$t('cloud.repo.inputProjectName')"
           maxlength="40"
           @input="inputProjectName"
           :suffix-icon="suffixIcon"
@@ -23,10 +23,10 @@
 
     <div slot="footer" class="dialog-footer">
       <el-button @click="project.addDialogVisible = false">{{
-        $t("market.deploy.cancel")
+        $t("cloud.deploy.cancel")
       }}</el-button>
       <el-button type="primary" @click="submit">{{
-        $t("market.repo.project")
+        $t("cloud.repo.project")
       }}</el-button>
     </div>
   </el-dialog>
@@ -44,7 +44,7 @@ export default {
     };
     var validateProjectName = (rule, value, callback) => {
       if (!nameIsValid(value)) {
-        callback(new Error(this.$t("market.repo.projectNameRegTips")));
+        callback(new Error(this.$t("cloud.repo.projectNameRegTips")));
       } else {
         callback();
       }
@@ -60,11 +60,7 @@ export default {
         project: [
           {
             required: true,
-            message: "项目名称不能为空",
-            trigger: "blur",
-          },
-          {
-            message: this.$t("market.repo.projectNameRegTips"),
+            message: this.$t("cloud.repo.projectNameRegTips"),
             trigger: "blur",
           },
           { validator: validateProjectName, trigger: "blur" },
@@ -114,18 +110,12 @@ export default {
               project: this.project.project,
             })
             .then((data) => {
-              this.$message({
-                message: this.$t("market.repo.createProjectSucc"),
-                type: "success",
-              });
+              this.$common.showSucc(this.$t("cloud.repo.createProjectSucc"));
 
               this.closeDialog();
             })
             .catch((err) => {
-              this.$message({
-                message: this.$t("market.marketRet." + err.tars_ret || "-1"),
-                type: "error",
-              });
+              this.$common.showCloudError("repoRet", err);
             });
         }
       });

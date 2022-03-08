@@ -2,7 +2,7 @@
   <div>
     <!-- 重置密码 -->
     <el-card class="box-card market_page">
-      <h1 class="top_txt">{{ $t("market.login.resetPass") }}</h1>
+      <h1 class="top_txt">{{ $t("cloud.login.resetPass") }}</h1>
       <el-form
         label-width="200px"
         :model="data"
@@ -10,43 +10,43 @@
         label-position="left"
         :rules="rules"
       >
-        <el-form-item :label="$t('market.login.userName')" prop="uid" required>
+        <el-form-item :label="$t('cloud.login.userName')" prop="uid" required>
           <el-input
             v-model="data.uid"
-            :placeholder="$t('market.login.inputUserName')"
+            :placeholder="$t('cloud.login.inputUserName')"
             prefix-icon="el-icon-message"
           ></el-input>
         </el-form-item>
 
         <el-form-item
-          :label="$t('market.login.inputPassword')"
+          :label="$t('cloud.login.inputPassword')"
           prop="password"
           required
         >
           <el-input
-            :placeholder="$t('market.login.passwordInfo')"
+            :placeholder="$t('cloud.login.passwordInfo')"
             v-model="data.password"
             show-password
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('market.login.repeatPassword')"
+          :label="$t('cloud.login.repeatPassword')"
           prop="checkPass"
           required
         >
           <el-input
-            :placeholder="$t('market.login.inputRepeatPassword')"
+            :placeholder="$t('cloud.login.inputRepeatPassword')"
             v-model="data.checkPass"
             show-password
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('market.login.activeCode')"
+          :label="$t('cloud.login.activeCode')"
           prop="activeCode"
           required
         >
           <el-input
-            :placeholder="$t('market.login.inputActiveCode')"
+            :placeholder="$t('cloud.login.inputActiveCode')"
             v-model="data.activeCode"
             show-password
           ></el-input>
@@ -56,15 +56,15 @@
             <el-input
               prefix-icon="el-icon-finished"
               type="text"
-              :placeholder="$t('market.login.captcha')"
+              :placeholder="$t('cloud.login.captcha')"
               v-model="data.captcha"
               required
-              :required-tip="$t('market.login.captchaTips')"
+              :required-tip="$t('cloud.login.captchaTips')"
               @keydown.enter="login"
             ></el-input>
             <img
               class="captcha_code"
-              :title="$t('market.login.refresh')"
+              :title="$t('cloud.login.refresh')"
               :src="data.captchaUrl"
               @click="reloadCaptcha"
             />
@@ -72,13 +72,13 @@
         </el-form-item>
 
         <el-button type="primary" size="small" round @click="resetPass">{{
-          $t("market.login.resetPass")
+          $t("cloud.login.resetPass")
         }}</el-button>
         <br />
         <br />
         <div class="sub_menu">
           <a size="small" round @click="show_login">{{
-            $t("market.login.back")
+            $t("cloud.login.back")
           }}</a>
         </div>
       </el-form>
@@ -107,9 +107,9 @@ export default {
 
     var validatePass = (rule, value, callback) => {
       if (value.length < 8) {
-        callback(new Error(this.$t("market.login.passwordInfo")));
+        callback(new Error(this.$t("cloud.login.passwordInfo")));
       } else if (!passwordIsValid(value)) {
-        callback(new Error(this.$t("market.login.passwordInfo")));
+        callback(new Error(this.$t("cloud.login.passwordInfo")));
       } else {
         callback();
       }
@@ -118,21 +118,21 @@ export default {
     var validateEmail = (rule, value, callback) => {
       const mailReg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       if (!value) {
-        return callback(new Error(this.$t("market.login.userNameRegTips")));
+        return callback(new Error(this.$t("cloud.login.userNameRegTips")));
       }
       setTimeout(() => {
         if (mailReg.test(value)) {
           callback();
         } else {
-          callback(new Error(this.$t("market.login.userNameRegTips")));
+          callback(new Error(this.$t("cloud.login.userNameRegTips")));
         }
       }, 100);
     };
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error(this.$t("market.login.inputPasswordAgain")));
+        callback(new Error(this.$t("cloud.login.inputPasswordAgain")));
       } else if (value !== this.data.password) {
-        callback(new Error(this.$t("market.login.passwordDiff")));
+        callback(new Error(this.$t("cloud.login.passwordDiff")));
       } else {
         callback();
       }
@@ -151,22 +151,22 @@ export default {
         uid: [
           {
             required: true,
-            message: this.$t("market.login.inputUserName"),
+            message: this.$t("cloud.login.inputUserName"),
             trigger: "blur",
           },
-          { message: this.$t("market.login.userNameRegTips"), trigger: "blur" },
+          { message: this.$t("cloud.login.userNameRegTips"), trigger: "blur" },
           { validator: validateEmail, trigger: "blur" },
         ],
         password: [
           {
             required: true,
-            message: this.$t("market.login.inputPassword"),
+            message: this.$t("cloud.login.inputPassword"),
             trigger: "blur",
           },
           {
             min: 8,
             max: 16,
-            message: this.$t("market.login.passwordInfo"),
+            message: this.$t("cloud.login.passwordInfo"),
             trigger: "blur",
           },
           { validator: validatePass, trigger: "blur" },
@@ -174,13 +174,13 @@ export default {
         checkPass: [
           {
             required: true,
-            message: this.$t("market.login.inputPassword"),
+            message: this.$t("cloud.login.inputPassword"),
             trigger: "blur",
           },
           {
             min: 8,
             max: 16,
-            message: this.$t("market.login.passwordInfo"),
+            message: this.$t("cloud.login.passwordInfo"),
             trigger: "blur",
           },
         ],
@@ -188,7 +188,7 @@ export default {
         activeCode: [
           {
             required: true,
-            message: this.$t("market.login.inputPassword"),
+            message: this.$t("cloud.login.inputPassword"),
             trigger: "blur",
           },
         ],
@@ -208,10 +208,7 @@ export default {
           this.data.session = data.ci.session;
         })
         .catch((err) => {
-          this.$message({
-            message: err.err_msg,
-            type: "error",
-          });
+          this.$common.showCloudError("userRet", err);
         });
     },
     resetPass: function() {
@@ -228,20 +225,14 @@ export default {
               },
             })
             .then((data) => {
-              this.$message({
-                message: this.$t("market.login.findPasswordSucc"),
-                type: "success",
-              });
+              this.$common.showSucc(this.$t("cloud.login.findPasswordSucc"));
 
               window.localStorage.uid = this.data.uid;
 
               this.$router.push("/market/user/login");
             })
             .catch((err) => {
-              this.$message({
-                message: this.$t("market.userRet." + err.tars_ret || "-1"),
-                type: "error",
-              });
+              this.$common.showCloudError("userRet", err);
             });
         } else {
           return false;

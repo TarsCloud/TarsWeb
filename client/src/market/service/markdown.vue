@@ -3,7 +3,7 @@
     <div class="markdown-body hljs" v-html="html"></div>
     <div class="fix_nav">
       <div class="tit_index">
-        {{ $t("market.index.directory") }}
+        {{ $t("cloud.index.directory") }}
       </div>
       <ul></ul>
       <div class="cur_bg"></div>
@@ -137,10 +137,7 @@ export default {
           }
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showError(err);
         });
     },
   },

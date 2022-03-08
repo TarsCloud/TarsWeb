@@ -2,7 +2,7 @@
   <div>
     <!-- 重置密码 -->
     <el-card class="box-card market_page">
-      <h1 class="top_txt">{{ $t("market.repo.resetPass") }}</h1>
+      <h1 class="top_txt">{{ $t("cloud.repo.resetPass") }}</h1>
       <el-form
         label-width="200px"
         :model="data"
@@ -11,34 +11,34 @@
         :rules="rules"
       >
         <el-form-item
-          :label="$t('market.repo.inputPassword')"
+          :label="$t('cloud.repo.inputPassword')"
           prop="password"
           required
         >
           <el-input
-            :placeholder="$t('market.repo.passwordInfo')"
+            :placeholder="$t('cloud.repo.passwordInfo')"
             v-model="data.password"
             show-password
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('market.repo.repeatPassword')"
+          :label="$t('cloud.repo.repeatPassword')"
           prop="checkPass"
           required
         >
           <el-input
-            :placeholder="$t('market.repo.inputRepeatPassword')"
+            :placeholder="$t('cloud.repo.inputRepeatPassword')"
             v-model="data.checkPass"
             show-password
           ></el-input>
         </el-form-item>
         <el-button type="primary" size="small" round @click="createRepoUser">{{
-          $t("market.repo.resetPass")
+          $t("cloud.repo.resetPass")
         }}</el-button>
         <br />
         <br />
         <div class="sub_menu">
-          <a size="small" round @click="back">{{ $t("market.repo.back") }}</a>
+          <a size="small" round @click="back">{{ $t("cloud.repo.back") }}</a>
         </div>
       </el-form>
     </el-card>
@@ -65,9 +65,9 @@ export default {
 
     var validatePass = (rule, value, callback) => {
       if (value.length < 8) {
-        callback(new Error(this.$t("market.repo.passwordInfo")));
+        callback(new Error(this.$t("cloud.repo.passwordInfo")));
       } else if (!passwordIsValid(value)) {
-        callback(new Error(this.$t("market.repo.passwordInfo")));
+        callback(new Error(this.$t("cloud.repo.passwordInfo")));
       } else {
         callback();
       }
@@ -75,9 +75,9 @@ export default {
 
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error(this.$t("market.login.inputPasswordAgain")));
+        callback(new Error(this.$t("cloud.login.inputPasswordAgain")));
       } else if (value !== this.data.password) {
-        callback(new Error(this.$t("market.login.passwordDiff")));
+        callback(new Error(this.$t("cloud.login.passwordDiff")));
       } else {
         callback();
       }
@@ -92,13 +92,13 @@ export default {
         password: [
           {
             required: true,
-            message: this.$t("market.repo.inputPassword"),
+            message: this.$t("cloud.repo.inputPassword"),
             trigger: "blur",
           },
           {
             min: 8,
             max: 16,
-            message: this.$t("market.repo.passwordInfo"),
+            message: this.$t("cloud.repo.passwordInfo"),
             trigger: "blur",
           },
           { validator: validatePass, trigger: "blur" },
@@ -106,13 +106,13 @@ export default {
         checkPass: [
           {
             required: true,
-            message: this.$t("market.repo.inputPassword"),
+            message: this.$t("cloud.repo.inputPassword"),
             trigger: "blur",
           },
           {
             min: 8,
             max: 16,
-            message: this.$t("market.repo.passwordInfo"),
+            message: this.$t("cloud.repo.passwordInfo"),
             trigger: "blur",
           },
         ],
@@ -120,7 +120,7 @@ export default {
         activeCode: [
           {
             required: true,
-            message: this.$t("market.repo.inputPassword"),
+            message: this.$t("cloud.repo.inputPassword"),
             trigger: "blur",
           },
         ],
@@ -139,20 +139,14 @@ export default {
               password: this.data.password,
             })
             .then((data) => {
-              this.$message({
-                message: this.$t("market.repo.resetPassSucc"),
-                type: "success",
-              });
+              this.$common.showSucc(this.$t("cloud.repo.resetPassSucc"));
 
               setTimeout(() => {
                 this.$router.go(-1);
               }, 1000);
             })
             .catch((err) => {
-              this.$message({
-                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
-                type: "error",
-              });
+              this.$common.showCloudError("repoRet", err);
             });
         } else {
           return false;

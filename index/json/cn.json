@@ -2125,7 +2125,7 @@
             }
         }
     },
-    "market": {
+    "cloud": {
         "index": {
             "search": "请输入搜索关键字",
             "directory": "本页目录",
@@ -2208,6 +2208,8 @@
             "repoList": "仓库列表",
             "repoName": "镜像仓库名称",
             "downloadCount": "下载数",
+            "deleteAuth": "确定取消该用户的权限么?",
+            "deleteProj": "确定删除该项目么?",
             "deleteRepo": "确定删除该镜像仓库么",
             "resetPass": "重置仓库密码",
             "password": "密码",
@@ -2249,8 +2251,31 @@
             "log": "日志",
             "installing": "正在安装中, 请耐心等候...",
             "versionList": "版本列表",
+            "commet": "Issues",
             "change": "切换",
             "changeVersion": "切换版本"
+        },
+        "commet": {
+            "add": "发表问题",
+            "user": "发帖人",
+            "title": "标题",
+            "content": "内容",
+            "createTime": "发帖时间",
+            "replyTime": "最新回复时间",
+            "count": "发帖数",
+            "inputTitle": "请输入标题",
+            "inputContent": "请输入内容",
+            "deletePost": "确定要删除当前帖子么?",
+            "reply": "回帖"
+        },
+        "commetRet": {
+            "0": "操作成功",
+            "-1": "系统繁忙",
+            "-2": "用户不存在",
+            "-3": "存储系统故障",
+            "-4": "生成帖子ID失败",
+            "-5": "无权限",
+            "-6": "参数非法"
         },
         "userRet": {
             "0": "操作成功",

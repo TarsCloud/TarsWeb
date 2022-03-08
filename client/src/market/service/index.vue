@@ -1,5 +1,5 @@
 <template>
-  <div style="width:75%">
+  <div :style="width">
     <el-header class="header">
       <el-row :gutter="24" v-if="serviceVersion">
         <el-col :span="3">
@@ -28,7 +28,7 @@
             <div style="margin-bottom:5px">
               <span style="margin-bottom:10px; margin-right:10px">
                 <el-tag effect="dark" size="mini" style=" margin-right:5px">{{
-                  $t("market.service.lang")
+                  $t("cloud.service.lang")
                 }}</el-tag
                 ><el-tag effect="plain" type="success" size="mini">{{
                   serviceVersion.lang
@@ -38,7 +38,7 @@
             <div style="margin-bottom:5px">
               <span style="margin-bottom:10px; margin-right:10px">
                 <el-tag effect="dark" size="mini" style=" margin-right:5px">{{
-                  $t("market.service.developer")
+                  $t("cloud.service.developer")
                 }}</el-tag
                 ><el-tag
                   effect="plain"
@@ -58,7 +58,7 @@
                   type="warning"
                   size="mini"
                   style=" margin-right:5px"
-                  >{{ $t("market.service.project") }}</el-tag
+                  >{{ $t("cloud.service.project") }}</el-tag
                 ><el-tag
                   effect="plain"
                   type="warning"
@@ -76,7 +76,7 @@
                   size="mini"
                   type="danger"
                   style=" margin-right:5px"
-                  >{{ $t("market.service.create") }}</el-tag
+                  >{{ $t("cloud.service.create") }}</el-tag
                 ><el-tag effect="plain" type="danger" size="mini">{{
                   serviceVersion.create_time
                 }}</el-tag>
@@ -88,7 +88,7 @@
                   size="mini"
                   type="danger"
                   style=" margin-right:5px"
-                  >{{ $t("market.service.update") }}</el-tag
+                  >{{ $t("cloud.service.update") }}</el-tag
                 ><el-tag effect="plain" type="danger" size="mini">{{
                   serviceVersion.update_time
                 }}</el-tag>
@@ -106,7 +106,7 @@
               style="margin-top:10px; cursor: pointer"
               type="danger"
               @click="showInstall"
-              >{{ $t("market.service.install") }}</el-tag
+              >{{ $t("cloud.service.install") }}</el-tag
             >
           </span>
         </el-col>
@@ -115,37 +115,43 @@
 
     <el-main v-if="serviceVersion">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane :label="$t('market.service.service')" name="readme">
+        <el-tab-pane :label="$t('cloud.service.service')" name="readme">
           <markdown
             v-if="activeName == 'readme'"
             :serviceVersion="serviceVersion"
             :file="getReadme(serviceVersion)"
           ></markdown>
         </el-tab-pane>
-        <el-tab-pane :label="$t('market.service.deploy')" name="deploy">
+        <el-tab-pane :label="$t('cloud.service.deploy')" name="deploy">
           <deploy
             v-if="activeName == 'deploy'"
             :serviceVersion="serviceVersion"
           ></deploy>
         </el-tab-pane>
-        <el-tab-pane :label="$t('market.service.protocol')" name="protocols">
+        <el-tab-pane :label="$t('cloud.service.protocol')" name="protocols">
           <protocols
             v-if="activeName == 'protocols'"
             :serviceVersion="serviceVersion"
           ></protocols>
         </el-tab-pane>
-        <el-tab-pane :label="$t('market.service.changelist')" name="changelist">
+        <el-tab-pane :label="$t('cloud.service.changelist')" name="changelist">
           <markdown
             v-if="activeName == 'changelist'"
             :serviceVersion="serviceVersion"
             :file="serviceVersion.changelist"
           ></markdown>
         </el-tab-pane>
-        <el-tab-pane :label="$t('market.service.log')" name="logs">
+        <el-tab-pane :label="$t('cloud.service.log')" name="logs">
           <logs
             v-if="activeName == 'logs'"
             :serviceVersion="serviceVersion"
           ></logs>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('cloud.service.commet')" name="commet">
+          <commet
+            v-if="activeName == 'commet'"
+            :serviceVersion="serviceVersion"
+          ></commet>
         </el-tab-pane>
       </el-tabs>
     </el-main>
@@ -173,6 +179,7 @@ import protocols from "./protocols";
 import installNative from "./installNative";
 import installK8S from "./installK8S";
 import logs from "./logs";
+import commet from "./commet";
 
 export default {
   name: "ServiceInfo",
@@ -183,6 +190,7 @@ export default {
     installK8S,
     installNative,
     logs,
+    commet,
   },
   data() {
     return {
@@ -200,6 +208,15 @@ export default {
     $route(to, from) {
       if (to.path.startsWith("/market/service")) {
         this.loadData(to.params.group, to.params.name, to.params.version);
+      }
+    },
+  },
+  computed: {
+    width() {
+      if (this.activeName == "readme" || this.activeName == "changelist") {
+        return "width: 75%";
+      } else {
+        return "width: 100%";
       }
     },
   },
@@ -286,10 +303,7 @@ export default {
           });
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showError(err);
         });
     },
     fetchVersionListData() {
@@ -304,10 +318,7 @@ export default {
           this.versions = data.rsp.versions;
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showError(err);
         });
     },
     showInstall() {

@@ -26,7 +26,7 @@
           :show-header="false"
           @row-click="selectService"
         >
-          <el-table-column :label="$t('market.table.version')">
+          <el-table-column :label="$t('cloud.table.version')">
             <template slot-scope="props">
               <el-row :gutter="24">
                 <el-col :span="4">
@@ -154,10 +154,7 @@ export default {
           this.total = data.rsp.total;
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showError(err);
         });
     },
     checkVersion(version) {
@@ -169,20 +166,15 @@ export default {
         })
         .then((data) => {
           if (data.info.code != 0) {
-            this.$message({
-              message:
-                this.$cookie.get("locale") == "en"
-                  ? data.info.info_en
-                  : data.info.info_cn,
-              type: "error",
-            });
+            this.$common.showError(
+              this.$cookie.get("locale") == "en"
+                ? data.info.info_en
+                : data.info.info_cn
+            );
           }
         })
         .catch((err) => {
-          this.$message({
-            message: err,
-            type: "error",
-          });
+          this.$common.showError(err);
         });
     },
   },

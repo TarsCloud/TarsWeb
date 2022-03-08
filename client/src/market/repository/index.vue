@@ -5,13 +5,13 @@
       type="primary"
       @click="showAddProject()"
       size="small"
-      >{{ $t("market.repo.project") }}</el-button
+      >{{ $t("cloud.repo.project") }}</el-button
     >
     <br />
     <el-table :data="data" stripe border style="width: 100%; margin-top:20px">
       <el-table-column
         prop="project"
-        :label="$t('market.repo.projectName')"
+        :label="$t('cloud.repo.projectName')"
         min-width="150"
       >
         <template slot-scope="scope">
@@ -22,11 +22,11 @@
       </el-table-column>
       <el-table-column
         prop="repo_count"
-        :label="$t('market.repo.repoCount')"
+        :label="$t('cloud.repo.repoCount')"
         min-width="100"
       >
       </el-table-column>
-      <el-table-column :label="$t('market.repo.developer')" min-width="800px">
+      <el-table-column :label="$t('cloud.repo.developer')" min-width="800px">
         <template slot-scope="props">
           <el-tag
             v-for="tag in props.row.uids"
@@ -44,7 +44,7 @@
       </el-table-column>
       <el-table-column
         prop="update_time"
-        :label="$t('market.repo.updateTime')"
+        :label="$t('cloud.repo.updateTime')"
         min-width="200"
       >
       </el-table-column>
@@ -146,9 +146,9 @@ export default {
       this.fetchProjects();
     },
     deleteMember(row, uid) {
-      this.$confirm("确定取消该用户的权限么?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm(this.$t("cloud.repo.deleteAuth"), this.$t("common.alert"), {
+        confirmButtonText: this.$t("common.submit"),
+        cancelButtonText: this.$t("common.cancel"),
         type: "warning",
       })
         .then(() => {
@@ -158,25 +158,20 @@ export default {
               uid: uid,
             })
             .then((data) => {
-              this.$message({
-                message: this.$t("market.repo.deleteMemberSucc"),
-                type: "success",
-              });
+              this.$common.showSucc(this.$t("cloud.repo.deleteMemberSucc"));
+
               row.uids.splice(row.uids.indexOf(uid), 1);
             })
             .catch((err) => {
-              this.$message({
-                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
-                type: "error",
-              });
+              this.$common.showCloudError("repoRet", err);
             });
         })
         .catch(() => {});
     },
     deleteProject(row) {
-      this.$confirm("确定删除该项目么?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm(this.$t("cloud.repo.deleteProj"), this.$t("common.alert"), {
+        confirmButtonText: this.$t("common.submit"),
+        cancelButtonText: this.$t("common.cancel"),
         type: "warning",
       })
         .then(() => {
@@ -185,17 +180,12 @@ export default {
               project: row.name,
             })
             .then((data) => {
-              this.$message({
-                message: this.$t("market.repo.deleteProjectSucc"),
-                type: "success",
-              });
+              this.$common.showSucc(this.$t("cloud.repo.deleteProjectSucc"));
+
               this.fetchProjects();
             })
             .catch((err) => {
-              this.$message({
-                message: this.$t("market.repoRet." + err.tars_ret || "-1"),
-                type: "error",
-              });
+              this.$common.showCloudError("repoRet", err);
             });
         })
         .catch(() => {});
@@ -205,7 +195,6 @@ export default {
       this.fetchProjects();
     },
     fetchProjects() {
-      // this.$loading.show();
       this.$cloud
         .call("cloud-harbor", "getProjectList", {
           page_size: this.page_size,
@@ -221,14 +210,9 @@ export default {
             });
           });
           this.total = data.info.total;
-          // this.$loading.hide();
         })
         .catch((err) => {
-          // this.$loading.hide();
-          this.$message({
-            message: this.$t("market.repoRet." + err.tars_ret || "-1"),
-            type: "error",
-          });
+          this.$common.showCloudError("repoRet", err);
         });
     },
   },
