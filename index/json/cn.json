@@ -1048,34 +1048,6 @@
         }
     },
     "deployService": {
-        "title": {
-            "deploy": "部署申请",
-            "expand": "扩容",
-            "approval": "待审批",
-            "history": "已审批",
-            "undeploy": "下线服务",
-            "template": "模板管理",
-            "apply": "部署申请",
-            "nodes": "节点管理",
-            "check": "框架检查",
-            "gateway": "网关配置",
-            "image": "镜像管理",
-            "baseImage": "基础镜像管理",
-            "baseRegistry": "仓库管理",
-            "nodeImage": "NODE镜像管理",
-            "affinity": "亲和性管理",
-            "application": "应用管理",
-            "node": "节点管理",
-            "business": "业务管理",
-            "businessRelation": "业务关系",
-            "idcManage": "IDC分组管理",
-            "exportServer": "部署工具",
-            "configSearch": "配置检索",
-            "board": "综合看板",
-            "userLog": "操作日志",
-            "event": "事件查询",
-            "framework": "集群配置"
-        },
         "form": {
             "app": "应用",
             "appAdd": "输入新的应用名称",
@@ -1182,36 +1154,6 @@
         },
         "infos": {
             "objNodedupErr": "Obj名称+节点 不能重复！"
-        },
-        "batchDeploy": {
-            "errFile": "该文件类型不允许上传。请上传[.yml | .yaml] 类型的文件",
-            "errConf": "请检查yaml配置是否存在问题",
-            "title": {
-                "config": "安装配置文件内容",
-                "dcacheConf": "模块安装参数信息",
-                "out": "进度日志",
-                "hasModule": "模块已经存在"
-            },
-            "btn": {
-                "clearLog": "清空日志",
-                "uploadConf": "上传安装配置参数",
-                "uploadApplyConf": "上传申请配置参数",
-                "dcacheApply": "开始安装",
-                "shutdown": "停止安装"
-            },
-            "tip": {
-                "stopSucc": "终止成功,将于下个模块开始终止"
-            }
-        },
-        "resources": {
-            "limitCpu": "CPU 限制",
-            "limitMem": "内存限制",
-            "requestCpu": "CPU 预留",
-            "requestMem": "内存预留",
-            "example": "例如",
-            "tip": {
-                "resources": "请先编辑资源管理,资源限制与预留"
-            }
         },
         "hpa": {
             "form": {

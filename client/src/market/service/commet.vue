@@ -307,7 +307,7 @@ export default {
       return this.serviceVersion.group + "." + this.serviceVersion.name;
     },
     closeDialog() {
-      console.log("closeDialog");
+      // console.log("closeDialog");
       this.getPostListByServiceId(false);
       this.post.dialogVisible = false;
       this.post.post = null;
