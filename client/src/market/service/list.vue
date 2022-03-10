@@ -298,7 +298,7 @@ export default {
         });
     },
     upgradeSucc() {
-      this.fetchInstallFromCloud();
+      this.fetchListInstall();
     },
     fetchCheckUpgrade() {
       let info = [];
