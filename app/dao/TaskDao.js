@@ -22,7 +22,12 @@ const Sequelize = require('sequelize');
 const moment = require('moment');
 const Op = Sequelize.Op;
 
-//tTask.belongsTo(tTaskItem, {foreignKey: 'task_no', as: 'taskItem', targetKey: 'task_no'});
+//不要去掉, 这个用于发布历史记录的查询
+tTask.belongsTo(tTaskItem, {
+	foreignKey: 'task_no',
+	as: 'taskItem',
+	targetKey: 'task_no'
+});
 
 module.exports = {
 	delTask: async (task_no) => {
