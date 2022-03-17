@@ -213,9 +213,9 @@ PatchController.uploadPatchPackage = async (ctx) => {
 
 			logger.info('[addServerPatch:]', paramsObj);
 			await PatchService.addServerPatch(paramsObj);
-			let ret = await CompileService.addPatchTask(paramsObj).catch((err) => {
-				logger.error('[addPatchTask]:', err);
-			});
+			// console.log(patch);
+
+			let ret = await CompileService.addPatchTask(paramsObj);
 
 			let data = util.viewFilter(ret, {
 				id: '',

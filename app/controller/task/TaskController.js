@@ -39,7 +39,15 @@ const TaskController = {};
 TaskController.getTasks = async (ctx) => {
 	// console.log(ctx);
 	try {
-		let {application, server_name, command, from, to, curr_page = 0, page_size = 0} = ctx.paramsObj;
+		let {
+			application,
+			server_name,
+			command,
+			from,
+			to,
+			curr_page = 0,
+			page_size = 0
+		} = ctx.paramsObj;
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
@@ -74,9 +82,12 @@ TaskController.getTasks = async (ctx) => {
 					});
 				}
 
-                ret[ret.length - 1].create_time = moment(task.create_time).format("YYYY-MM-DD HH:mm:ss");
+				ret[ret.length - 1].create_time = moment(task.create_time).format("YYYY-MM-DD HH:mm:ss");
 			}
-			ctx.makeResObj(200, '', {count: tasks.count, rows: ret});
+			ctx.makeResObj(200, '', {
+				count: tasks.count,
+				rows: ret
+			});
 		}
 	} catch (e) {
 		logger.error('[TaskController.getTasks]:', e, ctx);
@@ -95,7 +106,7 @@ TaskController.getTask = async (ctx) => {
 		// 		ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
 		// 	}
 		// } else {
-			ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
+		ret = await TaskService.getTaskRsp(ctx.paramsObj.task_no);
 		// }
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
@@ -104,19 +115,19 @@ TaskController.getTask = async (ctx) => {
 	}
 };
 
-TaskController.checkTask = async(item) => {
+TaskController.checkTask = async (item) => {
 
-	if(item.command == 'undeploy_tars') {
+	if (item.command == 'undeploy_tars') {
 		let server = await ServerService.getServerConfById(item.server_id);
-		if(server.application == 'tars') {
+		if (server.application == 'tars') {
 			//tars服务, 必须要保留一个, 不能都下线
 			let serverList = await ServerService.getServerConfList(server.application, server.server_name);
-			if(serverList.length <= 1) {
+			if (serverList.length <= 1) {
 				return false;
 			}
 
 			//部署在框架上的tars公共服务不能下线
-			if(await ServerService.isDeployWithRegistry([server.node_name])) {
+			if (await ServerService.isDeployWithRegistry([server.node_name])) {
 				return false;
 			}
 		}
@@ -125,66 +136,80 @@ TaskController.checkTask = async(item) => {
 	return true;
 }
 
-TaskController.addTask = async(ctx) => {
-    let user_name = ctx.uid;
-    
-    let { serial, elegant, eachnum, items } = ctx.paramsObj;
-    if (!items.length) {
-        return ctx.makeResObj(500, '#task.params#');
-    }
-    try {
+TaskController.addTask = async (ctx) => {
+	let user_name = ctx.uid;
 
-        if (webConf.strict) {
-            for (var index in items) {
-                if (!await TaskController.checkTask(items[index])) {
-                    ctx.makeResObj(500, "#task.serverLimit#");
-                    return;
-                }
-            }
-        }
-        let task_no = util.getUUID().toString();
+	let {
+		serial,
+		elegant,
+		eachnum,
+		items
+	} = ctx.paramsObj;
+	if (!items.length) {
+		return ctx.makeResObj(500, '#task.params#');
+	}
+	try {
 
-        for (let i = 0; i < items.length; i++) {
-            let item = items[i];
+		if (webConf.strict) {
+			for (var index in items) {
+				if (!await TaskController.checkTask(items[index])) {
+					ctx.makeResObj(500, "#task.serverLimit#");
+					return;
+				}
+			}
+		}
+		let task_no = util.getUUID().toString();
 
-            let server = await ServerService.getServerConfById(item.server_id);
+		for (let i = 0; i < items.length; i++) {
+			let item = items[i];
 
-            if (!await AuthService.hasDevAuth(server.application, server.server_name, ctx.uid)) {
-                ctx.makeNotAuthResObj();
-                return;
-            }
-        }
+			let server = await ServerService.getServerConfById(item.server_id);
+
+			if (!await AuthService.hasDevAuth(server.application, server.server_name, ctx.uid)) {
+				ctx.makeNotAuthResObj();
+				return;
+			}
+		}
 
 
-        // if (kafkaConf.enable) {
-        // 	await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
-        // 		logger.info('task produce success!');
-        // 	});
-        // } else {
-        await TaskService.addTask({ serial, elegant, eachnum, items, task_no, user_name });
-        // }
-        ctx.makeResObj(200, '', task_no);
-    } catch (e) {
-        logger.error('[TaskController.addTask]:', e, ctx);
-        ctx.makeErrResObj(500, e.toString());
-    }
+		// if (kafkaConf.enable) {
+		// 	await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
+		// 		logger.info('task produce success!');
+		// 	});
+		// } else {
+		await TaskService.addTask({
+			serial,
+			elegant,
+			eachnum,
+			items,
+			task_no,
+			user_name
+		});
+		// }
+		ctx.makeResObj(200, '', task_no);
+	} catch (e) {
+		logger.error('[TaskController.addTask]:', e, ctx);
+		ctx.makeErrResObj(500, e.toString());
+	}
 };
 
-TaskController.delTask = async(ctx) => {
-    let { task_no } = ctx.paramsObj;
+TaskController.delTask = async (ctx) => {
+	let {
+		task_no
+	} = ctx.paramsObj;
 
-    try {
-        if (!await AuthService.hasAdminAuth(ctx.uid)) {
-            ctx.makeNotAuthResObj();
-        } else {
-            await TaskService.delTask(task_no);
+	try {
+		if (!await AuthService.hasAdminAuth(ctx.uid)) {
+			ctx.makeNotAuthResObj();
+		} else {
+			await TaskService.delTask(task_no);
 
-            ctx.makeResObj(200, '', task_no);
-        }
-    } catch (e) {
-        logger.error('[TaskController.delTask]:', e, ctx);
-        ctx.makeErrResObj(500, e.toString());
-    }
+			ctx.makeResObj(200, '', task_no);
+		}
+	} catch (e) {
+		logger.error('[TaskController.delTask]:', e, ctx);
+		ctx.makeErrResObj(500, e.toString());
+	}
 };
 
 module.exports = TaskController;
