@@ -355,6 +355,12 @@ if (WebConf.enable) {
 			},
 			["registry", "username", "password", "remark"]
 		],
+		['post', '/check_docker_registry', ImageController.checkDockerRegistry, {
+				registry: 'notEmpty',
+			},
+			['id', "registry", "username", "password"]
+		],
+
 		['post', '/update_registry', ImageController.updateRegistry, {
 				id: 'notEmpty',
 				registry: 'notEmpty',

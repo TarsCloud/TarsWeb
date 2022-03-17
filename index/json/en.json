@@ -978,7 +978,10 @@
             "view": "Image Version"
         },
         "btn": {
-            "add": "Add"
+            "add": "Add",
+            "docker": "Test Node Login Docker Registry",
+            "imageTips": "If an unofficial docker registry is used, the image address must start with the docker registry address",
+            "checkRegistry": "Check Registry Login"
         },
         "delete": {
             "confirmTips": "Confirm delete base image?"

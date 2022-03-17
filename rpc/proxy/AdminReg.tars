@@ -486,6 +486,13 @@ module tars
 		 * @return 0: 成功, others: 失败
 		 */
 		int forceDockerLogin(string nodeName, out vector<string> result);
+
+		/**
+		 * 检查是否登录镜像仓库
+		 *
+		 * @params result: 是否可以登录仓库
+		 */
+		int checkDockerRegistry(string registry, string userName, string password, out string result);
     };
 };
 

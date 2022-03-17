@@ -64,6 +64,21 @@ Controller.deleteRegistry = async (ctx) => {
 	}
 };
 
+Controller.checkDockerRegistry = async (ctx) => {
+	try {
+		let {
+			registry,
+			username,
+			password
+		} = ctx.paramsObj;
+
+		ctx.makeResObj(200, '', await Service.checkDockerRegistry(registry, username, password));
+	} catch (e) {
+		logger.error('[checkDockerRegistry]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
 Controller.updateRegistry = async (ctx) => {
 	try {
 		let params = ctx.paramsObj;

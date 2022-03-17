@@ -998,7 +998,9 @@
         },
         "btn": {
             "add": "添加",
-            "docker": "强制节点登录仓库"
+            "docker": "测试节点登录仓库",
+            "imageTips": "如果使用非官方仓库, 则镜像地址必须以仓库地址开头",
+            "checkRegistry": "测试仓库登录"
         },
         "delete": {
             "confirmTips": "确认删除基础镜像么?"
@@ -1048,6 +1050,34 @@
         }
     },
     "deployService": {
+        "title": {
+            "deploy": "部署申请",
+            "expand": "扩容",
+            "approval": "待审批",
+            "history": "已审批",
+            "undeploy": "下线服务",
+            "template": "模板管理",
+            "apply": "部署申请",
+            "nodes": "节点管理",
+            "check": "框架检查",
+            "gateway": "网关配置",
+            "image": "镜像管理",
+            "baseImage": "基础镜像管理",
+            "baseRegistry": "仓库管理",
+            "nodeImage": "NODE镜像管理",
+            "affinity": "亲和性管理",
+            "application": "应用管理",
+            "node": "节点管理",
+            "business": "业务管理",
+            "businessRelation": "业务关系",
+            "idcManage": "IDC分组管理",
+            "exportServer": "部署工具",
+            "configSearch": "配置检索",
+            "board": "综合看板",
+            "userLog": "操作日志",
+            "event": "事件查询",
+            "framework": "集群配置"
+        },
         "form": {
             "app": "应用",
             "appAdd": "输入新的应用名称",

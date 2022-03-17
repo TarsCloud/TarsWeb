@@ -71,9 +71,20 @@ let ExecUpload = async (request) => {
                     }
                     let task_no = util.getUUID().toString();
 
-                    let rst = await PatchService.uploadAndPatch(params.app, params.server, '', task_no, "install from cloud", 0, filename, 'cloud', params.uid || '');
+                    try {
+                        let rst = await PatchService.uploadAndPatch(params.app, params.server, '', task_no, "install from cloud", 0, filename, 'cloud', params.uid || '');
 
-                    connection.send(JSON.stringify(rst));
+                        connection.send(JSON.stringify(rst));
+                    } catch (e) {
+                        logger.error('call PatchService.uploadAndPatch error:', e.message);
+
+                        connection.send(JSON.stringify({
+                            code: 500,
+                            msg: e.message
+                        }));
+
+
+                    }
 
                 }
             } else {

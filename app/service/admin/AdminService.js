@@ -294,4 +294,18 @@ AdminService.forceDockerLogin = async (nodeName) => {
     }
 };
 
+AdminService.checkDockerRegistry = async (registry, userName, password) => {
+    let timeout = adminRegPrx.getTimeout();
+    adminRegPrx.setTimeout(10000);
+    let ret = await adminRegPrx.checkDockerRegistry(registry, userName, password);
+    adminRegPrx.setTimeout(timeout);
+
+    if (ret.__return === 0) {
+        return ret.result;
+    } else {
+        throw new Error(ret.__return);
+    }
+};
+
+
 module.exports = AdminService;
