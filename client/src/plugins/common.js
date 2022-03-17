@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 class CommonUtil {
 
   constructor(vue) {

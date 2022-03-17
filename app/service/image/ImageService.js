@@ -43,6 +43,11 @@ Service.updateRegistry = async (params) => {
 	return await DockerRegistryDao.update(params);
 };
 
+Service.checkRegistry = async (params) => {
+	return await DockerRegistryDao.update(params);
+};
+
+
 Service.getRegistryList = async () => {
 	return await DockerRegistryDao.getList();
 };
@@ -81,6 +86,9 @@ Service.forceDockerLogin = async (nodeName) => {
 	return await AdminService.forceDockerLogin(nodeName);
 };
 
+Service.checkDockerRegistry = async (registry, userName, password) => {
+	return await AdminService.checkDockerRegistry(registry, userName, password);
+};
 
 
 module.exports = Service;

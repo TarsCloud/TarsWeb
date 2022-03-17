@@ -131,14 +131,14 @@
           ? this.$t('dialog.title.add')
           : this.$t('dialog.title.edit')
       "
-      @on-confirm="saveRegistryItem"
+      :footShow="false"
     >
       <let-form ref="detailRegistryForm" :rules="registryRules">
         <let-form-item :label="$t('imageService.form.Registry')">
           <let-input
             size="small"
             v-model="baseRegistryModal.model.registry"
-            placeholder="hub.docker.com"
+            placeholder="docker.io"
           >
           </let-input>
         </let-form-item>
@@ -167,6 +167,20 @@
           >
           </let-input>
         </let-form-item>
+        <el-button type="success" size="small" @click="saveRegistryItem"
+          >{{ $t("common.submit") }}
+        </el-button>
+        &nbsp;&nbsp;
+        <el-button
+          type="primary"
+          size="small"
+          @click="baseRegistryModal.show = false"
+          >{{ $t("common.cancel") }}
+        </el-button>
+        &nbsp;&nbsp;
+        <el-button type="primary" size="small" @click="checkDockerRegistry"
+          >{{ $t("imageService.btn.checkRegistry") }}
+        </el-button>
       </let-form>
     </let-modal>
 
@@ -436,6 +450,33 @@ export default {
           );
         });
     },
+    checkDockerRegistry() {
+      const loading = this.$refs.tableRegistry.$loading.show();
+
+      if (
+        !this.baseRegistryModal.model.registry ||
+        this.baseRegistryModal.model.registry == ""
+      ) {
+        this.baseRegistryModal.model.registry = "docker.io";
+      }
+
+      return this.$ajax
+        .postJSON(
+          "/server/api/check_docker_registry",
+          this.baseRegistryModal.model
+        )
+        .then((data) => {
+          loading.hide();
+
+          this.$tip.success(data);
+        })
+        .catch((err) => {
+          loading.hide();
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.message || err.err_msg}`
+          );
+        });
+    },
     saveRegistryItem() {
       const loading = this.$refs.tableRegistry.$loading.show();
 
@@ -443,7 +484,7 @@ export default {
         !this.baseRegistryModal.model.registry ||
         this.baseRegistryModal.model.registry == ""
       ) {
-        this.baseRegistryModal.model.registry = "hub.docker.com";
+        this.baseRegistryModal.model.registry = "docker.io";
       }
       return this.$ajax
         .postJSON(
@@ -458,6 +499,8 @@ export default {
           this.baseRegistryModal.show = false;
 
           this.fetchRegistryData();
+
+          this.$tip.success(this.$t("common.success"));
         })
         .catch((err) => {
           loading.hide();
@@ -541,6 +584,13 @@ export default {
         });
     },
     saveImageItem() {
+      if (
+        this.baseModal.model.registry != "docker.io" &&
+        !this.baseModal.model.image.startsWith(this.baseModal.model.registry)
+      ) {
+        this.$tip.error(`${this.$t("imageService.btn.imageTips")}`);
+        return;
+      }
       const loading = this.$refs.table.$loading.show();
 
       return this.$ajax
@@ -556,6 +606,8 @@ export default {
           this.baseModal.show = false;
 
           this.fetchImageData();
+
+          this.$tip.success(this.$t("common.success"));
         })
         .catch((err) => {
           loading.hide();

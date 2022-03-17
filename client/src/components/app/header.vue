@@ -44,7 +44,7 @@
             <let-tab-pane
               v-if="enableMarket == 'true'"
               :tab="$t('header.tab.tab9')"
-              tabkey="/market/list"
+              tabkey="/market"
               :icon="packageIcon"
             ></let-tab-pane>
           </let-tabs>
@@ -165,7 +165,11 @@ export default {
   },
   methods: {
     clickTab(tabkey) {
-      this.$router.replace(tabkey);
+      if (tabkey == "/market") {
+        window.open("/static/market/index.html");
+      } else {
+        this.$router.replace(tabkey);
+      }
     },
     userCenter() {
       window.open("/pages/server/api/userCenter");
@@ -178,7 +182,6 @@ export default {
       }
       if (command == "quit") {
         location.href = "/pages/server/api/logout";
-        // location.href = "/logout";
       }
     },
     handleMarketCommand(command) {

@@ -191,7 +191,8 @@ module.exports = function (sequelize, DataTypes) {
 		},
 		base_image_id: {
 			type: DataTypes.INTEGER(11),
-			allowNull: false,
+			allowNull: true,
+			defaultValue: '0'
 		}
 	}, {
 		tableName: 't_server_conf',

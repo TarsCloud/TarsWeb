@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+ <head id="head">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="/static/market/axios.min.js"></script>
+  <script src="/static/market/jquery.min.js"></script>
+
+  <script>
+	function replaceSource(content, host)
+	{
+		let linkReg=/<link(?:.*?)href=[\"\'](\/.+?)[\"\'](?!<)(?:.*)\>(?:[\n\r\s]*?)(?:<\/link>)*/gmi;
+		let scriptReg=/<script(?:.*?)src=[\"\'](\/.+?)[\"\'](?!<)(?:.*)\>(?:[\n\r\s]*?)(?:<\/script>)*/gmi;
+		let imgReg=/<img(?:.*?[\n\r\s]*.*?)src=[\'\"](\/.+?)[\'\"](?!<)(?:.*?[\n\r\s]*.*?)\/*>/gmi;
+
+		let str = content;
+		while(true)
+		{
+				let newStr = str.replace(linkReg, function (capture, src) {
+					return capture.replace(src, host + src);
+				});
+				
+				newStr = newStr.replace(scriptReg, function (capture, src) {
+					return capture.replace(src, host + src);
+				});
+				
+				newStr = newStr.replace(imgReg, function (capture, src) {
+						return capture.replace(src, host + src);
+				});
+				
+				if(newStr == str){
+					break;
+				}
+				else{
+					str = newStr;
+				}
+		}
+		
+		return str;
+	}
+
+	var url = 'http://m.k.tarsyun.com';
+	// var url = 'http://localhost:6001';
+	// var url = 'http://localhost:4000';
+
+	window.localStorage.marketUrl = url;
+
+	function loadFrame() {
+
+		axios.get(url + '/load.html?' + (new Date()).getTime())
+		.then(function (response) {
+			//获取远程html页面
+			let content = response.data;
+
+			let newStr = replaceSource(content, url);
+
+			$('#head').append(newStr);
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+	}
+	loadFrame();
+
+  </script>
+</head>
+<body>
+	<div id="market"></div>
+</body>
+</html>

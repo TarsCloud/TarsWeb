@@ -60,12 +60,6 @@ module.exports = {
       filename: 'logview.html',
       title: 'logView',
     }
-    // register: {
-    //   entry: 'src/sso/register/register.js',
-    //   template: 'src/sso/register/register.html',
-    //   filename: 'register.html',
-    //   title: "register",
-    // }
   },
   configureWebpack: {
     plugins: [new CopyWebpackPlugin([{

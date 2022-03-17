@@ -207,8 +207,12 @@ PatchService.uploadAndPatch = async (application,
 		}
 	} catch (e) {
 		logger.error('[uploadAndPatch]:', e);
+		return {
+			code: 500,
+			data: e.message
+		};
 
-		return e.toString();
+		// return e.toString();
 		// ctx.makeErrResObj(500, e.toString());
 	}
 
@@ -246,17 +250,23 @@ PatchService.uploadToPatch = async (md5, application, module_name, uploadTgzName
 
 		content.content = new TarsStream.BinBuffer(buffer);
 
-		let ret = await patchPrx.upload(application, module_name, content, hash);
+		try {
+			let ret = await patchPrx.upload(application, module_name, content, hash);
 
-		logger.info(`uploadToPatch file: ${localTgzPath}, md5: ${md5}, size: ${stat.size}, offset: ${offset}, length: ${length}, buffer length: ${buffer.length}`);
+			logger.info(`uploadToPatch file: ${localTgzPath}, md5: ${md5}, size: ${stat.size}, offset: ${offset}, length: ${length}, buffer length: ${buffer.length}`);
 
-		if (ret.__return != 0) {
-			logger.error('[PatchService.upload to patch error] ret:', ret);
+			if (ret.__return != 0) {
+				logger.error('[PatchService.upload to patch error] ret:', ret);
+				fs.close(fd);
+				return ret.__return;
+			}
+
+			offset += length;
+		} catch (e) {
+			logger.error('[PatchService.upload to patch error] :', e.message);
 			fs.close(fd);
-			return ret.__return;
+			return -1;
 		}
-
-		offset += length;
 
 	} while (!content.lastChunk);
 
