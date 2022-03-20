@@ -448,7 +448,8 @@
         "multipleIp": "服务IP(多个IP用;分隔)",
         "isSerializated": "数据序列化",
         "chooseRouterDb": "选择路由Mysql实例信息",
-        "inputRouterDb": "输入路由Mysql实例信息"
+        "inputRouterDb": "输入路由Mysql实例信息",
+        "databaseTips": "注意: 如果数据库是不区分大小写的, db名称则必须为小写字母!!"
     },
     "region": {
         "title": "地区",

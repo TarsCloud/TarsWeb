@@ -72,9 +72,9 @@
     <h4 v-if="serverNotifyList && showOthers">{{this.$t('serverList.title.serverStatus')}} <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i></h4>
     <let-table v-if="serverNotifyList && showOthers"
       :data="serverNotifyList" :empty-msg="$t('common.nodata')" ref="serverNotifyListLoading">
-      <let-table-column :title="$t('common.time')" prop="notifytime"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id"></let-table-column>
-      <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id"></let-table-column>
+      <let-table-column :title="$t('common.time')" prop="notifytime" width="200px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.serviceID')" prop="server_id" width="200px"></let-table-column>
+      <let-table-column :title="$t('serverList.table.th.threadID')" prop="thread_id" width="200px"></let-table-column>
       <let-table-column :title="$t('serverList.table.th.result')">
         <template slot-scope="scope">
           <span :style="statusStyle(scope.row.result)">{{scope.row.result}}</span>

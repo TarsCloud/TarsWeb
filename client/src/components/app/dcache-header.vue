@@ -81,7 +81,7 @@
             this.uid = '***';
           }
         }).catch((err) => {
-          this.$tip.error(`获取用户登录信息: ${err.err_msg || err.message}`);
+          this.$tip.error(`error: ${err.err_msg || err.message}`);
         });
       },
       changeLocale(){

@@ -131,6 +131,7 @@ import DPropertyMonitor from '@/pages/dcache/propertyMonitor/index.vue'
         treeData: null,
         treeid: '',
         enableAuth: false,
+        isIconPlay: false,
         // 当前页面信息
         serverData: {
           level: 5,
