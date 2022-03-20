@@ -57,14 +57,19 @@ PatchController.uploadAndPublish = async (ctx) => {
 		let baseUploadPath = WebConf.pkgUploadPath.path;
 		// 发布包上传目录
 		let updateTgzPath = `${baseUploadPath}/${application}/${module_name}`;
-		// console.info('updateTgzPath:', updateTgzPath);
+		
 		await fs.ensureDirSync(updateTgzPath);
-		let hash = md5Sum(`${baseUploadPath}/${file.filename}`);
 
 		let uploadTgzName = `${application}.${module_name}_${file.fieldname}_${new Date().getTime()}.tgz`;
-		logger.info('[newTgzName]:', `${updateTgzPath}/${uploadTgzName}`);
-		logger.info('[orgTgzName]:', `${baseUploadPath}/${file.filename}`);
+
 		await fs.rename(`${baseUploadPath}/${file.filename}`, `${updateTgzPath}/${uploadTgzName}`);
+
+		let hash = md5Sum(`${updateTgzPath}/${uploadTgzName}`);
+
+		logger.info('[orgTgzName]:', `${baseUploadPath}/${file.filename}`);
+		logger.info('[newTgzName]:', `${updateTgzPath}/${uploadTgzName}`);
+		logger.info('[hash]:', `${hash}`);
+
 		let paramsObj = {
 			server: `${application}.${module_name}`,
 			tgz: uploadTgzName,
@@ -212,12 +217,12 @@ PatchController.uploadPatchPackage = async (ctx) => {
 			}
 
 			logger.info('[addServerPatch:]', paramsObj);
-			await PatchService.addServerPatch(paramsObj);
+			let patch = await PatchService.addServerPatch(paramsObj);
 			// console.log(patch);
 
-			let ret = await CompileService.addPatchTask(paramsObj);
+			await CompileService.addPatchTask(paramsObj);
 
-			let data = util.viewFilter(ret, {
+			let data = util.viewFilter(patch, {
 				id: '',
 				server: '',
 				tgz: '',

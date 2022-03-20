@@ -255,10 +255,14 @@ PatchService.uploadToPatch = async (md5, application, module_name, uploadTgzName
 
 			logger.info(`uploadToPatch file: ${localTgzPath}, md5: ${md5}, size: ${stat.size}, offset: ${offset}, length: ${length}, buffer length: ${buffer.length}`);
 
-			if (ret.__return != 0) {
+			if (ret.__return < 0) {
 				logger.error('[PatchService.upload to patch error] ret:', ret);
 				fs.close(fd);
 				return ret.__return;
+			} else if (ret.__return == 1) {
+				logger.info('[PatchService.upload to patch ] file exist');
+				fs.close(fd);
+				return 0;				
 			}
 
 			offset += length;

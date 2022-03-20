@@ -208,7 +208,7 @@
               >
                 <template slot-scope="scope">
                   <span>{{
-                    scope.row.package_type == 1 ? "KVcache" : "MKVcache"
+                    scope.row.package_type == 1 ? "KVCache" : "MKVCache"
                   }}</span>
                 </template>
               </let-table-column>
@@ -237,38 +237,6 @@
               >{{ $t("common.patch") }}
             </let-button>
           </let-form-item>
-          <!-- <let-form-item :label="$t('serverList.table.th.version')" v-else>
-            <let-select
-              size="small"
-              required
-              :required-tip="$t('deployService.table.tips.empty')"
-              v-model="tagVersion"
-              requred
-            >
-              <let-option
-                v-for="it in tagList"
-                :key="`${it.version}`"
-                :value="it.path + '--' + it.version"
-              >
-                {{ it.version }}
-              </let-option>
-            </let-select>
-            <let-button
-              theme="primary"
-              size="small"
-              class="mt10"
-              @click="addCompileTask"
-            >
-              {{ $t("pub.dlg.compileAndPublish") }}
-            </let-button>
-            <let-button
-              size="small"
-              class="mt10"
-              @click="openPubConfModal"
-              v-if="false"
-              >{{ $t("pub.dlg.conf") }}
-            </let-button>
-          </let-form-item> -->
         </let-form>
       </let-modal>
 
@@ -451,78 +419,6 @@
         </let-table>
       </let-modal>
     </div>
-
-    <!-- 配置编译接口 -->
-    <!-- <let-modal
-      v-model="publishUrlConfModal.show"
-      :title="$t('pub.dlg.conf')"
-      width="800px"
-      :footShow="true"
-      @on-confirm="saveCompilerUrl"
-      @on-cancel="publishUrlConfModal.show = false"
-    >
-      <let-form
-        ref="compilerForm"
-        itemWidth="100%"
-        v-if="publishUrlConfModal.model"
-        required
-      >
-        <let-form-item :label="$t('pub.dlg.tag')">
-          <let-input
-            size="small"
-            v-model="publishUrlConfModal.model.tag"
-            :placeholder="$t('pub.tips.tag')"
-            :required-tip="$t('deployService.table.tips.empty')"
-            required
-          ></let-input>
-        </let-form-item>
-      </let-form>
-    </let-modal> -->
-
-    <!-- 编译进度 -->
-    <!-- <let-modal
-      v-model="compilerModal.show"
-      :title="$t('pub.dlg.compileProgress')"
-      width="880px"
-      :footShow="false"
-    >
-      <let-table
-        v-if="compilerModal.model"
-        :data="compilerModal.model.progress"
-      >
-        <let-table-column
-          :title="$t('historyList.dlg.th.c2')"
-          prop="application"
-        ></let-table-column>
-        <let-table-column
-          :title="$t('historyList.dlg.th.c3')"
-          prop="server_name"
-        ></let-table-column>
-        <let-table-column
-          :title="$t('historyList.dlg.th.c4')"
-          prop="node"
-        ></let-table-column>
-        <let-table-column :title="$t('historyList.dlg.th.c8')" prop="status">
-          <template slot-scope="scope">
-            <span v-if="scope.row.state == '1'" class="running">{{
-              scope.row.status
-            }}</span>
-            <span v-else-if="scope.row.state == '2'" class="success">{{
-              scope.row.status
-            }}</span>
-            <span v-else class="stop">{{ scope.row.status }}</span>
-          </template>
-        </let-table-column>
-        <let-table-column
-          :title="$t('monitor.search.start')"
-          prop="start_time"
-        ></let-table-column>
-        <let-table-column
-          :title="$t('monitor.search.end')"
-          prop="end_time"
-        ></let-table-column>
-      </let-table>
-    </let-modal> -->
   </div>
 </template>
 
@@ -553,6 +449,7 @@ export default {
         totalPatchPage: 0,
         patchPageSize: 10,
         patchPage: 1,
+        packageType: 0,
       },
       finishModal: {
         show: false,
@@ -561,15 +458,6 @@ export default {
           items: [],
         },
       },
-      // statusConfig: {
-      //   0: this.$t("serverList.restart.notStart"),
-      //   1: this.$t("serverList.restart.preparing"),
-      //   2: this.$t("serverList.restart.running"),
-      //   3: this.$t("serverList.restart.success"),
-      //   4: this.$t("serverList.restart.failed"),
-      //   5: this.$t("serverList.restart.cancel"),
-      //   6: this.$t("serverList.restart.pauseFlow"),
-      // },
       statusMap: {
         0: "EM_T_NOT_START",
         1: "EM_T_PREPARE",
@@ -597,16 +485,6 @@ export default {
       },
       patchType: "patch",
       patchRadioData: [{ value: "patch", text: this.$t("pub.dlg.upload") }],
-      // tagList: [],
-      // tagVersion: "",
-      // publishUrlConfModal: {
-      //   show: false,
-      //   model: { tag: "", compiler: "", task: "" },
-      // },
-      // compilerModal: {
-      //   show: false,
-      //   model: null,
-      // },
       pkgUpload: {
         show: false,
         model: null,
@@ -615,23 +493,6 @@ export default {
   },
   props: ["treeid", "servertype"],
   methods: {
-    // getCompileConf() {
-    //   this.$ajax
-    //     .getJSON("/server/api/get_compile_conf")
-    //     .then((data) => {
-    //       if (data.enable) {
-    //         this.patchRadioData.push({
-    //           value: "compile",
-    //           text: this.$t("pub.dlg.compileAndPublish"),
-    //         });
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       this.$tip.error(
-    //         `${this.$t("common.error")}: ${err.message || err.err_msg}`
-    //       );
-    //     });
-    // },
     getServerList() {
       // 获取服务列表
       const loading = this.$Loading.show();
@@ -682,13 +543,14 @@ export default {
         patchList: [],
         patch_id: "",
         update_text: "",
-        show: true,
+        show: true
       };
       // 区分服务的类型，获取发布包 router、proxy、dcache、tars
       let { serverType } = this;
       let module_name = first.server_name;
       let patchPage = 1;
       let patchPageSize = 5;
+      let packageType = 0;
       if (serverType == "router") {
         module_name = "RouterServer";
       } else if (serverType == "proxy") {
@@ -697,16 +559,21 @@ export default {
         module_name = "CombinDbAccessServer";
       } else if (serverType == "dcache") {
         module_name = "DCacheServerGroup";
+
+        packageType = (first.exe_path == "KVCacheServer")?1:2;
       }
       this.publishModal.module_name = module_name;
       this.publishModal.application = first.application;
       this.publishModal.patchPage = patchPage;
       this.publishModal.patchPageSize = patchPageSize;
+      this.publishModal.packageType = packageType;
+
       this.getPatchList(
         first.application,
         module_name,
         patchPage,
-        patchPageSize
+        patchPageSize,
+        packageType
       ).then((data) => {
         this.publishModal.model.patchList = data.rows;
         this.publishModal.totalPatchPage = Math.ceil(
@@ -722,12 +589,14 @@ export default {
         application,
         patchPage,
         patchPageSize,
+        packageType,
       } = this.publishModal;
       this.getPatchList(
         application,
         module_name,
         patchPage,
-        patchPageSize
+        patchPageSize,
+        packageType
       ).then((data) => {
         this.publishModal.model.patchList = data.rows;
         this.publishModal.totalPatchPage = Math.ceil(
@@ -735,12 +604,13 @@ export default {
         );
       });
     },
-    getPatchList(application, serverName, currPage, pageSize) {
+    getPatchList(application, serverName, currPage, pageSize, packageType) {
       return this.$ajax.getJSON("/server/api/server_patch_list", {
         application,
         module_name: serverName,
         curr_page: currPage,
         page_size: pageSize,
+        package_type: packageType
       });
     },
     closePublishModal() {
@@ -812,29 +682,6 @@ export default {
       this.finishModal.modal = null;
       this.$refs.finishForm.resetValid();
     },
-    // getTaskRepeat(taskId) {
-    //   let timerId;
-    //   timerId && clearTimeout(timerId);
-    //   const getTask = () => {
-    //     this.$ajax.getJSON('/server/api/task', {
-    //       task_no: taskId,
-    //     }).then((data) => {
-    //       let done = true;
-    //       data.items.forEach((item) => {
-    //         // 2、3 成功，失败
-    //         if (![2, 3].includes(item.status)) {
-    //           done = false;
-    //         }
-    //       });
-    //       done ? clearTimeout(timerId) : timerId = setTimeout(getTask, 2000);
-    //       this.finishModal.model.items = data.items;
-    //     }).catch((err) => {
-    //       clearTimeout(timerId);
-    //       this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
-    //     });
-    //   };
-    //   getTask();
-    // },
     updateServerList() {
       // 更新服务列表
       const start = (this.page - 1) * this.pageSize;
@@ -958,171 +805,9 @@ export default {
         // this.getCodeVersion();
       }
     },
-    // getCodeVersion() {
-    //   this.$ajax
-    //     .get("/server/api/get_tag_list", {
-    //       application: this.publishModal.model.application,
-    //       server_name: this.publishModal.model.server_name,
-    //     })
-    //     .then((data) => {
-    //       if (data.data == "") {
-    //         this.openPubConfModal();
-    //       } else {
-    //         this.tagList = data.data;
-    //       }
-    //     })
-    //     .catch((e) => {
-    //       this.tagList = [];
-    //       this.$tip.error(
-    //         `${this.$t("common.error")}: ${err.err_msg || err.message}`
-    //       );
-    //     });
-    // },
-    // openPubConfModal() {
-    //   this.publishUrlConfModal.show = true;
-    //   this.$ajax
-    //     .getJSON("/server/api/get_tag_conf", {
-    //       application: this.publishModal.model.application,
-    //       server_name: this.publishModal.model.server_name,
-    //     })
-    //     .then((data) => {
-    //       this.publishUrlConfModal.model.tag = data.path;
-    //     })
-    //     .catch((err) => {
-    //       this.$tip.error(
-    //         `${this.$t("common.error")}: ${err.err_msg || err.message}`
-    //       );
-    //     });
-    // },
-    // saveCompilerUrl() {
-    //   if (this.$refs.compilerForm.validate()) {
-    //     const loading = this.$Loading.show();
-    //     this.$ajax
-    //       .getJSON("/server/api/set_tag_conf", {
-    //         path: this.publishUrlConfModal.model.tag,
-    //         application: this.publishModal.model.application,
-    //         server_name: this.publishModal.model.server_name,
-    //       })
-    //       .then((data) => {
-    //         loading.hide();
-    //         this.$tip.success(this.$t("common.success"));
-    //         this.publishUrlConfModal.show = false;
-    //         this.getCodeVersion();
-    //       })
-    //       .catch((err) => {
-    //         loading.hide();
-    //         this.$tip.error(
-    //           `${this.$t("common.error")}: ${err.err_msg || err.message}`
-    //         );
-    //       });
-    //   }
-    // },
-    // addCompileTask() {
-    //   this.$ajax
-    //     .getJSON("/server/api/get_compile_conf")
-    //     .then((data) => {
-    //       const compileUrl = data.getVersionList;
-    //       if (!compileUrl) {
-    //         this.openPubConfModal();
-    //         return;
-    //       } else {
-    //         let nodes = this.publishModal.model.serverList.map(
-    //           (item) => item.node_name
-    //         );
-    //         let opts = {
-    //           application: this.publishModal.model.application,
-    //           server_name: this.publishModal.model.server_name,
-    //           node: nodes.join(";"),
-    //           path: this.tagVersion.split("--")[0],
-    //           version: this.tagVersion.split("--")[1],
-    //           comment: this.publishModal.model.update_text || "",
-    //           compileUrl: compileUrl,
-    //         };
-    //         const loading = this.$Loading.show();
-    //         this.$ajax
-    //           .postJSON("/server/api/do_compile", opts)
-    //           .then((data) => {
-    //             loading.hide();
-    //             this.compilerModal.show = true;
-    //             const taskNo = typeof data === "string" ? data : data.data;
-    //             this.getStatus(taskNo);
-    //             //this.taskStatus(taskNo);
-    //           })
-    //           .catch((err) => {
-    //             loading.hide();
-    //             this.$tip.error(
-    //               `${this.$t("common.error")}: ${err.err_msg || err.message}`
-    //             );
-    //           });
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       this.$tip.error(
-    //         `${this.$t("common.error")}: ${err.err_msg || err.message}`
-    //       );
-    //     });
-    // },
-    // taskStatus(taskNo) {
-    //   this.getStatus(taskNo);
-    // },
-    // getStatus(taskNo) {
-    //   const f = () => {
-    //     let t = null;
-    //     t && clearTimeout(t);
-    //     this.$ajax
-    //       .getJSON("/server/api/compiler_task", { taskNo })
-    //       .then((data) => {
-    //         const ret = typeof data === "array" ? data : data.data;
-    //         ret[0].status = this.statusConfig[ret[0].state];
-    //         if (ret[0].state == 1) {
-    //           t = setTimeout(f, 2000);
-    //         }
-    //         if (this.compilerModal.model) {
-    //           Object.assign(this.compilerModal.model, { progress: ret });
-    //         } else {
-    //           this.compilerModal.model = { progress: ret };
-    //         }
-    //         // 编译成功后轮询发布包回传情况
-    //         if (ret[0].state == 2) {
-    //           const loading = this.$Loading({ text: "回传发布包" });
-    //           loading.show();
-    //           this.compilerModal.show = false;
-    //           let timer = () => {
-    //             this.$ajax
-    //               .getJSON("/server/api/get_server_patch", { task_id: taskNo })
-    //               .then((data) => {
-    //                 if (Object.keys(data).length !== 0) {
-    //                   loading.hide();
-    //                   this.publishModal.model.patch_id = data.id;
-    //                   this.publishModal.show = false;
-    //                   this.savePublishServer();
-    //                 } else {
-    //                   setTimeout(timer, 2000);
-    //                 }
-    //               })
-    //               .catch((err) => {
-    //                 loading.hide();
-    //                 this.$tip.error(
-    //                   `${this.$t("common.error")}: ${err.err_msg ||
-    //                     err.message}`
-    //                 );
-    //               });
-    //           };
-    //           setTimeout(timer, 2000);
-    //         }
-    //       })
-    //       .catch((err) => {
-    //         this.$tip.error(
-    //           `${this.$t("common.error")}: ${err.err_msg || err.message}`
-    //         );
-    //       });
-    //   };
-    //   f();
-    // },
   },
   mounted() {
     this.getServerList();
-    // this.getCompileConf();
   },
   watch: {
     isCheckedAll() {
@@ -1147,17 +832,5 @@ export default {
   .mt10 {
     margin-top: 10px;
   }
-
-  /* .running {
-    color: #3f5ae0;
-  }
-
-  .success {
-    color: #6accab;
-  }
-
-  .stop {
-    color: #f56c77;
-  } */
 }
 </style>

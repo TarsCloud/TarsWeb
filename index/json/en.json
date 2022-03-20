@@ -430,7 +430,8 @@
         "multipleIp": "Service IP(multiple IP USES ; Separated)",
         "isSerializated": "Data Serializate",
         "chooseRouterDb": "Choose Mysql instance",
-        "inputRouterDb": "Input Mysql instance"
+        "inputRouterDb": "Input Mysql instance",
+        "databaseTips": "Note: if the database is case insensitive, the db name must be lowercase!!"
     },
     "region": {
         "title": "region",

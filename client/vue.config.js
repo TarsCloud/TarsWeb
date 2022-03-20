@@ -4,7 +4,7 @@ const server_port = process.env.SERVER_PORT || '4001'
 
 process.setMaxListeners(0);
 
-require('events').EventEmitter.setMaxListeners(0);
+// require('events').EventEmitter.setMaxListeners(0);
 
 module.exports = {
   outputDir: "./dist",

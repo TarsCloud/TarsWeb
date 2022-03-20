@@ -118,7 +118,7 @@ ApplyService.buildCacheList = async () => {
         })
       }
 
-      // 看看该应用是否已经有了存放 cahce 的模块的节点
+      // 看看该应用是否已经有了存放 cache 的模块的节点
       if (value.dbAccessServer && value.dbAccessServer.length > 0) {
         const has = TreeService.hasDCacheServerName(value.dbAccessServer);
 

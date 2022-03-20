@@ -226,8 +226,12 @@ ApplyController.installAndPublish = async(ctx) => {
                 templateFile: Proxy[0].template_file,
             },
             version: '1.0',
-            replace: apply.status === 2,
+            replace: true,
+            // replace: apply.status === 2,
         });
+
+        console.log(option);
+
         const args = await DCacheOptPrx.installApp(option);
         logger.info('[DCacheOptPrx.installApp]:', args);
         // {"__return":0,"instalRsp":{"errMsg":""}}
@@ -275,7 +279,7 @@ ApplyController.installAndPublish = async(ctx) => {
                         groupName: 'ProxyServer',
                         version: `${defaultProxyPackage.id}`,
                         user: ctx.uid,
-                        md5: '',
+                        md5: defaultProxyPackage.md5,
                         status: 0,
                         error: '',
                         ostype: '',
@@ -303,7 +307,7 @@ ApplyController.installAndPublish = async(ctx) => {
                 groupName: 'RouterServer',
                 version: `${defaultRouterPackage.id}`,
                 user: ctx.uid,
-                md5: '',
+                md5: defaultRouterPackage.md5,
                 status: 0,
                 error: '',
                 ostype: '',
