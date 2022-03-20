@@ -1,3 +1,20 @@
+## 20220320(2.4.27)
+
+### en
+
+- fix dcache install always use replace
+- fix upload_patch_package(only for dcache) return patch_id
+- fix dcache publish page, publishing logic that distinguishes mkvcache from kvcache### cn
+- fix history patch query bug
+- fix delete cloud market
+
+### cn
+
+- 修复 Dcache 安装过程, 使用 replace
+- 修复 upload_patch_package 返回 patchid
+- 修复 dcache cache 发布页, 区分 kvcache 和 mkvcache
+- 修复发布页面查询历史包的 bug
+
 ## 20220305(2.4.26)
 
 ### en
@@ -9,7 +26,8 @@
 - Fix the bug of creating framework config at startup
 - Fix the bug of viewing k8s information of normal service type
 - Fix call chain data display error
-- 
+-
+
 ### cn
 
 - 修复 k8s 调用链界面的 bug
@@ -18,7 +36,7 @@
 - k8s 部署时, 将 web 部署和云市场部署, 统一到同一个流程中
 - 修复启动时创建 framework config 的 bug
 - 修复 normal 服务类型查看 k8s 信息的 bug
-- 修复调用链data展示错误
+- 修复调用链 data 展示错误
 
 ## 20220302(2.4.25)
 
