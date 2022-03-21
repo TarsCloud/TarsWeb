@@ -109,7 +109,7 @@
       >
         <let-select size="small" v-model="model.base_image_id">
           <let-option v-for="i in baseImageList" :key="i.id" :value="i.id">{{
-            i.registry + "(" + i.image + ")"
+            i.image + '(' + i.remark + ')'
           }}</let-option>
         </let-select>
       </let-form-item>

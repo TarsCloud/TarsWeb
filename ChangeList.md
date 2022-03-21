@@ -2,18 +2,20 @@
 
 ### en
 
-- fix dcache install always use replace
-- fix upload_patch_package(only for dcache) return patch_id
-- fix dcache publish page, publishing logic that distinguishes mkvcache from kvcache### cn
-- fix history patch query bug
-- fix delete cloud market
+- Fix: dcache install always use replace
+- Fix: upload_patch_package(only for dcache) return patch_id
+- Fix: dcache publish page, publishing logic that distinguishes mkvcache from kvcache### cn
+- Fix: history patch query bug
+- Fix: delete cloud market
+- Fix: docker registry & image manage bug
 
 ### cn
 
-- 修复 Dcache 安装过程, 使用 replace
-- 修复 upload_patch_package 返回 patchid
-- 修复 dcache cache 发布页, 区分 kvcache 和 mkvcache
-- 修复发布页面查询历史包的 bug
+- 修复: Dcache 安装过程, 使用 replace
+- 修复: upload_patch_package 返回 patchid
+- 修复: dcache cache 发布页, 区分 kvcache 和 mkvcache
+- 修复: 发布页面查询历史包的 bug
+- 修复: 镜像仓库和镜像管理页面的bug
 
 ## 20220305(2.4.26)
 

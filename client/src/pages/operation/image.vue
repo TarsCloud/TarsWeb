@@ -584,9 +584,20 @@ export default {
         });
     },
     saveImageItem() {
+
+      let registry = this.baseRegistryLists.filter(v=>{
+        return v.id == this.baseModal.model.registryId
+      })[0];
+
+      if(!registry)
+      {
+        this.$tip.error(`${this.$t("common.error")}`);
+        return;
+      }
+
       if (
-        this.baseModal.model.registry != "docker.io" &&
-        !this.baseModal.model.image.startsWith(this.baseModal.model.registry)
+        registry.registry != "docker.io" &&
+        !this.baseModal.model.image.startsWith(registry.registry)
       ) {
         this.$tip.error(`${this.$t("imageService.btn.imageTips")}`);
         return;
