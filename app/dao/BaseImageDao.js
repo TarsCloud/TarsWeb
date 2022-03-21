@@ -78,7 +78,7 @@ Dao.getList = async (offset, limit) => {
 };
 
 Dao.getImageRegistryList = async () => {
-	let sql = 'select a.id as id, a.image as image, b.registry as registry from t_base_image a join t_docker_registry b on a.registryId =b.id';
+	let sql = 'select a.id as id, a.image as image, b.registry as registry, b.remark as remark from t_base_image a join t_docker_registry b on a.registryId =b.id';
 	return await Db['db_tars'].sequelize.query(sql, {
 		raw: true,
 		type: Sequelize.QueryTypes.SELECT,

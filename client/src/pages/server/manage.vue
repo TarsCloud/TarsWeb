@@ -307,7 +307,7 @@
     <let-modal
       v-model="configModal.show"
       :title="$t('serverList.dlg.title.editService')"
-      width="800px"
+      width="60%"
       :footShow="!!(configModal.model && configModal.model.server_name)"
       @on-confirm="saveConfig(batchEditConf.show)"
       @close="closeConfigModal"
@@ -316,7 +316,7 @@
       <let-form
         v-if="!!(configModal.model && configModal.model.server_name)"
         ref="configForm"
-        itemWidth="360px"
+        itemWidth="50%"
         :columns="2"
         class="two-columns"
       >
@@ -649,7 +649,6 @@
 
         <let-form-item
           :label="$t('serverList.dlg.monitorScript')"
-          itemWidth="724px"
         >
           <let-checkbox
             v-model="batchEditConf.itemEnable.monitor_script_path"
@@ -657,8 +656,8 @@
             class="form_item_disabled"
           />
           <let-input
-            style="width: 664px"
             size="small"
+            class="form_item_style"
             v-bind:disabled="
               !batchEditConf.itemEnable.monitor_script_path ||
                 !configModal.model.run_type_bool
@@ -670,7 +669,7 @@
         <let-form-item
           :label="$t('serverList.dlg.privateTemplate')"
           labelWidth="150px"
-          itemWidth="724px"
+          itemWidth="100%"
         >
           <let-checkbox
             v-model="batchEditConf.itemEnable.profile"
@@ -678,10 +677,9 @@
             class="form_item_disabled"
           />
           <let-input
-            style="width: 664px"
             size="large"
             type="textarea"
-            :rows="4"
+            :rows="5"
             v-bind:disabled="!batchEditConf.itemEnable.profile"
             v-model="configModal.model.profile"
           ></let-input>
