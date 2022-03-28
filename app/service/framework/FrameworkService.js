@@ -14,25 +14,21 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const {tKafkaQueue} = require('./db').db_tars_web;
+const FrameworkDao = require('../../dao/FrameworkDao');
+const logger = require('../../../logger');
+const _ = require('lodash');
 
-module.exports = {
-	getTaskByTaskNo: async (taskNo) => {
-		return await tKafkaQueue.findOne({
-			where: {task_no: taskNo},
-			raw: true
-		});
-	},
+const FrameworkService = {};
 
-	updateTask: async (params, taskNo) => {
-		return await tKafkaQueue.update(params, {
-			where: {
-				task_no: taskNo
-			}
-		});
-	},
+FrameworkService.getFrameworkId = async () => {
 
-	addTask: async (params) => {
-		return await tKafkaQueue.create(params)
-	}
+	return await FrameworkDao.getFrameworkId();
 };
+
+FrameworkService.updateFrameworkId = async (fId) => {
+
+	return await FrameworkDao.update(fId);
+};
+
+
+module.exports = FrameworkService;

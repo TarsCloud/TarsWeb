@@ -15,32 +15,27 @@
  */
 
 const {
-	tAdapterConf
+	tFrameworkId
 } = require('./db').db_tars;
-const logger = require('../logger');
+const Sequelize = require('sequelize');
+const FrameworkIdDao = {};
 
-var DemoDao = function () {
-}
+FrameworkIdDao.getFrameworkId = async () => {
+	return await tFrameworkId.findOne({
+		raw: true,
+		where: {
+			key: 'key'
+		}
+	})
+};
 
-DemoDao.getAdapterConfById = async (id) => {
-	try {
-		return await tAdapterConf.findAll({
-			where: {
-				id: id
-			}
-		});
-	} catch (e) {
-		logger.error(e);
-		throw(e);
-	}
-}
+FrameworkIdDao.update = async (fId) => {
+	return await tFrameworkId.upsert({
+		key: 'key',
+		fId: fId,
+		update_time: new Date(),
+	})
+};
 
-DemoDao.insertAdapterConf = async (adapterConf) => {
 
-}
-
-DemoDao.updateAdapterConf = async (id, adapterConf) => {
-
-}
-
-module.exports = DemoDao;
+module.exports = FrameworkIdDao;

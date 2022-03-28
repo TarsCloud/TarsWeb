@@ -311,7 +311,9 @@ CommonService.deletePod = async (name) => {
 
 
 CommonService.getServerList = async (force) => {
-	if (force) {
+
+	if (force === true) {
+
 		const data = await serverListFn();
 
 		return data.body.items;

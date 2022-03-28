@@ -26,7 +26,6 @@ if (WebConf.enable) {
 	const DeployServerController = require('./controller/deploy/DeployServerController');
 	const TaskController = require('./controller/task/TaskController');
 	const PatchController = require('./controller/patch/PatchController');
-	// const MonitorController = require('./controller/monitor/MonitorController');
 	const TemplateController = require('./controller/template/TemplateController');
 	const ApplicationController = require('./controller/application/ApplicationController');
 	const BusinessController = require('./controller/business/BusinessController');
@@ -37,7 +36,7 @@ if (WebConf.enable) {
 	const LogviewController = require('./controller/logview/LogviewController');
 	const IDCController = require('./controller/idc/IDCController');
 	const ImageController = require('./controller/image/ImageController');
-	// const CallChainController   = require("./controller/callchain/CallChainController")
+	const FrameworkController = require('./controller/framework/FrameworkController');
 
 	const apiConf = [
 		// 服务管理接口
@@ -501,7 +500,7 @@ if (WebConf.enable) {
 			test_case_name: 'notEmpty',
 			params: 'notEmpty'
 		}],
-		//taflogview
+		//logview
 		['get', '/logview_list', LogviewController.getLogFileList, {
 			application: 'notEmpty',
 			server_name: 'notEmpty',
@@ -513,6 +512,12 @@ if (WebConf.enable) {
 			node_name: 'notEmpty',
 			log_file: 'notEmpty',
 			interface_params: 'notEmpty'
+		}],
+
+		//framework id
+		['post', '/get_framework_id', FrameworkController.getFrameworkId],
+		['post', '/update_framework_id', FrameworkController.updateFrameworkId, {
+			fId: 'notEmpty',
 		}],
 
 	];

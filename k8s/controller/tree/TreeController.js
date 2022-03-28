@@ -103,7 +103,7 @@ TreeController.ServerTree = async (ctx) => {
             searchKey,
             force
         } = ctx.paramsObj
-        let result = await TreeService.tree(searchKey, force);
+        let result = await TreeService.tree(searchKey, force == "true");
         let treeData = treeNode({
             data: result.data,
         });

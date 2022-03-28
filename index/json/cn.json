@@ -1161,6 +1161,16 @@
             "tgz": "tgz",
             "docker": "docker"
         },
+        "resources": {
+            "example": "例如",
+            "limitCpu": "Cpu限制",
+            "limitMem": "内存限制",
+            "requestCpu": "Cpu预留",
+            "requestMem": "内存预留",
+            "tip": {
+                "resources": "请编辑资源管理"
+            }
+        },
         "table": {
             "th": {
                 "endpoint": "OBJ绑定地址",
