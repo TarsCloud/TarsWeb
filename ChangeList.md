@@ -1,4 +1,4 @@
-## 20220320(2.4.27)
+## 20220329(2.4.27)
 
 ### en
 
@@ -8,7 +8,7 @@
 - Fix: history patch query bug
 - Fix: delete cloud market
 - Fix: docker registry & image manage bug
-
+- Fix: synchronous replication of containerization parameters during capacity expansion
 ### cn
 
 - 修复: Dcache 安装过程, 使用 replace
@@ -16,6 +16,7 @@
 - 修复: dcache cache 发布页, 区分 kvcache 和 mkvcache
 - 修复: 发布页面查询历史包的 bug
 - 修复: 镜像仓库和镜像管理页面的bug
+- 修复: 扩容时同步复制容器化参数
 
 ## 20220305(2.4.26)
 
