@@ -1006,12 +1006,14 @@
         "delete": {
             "confirmTips": "确认删除基础镜像么?"
         },
+        "dockerPull": "后台拉取镜像中...",
         "form": {
             "Image": "镜像地址",
             "Count": "版本个数",
             "SupportedType": "支持类型",
             "CreationTime": "创建时间",
             "Mark": "备注",
+            "Result": "拉取镜像结果",
             "ImageHolder": "请输入镜像地址",
             "ImageTips": "镜像地址不能为空",
             "ImageFormatTips": "镜像地址非法",

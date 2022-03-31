@@ -393,6 +393,9 @@ if (WebConf.enable) {
 		['post', '/force_docker_login', ImageController.forceDockerLogin, {
 			nodeName: 'notEmpty'
 		}],
+		['post', '/docker_pull', ImageController.dockerPull, {
+			id: 'notEmpty'
+		}],
 
 		//资源管理
 		['get', '/list_tars_node', ResourceController.listTarsNode],

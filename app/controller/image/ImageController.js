@@ -162,7 +162,7 @@ Controller.forceDockerLogin = async (ctx) => {
 	try {
 		let data = await Service.forceDockerLogin(ctx.paramsObj.nodeName);
 
-		console.log(data);
+		// console.log(data);
 
 		ctx.makeResObj(200, '', data);
 	} catch (e) {
@@ -170,6 +170,20 @@ Controller.forceDockerLogin = async (ctx) => {
 		ctx.makeErrResObj();
 	}
 };
+
+Controller.dockerPull = async (ctx) => {
+	try {
+		let data = await Service.dockerPull(ctx.paramsObj.id);
+
+		// console.log(data);
+
+		ctx.makeResObj(200, '', data);
+	} catch (e) {
+		logger.error('[forceDockerLogin]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
 
 
 module.exports = Controller;

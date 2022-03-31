@@ -987,12 +987,14 @@
         "delete": {
             "confirmTips": "Confirm delete base image?"
         },
+        "dockerPull": "Docker pull image in background...",
         "form": {
             "Image": "Image",
             "Count": "Image Version Count",
             "SupportedType": "Support Type",
             "CreationTime": "Create Time",
             "Mark": "Mark",
+            "Result": "Docker Pull Result",
             "ImageHolder": "Please Input Registry",
             "ImageTips": "Image can not be empty",
             "ImageFormatTips": "Image format error",

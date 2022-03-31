@@ -90,5 +90,9 @@ Service.checkDockerRegistry = async (registry, userName, password) => {
 	return await AdminService.checkDockerRegistry(registry, userName, password);
 };
 
+Service.dockerPull = async (baseImageId) => {
+	return await AdminService.dockerPull("" + baseImageId);
+};
+
 
 module.exports = Service;

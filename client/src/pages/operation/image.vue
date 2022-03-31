@@ -94,22 +94,29 @@
         <let-table-column
           :title="$t('imageService.form.Registry')"
           prop="registry"
-          width="15%"
+          width="10%"
         >
+        </let-table-column>
+        <let-table-column title="sha256" prop="sha" width="30%">
         </let-table-column>
         <let-table-column
           :title="$t('imageService.form.Mark')"
           prop="remark"
-          width="25%"
+          width="10%"
         ></let-table-column>
         <let-table-column
+          :title="$t('imageService.form.Result')"
+          prop="result"
+          width="15%"
+        ></let-table-column>
+        <!-- <let-table-column
           :title="$t('imageService.form.UpdateTime')"
           prop="update_time"
-        ></let-table-column>
-        <let-table-column
+        ></let-table-column> -->
+        <!-- <let-table-column
           :title="$t('imageService.form.CreateTime')"
           prop="create_time"
-        ></let-table-column>
+        ></let-table-column> -->
         <let-table-column :title="$t('operate.operates')" width="180px">
           <template slot-scope="scope">
             <let-table-operation @click="editImageItem(scope.row)"
@@ -117,6 +124,9 @@
             </let-table-operation>
             <let-table-operation @click="removeImageItem(scope.row)"
               >{{ $t("operate.delete") }}
+            </let-table-operation>
+            <let-table-operation @click="pullImageItem(scope.row)"
+              >{{ $t("operate.pull") }}
             </let-table-operation>
           </template>
         </let-table-column>
@@ -584,13 +594,11 @@ export default {
         });
     },
     saveImageItem() {
-
-      let registry = this.baseRegistryLists.filter(v=>{
-        return v.id == this.baseModal.model.registryId
+      let registry = this.baseRegistryLists.filter((v) => {
+        return v.id == this.baseModal.model.registryId;
       })[0];
 
-      if(!registry)
-      {
+      if (!registry) {
         this.$tip.error(`${this.$t("common.error")}`);
         return;
       }
@@ -662,6 +670,20 @@ export default {
             });
         })
         .catch(() => {});
+    },
+    pullImageItem(row) {
+      this.$ajax
+        .postJSON("/server/api/docker_pull", {
+          id: row.id,
+        })
+        .then((data) => {
+          this.$tip.success("succ");
+        })
+        .catch((err) => {
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.message || err.err_msg}`
+          );
+        });
     },
     tableRowClassName({ row, rowIndex }) {
       if (row.present_state === "active") {

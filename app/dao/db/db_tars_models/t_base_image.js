@@ -32,8 +32,16 @@ module.exports = function (sequelize, DataTypes) {
 			type: DataTypes.INTEGER,
 			allowNull: true,
 		},
+		sha: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+		},
 		remark: {
 			type: DataTypes.STRING(255),
+			allowNull: true
+		},
+		result: {
+			type: DataTypes.TEXT,
 			allowNull: true
 		},
 		create_time: {

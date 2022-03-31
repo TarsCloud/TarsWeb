@@ -341,6 +341,13 @@ module tars
         int notifyServer(string application,string serverName, string nodeName, string command, out string result);
 
         /**
+        * 发布服务
+        * @param req
+        * @return 0: 成功, <0: 失败
+        */        
+        int batchPatch(PatchRequest req, out string result);
+        
+        /**
         * 卸载服务
         * @param application
         * @param serverName
@@ -493,6 +500,12 @@ module tars
 		 * @params result: 是否可以登录仓库
 		 */
 		int checkDockerRegistry(string registry, string userName, string password, out string result);
+
+		/**
+		 * 调用某台主控, 拉取基础镜像
+		 * @params result: 返回信息
+		 */
+		int dockerPull(string baseImageId);
     };
 };
 
