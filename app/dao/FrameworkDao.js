@@ -15,13 +15,13 @@
  */
 
 const {
-	tFrameworkId
+	tFrameworkKey
 } = require('./db').db_tars;
 const Sequelize = require('sequelize');
 const FrameworkIdDao = {};
 
-FrameworkIdDao.getFrameworkId = async () => {
-	return await tFrameworkId.findOne({
+FrameworkIdDao.getFrameworkKey = async () => {
+	return await tFrameworkKey.findOne({
 		raw: true,
 		where: {
 			key: 'key'
@@ -29,13 +29,26 @@ FrameworkIdDao.getFrameworkId = async () => {
 	})
 };
 
-FrameworkIdDao.update = async (fId) => {
-	return await tFrameworkId.upsert({
+FrameworkIdDao.update = async (cuid, priKey) => {
+	return await tFrameworkKey.upsert({
 		key: 'key',
-		fId: fId,
+		cuid: cuid,
+		autologin: 1,
+		pri_key: priKey,
 		update_time: new Date(),
 	})
 };
 
+FrameworkIdDao.updateAutoLogin = async (autologin) => {
+	return await tFrameworkKey.update({
+		autologin: autologin,
+		update_time: new Date(),
+	}, {
+		where: {
+			key: 'key'
+		}
+	});
+
+};
 
 module.exports = FrameworkIdDao;

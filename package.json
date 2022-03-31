@@ -54,6 +54,7 @@
         "md5": "^2.3.0",
         "md5-file": "^4.0.0",
         "memory-cache": "^0.2.0",
+        "miniprogram-sm-crypto": "^0.3.7",
         "moment": "^2.22.0",
         "mysql": "^2.15.0",
         "mysql2": "^1.5.1",

@@ -514,10 +514,17 @@ if (WebConf.enable) {
 			interface_params: 'notEmpty'
 		}],
 
-		//framework id
-		['post', '/get_framework_id', FrameworkController.getFrameworkId],
-		['post', '/update_framework_id', FrameworkController.updateFrameworkId, {
-			fId: 'notEmpty',
+		//framework key
+		['post', '/get_framework_cuid', FrameworkController.getFrameworkCUid],
+		['post', '/get_framework_ticket', FrameworkController.getFrameworkTicket, {
+			secret: 'notEmpty'
+		}],
+		['post', '/update_framework_autologin', FrameworkController.updateFrameworkAutoLogin, {
+			autologin: 'notEmpty',
+		}],
+		['post', '/update_framework_key', FrameworkController.updateFrameworkKey, {
+			priKey: 'notEmpty',
+			cuid: 'notEmpty',
 		}],
 
 	];

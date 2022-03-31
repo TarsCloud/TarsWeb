@@ -17,41 +17,67 @@
 const logger = require('../../../logger');
 const AuthService = require('../../service/auth/AuthService');
 const FrameworkService = require('../../service/framework/FrameworkService');
+const sm2 = require('miniprogram-sm-crypto').sm2
 
 const FrameworkController = {};
 
-FrameworkController.getFrameworkId = async (ctx) => {
+FrameworkController.getFrameworkCUid = async (ctx) => {
 	try {
-		if (!await AuthService.hasAdminAuth(ctx.uid)) {
-			ctx.makeNotAuthResObj();
+		let data = await FrameworkService.getFrameworkKey();
+
+		if (data) {
+			ctx.makeResObj(200, '', {
+				has: true,
+				cuid: data.cuid,
+				autologin: data.autologin,
+			});
 		} else {
-
-			let data = await FrameworkService.getFrameworkId();
-
-			if (data) {
-				ctx.makeResObj(200, '', {
-					fId: data.fId
-				});
-			} else {
-				ctx.makeResObj(200, '', {
-					fId: ''
-				});
-			}
+			ctx.makeResObj(200, '', {
+				has: false
+			});
 		}
 	} catch (e) {
-		logger.error('[getFrameworkId]', e, ctx);
+		logger.error('[getFrameworkKey]', e, ctx);
 		ctx.makeErrResObj();
 	}
 };
 
-FrameworkController.updateFrameworkId = async (ctx) => {
-	let fId = ctx.paramsObj.fId;
+FrameworkController.getFrameworkTicket = async (ctx) => {
+	try {
+		let data = await FrameworkService.getFrameworkKey();
+
+		if (!data) {
+			ctx.makeErrResObj();
+			return;
+		}
+		const cipherMode = 1;
+
+		//使用私钥解密
+		let secret = ctx.paramsObj.secret;
+		let ticket = sm2.doDecrypt(secret, data.pri_key, cipherMode);
+
+		// console.log(data.pri_key);
+		// console.log('encryptData', secret);
+		// console.log('ticket', ticket);
+		ctx.makeResObj(200, '', {
+			ticket: ticket || ''
+		});
+
+	} catch (e) {
+		logger.error('[getFrameworkTicket]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+FrameworkController.updateFrameworkKey = async (ctx) => {
+	let priKey = ctx.paramsObj.priKey;
+	let cuid = ctx.paramsObj.cuid;
 	try {
 		if (!await AuthService.hasAdminAuth(ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 
-			let data = await FrameworkService.getFrameworkId();
+			let data = await FrameworkService.getFrameworkKey();
 			if (data) {
 
 				logger.error('[updateFrameworkId] getFrameworkId fid exists:', data);
@@ -60,14 +86,35 @@ FrameworkController.updateFrameworkId = async (ctx) => {
 				return;
 			}
 
-			await FrameworkService.updateFrameworkId(fId);
+			await FrameworkService.updateFrameworkKey(cuid, priKey);
 
 			ctx.makeResObj(200, '', {});
 		}
 	} catch (e) {
-		logger.error('[updateFrameworkId]', e, ctx);
+		logger.error('[updateFrameworkKey]', e, ctx);
 		ctx.makeErrResObj();
 	}
 };
+
+FrameworkController.updateFrameworkAutoLogin = async (ctx) => {
+
+	try {
+		let autologin = ctx.paramsObj.autologin ? 1 : 0;
+
+		console.log(typeof (ctx.paramsObj.autologin), autologin);
+		if (!await AuthService.hasAdminAuth(ctx.uid)) {
+			ctx.makeNotAuthResObj();
+		} else {
+
+			await FrameworkService.updateFrameworkAutoLogin(autologin);
+
+			ctx.makeResObj(200, '', {});
+		}
+	} catch (e) {
+		logger.error('[updateFrameworkAutoLogin]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
 
 module.exports = FrameworkController;

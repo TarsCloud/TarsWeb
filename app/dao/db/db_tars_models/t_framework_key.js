@@ -17,7 +17,7 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-	return sequelize.define('t_framework_id', {
+	return sequelize.define('t_framework_key', {
 		id: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
@@ -29,10 +29,20 @@ module.exports = function (sequelize, DataTypes) {
 			allowNull: false,
 			unique: 'idx_key',
 		},
-		fId: {
-			type: DataTypes.TEXT,
+		cuid: {
+			type: DataTypes.STRING(128),
 			allowNull: false,
 			defaultValue: '',
+		},
+		pri_key: {
+			type: DataTypes.STRING(128),
+			allowNull: false,
+			defaultValue: '',
+		},
+		autologin: {
+			type: DataTypes.INTEGER,
+			defaultValue: 1,
+			allowNull: true,
 		},
 		update_time: {
 			type: DataTypes.DATE,
@@ -40,7 +50,7 @@ module.exports = function (sequelize, DataTypes) {
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		}
 	}, {
-		tableName: 't_framework_id',
+		tableName: 't_framework_key',
 		timestamps: false
 	});
 };

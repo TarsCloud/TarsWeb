@@ -20,14 +20,19 @@ const _ = require('lodash');
 
 const FrameworkService = {};
 
-FrameworkService.getFrameworkId = async () => {
+FrameworkService.getFrameworkKey = async () => {
 
-	return await FrameworkDao.getFrameworkId();
+	return await FrameworkDao.getFrameworkKey();
 };
 
-FrameworkService.updateFrameworkId = async (fId) => {
+FrameworkService.updateFrameworkKey = async (cuid, priKey) => {
 
-	return await FrameworkDao.update(fId);
+	return await FrameworkDao.update(cuid, priKey);
+};
+
+FrameworkService.updateFrameworkAutoLogin = async (autologin) => {
+
+	return await FrameworkDao.updateAutoLogin(autologin);
 };
 
 
