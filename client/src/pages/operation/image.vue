@@ -4,11 +4,7 @@
       <div>
         <span
           >{{ $t("deployService.title.baseRegistry") }}
-          <i
-            class="icon iconfont el-icon-third-shuaxin"
-            style="font-family: iconfont  !important;"
-            @click="fetchRegistryData()"
-          ></i>
+          <i class="el-icon-refresh-right" @click="fetchRegistryData()"></i>
         </span>
 
         <span style="float: right; margin-bottom: 10px">
@@ -71,11 +67,7 @@
       <div>
         <span
           >{{ $t("deployService.title.baseImage") }}
-          <i
-            class="icon iconfont el-icon-third-shuaxin"
-            style="font-family: iconfont  !important;"
-            @click="fetchImageData()"
-          ></i>
+          <i class="el-icon-refresh-right" @click="fetchImageData()"></i>
         </span>
         <el-button
           style="float: right; margin-bottom: 10px"

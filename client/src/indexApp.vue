@@ -22,10 +22,7 @@ export default {
     AppFooter,
   },
   data() {
-    return {
-      // web_version: "Version: loading··",
-      // framework_version: "Version: loading··",
-    };
+    return {};
   },
   mounted() {},
 };
@@ -106,9 +103,9 @@ export default {
   }
 }
 
-.icon.iconfont {
+/* .icon.iconfont {
   font-size: 10px;
   cursor: pointer;
   vertical-align: 0em;
-}
+} */
 </style>

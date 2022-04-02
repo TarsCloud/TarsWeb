@@ -4,11 +4,7 @@
     <div class="table_head">
       <h4>
         {{ this.$t("serverList.title.serverList") }}
-        <i
-          class="icon iconfont el-icon-third-shuaxin"
-          style="font-family: iconfont  !important;"
-          @click="getServerList()"
-        ></i>
+        <i class="el-icon-refresh-right" @click="getServerList()"></i>
       </h4>
     </div>
 
@@ -1301,11 +1297,11 @@ export default {
 .page_server_publish {
   padding-bottom: 32px;
 
-  .icon.iconfont {
+  /* .icon.iconfont {
     font-size: 10px;
     cursor: pointer;
     vertical-align: 0em;
-  }
+  } */
 
   /* .mt10 {
   margin-top: 10px;

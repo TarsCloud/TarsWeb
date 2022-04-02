@@ -4,9 +4,9 @@
     <div class="table_head">
       <h4>
         {{ this.$t("serverList.title.serverList") }}
+
         <i
-          class="icon iconfont el-icon-third-shuaxin"
-          style="font-family: iconfont  !important;"
+          class="el-icon-refresh-right"
           @click="getServerList(serverPageNum)"
         ></i>
       </h4>
@@ -153,7 +153,7 @@
             v-if="scope.row.run_type == 'container'"
             placement="top-start"
           >
-            <i class="icon iconfont el-icon-files"></i>
+            <i class="el-icon-files"></i>
           </el-tooltip>
         </template>
       </let-table-column>
@@ -261,7 +261,9 @@
     <div class="table_head">
       <h4 v-if="serverNotifyList && showOthers">
         {{ this.$t("serverList.title.serverStatus") }}
-        <i class="icon iconfont" @click="getServerNotifyList()">&#xec08;</i>
+        <i class="el-icon-refresh-right" @click="getServerNotifyList()"
+          >&#xec08;</i
+        >
       </h4>
     </div>
     <let-table
@@ -647,9 +649,7 @@
           ></let-input>
         </let-form-item>
 
-        <let-form-item
-          :label="$t('serverList.dlg.monitorScript')"
-        >
+        <let-form-item :label="$t('serverList.dlg.monitorScript')">
           <let-checkbox
             v-model="batchEditConf.itemEnable.monitor_script_path"
             v-show="!batchEditConf.show"
@@ -2143,11 +2143,11 @@ export default {
     color: var(--off-color);
   }
 
-  .icon.iconfont {
+  /* .icon.iconfont {
     font-size: 10px;
     cursor: pointer;
     vertical-align: 0em;
-  }
+  } */
 
   .more-cmd {
     .let-form-item__content {

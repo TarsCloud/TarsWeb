@@ -5,8 +5,8 @@
       <h4 style="float: left">
         {{ this.$t("serverList.title.serverList") }}
         <i
-          class="icon iconfont el-icon-third-shuaxin"
-          style="font-family: iconfont !important; cursor: pointer"
+          class="el-icon-refresh-right"
+          style="cursor: pointer"
           @click="getServerList()"
         ></i>
       </h4>
@@ -210,10 +210,7 @@
     <div class="table_head">
       <h4 v-if="serverNotifyList && showOthers">
         {{ this.$t("serverList.title.serverStatus") }}
-        <i
-          class="icon iconfont"
-          style="font-family: iconfont !important; cursor: pointer"
-          @click="getServerNotifyList()"
+        <i class="el-icon-refresh-right" @click="getServerNotifyList()"
           >&#xec08;</i
         >
       </h4>
@@ -1895,11 +1892,11 @@ export default {
     color: var(--off-color);
   }
 
-  .icon.iconfont {
+  /* .icon.iconfont {
     font-size: 10px;
     cursor: pointer;
     vertical-align: 0em;
-  }
+  } */
 
   .more-cmd {
     .let-form-item__content {

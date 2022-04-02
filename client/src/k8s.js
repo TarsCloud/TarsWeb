@@ -15,7 +15,7 @@
  */
 
 import Vue from 'vue';
-import './assets/icon-font/iconfont.css'
+// import './assets/icon-font/iconfont.css'
 import store from "../store/store"
 
 import './plugins/ajax';

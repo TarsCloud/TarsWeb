@@ -6,8 +6,8 @@
         <h4>
           {{ this.$t("serverList.title.buildList") }}
           <i
-            class="icon iconfont el-icon-third-shuaxin"
-            style="font-family: iconfont  !important; cursor: pointer"
+            class="el-icon-refresh-right"
+            style="cursor: pointer"
             @click="getBuildList()"
           ></i>
         </h4>
@@ -56,8 +56,8 @@
       <h4>
         {{ this.$t("serverList.title.patchList") }}
         <i
-          class="icon iconfont el-icon-third-shuaxin"
-          style="font-family: iconfont  !important; cursor: pointer"
+          class="el-icon-refresh-right"
+          style="cursor: pointer"
           @click="getImageList()"
         ></i>
       </h4>

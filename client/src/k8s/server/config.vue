@@ -4,8 +4,8 @@
       <h4 style="float: left">
         {{ this.$t("cfg.title.a") }}
         <i
-          class="icon iconfont el-icon-third-shuaxin"
-          style="font-family: iconfont !important; cursor: pointer"
+          class="el-icon-refresh-right"
+          style="cursor: pointer"
           @click="getConfigList()"
         ></i>
       </h4>

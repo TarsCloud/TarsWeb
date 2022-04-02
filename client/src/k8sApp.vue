@@ -1,8 +1,6 @@
 <template>
   <div id="app">
     <k8s-header></k8s-header>
-    <!-- <p id="web_version">Version:{{ web_version }}</p> -->
-    <!-- 切换 tab 缓存接口（主要为左侧目录树） -->
     <keep-alive>
       <router-view class="main-width"></router-view>
     </keep-alive>
@@ -12,7 +10,6 @@
 </template>
 
 <script>
-// import Axios from "axios";
 import K8sHeader from "./components/app/k8s-header";
 import AppFooter from "./components/app/footer";
 
@@ -23,9 +20,7 @@ export default {
     AppFooter,
   },
   data() {
-    return {
-      // web_version: " loading··",
-    };
+    return {};
   },
   mounted() {},
 };
@@ -106,9 +101,9 @@ export default {
   }
 }
 
-.icon.iconfont {
+/* .icon.iconfont {
   font-size: 10px;
   cursor: pointer;
   vertical-align: 0em;
-}
+} */
 </style>

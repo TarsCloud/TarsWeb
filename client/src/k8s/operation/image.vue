@@ -67,7 +67,7 @@
               :title="$t('releasePackage.default')"
               style="color: green; display: inline-block"
             >
-              <i v-if="scope.row.isDefault" class="icon iconfont">&#xec46;</i>
+              <i v-if="scope.row.isDefault" class="el-icon-refresh-right"></i>
             </span>
             {{ scope.row.Id }}
           </template>

@@ -28,9 +28,12 @@ import "./assets/theme/element-to-let/index.css"
 
 import dcacheApp from './dcacheApp';
 import router from './router/dcache';
-import {i18n, loadLang} from './locale/i18n'
+import {
+  i18n,
+  loadLang
+} from './locale/i18n'
 
-import './assets/icon-font/iconfont.css'
+// import './assets/icon-font/iconfont.css'
 
 Vue.config.productionTip = false;
 
@@ -46,8 +49,9 @@ loadLang.call(this).then(() => {
     el: '#app',
     router,
     store,
-    components: {dcacheApp},
+    components: {
+      dcacheApp
+    },
     template: '<dcacheApp/>'
   });
 })
-

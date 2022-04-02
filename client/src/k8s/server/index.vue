@@ -2,22 +2,20 @@
   <div class="page_server">
     <div class="left-view">
       <div class="tree_search">
-        <el-input
-          size="small"
+        <input
           :placeholder="$t('home.placeholder')"
+          class="tree_search_key"
           v-model="treeSearchKey"
-          @keydown.enter.native="filterTextChange"
-        >
-        </el-input>
-      </div>
-      <div class="tree_wrap">
-        <a
-          href="javascript:;"
-          class="tree_icon iconfont el-icon-third-shuaxin"
-          style="font-family: iconfont  !important;z-index: 99"
+          @keydown.enter="filterTextChange"
+        />
+        <i
+          class="el-icon-refresh-right"
+          style="z-index: 99"
           :class="{ active: isIconPlay }"
           @click="treeSearch(1)"
-        ></a>
+        ></i>
+      </div>
+      <div class="tree_wrap">
         <el-tree
           class="left-tree"
           :data="treeData"
@@ -586,7 +584,7 @@ export default {
 <style>
 @import "../../assets/css/variable.css";
 
-.el-icon-third-shuaxin.active {
+.el-icon-refresh-right.active {
   animation: icon_loading 1s;
 }
 
@@ -617,20 +615,21 @@ export default {
 
   /*目录搜索框*/
   .tree_search {
-    display: block;
+    display: inline;
     margin-bottom: 20px;
     position: relative;
   }
 
   .tree_search_key {
-    display: block;
+    display: inline;
     border: 1px solid #c0c4cc;
     border-radius: 4px;
     color: #222329;
     font-size: 14px;
     padding: 6px 10px;
+    margin-right: 10px;
     box-sizing: border-box;
-    width: 100%;
+    width: 80%;
   }
 
   /**/

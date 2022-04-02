@@ -3,11 +3,7 @@
     <div style="margin-bottom:5px">
       <h4>
         {{ $t("cfg.title.a") }}
-        <i
-          class="icon iconfont el-icon-third-shuaxin"
-          style="font-family: iconfont  !important;"
-          @click="getConfigList(serverData)"
-        ></i>
+        <i class="el-icon-refresh-right" @click="getConfigList(serverData)"></i>
 
         <let-button
           size="mini"
