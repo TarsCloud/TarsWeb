@@ -21,8 +21,12 @@ const store = new Vuex.Store({
         marketUid(state, uid) {
             state.marketUid = uid;
         },
-        version(state, version) {
-            state.version = version;
+        version(state, version, framework_version) {
+            state.version = version.version;
+            window.localStorage.version = version.version;
+            if (framework_version) {
+                window.localStorage.framework_version = version.framework_version;
+            }
         }
     }
 })

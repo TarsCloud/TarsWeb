@@ -205,7 +205,7 @@
           ? `${$t('operate.title.add')} ${$t('common.config')}`
           : `${$t('operate.title.update')} ${$t('common.config')}`
       "
-      width="800px"
+      width="80%"
       @on-confirm="configDiff"
       @close="closeConfigModal"
       @on-cancel="closeConfigModal"
@@ -251,7 +251,7 @@
           ? `${$t('operate.title.add')} ${$t('common.config')}`
           : `${$t('operate.title.update')} ${$t('common.config')}`
       "
-      width="1000px"
+      width="80%"
       @on-confirm="updateNodeConfigFile"
       @close="closeNodeConfigModal"
       @on-cancel="closeNodeConfigModal"

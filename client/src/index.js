@@ -29,7 +29,6 @@ import "./assets/theme/element-to-let/index.css"
 import './plugins/ui';
 import './plugins/ajax';
 import './plugins/common';
-import './plugins/cloud';
 
 import $ from "n-zepto";
 

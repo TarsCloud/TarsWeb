@@ -23,8 +23,8 @@ export default {
   },
   data() {
     return {
-      web_version: "Version: loading··",
-      framework_version: "Version: loading··",
+      // web_version: "Version: loading··",
+      // framework_version: "Version: loading··",
     };
   },
   mounted() {},

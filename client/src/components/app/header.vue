@@ -263,6 +263,7 @@ export default {
       this.$store.commit({
         type: "version",
         version: this.web_version,
+        framework_version: this.frameworkVersion,
       });
     });
 

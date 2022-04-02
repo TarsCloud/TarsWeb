@@ -1,7 +1,6 @@
 <template>
   <div class="app_index__header">
     <div class="main-width">
-      <!-- <h1 class="hidden">TARS/K8S</h1> -->
       <el-row :gutter="24">
         <el-col :span="6">
           <div class="logo-wrap">
@@ -67,6 +66,7 @@
         </el-col>
         <el-col :span="3" style="text-align:center">
           <div class="version-wrap">
+            <div>web:{{ web_version }}</div>
             <el-link
               style="font-size:9px"
               href="https://doc.tarsyun.com"
@@ -138,7 +138,7 @@ import cacheIcon from "@/assets/img/cache-l.png";
 import operatorIcon from "@/assets/img/operator-l.png";
 import packageIcon from "@/assets/img/package-l.png";
 import { localeMessages } from "@/locale/i18n";
-
+import Axios from "axios";
 export default {
   data() {
     return {
@@ -158,12 +158,12 @@ export default {
       k8s: this.$cookie.get("k8s") || "false",
       enable: this.$cookie.get("enable") || "false",
       show: this.$cookie.get("show") || "false",
+      web_version: "loading··",
       enableLdap: false,
     };
   },
   computed: {
     marketUid() {
-      // console.log("marketUid", this.$store.state.marketUid);
       return this.$store.state.marketUid;
     },
   },
@@ -252,6 +252,17 @@ export default {
     this.checkEnableLogin();
     this.checkAdmin();
     this.checkEnableLdap();
+
+    Axios.create({ baseURL: "/" })({
+      method: "get",
+      url: "/web/k8s_version",
+    }).then((response) => {
+      this.web_version = response.data;
+      this.$store.commit({
+        type: "version",
+        version: this.web_version,
+      });
+    });
 
     window.header = this;
   },
