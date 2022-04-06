@@ -72,7 +72,18 @@ let ExecUpload = async (request) => {
                     let task_no = util.getUUID().toString();
 
                     try {
-                        let rst = await PatchService.uploadAndPatch(params.app, params.server, '', task_no, "install from cloud", 0, filename, 'cloud', params.uid || '');
+                        let rst = await PatchService.uploadAndPatch(params.app, params.server, '', task_no, "install from cloud", 0, filename, 'cloud', params.uid || '', (total, length) => {
+                            console.log(total, length);
+
+                            let data = {
+                                code: 201,
+                                data: {
+                                    total: total,
+                                    length: length
+                                }
+                            }
+                            connection.send(JSON.stringify(data));
+                        });
 
                         connection.send(JSON.stringify(rst));
                     } catch (e) {

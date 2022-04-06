@@ -123,9 +123,9 @@ FrameworkService.createFrameworkConfig = async () => {
 
         try {
             let framework = JSON.parse(config.expand.frameworkConfig);
-            WebConf.market = framework.market || false;
+            WebConf.market.enable = framework.market || false;
         } catch (e) {
-            WebConf.market = false;
+            WebConf.market.enable = false;
             console.log(e);
         }
 

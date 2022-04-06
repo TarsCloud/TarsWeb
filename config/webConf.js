@@ -81,7 +81,10 @@ let conf = {
         upload: 'api/v1beta2/timage', // tarsimage上传交互
         cache: true, //从cache中加载
     },
-    market: false,
+    market: {
+        enable: false,
+        url: 'https://m.k.tarsyun.com'
+    },
     isEnableK8s: () => {
         return process.env.ENABLE_K8S == "true" || false;
     },
@@ -106,7 +109,11 @@ if (process.env.NODE_ENV == "local") {
     conf.webConf.host = '0.0.0.0';
     conf.webConf.port = 4001;
     conf.webConf.alter = false;
-    conf.market = true;
+
+    conf.market = {
+        enable: true,
+        url: 'http://localhost:6001'
+    };
 
     conf.client = path.join(cwd, 'config/tars-dev.conf');
     process.env.ENABLE_K8S = "false";
@@ -130,7 +137,10 @@ if (process.env.NODE_ENV == "local") {
     conf.webConf.host = '0.0.0.0';
     conf.webConf.port = 4001;
     conf.enable = true;
-    conf.market = true;
+    conf.market = {
+        enable: true,
+        url: 'http://localhost:6001'
+    };
     conf.webConf.alter = false;
     conf.client = path.join(cwd, 'config/tars-remote.conf');
     process.env.ENABLE_K8S = "true";
@@ -169,7 +179,10 @@ if (process.env.NODE_ENV == "local") {
 
     process.env.ENABLE_K8S = "true";
     conf.enable = false;
-    // conf.market = true;
+    conf.market = {
+        enable: true,
+        url: 'http://localhost:6001'
+    };
     conf.k8s.namespace = 'tars-dev';
     conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 } else if (process.env.NODE_ENV == "all") {
@@ -194,7 +207,10 @@ if (process.env.NODE_ENV == "local") {
 
     process.env.ENABLE_K8S = "true";
     conf.enable = true;
-    conf.market = true;
+    conf.market = {
+        enable: true,
+        url: 'http://localhost:6001'
+    };
     conf.webConf.alter = false;
     // conf.webConf.alter = true;
     conf.k8s.namespace = 'tars-dev';

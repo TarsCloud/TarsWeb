@@ -19,6 +19,7 @@ const captcha = require('svg-captcha')
 const PageController = {}
 const package = require("../../../package.json")
 const WebConf = require("../../../config/webConf");
+
 PageController.index = async (ctx) => {
 
     if (WebConf.enable && WebConf.show) {
@@ -65,5 +66,10 @@ PageController.captcha = async (ctx) => {
     ctx.set('Content-Type', 'image/svg+xml')
     ctx.body = cap.data
 }
+
+PageController.market = async (ctx) => {
+    ctx.body = WebConf.market;
+}
+
 
 module.exports = PageController;

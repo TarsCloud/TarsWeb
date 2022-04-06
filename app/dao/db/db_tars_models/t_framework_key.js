@@ -35,7 +35,7 @@ module.exports = function (sequelize, DataTypes) {
 			defaultValue: '',
 		},
 		pri_key: {
-			type: DataTypes.STRING(128),
+			type: DataTypes.TEXT,
 			allowNull: false,
 			defaultValue: '',
 		},

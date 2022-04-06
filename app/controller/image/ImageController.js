@@ -69,7 +69,7 @@ Controller.checkDockerRegistry = async (ctx) => {
 		let {
 			registry,
 			username,
-			password
+			password = ''
 		} = ctx.paramsObj;
 
 		ctx.makeResObj(200, '', await Service.checkDockerRegistry(registry, username, password));

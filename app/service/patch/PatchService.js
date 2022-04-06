@@ -107,7 +107,8 @@ PatchService.uploadAndPatch = async (application,
 	package_type,
 	filename,
 	fieldname,
-	uid) => {
+	uid,
+	callback) => {
 	try {
 
 		package_type = package_type || 0;
@@ -157,7 +158,7 @@ PatchService.uploadAndPatch = async (application,
 
 				logger.info('[newTgzName] copy tarspatch');
 				//上传到patch服务
-				let ret = await PatchService.uploadToPatch(hash, application, module_name, uploadTgzName, baseUploadPath + '/' + filename);
+				let ret = await PatchService.uploadToPatch(hash, application, module_name, uploadTgzName, baseUploadPath + '/' + filename, callback);
 				if (ret != 0) {
 					return {
 						code: 500,
@@ -218,7 +219,7 @@ PatchService.uploadAndPatch = async (application,
 
 };
 
-PatchService.uploadToPatch = async (md5, application, module_name, uploadTgzName, localTgzPath) => {
+PatchService.uploadToPatch = async (md5, application, module_name, uploadTgzName, localTgzPath, callback) => {
 
 	let content = new PatchStruct.FileContent();
 	content.md5 = md5;
@@ -237,7 +238,7 @@ PatchService.uploadToPatch = async (md5, application, module_name, uploadTgzName
 	}
 
 	do {
-		let length = Math.min(1024 * 1024 * 5, stat.size - offset);
+		let length = Math.min(1024 * 1024 * 1, stat.size - offset);
 
 		var buffer = Buffer.alloc(length);
 
@@ -262,10 +263,14 @@ PatchService.uploadToPatch = async (md5, application, module_name, uploadTgzName
 			} else if (ret.__return == 1) {
 				logger.info('[PatchService.upload to patch ] file exist');
 				fs.close(fd);
-				return 0;				
+				return 0;
 			}
 
 			offset += length;
+
+			if (callback) {
+				callback(stat.size, offset);
+			}
 		} catch (e) {
 			logger.error('[PatchService.upload to patch error] :', e.message);
 			fs.close(fd);

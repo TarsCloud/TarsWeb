@@ -131,7 +131,7 @@ if (WebConf.enable) {
 
 app.use(async (ctx, next) => {
 	await next();
-	ctx.cookies.set('market', WebConf.market ? "true" : "false", {
+	ctx.cookies.set('market', WebConf.market.enable ? "true" : "false", {
 		httpOnly: false
 	});
 	ctx.cookies.set('enable', WebConf.enable ? "true" : "false", {
