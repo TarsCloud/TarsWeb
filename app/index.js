@@ -48,6 +48,10 @@ if (WebConf.enable) {
 			server_name: 'notEmpty',
 			node_names: ''
 		}],
+		['post', '/server_exist_and_deploy', ServerController.serverExistAndDeploy, {
+			application: 'notEmpty',
+			server_name: 'notEmpty',
+		}],
 		['get', '/application_list', ServerController.getApplicationList],
 		['get', '/node_list', ServerController.getNodeList],
 		['get', '/server_list', ServerController.getServerConfList4Tree, {
@@ -143,6 +147,7 @@ if (WebConf.enable) {
 		//上线和扩容接口
 		['post', '/deploy_server', DeployServerController.deployServer],
 		['post', '/deploy_server_from_cloud', DeployServerController.deployServerFromCloud],
+		['post', '/upgrade_server_from_cloud', DeployServerController.upgradeServerFromCloud],
 		['get', '/server_type_list', DeployServerController.serverTypeList],
 		['post', '/expand_server_preview', ExpandServerController.expandServerPreview, {
 				application: 'notEmpty',

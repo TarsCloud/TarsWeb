@@ -131,6 +131,26 @@ ServerController.serverExist = async (ctx) => {
     }
 };
 
+ServerController.serverExistAndDeploy = async (ctx) => {
+    let application = ctx.paramsObj.application;
+    let serverName = ctx.paramsObj.server_name;
+    try {
+        let data = await ServerService.getServerConf(application, serverName, '');
+
+        let auth = await AuthService.hasDevAuth(application, serverName, ctx.uid);
+        let rst = {
+            exists: data.length > 0,
+            auth: auth,
+        };
+
+        ctx.makeResObj(200, '', rst);
+    } catch (e) {
+        logger.error('[serverExistAndDeploy]', e, ctx);
+        ctx.makeErrResObj();
+    }
+};
+
+
 ServerController.getApplicationList = async (ctx) => {
     try {
         let application = [];
@@ -474,15 +494,13 @@ ServerController.getServerNodes = async (ctx) => {
         server_name
     } = ctx.paramsObj;
     try {
-        if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
-            ctx.makeNotAuthResObj();
-        } else {
-            let ret = await ServerService.getServerConfList4Tree({
-                application,
-                serverName: server_name
-            });
-            ctx.makeResObj(200, '', ret);
-        }
+
+        let ret = await ServerService.getServerConfList4Tree({
+            application,
+            serverName: server_name
+        });
+        ctx.makeResObj(200, '', ret);
+
     } catch (e) {
         logger.error('[getServerNodes]', e, ctx);
         ctx.makeErrResObj();

@@ -21,7 +21,7 @@ const CommonService = require('../../k8s/service/common/CommonService');
 const MarketService = {};
 
 
-MarketService.listInstall = async () => {
+MarketService.listInstall = async (product) => {
 
 	let labelSelector = `${CommonService.TServerCloudInstall}`;
 
@@ -30,11 +30,53 @@ MarketService.listInstall = async () => {
 	let items = [];
 
 	data.body.items.forEach(item => {
-		var v = item.metadata.labels;
-		v[CommonService.TServerCloudLogo] = item.metadata.annotations[CommonService.TServerCloudLogo];
-		v[CommonService.TServerCloudDigest] = item.metadata.annotations[CommonService.TServerCloudDigest];
-		items.push(v);
+		// var v = 
+
+		if (item.metadata.annotations[CommonService.TServerCloudInstall]) {
+			let annotations = JSON.parse(item.metadata.annotations[CommonService.TServerCloudInstall]);
+
+			// console.log(annotations);
+			let v = {};
+
+			if (product) {
+				if (item.metadata.labels[CommonService.TServerCloudInstall] == "product") {
+
+					let service = JSON.parse(JSON.stringify(annotations));
+					delete service[CommonService.TServerCloudProduct];
+
+					let pos = items.findIndex((value) => {
+						return value[CommonService.TServerCloudProductID] == annotations[CommonService.TServerCloudProduct][CommonService.TServerCloudProductID];
+					});
+
+					if (pos == -1) {
+						v = Object.assign(v, annotations[CommonService.TServerCloudProduct]);
+						v["servers"] = [];
+						v["servers"].push(service);
+
+						items.push(v);
+					} else {
+						items[pos]["servers"].push(service);
+					}
+
+
+				}
+			} else {
+
+				if (item.metadata.labels[CommonService.TServerCloudInstall] == "service") {
+
+					let service = JSON.parse(JSON.stringify(annotations));
+
+					console.log(service);
+
+					v = Object.assign(v, annotations);
+					items.push(v);
+				}
+			}
+		}
+
 	});
+
+	console.log(product, items);
 
 	return {
 		ret: 200,

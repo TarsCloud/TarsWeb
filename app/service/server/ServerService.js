@@ -121,6 +121,11 @@ ServerService.getServerConfBySource = async () => {
     return await ServerDao.getServerConfBySource();
 };
 
+ServerService.updateServerConfSource = async (application, server_name, source) => {
+    return await ServerDao.updateServerConfSource(application, server_name, source);
+};
+
+
 //通过treeNodeId查询服务列表
 ServerService.getServerConfList4Tree = async (params) => {
     if (params.isPage == "true") {

@@ -29,7 +29,6 @@ if (WebConf.isEnableK8s()) {
 }
 
 let getMarketService = (k8s) => {
-	// console.log('getMarketService', k8s);
 	if (k8s == true || k8s == "true") {
 		return require('../service/MarketK8SService');
 	} else {
@@ -38,46 +37,15 @@ let getMarketService = (k8s) => {
 }
 const MarketController = {};
 
-// MarketController.install = async (ctx) => {
-
-// 	try {
-// 		//only k8s use
-// 		ctx.paramsObj.deploy.uid = ctx.uid;
-
-// 		ctx.paramsObj.k8s = true;
-
-// 		let result = await getMarketService(ctx.paramsObj.k8s).install(ctx.paramsObj.deploy, ctx.paramsObj.cloud);
-
-// 		ctx.makeResObj(result.ret, result.msg, result.data);
-
-// 	} catch (e) {
-// 		logger.error('[install]', e.body ? e.body.message : e, ctx)
-// 		ctx.makeResObj(500, e.body ? e.body.message : e);
-// 	}
-// }
-
-// MarketController.exists = async (ctx) => {
-
-// 	try {
-// 		let result = await getMarketService(ctx.paramsObj.k8s).exists(ctx.paramsObj.app, ctx.paramsObj.server);
-
-// 		ctx.makeResObj(result.ret, result.msg, result.data);
-
-// 	} catch (e) {
-// 		logger.error('[exists]', e.body ? e.body.message : e, ctx)
-// 		ctx.makeResObj(500, e.body ? e.body.message : e);
-// 	}
-// }
-
 MarketController.listInstall = async (ctx) => {
 
 	try {
-		let result = await getMarketService(ctx.paramsObj.k8s).listInstall();
+		let result = await getMarketService(ctx.paramsObj.k8s).listInstall(ctx.paramsObj.product == 'true');
 
 		ctx.makeResObj(result.ret, result.msg, result.data);
 
 	} catch (e) {
-		logger.error('[listFromCloud]', e.body ? e.body.message : e, ctx)
+		logger.error('[listInstall]', e.body ? e.body.message : e, ctx)
 		ctx.makeResObj(500, e.body ? e.body.message : e);
 	}
 }
@@ -90,7 +58,7 @@ MarketController.get = async (ctx) => {
 		ctx.makeResObj(result.ret, result.msg, result.data);
 
 	} catch (e) {
-		logger.error('[upgrade]', e.body ? e.body.message : e, ctx)
+		logger.error('[get]', e.body ? e.body.message : e, ctx)
 		ctx.makeResObj(500, e.body ? e.body.message : e);
 	}
 }

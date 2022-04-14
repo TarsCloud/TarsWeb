@@ -103,7 +103,7 @@ DeployServerController.deployServer = async (ctx) => {
             params.operator = operators.join(";")
         }
 
-        console.log(params);
+        // console.log(params);
 
         let rst = await ServerService.addServerConf(params);
         rst.server_conf = util.viewFilter(rst.server_conf, serverConfStruct)
@@ -137,6 +137,11 @@ DeployServerController.deployServerFromCloud = async (ctx) => {
     }
 
     try {
+        if (!await AuthService.hasOpeAuth(params.application, params.server_name, ctx.uid)) {
+            ctx.makeNotAuthResObj();
+            return;
+        }
+
         //若非admin用户，且operator中不包含当前用户，则在operator中加入当前用户
         let hasAdminAuth = await AuthService.hasAdminAuth(ctx.uid)
         if (!params.operator) params.operator = ""
@@ -171,6 +176,33 @@ DeployServerController.deployServerFromCloud = async (ctx) => {
         ctx.makeErrResObj();
     }
 };
+
+DeployServerController.upgradeServerFromCloud = async (ctx) => {
+    var params = ctx.paramsObj;
+
+    try {
+        if (!await AuthService.hasOpeAuth(params.application, params.server_name, ctx.uid)) {
+            ctx.makeNotAuthResObj();
+            return;
+        }
+        // 若非admin用户， 且operator中不包含当前用户， 则在operator中加入当前用户
+        let hasAdminAuth = await AuthService.hasAdminAuth(ctx.uid)
+        if (!params.operator) params.operator = ""
+        if (!hasAdminAuth && params.operator.indexOf(ctx.uid) < 0) {
+            let operators = params.operator.split(";")
+            operators.push(ctx.uid)
+            params.operator = operators.join(";")
+        }
+
+        let rst = await ServerService.updateServerConfSource(params.application, params.server_name, params.source);
+
+        ctx.makeResObj(200, '', rst);
+    } catch (e) {
+        logger.error('[upgradeServerFromCloud]', e, ctx);
+        ctx.makeErrResObj();
+    }
+};
+
 
 DeployServerController.serverTypeList = async (ctx) => {
     try {

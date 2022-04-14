@@ -25,6 +25,7 @@ FrameworkController.getFrameworkCUid = async (ctx) => {
 	try {
 		let data = await FrameworkService.getFrameworkKey();
 
+		console.log(data);
 		if (data) {
 			ctx.makeResObj(200, '', {
 				has: true,
@@ -73,23 +74,23 @@ FrameworkController.updateFrameworkKey = async (ctx) => {
 	let priKey = ctx.paramsObj.priKey;
 	let cuid = ctx.paramsObj.cuid;
 	try {
+
+		let data = await FrameworkService.getFrameworkKey();
+		if (data) {
+
+			logger.error('[updateFrameworkId] getFrameworkId fid exists:', data);
+
+			ctx.makeErrResObj();
+			return;
+		}
 		if (!await AuthService.hasAdminAuth(ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 
-			let data = await FrameworkService.getFrameworkKey();
-			if (data) {
-
-				logger.error('[updateFrameworkId] getFrameworkId fid exists:', data);
-
-				ctx.makeErrResObj();
-				return;
-			}
-
 			await FrameworkService.updateFrameworkKey(cuid, priKey);
-
-			ctx.makeResObj(200, '', {});
 		}
+
+		ctx.makeResObj(200, '', {});
 	} catch (e) {
 		logger.error('[updateFrameworkKey]', e, ctx);
 		ctx.makeErrResObj();

@@ -17,20 +17,48 @@
 const logger = require('../../logger');
 
 const ServerService = require('../../app/service/server/ServerService');
+const CommonService = require('../../k8s/service/common/CommonService');
 
 const MarketService = {};
 
-MarketService.listInstall = async () => {
+MarketService.listInstall = async (product) => {
 
 	let data = await ServerService.getServerConfBySource();
-
-	// console.log(data);
 
 	let items = [];
 
 	data.forEach(d => {
-		items.push(JSON.parse(d.source));
+		let data = JSON.parse(d.source);
+
+		// console.log(data);
+
+		if (product) {
+			if (data[CommonService.TServerCloudProduct]) {
+				let service = JSON.parse(JSON.stringify(data));
+				delete service[CommonService.TServerCloudProduct];
+
+				let pos = items.findIndex((value) => {
+					return value[CommonService.TServerCloudProductID] == data[CommonService.TServerCloudProduct][CommonService.TServerCloudProductID];
+				});
+
+				if (pos == -1) {
+					let v = data[CommonService.TServerCloudProduct];
+					v["servers"] = [];
+					v["servers"].push(service);
+
+					items.push(v);
+				} else {
+					items[pos]["servers"].push(service);
+				}
+			}
+		} else {
+			if (!data[CommonService.TServerCloudProduct]) {
+				items.push(data);
+			}
+		}
 	});
+
+	// console.log(items);
 
 	return {
 		ret: 200,

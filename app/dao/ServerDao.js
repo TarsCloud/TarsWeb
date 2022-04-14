@@ -192,6 +192,18 @@ ServerDao.getServerConfBySource = async () => {
 	return await tServerConf.findAll(options);
 };
 
+ServerDao.updateServerConfSource = async (application, server_name, source) => {
+
+	return await tServerConf.update({
+		source: source
+	}, {
+		where: {
+			application: application,
+			server_name: server_name
+		}
+	});
+};
+
 ServerDao.getServerConfAndCount = async (params) => {
 	let where = {};
 	params.application != undefined && (where.application = params.application);
@@ -312,6 +324,7 @@ ServerDao.updateServerConf = async (params) => {
 	params.ip_group_name != undefined && (updateOptions.ip_group_name = params.ip_group_name);
 	params.run_type != undefined && (updateOptions.run_type = params.run_type);
 	params.base_image_id != undefined && (updateOptions.base_image_id = params.base_image_id);
+	params.source != undefined && (updateOptions.source = params.source);
 
 	// console.log(params, updateOptions);
 

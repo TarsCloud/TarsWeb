@@ -87,47 +87,16 @@ CommonService.upload = async (name, formData, wait) => {
 	if (!process.env.KUBERNETES_SERVICE_HOST) {
 		Object.assign(data, opts);
 		url = `${kc.getCurrentCluster().server}/api/v1/namespaces/${CommonService.NAMESPACE}/services/http:tars-tarsimage:80/proxy/${WebConf.k8s.upload}/${name}/building?wait=${wait}`;
-		// url = CommonService.getServiceHttpPath("http", "http", "tars-tarsimage", `${WebConf.k8s.upload}/${name}/building?wait=${wait}`);
 	} else {
 		url = `http://tars-tarsimage/${WebConf.k8s.upload}/${name}/building?wait=${wait}`;
 	}
 
 	data.formData = formData;
-	data.timeout = 120 * 1000;
+	data.timeout = 300 * 1000;
 
-	// const options = {
-	// 	formData: formData,
-	// 	timeout: 120 * 1000,
-	// }
 	logger.info(`upload to image request:${url}`);
 
 	return await request.post(url, data);
-
-	// request(options, (error, response, body) => {
-	// 	logger.info(`upload to image response error: `, error, response, body);
-
-	// 	if (!error && (response.statusCode == 201 || response.statusCode == 200)) {
-
-	// 		logger.info(`rsp: ${body}`);
-
-	// 		const rsp = JSON.parse(body);
-
-	// 		result.ret = 0
-	// 		result.msg = rsp.message;
-	// 		result.result = rsp.result;
-
-	// 		resolve(result)
-	// 	} else {
-	// 		if (error && error.hasOwnProperty("message")) {
-	// 			result.msg = error.message
-	// 		} else {
-	// 			result.msg = response.body.toString()
-	// 		}
-	// 		logger.warn('[rpc_upload]', body)
-
-	// 		resolve(result)
-	// 	}
-	// })
 }
 
 CommonService.NAMESPACE = process.env.Namespace || WebConf.k8s.namespace;
@@ -150,6 +119,10 @@ CommonService.TServerNameLabel = "tars.io/ServerName"
 CommonService.TServerCloudInstall = "tars.io/CloudInstall"
 CommonService.TServerCloudLogo = "tars.io/CloudLogo"
 CommonService.TServerCloudDigest = "tars.io/CloudDigest"
+CommonService.TServerCloudProduct = "tars.io/CloudProduct"
+CommonService.TServerCloudProductID = "tars.io/CloudProductID"
+CommonService.TServerCloudProductDigest = "tars.io/CloudProductDigest"
+
 CommonService.TServerType1 = "tars";
 CommonService.TServerType2 = "normal";
 CommonService.TDeployApproveLabel = "tars.io/Approve"

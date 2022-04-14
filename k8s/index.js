@@ -91,12 +91,22 @@ const k8sApiConf = [
         app: 'notEmpty',
         server: 'notEmpty',
     }],
+
+    ['get', '/server_exist_and_deploy', DeployController.serverExistAndDeploy, {
+        app: 'notEmpty',
+        server: 'notEmpty',
+    }],
+
     ['post', '/install', DeployController.install, {
         deploy: 'notEmpty',
     }],
-    ['post', '/upgrade', DeployController.upgrade, {
+    ['post', '/install_server_from_cloud', DeployController.installFromCloud, {
         deploy: 'notEmpty',
-        cloud: 'notEmpty',
+        source: 'notEmpty',
+    }],
+    ['post', '/upgrade_server_from_cloud', DeployController.upgradeFromCloud, {
+        deploy: 'notEmpty',
+        source: 'notEmpty',
     }],
 
     // 服务配置文件 ( 创建、列表、更新、删除 )
