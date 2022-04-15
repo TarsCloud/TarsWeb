@@ -25,7 +25,7 @@ FrameworkController.getFrameworkCUid = async (ctx) => {
 	try {
 		let data = await FrameworkService.getFrameworkKey();
 
-		console.log(data);
+		// console.log(data);
 		if (data) {
 			ctx.makeResObj(200, '', {
 				has: true,

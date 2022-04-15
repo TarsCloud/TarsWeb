@@ -263,16 +263,6 @@ ImageService.baseImageSelect = async (metadata) => {
 
 			result.Data.push(elem);
 		})
-
-		// result.Data.sort((a, b) => {
-		// 	if (a.CreateTime == b.CreateTime) {
-		// 		return 0;
-		// 	}
-
-		// 	return a.CreateTime > b.CreateTime ? -1 : 1;
-		// })
-
-		// console.log(result.Data);
 	}
 
 	return {
@@ -353,12 +343,32 @@ ImageService.imageReleaseCreate = async (metadata) => {
 
 	let imageName = CommonService.getTServerName(metadata.Name);
 	let tImage = (await CommonService.getObject("timages", imageName));
+	// console.log(tImage);
+
 	if (!tImage) {
-		return {
-			ret: 500,
-			msg: "image not exists"
-		};
+
+		tImage = {
+			apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
+			kind: 'TImage',
+			metadata: {
+				namespace: CommonService.NAMESPACE,
+				name: imageName,
+				labels: {},
+			},
+			imageType: 'server',
+			mark: metadata.Mark,
+			releases: []
+		}
+
+		tImage.metadata.labels[CommonService.TImageTypeLabel] = 'server';
+
+		tImage.metadata.labels[CommonService.TServerAppLabel] = metadata.Name.split(".")[0];
+		tImage.metadata.labels[CommonService.TServerNameLabel] = metadata.Name.split(".")[1];
+
+		tImage = await CommonService.createObject("timages", tImage);
+
 	}
+	console.log(tImage);
 
 	tImage = tImage.body;
 

@@ -1139,7 +1139,8 @@
             "baseImageId": "Run Container",
             "containRunInfo": "To enable the container run mode, please configure the basic image first",
             "tgz": "tgz",
-            "docker": "docker"
+            "docker": "docker",
+            "uploadConf": "Upload Yaml Files"
         },
         "table": {
             "th": {

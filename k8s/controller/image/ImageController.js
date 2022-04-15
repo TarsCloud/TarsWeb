@@ -18,7 +18,7 @@ ImageController.NodeImageSelect = async (ctx) => {
 }
 
 
-ImageController.ImageSelect = async(ctx) => {
+ImageController.ImageSelect = async (ctx) => {
 
     try {
 
@@ -34,7 +34,9 @@ ImageController.ImageSelect = async(ctx) => {
 ImageController.ImageCreate = async (ctx) => {
     try {
 
-        let { SupportedType=[], Mark='' } = ctx.paramsObj
+        let {
+            SupportedType = [], Mark = ''
+        } = ctx.paramsObj
 
         let metadata = {
             SupportedType,
@@ -47,13 +49,15 @@ ImageController.ImageCreate = async (ctx) => {
     } catch (e) {
         logger.error('[ImageCreate]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
-    }    
+    }
 }
 
 
 ImageController.ImageUpdate = async (ctx) => {
     try {
-        let { Name='', SupportedType=[], Mark='' } = ctx.paramsObj
+        let {
+            Name = '', SupportedType = [], Mark = ''
+        } = ctx.paramsObj
 
         let metadata = {
             Name,
@@ -67,13 +71,15 @@ ImageController.ImageUpdate = async (ctx) => {
     } catch (e) {
         logger.error('[ImageUpdate]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
-    }    
+    }
 }
 
 ImageController.ImageDelete = async (ctx) => {
     try {
 
-        let { Name=''} = ctx.paramsObj
+        let {
+            Name = ''
+        } = ctx.paramsObj
 
         let metadata = {
             Name,
@@ -89,8 +95,12 @@ ImageController.ImageDelete = async (ctx) => {
 }
 
 ImageController.ImageReleaseSelect = async (ctx) => {
-    let {Name = ''} = ctx.paramsObj
-    let metadata = {Name}
+    let {
+        Name = ''
+    } = ctx.paramsObj
+    let metadata = {
+        Name
+    }
     try {
 
         let result = await ImageService.imageReleaseSelect(metadata);
@@ -102,7 +112,9 @@ ImageController.ImageReleaseSelect = async (ctx) => {
     }
 }
 ImageController.ImageNodeSelect = async (ctx) => {
-    let metadata = {Name: CommonService.TARSNODE}
+    let metadata = {
+        Name: CommonService.TARSNODE
+    }
     try {
         let result = await ImageService.imageReleaseSelect(metadata);
         ctx.makeResObj(result.ret, result.msg, result.data);
@@ -113,10 +125,14 @@ ImageController.ImageNodeSelect = async (ctx) => {
 }
 
 ImageController.ImageNodeUpdate = async (ctx) => {
-    let {Id = '', Image = "", Mark = ""} = ctx.paramsObj
+    let {
+        Id = '', Image = "", Mark = ""
+    } = ctx.paramsObj
     let metadata = {
         Name: CommonService.TARSNODE,
-        Id,Image,Mark
+        Id,
+        Image,
+        Mark
     }
     try {
         let result = await ImageService.ImageNodeUpdate(metadata);
@@ -128,10 +144,14 @@ ImageController.ImageNodeUpdate = async (ctx) => {
 }
 
 ImageController.ImageNodeDelete = async (ctx) => {
-    let {Id = '', Image = "", Mark = ""} = ctx.paramsObj
+    let {
+        Id = '', Image = "", Mark = ""
+    } = ctx.paramsObj
     let metadata = {
         Name: CommonService.TARSNODE,
-        Id,Image,Mark
+        Id,
+        Image,
+        Mark
     }
     try {
         let result = await ImageService.ImageNodeDelete(metadata);
@@ -144,7 +164,9 @@ ImageController.ImageNodeDelete = async (ctx) => {
 
 ImageController.BaseImageSelect = async (ctx) => {
 
-    let { ServerType = ''} = ctx.paramsObj
+    let {
+        ServerType = ''
+    } = ctx.paramsObj
     let metadata = {
         ServerType,
     }
@@ -164,7 +186,9 @@ ImageController.BaseImageSelect = async (ctx) => {
 ImageController.ImageReleaseDelete = async (ctx) => {
     try {
 
-        let { Id='', Name = ''} = ctx.paramsObj
+        let {
+            Id = '', Name = ''
+        } = ctx.paramsObj
         let metadata = {
             Id,
             Name,
@@ -182,18 +206,20 @@ ImageController.ImageReleaseDelete = async (ctx) => {
 ImageController.ImageReleaseCreate = async (ctx) => {
     try {
 
-        let { Name='', Image= '', Secret='', Mark='', } = ctx.paramsObj
+        let {
+            Name = '', Image = '', Secret = '', Mark = ''
+        } = ctx.paramsObj
 
         let CreatePerson = ctx.uid;
         let CreateTime = new Date();
 
         let metadata = {
             Name,
-            Image, 
+            Image,
             Secret,
             Mark,
             CreatePerson,
-            CreateTime
+            CreateTime,
         };
 
         let result = await ImageService.imageReleaseCreate(metadata);

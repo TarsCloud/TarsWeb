@@ -1161,7 +1161,8 @@
             "baseImageId": "运行容器",
             "containRunInfo": "开启容器运行模式请先配置好基础镜像",
             "tgz": "tgz",
-            "docker": "docker"
+            "docker": "docker",
+            "uploadConf": "上传yaml文件"
         },
         "resources": {
             "example": "例如",
