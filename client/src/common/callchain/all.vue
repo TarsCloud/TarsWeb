@@ -252,14 +252,14 @@ export default {
       }
       let rest = [];
       try {
-        this.$refs.detailsTable.$loading.show();
+        // this.$refs.detailsTable.$loading.show();
         rest = await this.$ajax.getJSON(
           "/server/api/detailByStartEndTime",
           this.form
         );
-        this.$refs.detailsTable.$loading.hide();
+        // this.$refs.detailsTable.$loading.hide();
       } catch (e) {
-        this.$refs.detailsTable.$loading.hide();
+        // this.$refs.detailsTable.$loading.hide();
       }
       this.options = [];
       this.flags = true;

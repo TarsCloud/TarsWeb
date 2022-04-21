@@ -13,14 +13,21 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-const { exec } = require('child_process');
+const {
+	exec
+} = require('child_process');
 const TarsClient = require('./TarsClient');
 const TarsParser = require('./TarsParser/TarsParser');
-const { benchmarkPrx, benchmarkStruct} = require('../../../rpc');
-const {BenchmarkRunner} = require("./BenchmarkRunner");
-const InfTestDao = require('../../dao/InfTestDao');
+const {
+	benchmarkPrx,
+	benchmarkStruct
+} = require('../../../rpc');
+const {
+	BenchmarkRunner
+} = require("./BenchmarkRunner");
+const InfTestDao = require('../../../app/dao/InfTestDao');
 const webConf = require('../../../config/webConf');
-const TestCaseDao = require('../../dao/TestCaseDao');
+const TestCaseDao = require('../../../app/dao/TestCaseDao');
 
 const fs = require('fs-extra');
 
@@ -42,10 +49,11 @@ const InfTestService = {};
 InfTestService.debug = async (paramObj) => {
 	let context = await getContextFromDB(paramObj.id);
 	context = JSON.parse(context.context);
+
 	let interface = context[paramObj.moduleName].interfaces[paramObj.interfaceName];
-	let client = new TarsClient(context, interface, paramObj.objName);
+	let client = new TarsClient(context, paramObj.k8s, interface, paramObj.objName);
 	let ret = await client.invoke(paramObj.functionName, JSON.parse(paramObj.params));
-	if(ret && ret.response) return ret.response;
+	if (ret && ret.response) return ret.response;
 	return ret;
 }
 
@@ -86,7 +94,7 @@ InfTestService.getContext = (tarsFilePath) => {
  * @param {String} tarsFilePath
  * @returns {Object} context上下文
  */
-InfTestService.getBenchmarkContext = async (tarsFilePath)=>{
+InfTestService.getBenchmarkContext = async (tarsFilePath) => {
 	return await getBenchmarkContext(tarsFilePath)
 }
 async function getContext(tarsFilePath) {
@@ -104,14 +112,16 @@ InfTestService.hasCaseTool = async () => {
 	return await fs.exists(tars2case);
 }
 
-exec("chmod +x " + tars2case, { cwd: __dirname})
+exec("chmod +x " + tars2case, {
+	cwd: __dirname
+})
 
-async function getBenchmarkContext(tarsFilePath){
-	return await new Promise((resolve, reject)=>{
-		exec(`${tars2case} --web ${tarsFilePath}`,{
+async function getBenchmarkContext(tarsFilePath) {
+	return await new Promise((resolve, reject) => {
+		exec(`${tars2case} --web ${tarsFilePath}`, {
 			cwd: __dirname
-		},(error, stdout)=>{
-			if(error){
+		}, (error, stdout) => {
+			if (error) {
 				reject(error)
 				return
 			}
@@ -132,6 +142,7 @@ async function getContextFromDB(id) {
 InfTestService.getAllData = async (id) => {
 	let context = (await getContextFromDB(id)).context;
 	context = JSON.parse(context);
+
 	function f(context) {
 		let obj = [];
 		for (let item in context) {
@@ -148,7 +159,9 @@ InfTestService.getAllData = async (id) => {
 				}
 			}
 			if (children.length) {
-				Object.assign(tmp, {children: children});
+				Object.assign(tmp, {
+					children: children
+				});
 			}
 			obj.push(tmp);
 		}
@@ -239,74 +252,77 @@ InfTestService.deleteTarsFile = async (id) => {
 	return await InfTestDao.deleteTarsFile(id);
 }
 
-function genFieldDes(context, field){
+function genFieldDes(context, field) {
 	let type = field.type
-	if(typeof type == "string") return type
+	if (typeof type == "string") return type
 	//enum
-	if(type.isEnum) return "int"
+	if (type.isEnum) return "int"
 	//结构体
-	if(type.isStruct){
+	if (type.isStruct) {
 		let fielddes = []
 		let fields = context[type.module].structs[type.name].fields
-		for(let fieldName in fields){
+		for (let fieldName in fields) {
 			fielddes.push(genFieldDes(context, fields[fieldName]))
 		}
 		return `struct<${fielddes.join(", ")}>`
 	}
 	//map
-	if(type.map){
+	if (type.map) {
 		return `map<${genFieldDes(context, {type: type.key})}, ${genFieldDes(context, {type: type.value})}>`
 	}
 	//list
-	if(type.vector){
+	if (type.vector) {
 		return `vector<${genFieldDes(context, {type: type.type})}>`
 	}
 	throw new Error(`unknown field type:${JSON.stringify(field)}`)
-	
+
 }
 /**
  * 获取所有的benchmark描述数据
  * @param {String} id tars文件ID
  * @returns {Array} benchmark函数描述
  */
-InfTestService.getBenchmarkDes = async (id)=>{
+InfTestService.getBenchmarkDes = async (id) => {
 	let tarsfile = await getContextFromDB(id)
-	let context = tarsfile.context, benchmark_context = tarsfile.benchmark_context
+	let context = tarsfile.context,
+		benchmark_context = tarsfile.benchmark_context
 	context = JSON.parse(context)
 	benchmark_context = JSON.parse(benchmark_context || "{}")
 	let fnlist = []
-	for(let moduleName in context){
+	for (let moduleName in context) {
 		let moduleObj = context[moduleName]
-		for(let interfaceName in moduleObj.interfaces){
+		for (let interfaceName in moduleObj.interfaces) {
 			let interfaceObj = moduleObj.interfaces[interfaceName]
-			for(let fnName in interfaceObj.functions){
+			for (let fnName in interfaceObj.functions) {
 				let fnObj = interfaceObj.functions[fnName]
 				let fnBmContext = benchmark_context[fnName]
 				fnlist.push({
 					module: moduleName,
 					interface: interfaceName,
 					name: fnName,
-					return: fnBmContext?fnBmContext.rettype : genFieldDes(context, {type: fnObj.return}),
-					inParams: fnBmContext? JSON.stringify(fnBmContext.descinput) : fnObj.params.filter((param)=>{
+					return: fnBmContext ? fnBmContext.rettype : genFieldDes(context, {
+						type: fnObj.return
+					}),
+					inParams: fnBmContext ? JSON.stringify(fnBmContext.descinput) : fnObj.params.filter((param) => {
 						return !param.out
-					}).map((param)=>{
+					}).map((param) => {
 						return genFieldDes(context, param)
 					}).join("|"),
-					outParams: fnBmContext? JSON.stringify(fnBmContext.descoutput) : fnObj.params.filter((param)=>{
+					outParams: fnBmContext ? JSON.stringify(fnBmContext.descoutput) : fnObj.params.filter((param) => {
 						return param.out
-					}).map((param)=>{
+					}).map((param) => {
 						return genFieldDes(context, param)
 					}).join("|"),
-					funInput: fnBmContext?JSON.stringify(fnBmContext.funinput, null, 2):""
+					funInput: fnBmContext ? JSON.stringify(fnBmContext.funinput, null, 2) : ""
 				})
 			}
 		}
 	}
 	return fnlist
 }
-InfTestService.getBmCaseList = async(servant, fn)=>{
+InfTestService.getBmCaseList = async (servant, fn) => {
 	return await InfTestDao.getBmCaseList(servant, fn)
-} 
+}
 
 //resultMap  
 const RET_MAP = {
@@ -337,16 +353,17 @@ const COST_MAP = {
 	"7": "5~100s"
 }
 
-InfTestService.getBmResultById = async(id)=>{
+InfTestService.getBmResultById = async (id) => {
 	let row = await InfTestDao.getBmResultById(id)
-	if(row.results){
+	if (row.results) {
 		let results = JSON.parse(row.results)
-		results.map((item)=>{
-			let mappedCost = {}, mappedRet = {}
-			for(let key in item.cost_map){
-				if(COST_MAP[key]) mappedCost[COST_MAP[key]] = item.cost_map[key]
+		results.map((item) => {
+			let mappedCost = {},
+				mappedRet = {}
+			for (let key in item.cost_map) {
+				if (COST_MAP[key]) mappedCost[COST_MAP[key]] = item.cost_map[key]
 			}
-			for(let key in item.ret_map){
+			for (let key in item.ret_map) {
 				mappedRet[RET_MAP[key] || key] = item.ret_map[key]
 			}
 			item.cost_map = mappedCost
@@ -356,21 +373,21 @@ InfTestService.getBmResultById = async(id)=>{
 		row.results = JSON.stringify(results)
 	}
 	return row
-} 
-InfTestService.upsertBmCase = async(caseInfo)=>{
+}
+InfTestService.upsertBmCase = async (caseInfo) => {
 	//状态更新为停止时，调用代理服务停止压测
-	if(("status" in caseInfo) && caseInfo.status == 0){
+	if (("status" in caseInfo) && caseInfo.status == 0) {
 
 	}
 	return await InfTestDao.upsertBmCase(caseInfo)
-} 
-InfTestService.startBencmark = async(runParams)=>{
+}
+InfTestService.startBencmark = async (runParams) => {
 	return await new BenchmarkRunner(runParams).start()
 }
-InfTestService.stopBencmark = async(runParams)=>{
+InfTestService.stopBencmark = async (runParams) => {
 	return await new BenchmarkRunner(runParams).stop()
 }
-InfTestService.testBencmark = async(runParams)=>{
+InfTestService.testBencmark = async (runParams) => {
 	return await new BenchmarkRunner(runParams).test()
 }
 

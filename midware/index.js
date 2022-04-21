@@ -31,7 +31,8 @@ const {
 	localeApiConf,
 	authApiConf,
 	monitorApiConf,
-	callTrainConf
+	callTrainConf,
+	infTestConf
 } = require('../index');
 
 const {
@@ -91,7 +92,10 @@ dcacheApiConf.forEach(conf => apiConf.push(conf));
 ssoApiConf.forEach(conf => apiConf.push(conf));
 monitorApiConf.forEach(conf => apiConf.push(conf));
 callTrainConf.forEach(conf => apiConf.push(conf));
+infTestConf.forEach(conf => apiConf.push(conf));
+
 marketApiConf.forEach(conf => apiConf.push(conf));
+
 
 //页面类型路由
 const pageRouter = new Router();

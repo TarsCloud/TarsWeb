@@ -15,7 +15,7 @@
  */
 
 const CommonService = require('../common/CommonService');
- 
+
 const AdapterService = {};
 
 // AdapterService.adpaterConfFields = () => {
@@ -44,29 +44,29 @@ AdapterService.serverAdapterSelect = async (ServerId, isTars, isTcp, limiter) =>
 	let v = ServerId.split(".");
 
 	let labelSelector = `${CommonService.TServerAppLabel}=${v[0]},${CommonService.TServerNameLabel}=${v[1]}`;
-	
+
 	if (isTars) {
 		labelSelector += `,${CommonService.TSubTypeLabel}=${CommonService.TServerType1}`
 	}
 
 	let allItems = [];
 
-    let allServerItems = (await CommonService.listObject("tservers", labelSelector)).body.items;
+	let allServerItems = (await CommonService.listObject("tservers", labelSelector)).body.items;
 
 	// console.log(labelSelector, allServerItems);
 
-    allServerItems.forEach(server => {
-        server.spec.tars.servants.forEach(servant => {
-            servant.name = CommonService.getServerId(server.spec.app, server.spec.server) + '.' + servant.name;
-            allItems.push(servant);
-        });
-    });
+	allServerItems.forEach(server => {
+		server.spec.tars.servants.forEach(servant => {
+			servant.name = CommonService.getServerId(server.spec.app, server.spec.server) + '.' + servant.name;
+			allItems.push(servant);
+		});
+	});
 
 	// filter
 	let filterItems = allItems
 
 	if (isTcp) {
-        filterItems = [];
+		filterItems = [];
 
 		allItems.forEach(elem => {
 			// if (elem.name == filter.eq["AdapterId"] && elem.IsTars == filter.eq["IsTars"] && elem.IsTcp == filter.eq["IsTcp"]) {
@@ -78,24 +78,27 @@ AdapterService.serverAdapterSelect = async (ServerId, isTars, isTcp, limiter) =>
 
 	// limiter
 	if (limiter != null) {
-        let { start, stop } = CommonService.pageList(filterItems.length, limiter);
-        filterItems = filterItems.slice(start, stop);
+		let {
+			start,
+			stop
+		} = CommonService.pageList(filterItems.length, limiter);
+		filterItems = filterItems.slice(start, stop);
 	}
 
 	// Count填充
-    let result = {}; 
-    result.Count = {};
-    result.Count["AllCount"] = allItems.length;
-    result.Count["FilterCount"] = filterItems.length;
+	let result = {};
+	result.Count = {};
+	result.Count["AllCount"] = allItems.length;
+	result.Count["FilterCount"] = filterItems.length;
 
 	// Data填充
-    result.Data = []; 
-    filterItems.forEach(item => {
-        let elem = {};
+	result.Data = [];
+	filterItems.forEach(item => {
+		let elem = {};
 
-        let fields = item.name.split(".");
-		if(fields.length != 3) {
-            return;
+		let fields = item.name.split(".");
+		if (fields.length != 3) {
+			return;
 		}
 		elem["ServerId"] = CommonService.getServerId(fields[0], fields[1])
 		elem["Name"] = fields[2]
@@ -107,12 +110,16 @@ AdapterService.serverAdapterSelect = async (ServerId, isTars, isTcp, limiter) =>
 		elem["Capacity"] = item.capacity
 		elem["Timeout"] = item.timeout
 		elem["IsTars"] = item.isTars
-        elem["IsTcp"] = item.isTcp        
-        
-        result.Data.push(elem);
-    })
-	
-    return { ret: 200, msg: 'succ', data: result };
+		elem["IsTcp"] = item.isTcp
+
+		result.Data.push(elem);
+	})
+
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: result
+	};
 }
 
 // CommonService.equalServerAdapter = (oldAdapter, newAdapter) => {
@@ -145,19 +152,22 @@ AdapterService.serverAdapterSelect = async (ServerId, isTars, isTcp, limiter) =>
 
 AdapterService.serverAdapterCreate = async (metadata) => {
 
-    let tServer = await CommonService.getServer(metadata.ServerId);
+	let tServer = await CommonService.getServer(metadata.ServerId);
 
-    if (!tServer) {
-        return { ret: 500, msg: "server not exists" };
+	if (!tServer) {
+		return {
+			ret: 500,
+			msg: "server not exists"
+		};
 	}
-	
+
 	tServer = tServer.body;
-    
-    let tServerCopy = JSON.parse(JSON.stringify(tServer));
 
-    for (let item in metadata.Servant) {
+	let tServerCopy = JSON.parse(JSON.stringify(tServer));
 
-        let target = metadata.Servant[item];
+	for (let item in metadata.Servant) {
+
+		let target = metadata.Servant[item];
 
 		let adapter = {};
 		adapter.name = target.Name
@@ -167,46 +177,59 @@ AdapterService.serverAdapterCreate = async (metadata) => {
 		adapter.capacity = target.Capacity
 		adapter.port = target.Port
 		adapter.connection = target.Connections
-        adapter.thread = target.Threads
-        
-        tServerCopy.spec.tars.servants.push(adapter);
-    }
+		adapter.thread = target.Threads
+
+		tServerCopy.spec.tars.servants.push(adapter);
+	}
 
 	let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
 
-    return { ret: 200, msg: 'succ', data: data.body };
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: data.body
+	};
 }
 
 AdapterService.serverAdapterUpdate = async (metadata, target) => {
 
-    let fields = metadata.AdapterId.split(".");
-	if(fields.length != 3) {
-        return { ret: 500, msg: "invalid adapterId" };
+	let fields = metadata.AdapterId.split(".");
+	if (fields.length != 3) {
+		return {
+			ret: 500,
+			msg: "invalid adapterId"
+		};
 	}
 
-    let ServerId = CommonService.getServerId(fields[0], fields[1]);
-    let AdapterName = fields[2];
+	let ServerId = CommonService.getServerId(fields[0], fields[1]);
+	let AdapterName = fields[2];
 
-    let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(ServerId));
-    if (!tServer) {
-        return { ret: 500, msg: "server not exists" };
+	let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(ServerId));
+	if (!tServer) {
+		return {
+			ret: 500,
+			msg: "server not exists"
+		};
 	}
-	
+
 	tServer = tServer.body;
-    
-    let index = -1
 
-    for (let i = 0; i < tServer.spec.tars.servants.length; i++) {
+	let index = -1
 
-        if (tServer.spec.tars.servants[i].name == AdapterName) {
-            index = i;
-        }
-    }
-	if(index == -1) {
-        return { ret: 500, msg: "adatper not exists" };
+	for (let i = 0; i < tServer.spec.tars.servants.length; i++) {
+
+		if (tServer.spec.tars.servants[i].name == AdapterName) {
+			index = i;
+		}
+	}
+	if (index == -1) {
+		return {
+			ret: 500,
+			msg: "adatper not exists"
+		};
 	}
 
-    let tServerCopy = JSON.parse(JSON.stringify(tServer));
+	let tServerCopy = JSON.parse(JSON.stringify(tServer));
 	tServerCopy.spec.tars.servants[index].name = target.Name
 	tServerCopy.spec.tars.servants[index].isTars = target.IsTars
 	tServerCopy.spec.tars.servants[index].isTcp = target.IsTcp
@@ -218,44 +241,94 @@ AdapterService.serverAdapterUpdate = async (metadata, target) => {
 
 	let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
 
-    return { ret: 200, msg: 'succ', data: data.body };
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: data.body
+	};
 }
 
 AdapterService.serverAdapterDelete = async (metadata) => {
-    let fields = metadata.AdapterId.split(".");
-	if(fields.length != 3) {
-        return { ret: 500, msg: "invalid adapterId" };
+	let fields = metadata.AdapterId.split(".");
+	if (fields.length != 3) {
+		return {
+			ret: 500,
+			msg: "invalid adapterId"
+		};
 	}
 
-    let ServerId = CommonService.getServerId(fields[0], fields[1]);
+	let ServerId = CommonService.getServerId(fields[0], fields[1]);
 	let AdapterName = fields[2]
 
-    let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(ServerId));
-    if (!tServer) {
-        return { ret: 500, msg: "server not exists" };
+	let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(ServerId));
+	if (!tServer) {
+		return {
+			ret: 500,
+			msg: "server not exists"
+		};
 	}
-	
+
 	tServer = tServer.body;
-    
+
 	let index = -1;
 
-    for (let i = 0; i < tServer.spec.tars.servants.length; i++) {
-        if (tServer.spec.tars.servants[i].name == AdapterName) {
-            index = i;
-        }
+	for (let i = 0; i < tServer.spec.tars.servants.length; i++) {
+		if (tServer.spec.tars.servants[i].name == AdapterName) {
+			index = i;
+		}
 	}
-	
-	if(index == -1) {
-        return { ret: 500, msg: "adatper not exists" };
+
+	if (index == -1) {
+		return {
+			ret: 500,
+			msg: "adatper not exists"
+		};
 	}
 
 	let tServerCopy = JSON.parse(JSON.stringify(tServer));
-	
-    tServerCopy.spec.tars.servants.splice(index, 1);
-    
+
+	tServerCopy.spec.tars.servants.splice(index, 1);
+
 	let data = await CommonService.replaceObject("tservers", tServerCopy.metadata.name, tServerCopy);
 
-    return { ret: 200, msg: 'succ', data: data.body };
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: data.body
+	};
 }
+
+AdapterService.getAllAdapterConfList = async (metadata) => {
+
+	let ServerId = CommonService.getServerId(metadata.ServerApp, metadata.ServerName);
+
+	let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(ServerId));
+	if (!tServer) {
+		return {
+			ret: 500,
+			msg: "server not exists"
+		};
+	}
+
+	tServer = tServer.body;
+
+	console.log(tServer);
+
+	let data = [];
+
+	for (let i = 0; i < tServer.spec.tars.servants.length; i++) {
+		data.push({
+			servant: tServer.spec.tars.servants[i].name
+		});
+	}
+
+
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: data
+	};
+}
+
 
 module.exports = AdapterService;

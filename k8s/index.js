@@ -163,6 +163,7 @@ const k8sApiConf = [
     ['post', '/server_option_update', ServerController.ServerOptionUpdate, {
         ServerId: 'notEmpty'
     }],
+
     // 命令
     ['get', '/send_command', ServerController.sendCommand, {
         serverApp: 'notEmpty',
@@ -182,7 +183,10 @@ const k8sApiConf = [
     ['get', '/server_adapter_delete', AdapterController.ServerAdapterDelete, {
         AdapterId: 'notEmpty'
     }],
-
+    ['get', '/all_adapter_conf_list', AdapterController.getAllAdapterConfList, {
+        ServerApp: 'notEmpty',
+        ServerName: 'notEmpty'
+    }],
     // 节点管理 ( 创建、列表、更新、删除 )
     ['get', '/node_select', NodeController.NodeSelect],
     ['get', '/node_list', NodeController.NodeList],

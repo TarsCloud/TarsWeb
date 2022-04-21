@@ -16,11 +16,11 @@
 
 const logger = require('../../../logger');
 const InfTestService = require('../../service/infTest/InfTestService');
-const AuthService = require('../../service/auth/AuthService');
+const AuthService = require('../../../app/service/auth/AuthService');
 const WebConf = require('../../../config/webConf');
 const util = require('../../../tools/util');
 const fs = require('fs-extra');
-const AdminService = require('../../service/admin/AdminService');
+const AdminService = require('../../../app/service/admin/AdminService');
 
 const InfTestController = {};
 
@@ -28,6 +28,7 @@ InfTestController.interfaceDebug = async (ctx) => {
 	try {
 		const {
 			id,
+			k8s,
 			objName,
 			application,
 			server_name,
@@ -39,8 +40,11 @@ InfTestController.interfaceDebug = async (ctx) => {
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
+			k8s = (k8s == "true");
+
 			let rsp = await InfTestService.debug({
 				id,
+				k8s,
 				objName,
 				moduleName: module_name,
 				interfaceName: interface_name,

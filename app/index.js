@@ -32,7 +32,7 @@ if (WebConf.enable) {
 	const BusinessRelationController = require('./controller/businessRelation/BusinessRelationController');
 	const ResourceController = require('./controller/resource/ResourceController');
 
-	const InfTestController = require('./controller/infTest/InfTestController');
+	// const InfTestController = require('../index/controller/infTest/InfTestController');
 	const LogviewController = require('./controller/logview/LogviewController');
 	const IDCController = require('./controller/idc/IDCController');
 	const ImageController = require('./controller/image/ImageController');
@@ -427,87 +427,7 @@ if (WebConf.enable) {
 		['get', '/check_tars_node', ResourceController.checkTarsNode, {
 			node_name: 'notEmpty'
 		}],
-		//接口测试
-		['post', '/interface_test', InfTestController.interfaceDebug],
-		['post', '/upload_tars_file', InfTestController.uploadTarsFile],
-		['get', '/get_file_list', InfTestController.getFileList, {
-			application: 'notEmpty',
-			server_name: 'notEmpty'
-		}],
-		['get', '/get_contexts', InfTestController.getContexts, {
-			application: 'notEmpty',
-			server_name: 'notEmpty',
-			id: 'notEmpty'
-		}],
-		['get', '/get_params', InfTestController.getParams, {
-			application: 'notEmpty',
-			server_name: 'notEmpty',
-			id: 'notEmpty',
-			module_name: 'notEmpty',
-			interface_name: 'notEmpty',
-			function_name: 'notEmpty'
-		}],
-		['get', '/delete_tars_file', InfTestController.deleteTarsFile, {
-			id: 'notEmpty'
-		}],
-		['get', '/get_structs', InfTestController.getStructs, {
-			id: 'notEmpty',
-			module_name: 'notEmpty'
-		}],
 
-		//压力测试
-		['get', '/get_benchmark_des', InfTestController.getBenchmarkDes, {
-			id: 'notEmpty'
-		}],
-		['get', '/get_bm_case_list', InfTestController.getBmCaseList, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['get', '/get_bm_result_by_id', InfTestController.getBmResultById, {
-			id: 'notEmpty'
-		}],
-		['post', '/upsert_bm_case', InfTestController.upsertBmCase, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['post', '/start_bencmark', InfTestController.startBencmark, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['post', '/stop_bencmark', InfTestController.stopBencmark, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['post', '/test_bencmark', InfTestController.testBencmark, {
-			servant: 'notEmpty',
-			fn: 'notEmpty'
-		}],
-		['get', '/get_endpoints', InfTestController.getEndpoints, {
-			servant: 'notEmpty'
-		}],
-		['get', '/is_benchmark_installed', InfTestController.isBenchmarkInstalled],
-		// 测试用例
-		['post', '/interface_add_testcase', InfTestController.interfaceAddCase, {
-			f_id: 'notEmpty',
-			test_case_name: 'notEmpty',
-			objName: 'notEmpty',
-			file_name: 'notEmpty',
-			module_name: 'notEmpty',
-			interface_name: 'notEmpty',
-			function_name: 'notEmpty',
-			params: 'notEmpty'
-		}],
-		['get', '/get_testcase_list', InfTestController.getTestCaseList, {
-			f_id: 'notEmpty'
-		}],
-		['get', '/delete_test_case', InfTestController.deleteTestCase, {
-			case_id: 'notEmpty'
-		}],
-		['post', '/modify_test_case', InfTestController.modifyTestCase, {
-			case_id: 'notEmpty',
-			test_case_name: 'notEmpty',
-			params: 'notEmpty'
-		}],
 		//logview
 		['get', '/logview_list', LogviewController.getLogFileList, {
 			application: 'notEmpty',

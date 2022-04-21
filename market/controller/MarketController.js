@@ -15,8 +15,6 @@
  */
 
 const logger = require('../../logger');
-const AdminService = require('../../app/service/admin/AdminService')
-// const jsYaml = require('js-yaml');
 
 const WebConf = require('../../config/webConf');
 
@@ -29,7 +27,7 @@ if (WebConf.isEnableK8s()) {
 }
 
 let getMarketService = (k8s) => {
-	if (k8s == true || k8s == "true") {
+	if (WebConf.isEnableK8s() && (k8s == true || k8s == "true")) {
 		return require('../service/MarketK8SService');
 	} else {
 		return require('../service/MarketService');

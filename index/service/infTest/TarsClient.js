@@ -16,11 +16,19 @@
 
 const assert = require('assert');
 const TarsStream = require('@tars/stream');
-const Tars = require('@tars/rpc').client;
+// const Tars = require('@tars/rpc').client;
 const TarsType = require('./TarsType');
 const TarsStruct = require('./TarsStruct').TarsStruct;
 
-const TarsClient = function (context, interface, objName, setName) {
+const TarsClient = function (context, k8s, interface, objName, setName) {
+
+	let Tars;
+	if (k8s) {
+		Tars = require('../../../rpc/k8s').client;
+	} else {
+		Tars = require('../../../rpc/index').client;
+	}
+
 	assert(context !== undefined, "please specify the parameter value for context");
 	assert(interface !== undefined, "please specify the parameter value for interface");
 	assert(objName !== undefined, "please specify the parameter value for objName");
@@ -50,13 +58,17 @@ TarsClient.prototype.invoke = function (method, params) {
 	if (!method) {
 		sMsg = "please specify the parameter value for function name"
 		console.error(sMsg);
-		return {error: sMsg};
+		return {
+			error: sMsg
+		};
 	}
 	const func = interface.functions[method];
 	if (!func) {
 		sMsg = 'no function named' + method + ' for ' + interface.fullName
 		console.error(sMsg);
-		return {error: sMsg};
+		return {
+			error: sMsg
+		};
 	}
 	if (func['return'] !== 'void') {
 		this.readParams.push({
@@ -115,7 +127,9 @@ TarsClient.prototype.invoke = function (method, params) {
 			}
 		} catch (e) {
 			console.error(e);
-			return {error: "decode error: " + e.message};
+			return {
+				error: "decode error: " + e.message
+			};
 		}
 	}
 
@@ -124,7 +138,9 @@ TarsClient.prototype.invoke = function (method, params) {
 			costtime: data.request.costtime,
 			error: data.error
 		}
-		return {response};
+		return {
+			response
+		};
 	}
 
 	return this._worker.tars_invoke(method, _encode(), arguments[arguments.length - 1]).then(_decode, _error)
