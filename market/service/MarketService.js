@@ -16,9 +16,14 @@
 
 const logger = require('../../logger');
 
+const TaskService = require('../../app/service/task/TaskService');
 const ServerService = require('../../app/service/server/ServerService');
 const CommonService = require('../../k8s/service/common/CommonService');
-
+const AuthService = require('../../app/service/auth/AuthService');
+const util = require('../../tools/util');
+const {
+	application
+} = require('express');
 const MarketService = {};
 
 MarketService.listInstall = async (product) => {
@@ -38,7 +43,7 @@ MarketService.listInstall = async (product) => {
 				delete service[CommonService.TServerCloudProduct];
 
 				let pos = items.findIndex((value) => {
-					return value[CommonService.TServerCloudProductID] == data[CommonService.TServerCloudProduct][CommonService.TServerCloudProductID];
+					return value[CommonService.TServerCloudID] == data[CommonService.TServerCloudProduct][CommonService.TServerCloudID];
 				});
 
 				if (pos == -1) {
@@ -77,6 +82,96 @@ MarketService.get = async (appliation, server_name) => {
 		data: items
 	};
 
+};
+
+MarketService.uninstallServer = async (application, server_name, uid) => {
+
+	let servers = [];
+	servers.push({
+		application: application,
+		server_name: server_name
+	});
+
+	return await MarketService.uninstallProduct(servers, uid);
+};
+
+MarketService.uninstallProduct = async (servers, uid) => {
+	let ids = [];
+	let items = [];
+	let task_no = util.getUUID().toString();
+
+	for (let i = 0; i < servers.length; i++) {
+
+		let node_servers = await ServerService.getServerConfList(servers[i].application, servers[i].server_name);
+
+		console.log(node_servers);
+
+		for (let j = 0; j < node_servers.length; j++) {
+
+			let node_server = await ServerService.getServerConfById(node_servers[j].id);
+
+			if (!await AuthService.hasDevAuth(node_server.application, node_server.server_name, uid)) {
+				return {
+					ret: 500,
+					msg: '#common.noPrivilage#',
+				};
+			}
+
+			items.push({
+				server_id: node_server.id,
+				command: "undeploy_tars"
+			});
+
+			ids.push(node_server.id);
+		}
+	}
+
+	// console.log(items);
+
+	if (ids.length > 0) {
+		await TaskService.addTask({
+			serial: true,
+			elegant: false,
+			eachnum: 1,
+			items,
+			task_no,
+			user_name: uid
+		});
+
+		let timeout = false;
+		let start = (new Date()).getTime();
+
+		while (true) {
+			await util.sleep(500);
+
+			let data = await ServerService.getServerConfByIds(ids);
+
+			// console.log(data);
+
+			if (data.length == 0) {
+				break;
+			}
+
+			if (((new Date()).getTime() - start) > 3000) {
+				timeout = true;
+				break;
+			}
+		}
+
+		if (timeout) {
+			return {
+				ret: 500,
+				msg: '#deployService.form.uninstallTimeout#',
+				data: task_no
+			};
+		}
+	}
+
+	return {
+		ret: 200,
+		msg: 'succ',
+		data: task_no
+	};
 };
 
 module.exports = MarketService;

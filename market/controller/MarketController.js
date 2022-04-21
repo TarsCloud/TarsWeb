@@ -63,5 +63,30 @@ MarketController.get = async (ctx) => {
 	}
 }
 
+MarketController.uninstallServer = async (ctx) => {
+
+	try {
+		let result = await getMarketService(ctx.paramsObj.k8s).uninstallServer(ctx.paramsObj.app, ctx.paramsObj.server, ctx.uid);
+
+		ctx.makeResObj(result.ret, result.msg, result.data);
+
+	} catch (e) {
+		logger.error('[uninstallServer]', e.body ? e.body.message : e, ctx)
+		ctx.makeResObj(500, e.body ? e.body.message : e);
+	}
+}
+
+MarketController.uninstallProduct = async (ctx) => {
+
+	try {
+		let result = await getMarketService(ctx.paramsObj.k8s).uninstallProduct(ctx.paramsObj.servers, ctx.uid);
+
+		ctx.makeResObj(result.ret, result.msg, result.data);
+
+	} catch (e) {
+		logger.error('[uninstallProduct]', e.body ? e.body.message : e, ctx)
+		ctx.makeResObj(500, e.body ? e.body.message : e);
+	}
+}
 
 module.exports = MarketController;

@@ -94,7 +94,7 @@ DeployController.serverExistAndDeploy = async (ctx) => {
         let auth = await AuthService.hasOpeAuth(ctx.paramsObj.app, ctx.paramsObj.server, ctx.uid);
 
         let rst = {
-            exist: obj ? true : false,
+            exists: obj ? true : false,
             auth: auth
         }
 

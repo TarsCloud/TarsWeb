@@ -214,7 +214,7 @@ if (process.env.NODE_ENV == "local") {
     conf.webConf.alter = false;
     // conf.webConf.alter = true;
     conf.k8s.namespace = 'tars-dev';
-    // conf.k8s.namespace = 'od-prod';
+    conf.k8s.namespace = 'od-prod';
     conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 }
 

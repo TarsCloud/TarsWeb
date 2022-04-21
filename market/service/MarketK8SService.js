@@ -15,9 +15,9 @@
  */
 
 const logger = require('../../logger');
-// const DeployService = require('../../k8s/service/deploy/DeployService');
+const ServerService = require('../../k8s/service/server/ServerService');
 const CommonService = require('../../k8s/service/common/CommonService');
-
+const AuthService = require('../../k8s/service/auth/AuthService');
 const MarketService = {};
 
 
@@ -45,7 +45,7 @@ MarketService.listInstall = async (product) => {
 					delete service[CommonService.TServerCloudProduct];
 
 					let pos = items.findIndex((value) => {
-						return value[CommonService.TServerCloudProductID] == annotations[CommonService.TServerCloudProduct][CommonService.TServerCloudProductID];
+						return value[CommonService.TServerCloudID] == annotations[CommonService.TServerCloudProduct][CommonService.TServerCloudID];
 					});
 
 					if (pos == -1) {
@@ -57,16 +57,10 @@ MarketService.listInstall = async (product) => {
 					} else {
 						items[pos]["servers"].push(service);
 					}
-
-
 				}
 			} else {
 
 				if (item.metadata.labels[CommonService.TServerCloudInstall] == "service") {
-
-					let service = JSON.parse(JSON.stringify(annotations));
-
-					console.log(service);
 
 					v = Object.assign(v, annotations);
 					items.push(v);
@@ -76,7 +70,7 @@ MarketService.listInstall = async (product) => {
 
 	});
 
-	console.log(product, items);
+	// console.log(product, items);
 
 	return {
 		ret: 200,
@@ -85,9 +79,9 @@ MarketService.listInstall = async (product) => {
 	};
 }
 
-MarketService.get = async (app, name) => {
+MarketService.get = async (app, server) => {
 
-	let data = await CommonService.getObject("tservers", CommonService.getTServerName(app + "-" + name));
+	let data = await CommonService.getObject("tservers", CommonService.getTServerName(app + "-" + server));
 
 	delete data.body.metadata.managedFields;
 
@@ -102,9 +96,42 @@ MarketService.get = async (app, name) => {
 	};
 };
 
-// MarketService.upgrade = async (paramsObj) => {
+MarketService.uninstallServer = async (application, server_name, uid) => {
 
-// 	return await DeployService.upgrade(paramsObj.deploy, paramsObj.cloud);
-// };
+	if (!await AuthService.hasDevAuth(application, server_name, uid)) {
+		return {
+			ret: 500,
+			msg: '#common.noPrivilage#',
+		};
+	}
+
+	const metadata = {
+		ServerId: [application + '-' + server_name]
+	}
+
+	return await ServerService.deleteServer(metadata);
+};
+
+MarketService.uninstallProduct = async (servers, uid) => {
+
+	let ServerId = [];
+
+	for (let i = 0; i < servers.length; i++) {
+		let server = servers[i];
+		if (!await AuthService.hasDevAuth(server.application, server.server_name, uid)) {
+			return {
+				ret: 500,
+				msg: '#common.noPrivilage#',
+			};
+		}
+		ServerId.push(server.application + '-' + server.server_name);
+	}
+
+	const metadata = {
+		ServerId: ServerId
+	};
+
+	return await ServerService.deleteServer(metadata);
+};
 
 module.exports = MarketService;

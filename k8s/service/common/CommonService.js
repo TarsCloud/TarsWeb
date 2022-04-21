@@ -92,7 +92,7 @@ CommonService.upload = async (name, formData, wait) => {
 	}
 
 	data.formData = formData;
-	data.timeout = 300 * 1000;
+	data.timeout = 500 * 1000;
 
 	logger.info(`upload to image request:${url}`);
 
@@ -120,7 +120,8 @@ CommonService.TServerCloudInstall = "tars.io/CloudInstall"
 CommonService.TServerCloudLogo = "tars.io/CloudLogo"
 CommonService.TServerCloudDigest = "tars.io/CloudDigest"
 CommonService.TServerCloudProduct = "tars.io/CloudProduct"
-CommonService.TServerCloudProductID = "tars.io/CloudProductID"
+CommonService.TServerCloudID = "tars.io/CloudID"
+CommonService.TServerCloudTitle = "tars.io/CloudTitle"
 CommonService.TServerCloudProductDigest = "tars.io/CloudProductDigest"
 
 CommonService.TServerType1 = "tars";

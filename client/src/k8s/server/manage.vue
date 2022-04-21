@@ -125,9 +125,28 @@
           prop="ServerName"
         >
           <template slot-scope="scope">
-            <let-table-operation @click="readPodLog(scope.row.PodName)">{{
-              scope.row.ServerName
-            }}</let-table-operation>
+            <let-table-operation @click="readPodLog(scope.row.PodName)"
+              >{{ scope.row.ServerName }}
+              <el-tooltip
+                class="item"
+                effect="dark"
+                v-if="scope.row.Source['tars.io/CloudInstall']"
+                :content="
+                  scope.row.Source['tars.io/CloudInstall'].group +
+                    '/' +
+                    scope.row.Source['tars.io/CloudInstall'].name +
+                    ':' +
+                    scope.row.Source['tars.io/CloudInstall'].version
+                "
+                placement="top-start"
+              >
+                <i
+                  class="el-icon-cloudy"
+                  style="cursor:pointer"
+                  @click="goMarket(scope.row)"
+                ></i>
+              </el-tooltip>
+            </let-table-operation>
           </template>
         </let-table-column>
         <let-table-column
@@ -846,6 +865,15 @@
     </let-modal>
 
     <log ref="log"></log>
+
+    <el-dialog :visible.sync="dialogCommandVisible" width="80%">
+      <span v-html="commandHTML"></span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogCommandVisible = false">{{
+          $t("common.cancel")
+        }}</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -875,6 +903,8 @@ export default {
         server_type: "",
       },
 
+      commandHTML: "",
+      dialogCommandVisible: false,
       // 服务列表
       isreloadlist: true,
       reloadTask: null,
@@ -1050,6 +1080,7 @@ export default {
           if (data.hasOwnProperty("Data")) {
             data.Data.forEach((item) => {
               item.isChecked = false;
+              item.Source = JSON.parse(item.Source || "{}");
               item.CreateTime = moment(item.CreateTime).format(
                 "YYYY-MM-DD HH:mm:ss"
               );
@@ -1709,6 +1740,13 @@ export default {
       this.moreCmdModal.currentServer = server;
     },
     sendCommand(serverApp, serverName, podIp, command, hold) {
+      // if (true) {
+      //   let msg = JSON.parse(
+      //     `{ "title": "成功!!!", "message": "[notify prefix object num:1]<br>[1]:====================================================================================================<br>----------------------------------------------------------------------------------------------------<br>[adapter:Cloud.MarketStorageServer.StorageObjAdapter] [connections:2]<br>conn-uid ip:port last-time timeout recvBufferSize sendBufferSize <br>205520898 172.29.96.179:46112 2022-04-17 12:38:01 30 0 0 <br>205520908 127.0.0.1:42308 2022-04-17 12:37:34 3 0 0 <br>----------------------------------------------------------------------------------------------------<br>[adapter:Cloud.MarketStorageServer.RaftObjAdapter] [connections:2]<br>conn-uid ip:port last-time timeout recvBufferSize sendBufferSize <br>205520898 172.29.96.179:46112 2022-04-17 12:38:01 30 0 0 <br>205520908 127.0.0.1:42308 2022-04-17 12:37:34 3 0 0 <br>----------------------------------------------------------------------------------------------------<br>[adapter:AdminAdapter] [connections:2] <br>conn-uid ip:port last-time timeout recvBufferSize sendBufferSize <br>205520898 172.29.96.179:46112 2022-04-17 12:38:01 30 0 0 <br>205520908 127.0.0.1:42308 2022-04-17 12:37:34 3 0 0 <br>====================================================================================================<br><br>", "duration": 0 }`
+      //   );
+      //   this.commandHTML = msg.message;
+      //   this.dialogCommandVisible = true;
+      // } else {
       const loading = this.$Loading.show();
       this.$ajax
         .getJSON("/k8s/api/send_command", {
@@ -1721,12 +1759,18 @@ export default {
           loading.hide();
           const msg = res[0].err_msg.replace(/\n/g, "<br>");
           if (res[0].ret_code === 0) {
-            const opt = {
-              title: this.$t("common.success"),
-              message: msg,
-            };
-            if (hold) opt.duration = 0;
-            this.$tip.success(opt);
+            // const opt = {
+            //   title: this.$t("common.success"),
+            //   message: msg,
+            // };
+            // if (hold) opt.duration = 0;
+
+            this.commandHTML = msg;
+            this.dialogCommandVisible = true;
+
+            // let msg = `{ "title": "成功!!!", "message": "[notify prefix object num:1]<br>[1]:====================================================================================================<br>----------------------------------------------------------------------------------------------------<br>[adapter:Cloud.MarketStorageServer.StorageObjAdapter] [connections:2]<br>conn-uid ip:port last-time timeout recvBufferSize sendBufferSize <br>205520898 172.29.96.179:46112 2022-04-17 12:38:01 30 0 0 <br>205520908 127.0.0.1:42308 2022-04-17 12:37:34 3 0 0 <br>----------------------------------------------------------------------------------------------------<br>[adapter:Cloud.MarketStorageServer.RaftObjAdapter] [connections:2]<br>conn-uid ip:port last-time timeout recvBufferSize sendBufferSize <br>205520898 172.29.96.179:46112 2022-04-17 12:38:01 30 0 0 <br>205520908 127.0.0.1:42308 2022-04-17 12:37:34 3 0 0 <br>----------------------------------------------------------------------------------------------------<br>[adapter:AdminAdapter] [connections:2] <br>conn-uid ip:port last-time timeout recvBufferSize sendBufferSize <br>205520898 172.29.96.179:46112 2022-04-17 12:38:01 30 0 0 <br>205520908 127.0.0.1:42308 2022-04-17 12:37:34 3 0 0 <br>====================================================================================================<br><br>", "duration": 0 }`;
+
+            // this.$tip.success(opt);
             this.getServerNotifyList();
           } else {
             throw new Error(msg);
@@ -1739,6 +1783,7 @@ export default {
             message: err.err_msg || err.message,
           });
         });
+      // }
     },
     invokeMoreCmd() {
       const model = this.moreCmdModal.model;
@@ -1829,6 +1874,16 @@ export default {
       });
       let launcherType = k8sData.Data[0].launcherType;
       return launcherType == "foreground";
+    },
+    goMarket(row) {
+      let href;
+      if (row.Source["tars.io/CloudProduct"]) {
+        href = `/static/market/index.html#/market/product/${row.Source["tars.io/CloudInstall"].group}/${row.Source["tars.io/CloudInstall"].name}/${row.Source["tars.io/CloudInstall"].version}`;
+      } else {
+        href = `/static/market/index.html#/market/service/${row.Source["tars.io/CloudInstall"].group}/${row.Source["tars.io/CloudInstall"].name}/${row.Source["tars.io/CloudInstall"].version}`;
+      }
+
+      window.open(href);
     },
   },
   async created() {

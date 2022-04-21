@@ -116,10 +116,21 @@ PodService.podAliveSelect = async (filter) => {
 
     let labelSelector = CommonService.createLabelSelector(filter);
 
+    // console.log(labelSelector);
     let filterItems = [];
 
-    let allEndpointItems = await CommonService.listObject("tendpoints", labelSelector);
+    let source = {};
+    let allServerItems = await CommonService.listObject("tservers", labelSelector);
+    allServerItems = allServerItems.body.items;
+    allServerItems.forEach(item => {
+        let annotations = item.metadata.annotations || {};
+        if (annotations[CommonService.TServerCloudInstall]) {
+            source[CommonService.getServerId(item.spec.app, item.spec.server)] = annotations[CommonService.TServerCloudInstall];
+        }
+    });
 
+
+    let allEndpointItems = await CommonService.listObject("tendpoints", labelSelector);
     allEndpointItems = allEndpointItems.body.items;
 
     allEndpointItems.forEach(endpoint => {
@@ -167,6 +178,11 @@ PodService.podAliveSelect = async (filter) => {
             elem["ServiceVersion"] = '';
             elem["SubType"] = item.spec.subType;
 
+            if (source[CommonService.getServerId(item.spec.app, item.spec.server)]) {
+                elem["Source"] = source[CommonService.getServerId(item.spec.app, item.spec.server)];
+            }
+
+
             if (pod.containerStatuses && pod.containerStatuses.length > 0) {
 
                 let image = pod.containerStatuses[0].image.split(':');
@@ -191,6 +207,7 @@ PodService.podAliveSelect = async (filter) => {
             result.Data.push(elem);
         })
     })
+
 
     return {
         ret: 200,

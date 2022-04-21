@@ -100,6 +100,7 @@ ServerDao.getServerConfById = async (id) => {
 
 ServerDao.getServerConfByIds = async (ids) => {
 	return await tServerConf.findAll({
+		raw: true,
 		where: {
 			id: {
 				[Op.in]: ids

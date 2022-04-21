@@ -28,7 +28,6 @@ const upload = async (formData = {}, wait) => {
         response = JSON.parse(response);
 
         logger.info("response:", typeof (response), response.status);
-        // console.log("response:", typeof (response), response.status);
 
         if (response.status == 201 || response.status == 200) {
 
@@ -148,6 +147,8 @@ PatchController.uploadAndPatch = async (ctx) => {
         let fileBuffer = fs.createReadStream(uploadTgzName)
 
         await ImageService.serverImageGetAndCreate(application, module_name);
+
+        await PatchService.deleteBuild(CommonService.getTServerName(application + '-' + module_name));
 
         let uploadData = await upload({
             ServerApp: application.toLowerCase(),

@@ -103,10 +103,13 @@ ServerService.selectServer = async (ServerApp, ServerName, limiter) => {
 
     filterItems.forEach(item => {
 
+        let annotations = item.metadata.annotations || {};
+
         let elem = {
             ServerId: item.spec.app + '.' + item.spec.server,
             ServerApp: item.spec.app,
             ServerName: item.spec.server,
+            Source: annotations[CommonService.TServerCloudInstall]
         };
 
         if (item.spec.Release != null) {
@@ -164,18 +167,20 @@ ServerService.updateServer = async (metadata, target) => {
 
 ServerService.deleteServer = async (metadata) => {
 
-    metadata.ServerId.forEach(async (item) => {
+    // metadata.ServerId.forEach(async (item) => {
+    for (let i = 0; i < metadata.ServerId.length; i++) {
+        let item = metadata.ServerId[i];
 
         try {
             await CommonService.deleteObject("tservers", CommonService.getTServerName(item));
         } catch (e) {
-            logger.error(`deleteServer tserver ${item}`, e);
+            logger.error(`deleteServer tserver ${item}`, e.message);
         }
 
         try {
             await CommonService.deleteObject("timages", CommonService.getTServerName(item));
         } catch (e) {
-            logger.error(`deleteServer timages ${item}`, e);
+            logger.error(`deleteServer timages ${item}`, e.message);
         }
 
         try {
@@ -196,17 +201,17 @@ ServerService.deleteServer = async (metadata) => {
                 try {
                     await CommonService.deleteObject("tconfigs", config.metadata.name);
                 } catch (e) {
-                    logger.error(`deleteServer tconfig item ${config.metadata.name}`, e);
+                    logger.error(`deleteServer tconfig item ${config.metadata.name}`, e.message);
 
                 }
 
             }
 
         } catch (e) {
-            logger.error(`deleteServer tconfig ${item}`, e);
+            logger.error(`deleteServer tconfig ${item}`, e.message);
         }
 
-    });
+    }
 
     return {
         ret: 200,

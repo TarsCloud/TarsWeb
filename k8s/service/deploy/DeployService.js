@@ -24,15 +24,6 @@ const DeployService = {};
 
 DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, source) => {
 
-    // let server = await CommonService.getServer(deploy.app + '.' + deploy.server);
-
-    // if (server) {
-    //     return {
-    //         ret: 201,
-    //         msg: 'server exists'
-    //     };
-    // }
-
     {
         let metadata = {
             ServerApp: deploy.app,
@@ -236,12 +227,18 @@ DeployService.upgrade = async (deploy, source) => {
         tServer.metadata.labels[CommonService.TServerCloudInstall] = "service";
     }
     tServer.metadata.annotations = tServer.metadata.annotations || {};
+    tServer.metadata.annotations[CommonService.TServerCloudInstall] = tServer.metadata.annotations[CommonService.TServerCloudInstall] || "{}";
+
+    let oldSource = JSON.parse(tServer.metadata.annotations[CommonService.TServerCloudInstall]);
+
+    //保留历史的CloudId和CloudTitle
+    source[CommonService.TServerCloudID] = oldSource[CommonService.TServerCloudID];
+    if (source[CommonService.TServerCloudProduct] && oldSource[CommonService.TServerCloudProduct]) {
+        source[CommonService.TServerCloudProduct][CommonService.TServerCloudTitle] = oldSource[CommonService.TServerCloudProduct][CommonService.TServerCloudTitle] || "";
+        source[CommonService.TServerCloudProduct][CommonService.TServerCloudID] = oldSource[CommonService.TServerCloudProduct][CommonService.TServerCloudID] || "";
+    }
+
     tServer.metadata.annotations[CommonService.TServerCloudInstall] = JSON.stringify(source);
-
-    // tServer.metadata.labels[CommonService.TServerCloudInstall] = source[CommonService.TServerCloudInstall] || "";
-
-    // tServer.metadata.annotations = tServer.metadata.annotations || {};
-    // Object.assign(tServer.metadata.annotations, source);
 
     tServer.spec.release = {};
     tServer.spec.release.id = deploy.repo.id;

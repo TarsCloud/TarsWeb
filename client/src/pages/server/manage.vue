@@ -54,6 +54,25 @@
           >
             {{ scope.row.server_name }}
           </a>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            v-if="scope.row.source['tars.io/CloudInstall']"
+            :content="
+              scope.row.source['tars.io/CloudInstall'].group +
+                '/' +
+                scope.row.source['tars.io/CloudInstall'].name +
+                ':' +
+                scope.row.source['tars.io/CloudInstall'].version
+            "
+            placement="top-start"
+          >
+            <i
+              class="el-icon-cloudy"
+              style="cursor:pointer"
+              @click="goMarket(scope.row)"
+            ></i>
+          </el-tooltip>
         </template>
       </let-table-column>
       <let-table-column
@@ -1203,6 +1222,8 @@ export default {
               item.present_state_in_node = "";
               item.is_node_ok = true;
               item.query_ret_code = 0;
+              item.source = item.source || "{}";
+              item.source = JSON.parse(item.source);
               item.setting_state =
                 item.setting_state.charAt(0).toUpperCase() +
                 item.setting_state.slice(1);
@@ -1216,6 +1237,8 @@ export default {
               item.present_state_in_node = "";
               item.is_node_ok = true;
               item.query_ret_code = 0;
+              item.source = item.source || "{}";
+              item.source = JSON.parse(item.source);
               item.setting_state =
                 item.setting_state.charAt(0).toUpperCase() +
                 item.setting_state.slice(1);
@@ -2103,6 +2126,16 @@ export default {
     closeStatusModal() {
       this.serverStatusModal.model = null;
       this.serverStatusModal.show = false;
+    },
+    goMarket(row) {
+      let href;
+      if (row.source["tars.io/CloudProduct"]) {
+        href = `/static/market/index.html#/market/product/${row.source["tars.io/CloudInstall"].group}/${row.source["tars.io/CloudInstall"].name}/${row.source["tars.io/CloudInstall"].version}`;
+      } else {
+        href = `/static/market/index.html#/market/service/${row.source["tars.io/CloudInstall"].group}/${row.source["tars.io/CloudInstall"].name}/${row.source["tars.io/CloudInstall"].version}`;
+      }
+
+      window.open(href);
     },
   },
   created() {

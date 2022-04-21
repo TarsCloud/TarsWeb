@@ -41,6 +41,23 @@
         :title="$t('deployService.form.serviceName')"
         prop="ServerName"
       ></let-table-column>
+      <let-table-column :title="$t('deployService.form.source')">
+        <template slot-scope="scope"
+          ><el-tag
+            style="cursor:pointer"
+            v-if="scope.row.Source['tars.io/CloudInstall']"
+            @click="goMarket(scope.row)"
+          >
+            {{
+              scope.row.Source["tars.io/CloudInstall"].group +
+                "/" +
+                scope.row.Source["tars.io/CloudInstall"].name +
+                ":" +
+                scope.row.Source["tars.io/CloudInstall"].version
+            }}
+          </el-tag>
+        </template>
+      </let-table-column>
     </let-table>
 
     <div style="overflow:hidden;">
@@ -132,6 +149,9 @@ export default {
           if (data.hasOwnProperty("Data")) {
             data.Data.forEach((item) => {
               item.isChecked = false;
+              item.Source = item.Source || "{}";
+              // console.log(item.Source);
+              item.Source = JSON.parse(item.Source);
             });
             this.serverList = data.Data;
           }
@@ -224,6 +244,16 @@ export default {
             );
           });
       });
+    },
+    goMarket(row) {
+      let href;
+      if (row.Source["tars.io/CloudProduct"]) {
+        href = `/static/market/index.html#/market/product/${row.Source["tars.io/CloudInstall"].group}/${row.Source["tars.io/CloudInstall"].name}/${row.Source["tars.io/CloudInstall"].version}`;
+      } else {
+        href = `/static/market/index.html#/market/service/${row.Source["tars.io/CloudInstall"].group}/${row.Source["tars.io/CloudInstall"].name}/${row.Source["tars.io/CloudInstall"].version}`;
+      }
+
+      window.open(href);
     },
   },
 };
