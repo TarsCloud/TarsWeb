@@ -20,11 +20,28 @@ const TaskService = require('../../app/service/task/TaskService');
 const ServerService = require('../../app/service/server/ServerService');
 const CommonService = require('../../k8s/service/common/CommonService');
 const AuthService = require('../../app/service/auth/AuthService');
+const FrameworkDao = require('../../app/dao/FrameworkDao');
+
 const util = require('../../tools/util');
-const {
-	application
-} = require('express');
+
 const MarketService = {};
+
+const _ = require('lodash');
+
+MarketService.getFrameworkKey = async () => {
+
+	return await FrameworkDao.getFrameworkKey();
+};
+
+MarketService.updateFrameworkKey = async (cuid, priKey) => {
+
+	return await FrameworkDao.update(cuid, priKey);
+};
+
+MarketService.updateFrameworkAutoLogin = async (autologin) => {
+
+	return await FrameworkDao.updateAutoLogin(autologin);
+};
 
 MarketService.listInstall = async (product) => {
 

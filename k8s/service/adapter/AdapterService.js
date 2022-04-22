@@ -312,7 +312,7 @@ AdapterService.getAllAdapterConfList = async (metadata) => {
 
 	tServer = tServer.body;
 
-	console.log(tServer);
+	// console.log(tServer);
 
 	let data = [];
 

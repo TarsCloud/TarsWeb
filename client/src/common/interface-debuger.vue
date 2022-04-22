@@ -11,19 +11,26 @@
       "
       ref="tarsFileListLoading"
     >
-      <let-button
-        size="small"
-        theme="primary"
-        class="add-btn"
-        @click="openTarsUploadFileModal"
-        >{{ $t("operate.add") }}</let-button
-      >
+      <div class="table_head" style="height:50px">
+        <h4>
+          {{ this.$t("inf.title.listTitle") }}
+          <i
+            class="el-icon-refresh-right"
+            style="cursor: pointer"
+            @click="getFileList()"
+          ></i>
+        </h4>
 
-      <let-table
-        :data="tarsFileList"
-        :title="$t('inf.title.listTitle')"
-        :empty-msg="$t('common.nodata')"
-      >
+        <let-button
+          size="small"
+          theme="primary"
+          class="add-btn"
+          @click="openTarsUploadFileModal"
+          >{{ $t("operate.add") }}</let-button
+        >
+      </div>
+
+      <let-table :data="tarsFileList" :empty-msg="$t('common.nodata')">
         <let-table-column
           :title="$t('deployService.form.app')"
           prop="application"
@@ -501,6 +508,7 @@ export default {
         .getJSON("/server/api/get_file_list", {
           application: this.serverData.application,
           server_name: this.serverData.server_name,
+          k8s: this.k8s,
         })
         .then((data) => {
           loading.hide();
@@ -515,12 +523,12 @@ export default {
     },
     getBmInstalled() {
       this.$ajax
-        .getJSON("/server/api/is_benchmark_installed")
+        .getJSON("/server/api/is_benchmark_installed", { k8s: false })
         .then((data) => {
           this.isBmInstalled = data;
         })
         .catch((e) => {
-          console.error("get bm installed status error", e);
+          // console.error("get bm installed status error", e);
           this.$tip.error(`error:${e.err_msg || e.message}`);
           this.isBmInstalled = false;
         });
@@ -564,6 +572,7 @@ export default {
         formdata.append("application", this.uploadModal.model.application);
         formdata.append("server_name", this.uploadModal.model.server_name);
         formdata.append("set_name", this.uploadModal.model.set_name);
+        formdata.append("k8s", this.k8s);
         this.uploadModal.model.file.forEach((file) =>
           formdata.append("suse", file)
         );
@@ -615,6 +624,7 @@ export default {
           this.$ajax
             .getJSON("/server/api/delete_tars_file", {
               id: id,
+              k8s: this.k8s,
             })
             .then((data) => {
               loading.hide();
@@ -630,8 +640,6 @@ export default {
         .catch(() => {});
     },
     getObjList() {
-      console.log("getObjList", this.k8s);
-
       if (this.k8s) {
         this.$ajax
           .getJSON("/k8s/api/all_adapter_conf_list", {
@@ -675,6 +683,7 @@ export default {
           application: this.serverData.application,
           server_name: this.serverData.server_name,
           type: "all",
+          k8s: this.k8s,
         })
         .then((data) => {
           this.contextData = data;
@@ -715,6 +724,7 @@ export default {
             module_name: value[0],
             interface_name: value[1],
             function_name: value[2],
+            k8s: this.k8s,
           })
           .then((data) => {
             loading.hide();
@@ -723,6 +733,7 @@ export default {
               .getJSON("/server/api/get_structs", {
                 id: this.selectedId,
                 module_name: value[0],
+                k8s: this.k8s,
               })
               .then((contextData) => {
                 data.forEach((item) => {
@@ -792,6 +803,7 @@ export default {
           this.$ajax
             .getJSON("/server/api/delete_test_case", {
               case_id: case_id,
+              k8s: this.k8s,
             })
             .then((data) => {
               loading.hide();
@@ -831,6 +843,7 @@ export default {
           server_name: this.serverData.server_name,
           page_size: this.pageSize,
           curr_page: curr_page,
+          k8s: this.k8s,
         })
         .then((data) => {
           loading.hide();
@@ -885,6 +898,7 @@ export default {
           params: this.inParam,
           test_case_name: this.testCastName,
           objName: this.objName,
+          k8s: this.k8s,
         })
         .then((data) => {
           loading.hide();
@@ -936,6 +950,7 @@ export default {
           case_id: this.modifyCaseItem.case_id,
           params: this.inParam,
           test_case_name: this.testCastName,
+          k8s: this.k8s,
         })
         .then((data) => {
           loading.hide();
@@ -954,6 +969,7 @@ export default {
       this.$ajax
         .getJSON("/server/api/adapter_conf_list", {
           id: server.id,
+          k8s: this.k8s,
         })
         .then((adapterData) => {
           // node到endpoint的映射
@@ -973,6 +989,7 @@ export default {
               function_name: row.function_name,
               params: row.context,
               objName: row.object_name + "@" + obj_endpoint[row.object_name],
+              k8s: this.k8s,
             })
             .then((data) => {
               loading.hide();

@@ -169,20 +169,34 @@ if (process.env.NODE_ENV == "local") {
     process.env.ENABLE_K8S = "false";
 
 } else if (process.env.NODE_ENV == "k8s") {
+    // conf.ENABLE_LOCAL_CONFIG = true;
+    // conf.dbConf = {
+    //     host: '127.0.0.1', // 数据库地址
+    //     port: '3306', // 数据库端口
+    //     user: 'tarsAdmin', // 用户名
+    //     password: 'Tars@2019', // 密码
+    //     charset: 'utf8', // 数据库编码
+    //     pool: {
+    //         max: 10, // 连接池中最大连接数量
+    //         min: 0, // 连接池中最小连接数量
+    //         idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
+    //     }
+    // };
 
-    conf.dbConf = null;
+    // conf.dbConf = null;
 
     conf.webConf.host = '0.0.0.0';
     conf.webConf.port = 4001;
 
-    conf.client = path.join(cwd, 'config/tars-k8s.conf');
+    // conf.client = path.join(cwd, 'config/tars-k8s.conf');
 
     process.env.ENABLE_K8S = "true";
-    conf.enable = false;
-    conf.market = {
-        enable: true,
-        url: 'http://localhost:6001'
-    };
+    // conf.enable = false;
+    // conf.market = {
+    //     enable: true,
+    //     url: 'http://localhost:6001'
+    // };
+
     conf.k8s.namespace = 'tars-dev';
     conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 } else if (process.env.NODE_ENV == "all") {
@@ -216,7 +230,7 @@ if (process.env.NODE_ENV == "local") {
     conf.webConf.alter = false;
     // conf.webConf.alter = true;
     conf.k8s.namespace = 'tars-dev';
-    conf.k8s.namespace = 'od-prod';
+    // conf.k8s.namespace = 'od-prod';
     conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 }
 

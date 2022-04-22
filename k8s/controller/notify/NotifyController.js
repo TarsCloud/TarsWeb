@@ -62,7 +62,7 @@ const queryNotify = async (app, server, page, size) => {
         logger.error('[queryNotify]', e)
         return {
             ret: -1,
-            msg: e.message || e.response.data.error
+            msg: e.message || e.response.body.error
         };
     }
 }

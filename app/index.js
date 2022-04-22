@@ -36,7 +36,7 @@ if (WebConf.enable) {
 	const LogviewController = require('./controller/logview/LogviewController');
 	const IDCController = require('./controller/idc/IDCController');
 	const ImageController = require('./controller/image/ImageController');
-	const FrameworkController = require('./controller/framework/FrameworkController');
+	// const FrameworkController = require('./controller/framework/FrameworkController');
 
 	const apiConf = [
 		// 服务管理接口
@@ -441,20 +441,6 @@ if (WebConf.enable) {
 			log_file: 'notEmpty',
 			interface_params: 'notEmpty'
 		}],
-
-		//framework key
-		['post', '/get_framework_cuid', FrameworkController.getFrameworkCUid],
-		['post', '/get_framework_ticket', FrameworkController.getFrameworkTicket, {
-			secret: 'notEmpty'
-		}],
-		['post', '/update_framework_autologin', FrameworkController.updateFrameworkAutoLogin, {
-			autologin: 'notEmpty',
-		}],
-		['post', '/update_framework_key', FrameworkController.updateFrameworkKey, {
-			priKey: 'notEmpty',
-			cuid: 'notEmpty',
-		}],
-
 	];
 
 	const clientConf = [

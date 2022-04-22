@@ -349,7 +349,8 @@ const k8sApiConf = [
 
     //集群管理
     ["get", "/get_tfc", FrameworkController.getFrameworkConfig],
-    ["post", "/save_tfc_item", FrameworkController.saveFrameworkConfig]
+    ["post", "/save_tfc_item", FrameworkController.saveFrameworkConfig],
+
 ];
 
 module.exports = {

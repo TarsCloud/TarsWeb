@@ -23,6 +23,24 @@ const marketApiConf = [
         k8s: 'notEmpty',
         servers: 'notEmpty',
     }],
+    //framework key
+    ['post', '/get_framework_cuid', MarketController.getFrameworkCUid, {
+        k8s: 'notEmpty',
+    }],
+
+    ['post', '/get_framework_ticket', MarketController.getFrameworkTicket, {
+        secret: 'notEmpty',
+        k8s: 'notEmpty',
+    }],
+    ['post', '/update_framework_autologin', MarketController.updateFrameworkAutoLogin, {
+        autologin: 'notEmpty',
+        k8s: 'notEmpty',
+    }],
+    ['post', '/update_framework_key', MarketController.updateFrameworkKey, {
+        priKey: 'notEmpty',
+        cuid: 'notEmpty',
+        k8s: 'notEmpty',
+    }],
 ];
 
 module.exports = {

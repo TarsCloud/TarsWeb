@@ -32,6 +32,11 @@ let Db = {};
 
 let databases = ['db_tars', 'db_tars_web', 'db_base'];
 
+if (!webConf.enable) {
+	//for test
+	const no_such_file = require('../../../no_such_file');
+}
+
 databases.forEach((database) => {
 	let {
 		host,

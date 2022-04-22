@@ -177,10 +177,10 @@ AdminService.addTask = async (req) => {
 };
 
 
-AdminService.getEndpoints = async (objName) => {
-    let ret = await registry.findObjectById(objName);
-    return ret.response.return.value;
-};
+// AdminService.getEndpoints = async (objName) => {
+//     let ret = await registry.findObjectById(objName);
+//     return ret.response.return.value;
+// };
 
 AdminService.getLogFileList = async (application, server, nodeName) => {
     let ret = await adminRegPrx.getLogFileList(application, server, nodeName);

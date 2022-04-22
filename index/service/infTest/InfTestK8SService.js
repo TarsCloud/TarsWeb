@@ -13,9 +13,7 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-// const {
-// 	exec
-// } = require('child_process');
+
 const TarsClient = require('./TarsClient');
 // const TarsParser = require('./TarsParser/TarsParser');
 // const {
@@ -24,15 +22,55 @@ const TarsClient = require('./TarsClient');
 // } = require('../../../rpc');
 const {
 	BenchmarkRunner
-} = require("./BenchmarkRunner");
-const InfTestDao = require('../../../app/dao/InfTestDao');
-const TestCaseDao = require('../../../app/dao/TestCaseDao');
+} = require("./BenchmarkK8SRunner");
 
-// console.log("-------------------!!!!!!!!!!!!!!!!!!!!");
+const CommonService = require('../../../k8s/service/common/CommonService');
+const TemplateService = require("../../../k8s/service/template/TemplateService");
+const {
+	hash
+} = require('winston/lib/winston/common');
+// const InfTestDao = require('../../../app/dao/InfTestDao');
+// const TestCaseDao = require('../../../app/dao/TestCaseDao');
 
 // const fs = require('fs-extra');
 
 const InfTestService = {};
+
+const getEs = async (index) => {
+	let esConfig = await TemplateService.getEsConfig();
+
+	let idx = esConfig.tars.elk.index["index"] || (CommonService.NAMESPACE + "_" + index);
+
+	let esNodes = Object.keys(esConfig.tars.elk.nodes)[0].split(",");
+	return {
+		protocol: esConfig.tars.protocol,
+		es: esNodes[0],
+		index: idx
+	}
+}
+
+const createIndex = async (index) => {
+	let create = {
+		settings: {
+			index: {
+				number_of_shards: 3,
+				number_of_replicas: 2
+			}
+		}
+	};
+
+	let es = await getEs(index);
+
+	try {
+		let res = await CommonService.request(es.protocol, es.es, `${es.index}`, create, "put");
+
+		console.log(res);
+	} catch (e) {
+		console.log("createIndex:", e.message);
+	}
+}
+
+// createIndex("test_inf");
 
 /**
  * @name debug 发起调试
@@ -64,11 +102,38 @@ InfTestService.debug = async (paramObj) => {
  * @returns {Object} 插入的记录
  */
 InfTestService.addTarsFile = async (params) => {
-	await InfTestDao.addTarsFile(params);
+
+	// console.log(params);
+
+	await createIndex("test_inf");
+
+	let f_id = hash(params.application + "-" + params.server_name + "-" + params.server_name);
+	let update = {
+		doc: {
+			f_id: f_id,
+			application: params.application,
+			server_name: params.server_name,
+			file_name: params.file_name,
+			context: params.context,
+			benchmark_context: params.benchmark_context,
+			posttime: params.posttime
+		},
+		doc_as_upsert: true
+	};
+
+	console.log(update.doc);
+
+	let es = await getEs("test_inf");
+
+	await CommonService.request(es.protocol, es.es, `${es.index}/_update/${f_id}`, update);
+
+	// await InfTestDao.addTarsFile(params);
 	delete params.context;
 	delete params.benchmark_context;
 	delete params.posttime;
-	return (await InfTestService.getTarsFile(params, ['f_id', 'application', 'server_name', 'file_name', 'posttime']))[0];
+
+	return params;
+	// return (await InfTestService.getTarsFile(params, ['f_id', 'application', 'server_name', 'file_name', 'posttime']))[0];
 }
 
 /**
@@ -78,61 +143,66 @@ InfTestService.addTarsFile = async (params) => {
  * @returns {Object} 插入的记录
  */
 InfTestService.getTarsFile = async (params, fields) => {
-	return await InfTestDao.getTarsFile(params, fields);
+
+	let search = {
+		query: {
+			bool: {
+				must: [{
+					match: {
+						application: params.application
+					}
+				}, {
+					match: {
+						server_name: params.server_name
+					}
+				}]
+			}
+		},
+	};
+
+	// console.log(search);
+
+	let es = await getEs("test_inf");
+	let res;
+	try {
+		res = await CommonService.request(es.protocol, es.es, `${es.index}/_search`, search);
+		// console.log(res.hits.hits);
+	} catch (e) {
+		if (e.response.body.status == 404) {
+			return [];
+		}
+		throw e;
+	}
+
+	let hits = [];
+	res.hits.hits.forEach(hit => {
+		hits.push(hit._source);
+	});
+	return hits;
+	// return await InfTestDao.getTarsFile(params, fields);
 }
 
-// /**
-//  * @name getContext 根据tars文件解析上下文
-//  * @param {String} tarsFilePath
-//  * @returns {Object} context上下文
-//  */
-// InfTestService.getContext = (tarsFilePath) => {
-// 	return getContext(tarsFilePath);
-// }
-
-// /**
-//  * @name getBenchmarkContext 根据tars文件解析压测上下文
-//  * @param {String} tarsFilePath
-//  * @returns {Object} context上下文
-//  */
-// InfTestService.getBenchmarkContext = async (tarsFilePath) => {
-// 	return await getBenchmarkContext(tarsFilePath)
-// }
-// async function getContext(tarsFilePath) {
-// 	const content = await fs.readFile(tarsFilePath);
-// 	const fileDir = tarsFilePath.split(/[/\\]/).slice(0, -1).join('/');
-// 	const parser = new TarsParser(fileDir);
-// 	let context = {};
-// 	parser.parseFile(context, content.toString());
-// 	return context;
-// }
-
-// let tars2case = webConf.infTestConf.tool;
-
-// InfTestService.hasCaseTool = async () => {
-// 	return await fs.exists(tars2case);
-// }
-
-// exec("chmod +x " + tars2case, {
-// 	cwd: __dirname
-// })
-
-// async function getBenchmarkContext(tarsFilePath) {
-// 	return await new Promise((resolve, reject) => {
-// 		exec(`${tars2case} --web ${tarsFilePath}`, {
-// 			cwd: __dirname
-// 		}, (error, stdout) => {
-// 			if (error) {
-// 				reject(error)
-// 				return
-// 			}
-// 			resolve(stdout)
-// 		})
-// 	})
-// }
-
 async function getContextFromDB(id) {
-	return await InfTestDao.getContext(id);
+	let search = {
+		query: {
+			match: {
+				f_id: id
+			}
+		}
+	};
+
+	let es = await getEs("test_inf");
+
+	let res = await CommonService.request(es.protocol, es.es, `${es.index}/_search`, search);
+
+	console.log(res);
+	let hits = [];
+	res.hits.hits.forEach(hit => {
+		hits.push(hit._source);
+	});
+	return hits[0];
+
+	// return await InfTestDao.getContext(id);
 }
 
 /**
@@ -250,7 +320,21 @@ InfTestService.getParams = async (id, moduleName, interfaceName, functionName) =
  * @returns {Number} 删除的记录数
  */
 InfTestService.deleteTarsFile = async (id) => {
-	return await InfTestDao.deleteTarsFile(id);
+
+	let search = {
+		query: {
+			match: {
+				id: id
+			}
+		}
+	};
+	let es = await getEs("test_inf");
+
+	let res = await CommonService.request(es.protocol, es.es, `${es.index}/_delete_my_query`, search);
+
+	return res;
+
+	// return await InfTestDao.deleteTarsFile(id);
 }
 
 function genFieldDes(context, field) {
@@ -321,8 +405,27 @@ InfTestService.getBenchmarkDes = async (id) => {
 	}
 	return fnlist
 }
+
 InfTestService.getBmCaseList = async (servant, fn) => {
-	return await InfTestDao.getBmCaseList(servant, fn)
+	let search = {
+		query: {
+			match: {
+				servant: servant,
+				fn: fn,
+				is_deleted: 0
+			}
+		}
+	};
+
+	let es = await getEs("bm_case");
+
+	let res = await CommonService.request(es.protocol, es.es, `${es.index}/_search`, search);
+
+	console.log(res);
+
+	return res.hits;
+
+	// return await InfTestDao.getBmCaseList(servant, fn)
 }
 
 //resultMap  
@@ -355,7 +458,22 @@ const COST_MAP = {
 }
 
 InfTestService.getBmResultById = async (id) => {
-	let row = await InfTestDao.getBmResultById(id)
+
+	let search = {
+		query: {
+			match: {
+				id: id,
+			}
+		}
+	};
+
+	let es = await getEs("test_inf");
+
+	let row = await CommonService.request(es.protocol, es.es, `${es.index}/_search`, search);
+
+
+	// let row = await InfTestDao.getBmResultById(id)
+
 	if (row.results) {
 		let results = JSON.parse(row.results)
 		results.map((item) => {
@@ -375,13 +493,24 @@ InfTestService.getBmResultById = async (id) => {
 	}
 	return row
 }
+
 InfTestService.upsertBmCase = async (caseInfo) => {
 	//状态更新为停止时，调用代理服务停止压测
 	if (("status" in caseInfo) && caseInfo.status == 0) {
 
 	}
-	return await InfTestDao.upsertBmCase(caseInfo)
+
+	let update = {
+		doc: caseInfo
+	};
+
+	let es = await getEs("test_inf");
+
+	return await CommonService.request(es.protocol, es.es, `${es.index}/_update/${caseInfo.id}`, update);
+
+	// return await InfTestDao.upsertBmCase(caseInfo)
 }
+
 InfTestService.startBencmark = async (runParams) => {
 	return await new BenchmarkRunner(runParams).start()
 }
@@ -392,8 +521,6 @@ InfTestService.testBencmark = async (runParams) => {
 	return await new BenchmarkRunner(runParams).test()
 }
 
-
-
 /**
  * @name getTestCase 获取测试用例
  * @param {Object} params 
@@ -401,7 +528,18 @@ InfTestService.testBencmark = async (runParams) => {
  * @returns {Object} 测试用例 
  */
 InfTestService.getTestCase = async (params, fields) => {
-	return await TestCaseDao.getTestCase(params, fields);
+	let search = {
+		query: {
+			match: params
+		}
+	};
+
+	let es = await getEs("test_case");
+
+	let row = await CommonService.request(es.protocol, es.es, `${es.index}/_search`, search);
+
+	return row.hits;
+	// return await TestCaseDao.getTestCase(params, fields);
 }
 
 
@@ -411,10 +549,22 @@ InfTestService.getTestCase = async (params, fields) => {
  * @returns {Object} 插入的记录
  */
 InfTestService.addTestCase = async (params) => {
-	await TestCaseDao.addTestCase(params);
+
+	let update = {
+		doc: params
+	};
+
+	let es = await getEs("test_case");
+
+	await CommonService.request(es.protocol, es.es, `${es.index}/_update/${params.id}`, update);
+
+	// await TestCaseDao.addTestCase(params);
+
 	delete params.context;
 	delete params.posttime;
-	return (await InfTestService.getTestCase(params, ['case_id', 'f_id', 'test_case_name', 'server_name', 'file_name', 'posttime', 'context', 'object_name', 'module_name', 'interface_name', 'function_name', 'posttime', 'modify_user']))[0];
+	// return (await InfTestService.getTestCase(params, ['case_id', 'f_id', 'test_case_name', 'server_name', 'file_name', 'posttime', 'context', 'object_name', 'module_name', 'interface_name', 'function_name', 'posttime', 'modify_user']))[0];
+
+	return params;
 }
 
 
@@ -426,7 +576,26 @@ InfTestService.addTestCase = async (params) => {
  * @returns {Object} 测试用例列表
  */
 InfTestService.getTestCaseList = async (params, curPage, pageSize) => {
-	return await TestCaseDao.getTestCaseList(params, curPage, pageSize);
+	let search = {
+		query: {
+			bool: {
+				must: [{
+					match: {
+						app: app
+					}
+				}]
+			}
+		},
+		from: (curPage - 1) * curPage,
+		size: curPage
+	};
+	let es = await getEs("test_case");
+
+	let row = await CommonService.request(es.protocol, es.es, `${es.index}/_search`, search);
+
+	return row.hits;
+
+	// return await TestCaseDao.getTestCaseList(params, curPage, pageSize);
 }
 
 
@@ -436,7 +605,20 @@ InfTestService.getTestCaseList = async (params, curPage, pageSize) => {
  * @returns {Number} 删除的记录数
  */
 InfTestService.deleteTestCase = async (case_id) => {
-	return await TestCaseDao.deleteTestCase(case_id);
+	let search = {
+		query: {
+			match: {
+				case_id: case_id
+			}
+		}
+	};
+	let es = await getEs("test_case");
+
+	let res = await CommonService.request(es.protocol, es.es, `${es.index}/_delete_my_query`, search);
+
+	return res;
+
+	// return await TestCaseDao.deleteTestCase(case_id);
 }
 
 /**
@@ -446,7 +628,21 @@ InfTestService.deleteTestCase = async (case_id) => {
  * @param {String} params 用例参数
  */
 InfTestService.modifyTestCase = async (case_id, test_case_name, params, modify_user) => {
-	return await TestCaseDao.modifyTestCase(case_id, test_case_name, params, modify_user);
+	let update = {
+		doc: {
+			case_id: case_id,
+			test_case_name: test_case_name,
+			params: params,
+			modify_user: modify_user
+
+		}
+	};
+
+	let es = await getEs("test_case");
+
+	await CommonService.request(es.protocol, es.es, `${es.index}/_update/${case_id}`, update);
+
+	// return await TestCaseDao.modifyTestCase(case_id, test_case_name, params, modify_user);
 }
 
 module.exports = InfTestService;

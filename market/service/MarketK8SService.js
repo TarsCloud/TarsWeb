@@ -134,4 +134,65 @@ MarketService.uninstallProduct = async (servers, uid) => {
 	return await ServerService.deleteServer(metadata);
 };
 
+MarketService.getFrameworkKey = async () => {
+
+	let fkey = await CommonService.getObject("tframeworkkey", "key");
+
+	if (fkey) {
+		return fkey.body.spec;
+	} else {
+
+		return null;
+	}
+
+};
+
+MarketService.updateFrameworkKey = async (cuid, priKey) => {
+
+	let fkey = await CommonService.getObject("tframeworkkey", "key");
+
+	if (!fkey) {
+		//创建用户
+		fkey = {
+			apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
+			kind: 'TFrameworkKey',
+			metadata: {
+				namespace: CommonService.NAMESPACE,
+				name: "key",
+			},
+			spec: {
+				cuid: cuid,
+				pri_key: priKey,
+				autologin: 1
+			},
+		}
+
+		await CommonService.createObject("tframeworkkey", fkey);
+	} else {
+		fkey = fkey.body;
+
+		if (fkey.spec.pri_key != priKey) {
+			return;
+		}
+
+		fkey.spec.cuid = cuid;
+		fkey.spec.pri_key = priKey;
+
+		await CommonService.replaceObject("tframeworkkey", "key", fkey);
+	}
+};
+
+MarketService.updateFrameworkAutoLogin = async (autologin) => {
+	let fkey = await CommonService.getObject("tframeworkkey", "key");
+
+	if (fkey) {
+
+		fkey = fkey.body;
+
+		fkey.spec.autologin = autologin;
+
+		await CommonService.replaceObject("tframeworkkey", "key", fkey);
+	}
+};
+
 module.exports = MarketService;

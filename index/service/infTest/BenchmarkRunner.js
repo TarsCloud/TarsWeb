@@ -3,8 +3,7 @@ const {
     benchmarkPrx,
     benchmarkStruct,
     benchmarkNodeStruct
-} = require('../../../rpc');
-const logger = require('../../../logger');
+} = require('../../../rpc/index');
 
 //TODO:协议中增加返回值枚举，替换此处硬编码
 const RetMap = {

@@ -15,8 +15,8 @@
  */
 
 const logger = require('../../logger');
-
 const WebConf = require('../../config/webConf');
+const sm2 = require('miniprogram-sm-crypto').sm2
 
 let AuthService;
 
@@ -86,5 +86,98 @@ MarketController.uninstallProduct = async (ctx) => {
 		ctx.makeResObj(500, e.body ? e.body.message : e);
 	}
 }
+
+
+MarketController.getFrameworkCUid = async (ctx) => {
+	try {
+		let data = await getMarketService(ctx.paramsObj.k8s).getFrameworkKey();
+
+		// console.log(data);
+		if (data) {
+			ctx.makeResObj(200, '', {
+				has: true,
+				cuid: data.cuid,
+				autologin: data.autologin,
+			});
+		} else {
+			ctx.makeResObj(200, '', {
+				has: false
+			});
+		}
+	} catch (e) {
+		logger.error('[getFrameworkKey]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
+MarketController.getFrameworkTicket = async (ctx) => {
+	try {
+		let data = await getMarketService(ctx.paramsObj.k8s).getFrameworkKey();
+
+		if (!data) {
+			ctx.makeErrResObj();
+			return;
+		}
+		const cipherMode = 1;
+
+		//使用私钥解密
+		let secret = ctx.paramsObj.secret;
+		let ticket = sm2.doDecrypt(secret, data.pri_key, cipherMode);
+
+		ctx.makeResObj(200, '', {
+			ticket: ticket || ''
+		});
+
+	} catch (e) {
+		logger.error('[getFrameworkTicket]', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+MarketController.updateFrameworkKey = async (ctx) => {
+	let priKey = ctx.paramsObj.priKey;
+	let cuid = ctx.paramsObj.cuid;
+	try {
+
+		let data = await getMarketService(ctx.paramsObj.k8s).getFrameworkKey();
+		if (data) {
+
+			logger.error('[updateFrameworkId] getFrameworkId fid exists:', data);
+
+			ctx.makeErrResObj();
+			return;
+		}
+		if (!await AuthService.hasAdminAuth(ctx.uid)) {
+			ctx.makeNotAuthResObj();
+		} else {
+
+			await getMarketService(ctx.paramsObj.k8s).updateFrameworkKey(cuid, priKey);
+		}
+
+		ctx.makeResObj(200, '', {});
+	} catch (e) {
+		logger.error('[updateFrameworkKey]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
+
+MarketController.updateFrameworkAutoLogin = async (ctx) => {
+
+	try {
+		let autologin = ctx.paramsObj.autologin ? 1 : 0;
+
+		if (!await AuthService.hasAdminAuth(ctx.uid)) {
+			ctx.makeNotAuthResObj();
+		} else {
+
+			await getMarketService(ctx.paramsObj.k8s).updateFrameworkAutoLogin(autologin);
+
+			ctx.makeResObj(200, '', {});
+		}
+	} catch (e) {
+		logger.error('[updateFrameworkAutoLogin]', e, ctx);
+		ctx.makeErrResObj();
+	}
+};
 
 module.exports = MarketController;

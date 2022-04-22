@@ -15,14 +15,85 @@
  */
 
 const logger = require('../../../logger');
-const InfTestService = require('../../service/infTest/InfTestService');
-const AuthService = require('../../../app/service/auth/AuthService');
+// const AuthService = require('../../../app/service/auth/AuthService');
 const WebConf = require('../../../config/webConf');
 const util = require('../../../tools/util');
 const fs = require('fs-extra');
-const AdminService = require('../../../app/service/admin/AdminService');
+// const AdminService = require('../../../app/service/admin/AdminService');
+const TarsParser = require('../../service/infTest/TarsParser/TarsParser');
+const {
+	exec
+} = require('child_process');
 
 const InfTestController = {};
+
+let AuthService;
+
+if (WebConf.isEnableK8s()) {
+	AuthService = require('../../../k8s/service/auth/AuthService');
+} else {
+	AuthService = require('../../../app/service/auth/AuthService');
+}
+
+let getInfTestService = (k8s) => {
+	if (WebConf.isEnableK8s() && (k8s == true || k8s == "true")) {
+		return require('../../service/infTest/InfTestK8SService');
+	} else {
+		return require('../../service/infTest/InfTestService');
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+let tars2case = WebConf.infTestConf.tool;
+
+const hasCaseTool = async () => {
+	return fs.existsSync(tars2case);
+}
+
+exec("chmod +x " + tars2case, {
+	cwd: __dirname
+})
+
+async function getBenchmarkContext(tarsFilePath) {
+	return await new Promise((resolve, reject) => {
+		exec(`${tars2case} --web ${tarsFilePath}`, {
+			cwd: __dirname
+		}, (error, stdout) => {
+			if (error) {
+				reject(error)
+				return
+			}
+			resolve(stdout)
+		})
+	})
+}
+async function getContext(tarsFilePath) {
+	const content = await fs.readFile(tarsFilePath);
+	const fileDir = tarsFilePath.split(/[/\\]/).slice(0, -1).join('/');
+	const parser = new TarsParser(fileDir);
+	let context = {};
+	parser.parseFile(context, content.toString());
+	return context;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+function getTars(k8s) {
+
+	const registry = require("@tars/registry");
+
+	let Tars;
+	if (k8s && k8s == 'true') {
+		Tars = require('../../../rpc/k8s').client;
+
+	} else {
+		Tars = require('../../../rpc/index').client;
+	}
+
+	registry.setLocator(Tars.getProperty('locator'));
+
+	return registry;
+}
 
 InfTestController.interfaceDebug = async (ctx) => {
 	try {
@@ -42,9 +113,11 @@ InfTestController.interfaceDebug = async (ctx) => {
 		} else {
 			k8s = (k8s == "true");
 
-			let rsp = await InfTestService.debug({
+			let client = getTars(k8s);
+
+			let rsp = await getInfTestService(k8s).debug({
 				id,
-				k8s,
+				client,
 				objName,
 				moduleName: module_name,
 				interfaceName: interface_name,
@@ -64,7 +137,8 @@ InfTestController.uploadTarsFile = async (ctx) => {
 	let {
 		application,
 		server_name,
-		set_name
+		set_name,
+		k8s
 	} = ctx.paramsObj;
 	// tars文件上传目录，和发布包同一个根目录
 	let baseUploadPath = WebConf.pkgUploadPath.path;
@@ -90,7 +164,7 @@ InfTestController.uploadTarsFile = async (ctx) => {
 				await fs.rename(`${baseUploadPath}/${file.filename}`, `${tarsFilePath}/${file.originalname}`);
 			}
 
-			let exists = await InfTestService.hasCaseTool();
+			let exists = await hasCaseTool();
 
 			if (!exists) {
 				ctx.makeResObj(500, "#inf.error.caseToolNotExists#");
@@ -99,9 +173,9 @@ InfTestController.uploadTarsFile = async (ctx) => {
 			// 解析并入库
 			let ret = [];
 			for (let file of files) {
-				const context = await InfTestService.getContext(`${tarsFilePath}/${file.originalname}`);
-				const benchmark_context = await InfTestService.getBenchmarkContext(`${tarsFilePath}/${file.originalname}`);
-				ret.push(await InfTestService.addTarsFile({
+				const context = await getContext(`${tarsFilePath}/${file.originalname}`);
+				const benchmark_context = await getBenchmarkContext(`${tarsFilePath}/${file.originalname}`);
+				ret.push(await getInfTestService(k8s).addTarsFile({
 					application: application,
 					server_name: server_name,
 					file_name: file.originalname,
@@ -126,12 +200,13 @@ InfTestController.getFileList = async (ctx) => {
 	try {
 		let {
 			application,
-			server_name
+			server_name,
+			k8s
 		} = ctx.paramsObj;
 		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
-			let ret = await InfTestService.getTarsFile({
+			let ret = await getInfTestService(k8s).getTarsFile({
 				application: application,
 				server_name: server_name
 			}, ['f_id', 'application', 'server_name', 'file_name', 'posttime']);
@@ -159,20 +234,21 @@ InfTestController.getContexts = async (ctx) => {
 			server_name,
 			type,
 			module_name,
-			interface_name
+			interface_name,
+			k8s
 		} = ctx.paramsObj;
 		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 			let contexts;
 			if (type == 'all') {
-				contexts = await InfTestService.getAllData(id);
+				contexts = await getInfTestService(k8s).getAllData(id);
 			} else if (type == 'module') {
-				contexts = await InfTestService.getModuleData(id);
+				contexts = await getInfTestService(k8s).getModuleData(id);
 			} else if (type == 'interface') {
-				contexts = await InfTestService.getInterfaceData(id, module_name);
+				contexts = await getInfTestService(k8s).getInterfaceData(id, module_name);
 			} else if (type == 'function') {
-				contexts = await InfTestService.getFunctionData(id, module_name, interface_name);
+				contexts = await getInfTestService(k8s).getFunctionData(id, module_name, interface_name);
 			}
 			ctx.makeResObj(200, '', contexts);
 		}
@@ -190,12 +266,13 @@ InfTestController.getParams = async (ctx) => {
 			id,
 			module_name,
 			interface_name,
-			function_name
+			function_name,
+			k8s
 		} = ctx.paramsObj;
 		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
-			let params = await InfTestService.getParams(id, module_name, interface_name, function_name);
+			let params = await getInfTestService(k8s).getParams(id, module_name, interface_name, function_name);
 			ctx.makeResObj(200, '', params);
 		}
 	} catch (e) {
@@ -207,9 +284,10 @@ InfTestController.getParams = async (ctx) => {
 InfTestController.deleteTarsFile = async (ctx) => {
 	try {
 		let {
-			id
+			id,
+			k8s
 		} = ctx.paramsObj;
-		ctx.makeResObj(200, '', await InfTestService.deleteTarsFile(id));
+		ctx.makeResObj(200, '', await getInfTestService(k8s).deleteTarsFile(id));
 	} catch (e) {
 		logger.error('[deleteTarsFile]:', e, ctx);
 		ctx.makeErrResObj();
@@ -220,9 +298,10 @@ InfTestController.getStructs = async (ctx) => {
 	try {
 		let {
 			id,
-			module_name
+			module_name,
+			k8s
 		} = ctx.paramsObj;
-		let ret = await InfTestService.getStructs(id, module_name);
+		let ret = await getInfTestService(k8s).getStructs(id, module_name);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
 		logger.error('[deleteTarsFile]:', e, ctx);
@@ -233,9 +312,10 @@ InfTestController.getStructs = async (ctx) => {
 InfTestController.getBenchmarkDes = async (ctx) => {
 	try {
 		let {
-			id
+			id,
+			k8s
 		} = ctx.paramsObj;
-		let ret = await InfTestService.getBenchmarkDes(id);
+		let ret = await getInfTestService(k8s).getBenchmarkDes(id);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
 		logger.error('[getBenchmarkDes]:', e, ctx);
@@ -246,14 +326,15 @@ InfTestController.getBmCaseList = async (ctx) => {
 	try {
 		let {
 			servant,
-			fn
+			fn,
+			k8s
 		} = ctx.paramsObj;
 		let [application, server_name] = servant.split(".")
 		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 			return;
 		}
-		let ret = await InfTestService.getBmCaseList(servant, fn);
+		let ret = await getInfTestService(k8s).getBmCaseList(servant, fn);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
 		logger.error('[getBmCaseList]:', e, ctx);
@@ -264,9 +345,10 @@ InfTestController.getBmCaseList = async (ctx) => {
 InfTestController.getBmResultById = async (ctx) => {
 	try {
 		let {
-			id
+			id,
+			k8s
 		} = ctx.paramsObj;
-		let ret = await InfTestService.getBmResultById(id);
+		let ret = await getInfTestService(k8s).getBmResultById(id);
 		let [application, server_name] = ret.servant.split(".")
 		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
@@ -280,6 +362,10 @@ InfTestController.getBmResultById = async (ctx) => {
 }
 InfTestController.upsertBmCase = async (ctx) => {
 	try {
+		let {
+			k8s
+		} = ctx.paramsObj;
+
 		let fields = ["id", "servant", "fn", "des", "in_values", "endpoints", "links", "speed", "duration", "is_deleted"],
 			caseInfo = {}
 		fields.forEach((field) => {
@@ -290,7 +376,7 @@ InfTestController.upsertBmCase = async (ctx) => {
 			ctx.makeNotAuthResObj();
 			return;
 		}
-		let ret = await InfTestService.upsertBmCase(caseInfo);
+		let ret = await getInfTestService(k8s).upsertBmCase(caseInfo);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
 		logger.error('[upsertBmCase]:', e, ctx);
@@ -301,7 +387,8 @@ InfTestController.upsertBmCase = async (ctx) => {
 InfTestController.startBencmark = async (ctx) => {
 	try {
 		let {
-			servant
+			servant,
+			k8s
 		} = ctx.paramsObj
 		let [application, server_name] = servant.split(".")
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
@@ -309,7 +396,7 @@ InfTestController.startBencmark = async (ctx) => {
 			return;
 		}
 		ctx.paramsObj.owner = ctx.uid
-		let ret = await InfTestService.startBencmark(ctx.paramsObj);
+		let ret = await getInfTestService(k8s).startBencmark(ctx.paramsObj);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
 		logger.error('[startBencmark]:', e, ctx);
@@ -320,7 +407,8 @@ InfTestController.startBencmark = async (ctx) => {
 InfTestController.stopBencmark = async (ctx) => {
 	try {
 		let {
-			servant
+			servant,
+			k8s
 		} = ctx.paramsObj
 		let [application, server_name] = servant.split(".")
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
@@ -328,7 +416,7 @@ InfTestController.stopBencmark = async (ctx) => {
 			return;
 		}
 		ctx.paramsObj.owner = ctx.uid
-		let ret = await InfTestService.stopBencmark(ctx.paramsObj);
+		let ret = await getInfTestService(k8s).stopBencmark(ctx.paramsObj);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
 		logger.error('[stopBencmark]:', e, ctx);
@@ -339,7 +427,8 @@ InfTestController.stopBencmark = async (ctx) => {
 InfTestController.testBencmark = async (ctx) => {
 	try {
 		let {
-			servant
+			servant,
+			k8s
 		} = ctx.paramsObj
 		let [application, server_name] = servant.split(".")
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
@@ -347,7 +436,7 @@ InfTestController.testBencmark = async (ctx) => {
 			return;
 		}
 		ctx.paramsObj.owner = ctx.uid
-		let ret = await InfTestService.testBencmark(ctx.paramsObj);
+		let ret = await getInfTestService(k8s).testBencmark(ctx.paramsObj);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
 		logger.error('[stopBencmark]:', e, ctx);
@@ -358,15 +447,18 @@ InfTestController.testBencmark = async (ctx) => {
 InfTestController.getEndpoints = async (ctx) => {
 	try {
 		let {
-			servant
+			servant,
+			k8s
 		} = ctx.paramsObj
 		let [application, server_name] = servant.split(".")
 		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 			return;
 		}
-		let ret = await AdminService.getEndpoints(servant);
-		ctx.makeResObj(200, '', ret);
+
+		let rst = await getTars(k8s).findObjectById(objName);
+		// let ret = await AdminService.getEndpoints(servant);
+		ctx.makeResObj(200, '', rst.response.return.value);
 	} catch (e) {
 		logger.error('[getEndpoints]:', e, ctx);
 		ctx.makeResObj(500, "get endpoints error");
@@ -375,8 +467,12 @@ InfTestController.getEndpoints = async (ctx) => {
 
 InfTestController.isBenchmarkInstalled = async (ctx) => {
 	try {
-		let adminObj = WebConf.infTestConf.benchmarkAdmin
-		let ret = await AdminService.getEndpoints(adminObj)
+		let adminObj = WebConf.infTestConf.benchmarkAdmin;
+		let k8s = ctx.paramsObj.k8s;
+
+		let rst = await getTars(k8s).findObjectById(adminObj);
+		let ret = rst.response.return.value;
+		// let ret = await AdminService.getEndpoints(adminObj)
 		if (ret && ret.length) {
 			ctx.makeResObj(200, '', true);
 		} else {
@@ -428,14 +524,14 @@ InfTestController.getTestCaseList = async (ctx) => {
 			let rst = null;
 			// 精准匹配
 			if (module_name && interface_name && function_name) {
-				rst = await InfTestService.getTestCaseList({
+				rst = await getInfTestService(k8s).getTestCaseList({
 					f_id: f_id,
 					module_name: module_name,
 					interface_name: interface_name,
 					function_name: function_name
 				}, curPage, pageSize);
 			} else {
-				rst = await InfTestService.getTestCaseList({
+				rst = await getInfTestService(k8s).getTestCaseList({
 					f_id: f_id
 				}, curPage, pageSize);
 			}
@@ -468,7 +564,7 @@ InfTestController.interfaceAddCase = async (ctx) => {
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
-			let ret = await InfTestService.addTestCase({
+			let ret = await getInfTestService(k8s).addTestCase({
 				f_id: f_id,
 				test_case_name: test_case_name,
 				application: application,
@@ -496,7 +592,7 @@ InfTestController.deleteTestCase = async (ctx) => {
 		let {
 			case_id
 		} = ctx.paramsObj;
-		ctx.makeResObj(200, '', await InfTestService.deleteTestCase(case_id));
+		ctx.makeResObj(200, '', await getInfTestService(k8s).deleteTestCase(case_id));
 	} catch (e) {
 		logger.error('[deleteTarsFile]:', e, ctx);
 		ctx.makeErrResObj();
@@ -511,7 +607,7 @@ InfTestController.modifyTestCase = async (ctx) => {
 			params,
 			prior_set
 		} = ctx.paramsObj;
-		ctx.makeResObj(200, '', await InfTestService.modifyTestCase(case_id, test_case_name, params, ctx.uid));
+		ctx.makeResObj(200, '', await getInfTestService(k8s).modifyTestCase(case_id, test_case_name, params, ctx.uid));
 	} catch (e) {
 		logger.error('[modifyTestCase]:', e, ctx);
 		ctx.makeErrResObj();

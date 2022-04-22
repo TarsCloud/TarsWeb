@@ -171,9 +171,9 @@
                   :key="d.Image"
                   :value="d.Image"
                 >
-                  <span v-html="imgNew" v-if="d.isDefaultTafNode"></span
+                  <span v-html="imgNew" v-if="d.isDefaultNode"></span
                   ><span v-else v-html="imgSpace"></span>
-                  <span v-html="imgCur" v-if="d.isCurrTafNode"></span
+                  <span v-html="imgCur" v-if="d.isCurrNode"></span
                   ><span v-else v-html="imgSpace"></span>
                   <span>{{ d.Id }} | {{ d.CreateTime }} | {{ d.Image }}</span>
                 </let-option>
@@ -544,7 +544,7 @@ export default {
       let k8sData = await this.getK8SData();
       let nowImage = await this.getNowImages();
 
-      let nodeList = await this.getImageNodes(); //获取tafNode所有镜像
+      let nodeList = await this.getImageNodes();
       let defaultImage = await this.getNodeImage();
       this.publishModal.model.Replicas =
         k8sData.Data[0].Replicas || this.serverK8S.Replicas || 1;
@@ -556,11 +556,16 @@ export default {
         }
       });
       nodeList.Data.forEach((item) => {
+        // console.log(item, nowImage, this.publishModal.model);
         if (item.Image == nowImage.NodeImage) {
-          item.isCurrTafNode = true;
+          item.isCurrNode = true;
+          this.publishModal.model.NodeImage = nowImage.NodeImage;
         }
         if (item.Image == defaultImage) {
-          item.isDefaultTafNode = true;
+          item.isDefaultNode = true;
+          if (!this.publishModal.model.NodeImage) {
+            this.publishModal.model.NodeImage = nowImage.NodeImage;
+          }
         }
       });
       this.publishModal.model.patchList = patchList.Data;

@@ -57,7 +57,9 @@ CommonService.getPath = (path) => {
 // }
 
 // console.log(opts);
-CommonService.request = async (schema, service, path, body) => {
+CommonService.request = async (schema, service, path, body, method) => {
+
+	method = method || "POST";
 
 	let data = {};
 
@@ -76,6 +78,10 @@ CommonService.request = async (schema, service, path, body) => {
 	};
 
 	data.json = body;
+
+	if (method == "put") {
+		return await request.put(url, data)
+	}
 
 	return await request.post(url, data);
 }

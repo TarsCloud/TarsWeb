@@ -22,9 +22,30 @@ const client = require("@tars/rpc/protal.js").Communicator.New();
 
 const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const TopologyProxy = require("./topology/TopologyProxy");
+const BenchmarkAdminProxy = require("./proxy/BenchmarkAdminProxy");
+const BenchmarkNode = require("./proxy/BenchmarkNodeTars");
+
 const WebConf = require('../config/webConf');
 
 client.initialize(WebConf.k8s.client);
+
+//生成rpc结构体
+const RPCStruct = function (proxy, moduleName) {
+    var module = proxy[moduleName];
+    var rpcStruct = {};
+    for (var p in module) {
+        if (module.hasOwnProperty(p)) {
+            if (typeof module[p] == 'function') {
+                if (new module[p]()._classname) {
+                    rpcStruct[p] = module[p];
+                }
+            } else {
+                rpcStruct[p] = module[p];
+            }
+        }
+    }
+    return rpcStruct;
+};
 
 module.exports = {
 
@@ -33,5 +54,9 @@ module.exports = {
 
     topologyPrx: RPCClientPrx(client, TopologyProxy, 'tars', 'Topology', 'tars.tarslog.TopologyObj'),
 
-    client: client
+    client: client,
+
+    benchmarkPrx: RPCClientPrx(client, BenchmarkAdminProxy, 'bm', 'Admin', 'benchmark.AdminServer.AdminObj'),
+    benchmarkStruct: RPCStruct(BenchmarkAdminProxy, 'bm'),
+    benchmarkNodeStruct: RPCStruct(BenchmarkNode, 'bm')
 };

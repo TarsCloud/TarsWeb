@@ -4,6 +4,7 @@
  */
 const logger = require('../../../logger')
 const FrameworkService = require('../../service/framework/FrameworkService');
+
 const FrameworkController = {};
 
 FrameworkController.getFrameworkConfig = async (ctx) => {
@@ -26,7 +27,4 @@ FrameworkController.saveFrameworkConfig = async (ctx) => {
     }
 }
 
-
 module.exports = FrameworkController;
-
-
