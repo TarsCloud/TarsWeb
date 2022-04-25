@@ -318,7 +318,7 @@ AdapterService.getAllAdapterConfList = async (metadata) => {
 
 	for (let i = 0; i < tServer.spec.tars.servants.length; i++) {
 		data.push({
-			servant: tServer.spec.tars.servants[i].name
+			servant: metadata.ServerApp + "." + metadata.ServerName + "." + tServer.spec.tars.servants[i].name
 		});
 	}
 

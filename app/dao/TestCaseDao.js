@@ -14,12 +14,14 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const { tTarsTestCase } = require('./db').db_tars_web;
+const {
+    tTarsTestCase
+} = require('./db').db_tars_web;
 
 module.exports = {
     addTestCase: async (params) => {
         return tTarsTestCase.upsert(params, {
-            fields: ['f_id', 'test_case_name', 'server_name', 'file_name', 'posttime', 'context', 'object_name', 'module_name', 'interface_name', 'function_name','modify_user']
+            fields: ['f_id', 'test_case_name', 'server_name', 'file_name', 'posttime', 'context', 'object_name', 'module_name', 'interface_name', 'function_name', 'modify_user']
         })
     },
 
@@ -29,7 +31,9 @@ module.exports = {
             where: params
         };
         if (fields) {
-            Object.assign(opt, { attributes: fields });
+            Object.assign(opt, {
+                attributes: fields
+            });
         }
         return tTarsTestCase.findAll(opt);
     },
@@ -59,16 +63,14 @@ module.exports = {
         });
     },
 
-    getTestCaseList: async (params, curPage, pageSize) => {
+    getTestCaseList: async (params) => {
         let options = {
             raw: true,
             where: params,
-            order: [['posttime', 'DESC']]
+            order: [
+                ['posttime', 'DESC']
+            ]
         };
-        if (curPage && pageSize) {
-            options.limit = pageSize;
-            options.offset = pageSize * (curPage - 1);
-        }
         return await tTarsTestCase.findAndCountAll(options);
     },
     modifyTestCase: async (case_id, test_case_name, params, modify_user) => {
@@ -77,7 +79,11 @@ module.exports = {
             context: params,
             modify_user: modify_user
         };
-       
-        return await tTarsTestCase.update(updateOptions, { where: { case_id: case_id } });
+
+        return await tTarsTestCase.update(updateOptions, {
+            where: {
+                case_id: case_id
+            }
+        });
     }
 };

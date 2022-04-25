@@ -13,10 +13,10 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
- 
+
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
 	return sequelize.define('t_tars_files', {
 		f_id: {
 			type: DataTypes.INTEGER(11),
@@ -27,7 +27,8 @@ module.exports = function(sequelize, DataTypes) {
 		application: {
 			type: DataTypes.STRING(64),
 			allowNull: false,
-			defaultValue: ''
+			defaultValue: '',
+			primaryKey: true
 		},
 		server_name: {
 			type: DataTypes.STRING(128),

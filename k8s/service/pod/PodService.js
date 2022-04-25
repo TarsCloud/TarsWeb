@@ -161,7 +161,7 @@ PodService.podAliveSelect = async (filter) => {
         item.status.pods.forEach(pod => {
             let elem = {};
 
-            // console.log(item);
+            // console.log(item.spec.tars.servants);
 
             elem["ServerId"] = CommonService.getServerId(item.spec.app, item.spec.server)
             elem["ServerApp"] = item.spec.app
@@ -177,6 +177,11 @@ PodService.podAliveSelect = async (filter) => {
             elem["PresentMessage"] = pod.presentMessage;
             elem["ServiceVersion"] = '';
             elem["SubType"] = item.spec.subType;
+            elem["Servant"] = {};
+
+            item.spec.tars.servants.forEach(servant => {
+                elem["Servant"][item.spec.app + "." + item.spec.server + "." + servant.name] = (servant.isTcp ? "tcp" : "udp") + " -h " + pod.podIP + " -p " + servant.port;
+            });
 
             if (source[CommonService.getServerId(item.spec.app, item.spec.server)]) {
                 elem["Source"] = source[CommonService.getServerId(item.spec.app, item.spec.server)];

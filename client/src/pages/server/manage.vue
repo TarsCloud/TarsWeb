@@ -1035,6 +1035,15 @@
         </let-table-column>
       </let-table>
     </let-modal>
+
+    <el-dialog :visible.sync="dialogCommandVisible" width="80%">
+      <span v-html="commandHTML"></span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogCommandVisible = false">{{
+          $t("common.cancel")
+        }}</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -1075,6 +1084,9 @@ export default {
   name: "ServerManage",
   data() {
     return {
+      dialogCommandVisible: false,
+      commandHTML: "",
+
       // 全选
       isCheckedAll: false,
 
@@ -1957,12 +1969,16 @@ export default {
           loading.hide();
           const msg = res[0].err_msg.replace(/\n/g, "<br>");
           if (res[0].ret_code === 0) {
-            const opt = {
-              title: this.$t("common.success"),
-              message: `${res[0].application}.${res[0].server_name}_${res[0].node_name}:<br>${msg}`,
-            };
-            if (hold) opt.duration = 0;
-            this.$tip.success(opt);
+            // const opt = {
+            //   title: this.$t("common.success"),
+            //   message: `${res[0].application}.${res[0].server_name}_${res[0].node_name}:<br>${msg}`,
+            // };
+            // if (hold) opt.duration = 0;
+
+            this.commandHTML = msg;
+            this.dialogCommandVisible = true;
+
+            // this.$tip.success(opt);
           } else {
             throw new Error(
               `${res[0].application}.${res[0].server_name}_${res[0].node_name}:<br>${msg}`

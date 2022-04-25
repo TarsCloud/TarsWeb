@@ -109,18 +109,24 @@ const infTestConf = [
         fn: 'notEmpty',
         k8s: 'notEmpty'
     }],
-    ['post', '/start_bencmark', InfTestController.startBencmark, {
+    ['post', '/delete_bm_case', InfTestController.deleteBmCase, {
+        id: 'notEmpty',
+        servant: 'notEmpty',
+        k8s: 'notEmpty'
+    }],
+
+    ['post', '/start_benchmark', InfTestController.startBenchmark, {
         servant: 'notEmpty',
         fn: 'notEmpty',
         k8s: 'notEmpty'
     }],
-    ['post', '/stop_bencmark', InfTestController.stopBencmark, {
+    ['post', '/stop_benchmark', InfTestController.stopBenchmark, {
         servant: 'notEmpty',
         fn: 'notEmpty',
         k8s: 'notEmpty'
 
     }],
-    ['post', '/test_bencmark', InfTestController.testBencmark, {
+    ['post', '/test_benchmark', InfTestController.testBenchmark, {
         servant: 'notEmpty',
         fn: 'notEmpty',
         k8s: 'notEmpty'

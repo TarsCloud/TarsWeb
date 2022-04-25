@@ -15,12 +15,12 @@
  */
 
 const logger = require('../../../logger');
-// const AuthService = require('../../../app/service/auth/AuthService');
 const WebConf = require('../../../config/webConf');
 const util = require('../../../tools/util');
 const fs = require('fs-extra');
-// const AdminService = require('../../../app/service/admin/AdminService');
 const TarsParser = require('../../service/infTest/TarsParser/TarsParser');
+const InfTestBaseService = require('../../service/infTest/InfTestBaseService');
+
 const {
 	exec
 } = require('child_process');
@@ -35,11 +35,25 @@ if (WebConf.isEnableK8s()) {
 	AuthService = require('../../../app/service/auth/AuthService');
 }
 
+let k8sService = null;
+let nativeService = null;
+
 let getInfTestService = (k8s) => {
 	if (WebConf.isEnableK8s() && (k8s == true || k8s == "true")) {
-		return require('../../service/infTest/InfTestK8SService');
+		if (!k8sService) {
+			const InfTestK8SService = require('../../service/infTest/InfTestK8SService');
+			InfTestBaseService.prototype = new InfTestK8SService();
+			k8sService = new InfTestBaseService();
+		}
+
+		return k8sService;
 	} else {
-		return require('../../service/infTest/InfTestService');
+		if (!nativeService) {
+			const InfTestNativeService = require('../../service/infTest/InfTestNativeService');
+			InfTestBaseService.prototype = new InfTestNativeService();
+			nativeService = new InfTestBaseService();
+		}
+		return nativeService;
 	}
 }
 
@@ -78,26 +92,23 @@ async function getContext(tarsFilePath) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function getTars(k8s) {
-
-	const registry = require("@tars/registry");
+function getRegistry(k8s) {
 
 	let Tars;
 	if (k8s && k8s == 'true') {
-		Tars = require('../../../rpc/k8s').client;
+		Tars = require('../../../rpc/k8s').registry;
 
 	} else {
-		Tars = require('../../../rpc/index').client;
+		Tars = require('../../../rpc/index').registry;
 	}
 
-	registry.setLocator(Tars.getProperty('locator'));
-
-	return registry;
+	return Tars;
 }
+
 
 InfTestController.interfaceDebug = async (ctx) => {
 	try {
-		const {
+		let {
 			id,
 			k8s,
 			objName,
@@ -111,13 +122,11 @@ InfTestController.interfaceDebug = async (ctx) => {
 		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
-			k8s = (k8s == "true");
 
-			let client = getTars(k8s);
+			// let client = getRegistry(k8s);
 
 			let rsp = await getInfTestService(k8s).debug({
 				id,
-				client,
 				objName,
 				moduleName: module_name,
 				interfaceName: interface_name,
@@ -349,6 +358,8 @@ InfTestController.getBmResultById = async (ctx) => {
 			k8s
 		} = ctx.paramsObj;
 		let ret = await getInfTestService(k8s).getBmResultById(id);
+		console.log(ret);
+
 		let [application, server_name] = ret.servant.split(".")
 		if (!await AuthService.hasOpeAuth(application, server_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
@@ -360,6 +371,7 @@ InfTestController.getBmResultById = async (ctx) => {
 		ctx.makeErrResObj();
 	}
 }
+
 InfTestController.upsertBmCase = async (ctx) => {
 	try {
 		let {
@@ -384,7 +396,28 @@ InfTestController.upsertBmCase = async (ctx) => {
 	}
 }
 
-InfTestController.startBencmark = async (ctx) => {
+InfTestController.deleteBmCase = async (ctx) => {
+	try {
+		let {
+			k8s,
+			id,
+			servant
+		} = ctx.paramsObj;
+
+		let [application, server_name] = servant.split(".")
+		if (!await AuthService.hasDevAuth(application, server_name, ctx.uid)) {
+			ctx.makeNotAuthResObj();
+			return;
+		}
+		let ret = await getInfTestService(k8s).deleteBmCase(id, servant);
+		ctx.makeResObj(200, '', ret);
+	} catch (e) {
+		logger.error('[upsertBmCase]:', e, ctx);
+		ctx.makeErrResObj();
+	}
+}
+
+InfTestController.startBenchmark = async (ctx) => {
 	try {
 		let {
 			servant,
@@ -396,15 +429,15 @@ InfTestController.startBencmark = async (ctx) => {
 			return;
 		}
 		ctx.paramsObj.owner = ctx.uid
-		let ret = await getInfTestService(k8s).startBencmark(ctx.paramsObj);
+		let ret = await getInfTestService(k8s).startBenchmark(ctx.paramsObj);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
-		logger.error('[startBencmark]:', e, ctx);
+		logger.error('[startBenchmark]:', e, ctx);
 		ctx.makeResObj(400, e.message);
 	}
 }
 
-InfTestController.stopBencmark = async (ctx) => {
+InfTestController.stopBenchmark = async (ctx) => {
 	try {
 		let {
 			servant,
@@ -416,15 +449,15 @@ InfTestController.stopBencmark = async (ctx) => {
 			return;
 		}
 		ctx.paramsObj.owner = ctx.uid
-		let ret = await getInfTestService(k8s).stopBencmark(ctx.paramsObj);
+		let ret = await getInfTestService(k8s).stopBenchmark(ctx.paramsObj);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
-		logger.error('[stopBencmark]:', e, ctx);
+		logger.error('[stopBenchmark]:', e, ctx);
 		ctx.makeResObj(400, e.message);
 	}
 }
 
-InfTestController.testBencmark = async (ctx) => {
+InfTestController.testBenchmark = async (ctx) => {
 	try {
 		let {
 			servant,
@@ -436,10 +469,10 @@ InfTestController.testBencmark = async (ctx) => {
 			return;
 		}
 		ctx.paramsObj.owner = ctx.uid
-		let ret = await getInfTestService(k8s).testBencmark(ctx.paramsObj);
+		let ret = await getInfTestService(k8s).testBenchmark(ctx.paramsObj);
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {
-		logger.error('[stopBencmark]:', e, ctx);
+		logger.error('[testBenchmark]:', e, ctx);
 		ctx.makeResObj(400, e.message);
 	}
 }
@@ -456,7 +489,7 @@ InfTestController.getEndpoints = async (ctx) => {
 			return;
 		}
 
-		let rst = await getTars(k8s).findObjectById(objName);
+		let rst = await getRegistry(k8s).findObjectById(servant);
 		// let ret = await AdminService.getEndpoints(servant);
 		ctx.makeResObj(200, '', rst.response.return.value);
 	} catch (e) {
@@ -467,20 +500,24 @@ InfTestController.getEndpoints = async (ctx) => {
 
 InfTestController.isBenchmarkInstalled = async (ctx) => {
 	try {
-		let adminObj = WebConf.infTestConf.benchmarkAdmin;
+		// let adminObj = WebConf.infTestConf.benchmarkAdmin;
 		let k8s = ctx.paramsObj.k8s;
 
-		let rst = await getTars(k8s).findObjectById(adminObj);
+		// console.log(adminObj, k8s);
+
+		// let rst = getBenchmark(k8s).tars_ping();
+
+		let rst = await getRegistry(k8s).findObjectById(WebConf.infTestConf.benchmarkAdmin);
 		let ret = rst.response.return.value;
-		// let ret = await AdminService.getEndpoints(adminObj)
 		if (ret && ret.length) {
 			ctx.makeResObj(200, '', true);
 		} else {
 			ctx.makeResObj(200, '', false);
 		}
 	} catch (e) {
-		logger.error('[isBenchmarkInstalled]:', e, ctx);
-		ctx.makeResObj(500, 'get benchmark admin status error', false);
+		logger.error('[isBenchmarkInstalled]:', e.message);
+		// ctx.makeResObj(500, 'get benchmark admin status error', false);
+		ctx.makeResObj(200, '', true);
 	}
 }
 
@@ -505,11 +542,9 @@ const testCaseConfStruct = {
 
 
 InfTestController.getTestCaseList = async (ctx) => {
-	let curPage = parseInt(ctx.paramsObj.curr_page) || 0;
-	let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
 	const {
 		f_id,
-		objName,
+		k8s,
 		application,
 		server_name,
 		module_name,
@@ -529,11 +564,11 @@ InfTestController.getTestCaseList = async (ctx) => {
 					module_name: module_name,
 					interface_name: interface_name,
 					function_name: function_name
-				}, curPage, pageSize);
+				});
 			} else {
 				rst = await getInfTestService(k8s).getTestCaseList({
 					f_id: f_id
-				}, curPage, pageSize);
+				});
 			}
 			ctx.makeResObj(200, '', {
 				count: rst.count,
@@ -551,6 +586,7 @@ InfTestController.interfaceAddCase = async (ctx) => {
 	try {
 		const {
 			f_id,
+			k8s,
 			test_case_name,
 			objName,
 			file_name,
@@ -590,11 +626,12 @@ InfTestController.interfaceAddCase = async (ctx) => {
 InfTestController.deleteTestCase = async (ctx) => {
 	try {
 		let {
-			case_id
+			case_id,
+			k8s
 		} = ctx.paramsObj;
 		ctx.makeResObj(200, '', await getInfTestService(k8s).deleteTestCase(case_id));
 	} catch (e) {
-		logger.error('[deleteTarsFile]:', e, ctx);
+		logger.error('[deleteTestCase]:', e, ctx);
 		ctx.makeErrResObj();
 	}
 }
@@ -603,6 +640,7 @@ InfTestController.modifyTestCase = async (ctx) => {
 	try {
 		const {
 			case_id,
+			k8s,
 			test_case_name,
 			params,
 			prior_set

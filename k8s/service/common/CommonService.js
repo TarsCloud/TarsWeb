@@ -73,14 +73,18 @@ CommonService.request = async (schema, service, path, body, method) => {
 		url = `${schema}://${service}/${path}`
 	}
 
-	data.headers = {
-		"Content-Type": "application/json"
-	};
+	if (body) {
+		data.headers = {
+			"Content-Type": "application/json"
+		};
 
-	data.json = body;
+		data.json = body;
+	}
 
 	if (method == "put") {
 		return await request.put(url, data)
+	} else if (method == "delete") {
+		return await request.delete(url, data)
 	}
 
 	return await request.post(url, data);

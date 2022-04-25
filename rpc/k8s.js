@@ -19,12 +19,11 @@ const {
 } = require('./service');
 
 const client = require("@tars/rpc/protal.js").Communicator.New();
-
 const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const TopologyProxy = require("./topology/TopologyProxy");
 const BenchmarkAdminProxy = require("./proxy/BenchmarkAdminProxy");
 const BenchmarkNode = require("./proxy/BenchmarkNodeTars");
-
+const EndpointManager = require("./proxy/getservant/lib/getEndpoint");
 const WebConf = require('../config/webConf');
 
 client.initialize(WebConf.k8s.client);
@@ -47,16 +46,29 @@ const RPCStruct = function (proxy, moduleName) {
     return rpcStruct;
 };
 
+let TARS_K8S_PROXY = "";
+
+let registry;
+
+if (process.env.NODE_ENV == "all" && process.env.TARS_K8S_PROXY) {
+    TARS_K8S_PROXY = process.env.TARS_K8S_PROXY;
+    registry = new EndpointManager("tars.tarsregistry.QueryObj" + TARS_K8S_PROXY).getQueryPrx();
+} else {
+    registry = new EndpointManager(client.getProperty('locator')).getQueryPrx();
+}
+
 module.exports = {
 
-    statQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj'),
-    propertyQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj'),
+    statQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj' + TARS_K8S_PROXY),
+    propertyQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj' + TARS_K8S_PROXY),
 
-    topologyPrx: RPCClientPrx(client, TopologyProxy, 'tars', 'Topology', 'tars.tarslog.TopologyObj'),
+    topologyPrx: RPCClientPrx(client, TopologyProxy, 'tars', 'Topology', 'tars.tarslog.TopologyObj' + TARS_K8S_PROXY),
 
     client: client,
 
-    benchmarkPrx: RPCClientPrx(client, BenchmarkAdminProxy, 'bm', 'Admin', 'benchmark.AdminServer.AdminObj'),
+    benchmarkPrx: RPCClientPrx(client, BenchmarkAdminProxy, 'bm', 'Admin', WebConf.infTestConf.benchmarkAdmin + TARS_K8S_PROXY),
     benchmarkStruct: RPCStruct(BenchmarkAdminProxy, 'bm'),
-    benchmarkNodeStruct: RPCStruct(BenchmarkNode, 'bm')
+    benchmarkNodeStruct: RPCStruct(BenchmarkNode, 'bm'),
+
+    registry: registry
 };

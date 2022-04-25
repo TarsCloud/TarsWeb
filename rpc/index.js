@@ -15,7 +15,6 @@
  */
 
 const client = require("@tars/rpc/protal.js").client;
-
 const AdminRegProxy = require("./proxy/AdminRegProxy");
 const ConfigFProxy = require("./proxy/ConfigFProxy");
 const DCacheOptProxy = require("./proxy/DCacheOptProxy");
@@ -25,7 +24,7 @@ const TopologyProxy = require("./topology/TopologyProxy");
 const WebConf = require("../config/webConf");
 const BenchmarkAdminProxy = require("./proxy/BenchmarkAdminProxy");
 const BenchmarkNode = require("./proxy/BenchmarkNodeTars");
-
+const EndpointManager = require("./proxy/getservant/lib/getEndpoint");
 const {
     RPCClientPrx
 } = require('./service');
@@ -33,16 +32,16 @@ const {
 client.initialize(WebConf.client);
 
 //生成rpc结构体
-const RPCStruct = function(proxy, moduleName){
+const RPCStruct = function (proxy, moduleName) {
     var module = proxy[moduleName];
     var rpcStruct = {};
-    for(var p in module){
-        if(module.hasOwnProperty(p)){
-            if(typeof module[p] == 'function'){
-                if(new module[p]()._classname){
+    for (var p in module) {
+        if (module.hasOwnProperty(p)) {
+            if (typeof module[p] == 'function') {
+                if (new module[p]()._classname) {
                     rpcStruct[p] = module[p];
                 }
-            }else{
+            } else {
                 rpcStruct[p] = module[p];
             }
         }
@@ -50,8 +49,9 @@ const RPCStruct = function(proxy, moduleName){
     return rpcStruct;
 };
 
+let registry = new EndpointManager(client.getProperty('locator')).getQueryPrx();
+
 module.exports = {
-    // RPCClientPrx,
 
     patchPrx: RPCClientPrx(client, PatchProxy, 'tars', 'Patch', 'tars.tarspatch.PatchObj'),
 
@@ -68,8 +68,9 @@ module.exports = {
 
     client: client,
 
-    benchmarkPrx : RPCClientPrx(client,BenchmarkAdminProxy, 'bm', 'Admin', 'benchmark.AdminServer.AdminObj'),
-    benchmarkStruct : RPCStruct(BenchmarkAdminProxy, 'bm'),
-    benchmarkNodeStruct : RPCStruct(BenchmarkNode, 'bm')
+    benchmarkPrx: RPCClientPrx(client, BenchmarkAdminProxy, 'bm', 'Admin', WebConf.infTestConf.benchmarkAdmin),
+    benchmarkStruct: RPCStruct(BenchmarkAdminProxy, 'bm'),
+    benchmarkNodeStruct: RPCStruct(BenchmarkNode, 'bm'),
+    registry: registry
 
 };

@@ -15,17 +15,19 @@
  */
 const uuid = require("uuid");
 const logger = require('../../logger');
-const AdminService = require('../../service/admin/AdminService');
-const { statQueryPrx, monitorQueryStruct} = require('../util/rpcClient');
-// const TCPClient = require('./TCPClient');
-// const Mysql = require('mysql');
+// const AdminService = require('../../service/admin/AdminService');
+const {
+	statQueryPrx,
+	monitorQueryStruct
+} = require('../util/rpcClient');
 
 const MonitorStatService = {};
 
 MonitorStatService.getData = async (params) => {
-	let theData = new Map(), preData = new Map()
+	let theData = new Map(),
+		preData = new Map()
 	theData = await callRpc(params, true);
-	if(params.thedate == params.predate){
+	if (params.thedate == params.predate) {
 		preData = theData
 	} else {
 		preData = await callRpc(params, false);
@@ -33,53 +35,6 @@ MonitorStatService.getData = async (params) => {
 	return merge(params, theData, preData);
 };
 
-// /**
-//  * 处理显示日期和对比日期查询条件
-//  * @param params
-//  * @param the 是否当前日期
-//  */
-// async function call(params, the) {
-// 	let date = the ? params.thedate : params.predate,
-// 		conditions = [],
-// 		startshowtime = params.startshowtime || '0000',
-// 		endshowtime = params.endshowtime || '2360';
-// 	conditions.push(`f_date=${Mysql.escape(date)}`);
-// 	conditions.push(`f_tflag>=${Mysql.escape(startshowtime)}`);
-// 	conditions.push(`f_tflag<=${Mysql.escape(endshowtime)}`);
-// 	if (params.master_name) {
-// 		conditions.push(`master_name like ${Mysql.escape(params.master_name)}`);
-// 	}
-// 	if (params.slave_name) {
-// 		conditions.push(`slave_name like ${Mysql.escape(params.slave_name)}`);
-// 	}
-// 	if (params.interface_name) {
-// 		conditions.push(`interface_name like ${Mysql.escape(params.interface_name)}`);
-// 	}
-// 	if (params.master_ip) {
-// 		conditions.push(`master_ip like ${Mysql.escape(params.master_ip)}`);
-// 	}
-// 	if (params.slave_ip) {
-// 		conditions.push(`slave_ip like ${Mysql.escape(params.slave_ip)}`);
-// 	}
-// 	let requestObj = {
-// 		groupby: params.group_by ? ['f_date', params.group_by] : ['f_tflag'],
-// 		method: 'query',
-// 		dataid: 'tars_stat',
-// 		filter: conditions,
-// 		indexs: ['succ_count', 'timeout_count', 'exce_count', 'total_time']
-// 	};
-// 	let addrs = await AdminService.getEndpoints("tars.tarsquerystat.NoTarsObj").catch(err => {
-// 		logger.error('[AdminService.getEndpoints]:', err.toString());
-// 		console.error(err);
-// 	});
-// 	if (!addrs || !addrs.length) {
-// 		logger.error('[AdminService.getEndpoints]:', 'tars.tarsquerystat.NoTarsObj not found');
-// 		return;
-// 	}
-// 	let addr0 = addrs[0];
-// 	logger.info(`tars.tarsquerystat.NoTarsObj, use ${addr0.host}:${addr0.port}`);
-// 	return await TCPClient(addr0.host, addr0.port, requestObj);
-// }
 
 async function callRpc(params, the) {
 	let date = the ? params.thedate : params.predate,
@@ -99,28 +54,48 @@ async function callRpc(params, the) {
 	// conditions.push({ field: "f_tflag", op: monitorQueryStruct.OP.LTE, val:Mysql.escape(endshowtime) })
 
 	if (params.master_name) {
-		conditions.push({ field: "master_name", op: monitorQueryStruct.OP.LIKE, val:params.master_name })
+		conditions.push({
+			field: "master_name",
+			op: monitorQueryStruct.OP.LIKE,
+			val: params.master_name
+		})
 	}
 	if (params.slave_name) {
-		conditions.push({ field: "slave_name", op: monitorQueryStruct.OP.LIKE, val:params.slave_name })
+		conditions.push({
+			field: "slave_name",
+			op: monitorQueryStruct.OP.LIKE,
+			val: params.slave_name
+		})
 	}
 	if (params.interface_name) {
-		conditions.push({ field: "interface_name", op: monitorQueryStruct.OP.LIKE, val:params.interface_name})
+		conditions.push({
+			field: "interface_name",
+			op: monitorQueryStruct.OP.LIKE,
+			val: params.interface_name
+		})
 	}
 	if (params.master_ip) {
-		conditions.push({ field: "master_ip", op: monitorQueryStruct.OP.LIKE, val:params.master_ip })
+		conditions.push({
+			field: "master_ip",
+			op: monitorQueryStruct.OP.LIKE,
+			val: params.master_ip
+		})
 	}
 	if (params.slave_ip) {
-		conditions.push({ field: "slave_ip", op: monitorQueryStruct.OP.LIKE, val:params.slave_ip })
+		conditions.push({
+			field: "slave_ip",
+			op: monitorQueryStruct.OP.LIKE,
+			val: params.slave_ip
+		})
 	}
 	req.conditions.readFromObject(conditions)
 	req.groupby.readFromObject(params.group_by ? [params.group_by_first || 'f_date', params.group_by] : ['f_tflag'])
 	let data = await statQueryPrx.query(req)
 	let rsp = data.rsp
-	if(data.__return !=0 ||  rsp.ret != 0) throw new Error(`query stat info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
+	if (data.__return != 0 || rsp.ret != 0) throw new Error(`query stat info code:${data.__return}  ret: ${rsp.ret}, msg: ${rsp.msg}`)
 
 	let map = new Map()
-	for(let key in rsp.result){
+	for (let key in rsp.result) {
 		map.set(key, rsp.result[key])
 	}
 	return map
@@ -177,25 +152,25 @@ function merge(params, theData, preData) {
 				callGroupValue = key[i];
 
 			switch (callGroup) {
-				case 'f_date' :
+				case 'f_date':
 					tmpObj.show_date = callGroupValue;
 					break;
-				case 'f_tflag' :
+				case 'f_tflag':
 					tmpObj.show_time = callGroupValue;
 					break;
-				case 'master_name' :
+				case 'master_name':
 					tmpObj.master_name = callGroupValue;
 					break;
-				case 'slave_name' :
+				case 'slave_name':
 					tmpObj.slave_name = callGroupValue;
 					break;
-				case 'interface_name' :
+				case 'interface_name':
 					tmpObj.interface_name = callGroupValue;
 					break;
-				case 'master_ip' :
+				case 'master_ip':
 					tmpObj.master_ip = callGroupValue;
 					break;
-				case 'slave_ip' :
+				case 'slave_ip':
 					tmpObj.slave_ip = callGroupValue;
 					break;
 			}

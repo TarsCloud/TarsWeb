@@ -2,14 +2,14 @@
   <div class="page_server_debuger">
     <!-- tars文件列表 -->
     <wrapper
+      ref="tarsFileListLoading"
       v-if="
         !showDebug &&
           !showBm &&
-          !addTestCase &&
           !showCaseList &&
+          !addTestCase &&
           !modifyTestCase
       "
-      ref="tarsFileListLoading"
     >
       <div class="table_head" style="height:50px">
         <h4>
@@ -65,10 +65,12 @@
           </template>
         </let-table-column>
       </let-table>
+
+      <el-divider></el-divider>
     </wrapper>
 
     <div v-if="showDebug">
-      <let-form class="left_align" itemWidth="530px">
+      <let-form :inline="true">
         <let-form-item :label="$t('inf.dlg.selectLabel')">
           <let-cascader
             :data="contextData"
@@ -179,8 +181,8 @@
     </let-modal>
 
     <div v-if="addTestCase && !showCaseList">
-      <let-form class="left_align" itemWidth="530px">
-        <let-form-item :label="$t('inf.dlg.selectLabel')">
+      <let-form :inline="true">
+        <let-form-item :label="$t('inf.dlg.selectLabel')" required>
           <let-cascader
             :data="contextData"
             required
@@ -188,7 +190,11 @@
             @change="getParams"
           ></let-cascader>
         </let-form-item>
-        <let-form-item :label="$t('inf.dlg.objName')" v-if="objList.length">
+        <let-form-item
+          :label="$t('inf.dlg.objName')"
+          v-if="objList.length"
+          required
+        >
           <let-select v-model="objName">
             <let-option
               v-for="item in objList"
@@ -197,10 +203,16 @@
             ></let-option>
           </let-select>
         </let-form-item>
+        <let-form-item :label="$t('inf.dlg.testCastName')" required>
+          <let-input
+            v-model="testCastName"
+            :placeholder="$t('inf.dlg.testCastName')"
+          ></let-input>
+        </let-form-item>
       </let-form>
 
       <!-- 用例名字 -->
-      <let-form class="left_align">
+      <!-- <let-form class="left_align">
         <let-form-item :label="$t('inf.dlg.testCastName')">
           <let-input
             type="textarea"
@@ -209,7 +221,7 @@
             :placeholder="$t('inf.dlg.testCastName')"
           ></let-input>
         </let-form-item>
-      </let-form>
+      </let-form> -->
 
       <!-- 入参输入框 -->
       <let-row>
@@ -246,7 +258,7 @@
 
     <!-- 测试用例 -->
     <div v-if="showCaseList && !addTestCase">
-      <let-form class="left_align" itemWidth="530px">
+      <let-form :inline="true">
         <let-form-item :label="$t('inf.dlg.selectLabel')">
           <let-cascader
             :data="contextData"
@@ -274,17 +286,17 @@
         <let-table-column
           :title="$t('inf.dlg.testCastName')"
           prop="test_case_name"
-          width="100px"
+          width="150px"
         ></let-table-column>
         <let-table-column
           :title="$t('inf.dlg.objName')"
           prop="object_name"
-          width="100px"
+          width="200px"
         ></let-table-column>
         <let-table-column
           :title="$t('inf.dlg.fileName')"
           prop="file_name"
-          width="100px"
+          width="150px"
         ></let-table-column>
         <let-table-column
           :title="$t('module.title')"
@@ -301,15 +313,15 @@
           prop="modify_user"
           width="100px"
         ></let-table-column>
-        <let-table-column
+        <!-- <let-table-column
           :title="$t('board.alarm.table.content')"
           width="460px"
         >
           <template slot-scope="scope">
             <font color="red">{{ scope.row.context }}</font>
           </template>
-        </let-table-column>
-        <let-table-column :title="$t('operate.operates')" width="100px">
+        </let-table-column> -->
+        <let-table-column :title="$t('operate.operates')" width="150px">
           <template slot-scope="scope">
             <let-table-operation @click="gotoModify(scope.row)">{{
               $t("operate.modify")
@@ -320,9 +332,9 @@
           </template>
         </let-table-column>
 
-        <let-table-column :title="$t('serverList.table.th.ip')" width="100px">
+        <let-table-column :title="$t('serverList.table.th.ip')">
           <template slot-scope="scope">
-            <div v-for="item in totalServerList" :key="item" :value="item">
+            <div v-for="(item, index) in totalServerList" :key="index">
               <let-table-operation @click="doNodedebug(item, scope.row)">{{
                 item.node_name
               }}</let-table-operation>
@@ -331,12 +343,12 @@
           </template>
         </let-table-column>
       </let-table>
-      <let-pagination
+      <!-- <let-pagination
         :page="pageNum"
         @change="gotoPage"
         style="margin-bottom: 32px;"
         :total="total"
-      ></let-pagination>
+      ></let-pagination> -->
       <div class="mt10">
         <let-button theme="primary" size="small" @click="gotoAddTestCase()">{{
           $t("operate.addTestCase")
@@ -354,21 +366,14 @@
     <div v-if="modifyTestCase">
       <let-form class="left_align" itemWidth="530px">
         <let-form-item>
-          <span class="text-blue">{{ modifyCaseItem.object_name }}</span>
+          <span class="text-blue"
+            >{{ modifyCaseItem.object_name }}::{{
+              modifyCaseItem.function_name
+            }}</span
+          >
         </let-form-item>
-        <let-form-item>
-          <span class="text-blue">{{ modifyCaseItem.module_name }}</span>
-          <span class="text-blue">{{ modifyCaseItem.interface_name }}</span>
-          <span class="text-blue">{{ modifyCaseItem.function_name }}</span>
-        </let-form-item>
-      </let-form>
-
-      <!-- 用例名字 -->
-      <let-form class="left_align">
         <let-form-item :label="$t('inf.dlg.testCastName')">
           <let-input
-            type="textarea"
-            :rows="1"
             v-model="testCastName"
             :placeholder="$t('inf.dlg.testCastName')"
           ></let-input>
@@ -488,9 +493,9 @@ export default {
       testCastName: "",
       testCaseList: [],
       showCaseList: false,
-      pageNum: 1,
-      pageSize: 20,
-      total: 1,
+      // pageNum: 1,
+      // pageSize: 20,
+      // total: 0,
       addTestCase: false,
       modifyTestCase: false,
       modifyCaseItem: {},
@@ -523,7 +528,7 @@ export default {
     },
     getBmInstalled() {
       this.$ajax
-        .getJSON("/server/api/is_benchmark_installed", { k8s: false })
+        .getJSON("/server/api/is_benchmark_installed", { k8s: this.k8s })
         .then((data) => {
           this.isBmInstalled = data;
         })
@@ -579,10 +584,12 @@ export default {
         this.$ajax
           .postForm("/server/api/upload_tars_file", formdata)
           .then(() => {
-            loading.hide();
-            this.getFileList();
-            this.uploadModal.show = false;
-            this.uploadModal.model = null;
+            setTimeout(() => {
+              loading.hide();
+              this.getFileList();
+              this.uploadModal.show = false;
+              this.uploadModal.model = null;
+            }, 1000);
           })
           .catch((err) => {
             loading.hide();
@@ -610,6 +617,9 @@ export default {
       if (this.isBmInstalled) {
         this.showBm = true;
         this.showDebug = false;
+        this.showCaseList = false;
+        this.addTestCase = false;
+        this.modifyTestCase = false;
         this.$nextTick(() => {
           this.$refs.bm.getBenchmarkDes(row.f_id);
         });
@@ -627,8 +637,10 @@ export default {
               k8s: this.k8s,
             })
             .then((data) => {
-              loading.hide();
-              this.getFileList();
+              setTimeout(() => {
+                loading.hide();
+                this.getFileList();
+              }, 1000);
             })
             .catch((err) => {
               loading.hide();
@@ -648,6 +660,7 @@ export default {
           })
           .then((data) => {
             if (data.length) {
+              console.log(data);
               this.objList = data;
               this.objName = data[0].servant;
             }
@@ -786,7 +799,7 @@ export default {
         })
         .then((data) => {
           loading.hide();
-          this.outParam = data;
+          this.outParam = JSON.stringify(JSON.parse(data), null, 4);
         })
         .catch((err) => {
           loading.hide();
@@ -807,7 +820,9 @@ export default {
             })
             .then((data) => {
               loading.hide();
-              this.getTestCaseListInner(this.pageNum);
+              setTimeout(() => {
+                this.getTestCaseListInner();
+              }, 500);
             })
             .catch((err) => {
               loading.hide();
@@ -833,22 +848,24 @@ export default {
       this.getObjList();
     },
     // 获取文件对应测试用例列表
-    getTestCaseListInner(curr_page) {
+    getTestCaseListInner() {
       const loading = this.$Loading.show();
+      this.showDebug = false;
       this.showCaseList = true;
+      this.modifyTestCase = false;
       this.$ajax
         .getJSON("/server/api/get_testcase_list", {
           f_id: this.selectedId,
           application: this.serverData.application,
           server_name: this.serverData.server_name,
-          page_size: this.pageSize,
-          curr_page: curr_page,
+          // page_size: this.pageSize,
+          // curr_page: curr_page,
           k8s: this.k8s,
         })
         .then((data) => {
           loading.hide();
-          this.pageNum = curr_page;
-          this.total = Math.ceil(data.count / this.pageSize);
+          // this.pageNum = curr_page;
+          // this.total = Math.ceil(data.count / this.pageSize);
           this.testCaseList = data.rows;
         })
         .catch((err) => {
@@ -859,10 +876,10 @@ export default {
           );
         });
     },
-    // 切换服务实时状态页码
-    gotoPage(num) {
-      this.getTestCaseListInner(num);
-    },
+    // // 切换服务实时状态页码
+    // gotoPage(num) {
+    //   this.getTestCaseListInner(num);
+    // },
     getTestCaseList(row) {
       this.rowData = row;
       this.showCaseList = true;
@@ -903,7 +920,9 @@ export default {
         .then((data) => {
           loading.hide();
           this.addTestCase = false;
-          this.getTestCaseListInner(this.pageNum);
+          setTimeout(() => {
+            this.getTestCaseListInner();
+          }, 500);
         })
         .catch((err) => {
           loading.hide();
@@ -915,26 +934,53 @@ export default {
     getServerList() {
       // 获取服务列表
       const loading = this.$Loading.show();
-      this.$ajax
-        .getJSON("/server/api/server_list", {
-          tree_node_id: this.treeid,
-        })
-        .then((data) => {
-          loading.hide();
-          const items = data || [];
-          items.forEach((item) => {
-            item.isChecked = false;
+      if (this.k8s) {
+        this.$ajax
+          .getJSON("/k8s/api/pod_list", {
+            ServerId:
+              this.serverData.application + "." + this.serverData.server_name,
+          })
+          .then((data) => {
+            loading.hide();
+            const items = data.Data || [];
+            items.forEach((item) => {
+              item.isChecked = false;
+              item.node_name = item.PodIp;
+            });
+            this.totalServerList = items;
+            // console.log(this.totalServerList);
+          })
+          .catch((err) => {
+            loading.hide();
+            this.$confirm(
+              err.err_msg || err.message || this.$t("serverList.table.msg.fail")
+            ).then(() => {
+              this.getServerList();
+            });
           });
-          this.totalServerList = items;
-        })
-        .catch((err) => {
-          loading.hide();
-          this.$confirm(
-            err.err_msg || err.message || this.$t("serverList.table.msg.fail")
-          ).then(() => {
-            this.getServerList();
+      } else {
+        this.$ajax
+          .getJSON("/server/api/server_list", {
+            tree_node_id: this.treeid,
+          })
+          .then((data) => {
+            loading.hide();
+            const items = data || [];
+            items.forEach((item) => {
+              item.isChecked = false;
+            });
+            this.totalServerList = items;
+            // console.log(this.totalServerList);
+          })
+          .catch((err) => {
+            loading.hide();
+            this.$confirm(
+              err.err_msg || err.message || this.$t("serverList.table.msg.fail")
+            ).then(() => {
+              this.getServerList();
+            });
           });
-        });
+      }
     },
     gotoModify(row) {
       this.modifyCaseItem = row;
@@ -955,7 +1001,9 @@ export default {
         .then((data) => {
           loading.hide();
           this.modifyTestCase = false;
-          this.getTestCaseListInner(this.pageNum);
+          setTimeout(() => {
+            this.getTestCaseListInner();
+          }, 500);
         })
         .catch((err) => {
           loading.hide();
@@ -964,55 +1012,96 @@ export default {
           );
         });
     },
-    doNodedebug(server, row) {
-      const loading = this.$Loading.show();
+    doInterfaceTest(obj_endpoint, row) {
+      //去到adapter信息  向特定节点请求服务
       this.$ajax
-        .getJSON("/server/api/adapter_conf_list", {
-          id: server.id,
+        .postJSON("/server/api/interface_test", {
+          id: this.selectedId,
+          application: this.serverData.application,
+          server_name: this.serverData.server_name,
+          file_name: this.selectedFileName,
+          module_name: row.module_name,
+          interface_name: row.interface_name,
+          function_name: row.function_name,
+          params: row.context,
+          objName: row.object_name + "@" + obj_endpoint[row.object_name],
           k8s: this.k8s,
         })
-        .then((adapterData) => {
-          // node到endpoint的映射
-          var obj_endpoint = {};
-          for (let tmp_data of adapterData) {
-            obj_endpoint[tmp_data.servant] = tmp_data.endpoint;
-          }
-          //去到adapter信息  向特定节点请求服务
-          this.$ajax
-            .postJSON("/server/api/interface_test", {
-              id: this.selectedId,
-              application: this.serverData.application,
-              server_name: this.serverData.server_name,
-              file_name: this.selectedFileName,
-              module_name: row.module_name,
-              interface_name: row.interface_name,
-              function_name: row.function_name,
-              params: row.context,
-              objName: row.object_name + "@" + obj_endpoint[row.object_name],
-              k8s: this.k8s,
-            })
-            .then((data) => {
-              loading.hide();
-              this.debugModal.show = true;
-              this.debugModal.resultParam = JSON.stringify(
-                JSON.parse(data),
-                null,
-                4
-              );
-            })
-            .catch((err) => {
-              loading.hide();
-              this.debugModal.show = true;
-              this.debugModal.resultParam = err.message || err.err_msg;
-            });
+        .then((data) => {
+          // loading.hide();
+          this.debugModal.show = true;
+          this.debugModal.resultParam = JSON.stringify(
+            JSON.parse(data),
+            null,
+            4
+          );
         })
         .catch((err) => {
-          loading.hide();
-          this.$tip.error(
-            `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
-              err.message}`
-          );
+          // loading.hide();
+          this.debugModal.show = true;
+          this.debugModal.resultParam = err.message || err.err_msg;
         });
+    },
+    doNodedebug(server, row) {
+      const loading = this.$Loading.show();
+
+      console.log(server, row);
+      if (this.k8s) {
+        this.$ajax
+          .getJSON("/k8s/api/pod_list", {
+            ServerId: server.ServerId,
+          })
+          .then((adapterData) => {
+            loading.hide();
+
+            adapterData.Data.forEach((data) => {
+              if (data.PodId != server.PodId) {
+                return;
+              }
+
+              // node到endpoint的映射
+              var obj_endpoint = {};
+              for (let tmp_data in data.Servant) {
+                console.log(tmp_data);
+                obj_endpoint[tmp_data] = data.Servant[tmp_data];
+              }
+
+              console.log(obj_endpoint);
+
+              this.doInterfaceTest(obj_endpoint, row);
+              return;
+            });
+          })
+          .catch((err) => {
+            loading.hide();
+            this.$tip.error(
+              `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
+                err.message}`
+            );
+          });
+      } else {
+        this.$ajax
+          .getJSON("/server/api/adapter_conf_list", {
+            id: server.id,
+          })
+          .then((adapterData) => {
+            loading.hide();
+            // node到endpoint的映射
+            var obj_endpoint = {};
+            for (let tmp_data of adapterData) {
+              obj_endpoint[tmp_data.servant] = tmp_data.endpoint;
+            }
+
+            this.doInterfaceTest(obj_endpoint, row);
+          })
+          .catch((err) => {
+            loading.hide();
+            this.$tip.error(
+              `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
+                err.message}`
+            );
+          });
+      }
     },
   },
   created() {

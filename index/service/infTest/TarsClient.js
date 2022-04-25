@@ -16,7 +16,6 @@
 
 const assert = require('assert');
 const TarsStream = require('@tars/stream');
-// const Tars = require('@tars/rpc').client;
 const TarsType = require('./TarsType');
 const TarsStruct = require('./TarsStruct').TarsStruct;
 
@@ -29,15 +28,24 @@ const TarsClient = function (context, k8s, interface, objName, setName) {
 		Tars = require('../../../rpc/index').client;
 	}
 
+	if (k8s && process.env.TARS_K8S_PROXY) {
+		let pos = objName.indexOf("@");
+		objName = objName.substr(0, pos) + process.env.TARS_K8S_PROXY;
+	}
+
 	assert(context !== undefined, "please specify the parameter value for context");
 	assert(interface !== undefined, "please specify the parameter value for interface");
 	assert(objName !== undefined, "please specify the parameter value for objName");
 	assert(objName.valueOf("@") !== -1 || objName.valueOf("@") === -1 && Tars.getProperty("locator") !== undefined,
 		"please specify the parameter value for registry locator");
+
+	// console.log(k8s, objName, interface);
+
 	this._context = context;
 	this._interface = interface;
 	this._name = objName;
 	this._worker = Tars._createObjectProxy(objName, setName ? setName : '', {});
+	this._worker.timeout = 3000;
 	this.writeParams = [];
 	this.readParams = [];
 }

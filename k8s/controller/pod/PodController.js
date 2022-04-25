@@ -6,7 +6,10 @@ const ImageService = require("../../service/image/ImageService");
 const PodController = {};
 
 PodController.PodSearch = async (ctx) => {
-    let {searchkey, c} = ctx.paramsObj
+    let {
+        searchkey,
+        c
+    } = ctx.paramsObj
 
     try {
         let rst = await PodService.searchPod(searchkey.trim(), c);
@@ -40,7 +43,9 @@ PodController.PodSearch = async (ctx) => {
 PodController.PodAliveSelect = async (ctx) => {
     const that = module.exports
 
-    let {Token = '', ServerId = ''} = ctx.paramsObj
+    let {
+        Token = '', ServerId = ''
+    } = ctx.paramsObj
 
     let filter = {
         eq: {},
@@ -75,7 +80,9 @@ PodController.PodAliveSelect = async (ctx) => {
 PodController.PodPerishedSelect = async (ctx) => {
     const that = module.exports
 
-    let {Token = '', ServerId = ''} = ctx.paramsObj
+    let {
+        Token = '', ServerId = ''
+    } = ctx.paramsObj
 
     try {
         let result = await PodService.podPerishedSelect(ServerId);
@@ -90,7 +97,9 @@ PodController.PodPerishedSelect = async (ctx) => {
 
 //删除pod
 PodController.deletePod = async (ctx) => {
-    let {Token = '', PodName = ''} = ctx.paramsObj
+    let {
+        Token = '', PodName = ''
+    } = ctx.paramsObj
     try {
         let result = await PodService.deletePod(PodName);
         ctx.makeResObj(result.ret, result.msg, result.data);
