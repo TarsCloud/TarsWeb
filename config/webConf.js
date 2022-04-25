@@ -82,7 +82,7 @@ let conf = {
         cache: true, //从cache中加载
     },
     market: {
-        enable: false,
+        enable: true,
         url: 'https://m.k.tarsyun.com'
     },
     isEnableK8s: () => {

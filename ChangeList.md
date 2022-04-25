@@ -1,10 +1,34 @@
+## 20220425(3.0.0)
+
+### en
+
+- Add: Complete the support of stress test in k8s mode, store and use es
+- Add: Adjust the stress test page to the index directory
+- Add: Complete the interface support of cloud market
+- Add: In normal mode, add the logic of adding and pulling images
+- Ad: Add support for framework key
+- Fix: In capacity expansion mode, synchronously copy container related parameters to new node service records
+- Fix: After deploying the service in k8s mode, the bug of service image cannot be added
+- Fix: The font-icon is removed and the icon of element UI is used uniformly
+
+### cn
+
+- 添加: 完成 k8s 模式下压力测试的支持, 存储使用 es
+- 添加: 压力测试页面调整到 index 目录下
+- 添加: 完成云市场的接口支持
+- 添加: 普通模式下, 添加镜像添加和拉取的逻辑
+- 添加: 增加 framework key 的支持
+- 修复: 扩容模式下, 同步复制容器相关的参数到新的节点服务记录
+- 修复: k8s 模式下部署服务后, 无法添加服务 image 的 bug
+- 修复: 去掉了 font-icon, 统一使用 element-ui 的 icon
+
 ## 20220320(2.4.27)
 
 ### en
 
 - Fix: dcache install always use replace
 - Fix: upload_patch_package(only for dcache) return patch_id
-- Fix: dcache publish page, publishing logic that distinguishes mkvcache from kvcache### cn
+- Fix: dcache publish page, publishing logic that distinguishes mkvcache from kvcache
 - Fix: history patch query bug
 - Fix: delete cloud market
 - Fix: docker registry & image manage bug
@@ -15,7 +39,7 @@
 - 修复: upload_patch_package 返回 patchid
 - 修复: dcache cache 发布页, 区分 kvcache 和 mkvcache
 - 修复: 发布页面查询历史包的 bug
-- 修复: 镜像仓库和镜像管理页面的bug
+- 修复: 镜像仓库和镜像管理页面的 bug
 
 ## 20220305(2.4.26)
 
