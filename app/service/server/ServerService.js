@@ -66,7 +66,7 @@ ServerService.serverConfFields = () => {
         server_important_type: '0',
         source: '',
         run_type: '',
-        base_image_id: ''
+        base_image_id: '0'
     };
 };
 
