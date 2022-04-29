@@ -15,6 +15,20 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+
+DROP TABLE IF EXISTS `t_application`;
+
+CREATE TABLE `t_application` (
+  `f_id` int(11) NOT NULL AUTO_INCREMENT,
+  `f_name` varchar(64) NOT NULL DEFAULT '' COMMENT '应用名',
+  `f_create_person` varchar(64) NOT NULL DEFAULT '' COMMENT '创建者',
+  `f_create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `f_update_person` varchar(64) NOT NULL DEFAULT '' COMMENT '更新人',
+  `f_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`f_id`),
+  UNIQUE KEY `f_name` (`f_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='应用';
+
 --
 -- Table structure for table `t_bm_case`
 --

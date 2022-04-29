@@ -1,4 +1,3 @@
-<!-- 调用链  -->
 <template>
   <div class="home">
     <let-form :inline="true" ref="form" style="font-size: 16px">
@@ -526,11 +525,7 @@ export default {
             //当前日期(毫秒值)
             var nowDate_millisecond = +echarts.number.parseDate(nowDateStr);
 
-            //如果项目进度未完成或刚好完成。
-            //比如计划开始时间1月10日，计划结束时间1月20日，项目周期10天，实际开始时间1月10日，当前日期1月18日，说明项目进度未完成
-            //那么在渲染实际工期的进度条时，进度条的范围为1月10日至1月18日(实际开始日期至当前日期)
-            //比如计划开始时间1月10日，计划结束时间1月20日，项目周期10天，实际开始时间1月10日，当前日期1月20日，说明项目进度刚好完成
-            //那么在渲染实际工期的进度条时，进度条的范围为1月10日至1月20日(实际开始日期至当前日期)
+
             if (
               nowDate_millisecond - practiceStartDate_millisecond <=
               projectCycle_millisecond
@@ -541,9 +536,7 @@ export default {
                 categoryIndex,
               ]);
             } else {
-              //比如计划开始时间1月10日，计划结束时间1月20日，项目周期10天，实际开始时间1月10日，当前日期1月22日，说明项目已结束
-              //那么在渲染实际工期的进度条时，进度条的范围应该是1月10日至1月20日(实际开始日期至实际结束日期)，
-              //而不是1月10日至1月22日(实际开始日期至当前日期)
+
               //实际结束日期(毫秒值)：实际开始日期(毫秒值) + 项目周期(毫秒值)
               var practiceEndDate_millisecond =
                 practiceStartDate_millisecond + projectCycle_millisecond;

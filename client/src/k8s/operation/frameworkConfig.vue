@@ -1,8 +1,3 @@
-<!--
-* @author: fanmei
-* @date: 2022-01-04 11:23
-* @description：集群配置管理
--->
 <template>
   <div class="page_framework_config">
     <template>

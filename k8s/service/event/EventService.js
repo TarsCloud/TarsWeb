@@ -2,7 +2,8 @@ const logger = require('../../../logger')
 const webConf = require('../../../config/webConf')
 const rpa = require('request-promise-any')
 const EventService = {};
-const TemplateService = require('../template/TemplateService')
+const TemplateService = require('../template/TemplateService');
+const CommonService = require('../common/CommonService');
 
 EventService.getEvents = async (params) => {
     try {
@@ -17,9 +18,7 @@ EventService.getEvents = async (params) => {
             startDate,
             endDate
         } = params
-
-        let esNodes = Object.keys(esConfig.tars.elk.nodes)[0].split(",")
-        let url = `http://${esNodes[0]}/${esConfig.tars.elk.index.kevent}/_search`
+        let esNodes = Object.keys(esConfig.tars.elk.nodes)[0].split(",");
 
         let from = params.pageSize * (params.currPage - 1);
         let size = params.pageSize * 1
@@ -112,19 +111,10 @@ EventService.getEvents = async (params) => {
             lastTimestamp: "desc"
         }];
 
-        // console.log("query:" + JSON.stringify(query, null, 4));
-        let rspData = await rpa({
-            method: 'GET',
-            uri: url,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(query)
-        });
-        let rsp = JSON.parse(rspData);
-        if (rsp.error) {
-            throw new Error(rsp.error.reason)
-        }
+        // console.log(esConfig, esNodes[0]);
+
+        let rsp = await CommonService.request(esConfig.tars.protocol, esNodes[0], `${esConfig.tars.elk.index.kevent}/_search`, query);
+
         let total = rsp.hits.total.value
         let rows = rsp.hits.hits.map(item => {
             return item._source
@@ -142,9 +132,14 @@ EventService.getPods = async (params) => {
     try {
         let esConfig = await TemplateService.getEsConfig();
 
-        let {application, serverName,startDate, endDate} = params
-        let esNodes = esConfig.tars.elk.nodes.tars_config_line_vector_value[0].split(",")
-        let url = `http://${esNodes[0]}/${esConfig.tars.elk.index.kevent}/_search`
+        let {
+            application,
+            serverName,
+            startDate,
+            endDate
+        } = params
+
+        let esNodes = Object.keys(esConfig.tars.elk.nodes)[0].split(",");
 
         let appServer = `${application}-${serverName}`
         let query = {
@@ -175,19 +170,8 @@ EventService.getPods = async (params) => {
                 "field": "involvedObject.name.keyword"
             }
         }
-        // console.log("query:" + JSON.stringify(query, null, 4));
-        let rspData = await rpa({
-            method: 'GET',
-            uri: url,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(query)
-        });
-        let rsp = JSON.parse(rspData);
-        if (rsp.error) {
-            throw new Error(rsp.error.reason)
-        }
+
+        let rsp = await CommonService.request(esConfig.tars.protocol, esNodes[0], `${esConfig.tars.elk.index.kevent}/_search`, query);
         return rsp.hits.hits.map(item => {
             return item._source.involvedObject.name
         })

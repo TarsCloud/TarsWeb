@@ -12,6 +12,7 @@
             @change="queryAppChange"
             size="small"
             filterable
+            :placeholder="$t('deployService.form.app')"
           >
             <el-option
               v-for="item in appList"
@@ -27,6 +28,7 @@
             style="width: 100%"
             clearable
             size="small"
+            :placeholder="$t('deployService.form.serviceName')"
           >
             <el-option
               v-for="item in serList"

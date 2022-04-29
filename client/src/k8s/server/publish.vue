@@ -556,7 +556,6 @@ export default {
         }
       });
       nodeList.Data.forEach((item) => {
-        // console.log(item, nowImage, this.publishModal.model);
         if (item.Image == nowImage.NodeImage) {
           item.isCurrNode = true;
           this.publishModal.model.NodeImage = nowImage.NodeImage;
@@ -564,7 +563,7 @@ export default {
         if (item.Image == defaultImage) {
           item.isDefaultNode = true;
           if (!this.publishModal.model.NodeImage) {
-            this.publishModal.model.NodeImage = nowImage.NodeImage;
+            this.publishModal.model.NodeImage = defaultImage;
           }
         }
       });

@@ -1,4 +1,3 @@
-<!-- 甘特图 供all.vue 画图-->
 <template>
   <div id="svgs">
     <div v-for="(item, index) in nodeinfos" :key="index">

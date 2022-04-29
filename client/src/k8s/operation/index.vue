@@ -37,7 +37,6 @@
         :tab="$t('deployService.title.event')"
         tabkey="/operation/event"
       ></let-tab-pane>
-      <!--      <let-tab-pane :tab="$t('deployService.title.affinity')" tabkey="/operation/affinity"></let-tab-pane>-->
       <let-tab-pane
         :tab="$t('deployService.title.image')"
         tabkey="/operation/image"

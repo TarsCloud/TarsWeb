@@ -1,7 +1,3 @@
-<!--
-* @date: 2021-11-07 09:51
-* @description：event 事件管理
--->
 <template>
   <div>
     <let-form inline itemWidth="180px" @submit.native.prevent="search">

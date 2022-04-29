@@ -243,12 +243,16 @@ export default {
         let itemEl = el.children || [];
         let currEl = "";
 
-        itemEl.forEach((item) => {
-          const iclass = item.getAttribute("class");
-          if (iclass.indexOf("active") > -1) {
+        for (let index in itemEl) {
+          let item = itemEl[index];
+
+          const iclass = item.attributes["class"];
+
+          if (iclass && iclass.value.indexOf("active") > -1) {
             currEl = item;
+            break;
           }
-        });
+        }
 
         if (currEl.offsetLeft < boxEl.scrollLeft) {
           const x = currEl.offsetLeft;
@@ -269,12 +273,16 @@ export default {
       if (!v) {
         return id;
       }
-
-      let temp_array = [];
-      v.forEach((item) => {
-        temp_array.push(item.substring(1));
-      });
-      return temp_array.join(".");
+      if (v.length == 1) {
+        const app = id && id.split(".")[0].substring(1);
+        return `${app}`;
+      }
+      if (v.length > 1) {
+        const app = id && id.split(".")[0].substring(1);
+        const server =
+          id && id.split(".")[id.split(".").length - 1].substring(1);
+        return `${app}.${server}`;
+      }
     },
     getName(val) {
       let result = "";

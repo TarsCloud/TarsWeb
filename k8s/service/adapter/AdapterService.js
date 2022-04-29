@@ -56,10 +56,12 @@ AdapterService.serverAdapterSelect = async (ServerId, isTars, isTcp, limiter) =>
 	// console.log(labelSelector, allServerItems);
 
 	allServerItems.forEach(server => {
-		server.spec.tars.servants.forEach(servant => {
-			servant.name = CommonService.getServerId(server.spec.app, server.spec.server) + '.' + servant.name;
-			allItems.push(servant);
-		});
+		if (server.spec.tars) {
+			server.spec.tars.servants.forEach(servant => {
+				servant.name = CommonService.getServerId(server.spec.app, server.spec.server) + '.' + servant.name;
+				allItems.push(servant);
+			});
+		}
 	});
 
 	// filter

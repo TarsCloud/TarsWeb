@@ -358,7 +358,7 @@ export default {
           if (data) {
             this.$message({
               showClose: true,
-              message: this.$t("cloud.deploy.existsK8S"),
+              message: this.$t("deployService.deploy.existsK8S"),
               type: "warning",
             });
             return;

@@ -179,9 +179,11 @@ PodService.podAliveSelect = async (filter) => {
             elem["SubType"] = item.spec.subType;
             elem["Servant"] = {};
 
-            item.spec.tars.servants.forEach(servant => {
-                elem["Servant"][item.spec.app + "." + item.spec.server + "." + servant.name] = (servant.isTcp ? "tcp" : "udp") + " -h " + pod.podIP + " -p " + servant.port;
-            });
+            if (item.spec.tars) {
+                item.spec.tars.servants.forEach(servant => {
+                    elem["Servant"][item.spec.app + "." + item.spec.server + "." + servant.name] = (servant.isTcp ? "tcp" : "udp") + " -h " + pod.podIP + " -p " + servant.port;
+                });
+            }
 
             if (source[CommonService.getServerId(item.spec.app, item.spec.server)]) {
                 elem["Source"] = source[CommonService.getServerId(item.spec.app, item.spec.server)];

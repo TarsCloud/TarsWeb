@@ -81,6 +81,8 @@ CommonService.request = async (schema, service, path, body, method) => {
 		data.json = body;
 	}
 
+	// console.log(url);
+
 	if (method == "put") {
 		return await request.put(url, data)
 	} else if (method == "delete") {

@@ -270,12 +270,16 @@ export default {
         let itemEl = el.children || [];
         let currEl = "";
 
-        itemEl.forEach((item) => {
-          const iclass = item.getAttribute("class");
-          if (iclass.indexOf("active") > -1) {
+        for (let index in itemEl) {
+          let item = itemEl[index];
+
+          const iclass = item.attributes["class"];
+
+          if (iclass && iclass.value.indexOf("active") > -1) {
             currEl = item;
+            break;
           }
-        });
+        }
 
         if (currEl.offsetLeft < boxEl.scrollLeft) {
           const x = currEl.offsetLeft;

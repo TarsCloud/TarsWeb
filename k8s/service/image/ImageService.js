@@ -368,7 +368,7 @@ ImageService.imageReleaseCreate = async (metadata) => {
 		tImage = await CommonService.createObject("timages", tImage);
 
 	}
-	console.log(tImage);
+//	console.log(tImage);
 
 	tImage = tImage.body;
 

@@ -1,3 +1,4 @@
+
 <template>
   <!--  基础信息-->
   <div class="page_operation_deploy">
@@ -69,9 +70,9 @@ export default {
       });
     },
     doInstall() {
-      this.$confirm(this.$t("cloud.deploy.install"), "Hint", {
-        confirmButtonText: this.$t("cloud.deploy.confirm"),
-        cancelButtonText: this.$t("cloud.deploy.cancel"),
+      this.$confirm(this.$t("deployService.deploy.install"), "Hint", {
+        confirmButtonText: this.$t("deployService.deploy.confirm"),
+        cancelButtonText: this.$t("deployService.deploy.cancel"),
         type: "warning",
       })
         .then(() => {
@@ -94,7 +95,7 @@ export default {
               if (err.ret_code == 201) {
                 this.$message({
                   showClose: true,
-                  message: this.$t("cloud.deploy.existsK8S"),
+                  message: this.$t("deployService.deploy.existsK8S"),
                   type: "warning",
                 });
               } else {

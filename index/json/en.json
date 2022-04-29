@@ -599,7 +599,7 @@
                 "last_heartbeat": "Last Heartbeat",
                 "present_state": "Present State",
                 "version": "Version",
-                "result": "结果",
+                "result": "Result",
                 "label": "label",
                 "last_notity": "Last Status",
                 "load_avg5": "Load",

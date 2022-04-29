@@ -208,8 +208,8 @@ import { checkServerIdentity } from 'tls';
       templateNameList () {
         return this.$ajax.getJSON('/server/api/template_name_list').then((data) => {
           this.templates = data;
-          this.apply.Router.template_file = "tars.cpp.default";
-          this.apply.Proxy.forEach(item => item.template_file = "tars.cpp.default");
+          this.apply.Router.template_file = "DCache.Router";
+          this.apply.Proxy.forEach(item => item.template_file = "DCache.Proxy");
 
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
@@ -273,7 +273,6 @@ import { checkServerIdentity } from 'tls';
       },
       async loadRouterDb() {
         return this.$ajax.getJSON('/server/api/load_router_db').then((data) => {
-          console.log(this.routerDb);
           this.routerDb = data;
         }).catch((err) => {
           this.$tip.error(`${this.$t('common.error')}: ${err.message || err.err_msg}`);
