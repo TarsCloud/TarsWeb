@@ -17,7 +17,8 @@
 const logger = require('../../../logger');
 const ResourceService = require('../../service/resource/ResourceService');
 const AdminService = require('../../service/admin/AdminService');
-const NotifyService = require('../../service/notify/NotifyService')
+const NotifyService = require('../../service/notify/NotifyService');
+const TarsStream = require("@tars/stream");
 const _ = require('lodash');
 const path = require('path');
 // const util = require('../../tools/util');
@@ -27,16 +28,38 @@ var fs = require('fs');
 
 const ResourceController = {};
 
-ResourceController.listTarsNode = async(ctx) => {
+ResourceController.listTarsNode = async (ctx) => {
 	let curPage = parseInt(ctx.paramsObj.curr_page) || 0;
 	let pageSize = parseInt(ctx.paramsObj.page_size) || 0;
 	let nodeName = ctx.paramsObj.node_name || '';
 	try {
 		let rst = await ResourceService.listTarsNode(nodeName, curPage, pageSize);
-		//获取每个节点tarsnode最新实时状态
-		rst.rows.forEach(item => {
-			item.last_notity = "Loading...";
-		})
+
+		let nodeNames = new TarsStream.List(TarsStream.String);
+		rst.rows.forEach(row => {
+			nodeNames.push(row.node_name);
+		});
+
+		try {
+			//查询长连接模式
+			let data = await AdminService.getNodeList(nodeNames);
+
+			rst.rows.forEach(row => {
+				row.last_heartbeat = data[row.node_name];
+
+				if (row.last_heartbeat == '') {
+					row.present_state = 'inactive';
+				}
+
+			});
+		} catch (e) {
+
+		}
+
+		// //获取每个节点tarsnode最新实时状态
+		// rst.rows.forEach(item => {
+		// 	item.last_notity = "Loading...";
+		// })
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
 		logger.error('[listTarsNode]', e, ctx);
@@ -44,7 +67,7 @@ ResourceController.listTarsNode = async(ctx) => {
 	}
 }
 
-ResourceController.getLastSatet = async(ctx) => {
+ResourceController.getLastSatet = async (ctx) => {
 	try {
 		let server_id = ctx.paramsObj.server_id;
 		let ret = await NotifyService.getServerLastNotify(server_id);
@@ -74,7 +97,7 @@ ResourceController.addNodeLabel = async (ctx) => {
 	try {
 
 		let rst = await ResourceService.addNodeLabel(nodeName, name, value);
-		
+
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
 		logger.error('[addNodeLabel]', e, ctx);
@@ -106,7 +129,7 @@ ResourceController.connectTarsNode = async (ctx) => {
 		logger.error('[connectTarsNode]', e, ctx);
 		ctx.makeErrResObj();
 	}
-}; 
+};
 
 ResourceController.installTarsNodes = async (ctx) => {
 	//step: 
@@ -118,8 +141,11 @@ ResourceController.installTarsNodes = async (ctx) => {
 	try {
 		let tgzPath = path.join(__dirname, '../../../files/tarsnode.tgz');
 		let exists = fs.existsSync(tgzPath);
-		if(!exists) {
-			ctx.makeResObj(500, '#connectNodeList.installTgzNotExists#', [{step: 1, installState: "fail"}]);
+		if (!exists) {
+			ctx.makeResObj(500, '#connectNodeList.installTgzNotExists#', [{
+				step: 1,
+				installState: "fail"
+			}]);
 			return
 		}
 
@@ -127,20 +153,20 @@ ResourceController.installTarsNodes = async (ctx) => {
 		ctx.paramsObj.ips = _.trim(ctx.paramsObj.node_name, /;|,/).split(/[,;\n]/);
 		let rst = await ResourceService.installTarsNodes(ctx.paramsObj);
 		//set fail step
-		rst.forEach((item)=>{
+		rst.forEach((item) => {
 			item.step = 5
 			item.installState = "fail"
-			if(item.msg == "#api.resource.sshFailed#"){
+			if (item.msg == "#api.resource.sshFailed#") {
 				item.step = 2
-			} else if (item.msg == "#api.resource.downloadFail#"){
+			} else if (item.msg == "#api.resource.downloadFail#") {
 				item.step = 3
-			} else if (item.msg == "#api.resource.registryAddressIsEmpty#" || item.msg == "#api.resource.machineIpIsEmpty#" ){
+			} else if (item.msg == "#api.resource.registryAddressIsEmpty#" || item.msg == "#api.resource.machineIpIsEmpty#") {
 				item.step = 4
-			} else if (item.msg == "#api.resource.installSuccess#"){
+			} else if (item.msg == "#api.resource.installSuccess#") {
 				item.installState = "success"
 			}
 		})
-		
+
 		ctx.makeResObj(200, '', rst);
 	} catch (e) {
 		logger.error('[installTarsNode]', e, ctx);
@@ -164,7 +190,7 @@ ResourceController.uninstallTarsNode = async (ctx) => {
 	try {
 		let node_name = ctx.paramsObj.node_name;
 		let rst = await ResourceService.uninstallTarsNode([node_name]);
-		if(rst && rst.length > 0) {
+		if (rst && rst.length > 0) {
 			rst = rst[0];
 		}
 		ctx.makeResObj(200, '', rst);
@@ -174,12 +200,12 @@ ResourceController.uninstallTarsNode = async (ctx) => {
 	}
 };
 
-ResourceController.getTarsNode = async(ctx) => {
+ResourceController.getTarsNode = async (ctx) => {
 	// console.log('getTarsNode', ctx);
 
 	let tgzPath = path.join(__dirname, '../../../files/tarsnode.tgz');
 	let exists = fs.existsSync(tgzPath);
-	if(!exists) {
+	if (!exists) {
 		ctx.body = "#!/bin/bash \n echo 'not tarsnode.tgz exists'";
 	}
 

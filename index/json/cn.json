@@ -615,6 +615,7 @@
         "table": {
             "th": {
                 "node_name": "节点",
+                "long_connection": "长连接",
                 "last_heartbeat": "最后心跳",
                 "present_state": "当前状态",
                 "version": "版本",

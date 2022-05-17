@@ -53,7 +53,9 @@ module tars
         EM_TARS_PREPARE_ERR = 1010,
         //不能执行
         EM_TARS_CAN_NOT_EXECUTE = 1011,
-        //未知错误
+		//tarsnode没有连接
+		EM_TARS_NODE_NO_CONNECTION = 1012,
+		//未知错误
         EM_TARS_UNKNOWN_ERR = -1,
         //成功
         EM_TARS_SUCCESS = 0
@@ -163,6 +165,20 @@ module tars
      */
     interface AdminReg
     {
+		/**
+		 * 长连接模式下, tarsnode上报自身
+		 *
+		 * @param nodeName   node名称(通常是IP)
+		 *
+		 * @return 注册是否成功
+		 */
+		int reportNode(string nodeName);
+
+		/**
+		 * tarsnode上报执行命令的结果
+		 *
+		 */
+		int reportResult(int requestId, string funcName, int ret, string result);
 
         /**
          * 请求异步任务
@@ -506,6 +522,13 @@ module tars
 		 * @params result: 返回信息
 		 */
 		int dockerPull(string baseImageId);
+
+		/**
+		 * 获取tarsnode长连接心跳
+		 * @params nodeNames: 节点信息
+		 * @params heartbeats: 心跳信息<节点名称, 心跳时间>
+		 */
+		int getNodeList(vector<string> nodeNames, out map<string, string> heartbeats);
     };
 };
 

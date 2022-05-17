@@ -596,6 +596,7 @@
         "table": {
             "th": {
                 "node_name": "NodeName",
+                "long_connection": "Long Connection",
                 "last_heartbeat": "Last Heartbeat",
                 "present_state": "Present State",
                 "version": "Version",

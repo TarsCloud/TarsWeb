@@ -315,5 +315,15 @@ AdminService.dockerPull = async (baseImageId) => {
     }
 };
 
+AdminService.getNodeList = async (nodeNames) => {
+    let ret = await adminRegPrx.getNodeList(nodeNames);
+
+    if (ret.__return === 0) {
+        return ret.heartbeats;
+    } else {
+        throw new Error(ret.__return);
+    }
+};
+
 
 module.exports = AdminService;

@@ -45,12 +45,12 @@
 
 			window.localStorage.marketUrl = rsp.data.url;
 
-			axios.get(rsp.data.url + '/load.html?' + (new Date()).getTime())
+			axios.get(window.localStorage.marketUrl + '/load.html?' + (new Date()).getTime())
 			.then(function (response) {
 				//获取远程html页面
 				let content = response.data;
 
-				let newStr = replaceSource(content, rsp.data.url);
+				let newStr = replaceSource(content, window.localStorage.marketUrl);
 
 				$('#head').append(newStr);
 			})

@@ -75,6 +75,13 @@
         :title="$t('nodeList.table.th.node_name')"
         prop="node_name"
       ></let-table-column>
+      <let-table-column :title="$t('nodeList.table.th.long_connection')">
+        <template slot-scope="scope">
+          <span :class="scope.row.node_obj === '' ? 'active' : 'inactive'">{{
+            scope.row.node_obj === "" ? "yes" : "no"
+          }}</span>
+        </template>
+      </let-table-column>
       <let-table-column :title="$t('nodeList.table.th.present_state')">
         <template slot-scope="scope">
           <span
@@ -568,9 +575,11 @@ export default {
           this.nodeList = data.rows;
 
           this.nodeList.forEach((x) => {
-            x.last_heartbeat = moment(x.last_heartbeat).format(
-              "YYYY-MM-DD HH:mm:ss"
-            );
+            if (x.last_heartbeat) {
+              x.last_heartbeat = moment(x.last_heartbeat).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+            }
             x.last_reg_time = moment(x.last_reg_time).format(
               "YYYY-MM-DD HH:mm:ss"
             );
