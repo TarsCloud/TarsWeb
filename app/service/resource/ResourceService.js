@@ -174,23 +174,12 @@ ResourceService.doConnectTarsNode = async (paramsObj) => {
 ResourceService.getRegistryAddress = async () => {
     let registryAddress = [];
 
-    if (process.env.TARS_PROXY) {
-        let proxy = process.env.TARS_PROXY.split(',');
+    const registryInfo = await ResourceDao.getRegistryAddress();
 
-        for (var index in proxy) {
-            let host = proxy[index].split(':');
+    for (var index in registryInfo) {
+        let host = registryInfo[index].locator_id.split(':');
 
-            registryAddress.push('tcp -h ' + host[0] + ' -p ' + host[1]);
-        }
-    } else {
-        const registryInfo = await ResourceDao.getRegistryAddress();
-
-        for (var index in registryInfo) {
-            let host = registryInfo[index].locator_id.split(':');
-
-            registryAddress.push('tcp -h ' + host[0] + ' -p ' + host[1]);
-        }
-
+        registryAddress.push('tcp -h ' + host[0] + ' -p ' + host[1]);
     }
 
     return registryAddress.join(':');
