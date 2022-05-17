@@ -28,11 +28,11 @@ const webConf = require('../../../config/webConf').webConf;
 // const Util = require('../../tools/util');
 const logger = require('../../../logger');
 
-ResourceService.listTarsNode = async(nodeName, curPage, pageSize) => {
+ResourceService.listTarsNode = async (nodeName, curPage, pageSize) => {
     return await NodeInfoDao.getNodeInfoList(nodeName, curPage, pageSize);
 }
 
-ResourceService.addNodeLabel = async(nodeName, name, value) => {
+ResourceService.addNodeLabel = async (nodeName, name, value) => {
 
     let node = await NodeInfoDao.hasNodeNode(nodeName);
 
@@ -40,9 +40,9 @@ ResourceService.addNodeLabel = async(nodeName, name, value) => {
         return [];
     }
 
-	if (typeof node.label === 'undefined' || !node.label || node.label == '') {
-		node.label = '{}';
-	}
+    if (typeof node.label === 'undefined' || !node.label || node.label == '') {
+        node.label = '{}';
+    }
 
     let labels = JSON.parse(node.label);
 
@@ -54,16 +54,16 @@ ResourceService.addNodeLabel = async(nodeName, name, value) => {
 }
 
 ResourceService.loadNodeLabel = async (nodeName) => {
-	let node = await NodeInfoDao.hasNodeNode(nodeName);
+    let node = await NodeInfoDao.hasNodeNode(nodeName);
 
-	if (!node || node.label == '') {
-		return {};
-	}
+    if (!node || node.label == '') {
+        return {};
+    }
 
-	return JSON.parse(node.label);
+    return JSON.parse(node.label);
 }
 
-ResourceService.deleteNodeLabel = async(nodeName, name) => {
+ResourceService.deleteNodeLabel = async (nodeName, name) => {
     let node = await NodeInfoDao.hasNodeNode(nodeName);
 
     if (!node || node.label == '') {
@@ -86,20 +86,24 @@ ResourceService.deleteNodeLabel = async(nodeName, name) => {
  * @param ips
  * @returns {Array}
  */
-ResourceService.connectTarsNode = async(paramsObj) => {
+ResourceService.connectTarsNode = async (paramsObj) => {
     return await ResourceService.doConnectTarsNode(paramsObj)
 };
 
-ResourceService.getTarsNode = async(webHost, paramsObj) => {
+ResourceService.getTarsNode = async (webHost, paramsObj) => {
 
-    let registryAddress = await ResourceService.getRegistryAddress();
+    let registryAddress = paramsObj.paramsObj;
+
+    if (!registryAddress) {
+        registryAddress = await ResourceService.getRegistryAddress();
+    }
 
     let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
 
-	shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser || 'tars')
-		.replace(/\$\{webHost\}/g, webHost)
-		.replace(/\$\{machine_ip\}/g, paramsObj.ip)
-		.replace(/\$\{registryAddress\}/g, registryAddress);
+    shell = shell.replace(/\$\{runuser\}/g, paramsObj.runuser || 'tars')
+        .replace(/\$\{webHost\}/g, webHost)
+        .replace(/\$\{machine_ip\}/g, paramsObj.ip)
+        .replace(/\$\{registryAddress\}/g, registryAddress);
 
     return shell;
 
@@ -110,7 +114,7 @@ ResourceService.getTarsNode = async(webHost, paramsObj) => {
  * @param ips
  * @returns {Array}
  */
-ResourceService.installTarsNodes = async(paramsObj) => {
+ResourceService.installTarsNodes = async (paramsObj) => {
 
     let registryAddress = await ResourceService.getRegistryAddress();
     let rst = [];
@@ -123,7 +127,7 @@ ResourceService.installTarsNodes = async(paramsObj) => {
     return rst;
 };
 
-ResourceService.doConnectTarsNode = async(paramsObj) => {
+ResourceService.doConnectTarsNode = async (paramsObj) => {
     let ip = paramsObj.node_name;
     let shell = await fs.readFile(__dirname + '/tarsnode_connect.sh', 'utf8');
 
@@ -167,7 +171,7 @@ ResourceService.doConnectTarsNode = async(paramsObj) => {
     return rst;
 };
 
-ResourceService.getRegistryAddress = async() => {
+ResourceService.getRegistryAddress = async () => {
     let registryAddress = [];
 
     if (process.env.TARS_PROXY) {
@@ -197,16 +201,16 @@ ResourceService.getRegistryAddress = async() => {
  * @param ip
  * @returns {*}
  */
-ResourceService.doInstallTarsNode = async(ip, registryAddress, paramsObj) => {
+ResourceService.doInstallTarsNode = async (ip, registryAddress, paramsObj) => {
     // console.log('doInstallTarsNode:', ip, registryAddress, paramsObj);
 
     try {
         let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
 
-		let thisIp = webConf.host;
-		if(thisIp == 'localip.tars.com') {
-			thisIp = internalIp.v4.sync();
-		}
+        let thisIp = webConf.host;
+        if (thisIp == 'localip.tars.com') {
+            thisIp = internalIp.v4.sync();
+        }
 
         let port = process.env.PORT || webConf.port || '3000';
 
@@ -259,7 +263,7 @@ ResourceService.doInstallTarsNode = async(ip, registryAddress, paramsObj) => {
  * @param ips
  * @returns {Array.<*>}
  */
-ResourceService.uninstallTarsNode = async(ips) => {
+ResourceService.uninstallTarsNode = async (ips) => {
     //若该ip对应的机器中还有服务，则不允许下线
     let rst = [];
     // let promiseList = [];
@@ -338,7 +342,7 @@ ResourceService.uninstallTarsNode = async(ips) => {
  * @param ip
  * @returns {*}
  */
-ResourceService.doUninstallTarsNode = async(ip) => {
+ResourceService.doUninstallTarsNode = async (ip) => {
     try {
         let shell = await fs.readFile(__dirname + '/tarsnode_uninstall.sh', 'utf8');
         let rst = await ResourceService.doSSHTask(ip, shell);
@@ -368,7 +372,7 @@ ResourceService.doUninstallTarsNode = async(ip) => {
 //  */
 // ResourceService.doSSHTask = async (ip, shell, paramsObj) => {
 // 	// console.log('doSSHTask', ip, paramsObj);
-	
+
 // 	try {
 // 		// let sshConf = await ResourceService.getSSHConfig(ip);
 // 		let sshConf = paramsObj;
@@ -437,7 +441,7 @@ ResourceService.doUninstallTarsNode = async(ip) => {
  * @param sshConf
  * @returns {*}
  */
-ResourceService.execSSH = async(ip, shell, sshConf) => {
+ResourceService.execSSH = async (ip, shell, sshConf) => {
     try {
         let ssh = new nodeSsh();
         await ssh.connect({
