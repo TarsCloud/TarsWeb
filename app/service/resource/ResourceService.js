@@ -94,7 +94,7 @@ ResourceService.getTarsNode = async (webHost, paramsObj) => {
 
     let registryAddress = paramsObj.paramsObj;
 
-    if (!registryAddress) {
+    if (!registryAddress || registryAddress.length == 0) {
         registryAddress = await ResourceService.getRegistryAddress();
     }
 
