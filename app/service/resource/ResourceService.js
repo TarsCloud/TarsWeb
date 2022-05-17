@@ -92,10 +92,22 @@ ResourceService.connectTarsNode = async (paramsObj) => {
 
 ResourceService.getTarsNode = async (webHost, paramsObj) => {
 
-    let registryAddress = paramsObj.paramsObj;
+    let registryAddress = paramsObj.registryAddress || "";
 
-    if (!registryAddress || registryAddress.length == 0) {
+    if (registryAddress.length == 0) {
         registryAddress = await ResourceService.getRegistryAddress();
+    } else {
+        let address = registryAddress.split(";");
+
+        let addressArray = [];
+
+        for (var index in address) {
+            let host = address[index].split(':');
+
+            addressArray.push('tcp -h ' + host[0] + ' -p ' + host[1]);
+        }
+
+        registryAddress = addressArray.join(':');
     }
 
     let shell = await fs.readFile(__dirname + '/tarsnode_install.sh', 'utf8');
