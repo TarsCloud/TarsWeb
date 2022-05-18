@@ -631,7 +631,7 @@
         },
         "checkNode": "检查节点联通性",
         "deleteNode": "删除节点",
-        "confirmDeleteNode": "确认删除节点吗? <br>请先在节点机上停止节点, 并下线节点上的服务"
+        "confirmDeleteNode": "确认删除节点吗? 请先在节点机上停止节点, 并下线节点上的服务"
     },
     "machineInfo": {
         "title": "服务器的基本负载情况",

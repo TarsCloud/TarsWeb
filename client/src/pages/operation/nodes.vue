@@ -533,6 +533,7 @@ export default {
           })
           .then((data) => {
             loading.hide();
+            this.getNodeList();
             if (data.rst) {
               this.$tip.success(
                 `${this.$t("nodeList.deleteNode")}: ${data.msg}`

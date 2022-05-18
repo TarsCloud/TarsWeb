@@ -612,7 +612,7 @@
         },
         "checkNode": "Check Node Connection",
         "deleteNode": "Delete Node",
-        "confirmDeleteNode": "Confire delete node?<br>Please stop the node on the node machine and log off the service on the node."
+        "confirmDeleteNode": "Confire delete node?Please stop the node on the node machine and log off the service on the node."
     },
     "machineInfo": {
         "title": "The basic load of the server",
