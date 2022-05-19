@@ -340,7 +340,10 @@
       </let-table>
     </let-modal>
 
-    <div style="width:400px;margin:0 auto;" v-show="deployModal.show">
+    <div
+      style="width:400px;margin:0 auto;margin-top:100px"
+      v-show="deployModal.show"
+    >
       <let-form
         ref="deployForm"
         itemWidth="400px"
@@ -371,7 +374,7 @@
         </let-form-item>
       </let-form>
       <div
-        style="width:100%;text-align: center;margin-top:100px"
+        style="width:100%;text-align: center;"
         v-if="deployModal.nodeList.length > 0"
       >
         <el-alert
@@ -390,7 +393,7 @@
           {{ $t("deployLog.install") }}
         </let-button>
       </div>
-      <div style="width:100%;text-align: center;margin-top:100px" v-else>
+      <div style="width:100%;text-align: center;" v-else>
         <el-alert
           show-icon
           :title="$t('deployLog.add_node')"
@@ -725,7 +728,7 @@ export default {
           this.deployShow = !data.need;
           if (data.need) {
             this.deployModal.nodeList = this.nodeList.filter((nodeName) => {
-              return nodeName.indexOf("tars-") != -1;
+              return nodeName.indexOf("tars-") == -1;
             });
 
             this.showDeployLog();
