@@ -109,7 +109,7 @@
       >
         <let-select size="small" v-model="model.base_image_id">
           <let-option v-for="i in baseImageList" :key="i.id" :value="i.id">{{
-            i.image + '(' + i.remark + ')'
+            i.image + "(" + i.remark + ")"
           }}</let-option>
         </let-select>
       </let-form-item>
@@ -341,10 +341,14 @@
     </let-modal>
 
     <div style="width:400px;margin:0 auto;" v-show="deployModal.show">
-      <let-form ref="deployForm" itemWidth="400px">
+      <let-form
+        ref="deployForm"
+        itemWidth="400px"
+        v-if="deployModal.nodeList.length > 0"
+      >
         <let-form-item :label="$t('nodes.node_name')">
           <let-select v-model="deployModal.node_name">
-            <let-option v-for="d in nodeList" :key="d" :value="d">
+            <let-option v-for="d in deployModal.nodeList" :key="d" :value="d">
               {{ d }}
             </let-option>
           </let-select>
@@ -366,8 +370,17 @@
           </let-select>
         </let-form-item>
       </let-form>
-      <div style="width:100%;text-align: center;">
-        <let-tag>{{ $t("deployLog.info") }}</let-tag>
+      <div
+        style="width:100%;text-align: center;margin-top:100px"
+        v-if="deployModal.nodeList.length > 0"
+      >
+        <el-alert
+          show-icon
+          :title="$t('deployLog.info')"
+          type="warning"
+          :closable="false"
+        >
+        </el-alert>
         <let-button
           type="submit"
           theme="primary"
@@ -376,6 +389,16 @@
         >
           {{ $t("deployLog.install") }}
         </let-button>
+      </div>
+      <div style="width:100%;text-align: center;margin-top:100px" v-else>
+        <el-alert
+          show-icon
+          :title="$t('deployLog.add_node')"
+          :description="$t('deployLog.description')"
+          type="warning"
+          :closable="false"
+        >
+        </el-alert>
       </div>
     </div>
 
@@ -463,6 +486,7 @@ export default {
       deployModal: {
         show: false,
         node_name: "",
+        nodeList: [],
         model: {
           patch_id: "",
           patchList: [],
@@ -700,6 +724,10 @@ export default {
           this.deployModal.show = data.need;
           this.deployShow = !data.need;
           if (data.need) {
+            this.deployModal.nodeList = this.nodeList.filter((nodeName) => {
+              return nodeName.indexOf("tars-") != -1;
+            });
+
             this.showDeployLog();
           }
         })

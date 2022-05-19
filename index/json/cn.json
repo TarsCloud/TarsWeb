@@ -62,8 +62,10 @@
         "installNode": "请先安装TarsNode",
         "failed": "服务部署失败",
         "sameWithRegistry": "tarslog不能和基础框架部署在相同服务器上",
-        "info": "请求优先迁移部署tarslog, 不能和基础框架部署同一台机器上",
-        "install": "迁移部署"
+        "info": "请迁移部署tarslog, 不能和基础框架部署同一台机器上",
+        "add_node": "请先新增节点",
+        "description": "除框架节点外, 无其他节点, 请参考TARS云, 完成节点的新增",
+        "install": "迁移tarslog"
     },
     "task": {
         "params": "参数错误",

@@ -62,6 +62,8 @@
         "failed:": "Server deploy failed",
         "sameWithRegistry": "Can not deploy tarslog in same machine with tars framework",
         "info": "Please deploy tarslog in machine(not tars framework machine)",
+        "add_node": "Please add a business node first",
+        "description": "There are no other nodes except framework nodes. Please refer to tars cloud to complete the addition of nodes",
         "install": "Deploy"
     },
     "releasePackage": {
