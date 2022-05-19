@@ -348,7 +348,7 @@ ServerController.updateServerConf = async (ctx) => {
     try {
         let updateServer = ctx.paramsObj;
 
- //       console.log(updateServer);
+        //       console.log(updateServer);
         let server = await ServerService.getServerConfById(updateServer.id);
         if (!_.isEmpty(server)) {
             if (!await AuthService.hasDevAuth(server.application, server.server_name, ctx.uid)) {
@@ -558,12 +558,20 @@ ServerController.expandDeployLog = async (ctx) => {
             application: "tars",
             copy_node_config: true,
             expand_preview_servers: [{
-                bind_ip: node_name,
-                node_name: node_name,
-                obj_name: "LogObj",
-                port: 0,
-                set: ""
-            }],
+                    bind_ip: node_name,
+                    node_name: node_name,
+                    obj_name: "LogObj",
+                    port: 0,
+                    set: ""
+                },
+                {
+                    bind_ip: node_name,
+                    node_name: node_name,
+                    obj_name: "TopologyObj",
+                    port: 0,
+                    set: ""
+                }
+            ],
             node_name: await ServerService.getLogNodeNameWithRegistry(),
             server_name: "tarslog",
             set: ''
