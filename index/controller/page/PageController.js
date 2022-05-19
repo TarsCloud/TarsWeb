@@ -22,9 +22,7 @@ const WebConf = require("../../../config/webConf");
 
 PageController.index = async (ctx) => {
 
-    if (WebConf.enable && WebConf.show) {
-        await ctx.redirect('/index.html');
-    } else if (WebConf.isEnableK8s()) {
+    if (WebConf.isEnableK8s()) {
         await ctx.redirect('/k8s.html');
     } else {
         await ctx.redirect('/index.html');
