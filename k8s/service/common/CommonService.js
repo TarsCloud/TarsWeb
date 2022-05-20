@@ -227,11 +227,11 @@ const tTemplateList = new k8s.ListWatch(CommonService.getPath(`${CommonService.N
 const tConfigListFn = () => CommonService.listObject("tframeworkconfigs");
 const tConfigList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/tframeworkconfigs`), watch, tConfigListFn, true);
 
-const nodeListFn = () => CommonService.listNode();
-const tNodeList = new k8s.ListWatch("/api/v1/nodes", watch, nodeListFn, true);
+// const nodeListFn = () => CommonService.listNode();
+// const tNodeList = new k8s.ListWatch("/api/v1/nodes", watch, nodeListFn, true);
 
 cacheListener(tServerList);
-cacheListener(tNodeList);
+// cacheListener(tNodeList);
 cacheListener(tTemplateList);
 cacheListener(tAccountList);
 cacheListener(tConfigList);
@@ -313,7 +313,8 @@ CommonService.getTreeData = async () => {
 }
 
 CommonService.getNodeList = async () => {
-	let nodes = tNodeList.list();
+	let nodes = await CommonService.listNode();
+	nodes = nodes.body.items || [];
 	nodes = nodes.filter(item => {
 		return item.metadata.labels.hasOwnProperty(CommonService.NodeFramworkAbilityLabelPrefix);
 	});
@@ -321,7 +322,8 @@ CommonService.getNodeList = async () => {
 }
 
 CommonService.getNodeListAll = async (localPV, hold) => {
-	let nodes = tNodeList.list();
+	let nodes = await CommonService.listNode();
+	nodes = nodes.body.items || [];
 	if (localPV) {
 		nodes = nodes.filter(item => {
 			return item.metadata.labels.hasOwnProperty(CommonService.SupportLocalVolume);
@@ -336,7 +338,6 @@ CommonService.getNodeListAll = async (localPV, hold) => {
 		});
 	}
 	return nodes;
-	// return tNodeList.list();
 }
 
 CommonService.getTemplateList = async () => {
@@ -345,9 +346,7 @@ CommonService.getTemplateList = async () => {
 
 CommonService.getFrameworkConfig = async () => {
 	let res = await tConfigListFn();
-	// console.log(res.body.items);
-	// return res.body.items[0];
-	// let res = await getCacheList(tConfigList, tConfigListFn)
+
 	let frameConfig = res.body.items.filter(item => item.metadata.name == CommonService.TFC)
 	return frameConfig ? frameConfig[0] : {};
 }
