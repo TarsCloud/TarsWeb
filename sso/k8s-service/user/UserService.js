@@ -108,7 +108,7 @@ UserService.isActiveTAccount = async (uid) => {
 }
 
 // UserService.getUserIdList = async () => {
-    
+
 //     let data = (await CommonService.listObject("taccounts")).body.items;
 
 //     let items = [];
@@ -125,7 +125,7 @@ UserService.isActiveTAccount = async (uid) => {
 // }; 
 
 UserService.getUserAuthList = async () => {
-    
+
     let data = (await CommonService.listObject("taccounts")).body.items;
 
     let items = [];
@@ -140,11 +140,11 @@ UserService.getUserAuthList = async () => {
     })
 
     return items;
-}; 
+};
 
 
 UserService.getUserPrivileges = async () => {
-    
+
     let data = (await CommonService.listObject("taccounts")).body.items;
 
     let items = {};
@@ -155,18 +155,19 @@ UserService.getUserPrivileges = async () => {
     })
 
     return items;
-}; 
+};
 
 
 //注册操作
-UserService.modifyPass = async(uid, password) => {
+UserService.modifyPass = async (uid, password) => {
 
     let account = await UserService.getTAccount(uid);
 
     if (!account) {
-        return {errMsg: 'user not exists'}
-    }
-    else {
+        return {
+            errMsg: 'user not exists'
+        }
+    } else {
         // account = account.body;
 
         account.spec.authentication.activated = true;
@@ -233,7 +234,7 @@ UserService.addUserAndAuth = async (user, auth) => {
                 role: auth.role,
                 flag: auth.flag,
                 updateTime: new Date()
-            }] 
+            }]
         }
     }
 
@@ -247,11 +248,12 @@ UserService.addUserAndAuth = async (user, auth) => {
     return data;
 };
 
-UserService.deleteUser = async(uids) => {
+UserService.deleteUser = async (uids) => {
 
-    uids.forEach(async(uid) => {
+    for (let i = 0; i < uids.length; i++) {
+        let uid = uids[i];
         await UserService.deleteTAccount(uid);
-    });
+    }
 
 };
 

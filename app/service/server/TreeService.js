@@ -17,6 +17,7 @@
 const ServerDao = require('../../dao/ServerDao');
 const BusinessDao = require('../../dao/BusinessDao');
 const BusinessRelationDao = require('../../dao/BusinessRelationDao');
+const AuthService = require('../../service/auth/AuthService');
 
 const cacheData = {
 	timer: '',
@@ -26,14 +27,15 @@ const cacheData = {
 	businessRelation: [],
 }
 
-const TreeService = {
-};
+const TreeService = {};
 
 TreeService.getTreeNodes = async (searchKey, uid, type) => {
 	return await TreeService.getCacheData(searchKey, uid, type)
 };
 TreeService.hasDCacheServerName = (serverName) => {
-	return cacheData.dcacheData.find((item) => { return item.server_name == serverName; });
+	return cacheData.dcacheData.find((item) => {
+		return item.server_name == serverName;
+	});
 }
 
 /**
@@ -114,11 +116,15 @@ TreeService.parents = (treeNodeMap, treeNode, rootNodes) => {
 TreeService.parentsBusiness = async (data) => {
 	//将app级别先排序(保证进入业务层后是按照顺序的)
 	data = data.sort((a, b) => {
-		if(b.order === a.order){
+		if (b.order === a.order) {
 			let aName = a.name.toLowerCase()
 			let bName = b.name.toLowerCase()
-			if(aName < bName){ return -1 }
-			if(aName > bName){ return 1 }
+			if (aName < bName) {
+				return -1
+			}
+			if (aName > bName) {
+				return 1
+			}
 			return 0
 		}
 		return b.order - a.order
@@ -130,7 +136,7 @@ TreeService.parentsBusiness = async (data) => {
 		let relationIsTrue = false
 		businessRelationList && businessRelationList.forEach(jitem => {
 			businessList && businessList.forEach(kitem => {
-				if(item.name === jitem.f_application_name && jitem.f_business_name === kitem.f_name){
+				if (item.name === jitem.f_application_name && jitem.f_business_name === kitem.f_name) {
 					relationIsTrue = true
 					let obj = {
 						name: kitem.f_show_name,
@@ -143,30 +149,34 @@ TreeService.parentsBusiness = async (data) => {
 					let isTrue = false
 					let resultIndex = 0
 					result.forEach((litem, lindex) => {
-						if(litem.pid === obj.pid){
+						if (litem.pid === obj.pid) {
 							isTrue = true
 							resultIndex = lindex
 						}
 					})
-					if(isTrue){
+					if (isTrue) {
 						result[resultIndex].children.push(obj.children[0])
-					}else{
+					} else {
 						result.push(obj)
 					}
 				}
 			})
 		})
-		if(!relationIsTrue && item.name){
+		if (!relationIsTrue && item.name) {
 			item.order = 0
 			result.push(item)
 		}
 	})
 	result = result.sort((a, b) => {
-		if(b.order === a.order){
+		if (b.order === a.order) {
 			let aName = a.name.toLowerCase()
 			let bName = b.name.toLowerCase()
-			if(aName < bName){ return -1 }
-			if(aName > bName){ return 1 }
+			if (aName < bName) {
+				return -1
+			}
+			if (aName > bName) {
+				return 1
+			}
 			return 0
 		}
 		return b.order - a.order
@@ -186,22 +196,23 @@ TreeService.setCacheData = async (isRefresh) => {
 	// console.log(serverList);
 
 	// 去重
-	let arr = serverList || [], newArr = [arr[0]]
+	let arr = serverList || [],
+		newArr = [arr[0]]
 	for (let i = 1; i < arr.length; i++) {
 		let repeat = false
 		for (let j = 0; j < newArr.length; j++) {
 			if (arr[i].enable_set === 'Y') {
-				if (arr[i].application === newArr[j].application
-				&& arr[i].server_name === newArr[j].server_name
-				&& arr[i].enable_set === newArr[j].enable_set
-				&& arr[i].set_name === newArr[j].set_name
-				&& arr[i].set_area === newArr[j].set_area
-				&& arr[i].set_group === newArr[j].set_group) {
-				repeat = true
-				break
+				if (arr[i].application === newArr[j].application &&
+					arr[i].server_name === newArr[j].server_name &&
+					arr[i].enable_set === newArr[j].enable_set &&
+					arr[i].set_name === newArr[j].set_name &&
+					arr[i].set_area === newArr[j].set_area &&
+					arr[i].set_group === newArr[j].set_group) {
+					repeat = true
+					break
 				}
-			}else{
-				if (arr[i].application === newArr[j].application && arr[i].server_name === newArr[j].server_name && newArr[j].enable_set != 'Y'){
+			} else {
+				if (arr[i].application === newArr[j].application && arr[i].server_name === newArr[j].server_name && newArr[j].enable_set != 'Y') {
 					repeat = true
 					break
 				}
@@ -216,18 +227,20 @@ TreeService.setCacheData = async (isRefresh) => {
 	newArr = newArr.sort((a, b) => {
 		const a1 = a.server_name.toLowerCase()
 		const b1 = b.server_name.toLowerCase()
-		if(a1 < b1) return -1
-		if(a1 > b1) return 1
+		if (a1 < b1) return -1
+		if (a1 > b1) return 1
 		return 0
 	})
 
 	// 写入缓存
 	cacheData.serverData = newArr
 
-	cacheData.dcacheData = newArr.filter(item => { return item.application == 'DCache';})
+	cacheData.dcacheData = newArr.filter(item => {
+		return item.application == 'DCache';
+	})
 
 	// 每10分钟更新
-	if(!isRefresh){
+	if (!isRefresh) {
 		cacheData.timer && clearTimeout(cacheData.timer)
 		cacheData.timer = setTimeout(() => {
 			TreeService.setCacheData()
@@ -241,9 +254,9 @@ TreeService.getDCacheCommonServer = () => {
 }
 
 TreeService.isDCacheCommonServer = (server_name) => {
-	return server_name === 'DCacheOptServer'
-		|| server_name === 'ConfigServer'
-		|| server_name === 'PropertyServer';
+	return server_name === 'DCacheOptServer' ||
+		server_name === 'ConfigServer' ||
+		server_name === 'PropertyServer';
 }
 
 /**
@@ -259,35 +272,60 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 	let serverList = cacheData.serverData || []
 
 	// 过滤Dcache
-	if(type && type === '1'){
+	if (type && type === '1') {
 		// 应用服务
 		// serverList = serverList.filter(item => item.application !== 'DCache' || (item.application === 'DCache' && TreeService.isDCacheCommonServer(item.server_name)))
 		serverList = serverList.filter(item => item.application !== 'DCache')
-	}else if(type === '2'){
+	} else if (type === '2') {
 		// DCache
 		serverList = serverList.filter(item => item.application === 'DCache' && TreeService.isDCacheCommonServer(item.server_name))
 	}
 
+	if (!await AuthService.isAdmin(uid)) {
+
+		let auths = await AuthService.getAuthListByUid(uid);
+
+		serverList = serverList.filter(item => {
+			let flag = false;
+
+			for (let i = 0; i < auths.length; i++) {
+
+				let auth = auths[i];
+				if (auth.serverName) {
+					flag = item.application == auth.application && item.server_name == auth.serverName;
+				} else {
+					flag = item.application == auth.application;
+				}
+
+				if (flag) {
+					break;
+				}
+			}
+
+			return flag;
+		});
+	}
+
 	// 查询过滤
-	if(searchKey){
-		businessList = businessList.filter(item => 
-			item.f_name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1
-			|| item.f_show_name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1
+	if (searchKey) {
+		businessList = businessList.filter(item =>
+			item.f_name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1 ||
+			item.f_show_name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1
 		)
-		if(businessList && businessList.length > 0){
+		if (businessList && businessList.length > 0) {
 			let newData = []
 			businessRelationList && businessRelationList.forEach(jitem => {
 				businessList && businessList.forEach(kitem => {
 					serverList && serverList.forEach(item => {
-						if(item.application === jitem.f_application_name && jitem.f_business_name === kitem.f_name){
+						if (item.application === jitem.f_application_name && jitem.f_business_name === kitem.f_name) {
 							newData.push(item)
 						}
 					})
-					
+
 				})
 			})
 			serverList = newData
-		}else{
+		} else {
 			serverList = serverList.filter(item => item.server_name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1)
 		}
 	}

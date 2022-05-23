@@ -16,20 +16,23 @@
 
 const logger = require('../../../logger');
 const TreeService = require('../../service/server/TreeService');
-const AdminService = require('../../service/admin/AdminService');
 const _ = require('lodash');
-const util = require('../../../tools/util');
-const AuthService = require('../../service/auth/AuthService');
 
 const TreeController = {};
 
 TreeController.listTree = async (ctx) => {
 	try {
-		const { searchKey, type } = ctx.paramsObj
-		if(type && type === '1'){
+		const {
+			searchKey,
+			type
+		} = ctx.paramsObj
+		if (type && type === '1') {
 			await TreeService.setCacheData(1)
 		}
-		ctx.makeResObj(200, '', await TreeService.getTreeNodes(searchKey, ctx.uid, '1'));
+
+		let tree = await TreeService.getTreeNodes(searchKey, ctx.uid, '1');
+
+		ctx.makeResObj(200, '', tree);
 	} catch (e) {
 		logger.error('[listTree]', e, ctx);
 		ctx.makeErrResObj();
