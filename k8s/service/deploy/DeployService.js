@@ -233,10 +233,9 @@ DeployService.upgrade = async (deploy, source) => {
 
     //保留历史的CloudId和CloudTitle
     source[CommonService.TServerCloudID] = oldSource[CommonService.TServerCloudID];
-    if (source[CommonService.TServerCloudProduct] && oldSource[CommonService.TServerCloudProduct]) {
-        source[CommonService.TServerCloudProduct][CommonService.TServerCloudTitle] = oldSource[CommonService.TServerCloudProduct][CommonService.TServerCloudTitle] || "";
-        source[CommonService.TServerCloudProduct][CommonService.TServerCloudID] = oldSource[CommonService.TServerCloudProduct][CommonService.TServerCloudID] || "";
-    }
+
+    source[CommonService.TServerCloudTitle] = oldSource[CommonService.TServerCloudTitle] || "";
+    source[CommonService.TServerCloudID] = oldSource[CommonService.TServerCloudID] || "";
 
     tServer.metadata.annotations[CommonService.TServerCloudInstall] = JSON.stringify(source);
 
