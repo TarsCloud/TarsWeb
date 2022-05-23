@@ -1229,7 +1229,7 @@ export default {
         .then((data) => {
           loading.hide();
           if (!(this.serverNotifyList && this.showOthers)) {
-            data.rows.forEach((item) => {
+            data.forEach((item) => {
               item.isChecked = false;
               item.present_state_in_node = "";
               item.is_node_ok = true;
@@ -1242,7 +1242,7 @@ export default {
             });
             this.serverPageNum = server_curr_page;
             this.serverTotal = Math.ceil(data.count / this.serverPageSize);
-            this.serverList = data.rows;
+            this.serverList = data;
           } else {
             data.forEach((item) => {
               item.isChecked = false;
@@ -1264,9 +1264,11 @@ export default {
           this.$confirm(
             err.err_msg || err.message || this.$t("serverList.msg.fail"),
             this.$t("common.alert")
-          ).then(() => {
-            this.getServerList();
-          });
+          )
+            .then(() => {
+              this.getServerList();
+            })
+            .catch(() => {});
         });
       this.isCheckedAll = false;
     },
