@@ -163,6 +163,7 @@ ServerService.isDeployWithRegistry = async (nodeNames) => {
     return false;
 };
 
+//获取tarslog和主控部署在相同节点地址
 ServerService.getLogNodeNameWithRegistry = async () => {
     let registry = await ResourceDao.getRegistryAddress();
     let log = await ServerDao.getServerConfList('tars', 'tarslog');

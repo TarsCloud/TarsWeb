@@ -185,6 +185,7 @@ DeployServerController.upgradeServerFromCloud = async (ctx) => {
             ctx.makeNotAuthResObj();
             return;
         }
+
         // 若非admin用户， 且operator中不包含当前用户， 则在operator中加入当前用户
         let hasAdminAuth = await AuthService.hasAdminAuth(ctx.uid)
         if (!params.operator) params.operator = ""
