@@ -13,43 +13,49 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
  * specific language governing permissions and limitations under the License.
  */
- 
+
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('t_gateway_obj', {
-		id: {
+module.exports = function (sequelize, DataTypes) {
+	return sequelize.define('t_plugin', {
+		f_id: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
 			autoIncrement: true,
-			primaryKey: true,
-			unique: "id"
+			primaryKey: true
 		},
-		obj: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-			defaultValue: '',
-			unique:"obj"
-			
-		},
-		update_person: {
+		f_name: {
 			type: DataTypes.STRING(64),
 			allowNull: false,
 			defaultValue: ''
 		},
-		posttime: {
+		f_name_en: {
+			type: DataTypes.STRING(64),
+			allowNull: false,
+			defaultValue: ''
+		},
+		f_obj: {
+			type: DataTypes.STRING(64),
+			allowNull: false,
+			defaultValue: ''
+		},
+		f_type: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: '0'
+		},
+		f_create_time: {
+			type: DataTypes.DATE,
+			allowNull: false,
+			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+		},
+		f_update_time: {
 			type: DataTypes.DATE,
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
 	}, {
-		tableName: 't_gateway_obj',
-		timestamps: false,
-		indexes: [
-			{
-				unique: true,
-				fields: ['obj']
-			}
-		]
+		tableName: 't_plugin',
+		timestamps: false
 	});
 };

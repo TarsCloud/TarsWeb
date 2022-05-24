@@ -82,7 +82,6 @@ let conf = {
         cache: true, //从cache中加载
     },
     market: {
-        enable: true,
         url: 'https://m.k.tarsyun.com'
     },
     isEnableK8s: () => {
@@ -111,7 +110,6 @@ if (process.env.NODE_ENV == "local") {
     conf.webConf.alter = false;
 
     conf.market = {
-        enable: true,
         url: 'http://localhost:6001'
     };
 
@@ -138,7 +136,6 @@ if (process.env.NODE_ENV == "local") {
     conf.webConf.port = 4001;
     conf.enable = true;
     conf.market = {
-        enable: true,
         url: 'http://localhost:6001'
     };
     conf.webConf.alter = false;
@@ -220,7 +217,9 @@ if (process.env.NODE_ENV == "local") {
     conf.client = path.join(cwd, 'config/tars-dev.conf');
 
     process.env.ENABLE_K8S = "true";
-    conf.enable = true;
+    // conf.market = {
+    //     url: 'http://localhost:6001'
+    // };
     // conf.market.url = 'https://m.k.tarsyun.com';
     conf.market.url = 'http://localhost:6001';
     conf.webConf.alter = false;

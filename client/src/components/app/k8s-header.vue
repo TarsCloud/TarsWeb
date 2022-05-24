@@ -16,7 +16,7 @@
           </div>
         </el-col>
 
-        <el-col :span="9">
+        <el-col :span="12">
           <let-tabs
             class="tabs"
             :center="true"
@@ -34,12 +34,6 @@
               :icon="opaIcon"
             ></let-tab-pane>
             <let-tab-pane
-              :tab="$t('header.tab.tab8')"
-              tabkey="/gateway"
-              :icon="cacheIcon"
-            ></let-tab-pane>
-            <let-tab-pane
-              v-if="enableMarket == 'true'"
               :tab="$t('header.tab.tab9')"
               tabkey="/market"
               :icon="packageIcon"
@@ -47,12 +41,13 @@
           </let-tabs>
         </el-col>
 
-        <el-col :span="2">
+        <el-col :span="4">
           <div class="language-wrap">
             <let-select
               v-model="locale"
               @change="changeLocale"
               :clearable="false"
+              style="vertical-align:baseline"
             >
               <template v-for="locale in localeMessages">
                 <let-option
@@ -63,21 +58,17 @@
               </template>
             </let-select>
           </div>
-        </el-col>
-        <el-col :span="3" style="text-align:center">
           <div class="version-wrap">
             <div>web:{{ web_version }}</div>
             <el-link
               style="font-size:9px"
               href="https://doc.tarsyun.com"
               target="_blank"
-              >{{
-                locale == "cn" ? "Tars在线文档" : "Tars Online Doc"
-              }}</el-link
+              >{{ locale == "cn" ? "在线文档" : "Online Manual" }}</el-link
             >
           </div>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="2">
           <div class="user-wrap">
             <el-dropdown
               @command="handleCommand"
@@ -150,7 +141,6 @@ export default {
       operatorIcon,
       packageIcon,
       locale: this.$cookie.get("locale") || "en",
-      enableMarket: this.$cookie.get("market") || "false",
       uid: "--",
       enableLogin: false,
       isAdmin: false,
@@ -285,6 +275,14 @@ export default {
     height: 80px;
   }
 
+  .version-wrap {
+    top: 0;
+    font-size: 12px;
+    height: 80px;
+    padding: 15px var(--gap-small);
+    display: inline-block;
+  }
+
   .logo-wrap {
     left: 0;
     width: auto;
@@ -317,15 +315,10 @@ export default {
     }
   }
 
-  .version-wrap {
-    font-size: 12px;
-    height: 80px;
-    padding: 30px var(--gap-small);
-  }
-
   .language-wrap {
     height: 80px;
     padding-top: 20px;
+    display: inline-block;
   }
 
   .user-wrap {

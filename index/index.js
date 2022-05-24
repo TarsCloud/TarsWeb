@@ -169,6 +169,7 @@ const infTestConf = [
         k8s: 'notEmpty'
     }],
 ]
+
 module.exports = {
     pageApiConf,
     localeApiConf,
@@ -177,5 +178,3 @@ module.exports = {
     callTrainConf,
     infTestConf
 };
-
-// k8sApiConf.forEach(conf => apiConf.push(conf));

@@ -58,7 +58,7 @@ import OperationEvent from '@/k8s/operation/event';
 import OperationTfc from '@/k8s/operation/frameworkConfig';
 
 // 网关
-import OperationGateway from '@/gateway/index';
+// import OperationGateway from '@/gateway/index';
 
 import market from '@/market/market';
 
@@ -156,16 +156,16 @@ export default new Router({
         }
       ],
     },
-    {
-      path: '/gateway',
-      name: 'Gateway',
-      component: OperationGateway,
-    },
-    {
-      path: '/market',
-      name: 'market',
-      component: market
-    },
+    // {
+    //   path: '/gateway',
+    //   name: 'Gateway',
+    //   component: OperationGateway,
+    // },
+    // {
+    //   path: '/market',
+    //   name: 'market',
+    //   component: market
+    // },
     {
       path: '*',
       redirect: '/server',

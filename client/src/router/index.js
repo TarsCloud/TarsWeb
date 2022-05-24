@@ -55,9 +55,7 @@ import OperationIDCManage from '@/pages/operation/idc';
 import OperationImage from '@/pages/operation/image';
 
 //网关
-import OperationGateway from '@/gateway/index';
-
-import market from '@/market/market';
+// import OperationGateway from '@/gateway/index';
 
 export default new Router({
   routes: [{
@@ -140,16 +138,6 @@ export default new Router({
           component: OperationImage
         }
       ],
-    },
-    {
-      path: '/gateway',
-      name: 'Gateway',
-      component: OperationGateway,
-    },
-    {
-      path: '/market',
-      name: 'market',
-      component: market
     },
     {
       path: '*',

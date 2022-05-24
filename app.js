@@ -131,9 +131,7 @@ if (WebConf.enable) {
 
 app.use(async (ctx, next) => {
 	await next();
-	ctx.cookies.set('market', WebConf.market.enable ? "true" : "false", {
-		httpOnly: false
-	});
+
 	ctx.cookies.set('enable', WebConf.enable ? "true" : "false", {
 		httpOnly: false
 	});
@@ -155,7 +153,6 @@ const {
 	apiRouter,
 	k8sRouter,
 	k8sApiRouter,
-	gatewayApiRouter,
 	marketApiRouter
 } = require('./midware');
 
@@ -180,7 +177,6 @@ if (k8sRouter) {
 if (k8sApiRouter) {
 	app.use(k8sApiRouter.routes()).use(k8sApiRouter.allowedMethods());
 }
-app.use(gatewayApiRouter.routes()).use(gatewayApiRouter.allowedMethods());
 app.use(marketApiRouter.routes()).use(marketApiRouter.allowedMethods());
 
 //激活静态资源中间件

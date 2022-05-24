@@ -36,10 +36,6 @@ const {
 } = require('../index');
 
 const {
-	gatewayApiConf
-} = require('../gateway');
-
-const {
 	marketApiConf
 } = require('../market');
 
@@ -54,8 +50,6 @@ const {
 } = require('./paramsMidware');
 // const logger = require('../logger');
 
-const gatewayDaoMidware = require('./gatewayDaoMidware');
-
 //获取路由
 const getRouter = (router, routerConf) => {
 
@@ -69,10 +63,6 @@ const getRouter = (router, routerConf) => {
 		router[method](url, authMidware); //admin用户采访访问的接口
 
 		router[method](url, noCacheMidware); //禁用缓存中间件
-
-		if (routerConf == gatewayApiConf) {
-			router[method](url, gatewayDaoMidware); //网关配置db获取中间件，非网关路由不做任何事情
-		}
 
 		//业务逻辑控制器
 		router[method](url, async (ctx, next) => {
@@ -95,7 +85,6 @@ callTrainConf.forEach(conf => apiConf.push(conf));
 infTestConf.forEach(conf => apiConf.push(conf));
 
 marketApiConf.forEach(conf => apiConf.push(conf));
-
 
 //页面类型路由
 const pageRouter = new Router();
@@ -139,11 +128,6 @@ if (WebConf.isEnableK8s()) {
 	getRouter(k8sApiRouter, k8sApiConf);
 }
 
-//gateway类型路由
-const gatewayApiRouter = new Router();
-gatewayApiRouter.prefix('/pages/server/api');
-getRouter(gatewayApiRouter, gatewayApiConf);
-
 //market类型路由
 const marketApiRouter = new Router();
 marketApiRouter.prefix('/pages/market/api');
@@ -158,6 +142,5 @@ module.exports = {
 	apiRouter,
 	k8sRouter,
 	k8sApiRouter,
-	gatewayApiRouter,
 	marketApiRouter
 };
