@@ -59,14 +59,14 @@ AuthService.checkHasAuth = async (application, serverName, role, uid) => {
 	if (!hasAuth) {
 		if (application) {
 			hasAuth = await AuthService.httpCallCheckAuth(application, role, uid);
-		// console.log('checkHasAuth2:', hasAuth);
+			// console.log('checkHasAuth2:', hasAuth);
 		}
 		if (!hasAuth) {
 			hasAuth = await AuthService.httpCallCheckAuth('*', role, uid);
 		}
 		if (!hasAuth) {
 			hasAuth = await AuthService.httpCallCheckAuth('', 'admin', uid);
-		// console.log('checkHasAuth3:', hasAuth);
+			// console.log('checkHasAuth3:', hasAuth);
 			if (!hasAuth) {
 				return false;
 			} else {
@@ -111,7 +111,7 @@ AuthService.getRoles = async (uid) => {
 			rolesList.push(auth.role);
 		});
 
-		let unique = (rolesList)=> [...new Set(rolesList)];
+		let unique = (rolesList) => [...new Set(rolesList)];
 		unique(rolesList);
 		return rolesList || [];
 	} else {
@@ -141,7 +141,7 @@ AuthService.getAuthListByUid = async (uid) => {
 		return [];
 	}
 
-//	logger.info('getAuthListByUid', AuthService.getUrl(getAuthListByUidUrl));
+	//	logger.info('getAuthListByUid', AuthService.getUrl(getAuthListByUidUrl));
 
 	var rst = await util.jsonRequest.get(AuthService.getUrl(getAuthListByUidUrl), {
 		uid: uid
@@ -154,9 +154,14 @@ AuthService.getAuthListByUid = async (uid) => {
 			let flag = auth.flag || "";
 			let idx = flag.indexOf('.');
 			if (idx > 1) {
-				authList.push({application: flag.substring(0, idx), serverName: flag.substring(idx + 1)})
+				authList.push({
+					application: flag.substring(0, idx),
+					serverName: flag.substring(idx + 1)
+				})
 			} else {
-				authList.push({application: flag})
+				authList.push({
+					application: flag
+				})
 			}
 		});
 		return authList || [];
@@ -180,7 +185,7 @@ AuthService.formatAddAuthParams = (flag, operator, uids) => {
 	let authList = [];
 	uids = AuthService.formatUidToArray(uids);
 	_.isArray(uids) && uids.forEach((uid) => {
-		if (!uid)return;
+		if (!uid) return;
 		let authItem = {
 			flag: flag,
 			role: operator,
@@ -197,7 +202,9 @@ AuthService.addAuth = async (application, serverName, operator, developer) => {
 	}
 	let flag = application + (serverName ? ('.' + serverName) : '');
 	let authList = _.concat(AuthService.formatAddAuthParams(flag, 'operator', operator), AuthService.formatAddAuthParams(flag, 'developer', developer))
-	let rst = await util.jsonRequest.post(AuthService.getUrl(addAuthUrl), { auth: authList});
+	let rst = await util.jsonRequest.post(AuthService.getUrl(addAuthUrl), {
+		auth: authList
+	});
 	if (rst && rst.ret_code == 200) {
 		return true;
 	} else {
@@ -213,8 +220,16 @@ AuthService.updateAuth = async (application, serverName, operator, developer) =>
 	operator = AuthService.formatUidToArray(operator);
 	developer = AuthService.formatUidToArray(developer);
 	let rst = await Promise.all([
-		util.jsonRequest.post(AuthService.getUrl(updateAuthUrl), { flag: flag, role: 'operator', uid: operator}),
-		util.jsonRequest.post(AuthService.getUrl(updateAuthUrl), { flag: flag, role: 'developer', uid: developer})
+		util.jsonRequest.post(AuthService.getUrl(updateAuthUrl), {
+			flag: flag,
+			role: 'operator',
+			uid: operator
+		}),
+		util.jsonRequest.post(AuthService.getUrl(updateAuthUrl), {
+			flag: flag,
+			role: 'developer',
+			uid: developer
+		})
 	]);
 	for (var i = 0; i < rst.length; i++) {
 		if (!rst[i] || rst[i].ret_code != 200) {
@@ -229,7 +244,9 @@ AuthService.getAuthList = async (application, serverName) => {
 	if (!enableAuth) {
 		return [];
 	}
-	let rst = await util.jsonRequest.get(AuthService.getUrl(getAuthListByFlagUrl), { flag: application + '.' + serverName});
+	let rst = await util.jsonRequest.get(AuthService.getUrl(getAuthListByFlagUrl), {
+		flag: application + '.' + serverName
+	});
 	let authList = {
 		operator: [],
 		developer: []
@@ -256,7 +273,8 @@ AuthService.checkHasParentAuth = async (params) => {
 		return true;
 	}
 	let authList = await AuthService.getAuthListByUid(params.uid);
-	let serverCond = [], appCond = [];
+	let serverCond = [],
+		appCond = [];
 	authList.forEach((auth) => {
 		let application = auth.application;
 		let serverName = auth.serverName;
@@ -267,7 +285,13 @@ AuthService.checkHasParentAuth = async (params) => {
 		}
 	});
 	let serverList = await ServerDao.getServerConf4Tree(appCond, serverCond);
-	let {application, setName, setArea, setGroup, serverName} = params;
+	let {
+		application,
+		setName,
+		setArea,
+		setGroup,
+		serverName
+	} = params;
 	let hasAuth = false;
 	_.each(serverList, (server) => {
 		server = server.dataValues;
@@ -288,7 +312,9 @@ AuthService.deleteAuth = async (application, serverName) => {
 	if (!enableAuth) {
 		return true;
 	}
-	let rst = await util.jsonRequest.post(AuthService.getUrl(deleteAuthUrl), {flag: application + '.' + serverName});
+	let rst = await util.jsonRequest.post(AuthService.getUrl(deleteAuthUrl), {
+		flag: application + '.' + serverName
+	});
 	if (rst.ret_code == 200) {
 		return true;
 	} else {

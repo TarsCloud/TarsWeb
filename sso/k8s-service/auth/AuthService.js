@@ -4,9 +4,9 @@ const logger = require('../../../logger');
 
 const AuthService = {}
 
-AuthService.isAdmin = async(uid) => {
+AuthService.isAdmin = async (uid) => {
 
-    if(uid == 'admin') {
+    if (uid == 'admin') {
         return true;
     }
 
@@ -16,9 +16,9 @@ AuthService.isAdmin = async(uid) => {
 
     let account = await UserService.getTAccount(uid);
 
-    if(account && account.spec.authorization.find(item => {
-        return item.role == 'admin';
-    })) {
+    if (account && account.spec.authorization.find(item => {
+            return item.role == 'admin';
+        })) {
         return true;
     }
 
@@ -26,15 +26,15 @@ AuthService.isAdmin = async(uid) => {
 };
 
 //是否已经激活
-AuthService.isActivated = async() => {
+AuthService.isActivated = async () => {
     return (await UserService.isActiveTAccount('admin'));
     // return !activated;
 };
 
 
-AuthService.addAuth = async(authList) => {
+AuthService.addAuth = async (authList) => {
 
-    for (let i = 0; i < authList.length; i++) { 
+    for (let i = 0; i < authList.length; i++) {
 
         const auth = authList[i];
 
@@ -43,15 +43,15 @@ AuthService.addAuth = async(authList) => {
         if (account) {
 
             if (account.spec.authorization.find(item => {
-                return item.role == auth.role && item.flag == auth.flag;
-            })) {
+                    return item.role == auth.role && item.flag == auth.flag;
+                })) {
                 return {};
             }
             account.spec.authorization.push({
                 role: auth.role,
                 flag: auth.flag,
                 updateTime: new Date()
-            }) 
+            })
 
             await UserService.replaceTAccount(auth.uid, account);
 
@@ -59,7 +59,7 @@ AuthService.addAuth = async(authList) => {
             await UserService.addUserAndAuth(auth);
         }
     };
-    
+
     return {}
 };
 
@@ -74,16 +74,18 @@ AuthService.getAuthListByFlag = async (flag) => {
         account.spec.authorization.forEach(authorization => {
 
             if (authorization.flag == flag) {
-                auth.push(Object.assign(authorization, { uid: account.spec.username }));
+                auth.push(Object.assign(authorization, {
+                    uid: account.spec.username
+                }));
             }
-            
+
         })
     });
-   
+
     return auth;
 }
 
-AuthService.deleteAuth = async(flag, role) => {
+AuthService.deleteAuth = async (flag, role) => {
 
     let accounts = (await UserService.listTAccounts());
 
@@ -94,14 +96,14 @@ AuthService.deleteAuth = async(flag, role) => {
         let newAuthorization = account.spec.authorization.filter(item => {
 
             if (role) {
-                
+
                 if (item.flag == flag && item.role == role) {
                     return false;
                 }
             } else {
                 if (item.flag == flag) {
                     return false;
-                }                    
+                }
             }
             return true;
         });
@@ -114,7 +116,7 @@ AuthService.deleteAuth = async(flag, role) => {
 
 };
 
-AuthService.updateAuth = async(flag, role, uids) => {
+AuthService.updateAuth = async (flag, role, uids) => {
 
     await AuthService.deleteAuth(flag, role);
 
@@ -134,8 +136,7 @@ AuthService.updateAuth = async(flag, role, uids) => {
             })
 
             await UserService.replaceTAccount(uid, account);
-        }
-        else {
+        } else {
             uidNotExists.push(uid);
         }
     };
@@ -145,7 +146,7 @@ AuthService.updateAuth = async(flag, role, uids) => {
     }
 };
 
-AuthService.getAuth = async(flag, roles, uid) => {
+AuthService.getAuth = async (flag, roles, uid) => {
 
     let account = await UserService.getTAccount(uid);
 
@@ -153,7 +154,8 @@ AuthService.getAuth = async(flag, roles, uid) => {
         return null;
     }
 
-    
+    // console.log(account.spec.authorization);
+
     let data = account.spec.authorization.find(item => {
         return item.flag == flag && item.role == roles;
     })
@@ -163,7 +165,7 @@ AuthService.getAuth = async(flag, roles, uid) => {
     // return await AuthDao.getAuth(flag, roles, uid);
 };
 
-AuthService.getAuthListByUid = async(uid) => {
+AuthService.getAuthListByUid = async (uid) => {
     let account = await UserService.getTAccount(uid);
 
     if (!account) {
@@ -173,7 +175,7 @@ AuthService.getAuthListByUid = async(uid) => {
     return account.spec.authorization;
 };
 
-AuthService.getAuthList = async(flag, role, uid) =>{
+AuthService.getAuthList = async (flag, role, uid) => {
     let account = await UserService.getTAccount(uid);
 
     if (!account) {
@@ -184,7 +186,7 @@ AuthService.getAuthList = async(flag, role, uid) =>{
 
     account.spec.authorization.forEach(item => {
         if (!flag && flag != item.flag) {
-            return;    
+            return;
         }
 
         if (!role && role != item.role) {
@@ -197,7 +199,7 @@ AuthService.getAuthList = async(flag, role, uid) =>{
     return item;
 };
 
-AuthService.pageDeleteAuth = async(flag, role, uid) => {
+AuthService.pageDeleteAuth = async (flag, role, uid) => {
     let account = await UserService.getTAccount(uid);
 
     if (!account) {
@@ -206,7 +208,7 @@ AuthService.pageDeleteAuth = async(flag, role, uid) => {
 
     account.spec.authorization = account.spec.authorization.filter(item => {
         if (flag != item.flag) {
-            return true;    
+            return true;
         }
 
         if (role != item.role) {

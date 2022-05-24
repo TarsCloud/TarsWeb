@@ -165,18 +165,12 @@ TaskController.addTask = async (ctx) => {
 
 			let server = await ServerService.getServerConfById(item.server_id);
 
-			if (!await AuthService.hasDevAuth(server.application, server.server_name, ctx.uid)) {
+			if (!await AuthService.hasOpeAuth(server.application, server.server_name, ctx.uid)) {
 				ctx.makeNotAuthResObj();
 				return;
 			}
 		}
 
-
-		// if (kafkaConf.enable) {
-		// 	await kafkaProducer.produce(JSON.stringify({serial, items, task_no}), () => {
-		// 		logger.info('task produce success!');
-		// 	});
-		// } else {
 		await TaskService.addTask({
 			serial,
 			elegant,

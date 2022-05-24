@@ -1228,8 +1228,9 @@ export default {
         })
         .then((data) => {
           loading.hide();
-          if (!(this.serverNotifyList && this.showOthers)) {
-            data.forEach((item) => {
+
+          if (data.rows) {
+            data.rows.forEach((item) => {
               item.isChecked = false;
               item.present_state_in_node = "";
               item.is_node_ok = true;
@@ -1242,7 +1243,7 @@ export default {
             });
             this.serverPageNum = server_curr_page;
             this.serverTotal = Math.ceil(data.count / this.serverPageSize);
-            this.serverList = data;
+            this.serverList = data.rows;
           } else {
             data.forEach((item) => {
               item.isChecked = false;
