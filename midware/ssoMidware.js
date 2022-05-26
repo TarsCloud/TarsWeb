@@ -7,6 +7,7 @@ module.exports = (loginConf) => {
   try {
     const cookieDomainConfig = {
       domain: loginConf.cookieDomain || '', // 用户cookie域
+      httpOnly: false,
     };
     const cookieConfig = Object.assign({
       maxAge: 365 * 24 * 60 * 60 * 1000, // 用户cookie过期时间为1年
@@ -25,10 +26,11 @@ module.exports = (loginConf) => {
         await next();
       } else if (isInPath(ctx, loginConf.ignore || []) || isInIgnoreIps(ctx, loginConf.ignoreIps || [])) { // 跳过用户配置的不需要验证的url或白名单IP
         ctx.uid = ctx.query.uid || loginConf.defaultLoginUid;
-       
+
         await next();
       } else {
-        let ticket; let uid;
+        let ticket;
+        let uid;
         const ticketFromQuery = ctx.query[loginConf.ticketParamName || 'ticket'];
 
         // console.log("ticketFromQuery:", ticketFromQuery, ctx.query);
@@ -56,18 +58,21 @@ module.exports = (loginConf) => {
 
           if (isInPath(ctx, loginConf.apiPrefix)) {
             await next();
-          }
-          else if (ticketFromQuery) {
+          } else if (ticketFromQuery) {
             const urlObj = url.parse(ctx.request.url, true);
-            delete (urlObj.query[loginConf.ticketParamName || 'ticket']);
-            delete (urlObj.search);
+            delete(urlObj.query[loginConf.ticketParamName || 'ticket']);
+            delete(urlObj.search);
             const redirectUrl = url.format(urlObj);
             ctx.redirect(redirectUrl);
           } else {
             await next();
           }
         } else if (isInPath(ctx, loginConf.apiPrefix)) {
-          ctx.body = { ret_code: 500, err_msg: loginConf.apiNotLoginMes, data: {} };
+          ctx.body = {
+            ret_code: 500,
+            err_msg: loginConf.apiNotLoginMes,
+            data: {}
+          };
         } else {
           toLoginPage(ctx);
         }
@@ -83,9 +88,11 @@ module.exports = (loginConf) => {
       const index = _.findIndex(pathList, (rule) => {
         if (!rule) {
           return false;
-        } if (typeof rule === 'string') {
+        }
+        if (typeof rule === 'string') {
           return pathname.indexOf(rule) === 0;
-        } if (rule instanceof RegExp) {
+        }
+        if (rule instanceof RegExp) {
           return rule.test(pathname);
         }
       });
@@ -95,7 +102,9 @@ module.exports = (loginConf) => {
 
     // 检测是否在IP白名单之中
     function isInIgnoreIps(ctx, ignoreIps) {
-      const { ip } = ctx;
+      const {
+        ip
+      } = ctx;
 
       return _.indexOf(ignoreIps || [], ip) > -1;
     }
@@ -168,7 +177,9 @@ module.exports = (loginConf) => {
             validateRet = false;
           }
           if (!validateRet) return false;
-          const { validateMatch } = loginConf;
+          const {
+            validateMatch
+          } = loginConf;
           for (let i = 0; i < validateMatch.length; i++) {
             if (_.result(validateRet, validateMatch[i][0]) !== validateMatch[i][1]) {
               return false;

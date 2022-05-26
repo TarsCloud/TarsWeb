@@ -19,7 +19,7 @@
           </div>
         </el-col>
 
-        <el-col :span="12">
+        <el-col :span="9">
           <let-tabs
             class="tabs"
             :center="true"
@@ -43,24 +43,26 @@
             ></let-tab-pane>
           </let-tabs>
         </el-col>
-        <el-col :span="4">
-          <div class="language-wrap">
-            <let-select
-              v-model="locale"
-              @change="changeLocale"
-              :clearable="false"
-              style="vertical-align:baseline"
+        <el-col :span="3">
+          <div class="plugin-wrap">
+            <el-select
+              v-model="pluginPath"
+              placeholder="扩展服务"
+              @change="changePlugin"
+              style="width:200px"
             >
-              <template v-for="locale in localeMessages">
-                <let-option
-                  :value="locale.localeCode"
-                  :key="locale.localeCode"
-                  >{{ locale.localeName }}</let-option
-                >
-              </template>
-            </let-select>
+              <el-option
+                v-for="item in plugins"
+                :key="item.f_id"
+                :label="item.f_name + '(' + item.f_name_en + ')'"
+                :value="item.f_path"
+              >
+              </el-option>
+            </el-select>
           </div>
-          <div class="version-wrap">
+        </el-col>
+        <el-col :span="2">
+          <span class="version-wrap">
             <div>web:{{ web_version }}</div>
             <div>framework:{{ framework_version }}</div>
             <el-link
@@ -69,7 +71,24 @@
               target="_blank"
               >{{ locale == "cn" ? "在线文档" : "Online Manual" }}</el-link
             >
-          </div>
+          </span>
+        </el-col>
+        <el-col :span="2">
+          <span class="language-wrap">
+            <el-select
+              v-model="locale"
+              @change="changeLocale"
+              style="width:100px"
+            >
+              <el-option
+                v-for="locale in localeMessages"
+                :key="locale.localeCode"
+                :value="locale.localeCode"
+                :label="locale.localeName"
+              >
+              </el-option>
+            </el-select>
+          </span>
         </el-col>
         <el-col :span="2">
           <div class="user-wrap">
@@ -140,6 +159,8 @@ export default {
       enableLogin: false,
       isAdmin: false,
       localeMessages: localeMessages,
+      pluginPath: "",
+      plugins: [],
       k8s: this.$cookie.get("k8s") || "false",
       enable: this.$cookie.get("enable") || "false",
       show: this.$cookie.get("show") || "false",
@@ -154,6 +175,16 @@ export default {
     },
   },
   methods: {
+    changePlugin() {
+      // console.log(
+      //   "changePlugin",
+      //   `/plugin/${this.plugin}`,
+      //   this.$cookie.get("ticket")
+      // );
+      // console.log(document.cookies, this.$cookie.get("k8s"));
+      console.log(this.pluginPath);
+      this.$router.push(`${this.pluginPath}`);
+    },
     clickTab(tabkey) {
       // if (tabkey == "/market") {
       //   window.open("/static/market/index.html");
@@ -188,6 +219,16 @@ export default {
       } else if (command == "modify") {
         this.$router.push("/market/user/modifyPass");
       }
+    },
+    getPlugins() {
+      this.$ajax
+        .getJSON("/plugin/api/list", { k8s: false })
+        .then((data) => {
+          this.plugins = data;
+        })
+        .catch((err) => {
+          this.$common.showError(err);
+        });
     },
     getLoginUid() {
       this.$ajax
@@ -243,6 +284,7 @@ export default {
     this.checkEnableLogin();
     this.checkAdmin();
     this.checkEnableLdap();
+    this.getPlugins();
 
     Axios.create({ baseURL: "/" })({
       method: "get",
@@ -282,6 +324,7 @@ export default {
     top: 0;
     font-size: 12px;
     height: 80px;
+    text-align: center;
     padding: 15px var(--gap-small);
     display: inline-block;
   }
@@ -316,6 +359,12 @@ export default {
     .logo {
       height: 28px;
     }
+  }
+
+  .plugin-wrap {
+    height: 80px;
+    padding-top: 20px;
+    display: inline-block;
   }
 
   .language-wrap {

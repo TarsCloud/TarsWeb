@@ -15,7 +15,7 @@
  */
 
 const WebConf = require('../config/webConf');
-
+const bodyparser = require('koa-bodyparser');
 const {
 	apiConf,
 	clientConf
@@ -34,6 +34,9 @@ const {
 	callTrainConf,
 	infTestConf
 } = require('../index');
+const {
+	pluginApiConf
+} = require('../plugin');
 
 const {
 	marketApiConf
@@ -55,6 +58,8 @@ const getRouter = (router, routerConf) => {
 
 	routerConf.forEach(function (conf) {
 		var [method, url, controller, checkRule, validParams] = conf;
+
+		router[method](url, bodyparser());
 
 		//前置参数合并校验相关中间件
 		router[method](url, paramsDealMidware(validParams)); //上下文入参出参处理中间件
@@ -83,7 +88,7 @@ ssoApiConf.forEach(conf => apiConf.push(conf));
 monitorApiConf.forEach(conf => apiConf.push(conf));
 callTrainConf.forEach(conf => apiConf.push(conf));
 infTestConf.forEach(conf => apiConf.push(conf));
-
+pluginApiConf.forEach(conf => apiConf.push(conf));
 marketApiConf.forEach(conf => apiConf.push(conf));
 
 //页面类型路由
@@ -129,6 +134,11 @@ if (WebConf.isEnableK8s()) {
 }
 
 //market类型路由
+const pluginApiRouter = new Router();
+pluginApiRouter.prefix('/pages/plugin/api');
+getRouter(pluginApiRouter, pluginApiConf);
+
+//market类型路由
 const marketApiRouter = new Router();
 marketApiRouter.prefix('/pages/market/api');
 getRouter(marketApiRouter, marketApiConf);
@@ -142,5 +152,6 @@ module.exports = {
 	apiRouter,
 	k8sRouter,
 	k8sApiRouter,
+	pluginApiRouter,
 	marketApiRouter
 };

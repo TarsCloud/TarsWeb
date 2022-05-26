@@ -75,6 +75,7 @@ LoginController.getUidByTicket = async (ctx) => {
     try {
         let ticket = ctx.paramsObj.ticket;
         let uid = '';
+        console.log(ticket);
         if (uid = await LoginService.getUidByTicket(ticket)) {
             ctx.makeResObj(200, '', {
                 uid: uid

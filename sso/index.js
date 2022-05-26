@@ -27,10 +27,10 @@ const ssoApiConf = [
     //登录注册接口
     ['post', '/register', DemoLoginController.register],
     ['post', '/login', DemoLoginController.login],
-    ['get',  '/logout', DemoLoginController.logout],
+    ['get', '/logout', DemoLoginController.logout],
     ['get', '/getUidByTicket', DemoLoginController.getUidByTicket],
     ['get', '/validate', DemoLoginController.validate],
-    
+
     ['get', '/getLoginUid', DemoLoginController.getLoginUid],
     ['get', '/isEnableLogin', DemoLoginController.isEnableLogin],
 
@@ -43,6 +43,10 @@ const ssoApiConf = [
     //需要登录
     ['post', '/modifyPass', DemoUserController.modifyPass],
     ['get', '/getMyAuthList', DemoAuthController.getMyAuthList],
+
+    //权限相关接口(给其他扩展服务使用)
+    ['get', '/ticket', DemoLoginController.getUidByTicket],
+
 
     //权限相关接口(从tars-web请求过来的, localhost默认开权限)
     ['get', '/auth/isAdmin', DemoAuthController.isAdmin],
@@ -72,4 +76,6 @@ const ssoApiConf = [
 
 ];
 
-module.exports = { ssoApiConf };
+module.exports = {
+    ssoApiConf
+};

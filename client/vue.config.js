@@ -103,6 +103,14 @@ module.exports = {
         target: `http://127.0.0.1:${server_port}`,
         changeOrigin: false
       },
+      "/plugins/*": {
+        target: `http://127.0.0.1:${server_port}`,
+        changeOrigin: false
+      },
+      "/plugin/*": {
+        target: `http://127.0.0.1:${server_port}`,
+        changeOrigin: false
+      },
       "/api/*": {
         target: `http://127.0.0.1:${server_port}`,
         changeOrigin: false

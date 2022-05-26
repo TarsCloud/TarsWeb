@@ -57,6 +57,8 @@ import OperationImage from '@/pages/operation/image';
 //网关
 // import OperationGateway from '@/gateway/index';
 
+import Plugin from '@/components/plugins.vue';
+
 export default new Router({
   routes: [{
       path: '/server',
@@ -138,6 +140,12 @@ export default new Router({
           component: OperationImage
         }
       ],
+    },
+    {
+      path: '/plugins/*',
+      name: 'Plugin',
+      component: Plugin
+
     },
     {
       path: '*',

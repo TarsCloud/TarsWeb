@@ -37,12 +37,19 @@ module.exports = function (sequelize, DataTypes) {
 		f_obj: {
 			type: DataTypes.STRING(64),
 			allowNull: false,
-			defaultValue: ''
+			defaultValue: '',
+			unique: "obj"
+		},
+		f_path: {
+			type: DataTypes.STRING(64),
+			allowNull: false,
+			defaultValue: '',
+			unique: "path"
 		},
 		f_type: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
-			defaultValue: '0'
+			defaultValue: 0x01
 		},
 		f_create_time: {
 			type: DataTypes.DATE,

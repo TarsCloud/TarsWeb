@@ -19,7 +19,7 @@ const app = new Koa();
 const path = require('path');
 const url = require('url');
 const onerror = require('koa-onerror');
-const bodyparser = require('koa-bodyparser');
+// const bodyparser = require('koa-bodyparser');
 const session = require('koa-session');
 const multer = require('koa-multer');
 const static = require('koa-static');
@@ -32,15 +32,13 @@ const upload = multer({
 });
 const logger = require('./logger');
 
-// const apiMidware = require('./midware/apiMidware');
-const preMidware = require('./midware/preMidware');
-const postMidware = require('./midware/postMidware');
 const localeMidware = require('./midware/localeMidware');
 const loginMidware = require('./midware/ssoMidware');
 const limitMidware = require('./midware/limitMidware');
-const router = require('koa-router')()
-const AuthService = require('./sso/service/auth/AuthService');
 
+const AuthService = require('./sso/service/auth/AuthService');
+const PluginController = require('./plugin/controller/PluginController');
+const proxy = require('koa-server-http-proxy');
 //信任proxy头部，支持 X-Forwarded-Host
 app.proxy = true;
 
@@ -68,17 +66,13 @@ app.use(session(CONFIG, app));
 //安全防护
 app.use(helmet());
 
-app.use(bodyparser());
+// app.use(bodyparser());
 
 app.use(upload.array('suse', 5)); //这里决定了上传包的name只能叫suse。
 
 //国际化多语言中间件
 app.use(localeMidware);
 
-//前置中间件
-preMidware.forEach((midware) => {
-	app.use(midware);
-});
 //app.use
 //登录校验
 let loginConf = require('./config/loginConf.js');
@@ -130,7 +124,6 @@ if (WebConf.enable) {
 }
 
 app.use(async (ctx, next) => {
-	await next();
 
 	ctx.cookies.set('enable', WebConf.enable ? "true" : "false", {
 		httpOnly: false
@@ -141,6 +134,9 @@ app.use(async (ctx, next) => {
 	ctx.cookies.set('k8s', WebConf.isEnableK8s() ? "true" : "false", {
 		httpOnly: false
 	});
+
+	await next();
+
 })
 
 //激活router
@@ -153,6 +149,7 @@ const {
 	apiRouter,
 	k8sRouter,
 	k8sApiRouter,
+	pluginApiRouter,
 	marketApiRouter
 } = require('./midware');
 
@@ -177,6 +174,8 @@ if (k8sRouter) {
 if (k8sApiRouter) {
 	app.use(k8sApiRouter.routes()).use(k8sApiRouter.allowedMethods());
 }
+
+app.use(pluginApiRouter.routes()).use(pluginApiRouter.allowedMethods());
 app.use(marketApiRouter.routes()).use(marketApiRouter.allowedMethods());
 
 //激活静态资源中间件
@@ -184,12 +183,7 @@ app.use(static(path.join(__dirname, './client/dist'), {
 	maxage: 7 * 24 * 60 * 60 * 1000
 }));
 
-app.use(router.routes()); //作用：启动路由
-app.use(router.allowedMethods());
 
-//后置中间件
-postMidware.forEach((midware) => {
-	app.use(midware);
-});
+PluginController.loadPlugins(app);
 
 module.exports = app;
