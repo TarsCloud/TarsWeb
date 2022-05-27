@@ -22,8 +22,7 @@ const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const PatchProxy = require("./proxy/PatchProxy");
 const TopologyProxy = require("./topology/TopologyProxy");
 const WebConf = require("../config/webConf");
-const BenchmarkAdminProxy = require("./proxy/BenchmarkAdminProxy");
-const BenchmarkNode = require("./proxy/BenchmarkNodeTars");
+
 const EndpointManager = require("./proxy/getservant/lib/getEndpoint");
 const {
     RPCClientPrx
@@ -68,9 +67,6 @@ module.exports = {
 
     client: client,
 
-    benchmarkPrx: RPCClientPrx(client, BenchmarkAdminProxy, 'bm', 'Admin', WebConf.infTestConf.benchmarkAdmin),
-    benchmarkStruct: RPCStruct(BenchmarkAdminProxy, 'bm'),
-    benchmarkNodeStruct: RPCStruct(BenchmarkNode, 'bm'),
     registry: registry
 
 };

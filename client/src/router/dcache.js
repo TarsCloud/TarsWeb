@@ -44,7 +44,7 @@ import ServerConfig from '@/pages/server/config';
 import ServerServerMonitor from '@/common/monitor-server';
 import ServerPropertyMonitor from '@/common/monitor-property';
 import userManage from '@/common/user-manage';
-import InterfaceDebuger from '@/common/interface-debuger';
+// import InterfaceDebuger from '@/common/interface-debuger';
 
 // dcache 运维管理
 import Operation from '@/pages/dcacheOperation/index';
@@ -112,10 +112,10 @@ export default new Router({
           path: ':treeid/property-monitor/:serverType',
           component: ServerPropertyMonitor,
         },
-        {
-          path: ':treeid/interface-debuger/:serverType',
-          component: InterfaceDebuger,
-        },
+        // {
+        //   path: ':treeid/interface-debuger/:serverType',
+        //   component: InterfaceDebuger,
+        // },
         {
           path: ':treeid/user-manage/:serverType',
           component: userManage,

@@ -38,7 +38,7 @@ import ServerConfig from '@/k8s/server/config';
 
 // import AlarmConfig from '@/common/alarm';
 import AuthManage from '@/common/user-manage';
-import InterfaceDebuger from '@/common/interface-debuger';
+// import InterfaceDebuger from '@/common/interface-debuger';
 import ServerServerMonitor from '@/common/monitor-server';
 import ServerPropertyMonitor from '@/common/monitor-property';
 
@@ -91,10 +91,10 @@ export default new Router({
           path: ':treeid/property-monitor',
           component: ServerPropertyMonitor,
         },
-        {
-          path: ':treeid/interface-debuger',
-          component: InterfaceDebuger,
-        },
+        // {
+        //   path: ':treeid/interface-debuger',
+        //   component: InterfaceDebuger,
+        // },
         {
           path: ':treeid/user-manage',
           component: AuthManage,

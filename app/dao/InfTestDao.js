@@ -1,7 +1,3 @@
-const {
-	async
-} = require('q');
-
 /**
  * Tencent is pleased to support the open source community by making Tars available.
  *

@@ -37,7 +37,7 @@ import ServerPublish from '@/pages/server/publish';
 import ServerConfig from '@/pages/server/config';
 
 import AuthManage from '@/common/user-manage';
-import InterfaceDebuger from '@/common/interface-debuger';
+// import InterfaceDebuger from '@/common/interface-debuger';
 import ServerServerMonitor from '@/common/monitor-server';
 import ServerPropertyMonitor from '@/common/monitor-property';
 
@@ -55,7 +55,7 @@ import OperationIDCManage from '@/pages/operation/idc';
 import OperationImage from '@/pages/operation/image';
 
 //网关
-// import OperationGateway from '@/gateway/index';
+import ServerPlugins from '@/pages/server/plugins';
 
 import Plugin from '@/components/plugins.vue';
 
@@ -84,13 +84,17 @@ export default new Router({
           path: ':treeid/property-monitor',
           component: ServerPropertyMonitor,
         },
-        {
-          path: ':treeid/interface-debuger',
-          component: InterfaceDebuger,
-        },
+        // {
+        //   path: ':treeid/interface-debuger',
+        //   component: InterfaceDebuger,
+        // },
         {
           path: ':treeid/user-manage',
           component: AuthManage,
+        },
+        {
+          path: ':treeid/plugins',
+          component: ServerPlugins,
         },
       ],
     },
@@ -145,7 +149,6 @@ export default new Router({
       path: '/plugins/*',
       name: 'Plugin',
       component: Plugin
-
     },
     {
       path: '*',

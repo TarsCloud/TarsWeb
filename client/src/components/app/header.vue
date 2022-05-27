@@ -176,13 +176,6 @@ export default {
   },
   methods: {
     changePlugin() {
-      // console.log(
-      //   "changePlugin",
-      //   `/plugin/${this.plugin}`,
-      //   this.$cookie.get("ticket")
-      // );
-      // console.log(document.cookies, this.$cookie.get("k8s"));
-      console.log(this.pluginPath);
       this.$router.push(`${this.pluginPath}`);
     },
     clickTab(tabkey) {
@@ -222,7 +215,7 @@ export default {
     },
     getPlugins() {
       this.$ajax
-        .getJSON("/plugin/api/list", { k8s: false })
+        .getJSON("/plugin/api/list", { k8s: false, type: 1 })
         .then((data) => {
           this.plugins = data;
         })

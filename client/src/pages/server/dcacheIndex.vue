@@ -183,7 +183,7 @@ import config from "./config";
 
 import serverMonitor from "@/common/monitor-server";
 import propertyMonitor from "@/common/monitor-property";
-import interfaceDebuger from "@/common/interface-debuger";
+// import interfaceDebuger from "@/common/interface-debuger";
 import userManage from "@/common/user-manage";
 
 import cache from "@/pages/dcache/moduleManage/index.vue";
@@ -199,7 +199,7 @@ export default {
     config,
     "server-monitor": serverMonitor,
     "property-monitor": propertyMonitor,
-    "interface-debuger": interfaceDebuger,
+    // "interface-debuger": interfaceDebuger,
     "user-manage": userManage,
     cache,
     moduleCache,

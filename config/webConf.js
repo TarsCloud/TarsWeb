@@ -29,10 +29,6 @@ let conf = {
         uploadLogin: false, //上传文件是否需要登录(开发或者调试时可以放开)
         alter: true, //变更db结构
     },
-    batchServer: {
-        exportPath: "/usr/local/app/patchs/export",
-        importPath: "/usr/local/app/patchs/import"
-    },
     pkgUploadPath: {
         path: '/usr/local/app/patchs/tars.upload'
     },
@@ -43,10 +39,6 @@ let conf = {
         interval: 1000 * 60 * 10, //限制的时间间隔，单位为ms，如：1小时内限制访问5000次
         whilteList: [], //白名单IP
         blackList: [] //黑名单IP
-    },
-    infTestConf: {
-        tool: "/usr/local/tars/cpp/tools/tars2case",
-        benchmarkAdmin: "benchmark.AdminServer.AdminObj"
     },
     ldapConf: {
         enableLDAP: false, // 是否启用LDAP用户登录验证

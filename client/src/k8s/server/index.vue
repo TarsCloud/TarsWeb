@@ -154,11 +154,11 @@
               :tab="$t('index.rightView.tab.propertyMonitor')"
               v-if="serverData.level === 5"
             ></let-tab-pane>
-            <let-tab-pane
+            <!-- <let-tab-pane
               :tabkey="base + '/interface-debuger'"
               :tab="$t('index.rightView.tab.infDebuger')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
+            ></let-tab-pane> -->
             <let-tab-pane
               :tabkey="base + '/user-manage'"
               :tab="$t('index.rightView.tab.privileage')"
@@ -190,7 +190,7 @@ import publish from "./publish";
 import config from "./config";
 import serverMonitor from "@/common/monitor-server";
 import propertyMonitor from "@/common/monitor-property";
-import interfaceDebuger from "@/common/interface-debuger";
+// import interfaceDebuger from "@/common/interface-debuger";
 import userManage from "@/common/user-manage";
 import history from "./history";
 import serverHistory from "./serverHistory";
@@ -204,7 +204,7 @@ export default {
     config,
     "server-monitor": serverMonitor,
     "property-monitor": propertyMonitor,
-    "interface-debuger": interfaceDebuger,
+    // "interface-debuger": interfaceDebuger,
     "user-manage": userManage,
     history,
     serverHistory,

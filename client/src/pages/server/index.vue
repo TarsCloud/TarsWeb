@@ -100,19 +100,19 @@
           :key="item.id"
           v-show="item.id === treeid"
         >
-          <let-tabs @click="clickTab" :activekey="item.path">
-            <let-tab-pane
-              :tabkey="base + '/manage'"
-              :tab="$t('header.tab.tab1')"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/publish'"
-              :tab="$t('index.rightView.tab.patch')"
+          <el-tabs @tab-click="clickTab" v-model="item.path">
+            <el-tab-pane
+              :name="base + '/manage'"
+              :label="$t('header.tab.tab1')"
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/publish'"
+              :label="$t('index.rightView.tab.patch')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/config'"
-              :tab="
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/config'"
+              :label="
                 serverData.level === 5
                   ? $t('index.rightView.tab.serviceConfig')
                   : serverData.level === 4
@@ -126,37 +126,45 @@
                   serverData.level === 4 ||
                   serverData.level === 1
               "
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/server-monitor'"
-              :tab="$t('index.rightView.tab.statMonitor')"
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/server-monitor'"
+              :label="$t('index.rightView.tab.statMonitor')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/property-monitor'"
-              :tab="$t('index.rightView.tab.propertyMonitor')"
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/property-monitor'"
+              :label="$t('index.rightView.tab.propertyMonitor')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-            <let-tab-pane
+            ></el-tab-pane>
+            <!-- <el-tab-pane
               :tabkey="base + '/interface-debuger'"
               :tab="$t('index.rightView.tab.infDebuger')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/user-manage'"
-              :tab="$t('index.rightView.tab.privileage')"
+            ></el-tab-pane> -->
+            <el-tab-pane
+              :name="base + '/user-manage'"
+              :label="$t('index.rightView.tab.privileage')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/callChain'"
-              :tab="$t('index.rightView.tab.treeConfig')"
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/callChain'"
+              :label="$t('index.rightView.tab.treeConfig')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-          </let-tabs>
+            ></el-tab-pane>
+            <el-tab-pane
+              v-if="serverData.level === 5"
+              v-for="plugin in plugins"
+              v-bind:key="plugin.f_id"
+              :name="base + plugin.f_path + '/plugins'"
+              :label="plugin.f_name"
+            ></el-tab-pane>
+          </el-tabs>
 
           <router-view
             :is="getName(item.path)"
             :treeid="item.id"
+            :path="item.pluginPath"
             ref="childView"
             class="page_server_child"
           ></router-view>
@@ -174,9 +182,9 @@ import config from "./config";
 import serverHistory from "./history";
 import serverMonitor from "@/common/monitor-server";
 import propertyMonitor from "@/common/monitor-property";
-import alarm from "@/common/alarm";
-import interfaceDebuger from "@/common/interface-debuger";
+// import interfaceDebuger from "@/common/interface-debuger";
 import userManage from "@/common/user-manage";
+import serverPlugins from "./plugins";
 
 export default {
   name: "Server",
@@ -187,10 +195,10 @@ export default {
     config,
     "server-monitor": serverMonitor,
     "property-monitor": propertyMonitor,
-    alarm,
-    "interface-debuger": interfaceDebuger,
+    // "interface-debuger": interfaceDebuger,
     "user-manage": userManage,
     serverHistory,
+    plugins: serverPlugins,
   },
   data() {
     return {
@@ -199,9 +207,7 @@ export default {
       treeSearchKey: "",
       treeid: "home",
       isIconPlay: false,
-      // enableAuth: false,
-      // deployLog: false,
-
+      plugins: [],
       // 当前页面信息
       serverData: {
         level: 5,
@@ -212,7 +218,6 @@ export default {
         set_group: "",
       },
       homeTab: "home",
-      // BTabs
       BTabs: [],
     };
   },
@@ -289,7 +294,20 @@ export default {
       if (val.lastIndexOf("/") > -1) {
         result = val.substring(val.lastIndexOf("/") + 1, val.length);
       }
+      // console.log("val:", result);
       return result;
+    },
+    getPlugins() {
+      this.$ajax
+        .getJSON("/plugin/api/list", { k8s: false, type: 2 })
+        .then((data) => {
+          this.plugins = data;
+        })
+        .catch((err) => {
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.err_msg || err.message}`
+          );
+        });
     },
     iconLoading() {
       const that = this;
@@ -314,12 +332,6 @@ export default {
       res.forEach((node) => {
         node.label = node.name; //eslint-disable-line
         node.nodeKey = node.id; //eslint-disable-line
-
-        // 第一层特殊图标、展开
-        // if (isFirstLayer) {
-        // node.iconClass = 'tree-icon';
-        // node.expand = true;  //eslint-disable-line
-        // }
 
         if (this.treeSearchKey) {
           node.expand = true;
@@ -405,14 +417,20 @@ export default {
     },
 
     clickTab(tabkey) {
+      // console.log(tabkey);
       let { treeid, BTabs } = this;
       //       console.log("treeid",treeid);
 
       BTabs &&
         BTabs.forEach((item) => {
-          //         console.log("item",item);
           if (item.id === treeid) {
-            item.path = tabkey;
+            // console.log(item.path, tabkey.name);
+            item.path = tabkey.name;
+            item.pluginPath = tabkey.name.substr(this.base.length);
+            item.pluginPath = item.pluginPath.substr(
+              0,
+              item.pluginPath.length - "/plugins".length
+            );
           }
         });
 
@@ -573,6 +591,7 @@ export default {
     this.checkTreeid();
     this.checkBTabs();
     this.getTreeData();
+    this.getPlugins();
 
     //begin 浏览器刷新后所有tab页回到服务管理( 解决当多个tab页都选择配置(或其他相同的页),
     // 点击浏览器刷新后其他tab页都与当前tab页的内容相同,不刷新 )

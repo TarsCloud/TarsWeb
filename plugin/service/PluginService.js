@@ -17,7 +17,6 @@
 const logger = require('../../logger');
 const PluginDao = require('../../app/dao/PluginDao');
 
-// const AdminService = require('../../app/service/admin/AdminService');
 const registry = require("../../rpc").registry
 const proxy = require('koa-server-http-proxy');
 
@@ -30,9 +29,9 @@ PluginService.install = async (paramsObj) => {
     return await PluginDao.install(paramsObj);
 }
 
-PluginService.list = async () => {
+PluginService.list = async (type) => {
 
-    let rst = await PluginDao.listPlugins();
+    let rst = await PluginDao.listPlugins(type);
 
     return {
         ret: 200,
@@ -45,7 +44,7 @@ async function findActiveIndex(obj) {
     try {
         let rst = await registry.findObjectById4Any(obj);
 
-        console.log(obj, rst.response.arguments);
+        // console.log(obj, rst.response.arguments);
 
         activeList = rst.response.arguments.activeEp;
 
@@ -61,7 +60,7 @@ async function findActiveIndex(obj) {
 
         return null;
     } catch (e) {
-        console.log(e);
+        console.log('findActiveIndex', e);
         return null;
     }
 }
@@ -72,24 +71,34 @@ PluginService.loadPlugins = async (app) => {
 
     plugins.forEach(async (plugin) => {
 
-        console.log("plugin:", plugin);
+        // console.log("plugin:", plugin);
 
         let target = await findActiveIndex(plugin.f_obj);
 
         console.log("target:", target);
         if (target) {
-            // app.use(proxy(`${plugin.f_path}`, {
-            //     target: target,
-            //     ws: true,
-            //     changeOrigin: true
-            // }));
+
+            if (process.env.NODE_ENV != "production") {
+                if (plugin.f_path == "/plugins/base/benchmark") {
+                    app.use(proxy(plugin.f_path, {
+                        target: "http://127.0.0.1:8188",
+                        ws: true,
+                        changeOrigin: true
+                    }));
+                }
+            }
+        } else {
             app.use(proxy(`${plugin.f_path}`, {
-                target: "http://127.0.0.1:8188",
+                target: target,
+                ws: true,
                 changeOrigin: true
             }));
         }
-    })
+    });
 
+    setTimeout(() => {
+        PluginService.loadPlugins(app);
+    }, 5000);
 }
 
 module.exports = PluginService;

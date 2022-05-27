@@ -17,13 +17,25 @@
 const {
 	tPlugin
 } = require('./db').db_tars_web;
-const Sequelize = require('sequelize');
+// const Sequelize = require('sequelize');
 const PluginDao = {};
 
-PluginDao.listPlugins = async () => {
-	return await tPlugin.findAll({
-		raw: true,
-	})
+PluginDao.listPlugins = async (type) => {
+
+	console.log(type);
+
+	if (type) {
+		return await tPlugin.findAll({
+			raw: true,
+			where: {
+				f_type: type
+			}
+		});
+	} else {
+		return await tPlugin.findAll({
+			raw: true,
+		});
+	}
 };
 
 PluginDao.updatePlugin = async (paramsObj) => {

@@ -21,8 +21,6 @@ const {
 const client = require("@tars/rpc/protal.js").Communicator.New();
 const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const TopologyProxy = require("./topology/TopologyProxy");
-const BenchmarkAdminProxy = require("./proxy/BenchmarkAdminProxy");
-const BenchmarkNode = require("./proxy/BenchmarkNodeTars");
 const EndpointManager = require("./proxy/getservant/lib/getEndpoint");
 const WebConf = require('../config/webConf');
 
@@ -65,10 +63,6 @@ module.exports = {
     topologyPrx: RPCClientPrx(client, TopologyProxy, 'tars', 'Topology', 'tars.tarslog.TopologyObj' + TARS_K8S_PROXY),
 
     client: client,
-
-    benchmarkPrx: RPCClientPrx(client, BenchmarkAdminProxy, 'bm', 'Admin', WebConf.infTestConf.benchmarkAdmin + TARS_K8S_PROXY),
-    benchmarkStruct: RPCStruct(BenchmarkAdminProxy, 'bm'),
-    benchmarkNodeStruct: RPCStruct(BenchmarkNode, 'bm'),
 
     registry: registry
 };
