@@ -1,4 +1,4 @@
-## 20220427(3.0.0)
+## 20220530(3.0.1)
 
 ### en
 
@@ -12,6 +12,7 @@
 - Fix: tarslog expand lost TopologyObj
 - Fix: in nodes page refresh node list after delete node
 - Fix: tarsnode registryAddress
+- Fix: index redirect: tars.html/k8s.html/dcache.html
 
 ### cn
 
@@ -25,6 +26,7 @@
 - Fix: tarslog 扩容增加 TopologyObj
 - Fix: 删除节点以后刷新节点列表
 - Fix: 获取 tarsnode 脚本时可以设置 registryAddress
+- Fix: 修复首页重定向的问题
 
 ## 20220429(3.0.0)
 
