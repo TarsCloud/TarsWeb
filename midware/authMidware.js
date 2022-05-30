@@ -15,7 +15,7 @@ module.exports = async (ctx, next) => {
 
     var myurl = url.parse(ctx.url);
 
-    if (myurl.pathname.indexOf('/pages/server/api/auth/page/') != -1 || myurl.pathname.indexOf('/pages/gateway') != -1) {
+    if (myurl.pathname.indexOf('/pages/server/api/auth/page/') != -1 || myurl.pathname.indexOf('/base/gateway') != -1) {
         if (!await AuthService.isAdmin(ctx.uid)) {
             ctx.makeResObj(500, '#common.noPrivilage#', {});
             return;
