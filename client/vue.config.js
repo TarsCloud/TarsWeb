@@ -77,6 +77,12 @@ module.exports = {
     port: 8088,
     //ajax请求代理
     proxy: {
+      "/": {
+        target: `ws://127.0.0.1:${server_port}`,
+        ws: true,
+        secure: false,
+        logLevel: 'debug',
+      },
       "/favicon.ico": {
         target: `http://127.0.0.1:${server_port}`,
         changeOrigin: false

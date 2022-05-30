@@ -141,7 +141,7 @@ if (WebConf.isEnableK8s()) {
 
 //gateway类型路由
 const gatewayApiRouter = new Router();
-gatewayApiRouter.prefix('/base/gateway/api');
+gatewayApiRouter.prefix('/pages/server/api');
 getRouter(gatewayApiRouter, gatewayApiConf);
 
 //market类型路由

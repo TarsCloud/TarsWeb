@@ -57,16 +57,7 @@ import OperationImage from '@/pages/operation/image';
 //网关
 import OperationGateway from '@/gateway/index';
 
-// import market from '@/market/index';
-
-// // 市场
-// import {
-//   marketSso,
-//   marketRepo,
-//   marketService,
-//   marketList
-// } from './inc/market';
-
+// import market from '@/market/market';
 
 export default new Router({
   routes: [{
