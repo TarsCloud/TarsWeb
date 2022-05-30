@@ -148,6 +148,7 @@ app.use(async (ctx, next) => {
 //激活router
 // dcache 会添加新的 page、api router， 不能提前
 const {
+	indexRouter,
 	pageRouter,
 	paegApiRouter,
 	clientRouter,
@@ -158,6 +159,9 @@ const {
 	marketApiRouter
 } = require('./midware');
 
+app.use(indexRouter.routes(), indexRouter.allowedMethods({
+	throw: true
+}));
 app.use(pageRouter.routes(), pageRouter.allowedMethods({
 	throw: true
 }));

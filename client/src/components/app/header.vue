@@ -7,7 +7,7 @@
             <a
               v-if="enable === 'true' && show === 'true'"
               :class="{ active: true }"
-              href="/"
+              href="/tars.html"
               ><img class="logo" src="/static/img/tars-logo.png"
             /></a>
             <a v-if="k8s === 'true'" href="/k8s.html"

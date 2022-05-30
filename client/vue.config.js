@@ -15,7 +15,7 @@ module.exports = {
     index: {
       entry: 'src/index.js',
       template: 'public/index.html',
-      filename: 'index.html',
+      filename: 'tars.html',
       title: "Tars",
     },
     k8s: {

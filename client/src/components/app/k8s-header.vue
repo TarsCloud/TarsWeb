@@ -4,7 +4,7 @@
       <el-row :gutter="24">
         <el-col :span="6">
           <div class="logo-wrap">
-            <a v-if="enable === 'true' && show === 'true'" href="/"
+            <a v-if="enable === 'true' && show === 'true'" href="/tars.html"
               ><img class="logo" src="/static/img/tars-logo.png"
             /></a>
             <a v-if="k8s === 'true'" :class="{ active: true }" href="/k8s.html"

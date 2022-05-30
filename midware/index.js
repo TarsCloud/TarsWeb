@@ -102,6 +102,11 @@ const pageRouter = new Router();
 pageRouter.prefix('/web');
 getRouter(pageRouter, pageApiConf);
 
+const indexRouter = new Router();
+indexRouter.prefix('/');
+getRouter(indexRouter, pageApiConf);
+
+
 //节点服务器过来的请求, 获取安装tarsnode的脚本
 const clientRouter = new Router();
 getRouter(clientRouter, clientConf);
@@ -146,6 +151,7 @@ getRouter(marketApiRouter, marketApiConf);
 
 
 module.exports = {
+	indexRouter,
 	pageRouter,
 	paegApiRouter,
 	clientRouter,

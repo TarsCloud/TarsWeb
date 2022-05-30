@@ -4,7 +4,7 @@
       <h1 class="hidden">TARS</h1>
 
       <div class="logo-wrap">
-        <a v-if="enable === 'true' && show === 'true'" href="/"
+        <a v-if="enable === 'true' && show === 'true'" href="/tars.html"
           ><img class="logo" src="/static/img/tars-logo.png"
         /></a>
         <a v-if="k8s === 'true'" href="/k8s.html"

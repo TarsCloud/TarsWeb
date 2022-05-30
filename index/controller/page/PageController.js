@@ -25,7 +25,7 @@ PageController.index = async (ctx) => {
     if (WebConf.isEnableK8s()) {
         await ctx.redirect('/k8s.html');
     } else {
-        await ctx.redirect('/index.html');
+        await ctx.redirect('/tars.html');
     }
 };
 
