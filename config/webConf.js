@@ -221,12 +221,8 @@ if (process.env.NODE_ENV == "local") {
 
     process.env.ENABLE_K8S = "true";
     conf.enable = true;
-    // conf.market = {
-    //     enable: true,
-    //     url: 'http://localhost:6001'
-    // };
     // conf.market.url = 'https://m.k.tarsyun.com';
-    // conf.market.url = 'http://localhost:6001';
+    conf.market.url = 'http://localhost:6001';
     conf.webConf.alter = false;
     // conf.webConf.alter = true;
     conf.k8s.namespace = 'tars-dev';

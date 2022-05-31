@@ -45,7 +45,7 @@
 
 			window.localStorage.marketUrl = rsp.data.url;
 
-			axios.get(window.localStorage.marketUrl + '/load.html?' + (new Date()).getTime())
+			axios.get(window.localStorage.marketUrl + '/load_embed.html?' + (new Date()).getTime())
 			.then(function (response) {
 				//获取远程html页面
 				let content = response.data;

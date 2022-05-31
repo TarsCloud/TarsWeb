@@ -194,11 +194,11 @@ export default {
       }
     },
     clickTab(tabkey) {
-      if (tabkey == "/market") {
-        window.open("/static/market/k8s.html");
-      } else {
-        this.$router.replace(tabkey);
-      }
+      // if (tabkey == "/market") {
+      //   window.open("/static/market/k8s.html");
+      // } else {
+      this.$router.replace(tabkey);
+      // }
     },
     userCenter() {
       window.open("/pages/server/api/userCenter");
