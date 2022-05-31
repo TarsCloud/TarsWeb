@@ -6,6 +6,7 @@
 - Add: If don't have permission, service will not be displayed in the tree
 - Add: add tarslog expand alert in tarscloud mode
 - Add: node list page add tarsnode long connection status
+- Add: market use iframe
 - Fix: server list & server notify list auth (developer can view)
 - Fix: install from cloud lost title bug
 - Fix: k8s list node bug
@@ -20,6 +21,7 @@
 - Add: 如果没有权限, 服务在左边树上不显示(非 k8s)
 - Add: 在云市场模式下, 增加 tarslog 扩容提示
 - Add: 节点管理界面增加长连接的状态提示
+- Add: 市场界面使用 iframe 去显示
 - Fix: 服务列表和 notify 信息开发权限也可查看
 - Fix: 云市场安装丢失了 title
 - Fix: k8s 界面节点列表 bug
