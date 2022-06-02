@@ -2,7 +2,6 @@
 <html>
  <head id="head">
   <meta charset="UTF-8">
-  <title></title>
   <script src="/static/market/axios.min.js"></script>
   <script src="/static/market/jquery.min.js"></script>
 
@@ -43,7 +42,6 @@
 
 		axios.get("/web/market").then((rsp)=>{
 
-			console.log(rsp);
 			window.localStorage.marketUrl = rsp.data.url;
 
 			axios.get(rsp.data.url + '/load_embed.html?' + (new Date()).getTime())
@@ -54,9 +52,15 @@
 				let newStr = replaceSource(content, rsp.data.url);
 
 				$('#head').append(newStr);
+
+				setTimeout(()=>{
+					parent.document.loadFrameSucc();
+				}, 2000);
+
+				
 			})
 			.catch(function (error) {
-				console.log(error);
+				parent.document.loadFrameError();
 			});
 		})
 

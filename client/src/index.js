@@ -16,7 +16,6 @@
 
 import Vue from 'vue';
 
-// import './assets/icon-font/iconfont.css'
 import store from "../store/store"
 
 //调用链需要

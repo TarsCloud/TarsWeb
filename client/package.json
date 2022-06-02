@@ -13,7 +13,7 @@
     "d3": "^3.5.17",
     "dagre-d3": "^0.6.4",
     "echarts": "^4.0.4",
-    "element-ui": "^2.15.1",
+    "element-ui": "^2.15.8",
     "es6-promise": "^4.2.8",
     "events": "^3.3.0",
     "highlight.js": "^11.3.1",

@@ -30,6 +30,12 @@ module.exports = {
       filename: 'dcache.html',
       title: "DCache",
     },
+    error: {
+      entry: 'src/error.js',
+      template: 'public/index.html',
+      filename: 'error.html',
+      title: "Error",
+    },
     login: {
       entry: 'src/sso/login/login.js',
       template: 'src/sso/login/login.html',

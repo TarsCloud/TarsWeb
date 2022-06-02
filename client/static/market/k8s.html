@@ -53,9 +53,13 @@
 				let newStr = replaceSource(content, window.localStorage.marketUrl);
 
 				$('#head').append(newStr);
+				
+				setTimeout(()=>{
+					parent.document.loadFrameSucc();
+				}, 2000);
 			})
 			.catch(function (error) {
-				console.log(error);
+				parent.document.loadFrameError();
 			});
 		})
 
