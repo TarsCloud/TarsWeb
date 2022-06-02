@@ -2,13 +2,7 @@
   <div class="page_server">
     <div class="left-view">
       <div class="tree_wrap">
-        <i
-          v-if="treeData && treeData.length"
-          class="el-icon-refresh-right"
-          style="z-index: 99"
-          :class="{ active: isIconPlay }"
-          @click="getTreeData(1)"
-        ></i>
+
         <let-tree
           class="left-tree"
           v-if="treeData && treeData.length"
@@ -16,6 +10,13 @@
           :activeKey="treeid"
           @on-select="selectTree"
         />
+         <i
+          v-if="treeData && treeData.length"
+          class="el-icon-refresh-right"
+          style="position: absolute; right: 10px;"
+          :class="{ active: isIconPlay }"
+          @click="getTreeData(1)"
+        ></i>       
         <div class="left-tree" v-if="treeData && !treeData.length">
           <p class="loading">{{ $t("common.noService") }}</p>
         </div>
