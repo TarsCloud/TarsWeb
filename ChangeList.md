@@ -1,3 +1,15 @@
+## 20220606(3.0.2)
+
+### en
+
+- Add: add market load error page
+- Fix: dcache page offline cache bug
+
+### cn
+
+- Add: 添加市场加载出错的的错误页
+- Fix: dcache 下线 cache 的 bug
+
 ## 20220530(3.0.1)
 
 ### en
