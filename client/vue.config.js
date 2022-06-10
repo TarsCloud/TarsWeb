@@ -24,12 +24,6 @@ module.exports = {
       filename: 'k8s.html',
       title: "TarsK8s",
     },
-    dcache: {
-      entry: 'src/dcache.js',
-      template: 'public/index.html',
-      filename: 'dcache.html',
-      title: "DCache",
-    },
     error: {
       entry: 'src/error.js',
       template: 'public/index.html',

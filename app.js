@@ -38,7 +38,6 @@ const limitMidware = require('./midware/limitMidware');
 
 const AuthService = require('./sso/service/auth/AuthService');
 const PluginController = require('./plugin/controller/PluginController');
-const proxy = require('koa-server-http-proxy');
 //信任proxy头部，支持 X-Forwarded-Host
 app.proxy = true;
 
@@ -117,10 +116,6 @@ app.use(staticRouter([{
 //激活router
 if (WebConf.isEnableK8s()) {
 	require('./k8s');
-}
-
-if (WebConf.enable) {
-	require('./dcache');
 }
 
 app.use(async (ctx, next) => {

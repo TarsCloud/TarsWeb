@@ -360,7 +360,10 @@
             "serverList": "服务列表",
             "serverStatus": "服务实时状态",
             "patchList": "版本列表",
-            "buildList": "编译列表"
+            "buildList": "编译列表",
+            "serverIp": "节点列表",
+            "execute": "执行中...",
+            "executeSuccess": "执行成功"
         },
         "table": {
             "th": {
@@ -1573,39 +1576,6 @@
     "localeSelect": {
         "cn": "中文",
         "en": "英文"
-    },
-    "routerManage": {
-        "routerModule": "业务模块管理",
-        "routerRecord": "路由记录配置",
-        "routerGroup": "服务组配置",
-        "routerServer": "服务器配置",
-        "routerTransfer": "迁移记录",
-        "moduleName": "业务模块名",
-        "version": "版本号",
-        "switchStatus": "模块状态",
-        "remark": "备注",
-        "groupName": "服务器组名",
-        "accessStatus": "访问状态",
-        "serverName": "服务器名",
-        "serverStatus": "服务类型",
-        "pri": "优先级",
-        "sourceServerName": "备份源Server",
-        "fromPageNo": "开始页",
-        "toPageNo": "结束页",
-        "routerGroupName": "路由目的服务器组名",
-        "idcArea": "IDC地区",
-        "ip": "服务器IP",
-        "binlogPort": "BinLogObj服务端口",
-        "cachePort": "cache_port服务端口",
-        "wcachePort": "wcache_port服务端口",
-        "backupPort": "backup_port服务端口",
-        "routeclientPort": "routerclient_port服务端口",
-        "transGroupName": "迁移目的服务器组名",
-        "transferedPageNo": "已迁移成功页",
-        "state": "迁移状态",
-        "time": "时间",
-        "startTime": "开始时间",
-        "endTime": "结束时间"
     },
     "home": {
         "homeTab": "首页",

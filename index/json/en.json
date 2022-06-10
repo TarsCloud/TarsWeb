@@ -361,7 +361,10 @@
             "serverList": "Services",
             "serverStatus": "Real Time Service Status",
             "patchList": "Patchs",
-            "buildList": "Builds"
+            "buildList": "Builds",
+            "serverIp": "Node List",
+            "execute": "execute...",
+            "executeSuccess": "Success"
         },
         "table": {
             "th": {
@@ -1101,78 +1104,6 @@
         "ApprovalTime": "approval time",
         "ApprovalMark": "approval mark"
     },
-    "gateway": {
-        "station": "Station Config",
-        "upstream": "Upstream Config",
-        "globalblack": "Global Black List",
-        "stationId": "Station ID",
-        "stationName": "Station Name",
-        "monitorUrl": "Monitor Url",
-        "serverName": "Server Name",
-        "pathRule": "Path Rule",
-        "proxyPass": "ProxyPass",
-        "addr": "Addr",
-        "weight": "Weight",
-        "fusing": "Fusing",
-        "fusingOn": "FusingOn",
-        "fusingOff": "FusingOff",
-        "lastUpdate": "Update Time",
-        "gatewayObj": "GatewayFlowControlObj",
-        "switchGateway": "Switch Gateway",
-        "btn": {
-            "addGateway": "Add Gateway",
-            "addUpstream": "Add Upstream",
-            "addHttpRouter": "Add Router",
-            "loadAll": "Load Configuration"
-        },
-        "add": {
-            "stationNameTips": "please input station name",
-            "idFormatTips": "station id can only contain letters, numbers, dots, underscores, start with a letter, and cannot end with Obj",
-            "monitorUrlTips": "please input monitor tips",
-            "upstreamFormatTips": "upstream can only contain letters, numbers, underscores, start with a letter, and cannot end with Obj",
-            "addrFormatTips": "please input ip:port",
-            "weightFormatTips": "please input weight",
-            "serverNameTip": "support wildcards or regular expressions. if empty, matchs all",
-            "pathRuleTip": "please input path rule",
-            "proxyPassTip": "please input ProxyPass，support ip:port, upstream, tars obj",
-            "title": "add station",
-            "upstream": "add upstream"
-        },
-        "update": {
-            "title": "edit station",
-            "routerTitle": "edit router",
-            "upstream": "edit upstream",
-            "errTips": "edit fail"
-        },
-        "delete": {
-            "confirmTips": "are you sure to delete this station?",
-            "upstreamConfirmTips": "are you sure to delete this upstream?",
-            "bwListConfirmTips": "are you sure to delete this black/whitelist?",
-            "deleteUpstreamErrorTip": "detete fail，there are still associated routers, or upstream is not exsit",
-            "title": "Delete Station"
-        },
-        "config": {
-            "title": "Gateway Config"
-        },
-        "bwlist": {
-            "title": {
-                "black": "Blacklist",
-                "white": "Whitelist"
-            },
-            "ipTip": "please input ip（support wildcards）"
-        },
-        "flowControl": {
-            "title": "flow control",
-            "duration": "time window(s)",
-            "durationTip": "please input seconds of time window",
-            "maxFlow": "max flow",
-            "maxFlowTip": "please input max flow in time window",
-            "tip": "that is, during the 'time window', when reached 'max flow', the excess flow will be rejected"
-        },
-        "router": {
-            "title": "Router Config"
-        }
-    },
     "serviceExpand": {
         "title": "service expand",
         "form": {
@@ -1241,81 +1172,6 @@
     "resource": {
         "installRstMsg": ",The results of installment of Tarsnode are as follows:",
         "installResult": "Install result"
-    },
-    "inf": {
-        "list": {
-            "debug": "debug",
-            "benchmark": "benchmark"
-        },
-        "error": {
-            "parseFail": "proto parse fail",
-            "caseToolNotExists": "protocol parse tool not exists! please copy to web/"
-        },
-        "title": {
-            "listTitle": "Tars Files",
-            "dlgTitle": "Upload Tars File"
-        },
-        "dlg": {
-            "selectLabel": "modules/interfaces/functions",
-            "inParam": "in params",
-            "outParam": "out params",
-            "tarsFile": "tars file",
-            "deleteMsg": "are you sure to delete this file?",
-            "objName": "Servant Name",
-            "testCastName": "testcase name",
-            "fileName": "file name"
-        },
-        "benchmark": {
-            "inParam": "in params struct",
-            "outParam": "out params struct",
-            "fnlist": "Function List",
-            "nofn": "no function record",
-            "interface": "interface",
-            "fnname": "function name",
-            "returnType": "return type",
-            "case": "case",
-            "addCase": "add case",
-            "caselist": "case list",
-            "nocase": "no case record",
-            "des": "description",
-            "inputValue": "input value",
-            "modifyCase": "modify",
-            "testCase": "test",
-            "runCase": "run",
-            "viewResult": "view result",
-            "deleteCase": "delete",
-            "inputValueDes": "input value generation description",
-            "bmParams": "benchmark params",
-            "endpoints": "endpoints",
-            "endpointsTip": "other(eg：tcp -h 192.168.10.4 -t 60000 -p 3031，separate by newline)",
-            "infTest": "run test",
-            "cancelTest": "cancel",
-            "links": "links in one endpoint",
-            "speed": "speed in one endpoint",
-            "duration": "duration(s)",
-            "testResult": "benchmark result",
-            "startBenchmark": "start",
-            "stopBenchmark": "stop",
-            "refresh": "refresh",
-            "detail": "detail",
-            "stat": "stat charts",
-            "retStat": "return stat",
-            "costStat": "cost time stat",
-            "time": "time",
-            "total": "total",
-            "success": "success",
-            "fail": "fail",
-            "successRate": "success rate",
-            "maxCost": "max cost(ms)",
-            "minCost": "min cost(ms)",
-            "avgCost": "avg cost(ms)",
-            "sendBytes": "send bytes",
-            "recvBytes": "recv bytes",
-            "deleteCaseConfirm": "are you sure to delete this case?",
-            "installTip": "please install benchmark server before you use benchmark tool",
-            "installTutorial": "install tutorial",
-            "installScript": "install script"
-        }
     },
     "publishLog": {
         "title": "Publish Log",
@@ -1730,39 +1586,6 @@
     "localeSelect": {
         "cn": "Chinese",
         "en": "English"
-    },
-    "routerManage": {
-        "routerModule": "router Module",
-        "routerRecord": "router Record",
-        "routerGroup": "router Group",
-        "routerServer": "router Server",
-        "routerTransfer": "router Transfer",
-        "moduleName": "module name",
-        "version": "version",
-        "switchStatus": "switch status",
-        "remark": "remark",
-        "groupName": "group name",
-        "accessStatus": "access status",
-        "serverName": "server name",
-        "serverStatus": "server status",
-        "pri": "pri",
-        "sourceServerName": "source server name",
-        "fromPageNo": "from page no",
-        "toPageNo": "to page no",
-        "routerGroupName": "router group name",
-        "idcArea": "idc area",
-        "ip": "IP",
-        "binlogPort": "binlog port",
-        "cachePort": "cache port",
-        "wcachePort": "wcache port",
-        "backupPort": "backup port",
-        "routeclientPort": "routeclient port",
-        "transGroupName": "trans group name",
-        "transferedPageNo": "transfered page no",
-        "state": "state",
-        "time": "time",
-        "startTime": "start time",
-        "endTime": "end time"
     },
     "home": {
         "homeTab": "HOME",

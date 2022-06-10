@@ -592,7 +592,7 @@
 </template>
 
 <script>
-import PublishStatus from "../publish/status";
+import PublishStatus from "../inc/status";
 
 export default {
   name: "ServerPublish",

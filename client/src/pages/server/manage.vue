@@ -1048,7 +1048,7 @@
 </template>
 
 <script>
-import batchOperation from "./../dcache/moduleManage/batchOperation.vue";
+import batchOperation from "../inc/batchOperation.vue";
 import Vue from "vue";
 import VueClipboard from "vue-clipboard2";
 Vue.use(VueClipboard);

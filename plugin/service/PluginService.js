@@ -71,22 +71,10 @@ PluginService.loadPlugins = async (app) => {
 
     plugins.forEach(async (plugin) => {
 
-        // console.log("plugin:", plugin);
-
         let target = await findActiveIndex(plugin.f_obj);
 
-        // console.log("target:", plugin, target);
         if (target) {
 
-            // if (process.env.NODE_ENV != "production") {
-            //     if (plugin.f_path == "/plugins/base/benchmark") {
-            //         app.use(proxy(plugin.f_path, {
-            //             target: "http://127.0.0.1:8188",
-            //             ws: true,
-            //             changeOrigin: true
-            //         }));
-            //     }
-            // } else {
             app.use(proxy(`${plugin.f_path}`, {
                 target: target,
                 ws: true,

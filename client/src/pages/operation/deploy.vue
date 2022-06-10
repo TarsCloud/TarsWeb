@@ -410,7 +410,7 @@
 </template>
 
 <script>
-import PublishStatus from "../publish/status";
+import PublishStatus from "../inc/status";
 
 import SetInputer from "@/components/set-inputer";
 

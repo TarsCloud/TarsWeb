@@ -20,9 +20,7 @@ const {
 	apiConf,
 	clientConf
 } = require('../app/index');
-const {
-	dcacheApiConf
-} = require('../dcache');
+
 const {
 	ssoApiConf
 } = require('../sso');
@@ -83,7 +81,6 @@ const getRouter = (router, routerConf) => {
 
 localeApiConf.forEach(conf => apiConf.push(conf));
 authApiConf.forEach(conf => apiConf.push(conf));
-dcacheApiConf.forEach(conf => apiConf.push(conf));
 ssoApiConf.forEach(conf => apiConf.push(conf));
 monitorApiConf.forEach(conf => apiConf.push(conf));
 callTrainConf.forEach(conf => apiConf.push(conf));
@@ -99,7 +96,6 @@ getRouter(pageRouter, pageApiConf);
 const indexRouter = new Router();
 indexRouter.prefix('/');
 getRouter(indexRouter, pageApiConf);
-
 
 //节点服务器过来的请求, 获取安装tarsnode的脚本
 const clientRouter = new Router();
