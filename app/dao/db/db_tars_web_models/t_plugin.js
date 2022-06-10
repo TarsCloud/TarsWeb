@@ -38,13 +38,11 @@ module.exports = function (sequelize, DataTypes) {
 			type: DataTypes.STRING(64),
 			allowNull: false,
 			defaultValue: '',
-			unique: "obj"
 		},
 		f_path: {
 			type: DataTypes.STRING(64),
 			allowNull: false,
 			defaultValue: '',
-			unique: "path"
 		},
 		f_type: {
 			type: DataTypes.INTEGER,
@@ -63,6 +61,15 @@ module.exports = function (sequelize, DataTypes) {
 		},
 	}, {
 		tableName: 't_plugin',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+				unique: true,
+				fields: ['f_obj', 'f_type']
+			},
+			{
+				unique: true,
+				fields: ['f_path']
+			}
+		]
 	});
 };

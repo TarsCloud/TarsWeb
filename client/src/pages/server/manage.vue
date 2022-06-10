@@ -249,7 +249,7 @@
           size="small"
           :disabled="!hasCheckedServer"
           @click="batchConfigServer"
-          >{{ $t("dcache.batch.edit") }}</let-button
+          >{{ $t("serverList.batch.edit") }}</let-button
         >
         <batch-operation
           size="small"
@@ -1398,9 +1398,7 @@ export default {
     },
     // 获取服务数据
     async getServerConfig(id) {
-      const loading = this.$loading.show({
-        target: this.$refs.configFormLoading,
-      });
+      const loading = this.$loading.show();
 
       let data = await this.$ajax.getJSON("/server/api/base_image_list");
 
@@ -1689,9 +1687,7 @@ export default {
     manageServant(server) {
       this.servantModal.show = true;
 
-      const loading = this.$loading.show({
-        target: this.$refs.servantModalLoading,
-      });
+      const loading = this.$loading.show();
 
       this.$ajax
         .getJSON("/server/api/adapter_conf_list", {

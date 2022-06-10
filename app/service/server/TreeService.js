@@ -250,12 +250,13 @@ TreeService.setCacheData = async (isRefresh) => {
 TreeService.setCacheData()
 
 TreeService.getDCacheCommonServer = () => {
-	return ['DCacheOptServer', 'ConfigServer', 'PropertyServer'];
+	return ['DCacheOptServer', 'ConfigServer', 'PropertyServer', 'DCacheWebServer'];
 }
 
 TreeService.isDCacheCommonServer = (server_name) => {
 	return server_name === 'DCacheOptServer' ||
 		server_name === 'ConfigServer' ||
+		server_name === 'DCacheWebServer' ||
 		server_name === 'PropertyServer';
 }
 
@@ -274,12 +275,14 @@ TreeService.getCacheData = async (searchKey, uid, type) => {
 	// 过滤Dcache
 	if (type && type === '1') {
 		// 应用服务
-		// serverList = serverList.filter(item => item.application !== 'DCache' || (item.application === 'DCache' && TreeService.isDCacheCommonServer(item.server_name)))
-		serverList = serverList.filter(item => item.application !== 'DCache')
+		serverList = serverList.filter(item => item.application !== 'DCache' || (item.application === 'DCache' && TreeService.isDCacheCommonServer(item.server_name)))
+		// serverList = serverList.filter(item => item.application !== 'DCache' || TreeService.isDCacheCommonServer(item.server_name))
 	} else if (type === '2') {
 		// DCache
 		serverList = serverList.filter(item => item.application === 'DCache' && TreeService.isDCacheCommonServer(item.server_name))
 	}
+
+	// console.log(type, serverList);
 
 	if (!await AuthService.isAdmin(uid)) {
 

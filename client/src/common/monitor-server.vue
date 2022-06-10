@@ -417,7 +417,7 @@ export default {
       this.loading = true;
       // const chartLoading = this.$refs.chart && this.$refs.chart.$loading.show();
       // const tableLoading = this.$refs.table.$loading.show();
-      return this.$ajax
+      return this.$tars
         .getJSON("/server/api/stat_monitor_data", this.query)
         .then((data) => {
           this.loading = false;

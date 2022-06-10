@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%;height:800px">
+  <div style="width:100%;height:1200px">
     <iframe id="iframe" frameborder="0" style="width:100%;"> </iframe>
   </div>
 </template>
@@ -17,18 +17,24 @@ export default {
       this.setIframeHeight("iframe");
     }, 200);
   },
+  watch: {
+    $route(to, from) {
+      console.log(to);
+      this.load();
+    },
+  },
   methods: {
     load() {
-      // console.log(this.$route);
+      let ticket = this.$cookie.get("ticket");
 
-      let src = `${this.$route.path}?ticket=` + this.$cookie.get("ticket");
+      console.log(this.$route);
+
+      let src = `${this.$route.path}?ticket=` + ticket;
       console.log("load:" + src);
       document.getElementById("iframe").src = src;
     },
     setIframeHeight(id) {
       try {
-        // document.getElementById("iframe").height=document.getElementById("iframe").contentWindow.document.body.scrollHeight;
-
         var iframe = document.getElementById(id);
 
         let height = 0;
@@ -40,8 +46,8 @@ export default {
 
         // console.log(iframe.height);
 
-        if (height < 800 && iframe.height < 800) {
-          iframe.height = 800;
+        if (height < 1200 && iframe.height < 1200) {
+          iframe.height = 1200;
         }
       } catch (e) {
         throw new Error(e);

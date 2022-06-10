@@ -33,7 +33,7 @@ LoginController.registerPage = async (ctx) => {
 //登出操作，清理session并跳转
 LoginController.logout = async (ctx) => {
 
-    console.log('logout');
+    // console.log('logout');
 
     ctx.cookies.set('ticket', '');
     ctx.cookies.set('uid', '');

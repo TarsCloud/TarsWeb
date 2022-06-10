@@ -13,9 +13,9 @@
             <a v-if="k8s === 'true'" href="/k8s.html"
               ><img class="logo" src="/static/img/K8S.png"
             /></a>
-            <a v-if="enable === 'true'" href="/dcache.html"
+            <!-- <a v-if="enable === 'true'" href="/dcache.html"
               ><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"
-            /></a>
+            /></a> -->
           </div>
         </el-col>
 
@@ -45,20 +45,24 @@
         </el-col>
         <el-col :span="3">
           <div class="plugin-wrap">
-            <el-select
-              v-model="pluginPath"
-              placeholder="扩展服务"
-              @change="changePlugin"
-              style="width:200px"
-            >
-              <el-option
-                v-for="item in plugins"
-                :key="item.f_id"
-                :label="item.f_name + '(' + item.f_name_en + ')'"
-                :value="item.f_path"
+            <div style="display: inline-block;width:70%">
+              <el-select
+                v-model="pluginPath"
+                placeholder="扩展服务"
+                @change="changePlugin"
               >
-              </el-option>
-            </el-select>
+                <el-option
+                  v-for="item in plugins"
+                  :key="item.f_id"
+                  :label="item.f_name + '(' + item.f_name_en + ')'"
+                  :value="item.f_path"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <div style="margin-left:10px;width:20%;display: inline-block;">
+              <i class="el-icon-refresh-right" @click="refreshPlugin()"></i>
+            </div>
           </div>
         </el-col>
         <el-col :span="2">
@@ -174,9 +178,25 @@ export default {
       return this.$store.state.marketUid;
     },
   },
+  watch: {
+    $route(to, from) {
+      console.log("header", to);
+      if (to.path.startsWith("/plugins") && !to.path.startsWith("/plugins/*")) {
+        this.pluginPath = to.path;
+      }
+    },
+  },
   methods: {
+    refreshPlugin() {
+      if (this.pluginPath.startsWith("/plugins")) {
+        this.$router.replace("/plugins/*");
+        this.$nextTick(() => {
+          this.$router.replace(this.pluginPath);
+        });
+      }
+    },
     changePlugin() {
-      this.$router.push(`${this.pluginPath}`);
+      this.$router.replace(this.pluginPath);
     },
     clickTab(tabkey) {
       // if (tabkey == "/market") {
@@ -218,6 +238,12 @@ export default {
         .getJSON("/plugin/api/list", { k8s: false, type: 1 })
         .then((data) => {
           this.plugins = data;
+          if (
+            this.$route.path.startsWith("/plugins") &&
+            !this.$route.path.startsWith("/plugins/*")
+          ) {
+            this.pluginPath = this.$route.path;
+          }
         })
         .catch((err) => {
           this.$common.showError(err);

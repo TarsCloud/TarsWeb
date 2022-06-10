@@ -956,9 +956,7 @@ export default {
     },
     // 获取服务数据
     getServerConfig(id) {
-      const loading = this.$loading.show({
-        target: this.$refs.configFormLoading,
-      });
+      const loading = this.$loading.show();
 
       this.$ajax
         .getJSON("/server/api/server", {
@@ -1163,9 +1161,7 @@ export default {
     manageServant(server) {
       this.servantModal.show = true;
 
-      const loading = this.$loading.show({
-        target: this.$refs.servantModalLoading,
-      });
+      const loading = this.$loading.show();
 
       this.$ajax
         .getJSON("/server/api/adapter_conf_list", {

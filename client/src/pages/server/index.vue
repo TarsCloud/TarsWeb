@@ -31,7 +31,7 @@
         <div class="left-tree" v-if="!treeData" ref="treeLoading">
           <div class="loading" v-if="treeData === false">
             <p>{{ treeErrMsg }}</p>
-            <a href="javascript:;" @click="getTreeData">{{
+            <a href="javascript:;" @click="getTreeData()">{{
               $t("common.reTry")
             }}</a>
           </div>
@@ -346,9 +346,7 @@ export default {
       this.treeData = null;
 
       this.$nextTick(() => {
-        const loading = this.$loading.show({
-          target: this.$refs.treeLoading,
-        });
+        const loading = this.$loading.show();
 
         this.$ajax
           .getJSON("/server/api/tree", {
@@ -636,7 +634,6 @@ export default {
   width: 100%;
   overflow: hidden;
 
-  /*left-view*/
   .left-view {
     display: flex;
     flex: 1;
@@ -723,25 +720,6 @@ export default {
         }
       }
     }
-
-    /* .tree-icon {
-      width: 16px;
-      height: 16px;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 100%;
-      background-image: url("../../assets/img/tree-icon-2.png");
-      margin-right: 4px;
-      margin-left: 0;
-      vertical-align: middle;
-
-      &.down {
-        transform: rotate(0);
-      }
-      &:before {
-        content: "";
-      }
-    } */
   }
   /*目录树 end*/
 

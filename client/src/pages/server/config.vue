@@ -840,9 +840,7 @@ export default {
     showMergedDetail(id) {
       this.detailModal.title = this.$t("cfg.title.viewMerged");
       this.detailModal.show = true;
-      const loading = this.$loading.show({
-        target: this.$refs.detailModalLoading,
-      });
+      const loading = this.$loading.show();
 
       this.$ajax
         .getJSON("/server/api/merged_node_config", {
@@ -864,9 +862,7 @@ export default {
     showHistory(id) {
       this.detailModal.title = this.$t("cfg.title.viewHistory");
       this.detailModal.show = true;
-      const loading = this.$loading.show({
-        target: this.$refs.detailModalLoading,
-      });
+      const loading = this.$loading.show();
 
       this.$ajax
         .getJSON("/server/api/config_file_history_list", {

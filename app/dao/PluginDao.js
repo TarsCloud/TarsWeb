@@ -22,7 +22,7 @@ const PluginDao = {};
 
 PluginDao.listPlugins = async (type) => {
 
-	console.log(type);
+	// console.log(type);
 
 	if (type) {
 		return await tPlugin.findAll({

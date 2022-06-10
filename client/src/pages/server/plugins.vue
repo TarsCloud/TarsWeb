@@ -13,7 +13,6 @@ export default {
   },
 
   mounted() {
-    console.log("here");
     this.load();
 
     setInterval(() => {
@@ -25,8 +24,6 @@ export default {
     load() {
       document.getElementById(this.id).src =
         this.path + "?treeid=" + this.treeid;
-
-      // console.log(document.getElementById(this.id).src);
     },
     setIframeHeight(id) {
       try {
@@ -38,8 +35,6 @@ export default {
         } else {
           height = iframe.contentDocument.body.scrollHeight;
         }
-
-        // console.log(iframe.height);
 
         if (height < 800 && iframe.height < 800) {
           iframe.height = 800;

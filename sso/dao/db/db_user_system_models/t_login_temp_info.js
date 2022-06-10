@@ -1,6 +1,6 @@
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
 	return sequelize.define('t_login_temp_info', {
 		id: {
 			type: DataTypes.INTEGER(11),
@@ -10,7 +10,8 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		ticket: {
 			type: DataTypes.STRING(256),
-			allowNull: true
+			allowNull: true,
+
 		},
 		uid: {
 			type: DataTypes.STRING(256),
@@ -23,6 +24,10 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 't_login_temp_info',
-		timestamps: false
+		timestamps: false,
+		indexes: [{
+			unique: false,
+			fields: ['ticket']
+		}]
 	});
 };

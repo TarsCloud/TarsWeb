@@ -335,9 +335,7 @@ export default {
       this.treeData = null;
 
       this.$nextTick(() => {
-        const loading = this.$loading.show({
-          target: this.$refs.treeLoading,
-        });
+        const loading = this.$loading.show("loading");
 
         this.$ajax
           .getJSON("/server/api/dtree", { type })
