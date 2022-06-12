@@ -19,6 +19,7 @@ const {
 } = require('./service');
 
 const client = require("@tars/rpc/protal.js").Communicator.New();
+const AdminRegProxy = require("./proxy/AdminRegProxy");
 const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const TopologyProxy = require("./topology/TopologyProxy");
 const EndpointManager = require("./proxy/getservant/lib/getEndpoint");
@@ -26,23 +27,23 @@ const WebConf = require('../config/webConf');
 
 client.initialize(WebConf.k8s.client);
 
-//生成rpc结构体
-const RPCStruct = function (proxy, moduleName) {
-    var module = proxy[moduleName];
-    var rpcStruct = {};
-    for (var p in module) {
-        if (module.hasOwnProperty(p)) {
-            if (typeof module[p] == 'function') {
-                if (new module[p]()._classname) {
-                    rpcStruct[p] = module[p];
-                }
-            } else {
-                rpcStruct[p] = module[p];
-            }
-        }
-    }
-    return rpcStruct;
-};
+// //生成rpc结构体
+// const RPCStruct = function (proxy, moduleName) {
+//     var module = proxy[moduleName];
+//     var rpcStruct = {};
+//     for (var p in module) {
+//         if (module.hasOwnProperty(p)) {
+//             if (typeof module[p] == 'function') {
+//                 if (new module[p]()._classname) {
+//                     rpcStruct[p] = module[p];
+//                 }
+//             } else {
+//                 rpcStruct[p] = module[p];
+//             }
+//         }
+//     }
+//     return rpcStruct;
+// };
 
 let TARS_K8S_PROXY = "";
 
@@ -56,6 +57,7 @@ if (process.env.NODE_ENV == "all" && process.env.TARS_K8S_PROXY) {
 }
 
 module.exports = {
+    adminRegPrx: RPCClientPrx(client, AdminRegProxy, 'tars', 'AdminReg', 'tars.tarsAdminRegistry.AdminRegObj'),
 
     statQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj' + TARS_K8S_PROXY),
     propertyQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj' + TARS_K8S_PROXY),

@@ -14,13 +14,15 @@
  * specific language governing permissions and limitations under the License.
  */
 
-const NodeProxy = require("../../../rpc/k8s-proxy/NodeProxy");
+// const NodeProxy = require("../../../rpc/k8s-proxy/NodeProxy");
+// const AdminService = require("../");
+// const {
+//     RPCClientPrx
+// } = require('../../../rpc/service');
 const {
-    RPCClientPrx
-} = require('../../../rpc/service');
-const {
-    client
+    adminRegPrx
 } = require('../../../rpc/k8s');
+
 const CommonService = require('../common/CommonService');
 const logger = require('../../../logger');
 const Telnet = require('telnet-client')
@@ -36,8 +38,8 @@ NodeService.startServer = async (application, serverName, podIp) => {
 
             logger.info(`startServer: ${target}, ${application}, ${serverName}`);
 
-            let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
-            ret = await nodePrx.startServer(application, serverName);
+            // let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
+            ret = await adminRegPrx.startServer(application, serverName, target);
         } catch (e) {
             ret = {
                 __return: -1,
@@ -69,8 +71,9 @@ NodeService.stopServer = async (application, serverName, podIp) => {
 
             logger.info(`stopServer: ${target}, ${application}, ${serverName}`);
 
-            let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
-            ret = await nodePrx.stopServer(application, serverName);
+            // let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
+            // ret = await nodePrx.stopServer(application, serverName);
+            ret = await adminRegPrx.stopServer(application, serverName, target);
         } catch (e) {
             ret = {
                 __return: -1,
@@ -101,8 +104,10 @@ NodeService.restartServer = async (application, serverName, podIp) => {
 
             logger.info(`restartServer: ${target}, ${application}, ${serverName}`);
 
-            let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
-            ret = await nodePrx.restartServer(application, serverName);
+            // let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
+            // ret = await nodePrx.restartServer(application, serverName);
+            ret = await adminRegPrx.restartServer(application, serverName, target);
+
         } catch (e) {
             ret = {
                 __return: -1,
@@ -132,8 +137,9 @@ NodeService.doCommand = async (application, serverName, podIp, command) => {
 
             logger.info(`doCommand: ${command}, ${target}, ${application}, ${serverName}`);
 
-            let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
-            ret = await nodePrx.notifyServer(application, serverName, command);
+            // let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
+            // ret = await nodePrx.notifyServer(application, serverName, command);
+            ret = await adminRegPrx.notifyServer(application, serverName, target, command);
         } catch (e) {
             ret = {
                 __return: -1,
@@ -325,7 +331,6 @@ NodeService.checkNode = async (node, port) => {
     }
 }
 
-//�༭��ǩ(������ɾ��)
 NodeService.editCommonTag = async (metadata) => {
     let k8sNode = await CommonService.readNode(metadata.nodeName);
     if (k8sNode && k8sNode.body) {
@@ -347,7 +352,7 @@ NodeService.editCommonTag = async (metadata) => {
     };
 }
 
-//�����������ø��ǲ���
+
 NodeService.batchEditCommonTag = async (metadata) => {
     for (let node of metadata.nodeNames) {
         let k8sNode = await CommonService.readNode(node);

@@ -17,7 +17,6 @@
 const client = require("@tars/rpc/protal.js").client;
 const AdminRegProxy = require("./proxy/AdminRegProxy");
 const ConfigFProxy = require("./proxy/ConfigFProxy");
-const DCacheOptProxy = require("./proxy/DCacheOptProxy");
 const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const PatchProxy = require("./proxy/PatchProxy");
 const TopologyProxy = require("./topology/TopologyProxy");
@@ -29,24 +28,6 @@ const {
 } = require('./service');
 
 client.initialize(WebConf.client);
-
-//生成rpc结构体
-const RPCStruct = function (proxy, moduleName) {
-    var module = proxy[moduleName];
-    var rpcStruct = {};
-    for (var p in module) {
-        if (module.hasOwnProperty(p)) {
-            if (typeof module[p] == 'function') {
-                if (new module[p]()._classname) {
-                    rpcStruct[p] = module[p];
-                }
-            } else {
-                rpcStruct[p] = module[p];
-            }
-        }
-    }
-    return rpcStruct;
-};
 
 let registry = new EndpointManager(client.getProperty('locator')).getQueryPrx();
 
@@ -60,8 +41,6 @@ module.exports = {
 
     statQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsquerystat.QueryObj'),
     propertyQueryPrx: RPCClientPrx(client, MonitorQueryProxy, 'tars', 'MonitorQuery', 'tars.tarsqueryproperty.QueryObj'),
-
-    DCacheOptPrx: RPCClientPrx(client, DCacheOptProxy, 'DCache', 'DCacheOpt', 'DCache.DCacheOptServer.DCacheOptObj'),
 
     topologyPrx: RPCClientPrx(client, TopologyProxy, 'tars', 'Topology', 'tars.tarslog.TopologyObj'),
 
