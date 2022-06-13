@@ -1257,6 +1257,15 @@ export default {
               serverName,
             })
             .then((data) => {
+              for (let i = 0; i < data.length; i++) {
+                if (data[i].ret_code != 0) {
+                  this.$tip.error(
+                    this.$t("common.error") + ", ret_code:" + data[i].ret_code
+                  );
+                  return;
+                }
+              }
+
               this.$tip.success(this.$t("common.success"));
               this.startServerList();
               this.getServerNotifyList();
@@ -1302,6 +1311,15 @@ export default {
               serverName,
             })
             .then((data) => {
+              for (let i = 0; i < data.length; i++) {
+                if (data[i].ret_code != 0) {
+                  this.$tip.error(
+                    this.$t("common.error") + ", ret_code:" + data[i].ret_code
+                  );
+                  return;
+                }
+              }
+
               this.$tip.success(this.$t("common.success"));
               this.startServerList();
               this.getServerNotifyList();
@@ -1347,6 +1365,15 @@ export default {
               serverName,
             })
             .then((data) => {
+              for (let i = 0; i < data.length; i++) {
+                if (data[i].ret_code != 0) {
+                  this.$tip.error(
+                    this.$t("common.error") + ", ret_code:" + data[i].ret_code
+                  );
+                  return;
+                }
+              }
+
               this.$tip.success(this.$t("common.success"));
               this.startServerList();
               this.getServerNotifyList();
@@ -1757,20 +1784,20 @@ export default {
         })
         .then((res) => {
           loading.hide();
+          for (let i = 0; i < res.length; i++) {
+            if (res[i].ret_code != 0) {
+              this.$tip.error(
+                this.$t("common.error") + ", ret_code:" + res[i].ret_code
+              );
+              return;
+            }
+          }
+
           const msg = res[0].err_msg.replace(/\n/g, "<br>");
           if (res[0].ret_code === 0) {
-            // const opt = {
-            //   title: this.$t("common.success"),
-            //   message: msg,
-            // };
-            // if (hold) opt.duration = 0;
-
             this.commandHTML = msg;
             this.dialogCommandVisible = true;
 
-            // let msg = `{ "title": "成功!!!", "message": "[notify prefix object num:1]<br>[1]:====================================================================================================<br>----------------------------------------------------------------------------------------------------<br>[adapter:Cloud.MarketStorageServer.StorageObjAdapter] [connections:2]<br>conn-uid ip:port last-time timeout recvBufferSize sendBufferSize <br>205520898 172.29.96.179:46112 2022-04-17 12:38:01 30 0 0 <br>205520908 127.0.0.1:42308 2022-04-17 12:37:34 3 0 0 <br>----------------------------------------------------------------------------------------------------<br>[adapter:Cloud.MarketStorageServer.RaftObjAdapter] [connections:2]<br>conn-uid ip:port last-time timeout recvBufferSize sendBufferSize <br>205520898 172.29.96.179:46112 2022-04-17 12:38:01 30 0 0 <br>205520908 127.0.0.1:42308 2022-04-17 12:37:34 3 0 0 <br>----------------------------------------------------------------------------------------------------<br>[adapter:AdminAdapter] [connections:2] <br>conn-uid ip:port last-time timeout recvBufferSize sendBufferSize <br>205520898 172.29.96.179:46112 2022-04-17 12:38:01 30 0 0 <br>205520908 127.0.0.1:42308 2022-04-17 12:37:34 3 0 0 <br>====================================================================================================<br><br>", "duration": 0 }`;
-
-            // this.$tip.success(opt);
             this.getServerNotifyList();
           } else {
             throw new Error(msg);
