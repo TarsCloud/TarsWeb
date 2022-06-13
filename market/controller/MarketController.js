@@ -114,6 +114,8 @@ MarketController.getFrameworkTicket = async (ctx) => {
 	try {
 		let data = await getMarketService(ctx.paramsObj.k8s).getFrameworkKey();
 
+		console.log("getFrameworkTicket", data);
+
 		if (!data) {
 			ctx.makeErrResObj();
 			return;
@@ -123,6 +125,8 @@ MarketController.getFrameworkTicket = async (ctx) => {
 		//使用私钥解密
 		let secret = ctx.paramsObj.secret;
 		let ticket = sm2.doDecrypt(secret, data.pri_key, cipherMode);
+
+		console.log("ticket", secret, data.pri_key, ticket);
 
 		ctx.makeResObj(200, '', {
 			ticket: ticket || ''

@@ -7,9 +7,12 @@ const pluginApiConf = [
         name: 'notEmpty',
         name_en: 'notEmpty',
         type: 'notEmpty',
+        path: 'notEmpty',
     }],
 
-    ['get', '/list', PluginController.list],
+    ['get', '/list', PluginController.list, {
+        k8s: 'notEmpty',
+    }],
 ];
 
 module.exports = {

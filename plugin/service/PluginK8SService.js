@@ -15,12 +15,84 @@
  */
 
 const logger = require('../../logger');
+const CommonService = require("../../k8s/service/common/CommonService");
+
 const PluginService = {};
 
+PluginService.listInstall = async (paramsObj) => {
 
-PluginService.listInstall = async (product) => {}
+    let tPlugin = await CommonService.getObject("tplugins", CommonService.getMetadataName(paramsObj.obj.toLowerCase()));
 
-PluginService.loadPlugins = async () => {
+    let result;
+
+    if (!tPlugin) {
+        tPlugin = tPlugin.body;
+        tPlugin.spec = {
+            name: paramsObj.name,
+            name_en: paramsObj.name_en,
+            obj: paramsObj.obj,
+            type: paramsObj.type,
+            path: paramsObj.path
+        };
+
+        result = await CommonService.replaceObject("tplugins", tPlugin);
+
+    } else {
+        tPlugin = {
+            apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
+            kind: 'TPlugin',
+            metadata: {
+                namespace: CommonService.NAMESPACE,
+            },
+        }
+        tPlugin.spec = {
+            name: paramsObj.name,
+            name_en: paramsObj.name_en,
+            obj: paramsObj.obj,
+            type: paramsObj.type,
+            path: paramsObj.path
+        }
+
+        result = await CommonService.createObject("tplugins", tPlugin);
+    }
+
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: result.body
+    };
+
+}
+
+PluginService.loadPlugins = async (app) => {
+
+    try {
+        let plugins = await CommonService.listObject("tplugins");
+
+        // console.log("loadPlugins", plugins);
+
+        if (plugins.items) {
+            plugins.items.forEach(async (plugin) => {
+
+                let target = await findActiveIndex(plugin.f_obj);
+
+                if (target) {
+
+                    app.use(proxy(`${plugin.f_path}`, {
+                        target: target,
+                        ws: true,
+                        changeOrigin: true
+                    }));
+                }
+            });
+        }
+    } catch (e) {
+
+    }
+
+    setTimeout(() => {
+        PluginService.loadPlugins(app);
+    }, 5000);
 
 }
 

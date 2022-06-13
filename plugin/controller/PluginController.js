@@ -54,7 +54,6 @@ PluginController.list = async (ctx) => {
 	try {
 		let result = await getPluginService(ctx.paramsObj.k8s).list(ctx.paramsObj.type);
 
-		// console.log(result);
 		ctx.makeResObj(result.ret, result.msg, result.data);
 
 	} catch (e) {

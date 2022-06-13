@@ -24,11 +24,6 @@ const PluginService = {};
 
 const _ = require('lodash');
 
-PluginService.install = async (paramsObj) => {
-
-    return await PluginDao.install(paramsObj);
-}
-
 PluginService.list = async (type) => {
 
     let rst = await PluginDao.listPlugins(type);

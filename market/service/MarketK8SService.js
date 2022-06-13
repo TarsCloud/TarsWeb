@@ -138,6 +138,8 @@ MarketService.getFrameworkKey = async () => {
 
 	let fkey = await CommonService.getObject("tframeworkkey", "key");
 
+	// console.log(fkey);
+
 	if (fkey) {
 		return fkey.body.spec;
 	} else {
