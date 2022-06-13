@@ -57,10 +57,14 @@ import OperationNode from '@/k8s/operation/node';
 import OperationEvent from '@/k8s/operation/event';
 import OperationTfc from '@/k8s/operation/frameworkConfig';
 
-// 网关
-// import OperationGateway from '@/gateway/index';
+//服务级别插件
+import ServerPlugins from '@/pages/server/plugins';
 
-import market from '@/market/market';
+//全局插件
+import Plugin from '@/components/plugins.vue';
+
+//市场
+import Market from '@/market/market';
 
 export default new Router({
   routes: [{
@@ -98,6 +102,10 @@ export default new Router({
         {
           path: ':treeid/user-manage',
           component: AuthManage,
+        },
+        {
+          path: ':treeid/plugins',
+          component: ServerPlugins,
         },
       ],
     },
@@ -156,16 +164,15 @@ export default new Router({
         }
       ],
     },
-    // {
-    //   path: '/gateway',
-    //   name: 'Gateway',
-    //   component: OperationGateway,
-    // },
-    // {
-    //   path: '/market',
-    //   name: 'market',
-    //   component: market
-    // },
+    {
+      path: '/market',
+      name: 'Market',
+      component: Market
+    }, {
+      path: '/plugins/*',
+      name: 'Plugin',
+      component: Plugin
+    },
     {
       path: '*',
       redirect: '/server',

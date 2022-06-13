@@ -10,13 +10,13 @@
             <a v-if="k8s === 'true'" :class="{ active: true }" href="/k8s.html"
               ><img class="logo" src="/static/img/K8S.png"
             /></a>
-            <a v-if="enable === 'true'" href="/dcache.html"
+            <!-- <a v-if="enable === 'true'" href="/dcache.html"
               ><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"
-            /></a>
+            /></a> -->
           </div>
         </el-col>
 
-        <el-col :span="12">
+        <el-col :span="9">
           <let-tabs
             class="tabs"
             :center="true"
@@ -40,7 +40,28 @@
             ></let-tab-pane>
           </let-tabs>
         </el-col>
-
+        <el-col :span="3">
+          <div class="plugin-wrap">
+            <div style="display: inline-block;width:70%">
+              <el-select
+                v-model="pluginPath"
+                placeholder="扩展服务"
+                @change="changePlugin"
+              >
+                <el-option
+                  v-for="item in plugins"
+                  :key="item.f_id"
+                  :label="item.f_name + '(' + item.f_name_en + ')'"
+                  :value="item.f_path"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <div style="margin-left:10px;width:20%;display: inline-block;">
+              <i class="el-icon-refresh-right" @click="refreshPlugin()"></i>
+            </div>
+          </div>
+        </el-col>
         <el-col :span="4">
           <div class="language-wrap">
             <let-select
@@ -93,7 +114,7 @@
                 }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <el-dropdown @command="handleMarketCommand" v-if="marketUid">
+            <!-- <el-dropdown @command="handleMarketCommand" v-if="marketUid">
               <span class="el-dropdown-link">
                 <i class="el-icon-cloudy el-icon--left"></i>
                 {{ marketUid.uid
@@ -113,7 +134,7 @@
                   $t("cloud.header.quit")
                 }}</el-dropdown-item>
               </el-dropdown-menu>
-            </el-dropdown>
+            </el-dropdown> -->
           </div>
         </el-col>
       </el-row>
@@ -144,6 +165,8 @@ export default {
       uid: "--",
       enableLogin: false,
       isAdmin: false,
+      pluginPath: "",
+      plugins: [],
       localeMessages: localeMessages,
       k8s: this.$cookie.get("k8s") || "false",
       enable: this.$cookie.get("enable") || "false",
@@ -168,27 +191,34 @@ export default {
         location.href = "/pages/server/api/logout";
       }
     },
-    handleMarketCommand(command) {
-      if (command == "quit") {
-        this.$store.commit({
-          type: "quit",
-        });
+    // handleMarketCommand(command) {
+    //   if (command == "quit") {
+    //     this.$store.commit({
+    //       type: "quit",
+    //     });
 
-        this.$router.push("/market/user/login");
-      } else if (command == "pass") {
-        this.$router.push("/market/repo/pass");
-      } else if (command == "project") {
-        this.$router.push("/market/repo/project");
-      } else if (command == "modify") {
-        this.$router.push("/market/user/modifyPass");
+    //     this.$router.push("/market/user/login");
+    //   } else if (command == "pass") {
+    //     this.$router.push("/market/repo/pass");
+    //   } else if (command == "project") {
+    //     this.$router.push("/market/repo/project");
+    //   } else if (command == "modify") {
+    //     this.$router.push("/market/user/modifyPass");
+    //   }
+    // },
+    refreshPlugin() {
+      if (this.pluginPath.startsWith("/plugins")) {
+        this.$router.replace("/plugins/*");
+        this.$nextTick(() => {
+          this.$router.replace(this.pluginPath);
+        });
       }
     },
+    changePlugin() {
+      this.$router.replace(this.pluginPath);
+    },
     clickTab(tabkey) {
-      // if (tabkey == "/market") {
-      //   window.open("/static/market/k8s.html");
-      // } else {
       this.$router.replace(tabkey);
-      // }
     },
     userCenter() {
       window.open("/pages/server/api/userCenter");
@@ -313,6 +343,12 @@ export default {
     .logo {
       height: 28px;
     }
+  }
+
+  .plugin-wrap {
+    height: 80px;
+    padding-top: 20px;
+    display: inline-block;
   }
 
   .language-wrap {

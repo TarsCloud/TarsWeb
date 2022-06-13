@@ -15,7 +15,7 @@
           <i
             class="el-icon-refresh-right"
             style="margin:10px"
-            @click="fetchData()"
+            @click="fetchData(true)"
           ></i>
         </span>
       </let-form-item>
@@ -134,7 +134,7 @@ export default {
       this.pagination.page = num;
       this.fetchData();
     },
-    fetchData() {
+    fetchData(force) {
       const loading = this.$refs.table.$loading.show();
       return this.$ajax
         .getJSON("/k8s/api/server_list", {
@@ -142,6 +142,7 @@ export default {
           ServerName: this.query.ServerName,
           page: this.pagination.page,
           size: this.pagination.size,
+          force: force,
         })
         .then((data) => {
           loading.hide();

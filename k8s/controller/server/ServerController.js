@@ -55,7 +55,7 @@ ServerController.sendCommand = async (ctx) => {
  */
 ServerController.ServerSelect = async (ctx) => {
 	let {
-		Token = '', ServerApp = '', ServerName = '', page = 1, isAll
+		Token = '', ServerApp = '', ServerName = '', page = 1, isAll, force = false
 	} = ctx.paramsObj
 
 	let pageIndex = Math.floor(page) || 1
@@ -73,7 +73,7 @@ ServerController.ServerSelect = async (ctx) => {
 
 	try {
 
-		let result = await ServerService.selectServer(ServerApp, ServerName, limiter);
+		let result = await ServerService.selectServer(ServerApp, ServerName, limiter, force);
 
 		ctx.makeResObj(result.ret, "succ", result.data)
 	} catch (e) {

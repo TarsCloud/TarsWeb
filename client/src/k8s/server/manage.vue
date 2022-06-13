@@ -1241,7 +1241,7 @@ export default {
         return;
       }
 
-      let podIp = checkedServerList.map((item) => item.PodIp);
+      let podIp = checkedServerList.map((item) => item.PodName);
       let serverApp = checkedServerList[0].ServerApp;
       let serverName = checkedServerList[0].ServerName;
       this.$confirm(
@@ -1286,7 +1286,7 @@ export default {
         return;
       }
 
-      let podIp = checkedServerList.map((item) => item.PodIp);
+      let podIp = checkedServerList.map((item) => item.PodName);
       let serverApp = checkedServerList[0].ServerApp;
       let serverName = checkedServerList[0].ServerName;
       this.$confirm(
@@ -1331,7 +1331,7 @@ export default {
         return;
       }
 
-      let podIp = checkedServerList.map((item) => item.PodIp);
+      let podIp = checkedServerList.map((item) => item.PodName);
       let serverApp = checkedServerList[0].ServerApp;
       let serverName = checkedServerList[0].ServerName;
       this.$confirm(
@@ -1716,7 +1716,7 @@ export default {
         return;
       }
 
-      let podIp = checkedServerList.map((item) => item.PodIp);
+      let podIp = checkedServerList.map((item) => item.PodName);
       let serverApp = checkedServerList[0].ServerApp;
       let serverName = checkedServerList[0].ServerName;
 

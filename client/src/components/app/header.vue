@@ -115,7 +115,7 @@
                 }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <el-dropdown @command="handleMarketCommand" v-if="marketUid">
+            <!-- <el-dropdown @command="handleMarketCommand" v-if="marketUid">
               <span class="el-dropdown-link">
                 <i class="el-icon-cloudy el-icon--left"></i>
                 {{ marketUid.uid
@@ -135,7 +135,7 @@
                   $t("cloud.header.quit")
                 }}</el-dropdown-item>
               </el-dropdown-menu>
-            </el-dropdown>
+            </el-dropdown> -->
           </div>
         </el-col>
       </el-row>
@@ -199,11 +199,7 @@ export default {
       this.$router.replace(this.pluginPath);
     },
     clickTab(tabkey) {
-      // if (tabkey == "/market") {
-      //   window.open("/static/market/index.html");
-      // } else {
       this.$router.replace(tabkey);
-      // }
     },
     userCenter() {
       window.open("/pages/server/api/userCenter");
@@ -218,21 +214,21 @@ export default {
         location.href = "/pages/server/api/logout";
       }
     },
-    handleMarketCommand(command) {
-      if (command == "quit") {
-        this.$store.commit({
-          type: "quit",
-        });
+    // handleMarketCommand(command) {
+    //   if (command == "quit") {
+    //     this.$store.commit({
+    //       type: "quit",
+    //     });
 
-        this.$router.push("/market/user/login");
-      } else if (command == "pass") {
-        this.$router.push("/market/repo/pass");
-      } else if (command == "project") {
-        this.$router.push("/market/repo/project");
-      } else if (command == "modify") {
-        this.$router.push("/market/user/modifyPass");
-      }
-    },
+    //     this.$router.push("/market/user/login");
+    //   } else if (command == "pass") {
+    //     this.$router.push("/market/repo/pass");
+    //   } else if (command == "project") {
+    //     this.$router.push("/market/repo/project");
+    //   } else if (command == "modify") {
+    //     this.$router.push("/market/user/modifyPass");
+    //   }
+    // },
     getPlugins() {
       this.$ajax
         .getJSON("/plugin/api/list", { k8s: false, type: 1 })

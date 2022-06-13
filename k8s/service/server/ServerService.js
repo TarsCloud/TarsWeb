@@ -60,9 +60,9 @@ ServerService.searchServer = async (searchKey) => {
     };
 }
 
-ServerService.selectServer = async (ServerApp, ServerName, limiter) => {
+ServerService.selectServer = async (ServerApp, ServerName, limiter, force) => {
 
-    let allItems = await CommonService.getServerList();
+    let allItems = await CommonService.getServerList(force);
 
     let items = [];
 

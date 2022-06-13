@@ -54,10 +54,14 @@ import OperationBusinessRelation from '@/pages/operation/businessRelation';
 import OperationIDCManage from '@/pages/operation/idc';
 import OperationImage from '@/pages/operation/image';
 
-//网关
+//服务级别插件
 import ServerPlugins from '@/pages/server/plugins';
 
+//全局插件
 import Plugin from '@/components/plugins.vue';
+
+//市场
+import Market from '@/market/market';
 
 export default new Router({
   routes: [{
@@ -144,6 +148,11 @@ export default new Router({
           component: OperationImage
         }
       ],
+    },
+    {
+      path: '/market',
+      name: 'Market',
+      component: Market
     },
     {
       path: '/plugins/*',
