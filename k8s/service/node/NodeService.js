@@ -14,11 +14,6 @@
  * specific language governing permissions and limitations under the License.
  */
 
-// const NodeProxy = require("../../../rpc/k8s-proxy/NodeProxy");
-// const AdminService = require("../");
-// const {
-//     RPCClientPrx
-// } = require('../../../rpc/service');
 const {
     adminRegPrx
 } = require('../../../rpc/k8s');
@@ -38,8 +33,10 @@ NodeService.startServer = async (application, serverName, podIp) => {
 
             logger.info(`startServer: ${target}, ${application}, ${serverName}`);
 
-            // let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
             ret = await adminRegPrx.startServer(application, serverName, target);
+
+            logger.info(`startServer: ${target}, ${application}, ${serverName}`, ret);
+
         } catch (e) {
             ret = {
                 __return: -1,
@@ -71,9 +68,9 @@ NodeService.stopServer = async (application, serverName, podIp) => {
 
             logger.info(`stopServer: ${target}, ${application}, ${serverName}`);
 
-            // let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
-            // ret = await nodePrx.stopServer(application, serverName);
             ret = await adminRegPrx.stopServer(application, serverName, target);
+
+            logger.info(`stopServer: ${target}, ${application}, ${serverName}`, ret);
         } catch (e) {
             ret = {
                 __return: -1,
@@ -104,10 +101,9 @@ NodeService.restartServer = async (application, serverName, podIp) => {
 
             logger.info(`restartServer: ${target}, ${application}, ${serverName}`);
 
-            // let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
-            // ret = await nodePrx.restartServer(application, serverName);
             ret = await adminRegPrx.restartServer(application, serverName, target);
 
+            logger.info(`restartServer: ${target}, ${application}, ${serverName}`, ret);
         } catch (e) {
             ret = {
                 __return: -1,
@@ -137,9 +133,9 @@ NodeService.doCommand = async (application, serverName, podIp, command) => {
 
             logger.info(`doCommand: ${command}, ${target}, ${application}, ${serverName}`);
 
-            // let nodePrx = await RPCClientPrx(client, NodeProxy, 'tars', 'Node', `tars.tarsnode.NodeObj@tcp -h ${target} -p 19385 -t 3000`)
-            // ret = await nodePrx.notifyServer(application, serverName, command);
             ret = await adminRegPrx.notifyServer(application, serverName, target, command);
+
+            logger.info(`doCommand: ${target}, ${application}, ${serverName}`, ret);
         } catch (e) {
             ret = {
                 __return: -1,
