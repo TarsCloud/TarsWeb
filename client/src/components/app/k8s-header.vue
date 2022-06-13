@@ -45,7 +45,7 @@
             <div style="display: inline-block;width:70%">
               <el-select
                 v-model="pluginPath"
-                placeholder="扩展服务"
+                :placeholder="$t('header.extension')"
                 @change="changePlugin"
               >
                 <el-option
@@ -64,20 +64,19 @@
         </el-col>
         <el-col :span="4">
           <div class="language-wrap">
-            <let-select
+            <el-select
               v-model="locale"
               @change="changeLocale"
-              :clearable="false"
-              style="vertical-align:baseline"
+              style="width:100px"
             >
-              <template v-for="locale in localeMessages">
-                <let-option
-                  :value="locale.localeCode"
-                  :key="locale.localeCode"
-                  >{{ locale.localeName }}</let-option
-                >
-              </template>
-            </let-select>
+              <el-option
+                v-for="locale in localeMessages"
+                :key="locale.localeCode"
+                :value="locale.localeCode"
+                :label="locale.localeName"
+              >
+              </el-option>
+            </el-select>
           </div>
           <div class="version-wrap">
             <div>web:{{ web_version }}</div>

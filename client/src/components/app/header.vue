@@ -48,7 +48,7 @@
             <div style="display: inline-block;width:70%">
               <el-select
                 v-model="pluginPath"
-                placeholder="扩展服务"
+                :placeholder="$t('header.extension')"
                 @change="changePlugin"
               >
                 <el-option
