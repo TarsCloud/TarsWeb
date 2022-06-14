@@ -8,6 +8,7 @@ const pluginApiConf = [
         name_en: 'notEmpty',
         type: 'notEmpty',
         path: 'notEmpty',
+        k8s: 'notEmpty',
     }],
 
     ['get', '/list', PluginController.list, {
