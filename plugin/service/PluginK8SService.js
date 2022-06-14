@@ -19,7 +19,7 @@ const CommonService = require("../../k8s/service/common/CommonService");
 
 const PluginService = {};
 
-PluginService.listInstall = async (paramsObj) => {
+PluginService.install = async (paramsObj) => {
 
     let tPlugin = await CommonService.getObject("tplugins", CommonService.getMetadataName(paramsObj.obj.toLowerCase()));
 
