@@ -100,6 +100,18 @@ AuthController.getAuthListByUid = async (ctx) => {
     }
 };
 
+AuthController.getAuthListNoLogin = async (ctx) => {
+    try {
+        let uid = ctx.paramsObj.uid;
+        let rst = await AuthService.getAuthListByUid(uid);
+
+        ctx.makeResObj(200, '', util.viewFilter(rst || [], authStruct));
+    } catch (e) {
+        logger.error('[getMyAuthList]', e.body ? e.body.message : e, ctx);
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
+};
+
 AuthController.getMyAuthList = async (ctx) => {
     try {
         let uid = ctx.uid;

@@ -44,9 +44,9 @@ const ssoApiConf = [
     ['post', '/modifyPass', DemoUserController.modifyPass],
     ['get', '/getMyAuthList', DemoAuthController.getMyAuthList],
 
-    //权限相关接口(给其他扩展服务使用)
+    //权限相关接口(给其他扩展服务使用, 无须登录, tarsAdminRegistry调用)
     ['get', '/ticket', DemoLoginController.getUidByTicket],
-
+    ['get', '/authList', DemoAuthController.getAuthListNoLogin],
 
     //权限相关接口(从tars-web请求过来的, localhost默认开权限)
     ['get', '/auth/isAdmin', DemoAuthController.isAdmin],

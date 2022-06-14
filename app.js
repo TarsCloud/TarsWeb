@@ -76,7 +76,7 @@ app.use(localeMidware);
 //登录校验
 let loginConf = require('./config/loginConf.js');
 loginConf.ignore = loginConf.ignore.concat(['/web', '/static', '/files', '/get_tarsnode', '/install.sh', '/favicon.ico']);
-loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login', '/pages/server/api/isEnableLdap']);
+loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/pages/server/api/adminModifyPass', '/pages/server/api/get_locale', '/pages/server/api/login', '/pages/server/api/isEnableLdap', '/pages/plugins/api/install', '/pages/server/api/authList', '/pages/server/api/ticket']);
 
 //不需要登录, 环境变量优先
 if (process.env.TARS_ENABLE_LOGIN == "false") {
