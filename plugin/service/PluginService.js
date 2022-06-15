@@ -24,6 +24,8 @@ const PluginService = {};
 
 const _ = require('lodash');
 
+let thisApp = null;
+
 PluginService.list = async (type) => {
 
     let rst = await PluginDao.listPlugins(type);
@@ -82,6 +84,17 @@ PluginService.loadPlugins = async (app) => {
     setTimeout(() => {
         PluginService.loadPlugins(app);
     }, 5000);
+}
+
+PluginService.load = async () => {
+
+    PluginService.loadPlugins(thisApp);
+
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: {}
+    };
 }
 
 module.exports = PluginService;

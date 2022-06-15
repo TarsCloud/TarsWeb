@@ -55,7 +55,7 @@ import OperationIDCManage from '@/pages/operation/idc';
 import OperationImage from '@/pages/operation/image';
 
 //服务级别插件
-import ServerPlugins from '@/pages/server/plugins';
+import ServerPlugins from '@/components/serverPlugins';
 
 //全局插件
 import Plugin from '@/components/plugins.vue';

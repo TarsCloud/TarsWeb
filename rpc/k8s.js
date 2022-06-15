@@ -27,24 +27,6 @@ const WebConf = require('../config/webConf');
 
 client.initialize(WebConf.k8s.client);
 
-// //生成rpc结构体
-// const RPCStruct = function (proxy, moduleName) {
-//     var module = proxy[moduleName];
-//     var rpcStruct = {};
-//     for (var p in module) {
-//         if (module.hasOwnProperty(p)) {
-//             if (typeof module[p] == 'function') {
-//                 if (new module[p]()._classname) {
-//                     rpcStruct[p] = module[p];
-//                 }
-//             } else {
-//                 rpcStruct[p] = module[p];
-//             }
-//         }
-//     }
-//     return rpcStruct;
-// };
-
 let TARS_K8S_PROXY = "";
 
 let registry;

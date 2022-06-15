@@ -67,7 +67,7 @@ let conf = {
     show: true, //显示TARS tab
 
     k8s: {
-        client: path.join(cwd, 'config/k8s.conf'), //连接k8s环境里面tars配置
+        client: path.join(cwd, 'config/k8s.conf'),
         namespace: 'tars-dev',
         apiPrefix: 'apis/k8s.tars.io/v1beta2', // 与k8s的交互配置
         upload: 'api/v1beta2/timage', // tarsimage上传交互

@@ -13,6 +13,11 @@ const pluginApiConf = [
 
     ['get', '/list', PluginController.list, {
         k8s: 'notEmpty',
+        type: 'notEmpty'
+    }],
+
+    ['get', '/load', PluginController.load, {
+        k8s: 'notEmpty',
     }],
 ];
 

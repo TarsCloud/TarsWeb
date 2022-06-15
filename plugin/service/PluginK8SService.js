@@ -16,17 +16,25 @@
 
 const logger = require('../../logger');
 const CommonService = require("../../k8s/service/common/CommonService");
+const registry = require("../../rpc/k8s").registry
+const proxy = require('koa-server-http-proxy');
 
 const PluginService = {};
 
+let thisApp = null;
+
 PluginService.install = async (paramsObj) => {
 
-    let tPlugin = await CommonService.getObject("tplugins", CommonService.getMetadataName(paramsObj.obj.toLowerCase()));
+    let name = paramsObj.obj.toLowerCase();
+
+    let tPlugin = await CommonService.getObject("tplugins", name);
 
     let result;
 
-    if (!tPlugin) {
+    if (tPlugin) {
         tPlugin = tPlugin.body;
+        tPlugin.metadata.labels = tPlugin.metadata.labels || {};
+        tPlugin.metadata.labels["type"] = "" + paramsObj.type;
         tPlugin.spec = {
             name: paramsObj.name,
             name_en: paramsObj.name_en,
@@ -35,7 +43,7 @@ PluginService.install = async (paramsObj) => {
             path: paramsObj.path
         };
 
-        result = await CommonService.replaceObject("tplugins", tPlugin);
+        result = await CommonService.replaceObject("tplugins", name, tPlugin);
 
     } else {
         tPlugin = {
@@ -43,6 +51,10 @@ PluginService.install = async (paramsObj) => {
             kind: 'TPlugin',
             metadata: {
                 namespace: CommonService.NAMESPACE,
+                name: name,
+                labels: {
+                    type: "" + paramsObj.type
+                }
             },
         }
         tPlugin.spec = {
@@ -64,21 +76,75 @@ PluginService.install = async (paramsObj) => {
 
 }
 
+PluginService.list = async (type) => {
+
+    let plugins = await CommonService.listObject("tplugins", "type=" + type);
+
+    let data = [];
+
+    if (plugins) {
+        plugins.body.items.forEach(i => {
+            data.push({
+                f_name: i.spec.name,
+                f_name_en: i.spec.name_en,
+                f_obj: i.spec.obj,
+                f_type: i.spec.type,
+                f_path: i.spec.path,
+            });
+        })
+    }
+
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data
+    };
+}
+
+async function findActiveIndex(obj) {
+    try {
+        let rst = await registry.findObjectById4Any(obj);
+
+        logger.info(obj, rst.response.arguments.activeEp.toObject());
+
+        activeList = rst.response.arguments.activeEp;
+
+        if (activeList.length > 0) {
+            return `http://${activeList.at(0).host}:${activeList.at(0).port}`;
+        }
+
+        activeList = rst.response.arguments.inactiveEp;
+
+        if (activeList.length > 0) {
+            return `http://${activeList.at(0).host}:${activeList.at(0).port}`;
+        }
+
+        return null;
+    } catch (e) {
+        logger.error('findActiveIndex', e.message);
+        return null;
+    }
+}
+
 PluginService.loadPlugins = async (app) => {
+
+    thisApp = app;
 
     try {
         let plugins = await CommonService.listObject("tplugins");
 
         // console.log("loadPlugins", plugins);
 
-        if (plugins.items) {
-            plugins.items.forEach(async (plugin) => {
+        if (plugins) {
+            plugins.body.items.forEach(async (plugin) => {
 
-                let target = await findActiveIndex(plugin.f_obj);
+                logger.info(plugin);
+
+                let target = await findActiveIndex(plugin.spec.obj);
 
                 if (target) {
 
-                    app.use(proxy(`${plugin.f_path}`, {
+                    app.use(proxy(plugin.spec.path, {
                         target: target,
                         ws: true,
                         changeOrigin: true
@@ -87,13 +153,24 @@ PluginService.loadPlugins = async (app) => {
             });
         }
     } catch (e) {
-
+        logger.error(e.message);
     }
 
     setTimeout(() => {
         PluginService.loadPlugins(app);
     }, 5000);
 
+}
+
+PluginService.load = async () => {
+
+    PluginService.loadPlugins(thisApp);
+
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: {}
+    };
 }
 
 module.exports = PluginService;

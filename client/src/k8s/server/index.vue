@@ -118,24 +118,24 @@
           :key="item.id"
           v-if="item.id === treeid"
         >
-          <let-tabs @click="clickTab" :activekey="item.path">
-            <let-tab-pane
-              :tabkey="base + '/manage'"
-              :tab="$t('header.tab.tab1')"
-            ></let-tab-pane>
-            <let-tab-pane
+          <el-tabs @tab-click="clickTab" v-model="item.path">
+            <el-tab-pane
+              :name="base + '/manage'"
+              :label="$t('header.tab.tab1')"
+            ></el-tab-pane>
+            <el-tab-pane
               v-if="serverData.level === 5"
-              :tabkey="base + '/history'"
-              :tab="$t('header.tab.tab7')"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/publish'"
-              :tab="$t('index.rightView.tab.patch')"
+              :name="base + '/history'"
+              :label="$t('header.tab.tab7')"
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/publish'"
+              :label="$t('index.rightView.tab.patch')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/config'"
-              :tab="
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/config'"
+              :label="
                 serverData.level === 5
                   ? $t('index.rightView.tab.serviceConfig')
                   : serverData.level === 1
@@ -143,37 +143,40 @@
                   : ''
               "
               v-if="serverData.level === 5 || serverData.level === 1"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/server-monitor'"
-              :tab="$t('index.rightView.tab.statMonitor')"
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/server-monitor'"
+              :label="$t('index.rightView.tab.statMonitor')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/property-monitor'"
-              :tab="$t('index.rightView.tab.propertyMonitor')"
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/property-monitor'"
+              :label="$t('index.rightView.tab.propertyMonitor')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-            <!-- <let-tab-pane
-              :tabkey="base + '/interface-debuger'"
-              :tab="$t('index.rightView.tab.infDebuger')"
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/user-manage'"
+              :label="$t('index.rightView.tab.privileage')"
               v-if="serverData.level === 5"
-            ></let-tab-pane> -->
-            <let-tab-pane
-              :tabkey="base + '/user-manage'"
-              :tab="$t('index.rightView.tab.privileage')"
+            ></el-tab-pane>
+            <el-tab-pane
+              :name="base + '/callChain'"
+              :label="$t('index.rightView.tab.treeConfig')"
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-            <let-tab-pane
-              :tabkey="base + '/callChain'"
-              :tab="$t('index.rightView.tab.treeConfig')"
+            ></el-tab-pane>
+            <el-tab-pane
               v-if="serverData.level === 5"
-            ></let-tab-pane>
-          </let-tabs>
+              v-for="plugin in plugins"
+              v-bind:key="plugin.f_id"
+              :name="base + plugin.f_path + '/plugins'"
+              :label="plugin.f_name"
+            ></el-tab-pane>
+          </el-tabs>
 
           <router-view
             :is="getName(item.path)"
             :treeid="item.id"
+            :path="item.pluginPath"
             ref="childView"
             class="page_server_child"
           ></router-view>
@@ -190,10 +193,10 @@ import publish from "./publish";
 import config from "./config";
 import serverMonitor from "@/common/monitor-server";
 import propertyMonitor from "@/common/monitor-property";
-// import interfaceDebuger from "@/common/interface-debuger";
 import userManage from "@/common/user-manage";
 import history from "./history";
 import serverHistory from "./serverHistory";
+import serverPlugins from "@/components/serverPlugins";
 
 export default {
   name: "Server",
@@ -204,10 +207,10 @@ export default {
     config,
     "server-monitor": serverMonitor,
     "property-monitor": propertyMonitor,
-    // "interface-debuger": interfaceDebuger,
     "user-manage": userManage,
     history,
     serverHistory,
+    plugins: serverPlugins,
   },
   data() {
     return {
@@ -228,6 +231,7 @@ export default {
 
       // BTabs
       BTabs: [],
+      plugins: [],
       defaultProps: {
         children: "children",
         label: "name",
@@ -301,6 +305,19 @@ export default {
         result = val.substring(val.lastIndexOf("/") + 1, val.length);
       }
       return result;
+    },
+    getPlugins() {
+      this.$ajax
+        .getJSON("/plugin/api/list", { k8s: true, type: 2 })
+        .then((data) => {
+          this.plugins = data;
+          console.log(data);
+        })
+        .catch((err) => {
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.err_msg || err.message}`
+          );
+        });
     },
     iconLoading() {
       const that = this;
@@ -412,7 +429,13 @@ export default {
       BTabs &&
         BTabs.forEach((item) => {
           if (item.id === treeid) {
-            item.path = tabkey;
+            item.path = tabkey.name;
+            item.pluginPath = tabkey.name.substr(this.base.length);
+            item.pluginPath = item.pluginPath.substr(
+              0,
+              item.pluginPath.length - "/plugins".length
+            );
+            // item.path = tabkey;
           }
         });
 
@@ -582,7 +605,7 @@ export default {
     this.checkTreeid();
     this.checkBTabs();
     this.getTreeData();
-
+    this.getPlugins();
     if (!this.treeid) {
       this.treeid = "home";
     }
@@ -767,7 +790,6 @@ export default {
     display: flex;
     flex: 1;
     flex-flow: column;
-    margin-top: 20px;
     overflow: auto;
     padding-right: 20px;
   }

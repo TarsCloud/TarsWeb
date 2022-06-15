@@ -28,11 +28,11 @@ const PluginController = {};
 
 PluginController.loadPlugins = async (app) => {
 
-	if (WebConf.enable) {
-		await getPluginService(false).loadPlugins(app);
-	}
+
 	if (WebConf.isEnableK8s()) {
 		await getPluginService(true).loadPlugins(app);
+	} else if (WebConf.enable) {
+		await getPluginService(false).loadPlugins(app);
 	}
 }
 
@@ -61,5 +61,20 @@ PluginController.list = async (ctx) => {
 		ctx.makeResObj(500, e.body ? e.body.message : e);
 	}
 }
+
+PluginController.load = async (ctx) => {
+
+	try {
+		let result = await getPluginService(ctx.paramsObj.k8s).load(ctx.paramsObj.type);
+
+		ctx.makeResObj(result.ret, result.msg, result.data);
+
+	} catch (e) {
+		logger.error('[list]', e.body ? e.body.message : e, ctx)
+		ctx.makeResObj(500, e.body ? e.body.message : e);
+	}
+}
+
+
 
 module.exports = PluginController;

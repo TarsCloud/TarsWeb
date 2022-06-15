@@ -137,11 +137,6 @@
               :label="$t('index.rightView.tab.propertyMonitor')"
               v-if="serverData.level === 5"
             ></el-tab-pane>
-            <!-- <el-tab-pane
-              :tabkey="base + '/interface-debuger'"
-              :tab="$t('index.rightView.tab.infDebuger')"
-              v-if="serverData.level === 5"
-            ></el-tab-pane> -->
             <el-tab-pane
               :name="base + '/user-manage'"
               :label="$t('index.rightView.tab.privileage')"
@@ -184,7 +179,7 @@ import serverMonitor from "@/common/monitor-server";
 import propertyMonitor from "@/common/monitor-property";
 // import interfaceDebuger from "@/common/interface-debuger";
 import userManage from "@/common/user-manage";
-import serverPlugins from "./plugins";
+import serverPlugins from "@/components/serverPlugins";
 
 export default {
   name: "Server",
@@ -757,7 +752,6 @@ export default {
     display: flex;
     flex: 1;
     flex-flow: column;
-    margin-top: 20px;
     overflow: auto;
     padding-right: 20px;
   }

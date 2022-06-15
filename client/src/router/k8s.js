@@ -58,7 +58,7 @@ import OperationEvent from '@/k8s/operation/event';
 import OperationTfc from '@/k8s/operation/frameworkConfig';
 
 //服务级别插件
-import ServerPlugins from '@/pages/server/plugins';
+import ServerPlugins from '@/components/serverPlugins';
 
 //全局插件
 import Plugin from '@/components/plugins.vue';

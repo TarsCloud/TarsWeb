@@ -42,7 +42,7 @@
         </el-col>
         <el-col :span="3">
           <div class="plugin-wrap">
-            <div style="display: inline-block;width:70%">
+            <div style="display: inline-block; width: 70%">
               <el-select
                 v-model="pluginPath"
                 :placeholder="$t('header.extension')"
@@ -57,7 +57,7 @@
                 </el-option>
               </el-select>
             </div>
-            <div style="margin-left:10px;width:20%;display: inline-block;">
+            <div style="margin-left: 10px; width: 20%; display: inline-block">
               <i class="el-icon-refresh-right" @click="refreshPlugin()"></i>
             </div>
           </div>
@@ -67,7 +67,7 @@
             <el-select
               v-model="locale"
               @change="changeLocale"
-              style="width:100px"
+              style="width: 100px"
             >
               <el-option
                 v-for="locale in localeMessages"
@@ -81,7 +81,7 @@
           <div class="version-wrap">
             <div>web:{{ web_version }}</div>
             <el-link
-              style="font-size:9px"
+              style="font-size: 9px"
               href="https://doc.tarsyun.com"
               target="_blank"
               >{{ locale == "cn" ? "在线文档" : "Online Manual" }}</el-link
@@ -92,7 +92,7 @@
           <div class="user-wrap">
             <el-dropdown
               @command="handleCommand"
-              style="display: block!important;"
+              style="display: block !important"
             >
               <span class="el-dropdown-link">
                 {{ uid
@@ -205,6 +205,22 @@ export default {
     //     this.$router.push("/market/user/modifyPass");
     //   }
     // },
+    getPlugins() {
+      this.$ajax
+        .getJSON("/plugin/api/list", { k8s: true, type: 1 })
+        .then((data) => {
+          this.plugins = data;
+          if (
+            this.$route.path.startsWith("/plugins") &&
+            !this.$route.path.startsWith("/plugins/*")
+          ) {
+            this.pluginPath = this.$route.path;
+          }
+        })
+        .catch((err) => {
+          this.$common.showError(err);
+        });
+    },
     refreshPlugin() {
       if (this.pluginPath.startsWith("/plugins")) {
         this.$router.replace("/plugins/*");
@@ -271,6 +287,7 @@ export default {
     this.checkEnableLogin();
     this.checkAdmin();
     this.checkEnableLdap();
+    this.getPlugins();
 
     Axios.create({ baseURL: "/" })({
       method: "get",

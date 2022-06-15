@@ -115,27 +115,6 @@
                 }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <!-- <el-dropdown @command="handleMarketCommand" v-if="marketUid">
-              <span class="el-dropdown-link">
-                <i class="el-icon-cloudy el-icon--left"></i>
-                {{ marketUid.uid
-                }}<i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="pass">{{
-                  $t("cloud.header.pass")
-                }}</el-dropdown-item>
-                <el-dropdown-item command="project">{{
-                  $t("cloud.header.repo")
-                }}</el-dropdown-item>
-                <el-dropdown-item command="modify">{{
-                  $t("cloud.header.modify")
-                }}</el-dropdown-item>
-                <el-dropdown-item command="quit">{{
-                  $t("cloud.header.quit")
-                }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown> -->
           </div>
         </el-col>
       </el-row>
@@ -214,21 +193,6 @@ export default {
         location.href = "/pages/server/api/logout";
       }
     },
-    // handleMarketCommand(command) {
-    //   if (command == "quit") {
-    //     this.$store.commit({
-    //       type: "quit",
-    //     });
-
-    //     this.$router.push("/market/user/login");
-    //   } else if (command == "pass") {
-    //     this.$router.push("/market/repo/pass");
-    //   } else if (command == "project") {
-    //     this.$router.push("/market/repo/project");
-    //   } else if (command == "modify") {
-    //     this.$router.push("/market/user/modifyPass");
-    //   }
-    // },
     getPlugins() {
       this.$ajax
         .getJSON("/plugin/api/list", { k8s: false, type: 1 })
