@@ -160,6 +160,7 @@
             :is="getName(item.path)"
             :treeid="item.id"
             :path="item.pluginPath"
+            :k8s="false"
             ref="childView"
             class="page_server_child"
           ></router-view>

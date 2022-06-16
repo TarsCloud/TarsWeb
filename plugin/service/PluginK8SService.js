@@ -138,7 +138,7 @@ PluginService.loadPlugins = async (app) => {
         if (plugins) {
             plugins.body.items.forEach(async (plugin) => {
 
-                logger.info(plugin);
+                // logger.info(plugin);
 
                 let target = await findActiveIndex(plugin.spec.obj);
 

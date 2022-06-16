@@ -19,11 +19,11 @@ export default {
       this.setIframeHeight(this.id);
     }, 500);
   },
-  props: ["treeid", "path"],
+  props: ["treeid", "path", "k8s"],
   methods: {
     load() {
       document.getElementById(this.id).src =
-        this.path + "?treeid=" + this.treeid;
+        this.path + "?treeid=" + this.treeid + "&k8s=" + this.k8s;
     },
     setIframeHeight(id) {
       try {

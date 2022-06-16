@@ -8,14 +8,14 @@
         <let-input size="small" v-model="query.ServerName"></let-input>
       </let-form-item>
       <let-form-item>
-        <let-button size="small" type="submit" theme="primary">{{
+        <let-button size="small" theme="primary" @click="fetchData(true, 1)">{{
           $t("operate.search")
         }}</let-button>
         <span>
           <i
             class="el-icon-refresh-right"
             style="margin:10px"
-            @click="fetchData(true)"
+            @click="fetchData(true, 1)"
           ></i>
         </span>
       </let-form-item>
@@ -134,13 +134,14 @@ export default {
       this.pagination.page = num;
       this.fetchData();
     },
-    fetchData(force) {
+    fetchData(force, page) {
       const loading = this.$refs.table.$loading.show();
+      console.log("fetchData", force, page);
       return this.$ajax
         .getJSON("/k8s/api/server_list", {
           ServerApp: this.query.ServerApp,
           ServerName: this.query.ServerName,
-          page: this.pagination.page,
+          page: page || this.pagination.page,
           size: this.pagination.size,
           force: force,
         })
