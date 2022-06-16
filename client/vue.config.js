@@ -83,32 +83,6 @@ module.exports = {
         secure: false,
         logLevel: 'debug',
       },
-      "/favicon.ico": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/web/*": {
-        target: `ws://127.0.0.1:${server_port}`,
-        ws: true,
-        secure: false,
-        logLevel: 'debug',
-      },
-      "/pages/*": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/plugins/*": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/plugin/*": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
-      "/api/*": {
-        target: `http://127.0.0.1:${server_port}`,
-        changeOrigin: false
-      },
 
     }
   }
