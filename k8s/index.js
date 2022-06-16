@@ -30,7 +30,7 @@ const k8sApiConf = [
 
     // 服务状态
     ['get', '/server_notify_list', NotifyController.NotifySelect, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
 
     // 应用管理 ( 创建、列表、更新、删除 )
@@ -110,9 +110,11 @@ const k8sApiConf = [
     }],
 
     // 服务配置文件 ( 创建、列表、更新、删除 )
-    ['post', '/server_config_create', ConfigController.ServerConfigCreate],
+    ['post', '/server_config_create', ConfigController.ServerConfigCreate, {
+        tree_node_id: 'notEmpty'
+    }],
     ['get', '/server_config_select', ConfigController.ServerConfigSelect, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['post', '/server_config_update', ConfigController.ServerConfigUpdate, {
         ConfigId: 'notEmpty'
@@ -121,7 +123,7 @@ const k8sApiConf = [
         ConfigId: 'notEmpty'
     }],
     ['get', '/merged_node_config', ConfigController.ServerConfigContent, {
-        ServerId: 'notEmpty',
+        tree_node_id: 'notEmpty',
         ConfigName: 'notEmpty'
     }],
 
@@ -138,10 +140,10 @@ const k8sApiConf = [
 
     // 服务管理 ( pod列表、pod历史列表、服务列表、服务更新、状态(重启、停止)、编辑、更新 )
     ['get', '/pod_list', PodController.PodAliveSelect, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['get', '/pod_history_list', PodController.PodPerishedSelect, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['get', '/delete_pod', PodController.deletePod, {
         PodName: 'notEmpty'
@@ -149,19 +151,19 @@ const k8sApiConf = [
 
     ['get', '/server_list', ServerController.ServerSelect],
     ['post', '/server_update', ServerController.ServerUpdate, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['post', '/server_undeploy', ServerController.ServerUndeploy, {
-        ServerId: 'notEmpty'
+        ServerIds: 'notEmpty'
     }],
     ['get', '/server_option_select', ServerController.ServerOptionSelect, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['get', '/server_option_template', ServerController.ServerOptionTemplate, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['post', '/server_option_update', ServerController.ServerOptionUpdate, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
 
     // 命令
@@ -175,7 +177,7 @@ const k8sApiConf = [
     // 服务ServerAdapter ( 创建、列表、更新、删除 )
     ['post', '/server_adapter_create', AdapterController.ServerAdapterCreate],
     ['get', '/server_adapter_select', AdapterController.ServerAdapterSelect, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['post', '/server_adapter_update', AdapterController.ServerAdapterUpdate, {
         AdapterId: 'notEmpty'
@@ -231,19 +233,19 @@ const k8sApiConf = [
 
     // 服务K8S ( 列表、更新 )
     ['get', '/server_k8s_select', K8sController.ServerK8SSelect, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['post', '/server_k8s_update', K8sController.ServerK8SUpdate, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }], //k8s管理
     ['post', '/server_k8s_update_resource', K8sController.ServerK8SUpdateResource, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }], //资源管理
     ['post', '/server_k8s_update_network', K8sController.ServerK8SUpdateNetwork, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }], //网络映射
     ['post', '/server_k8s_update_disk', K8sController.ServerK8SUpdateDisk, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }], //磁盘管理
     ['get', '/generate_host_port', K8sController.ServerK8SGenerateHostPort, {
         NodeList: 'notEmpty',
@@ -258,11 +260,11 @@ const k8sApiConf = [
 
     ['get', '/get_object', K8sController.getObject, {
         plural: 'notEmpty',
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['post', '/update_object', K8sController.updateObject, {
         plural: 'notEmpty',
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
 
 
@@ -273,7 +275,7 @@ const k8sApiConf = [
         base_image: 'notEmpty'
     }],
     ['post', '/patch_upload', PatchController.uploadPatchPackage, {
-        ServerId: 'notEmpty',
+        tree_node_id: 'notEmpty',
         ServerType: 'notEmpty',
         BaseImage: 'notEmpty'
     }],
@@ -281,10 +283,10 @@ const k8sApiConf = [
         BuildId: 'notEmpty'
     }],
     ['get', '/patch_list', PatchController.ServicePoolSelect, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['get', '/build_list', PatchController.BuildSelect, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['get', '/delete_build', PatchController.DeleteBuild, {
         ImageName: 'notEmpty'
@@ -292,11 +294,11 @@ const k8sApiConf = [
 
 
     ['get', '/get_now_image', PatchController.ServiceNowImages, {
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
     ['post', '/patch_publish', PatchController.ServicePoolUpdate, {
         Id: 'notEmpty',
-        ServerId: 'notEmpty'
+        tree_node_id: 'notEmpty'
     }],
 
     //image管理
@@ -333,7 +335,9 @@ const k8sApiConf = [
 
     //HorizontalPodAutoscaler 管理
     ['post', '/create_hpa', HPAController.HPACreate],
-    ['get', '/get_hpa', HPAController.getHPAByName],
+    ['get', '/get_hpa', HPAController.getHPAByName, {
+        tree_node_id: 'notEmpty'
+    }],
     ['get', '/get_hpa_target', HPAController.getHPACustomTarget],
 
     ['get', '/get_events', EventController.getEvents, {

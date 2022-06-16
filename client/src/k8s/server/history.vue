@@ -66,6 +66,15 @@ export default {
   name: "ServerManage",
   data() {
     return {
+      serverData: {
+        level: 5,
+        application: "",
+        server_name: "",
+        set_name: "",
+        set_area: "",
+        set_group: "",
+      },
+
       serverList: [],
     };
   },
@@ -74,20 +83,12 @@ export default {
     gotoLog(data) {
       let url = `/logview.html?History=true&NodeIP=${data.NodeIp}&ServerApp=${data.ServerApp}&ServerName=${data.ServerName}&PodName=${data.PodName}`;
       window.open(url);
-
-      // this.$ajax.getJSON("/k8s/api/shell_domain").then(domain => {
-      //   let url = `${domain.fromPage}?History=true&NodeIP=${data.NodeIp}&ServerApp=${data.ServerApp}&ServerName=${data.ServerName}&PodName=${data.PodName}`
-      //   window.open(url)
-      // })
-    },
-    getServerId() {
-      return this.treeid;
     },
     // 获取服务列表
     getServerList(c) {
       this.$ajax
         .getJSON("/k8s/api/pod_history_list", {
-          ServerId: this.getServerId(),
+          tree_node_id: this.treeid,
         })
         .then((data) => {
           data.Data.forEach((item) => {
@@ -114,7 +115,9 @@ export default {
       this.getServerList(this.continue);
     },
   },
-  created() {},
+  created() {
+    this.serverData = this.$parent.getServerData();
+  },
   mounted() {
     this.getServerList();
   },

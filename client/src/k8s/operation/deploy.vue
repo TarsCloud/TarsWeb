@@ -70,9 +70,9 @@ export default {
       });
     },
     doInstall() {
-      this.$confirm(this.$t("deployService.deploy.install"), "Hint", {
-        confirmButtonText: this.$t("deployService.deploy.confirm"),
-        cancelButtonText: this.$t("deployService.deploy.cancel"),
+      this.$confirm(this.$t("deployService.form.deployServiceTip"), "Hint", {
+        confirmButtonText: this.$t("common.submit"),
+        cancelButtonText: this.$t("common.cancel"),
         type: "warning",
       })
         .then(() => {

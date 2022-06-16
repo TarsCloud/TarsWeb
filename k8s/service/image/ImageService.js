@@ -87,9 +87,9 @@ ImageService.serverImageCreateWithRelease = async (deploy, mark) => {
 			releases: []
 		}
 
-		tImage.metadata.labels[`${CommonService.TImageTypeLabel}`] = 'server';
-		tImage.metadata.labels[`${CommonService.TServerAppLabel}`] = deploy.app;
-		tImage.metadata.labels[`${CommonService.TServerNameLabel}`] = deploy.server;
+		tImage.metadata.labels[CommonService.TImageTypeLabel] = 'server';
+		tImage.metadata.labels[CommonService.TServerAppLabel] = deploy.app;
+		tImage.metadata.labels[CommonService.TServerNameLabel] = deploy.server;
 	} else {
 		tImage = result.body;
 	}
@@ -137,9 +137,9 @@ ImageService.serverImageGetAndCreate = async (ServerApp, ServerName) => {
 			releases: []
 		}
 
-		tImage.metadata.labels[`${CommonService.TImageTypeLabel}`] = 'server';
-		tImage.metadata.labels[`${CommonService.TServerAppLabel}`] = ServerApp;
-		tImage.metadata.labels[`${CommonService.TServerNameLabel}`] = ServerName;
+		tImage.metadata.labels[CommonService.TImageTypeLabel] = 'server';
+		tImage.metadata.labels[CommonService.TServerAppLabel] = ServerApp;
+		tImage.metadata.labels[CommonService.TServerNameLabel] = ServerName;
 
 		result = await CommonService.createObject("timages", tImage);
 	}
@@ -368,7 +368,7 @@ ImageService.imageReleaseCreate = async (metadata) => {
 		tImage = await CommonService.createObject("timages", tImage);
 
 	}
-//	console.log(tImage);
+	//	console.log(tImage);
 
 	tImage = tImage.body;
 

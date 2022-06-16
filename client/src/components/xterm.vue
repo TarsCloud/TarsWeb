@@ -77,7 +77,7 @@ export default {
         setTimeout(() => {
           console.log("ping");
           this.ping();
-        }, 5000);
+        }, 10000);
       } else {
         location.reload();
       }
@@ -97,7 +97,7 @@ export default {
       this.term = new Terminal({
         rendererType: "canvas", //渲染类型
         convertEol: true, //启用时，光标将设置为下一行的开头
-        scrollback: 2000, //终端中的回滚量
+        scrollback: 5000, //终端中的回滚量
         disableStdin: false, //是否应禁用输入
         cursorStyle: "block", //光标样式
         cursorBlink: true, //光标闪烁
@@ -142,13 +142,15 @@ export default {
 
       setTimeout(() => {
         this.ping();
-      }, 5000);
+      }, 10000);
     },
     open: function() {
       this.initXterm();
       this.term.writeln(
         `connecting to pod \x1B[1;3;31m ${this.pod} \x1B[0m ... \r\n`
       );
+
+      this.resizeScreen();
     },
     error: function() {
       console.log("[error] Connection error");
@@ -165,10 +167,10 @@ export default {
     getMessage: function(msg) {
       // console.log(msg);
 
-      if (!this.resize) {
-        this.resize = true;
-        this.resizeScreen();
-      }
+      // if (!this.resize) {
+      //   this.resize = true;
+      //   this.resizeScreen();
+      // }
 
       const data = msg.data && JSON.parse(msg.data);
       if (data.operation === "stdout") {

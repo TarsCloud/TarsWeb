@@ -19,11 +19,12 @@ const axios = require('axios');
 const K8sService = {};
 
 
-K8sService.serverK8SSelect = async (ServerId, limiter) => {
+K8sService.serverK8SSelect = async (serverData, limiter) => {
 
-    let v = ServerId.split(".");
-
-    let labelSelector = `${CommonService.TServerAppLabel}=${v[0]},${CommonService.TServerNameLabel}=${v[1]}`;
+    let labelSelector = `${CommonService.TServerAppLabel}=${serverData.application}`;
+    if (serverData.serverName) {
+        labelSelector += `,${CommonService.TServerNameLabel}=${serverData.serverName}`;
+    }
 
     let filterItems = (await CommonService.listObject("tservers", labelSelector)).body.items;
 
@@ -82,8 +83,8 @@ K8sService.serverK8SSelect = async (ServerId, limiter) => {
     };
 }
 
-K8sService.serverK8SUpdate = async (metadata, target) => {
-    let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
+K8sService.serverK8SUpdate = async (serverData, target) => {
+    let tServer = await CommonService.getServer(serverData.application + "-" + serverData.serverName);
     if (!tServer) {
         return {
             ret: 500,
@@ -124,8 +125,8 @@ K8sService.serverK8SUpdate = async (metadata, target) => {
     };
 }
 
-K8sService.ServerK8SUpdateResource = async (metadata, target) => {
-    let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
+K8sService.ServerK8SUpdateResource = async (serverData, target) => {
+    let tServer = await CommonService.getServer(serverData.application + "-" + serverData.serverName);
     if (!tServer) {
         return {
             ret: 500,
@@ -159,8 +160,8 @@ K8sService.ServerK8SUpdateResource = async (metadata, target) => {
     };
 }
 
-K8sService.ServerK8SUpdateNetwork = async (metadata, target) => {
-    let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
+K8sService.ServerK8SUpdateNetwork = async (serverData, target) => {
+    let tServer = await CommonService.getServer(serverData.application + "-" + serverData.serverName);
     if (!tServer) {
         return {
             ret: 500,
@@ -193,8 +194,8 @@ K8sService.ServerK8SUpdateNetwork = async (metadata, target) => {
     };
 }
 
-K8sService.ServerK8SUpdateDisk = async (metadata, target) => {
-    let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
+K8sService.ServerK8SUpdateDisk = async (serverData, target) => {
+    let tServer = await CommonService.getServer(serverData.application + "-" + serverData.serverName);
     if (!tServer) {
         return {
             ret: 500,

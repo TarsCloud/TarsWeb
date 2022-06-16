@@ -55,9 +55,12 @@ HPAService.HPACreate = async (ServerId, target) => {
             let metricItem = {}
             let config = getMatchLabel(item.name);
             let matchTarget = config.target.filter(v => v.type.toLowerCase() == item.targetType.toLowerCase())[0]
-            if (config.type.toLowerCase() == "resource") {//资源类型
+            if (config.type.toLowerCase() == "resource") { //资源类型
                 metricItem.type = "Resource"
-                metricItem.resource = {name: item.name.toLowerCase(), target: {}}
+                metricItem.resource = {
+                    name: item.name.toLowerCase(),
+                    target: {}
+                }
                 if (item.targetType.toLowerCase() == "averagevalue".toLowerCase()) {
                     metricItem.resource.target.type = "AverageValue" //平均值
                     metricItem.resource.target.averageValue = item.value * 1 + matchTarget.suffix
@@ -67,7 +70,7 @@ HPAService.HPACreate = async (ServerId, target) => {
                 }
             }
 
-            if (config.type.toLowerCase() == "object") {//对象
+            if (config.type.toLowerCase() == "object") { //对象
                 let targets = {}
                 if (item.targetType.toLowerCase() == "averageValue".toLowerCase()) {
                     targets.type = "AverageValue"
@@ -80,7 +83,9 @@ HPAService.HPACreate = async (ServerId, target) => {
                 };
                 metricItem.type = "Object"
                 metricItem.object = {
-                    metric: {name: item.name},
+                    metric: {
+                        name: item.name
+                    },
                     describedObject,
                     target: targets
                 }
@@ -96,12 +101,20 @@ HPAService.HPACreate = async (ServerId, target) => {
     } else {
         data = await CommonService.createObject(HPAService.HPAPLURAL, tHpa, HPAService.GROUP, HPAService.VERSION);
     }
-    return {ret: 200, msg: 'succ', data: data.body};
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data.body
+    };
 }
 
-HPAService.getHPAByName = async (name) => {
-    let hap = await CommonService.getObject(HPAService.HPAPLURAL, name, HPAService.GROUP, HPAService.VERSION)
-    return {ret: 200, msg: 'succ', data: hap};
+HPAService.getHPAByName = async (serverData) => {
+    let hap = await CommonService.getObject(HPAService.HPAPLURAL, CommonService.getTServerName(serverData.application + "-" + serverData.serverName), HPAService.GROUP, HPAService.VERSION)
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: hap
+    };
 }
 
 function getMatchLabel(val) {
@@ -129,13 +142,17 @@ HPAService.getHPACustomTarget = async (params) => {
     return new Promise((resolve, reject) => {
         try {
             let request = require('request').defaults({
-                ca: require("fs").readFileSync("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt", {encoding: "utf-8"}),
+                ca: require("fs").readFileSync("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt", {
+                    encoding: "utf-8"
+                }),
             });
             let options = {
                 'method': 'GET',
                 'url': `https://${process.env.KUBERNETES_SERVICE_HOST}:${process.env.KUBERNETES_SERVICE_PORT}/apis/custom.metrics.k8s.io/v1beta1`,
                 'headers': {
-                    'Authorization': 'Bearer ' + require("fs").readFileSync("/var/run/secrets/kubernetes.io/serviceaccount/token", {encoding: "utf-8"})
+                    'Authorization': 'Bearer ' + require("fs").readFileSync("/var/run/secrets/kubernetes.io/serviceaccount/token", {
+                        encoding: "utf-8"
+                    })
                 }
             };
             request(options, function (error, response) {

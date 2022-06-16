@@ -20,11 +20,14 @@ const CommonService = require("../common/CommonService");
 const ImageService = require("../image/ImageService");
 const PatchService = {};
 
-PatchService.buildSelect = async (ServerId) => {
+PatchService.buildSelect = async (serverData) => {
 
-	let v = ServerId.split(".");
+	// let v = ServerId.split(".");
 
-	let labelSelector = `${CommonService.TImageTypeLabel}=server,${CommonService.TServerAppLabel}=${v[0]},${CommonService.TServerNameLabel}=${v[1]}`;
+	let labelSelector = `${CommonService.TImageTypeLabel}=server,${CommonService.TServerAppLabel}=${serverData.application}`;
+	if (serverData.serverName) {
+		labelSelector += `,${CommonService.TServerNameLabel}=${serverData.serverName}`;
+	}
 
 	let tImages = await CommonService.listObject("timages", labelSelector);
 
@@ -98,15 +101,22 @@ PatchService.deleteBuild = async (ImageName) => {
 	};
 }
 
-PatchService.servicePoolSelect = async (ServerId) => {
+PatchService.servicePoolSelect = async (serverData) => {
 
-	let v = ServerId.split(".");
+	// let v = ServerId.split(".");
 
-	let labelSelector = `${CommonService.TImageTypeLabel}=server,${CommonService.TServerAppLabel}=${v[0]},${CommonService.TServerNameLabel}=${v[1]}`;
+	let labelSelector = `${CommonService.TImageTypeLabel}=server,${CommonService.TServerAppLabel}=${serverData.application}`;
+	if (serverData.serverName) {
+		labelSelector += `,${CommonService.TServerNameLabel}=${serverData.serverName}`;
+	}
+
+	// console.log(labelSelector);
 
 	let tImages = await CommonService.listObject("timages", labelSelector);
 
 	let allItems = tImages.body;
+
+	// console.log(allItems);
 
 	let result = {};
 
@@ -125,9 +135,9 @@ PatchService.servicePoolSelect = async (ServerId) => {
 
 				let elem = {};
 
-				elem["ServerApp"] = v[0]
+				elem["ServerApp"] = serverData.application
 
-				elem["ServerName"] = v[1]
+				elem["ServerName"] = serverData.serverName
 
 				elem["Name"] = item.metadata.name
 
@@ -176,7 +186,7 @@ PatchService.servicePoolCreate = async (metadata) => {
 
 PatchService.servicePoolUpdate = async (metadata) => {
 
-	let tServer = await CommonService.getServer(metadata.ServerId);
+	let tServer = await CommonService.getServer(metadata.serverData.application + "-" + metadata.serverData.serverName);
 
 	if (!tServer) {
 		return {
@@ -242,9 +252,9 @@ PatchService.servicePoolUpdate = async (metadata) => {
 }
 
 
-PatchService.ServiceNowImages = async (ServerId) => {
+PatchService.ServiceNowImages = async (serverData) => {
 
-	let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(ServerId));
+	let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(serverData.application + '-' + serverData.serverName));
 	if (!tServer) {
 		return {
 			ret: 500,
@@ -269,9 +279,9 @@ PatchService.ServiceNowImages = async (ServerId) => {
 	};
 }
 
-PatchService.serviceEnabledSelect = async (ServerId) => {
+PatchService.serviceEnabledSelect = async (serverData) => {
 
-	let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(ServerId));
+	let tServer = await CommonService.getObject("tservers", CommonService.getTServerName(serverData.application + '-' + serverData.serverName));
 	if (!tServer) {
 		return {
 			ret: 500,

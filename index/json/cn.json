@@ -741,8 +741,13 @@
     "framework": {
         "remark": {
             "maxBuildTime": "镜像build最大时长",
-            "imageRegistry": "镜像推送地址",
+            "imageUpload": "镜像推送仓库",
+            "imageUploadSecret": "镜像推送仓库Secret",
             "nodeImage": "默认使用tarsnode地址",
+            "nodeImageSecret": "tarsnode仓库Secret",
+            "imageBuildImage": "编译镜像地址",
+            "imageBuildSecret": "编译镜像Secret",
+            "imageBuildMaxTime": "最大编译时间(s)",
             "tconfigHistory": "配置信息最大保存条数",
             "texitedPod": "pod 保存个数",
             "timageRelease": "镜像保存条数",

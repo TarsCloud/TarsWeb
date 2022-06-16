@@ -37,7 +37,7 @@ export default {
   components: { YamlEditor },
   data() {
     return {
-      ServerId: "",
+      treeid: "",
       plural: "",
       yamlContent: "",
     };
@@ -50,11 +50,13 @@ export default {
     readonly() {
       this.$refs.yamlEdit.readonly();
     },
-    show(ServerId, plural) {
-      this.ServerId = ServerId;
-      this.plural = plural;
+    show(treeid, plural) {
+      (this.treeid = treeid), (this.plural = plural);
       this.$ajax
-        .getJSON("/k8s/api/get_object", { plural: plural, ServerId: ServerId })
+        .getJSON("/k8s/api/get_object", {
+          plural: plural,
+          tree_node_id: this.treeid,
+        })
         .then((data) => {
           this.yamlContent = data;
         })
@@ -68,11 +70,11 @@ export default {
       this.$ajax
         .postJSON("/k8s/api/update_object", {
           plural: this.plural,
-          ServerId: this.ServerId,
+          tree_node_id: this.treeid,
           yamlContent: this.yamlContent,
         })
         .then((data) => {
-          this.$emit("flushOthers", this.ServerId);
+          this.$emit("flushOthers", this.treeid);
           this.$message.success(`${this.$t("common.success")}`);
           this.$emit("successFun");
         })

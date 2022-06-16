@@ -223,7 +223,7 @@ export default {
         return;
       }
 
-      let ServerId = checkedServerList.map((item) => item.ServerId);
+      let ServerIds = checkedServerList.map((item) => item.ServerId);
 
       this.$confirm(
         this.$t("serverList.dlg.msg.undeploy"),
@@ -232,7 +232,7 @@ export default {
         const loading = this.$Loading.show();
         this.$ajax
           .postJSON("/k8s/api/server_undeploy", {
-            ServerId,
+            ServerIds,
           })
           .then((res) => {
             loading.hide();

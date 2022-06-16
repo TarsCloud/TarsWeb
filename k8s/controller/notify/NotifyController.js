@@ -16,9 +16,9 @@
 
 const logger = require('../../../logger');
 const axios = require('axios');
+const ServerController = require("../../controller/server/ServerController")
 const CommonService = require('../../service/common/CommonService');
 const NotifyController = {};
-const moment = require('moment');
 const TemplateService = require("../../service/template/TemplateService")
 
 const queryNotify = async (app, server, page, size) => {
@@ -70,14 +70,15 @@ const queryNotify = async (app, server, page, size) => {
 NotifyController.NotifySelect = async (ctx) => {
 
     let {
-        ServerId = '', page = 1, size = 10
+        tree_node_id,
+        page = 1,
+        size = 10
     } = ctx.paramsObj
     try {
 
-        let app = ServerId.split('.')[0];
-        let server = ServerId.split('.')[1];
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
 
-        let data = await queryNotify(app, server, page, size)
+        let data = await queryNotify(serverData.application, serverData.serverName, page, size)
 
         if (data.ret === 0) {
             ctx.makeResObj(200, "", data.msg)

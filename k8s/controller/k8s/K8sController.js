@@ -3,24 +3,21 @@ const K8sService = require('../../service/k8s/K8sService');
 const CommonService = require('../../service/common/CommonService')
 const jsYaml = require('js-yaml')
 const NodeService = require("../../service/node/NodeService");
+const ServerController = require("../../controller/server/ServerController");
 const K8sController = {};
 
 /**
  * K8S列表
- * @param  {String}  Token                登录签名
- * @param  {String}  ServerId             配置ID
- * @param  {Object}  ServerK8S            配置
- * @param  {Number}  ServerK8S.Replicas   副本数量
  */
 K8sController.ServerK8SSelect = async (ctx) => {
-    const that = module.exports
 
     let {
-        Token = '', page = 1, ServerId = '', isAll = false
+        Token = '', page = 1, tree_node_id = '', isAll = false
     } = ctx.paramsObj
     let limiter = null;
+    let serverData = ServerController.formatTreeNodeId(tree_node_id);
     try {
-        let result = await K8sService.serverK8SSelect(ServerId, limiter);
+        let result = await K8sService.serverK8SSelect(serverData, limiter);
         ctx.makeResObj(result.ret, result.msg, result.data);
     } catch (e) {
         logger.error('[ServerK8SSelect]', e.body ? e.body.message : e, ctx)
@@ -30,20 +27,14 @@ K8sController.ServerK8SSelect = async (ctx) => {
 
 /**
  * ServerK8S更新
- * @param  {String}  Token                登录签名
- * @param  {Number}  ServerId             配置ID
- * @param  {Number}  Replicas             副本
- * @param  {String}  NodeSelector         节点
  */
 K8sController.ServerK8SUpdate = async (ctx) => {
     let {
-        Token = '', ServerId = '', pull, launcherType, notStacked, daemonSet, Replicas = null, NodeSelector, abilityAffinity
+        Token = '', tree_node_id = '', pull, launcherType, notStacked, daemonSet, Replicas = null, NodeSelector, abilityAffinity
     } = ctx.paramsObj
     Replicas = Math.floor(Replicas) || -1
     try {
-        const metadata = {
-            ServerId,
-        }
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
         let target = {
             pull,
             launcherType,
@@ -53,7 +44,7 @@ K8sController.ServerK8SUpdate = async (ctx) => {
             NodeSelector,
             abilityAffinity
         }
-        let result = await K8sService.serverK8SUpdate(metadata, target);
+        let result = await K8sService.serverK8SUpdate(serverData, target);
         ctx.makeResObj(result.ret, result.msg, result.data);
     } catch (e) {
         logger.error('[ServerK8SUpdate]', e.body ? e.body.message : e, ctx)
@@ -64,19 +55,17 @@ K8sController.ServerK8SUpdate = async (ctx) => {
 //修改k8s  Tserver 资源管理
 K8sController.ServerK8SUpdateResource = async (ctx) => {
     let {
-        Token = '', ServerId = '', limitCpu, limitMem, requestCpu, requestMem
+        Token = '', tree_node_id = '', limitCpu, limitMem, requestCpu, requestMem
     } = ctx.paramsObj
     try {
-        const metadata = {
-            ServerId,
-        }
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
         let target = {
             limitCpu, //资源管理
             limitMem,
             requestCpu,
             requestMem,
         }
-        let result = await K8sService.ServerK8SUpdateResource(metadata, target);
+        let result = await K8sService.ServerK8SUpdateResource(serverData, target);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
@@ -88,19 +77,18 @@ K8sController.ServerK8SUpdateResource = async (ctx) => {
 //修改k8s  Tserver 资源管理
 K8sController.ServerK8SUpdateNetwork = async (ctx) => {
     let {
-        Token = '', ServerId = '', HostIpc, HostNetwork, showHostPort, HostPort
+        Token = '', tree_node_id = '', HostIpc, HostNetwork, showHostPort, HostPort
     } = ctx.paramsObj
     try {
-        const metadata = {
-            ServerId
-        }
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
+
         let target = {
             HostIpc,
             HostNetwork,
             showHostPort,
             HostPort,
         }
-        let result = await K8sService.ServerK8SUpdateNetwork(metadata, target);
+        let result = await K8sService.ServerK8SUpdateNetwork(serverData, target);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
@@ -112,16 +100,15 @@ K8sController.ServerK8SUpdateNetwork = async (ctx) => {
 //磁盘管理
 K8sController.ServerK8SUpdateDisk = async (ctx) => {
     let {
-        Token = '', ServerId = '', mounts
+        Token = '', serverData = '', mounts
     } = ctx.paramsObj
     try {
-        const metadata = {
-            ServerId
-        }
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
+
         let target = {
             mounts
         }
-        let result = await K8sService.ServerK8SUpdateDisk(metadata, target);
+        let result = await K8sService.ServerK8SUpdateDisk(serverData, target);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
@@ -218,15 +205,16 @@ K8sController.DescribePod = async (ctx) => {
 K8sController.getObject = async (ctx) => {
     try {
         let params = ctx.paramsObj
+        let serverData = ServerController.formatTreeNodeId(params.tree_node_id);
 
         let obj = {}; //res.response.body
         if (params.plural == "tservers") {
-            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
+            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(serverData.application + '-' + serverData.serverName));
             obj = res.response.body
             delete obj.metadata.managedFields; //屏蔽managedFields信息
         }
         if (params.plural == "tdeploys") {
-            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
+            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(serverData.application + '-' + serverData.serverName));
             obj = obj.apply
         }
         if (params.plural == "tframeworkconfigs") {
@@ -244,11 +232,12 @@ K8sController.getObject = async (ctx) => {
 K8sController.updateObject = async (ctx) => {
     try {
         let params = ctx.paramsObj
+        let serverData = ServerController.formatTreeNodeId(params.tree_node_id);
         let object = jsYaml.load(params.yamlContent)
         if (params.plural == "tservers") {
-            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
+            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(serverData.application + '-' + serverData.serverName));
             object.metadata.managedFields = res.response.body.metadata.managedFields
-            await CommonService.replaceObject(params.plural, CommonService.getTServerName(params.ServerId), object)
+            await CommonService.replaceObject(params.plural, CommonService.getTServerName(serverData.application + '-' + serverData.serverName), object)
         }
         if (params.plural == "tframeworkconfigs") {
             let res = await CommonService.getObject(params.plural, CommonService.TFC);
@@ -256,10 +245,10 @@ K8sController.updateObject = async (ctx) => {
             await CommonService.replaceObject(params.plural, CommonService.TFC, object)
         }
         if (params.plural == "tdeploys") {
-            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(params.ServerId));
+            let res = await CommonService.getObject(params.plural, CommonService.getTServerName(serverData.application + '-' + serverData.serverName));
             let tdeploy = res.body
             tdeploy.apply = object
-            await CommonService.replaceObject(params.plural, CommonService.getTServerName(params.ServerId), tdeploy)
+            await CommonService.replaceObject(params.plural, CommonService.getTServerName(serverData.application + '-' + serverData.serverName), tdeploy)
         }
         ctx.makeResObj(200, "", object)
     } catch (e) {

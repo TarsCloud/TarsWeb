@@ -49,7 +49,7 @@ NodeService.startServer = async (application, serverName, podIp) => {
 
         rets.push({
             application: application,
-            server_name: serverName,
+            serverName: serverName,
             target,
             ret_code: ret.__return,
             err_msg: ret.result

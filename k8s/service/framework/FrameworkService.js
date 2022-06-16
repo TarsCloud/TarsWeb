@@ -12,21 +12,44 @@ FrameworkService.getFrameworkConfig = async () => {
     const CommonService = require('../common/CommonService');
 
     let data = await CommonService.getFrameworkConfig();
+
+    console.log(data);
+
     let res = [];
     res.push({
-        column: "imageBuild.maxBuildTime",
-        remark: "#framework.remark.maxBuildTime#",
-        value: data.imageBuild.maxBuildTime
+        column: "imageUpload.registry",
+        remark: "#framework.remark.imageUpload#",
+        value: data.imageUpload.registry
     })
     res.push({
-        column: "imageRegistry.registry",
-        remark: "#framework.remark.imageRegistry#",
-        value: data.imageRegistry.registry
+        column: "imageUpload.secret",
+        remark: "#framework.remark.imageUploadSecret#",
+        value: data.imageUpload.secret
     })
     res.push({
         column: "nodeImage.image",
         remark: "#framework.remark.nodeImage#",
         value: data.nodeImage.image
+    })
+    res.push({
+        column: "nodeImage.secret",
+        remark: "#framework.remark.nodeImageSecret#",
+        value: data.nodeImage.secret
+    })
+    res.push({
+        column: "imageBuild.image",
+        remark: "#framework.remark.imageBuildImage#",
+        value: data.imageBuild.executor.image
+    })
+    res.push({
+        column: "imageBuild.secret",
+        remark: "#framework.remark.imageBuildSecret#",
+        value: data.imageBuild.executor.secret
+    })
+    res.push({
+        column: "imageBuild.maxBuildTime",
+        remark: "#framework.remark.imageBuildMaxTime#",
+        value: data.imageBuild.maxBuildTime
     })
     res.push({
         column: "recordLimit.tconfigHistory",
@@ -46,9 +69,7 @@ FrameworkService.getFrameworkConfig = async () => {
     res.push({
         column: "frameworkConfig",
         remark: "#framework.remark.frameworkConfig#",
-        value: data.expand.frameworkConfig || JSON.stringify({
-
-        })
+        value: data.expand.frameworkConfig || JSON.stringify({})
     })
     res.push({
         column: "nativeDBConfig",
@@ -84,11 +105,23 @@ FrameworkService.saveFrameworkConfig = async (params) => {
         case "imageBuild.maxBuildTime":
             tfc.imageBuild.maxBuildTime = Number(params.value);
             break;
-        case "imageRegistry.registry":
-            tfc.imageRegistry.registry = params.value;
+        case "imageBuild.image":
+            tfc.imageBuild.executor.image = params.value;
+            break;
+        case "imageBuild.secret":
+            tfc.imageBuild.executor.secret = params.value;
+            break;
+        case "imageUpload.registry":
+            tfc.imageUpload.registry = params.value;
+            break;
+        case "imageUpload.secret":
+            tfc.imageUpload.secret = params.value;
             break;
         case "nodeImage.image":
             tfc.nodeImage.image = params.value;
+            break;
+        case "nodeImage.secret":
+            tfc.nodeImage.secret = params.value;
             break;
         case "recordLimit.tconfigHistory":
             tfc.recordLimit.tconfigHistory = Number(params.value);

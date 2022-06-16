@@ -21,7 +21,7 @@ const AdapterService = {};
 // AdapterService.adpaterConfFields = () => {
 // 	return {
 // 		application: '',
-// 		server_name: '',
+// 		serverName: '',
 // 		node_name: '',
 // 		adapter_name: '',
 // 		thread_num: 1,
@@ -39,11 +39,12 @@ const AdapterService = {};
 // };
 
 
-AdapterService.serverAdapterSelect = async (ServerId, isTars, isTcp, limiter) => {
+AdapterService.serverAdapterSelect = async (serverData, isTars, isTcp, limiter) => {
 
-	let v = ServerId.split(".");
-
-	let labelSelector = `${CommonService.TServerAppLabel}=${v[0]},${CommonService.TServerNameLabel}=${v[1]}`;
+	let labelSelector = `${CommonService.TServerAppLabel}=${serverData.application}`;
+	if (serverData.serverName) {
+		labelSelector += `,${CommonService.TServerNameLabel}=${serverData.serverName}`;
+	}
 
 	if (isTars) {
 		labelSelector += `,${CommonService.TSubTypeLabel}=${CommonService.TServerType1}`
@@ -154,7 +155,7 @@ AdapterService.serverAdapterSelect = async (ServerId, isTars, isTcp, limiter) =>
 
 AdapterService.serverAdapterCreate = async (metadata) => {
 
-	let tServer = await CommonService.getServer(metadata.ServerId);
+	let tServer = await CommonService.getServer(metadata.serverData.application + "-" + metadata.serverData.serverName);
 
 	if (!tServer) {
 		return {

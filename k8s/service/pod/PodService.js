@@ -116,7 +116,7 @@ PodService.podAliveSelect = async (filter) => {
 
     let labelSelector = CommonService.createLabelSelector(filter);
 
-    // console.log(labelSelector);
+    console.log(labelSelector);
     let filterItems = [];
 
     let source = {};
@@ -223,9 +223,9 @@ PodService.podAliveSelect = async (filter) => {
     };
 }
 
-PodService.podPerishedSelect = async (serverId) => {
+PodService.podPerishedSelect = async (serverData) => {
 
-    let allExitedPodItems = await CommonService.getObject("texitedrecords", CommonService.getTServerName(serverId));
+    let allExitedPodItems = await CommonService.getObject("texitedrecords", CommonService.getTServerName(serverData.application + '-' + serverData.serverName));
 
     allExitedPodItems = allExitedPodItems.body;
 

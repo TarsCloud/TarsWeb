@@ -25,7 +25,7 @@ const treeNode = ({
                     item.App.forEach(AppItem => {
                         let obj = {
                             children: [],
-                            id: `${AppItem.ServerApp}`,
+                            id: `1${AppItem.ServerApp}`,
                             name: AppItem.ServerApp,
                             type: '1',
                             is_parent: false,
@@ -36,7 +36,7 @@ const treeNode = ({
                         if (AppItem.Server && AppItem.Server.length > 0) {
                             AppItem.Server.forEach(serverItem => {
                                 obj.children.push({
-                                    id: `${AppItem.ServerApp}.${serverItem.ServerName}`,
+                                    id: `1${AppItem.ServerApp}.5${serverItem.ServerName}`,
                                     name: serverItem.ServerName,
                                     type: '2',
                                     is_parent: false,
@@ -58,7 +58,7 @@ const treeNode = ({
                     item.App.forEach(AppItem => {
                         if (AppItem.ServerApp) {
                             obj = {
-                                id: AppItem.ServerApp,
+                                id: `1${AppItem.ServerApp}`,
                                 name: AppItem.ServerApp,
                                 type: '1',
                                 is_parent: true,
@@ -70,7 +70,7 @@ const treeNode = ({
                             if (AppItem.Server && AppItem.Server.length > 0) {
                                 AppItem.Server.forEach(serverItem => {
                                     obj.children.push({
-                                        id: `${AppItem.ServerApp}.${serverItem.ServerName}`,
+                                        id: `1${AppItem.ServerApp}.5${serverItem.ServerName}`,
                                         name: serverItem.ServerName,
                                         type: '2',
                                         is_parent: false,

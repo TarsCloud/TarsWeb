@@ -83,7 +83,7 @@
               class="btabs_link"
               href="javascript:;"
               @click="clickBTabs($event, item.id)"
-              >{{ item.id }}</a
+              >{{ getNewServerName(item.id) }}</a
             >
             <a
               class="btabs_close"
@@ -300,6 +300,22 @@ export default {
     },
   },
   methods: {
+    getNewServerName(id) {
+      const v = id && id.split(".");
+      if (!v) {
+        return id;
+      }
+      if (v.length == 1) {
+        const app = id && id.split(".")[0].substring(1);
+        return `${app}`;
+      }
+      if (v.length > 1) {
+        const app = id && id.split(".")[0].substring(1);
+        const server =
+          id && id.split(".")[id.split(".").length - 1].substring(1);
+        return `${app}.${server}`;
+      }
+    },
     getName(val) {
       let result = "";
       if (val.lastIndexOf("/") > -1) {
@@ -354,12 +370,6 @@ export default {
         node.label = node.name; //eslint-disable-line
         node.nodeKey = node.type !== "0" ? node.id : ""; //eslint-disable-line
 
-        // // 第一层特殊图标、展开
-        // if (isFirstLayer) {
-        //   // node.iconClass = 'tree-icon';
-        //   node.expand = true;  //eslint-disable-line
-        // }
-
         if (this.treeSearchKey) {
           node.expand = true;
         }
@@ -387,7 +397,7 @@ export default {
           .catch((err) => {
             this.loading = false;
             this.treeErrMsg = err.err_msg || err.message || "load failed";
-            this.treeData = false;
+            // this.treeData = false;
           });
       });
     },
@@ -400,23 +410,40 @@ export default {
         let selectNode = this.$refs.trees.getNode(this.treeid);
         selectNode && (server_type = selectNode.data.serverType || "");
       }
-
-      const treeArr = this.treeid.split(".");
       const serverData = {
-        level: treeArr.length == 1 ? 1 : 5,
-        application: treeArr[0],
-        server_name: treeArr[1] || "",
-        server_type: server_type,
-        // set_name: '',
-        // set_area: '',
-        // set_group: '',
+        level: 5,
+        application: "",
+        server_name: "",
+        set_name: "",
+        set_area: "",
+        set_group: "",
       };
-      if (!this.treeid) {
-        return {};
-      }
-      if (this.treeid == "home") {
-        return serverData;
-      }
+      const treeArr = this.treeid.split(".");
+
+      treeArr.forEach((item) => {
+        const level = +item.substr(0, 1);
+        const name = item.substr(1);
+        switch (level) {
+          case 1:
+            serverData.application = name;
+            break;
+          case 2:
+            serverData.set_name = name;
+            break;
+          case 3:
+            serverData.set_area = name;
+            break;
+          case 4:
+            serverData.set_group = name;
+            break;
+          case 5:
+            serverData.server_name = name;
+            break;
+          default:
+            break;
+        }
+        serverData.level = level;
+      });
 
       return serverData;
     },

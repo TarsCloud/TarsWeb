@@ -306,13 +306,13 @@
       v-model="configModal.show"
       :title="$t('serverList.dlg.title.editService')"
       width="800px"
-      :footShow="!!(configModal.model && configModal.model.ServerId)"
+      :footShow="!!configModal.model"
       @on-confirm="saveConfig"
       @close="closeConfigModal"
       @on-cancel="closeConfigModal"
     >
       <let-form
-        v-if="!!(configModal.model && configModal.model.ServerId)"
+        v-if="!!configModal.model"
         ref="configForm"
         itemWidth="360px"
         :columns="2"
@@ -342,12 +342,8 @@
             v-model="configModal.model.AsyncThread"
             :placeholder="$t('serverList.dlg.placeholder.thread')"
             required
-            :pattern="
-              configModal.model.ServerTemplate === 'tars.nodejs'
-                ? '^[1-9][0-9]*$'
-                : '^([3-9]|[1-9][0-9]+)$'
-            "
-            pattern-tip="$t('serverList.dlg.placeholder.thread')"
+            :pattern="'^[1-9][0-9]*$'"
+            :pattern-tip="$t('serverList.dlg.placeholder.thread')"
           ></let-input>
         </let-form-item>
         <let-form-item
@@ -900,7 +896,9 @@ export default {
         level: 5,
         application: "",
         server_name: "",
-        server_type: "",
+        set_name: "",
+        set_area: "",
+        set_group: "",
       },
 
       commandHTML: "",
@@ -996,9 +994,6 @@ export default {
       let url = `/logview.html?History=false&NodeIP=${data.NodeIp}&ServerApp=${data.ServerApp}&ServerName=${data.ServerName}&PodName=${data.PodName}`;
       window.open(url);
     },
-    getServerId() {
-      return this.treeid;
-    },
     closePodYaml() {
       this.podYaml = null;
     },
@@ -1053,7 +1048,7 @@ export default {
             if (
               that.isreloadlist &&
               location.hash == "#/server" &&
-              that.$parent.treeid == that.getServerId()
+              that.$parent.treeid == that.treeid
             ) {
               that.getServerList();
               that.getServerNotifyList();
@@ -1073,7 +1068,7 @@ export default {
     getServerList() {
       this.$ajax
         .getJSON("/k8s/api/pod_list", {
-          ServerId: this.getServerId(),
+          tree_node_id: this.treeid,
         })
         .then((data) => {
           this.serverList = [];
@@ -1091,13 +1086,7 @@ export default {
             this.serverList = data.Data;
           }
         })
-        .catch((err) => {
-          // loading.hide();
-          // this.stopServerList();
-          // this.$confirm(err.err_msg || err.message || this.$t('serverList.msg.fail'), this.$t('common.alert')).then(() => {
-          //   this.getServerList();
-          // });
-        });
+        .catch((err) => {});
     },
     // 获取服务实时状态
     getServerNotifyList() {
@@ -1105,7 +1094,7 @@ export default {
 
       this.$ajax
         .getJSON("/k8s/api/server_notify_list", {
-          ServerId: this.getServerId(),
+          tree_node_id: this.treeid,
           size: this.notifyPagination.size,
           page: this.notifyPagination.page,
         })
@@ -1145,7 +1134,7 @@ export default {
       this.getServerNotifyList();
     },
     // 获取服务数据
-    getServerConfig(id) {
+    getServerConfig() {
       this.stopServerList();
       const loading = this.$loading.show({
         target: this.$refs.configFormLoading,
@@ -1153,7 +1142,7 @@ export default {
 
       this.$ajax
         .getJSON("/k8s/api/server_option_select", {
-          ServerId: id,
+          tree_node_id: this.treeid,
         })
         .then((data) => {
           loading.hide();
@@ -1168,6 +1157,8 @@ export default {
             data.templates = [];
             this.configModal.model = data.Data[0];
           }
+
+          this.configModal.model["tree_node_id"] = this.treeid;
           this.startServerList();
         })
         .catch((err) => {
@@ -1194,7 +1185,7 @@ export default {
           } else {
             this.configModal.model = { templates: data.Data };
           }
-          this.getServerConfig(this.getServerId());
+          this.getServerConfig();
           this.startServerList();
         })
         .catch((err) => {
@@ -1217,6 +1208,9 @@ export default {
             loading.hide();
             this.closeConfigModal();
             this.$tip.success(this.$t("common.success"));
+          })
+          .catch(() => {
+            loading.hide();
           });
       }
     },
@@ -1420,7 +1414,7 @@ export default {
       });
       this.$ajax
         .getJSON("/k8s/api/server_option_template", {
-          ServerId: this.getServerId(),
+          tree_node_id: this.treeid,
         })
         .then((data) => {
           loading.hide();
@@ -1445,7 +1439,7 @@ export default {
       });
       this.$ajax
         .getJSON("/k8s/api/server_option_select", {
-          ServerId: this.getServerId(),
+          tree_node_id: this.treeid,
         })
         .then((data) => {
           loading.hide();
@@ -1471,7 +1465,7 @@ export default {
 
       this.$ajax
         .getJSON("/k8s/api/server_adapter_select", {
-          ServerId: this.getServerId(),
+          tree_node_id: this.treeid,
         })
         .then((data) => {
           this.servantModal.model = data.Data;
@@ -1485,7 +1479,7 @@ export default {
         });
     },
     manageK8S() {
-      this.$refs.k8s.show(this.getServerId());
+      this.$refs.k8s.show(this.treeid);
     },
     closeServantModal() {
       this.servantModal.show = false;
@@ -1528,7 +1522,7 @@ export default {
       const { defaultObj } = this;
 
       const model = {
-        ServerId: this.getServerId(),
+        tree_node_id: this.treeid,
         ServerServant: [
           {
             Name: "",
@@ -1897,7 +1891,7 @@ export default {
     //校验服务是否为前端启动
     async checkLauncherType() {
       let k8sData = await this.$ajax.getJSON("/k8s/api/server_k8s_select", {
-        ServerId: this.getServerId(),
+        tree_node_id: this.treeid,
       });
       let launcherType = k8sData.Data[0].launcherType;
       return launcherType == "foreground";
@@ -1918,7 +1912,7 @@ export default {
     if (!this.serverData.server_type) {
       try {
         let server = await this.$ajax.getJSON("/k8s/api/server_option_select", {
-          ServerId: this.treeid,
+          tree_node_id: this.treeid,
         });
         this.$set(this.serverData, "server_type", server.Data[0].serverType);
       } catch (e) {

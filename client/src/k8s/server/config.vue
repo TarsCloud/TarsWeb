@@ -422,13 +422,12 @@ export default {
 
       // 当前页面信息
       serverData: {
-        // level: 5,
-        // application: '',
-        // server_name: '',
-        // set_name: '',
-        // set_area: '',
-        // set_group: '',
-        ServerId: "",
+        level: 5,
+        application: "",
+        server_name: "",
+        set_name: "",
+        set_area: "",
+        set_group: "",
       },
 
       // 服务列表
@@ -520,17 +519,14 @@ export default {
     },
   },
   methods: {
-    getServerId() {
-      return this.treeid;
-    },
     // 配置列表
     getConfigList(query) {
       const loading = this.$refs.configListLoading.$loading.show();
 
-      let ServerId = this.getServerId();
+      let tree_node_id = this.treeid;
       this.$ajax
         .getJSON("/k8s/api/server_config_select", {
-          ServerId,
+          tree_node_id,
         })
         .then((data) => {
           loading.hide();
@@ -540,7 +536,6 @@ export default {
           if (data.hasOwnProperty("Data")) {
             if (data.Data[0] && data.Data[0].ConfigId) {
               this.checkedConfigId = data.Data[0].ConfigName;
-              // this.getRefFileList();
               this.getNodeConfigList();
             }
             data.Data.forEach((item) => {
@@ -561,10 +556,9 @@ export default {
         });
     },
     addConfig() {
-      const serverName = this.getServerId().split(".")[1] || "";
       this.configContent = "";
       this.configModal.model = {
-        ConfigName: (serverName && `${serverName}.conf`) || "",
+        ConfigName: this.serverData.server_name + ".conf",
         ConfigContent: "",
       };
       this.configModal.isNew = true;
@@ -599,7 +593,7 @@ export default {
         if (this.configModal.isNew) {
           const query = Object.assign(
             {
-              ServerId: this.getServerId(),
+              tree_node_id: this.treeid,
             },
             model
           );
@@ -650,7 +644,7 @@ export default {
         if (this.nodeConfigModal.isNew) {
           const query = Object.assign(
             {
-              ServerId: this.getServerId(),
+              tree_node_id: this.treeid,
             },
             model
           );
@@ -741,7 +735,7 @@ export default {
       // const loading = this.$refs.nodeConfigListLoading.$loading.show();
 
       const query = {
-        ServerId: this.getServerId(),
+        tree_node_id: this.treeid,
         ConfigName: this.checkedConfigId,
       };
       this.$ajax
@@ -771,35 +765,14 @@ export default {
       let newData = data.filter((item) => item.ConfigName === key);
 
       this.nodeConfigModal.model = {
-        ServerId: newData[0].ServerId,
+        // ServerId: newData[0].ServerId,
+        ServerId: this.treeid,
         ConfigName: newData[0].ConfigName,
         ConfigContent: "",
       };
       this.nodeConfigModal.isNew = true;
       this.nodeConfigModal.show = true;
     },
-    // pushNodeConfig() {
-    //   if (!this.nodeCheckList.length) {
-    //     this.$tip.warning(this.$t('cfg.msg.selectNode'));
-    //     return;
-    //   }
-    //   const loading = this.$Loading.show();
-    //   this.$ajax.getJSON('/k8s/api/push_config_file', {
-    //     ids: this.nodeCheckList.join(';'),
-    //   }).then((res) => {
-    //     loading.hide();
-    //     this.pushResultModal.model = res;
-    //     this.pushResultModal.show = true;
-    //   }).catch((err) => {
-    //     loading.hide();
-    //     this.$tip.error(`${this.$t('common.error')}: ${err.err_msg || err.message}`);
-    //   });
-    // },
-    // closePushResultModal() {
-    //   this.pushResultModal.model = null;
-    //   this.pushResultModal.show = false;
-    // },
-
     // 显示详情弹窗
     showDetail(data, key, val) {
       if (!val || val.length === 0) {
@@ -831,7 +804,8 @@ export default {
 
       this.$ajax
         .getJSON("/k8s/api/merged_node_config", {
-          ServerId: newData[0].ServerId,
+          // ServerId: newData[0].ServerId,
+          tree_node_id: this.treeid,
           ConfigName: newData[0].ConfigName,
           PodSeq: newData[0].PodSeq,
         })

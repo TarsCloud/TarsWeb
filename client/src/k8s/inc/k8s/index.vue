@@ -190,14 +190,14 @@ export default {
 
       yamlContent: "",
       mounts: [],
-      serverId: "",
+      treeid: "",
     };
   },
   methods: {
     HandleClick(activeName) {
       if (activeName == "yaml") {
         this.$nextTick(() => {
-          this.$refs.yamlEdit.show(this.serverId, "tservers"); // 点击yaml编辑自动刷新结构
+          this.$refs.yamlEdit.show(this.treeid, "tservers"); // 点击yaml编辑自动刷新结构
           this.$refs.yamlEdit.refresh();
         });
       }
@@ -206,7 +206,7 @@ export default {
       const loading = this.$Loading.show();
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update", {
-          ServerId: this.serverId,
+          tree_node_id: this.treeid,
           launcherType: launcherType,
         })
         .then((res) => {
@@ -224,7 +224,7 @@ export default {
       const loading = this.$Loading.show();
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update", {
-          ServerId: this.serverId,
+          tree_node_id: this.treeid,
           pull: pull,
         })
         .then((res) => {
@@ -242,7 +242,7 @@ export default {
       const loading = this.$Loading.show();
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update", {
-          ServerId: this.serverId,
+          tree_node_id: this.treeid,
           notStacked: notStacked,
         })
         .then((res) => {
@@ -260,7 +260,7 @@ export default {
       const loading = this.$Loading.show();
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update", {
-          ServerId: this.serverId,
+          tree_node_id: this.treeid,
           daemonSet: daemonSet,
         })
         .then((res) => {
@@ -278,7 +278,7 @@ export default {
       const loading = this.$Loading.show();
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update", {
-          ServerId: this.serverId,
+          tree_node_id: this.treeid,
           Replicas: Replicas,
         })
         .then((res) => {
@@ -296,7 +296,7 @@ export default {
       const loading = this.$Loading.show();
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update", {
-          ServerId: this.serverId,
+          tree_node_id: this.treeid,
           abilityAffinity: data.abilityAffinity,
           NodeSelector: data.NodeSelector,
         })
@@ -312,7 +312,7 @@ export default {
         });
     },
     saveHpa(data) {
-      data = Object.assign(data, { ServerId: this.ServerId });
+      data = Object.assign(data, { tree_node_id: this.treeid });
 
       this.$ajax
         .postJSON("/k8s/api/create_hpa", data)
@@ -329,7 +329,7 @@ export default {
       const loading = this.$Loading.show();
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update_disk", {
-          ServerId: this.serverId,
+          tree_node_id: this.treeid,
           mounts: mounts,
         })
         .then((res) => {
@@ -344,6 +344,7 @@ export default {
         });
     },
     saveResource(sourceModel) {
+      sourceModel.tree_node_id = this.treeid;
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update_resource", sourceModel)
         .then((res) => {
@@ -357,6 +358,8 @@ export default {
     },
     adapterServerK8S(model) {
       let data = Object.assign({}, model);
+      data.tree_node_id = this.treeid;
+
       if (data.HostNetwork && data.showHostPort) {
         return this.$message.error(
           `${this.$t("deployService.form.portOrNetWork")}`
@@ -375,11 +378,15 @@ export default {
           });
         }
       }
+
+      console.log(this.treeid, data);
       return data;
     },
     saveNetwork(k8sModel) {
       const loading = this.$Loading.show();
       let data = this.adapterServerK8S(k8sModel);
+
+      console.log(data);
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update_network", data)
         .then((res) => {
@@ -406,15 +413,15 @@ export default {
         indicatorData: [],
       };
     },
-    show(serverId) {
-      this.serverId = serverId;
+    show(treeid) {
+      this.treeid = treeid;
       this.DetailModel.show = true;
       this.getDefaultValue();
 
       this.$nextTick(() => {
-        this.getServerInfo(serverId);
-        this.getHpaInfo(serverId);
-        this.$refs.yamlEdit.show(serverId, "tservers");
+        this.getServerInfo(treeid);
+        this.getHpaInfo(treeid);
+        this.$refs.yamlEdit.show(treeid, "tservers");
       });
     },
     getDefaultValue() {
@@ -431,10 +438,10 @@ export default {
         this.indicators = indicators;
       });
     },
-    getServerInfo(serverId) {
+    getServerInfo() {
       this.$ajax
         .getJSON("/k8s/api/server_k8s_select", {
-          ServerId: serverId,
+          tree_node_id: this.treeid,
         })
         .then((data) => {
           data = data.Data[0];
@@ -442,7 +449,7 @@ export default {
 
           this.serverData = data;
           //1.服务信息
-          this.sourceModel.ServerId = serverId;
+          this.sourceModel.tree_node_id = this.treeid;
           //2.资源信息
           if (data.resources && Object.keys(data.resources).length > 0) {
             if (data.resources.limits) {
@@ -529,11 +536,12 @@ export default {
           );
         });
     },
-    getHpaInfo(serverId) {
+    getHpaInfo(treeid) {
       //查询hpa
       this.$ajax
         .getJSON("/k8s/api/get_hpa", {
-          serverId: serverId.toLowerCase().replace(".", "-"),
+          tree_node_id: treeid,
+          // serverId: serverId.toLowerCase().replace(".", "-"),
         })
         .then((res) => {
           // console.log("res:" + JSON.stringify(res, null, 4));

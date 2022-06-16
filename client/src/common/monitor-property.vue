@@ -198,36 +198,33 @@ export default {
 
     let _master_name = "";
 
-    let k8s = true;
-    if (location.pathname == "/k8s.html") {
-      k8s = true;
-      //k8s的服务
-      if (_master_name_arr.length == 2) {
-        //没有启用set的被调名
-        _master_name = _master_name_arr[0] + "." + _master_name_arr[1];
-      }
-    } else {
-      k8s = false;
-      if (_master_name_arr.length == 2) {
-        //没有启用set的被调名
-        _master_name =
-          _master_name_arr[0].substring(1) +
-          "." +
-          _master_name_arr[1].substring(1);
-      } else if (_slave_name_arr.length == 5) {
-        //启用set的被调名
-        _master_name =
-          _master_name_arr[0].substring(1) +
-          "." +
-          _master_name_arr[4].substring(1) +
-          "." +
-          _master_name_arr[1].substring(1) +
-          _master_name_arr[2].substring(1) +
-          _master_name_arr[3].substring(1);
-      }
+    // k8s = false;
+    if (_master_name_arr.length == 2) {
+      //没有启用set的被调名
+      _master_name =
+        _master_name_arr[0].substring(1) +
+        "." +
+        _master_name_arr[1].substring(1);
+    } else if (_master_name_arr.length == 5) {
+      //启用set的被调名
+      _master_name =
+        _master_name_arr[0].substring(1) +
+        "." +
+        _master_name_arr[4].substring(1) +
+        "." +
+        _master_name_arr[1].substring(1) +
+        _master_name_arr[2].substring(1) +
+        _master_name_arr[3].substring(1);
     }
 
     return {
+      loading: false,
+      formatter,
+      allItems: [],
+      hour: -1,
+      page: 1,
+      showChart: true,
+      k8s: false,
       query: {
         // userpc: 0,
         thedate: formatDate(new Date(), formatter),
@@ -239,14 +236,8 @@ export default {
         property_name: "",
         policy: "",
         group_by: "",
-        k8s: k8s,
+        k8s: this.k8s,
       },
-      loading: false,
-      formatter,
-      allItems: [],
-      hour: -1,
-      page: 1,
-      showChart: true,
     };
   },
   props: ["treeid"],
@@ -286,6 +277,7 @@ export default {
   },
 
   mounted() {
+    this.k8s = location.pathname == "/k8s.html";
     this.fetchData();
   },
 

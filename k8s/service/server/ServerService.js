@@ -126,9 +126,9 @@ ServerService.selectServer = async (ServerApp, ServerName, limiter, force) => {
     };
 }
 
-ServerService.updateServer = async (metadata, target) => {
+ServerService.updateServer = async (serverData, target) => {
 
-    let server = await CommonService.getServer(metadata.ServerId);
+    let server = await CommonService.getServer(serverData.application + "-" + serverData.serverName);
     if (!server) {
         return {
             ret: 500,
@@ -165,53 +165,59 @@ ServerService.updateServer = async (metadata, target) => {
 }
 
 
-ServerService.deleteServer = async (metadata) => {
+ServerService.deleteServer = async (serverData) => {
 
     // metadata.ServerId.forEach(async (item) => {
-    for (let i = 0; i < metadata.ServerId.length; i++) {
-        let item = metadata.ServerId[i];
+    let item = serverData;
+
+    try {
+        await CommonService.deleteObject("tservers", CommonService.getTServerName(item.application + '-' + item.serverName));
+    } catch (e) {
+
+        logger.error(`deleteServer tserver ${item}`, e.message);
+        return {
+            ret: 500,
+            msg: e.message
+        };
+    }
+
+    try {
+        await CommonService.deleteObject("timages", CommonService.getTServerName(item.application + '-' + item.serverName));
+    } catch (e) {
+        logger.error(`deleteServer timages ${item}`, e.message);
+        return {
+            ret: 500,
+            msg: e.message
+        };
+    }
+
+    let filter = {
+        eq: {},
+    }
+
+    filter.eq[CommonService.TServerAppLabel] = item.application;
+    filter.eq[CommonService.TServerNameLabel] = item.serverName;
+
+    let labelSelector = CommonService.createLabelSelector(filter);
+
+    let configs = await CommonService.listObject("tconfigs", labelSelector);
+
+    for (let i = 0; i < configs.body.items.length; i++) {
+        let config = configs.body.items[i];
 
         try {
-            await CommonService.deleteObject("tservers", CommonService.getTServerName(item));
+            await CommonService.deleteObject("tconfigs", config.metadata.name);
         } catch (e) {
-            logger.error(`deleteServer tserver ${item}`, e.message);
-        }
-
-        try {
-            await CommonService.deleteObject("timages", CommonService.getTServerName(item));
-        } catch (e) {
-            logger.error(`deleteServer timages ${item}`, e.message);
-        }
-
-        try {
-            let filter = {
-                eq: {},
-            }
-
-            filter.eq[CommonService.TServerAppLabel] = item.substr(0, item.indexOf("."));
-            filter.eq[CommonService.TServerNameLabel] = item.substr(item.indexOf(".") + 1);
-
-            let labelSelector = CommonService.createLabelSelector(filter);
-
-            let configs = await CommonService.listObject("tconfigs", labelSelector);
-
-            for (let i = 0; i < configs.body.items.length; i++) {
-                let config = configs.body.items[i];
-
-                try {
-                    await CommonService.deleteObject("tconfigs", config.metadata.name);
-                } catch (e) {
-                    logger.error(`deleteServer tconfig item ${config.metadata.name}`, e.message);
-
-                }
-
-            }
-
-        } catch (e) {
-            logger.error(`deleteServer tconfig ${item}`, e.message);
+            logger.error(`deleteServer tconfig item ${config.metadata.name}`, e.message);
+            return {
+                ret: 500,
+                msg: e.message
+            };
         }
 
     }
+
+    // }
 
     return {
         ret: 200,
@@ -220,11 +226,15 @@ ServerService.deleteServer = async (metadata) => {
 }
 
 
-ServerService.serverOptionSelect = async (ServerId, limiter) => {
+ServerService.serverOptionSelect = async (serverData, limiter) => {
 
-    let v = ServerId.split(".");
+    let labelSelector = `${CommonService.TServerAppLabel}=${serverData.application}`;
 
-    let labelSelector = `${CommonService.TServerAppLabel}=${v[0]},${CommonService.TServerNameLabel}=${v[1]}`;
+    if (serverData.serverName && serverData.serverName.length > 0) {
+        labelSelector += `,${CommonService.TServerNameLabel}=${serverData.serverName}`;
+    }
+
+    // console.log(serverData, labelSelector);
 
     let filterItems = (await CommonService.listObject("tservers", labelSelector)).body.items;
 
@@ -270,9 +280,9 @@ ServerService.serverOptionSelect = async (ServerId, limiter) => {
 
 }
 
-ServerService.serverOptionUpdate = async (metadata, target) => {
+ServerService.serverOptionUpdate = async (serverData, target) => {
 
-    let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
+    let tServer = await CommonService.getServer(serverData.application + "-" + serverData.serverName);
     if (!tServer) {
         return {
             ret: 500,
@@ -298,9 +308,9 @@ ServerService.serverOptionUpdate = async (metadata, target) => {
     };
 }
 
-ServerService.serverOptionTemplate = async (metadata) => {
+ServerService.serverOptionTemplate = async (serverData) => {
 
-    let tServer = await CommonService.getServer(CommonService.getTServerName(metadata.ServerId));
+    let tServer = await CommonService.getServer(serverData.application + "-" + serverData.serverName);
     if (!tServer) {
         return {
             ret: 500,

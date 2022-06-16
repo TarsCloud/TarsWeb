@@ -256,38 +256,26 @@ export default {
 
     let _slave_name = "";
 
-    let k8s = true;
-    if (location.pathname == "/k8s.html") {
-      k8s = true;
-      //k8s的服务
-      if (_slave_name_arr.length == 2) {
-        //没有启用set的被调名
-        _slave_name = _slave_name_arr[0] + "." + _slave_name_arr[1];
-      }
-    } else {
-      k8s = false;
-
-      if (_slave_name_arr.length == 2) {
-        //没有启用set的被调名
-        _slave_name =
-          _slave_name_arr[0].substring(1) +
-          "." +
-          _slave_name_arr[1].substring(1);
-      } else if (_slave_name_arr.length == 5) {
-        //启用set的被调名
-        _slave_name =
-          _slave_name_arr[0].substring(1) +
-          "." +
-          _slave_name_arr[4].substring(1) +
-          "." +
-          _slave_name_arr[1].substring(1) +
-          _slave_name_arr[2].substring(1) +
-          _slave_name_arr[3].substring(1);
-      }
+    if (_slave_name_arr.length == 2) {
+      //没有启用set的被调名
+      _slave_name =
+        _slave_name_arr[0].substring(1) + "." + _slave_name_arr[1].substring(1);
+    } else if (_slave_name_arr.length == 5) {
+      //启用set的被调名
+      _slave_name =
+        _slave_name_arr[0].substring(1) +
+        "." +
+        _slave_name_arr[4].substring(1) +
+        "." +
+        _slave_name_arr[1].substring(1) +
+        _slave_name_arr[2].substring(1) +
+        _slave_name_arr[3].substring(1);
     }
+    // }
 
     return {
       loading: false,
+      k8s: false,
       query: {
         // userpc:0,
         thedate: formatDate(new Date(), "YYYYMMDD"),
@@ -300,7 +288,7 @@ export default {
         master_ip: "",
         slave_ip: "",
         group_by: "",
-        k8s: k8s,
+        k8s: this.k8s,
       },
       formatter,
       allItems: [],
@@ -409,6 +397,8 @@ export default {
   },
 
   mounted() {
+    this.k8s = location.pathname == "/k8s.html";
+
     this.fetchData();
   },
 
@@ -417,7 +407,7 @@ export default {
       this.loading = true;
       // const chartLoading = this.$refs.chart && this.$refs.chart.$loading.show();
       // const tableLoading = this.$refs.table.$loading.show();
-      return this.$tars
+      return this.$ajax
         .getJSON("/server/api/stat_monitor_data", this.query)
         .then((data) => {
           this.loading = false;

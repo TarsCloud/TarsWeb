@@ -276,7 +276,7 @@ AuthService.getAuthList = async (application, serverName) => {
 // 			(!setName || setName == server.set_name) &&
 // 			(!setArea || setArea == server.set_area) &&
 // 			(!setGroup || setGroup == server.set_group) &&
-// 			(!serverName || serverName == server.server_name)) {
+// 			(!serverName || serverName == server.serverName)) {
 // 			hasAuth = true;
 // 			return false;
 // 		}

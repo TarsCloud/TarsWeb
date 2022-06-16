@@ -357,6 +357,15 @@ export default {
       imgNew: '<img class="logo" src="/static/img/new.gif">',
       imgCur: '<img class="logo" src="/static/img/current.gif">',
       imgSpace: '<img class="logo" src="/static/img/space.png">',
+      // 当前页面信息
+      serverData: {
+        level: 5,
+        application: "",
+        server_name: "",
+        set_name: "",
+        set_area: "",
+        set_group: "",
+      },
 
       buildList: [], //docker build list
       serverList: [],
@@ -367,11 +376,14 @@ export default {
           nodeList: [],
         },
       },
+      timer: null,
       reloadTask: null,
       serverK8S: {},
       serverType: [],
       baseImage: [],
       baseImageRelease: [],
+      defaultImage: null,
+      tfc: null,
       uploadModal: {
         show: false,
         model: null,
@@ -384,12 +396,9 @@ export default {
   },
   props: ["treeid"],
   methods: {
-    getServerId() {
-      return this.treeid;
-    },
     getServerType() {
       return this.$ajax.getJSON("/k8s/api/server_list", {
-        ServerId: this.getServerId(),
+        tree_node_id: this.treeid,
       });
     },
     getDefault() {
@@ -433,26 +442,32 @@ export default {
     formatDate(date, formatter) {
       return formatDate(date, "YYYY-MM-DD HH:mm:ss");
     },
+
     reloadBuildList() {
       let that = this;
 
-      let allPath = this.$parent.BTabs[0].path;
-      let path = allPath.substring(allPath.lastIndexOf("/") + 1);
+      this.timer = setTimeout(() => {
+        if (
+          this.$parent.BTabs.length > 0 &&
+          that.$parent.treeid == that.treeid
+        ) {
+          let BTabs = this.$parent.BTabs.filter((b) => {
+            return b.path.indexOf(that.treeid + "/publish") != -1;
+          });
 
-      if (path === "publish" || !that.reloadTask) {
-        that.reloadTask = setTimeout(() => {
-          if (that.$parent.treeid == that.getServerId()) {
+          if (BTabs.length > 0) {
             that.getBuildList();
           }
-          that.reloadBuildList();
-        }, 1000);
-      }
+        }
+
+        that.reloadBuildList();
+      }, 1000);
     },
     getBuildList() {
       // 获取服务列表
       this.$ajax
         .getJSON("/k8s/api/build_list", {
-          ServerId: this.getServerId(),
+          tree_node_id: this.treeid,
         })
         .then((data) => {
           data.Data.forEach((item) => {
@@ -499,7 +514,7 @@ export default {
       // 获取服务列表
       this.$ajax
         .getJSON("/k8s/api/patch_list", {
-          ServerId: this.getServerId(),
+          tree_node_id: this.treeid,
         })
         .then((data) => {
           this.getNowImages()
@@ -534,18 +549,18 @@ export default {
         });
     },
     async openPublishVersionModal() {
-      let ServerId = this.getServerId();
+      // let ServerId = this.getServerId();
       this.publishModal.model = {
-        ServerId,
+        tree_node_id: this.treeid,
         Replicas: this.serverK8S.Replicas || 1,
         show: true,
       };
-      let patchList = await this.getPatchList(ServerId);
+      let patchList = await this.getPatchList();
       let k8sData = await this.getK8SData();
       let nowImage = await this.getNowImages();
 
       let nodeList = await this.getImageNodes();
-      let defaultImage = await this.getNodeImage();
+
       this.publishModal.model.Replicas =
         k8sData.Data[0].Replicas || this.serverK8S.Replicas || 1;
 
@@ -560,10 +575,10 @@ export default {
           item.isCurrNode = true;
           this.publishModal.model.NodeImage = nowImage.NodeImage;
         }
-        if (item.Image == defaultImage) {
+        if (item.Image == this.defaultImage) {
           item.isDefaultNode = true;
           if (!this.publishModal.model.NodeImage) {
-            this.publishModal.model.NodeImage = defaultImage;
+            this.publishModal.model.NodeImage = this.defaultImage;
           }
         }
       });
@@ -571,28 +586,29 @@ export default {
       this.publishModal.model.nodeList = nodeList.Data;
       this.publishModal.show = true;
     },
-    async getPatchList(ServerId) {
+    async getPatchList() {
       return await this.$ajax.getJSON("/k8s/api/patch_list", {
-        ServerId,
+        tree_node_id: this.treeid,
       });
     },
     async getNowImages() {
       return await this.$ajax.getJSON("/k8s/api/get_now_image", {
-        ServerId: this.getServerId(),
+        tree_node_id: this.treeid,
       });
     },
     async getK8SData() {
       return await this.$ajax.getJSON("/k8s/api/server_k8s_select", {
-        ServerId: this.getServerId(),
+        tree_node_id: this.treeid,
       });
     },
     async getImageNodes() {
       return await this.$ajax.getJSON("/k8s/api/image_node_select");
     },
     async getNodeImage() {
-      let tfc = await this.$ajax.getJSON("/k8s/api/get_tfc");
-      let res = tfc.filter((item) => item.column === "nodeImage.image");
-      return res.length == 1 ? res[0].value : "";
+      this.tfc = await this.$ajax.getJSON("/k8s/api/get_tfc");
+      // console.log(this.tfc);
+      let res = this.tfc.filter((item) => item.column === "nodeImage.image");
+      this.defaultImage = res.length == 1 ? res[0].value : "";
     },
     closePublishModal() {
       // 关闭发布弹出框
@@ -607,7 +623,7 @@ export default {
         loading.hide();
         this.$ajax
           .postJSON("/k8s/api/patch_publish", {
-            ServerId: this.publishModal.model.ServerId,
+            tree_node_id: this.publishModal.model.tree_node_id,
             Id: this.publishModal.model.Id,
             Replicas: this.publishModal.model.Replicas,
             EnableMark: this.publishModal.model.EnableMark,
@@ -628,18 +644,17 @@ export default {
           });
       }
     },
-    updateServerInfo(data) {
-      this.$ajax.postJSON("/k8s/api/server_update", {
-        ServerId: data.ServerId,
-        ServerType: data.ServerType,
-        ServerMark: data.ServerMark,
-      });
-    },
+    // updateServerInfo(data) {
+    //   this.$ajax.postJSON("/k8s/api/server_update", {
+    //     ServerId: data.ServerId,
+    //     ServerType: data.ServerType,
+    //     ServerMark: data.ServerMark,
+    //   });
+    // },
     showUploadModal() {
       this.getServerType().then((data) => {
-        let ServerId = this.getServerId();
         this.uploadModal.model = {
-          ServerId,
+          tree_node_id: this.treeid,
           file: null,
           ServerMark: "",
           ServerType: data.Data[0].ServerType,
@@ -649,9 +664,8 @@ export default {
       });
     },
     showAddImageModal() {
-      let ServerId = this.getServerId();
       this.addImageModal.model = {
-        ServerId,
+        tree_node_id: this.treeid,
         Id: "",
         Image: "",
         Secret: "tars-image-secret",
@@ -678,7 +692,7 @@ export default {
         this.$t("common.alert")
       )
         .then(() => {
-          let ServerId = this.getServerId();
+          // let ServerId = this.getServerId();
 
           const loading = this.$Loading.show();
           this.$ajax
@@ -704,27 +718,36 @@ export default {
       this.uploadModal.model.file = file;
     },
     uploadPatchPackage() {
-      let ServerId = this.getServerId();
+      // let ServerId = this.getServerId();
       // 上传发布包
       if (this.$refs.uploadForm.validate()) {
         const loading = this.$Loading.show();
         const formdata = new FormData();
-        let Secret = "";
-        let image = this.baseImageRelease.filter(
-          (item) => item.Image == this.uploadModal.model.BaseImageRelease
+        // let Secret = "";
+        // let image = this.baseImageRelease.filter(
+        //   (item) => item.Image == this.uploadModal.model.BaseImageRelease
+        // );
+        // if (image.length == 1) {
+        //   Secret = image[0].Secret || "";
+        // }
+
+        let res = this.tfc.filter(
+          (item) => item.column === "imageBuild.secret"
         );
-        if (image.length == 1) {
-          Secret = image[0].Secret || "";
-        }
-        formdata.append("ServerId", ServerId);
+        let secret = res.length >= 1 ? res[0].value : "";
+
+        console.log(this.tfc, secret, res);
+
+        formdata.append("tree_node_id", this.treeid);
         formdata.append("ServerType", this.uploadModal.model.ServerType);
         formdata.append(
           "ServerTag",
           this.uploadModal.model.ServerTag ||
             `v-${formatDate(new Date(), "YYYYMMDDHHmmss")}`
         );
+
         formdata.append("BaseImage", this.uploadModal.model.BaseImageRelease);
-        formdata.append("Secret", Secret);
+        formdata.append("Secret", secret);
         formdata.append("suse", this.uploadModal.model.file);
         formdata.append("CreateMark", this.uploadModal.model.comment || "");
 
@@ -732,6 +755,7 @@ export default {
           .postForm("/k8s/api/patch_upload", formdata)
           .then((data) => {
             this.closeUploadModal();
+            this.reloadBuildList();
 
             loading.hide();
 
@@ -746,13 +770,13 @@ export default {
       }
     },
     addImage() {
-      let ServerId = this.getServerId();
+      // let ServerId = this.getServerId();
 
       // 上传发布包
       if (this.$refs.addImageForm.validate()) {
         const loading = this.$Loading.show();
         const formdata = new FormData();
-        formdata.append("Name", ServerId);
+        formdata.append("tree_node_id", this.treeid);
         // formdata.append('Id', this.addImageModal.model.Id);
         formdata.append("Image", this.addImageModal.model.Image);
         formdata.append("Secret", this.addImageModal.model.Secret || "");
@@ -776,10 +800,22 @@ export default {
       }
     },
   },
-  mounted() {
-    this.getImageList();
-    this.getDefault();
+  created() {
+    this.serverData = this.$parent.getServerData();
+  },
+  beforeMount() {
     this.reloadBuildList();
+  },
+  beforeDestroy() {
+    clearTimeout(this.timer);
+    this.timer = null;
+  },
+  async mounted() {
+    this.getImageList();
+
+    this.getDefault();
+
+    await this.getNodeImage();
   },
 };
 </script>

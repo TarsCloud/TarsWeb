@@ -30,12 +30,13 @@ let ExecPod = async (request) => {
 
     let params = request.resourceURL.query;
 
-    // logger.info('request:', params);
+    logger.info('request:', params);
 
     let command = ['bash', '-c'];
 
     let sh;
 
+    let pod;
     if (params.History == 'true') {
         sh = `#!/bin/sh
                 dir=/usr/local/app/${CommonService.TServerType1}/app_log/${params.PodName}/${params.ServerApp}/${params.ServerName}
@@ -48,10 +49,17 @@ let ExecPod = async (request) => {
                     bash 
                 fi`;
 
-        let pod = await CommonService.getDaemonPodByHostIp(params.NodeIP);
+        pod = await CommonService.getDaemonPodByHostIp(params.NodeIP);
 
         // console.log(pod);
-        params.PodName = pod.metadata.name;
+
+        if (!pod) {
+            connection.close();
+            return;
+        }
+
+        // console.log(pod);
+        // params.PodName = pod.metadata.name;
 
     } else {
         sh = `#!/bin/sh 
@@ -64,17 +72,18 @@ let ExecPod = async (request) => {
             else   
                 bash 
             fi`
+
+        pod = (await CommonService.getPod(params.PodName)).body;
+
     }
 
     command.push(sh);
 
     try {
 
-        let pod = (await CommonService.getPod(params.PodName)).body;
+        logger.info(pod.metadata.name, pod.spec.containers[0].name, pod.metadata.namespace);
 
-        logger.info('PodName:', params.PodName, pod.spec.containers[0].name);
-
-        ws = await CommonService.connectPodExec(params.PodName, command, pod.spec.containers[0].name);
+        ws = await CommonService.connectPodExec(pod.metadata.name, pod.metadata.namespace, command, pod.spec.containers[0].name);
 
         ws.on('close', (code, reason) => {
             logger.error('close:', code, reason);

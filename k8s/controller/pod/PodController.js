@@ -1,8 +1,7 @@
 const logger = require('../../../logger')
 const CommonService = require('../../service/common/CommonService');
 const PodService = require('../../service/pod/PodService');
-const ImageService = require("../../service/image/ImageService");
-
+const ServerController = require("../../controller/server/ServerController");
 const PodController = {};
 
 PodController.PodSearch = async (ctx) => {
@@ -27,31 +26,23 @@ PodController.PodSearch = async (ctx) => {
 
 /**
  * Pod存活列表
- * @param  {String}  Token                登录签名
- * @param  {String}  PodId                Pod ID
- * @param  {String}  PodName              Pod名称
- * @param  {String}  PodIp                Pod IP
- * @param  {String}  ServerId             服务ID
- * @param  {String}  ServerApp            服务应用
- * @param  {String}  ServerName           服务名称
- * @param  {Number}  ServiceVersion       服务版本
- * @param  {String}  SettingState         设置状态
- * @param  {String}  PresentState         当前状态
- * @param  {String}  CreateTime           创建时间
- * @param  {String}  UpdateTime           更新时间
  */
 PodController.PodAliveSelect = async (ctx) => {
-    const that = module.exports
 
     let {
-        Token = '', ServerId = ''
+        Token = '', tree_node_id = ''
     } = ctx.paramsObj
 
     let filter = {
         eq: {},
     }
 
-    CommonService.addEqFilter(filter, ServerId);
+    let serverData = ServerController.formatTreeNodeId(tree_node_id);
+
+    filter.eq[CommonService.TServerAppLabel] = serverData.application;
+    if (serverData.serverName) {
+        filter.eq[CommonService.TServerNameLabel] = serverData.serverName;
+    }
 
     try {
 
@@ -67,25 +58,18 @@ PodController.PodAliveSelect = async (ctx) => {
 
 /**
  * Pod历史列表
- * @param  {String}  Token                登录签名
- * @param  {String}  PodId                Pod ID
- * @param  {String}  PodName              Pod名称
- * @param  {String}  PodIp                Pod IP
- * @param  {Number}  ServerId             服务ID
- * @param  {String}  ServerApp            服务应用
- * @param  {String}  ServerName           服务名称
- * @param  {String}  CreateTime           创建时间
- * @param  {String}  DeleteTime           删除时间
  */
 PodController.PodPerishedSelect = async (ctx) => {
     const that = module.exports
 
     let {
-        Token = '', ServerId = ''
+        Token = '', tree_node_id = ''
     } = ctx.paramsObj
 
     try {
-        let result = await PodService.podPerishedSelect(ServerId);
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
+
+        let result = await PodService.podPerishedSelect(serverData);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {

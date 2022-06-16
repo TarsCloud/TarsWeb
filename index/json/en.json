@@ -742,7 +742,12 @@
         "remark": {
             "maxBuildTime": "Maximum duration of mirroring build",
             "imageRegistry": "Mirror push address",
-            "nodeImage": "Use tafnode address by default",
+            "imageUploadSecret": "Mirror secret",
+            "nodeImage": "tarsnode address",
+            "nodeImageSecret": "tarsnode secret",
+            "imageBuildImage": "Compiler mirror address",
+            "imageBuildSecret": "Compiler mirror Secret",
+            "imageBuildMaxTime": "Max build time(s)",
             "tconfigHistory": "Maximum number of saved configuration information",
             "texitedPod": "Number of pods saved",
             "timageRelease": "Number of images saved",

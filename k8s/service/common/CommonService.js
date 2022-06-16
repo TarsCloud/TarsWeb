@@ -121,7 +121,7 @@ CommonService.TREENAME = 'tars-tree';
 CommonService.TFC = "tars-framework"
 CommonService.TARSNODE = "node"
 CommonService.GROUP = "k8s.tars.io";
-CommonService.VERSION = "v1beta2";
+CommonService.VERSION = "v1beta3";
 CommonService.APPROVE = "tars.io/Approve";
 CommonService.TImageTypeLabel = "tars.io/ImageType"
 CommonService.TSupportedLabel = "tars.io/Supported."
@@ -145,9 +145,9 @@ CommonService.TConfigActivated = "tars.io/Activated"
 CommonService.TConfigVersion = "tars.io/Version"
 CommonService.TSecret = "tars.io/Secret";
 
-CommonService.connectPodExec = async (name, command, container) => {
+CommonService.connectPodExec = async (name, namespace, command, container) => {
 
-	return await exec.exec(CommonService.NAMESPACE, name, container, command, process.stdout, process.stderr, process.stdin, true, (status) => {
+	return await exec.exec(namespace, name, container, command, process.stdout, process.stderr, process.stdin, true, (status) => {
 		logger.error('Exited with status:', status);
 		// tslint:disable-next-line:no-console
 	});
@@ -287,6 +287,10 @@ CommonService.listPods = async (labelSelector) => {
 	return await k8sCoreApi.listNamespacedPod(CommonService.NAMESPACE, "true", undefined, undefined, undefined, labelSelector);
 }
 
+CommonService.listAgentPods = async (labelSelector) => {
+	return await k8sCoreApi.listNamespacedPod("tars-system", "true", undefined, undefined, undefined, labelSelector);
+}
+
 CommonService.getPod = async (name) => {
 	return await k8sCoreApi.readNamespacedPod(name, CommonService.NAMESPACE, "true");
 }
@@ -386,25 +390,25 @@ CommonService.hasAppName = async (appName) => {
 
 }
 
-CommonService.addEqFilter = (filter, ServerId) => {
+// CommonService.addEqFilter = (filter, ServerId) => {
 
-	if (!filter) {
-		filter = {}
-	}
+// 	if (!filter) {
+// 		filter = {}
+// 	}
 
-	if (!filter.eq) {
-		filter.eq = {};
-	}
+// 	if (!filter.eq) {
+// 		filter.eq = {};
+// 	}
 
-	if (ServerId) {
-		if (ServerId.indexOf('.') === -1) {
-			filter.eq[CommonService.TServerAppLabel] = ServerId;
-		} else {
-			filter.eq[CommonService.TServerAppLabel] = ServerId.substring(0, ServerId.indexOf('.'))
-			filter.eq[CommonService.TServerNameLabel] = ServerId.substring(ServerId.indexOf('.') + 1, ServerId.length)
-		}
-	}
-}
+// 	if (ServerId) {
+// 		if (ServerId.indexOf('.') === -1) {
+// 			filter.eq[CommonService.TServerAppLabel] = ServerId;
+// 		} else {
+// 			filter.eq[CommonService.TServerAppLabel] = ServerId.substring(0, ServerId.indexOf('.'))
+// 			filter.eq[CommonService.TServerNameLabel] = ServerId.substring(ServerId.indexOf('.') + 1, ServerId.length)
+// 		}
+// 	}
+// }
 
 CommonService.createLabelSelector = (filter) => {
 	let labelSelector = '';
@@ -488,7 +492,9 @@ CommonService.getServer = async (serverId) => {
 CommonService.getDaemonPodByField = async (func) => {
 	let labelSelector = `${CommonService.TServerAppLabel}=${CommonService.TServerType1},${CommonService.TServerNameLabel}=${CommonService.TServerType1}agent`;
 
-	let agents = await CommonService.listPods(labelSelector);
+	let agents = await CommonService.listAgentPods();
+
+	// console.log(labelSelector, agents.body);
 
 	if (!agents) {
 		return null;
@@ -501,6 +507,8 @@ CommonService.getDaemonPodByField = async (func) => {
 	for (let i = 0; i < agents.items.length; i++) {
 
 		let agent = agents.items[i];
+
+		// console.log(agent.status.phase, agent.status.hostIP);
 
 		if (func(agent) && agent.status.phase == "Running") {
 			index = i

@@ -4,8 +4,8 @@ const fs = require('fs');
 const PatchController = {};
 const CommonService = require('../../service/common/CommonService');
 const WebConf = require('../../../config/webConf');
-const util = require('../../../tools/util');
 const ImageService = require('../../service/image/ImageService');
+const ServerController = require("../../controller/server/ServerController");
 
 const upload = async (formData = {}, wait) => {
 
@@ -59,10 +59,9 @@ const upload = async (formData = {}, wait) => {
  * 发布包上传
  */
 PatchController.uploadPatchPackage = async (ctx) => {
-    const that = module.exports
 
     let {
-        Token = '', ServerId = '', ServerType = '', BaseImage = '', Secret = '', CreateMark = '',
+        Token = '', tree_node_id = '', ServerType = '', BaseImage = '', Secret = '', CreateMark = '',
             ServerTag = ''
     } = ctx.paramsObj
 
@@ -73,6 +72,8 @@ PatchController.uploadPatchPackage = async (ctx) => {
             return ctx.makeResObj(500, 'no files')
         }
 
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
+
         let baseUploadPath = WebConf.pkgUploadPath.path
         let uploadTgzName = `${baseUploadPath}/${file.originalname}`
         fs.mkdirSync(WebConf.pkgUploadPath.path, {
@@ -82,24 +83,24 @@ PatchController.uploadPatchPackage = async (ctx) => {
 
         let fileBuffer = fs.createReadStream(uploadTgzName)
 
-        // 查询服务信息
-        let ServerApp = ServerId.substring(0, ServerId.indexOf('.')) || '',
-            ServerName = ServerId.substring(ServerId.indexOf('.') + 1, ServerId.length) || ''
+        // // 查询服务信息
+        // let ServerApp = ServerId.substring(0, ServerId.indexOf('.')) || '',
+        //     ServerName = ServerId.substring(ServerId.indexOf('.') + 1, ServerId.length) || ''
 
-        if (!ServerApp || !ServerName) {
-            return ctx.makeResObj(500, 'ServerId有误')
+        if (!serverData.application || !serverData.serverName) {
+            return ctx.makeResObj(500, 'parameter error')
         }
 
-        await ImageService.serverImageGetAndCreate(ServerApp, ServerName);
+        await ImageService.serverImageGetAndCreate(serverData.application, serverData.serverName);
 
         let uploadData = await upload({
-            ServerApp: ServerApp.toLowerCase(),
-            ServerName: ServerName.toLowerCase(),
+            ServerApp: serverData.application.toLowerCase(),
+            ServerName: serverData.serverName.toLowerCase(),
             ServerType,
             BaseImage,
-            Secret,
             ServerTag: ServerTag || 'v-' + (new Date()).getTime(),
             Mark: CreateMark,
+            Secret: Secret,
             CreatePerson: ctx.uid,
             ServerFile: fileBuffer,
         }, false)
@@ -124,7 +125,6 @@ PatchController.uploadPatchPackage = async (ctx) => {
  * 上传并发布
  */
 PatchController.uploadAndPatch = async (ctx) => {
-    const that = module.exports
 
     let {
         Token = '', application = '', module_name = '', server_type = 'cpp', base_image = '', secret = '', comment = ''
@@ -168,7 +168,10 @@ PatchController.uploadAndPatch = async (ctx) => {
             logger.info(`check build docker process`);
 
             const metadata = {
-                ServerId: application + '.' + module_name,
+                serverData: {
+                    application,
+                    serverName: module_name,
+                },
                 Id: uploadData.result.id,
                 EnableMark: comment
             }
@@ -194,12 +197,13 @@ PatchController.uploadPatchStatus = async (ctx) => {
     const that = module.exports
 
     let {
-        Token = '', ServerId = '', BuildId = 0
+        Token = '', tree_node_id = '', BuildId = 0
     } = ctx.paramsObj
 
     try {
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
 
-        let result = await CommonService.getObject("timages", CommonService.getTServerName(ServerId));
+        let result = await CommonService.getObject("timages", CommonService.getTServerName(serverData.application + "-" + serverData.serverName));
 
         let buildStatusData = result.body.Build.Running;
 
@@ -216,18 +220,16 @@ PatchController.uploadPatchStatus = async (ctx) => {
 
 /**
  * 服务版本列表
- * @param  {String}  Token                登录签名
- * @param  {String}  ServerId             服务名
  */
 PatchController.ServicePoolSelect = async (ctx) => {
-    const that = module.exports
 
     let {
-        Token = '', ServerId = ''
+        Token = '', tree_node_id = ''
     } = ctx.paramsObj
 
     try {
-        let result = await PatchService.servicePoolSelect(ServerId);
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
+        let result = await PatchService.servicePoolSelect(serverData);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
@@ -239,11 +241,12 @@ PatchController.ServicePoolSelect = async (ctx) => {
 PatchController.BuildSelect = async (ctx) => {
 
     let {
-        Token = '', ServerId = ''
+        Token = '', tree_node_id = ''
     } = ctx.paramsObj
 
     try {
-        let result = await PatchService.buildSelect(ServerId);
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
+        let result = await PatchService.buildSelect(serverData);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
@@ -277,14 +280,15 @@ PatchController.DeleteBuild = async (ctx) => {
 PatchController.ServicePoolUpdate = async (ctx) => {
     const that = module.exports
     let {
-        Token = '', ServerId, Id = '', Replicas = 1, EnableMark = '', NodeImage = ""
+        Token = '', tree_node_id, Id = '', Replicas = 1, EnableMark = '', NodeImage = ""
     } = ctx.paramsObj
 
     Replicas = Math.floor(Replicas) || 1
 
     try {
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
         const metadata = {
-            ServerId,
+            serverData,
             Id,
             Replicas,
             NodeImage,
@@ -308,11 +312,12 @@ PatchController.ServicePoolUpdate = async (ctx) => {
 PatchController.ServiceNowImages = async (ctx) => {
 
     let {
-        Token = '', ServerId = ''
+        Token = '', tree_node_id = ''
     } = ctx.paramsObj
 
     try {
-        let result = await PatchService.ServiceNowImages(ServerId);
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
+        let result = await PatchService.ServiceNowImages(serverData);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
@@ -328,11 +333,12 @@ PatchController.ServiceNowImages = async (ctx) => {
 PatchController.ServiceEnabledSelect = async (ctx) => {
 
     let {
-        Token = '', ServerId = ''
+        Token = '', serverData = ''
     } = ctx.paramsObj
 
     try {
-        let result = await PatchService.serviceEnabledSelect(ServerId);
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
+        let result = await PatchService.serviceEnabledSelect(serverData);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
