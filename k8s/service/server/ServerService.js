@@ -16,7 +16,11 @@
 
 const logger = require('../../../logger');
 const CommonService = require('../common/CommonService');
-
+const AuthService = require('../auth/AuthService');
+const AdapterService = require('../adapter/AdapterService');
+const ApplicationService = require('../application/ApplicationService');
+const PodService = require('../pod/PodService');
+const _ = require('lodash');
 const ServerService = {};
 
 ServerService.searchServer = async (searchKey) => {
@@ -109,6 +113,7 @@ ServerService.selectServer = async (ServerApp, ServerName, limiter, force) => {
             ServerId: item.spec.app + '.' + item.spec.server,
             ServerApp: item.spec.app,
             ServerName: item.spec.server,
+            SubType: item.spec.subType,
             Source: annotations[CommonService.TServerCloudInstall]
         };
 
@@ -379,4 +384,168 @@ ServerService.serverOptionTemplate = async (serverData) => {
         data: afterJoinTemplateContent
     };
 }
+
+ServerService.getApplication = async (uid) => {
+    if (await AuthService.hasAdminAuth(uid)) {
+
+        let data = await ApplicationService.applicationSelect(true, '', '', null);
+        if (data.ret == 200) {
+            let rst = [];
+            data.data.Data.forEach(d => {
+                rst.push(d.ServerApp);
+            });
+
+            data.data = _.uniq(rst);
+        } else {
+            data.data = [];
+        }
+
+        return data;
+    } else {
+        let authList = await AuthService.getAuthListByUid(uid);
+        let appList = [];
+        authList.forEach((auth) => {
+            let application = auth.application;
+            appList.push(application);
+        });
+        return {
+            ret: 200,
+            msg: 'succ',
+            data: _.uniq(appList)
+        };
+    }
+};
+
+ServerService.getServerName = async (application, uid) => {
+
+    if (await AuthService.hasAdminAuth(uid)) {
+
+        let data = await ServerService.selectServer(application, "", null, true);
+
+        if (data.ret == 200) {
+            let rst = [];
+            data.data.Data.forEach(d => {
+
+                if (d.SubType == "tars") {
+                    rst.push(d.ServerName);
+                }
+            });
+
+            data.data = _.uniq(rst);
+        } else {
+            data.data = [];
+        }
+
+        return data;
+    } else {
+        let serverList = [];
+        let authList = await AuthService.getAuthListByUid(uid);
+
+        for (var i = 0; i < authList.length; i++) {
+            let auth = authList[i];
+            let authApplication = auth.application;
+            let authServerName = auth.serverName;
+            if (authServerName) {
+                if (authApplication == application) {
+                    serverList.push(authServerName);
+                }
+            } else if (authApplication == application) {
+
+                let data = await ServerService.selectServer(application, "", null, true);
+                if (data.ret == 200) {
+                    data.data.Data.forEach(d => {
+                        serverList.push(d.ServerName);
+                    });
+                }
+
+            }
+        }
+
+        return {
+            ret: 200,
+            msg: 'succ',
+            data: _.uniq(serverList)
+        };
+    }
+};
+
+ServerService.getObj = async (application, serverName, uid) => {
+    if (await AuthService.hasAdminAuth(uid)) {
+
+        let data = await AdapterService.getAllAdapterConfList({
+            ServerApp: application,
+            ServerName: serverName
+        });
+
+        if (data.ret == 200) {
+            let rst = [];
+
+            data.data.forEach(d => {
+                rst.push(d.servant);
+            });
+
+            data.data = _.uniq(rst);
+        } else {
+            data.data = []
+        }
+
+        return data;
+
+    } else {
+        let authList = await AuthService.getAuthListByUid(uid);
+        for (let auth of authList) {
+            if (auth.application == application || auth.serverName == serverName) {
+
+                let data = await AdapterService.getAllAdapterConfList({
+                    ServerApp: application,
+                    ServerName: serverName
+                });
+
+                if (data.ret == 200) {
+                    let rst = [];
+
+                    data.data.forEach(d => {
+                        rst.push(d.servant);
+                    });
+
+                    data.data = _.uniq(rst);
+
+                } else {
+                    data.data = []
+                }
+                return data;
+            }
+        }
+    }
+    return []
+};
+
+ServerService.getNodeName = async (application, serverName, set) => {
+    let filter = {
+        eq: {},
+    }
+
+    filter.eq[CommonService.TServerAppLabel] = application;
+    if (serverName) {
+        filter.eq[CommonService.TServerNameLabel] = serverName;
+    }
+
+    let data = await PodService.podAliveSelect(filter);
+
+    if (data.ret == 200) {
+        let rst = [];
+
+        data.data.Data.forEach(d => {
+            rst.push(d.PodName);
+        });
+
+        data.data = _.uniq(rst);
+
+    } else {
+        data.data = [];
+    }
+    return data;
+
+};
+
 module.exports = ServerService;

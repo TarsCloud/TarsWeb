@@ -165,6 +165,7 @@ const k8sApiConf = [
     ['post', '/server_option_update', ServerController.ServerOptionUpdate, {
         tree_node_id: 'notEmpty'
     }],
+    ['get', '/cascade_select_server', ServerController.SelectAppServer],
 
     // 命令
     ['get', '/send_command', ServerController.sendCommand, {
@@ -192,12 +193,12 @@ const k8sApiConf = [
     // 节点管理 ( 创建、列表、更新、删除 )
     ['get', '/node_select', NodeController.NodeSelect],
     ['get', '/node_list', NodeController.NodeList],
-    ['post', '/ability_open', NodeController.openTafAbility, {
-        NodeName: 'notEmpty'
-    }],
-    ['post', '/ability_close', NodeController.closeTafAbility, {
-        NodeName: 'notEmpty'
-    }],
+    // ['post', '/ability_open', NodeController.openTafAbility, {
+    //     NodeName: 'notEmpty'
+    // }],
+    // ['post', '/ability_close', NodeController.closeTafAbility, {
+    //     NodeName: 'notEmpty'
+    // }],
     ['post', '/edit_common_tag', NodeController.editCommonTag, {
         nodeName: 'notEmpty'
     }],

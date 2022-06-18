@@ -37,6 +37,29 @@ PluginService.list = async (type) => {
     };
 }
 
+PluginService.listAll = async () => {
+
+    let rst = await PluginDao.listPlugins();
+
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: rst
+    };
+}
+
+PluginService.delete = async (id) => {
+
+    let rst = await PluginDao.deletePlugin(id);
+
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: rst
+    };
+}
+
+
 async function findActiveIndex(obj) {
     try {
         let rst = await registry.findObjectById4Any(obj);

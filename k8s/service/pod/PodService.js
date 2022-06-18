@@ -116,7 +116,7 @@ PodService.podAliveSelect = async (filter) => {
 
     let labelSelector = CommonService.createLabelSelector(filter);
 
-    console.log(labelSelector);
+    // console.log(labelSelector);
     let filterItems = [];
 
     let source = {};
@@ -128,7 +128,6 @@ PodService.podAliveSelect = async (filter) => {
             source[CommonService.getServerId(item.spec.app, item.spec.server)] = annotations[CommonService.TServerCloudInstall];
         }
     });
-
 
     let allEndpointItems = await CommonService.listObject("tendpoints", labelSelector);
     allEndpointItems = allEndpointItems.body.items;

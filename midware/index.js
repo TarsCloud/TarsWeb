@@ -13,9 +13,12 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-
+const multer = require('koa-multer');
 const WebConf = require('../config/webConf');
 const bodyparser = require('koa-bodyparser');
+const upload = multer({
+	dest: WebConf.pkgUploadPath.path + '/'
+});
 const {
 	apiConf,
 	clientConf
@@ -58,6 +61,8 @@ const getRouter = (router, routerConf) => {
 		var [method, url, controller, checkRule, validParams] = conf;
 
 		router[method](url, bodyparser());
+
+		router[method](url, upload.array('suse', 5));
 
 		//前置参数合并校验相关中间件
 		router[method](url, paramsDealMidware(validParams)); //上下文入参出参处理中间件

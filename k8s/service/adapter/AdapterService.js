@@ -319,12 +319,13 @@ AdapterService.getAllAdapterConfList = async (metadata) => {
 
 	let data = [];
 
-	for (let i = 0; i < tServer.spec.tars.servants.length; i++) {
-		data.push({
-			servant: metadata.ServerApp + "." + metadata.ServerName + "." + tServer.spec.tars.servants[i].name
-		});
+	if (tServer.spec.tars && tServer.spec.tars.servants) {
+		for (let i = 0; i < tServer.spec.tars.servants.length; i++) {
+			data.push({
+				servant: metadata.ServerApp + "." + metadata.ServerName + "." + tServer.spec.tars.servants[i].name
+			});
+		}
 	}
-
 
 	return {
 		ret: 200,

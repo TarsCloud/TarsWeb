@@ -24,7 +24,6 @@ let conf = {
         port: 3000, //服务启动端口
         loggerPath: path.join(__dirname, '../log'), //本地日志的目录
         logFileKeepDays: '1', //日志保留时间
-        defaultLanguage: 'cn', //cn 或 en ，用户默认的语言环境
         strict: false, //true: tarslog模式(tarslog需要首先从框架上迁移走, 基础框架服务器上不能部署其他服务)
         uploadLogin: false, //上传文件是否需要登录(开发或者调试时可以放开)
         alter: true, //变更db结构

@@ -60,7 +60,7 @@ PageController.captcha = async (ctx) => {
         mathMax: 9,
     })
     ctx.session.captcha = cap.text.toLocaleLowerCase();
-    console.log("ctx.session:" + JSON.stringify(ctx.session, null, 4));
+    // console.log("ctx.session:" + JSON.stringify(ctx.session, null, 4));
     ctx.set('Content-Type', 'image/svg+xml')
     ctx.body = cap.data
 }

@@ -45,23 +45,22 @@ import ServerPropertyMonitor from '@/common/monitor-property';
 // 运维管理
 import Operation from '@/k8s/operation/index';
 import OperationDeploy from '@/k8s/operation/deploy';
-// import OperationApproval from '@/k8s/operation/approval';
 import OperationHistory from '@/k8s/operation/history';
 import OperationUndeploy from '@/k8s/operation/undeploy';
 import OperationTemplates from '@/k8s/operation/templates';
 import OperationImage from '@/k8s/operation/image';
-// import OperationAffinity from '@/k8s/operation/affinity';
 import OperationApplication from '@/k8s/operation/application';
 import OperationBusiness from '@/k8s/operation/business';
 import OperationNode from '@/k8s/operation/node';
 import OperationEvent from '@/k8s/operation/event';
 import OperationTfc from '@/k8s/operation/frameworkConfig';
 
+import PluginsManage from '@/common/plugins-manage.vue';
 //服务级别插件
-import ServerPlugins from '@/components/serverPlugins';
+import ServerPlugins from '@/common/serverPlugins';
 
 //全局插件
-import Plugin from '@/components/plugins.vue';
+import Plugin from '@/common/plugins.vue';
 
 //市场
 import Market from '@/market/market';
@@ -95,10 +94,6 @@ export default new Router({
           path: ':treeid/property-monitor',
           component: ServerPropertyMonitor,
         },
-        // {
-        //   path: ':treeid/interface-debuger',
-        //   component: InterfaceDebuger,
-        // },
         {
           path: ':treeid/user-manage',
           component: AuthManage,
@@ -118,10 +113,6 @@ export default new Router({
           path: 'deploy',
           component: OperationDeploy,
         },
-        // {
-        //   path: 'approval',
-        //   component: OperationApproval,
-        // },
         {
           path: 'history',
           component: OperationHistory,
@@ -138,10 +129,6 @@ export default new Router({
           path: 'image',
           component: OperationImage,
         },
-        // {
-        //   path: 'affinity',
-        //   component: OperationAffinity,
-        // },
         {
           path: 'application',
           component: OperationApplication,
@@ -172,6 +159,11 @@ export default new Router({
       path: '/plugins/*',
       name: 'Plugin',
       component: Plugin
+    },
+    {
+      path: '/plugins-manage',
+      name: 'PluginManage',
+      component: PluginsManage
     },
     {
       path: '*',

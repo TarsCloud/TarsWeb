@@ -10,9 +10,6 @@
             <a v-if="k8s === 'true'" :class="{ active: true }" href="/k8s.html"
               ><img class="logo" src="/static/img/K8S.png"
             /></a>
-            <!-- <a v-if="enable === 'true'" href="/dcache.html"
-              ><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"
-            /></a> -->
           </div>
         </el-col>
 
@@ -42,41 +39,12 @@
         </el-col>
         <el-col :span="3">
           <div class="plugin-wrap">
-            <div style="display: inline-block; width: 70%">
-              <el-select
-                v-model="pluginPath"
-                :placeholder="$t('header.extension')"
-                @change="changePlugin"
-              >
-                <el-option
-                  v-for="item in plugins"
-                  :key="item.f_id"
-                  :label="item.f_name + '(' + item.f_name_en + ')'"
-                  :value="item.f_path"
-                >
-                </el-option>
-              </el-select>
-            </div>
-            <div style="margin-left: 10px; width: 20%; display: inline-block">
-              <i class="el-icon-refresh-right" @click="refreshPlugin()"></i>
-            </div>
+            <extentionSelect></extentionSelect>
           </div>
         </el-col>
         <el-col :span="4">
           <div class="language-wrap">
-            <el-select
-              v-model="locale"
-              @change="changeLocale"
-              style="width: 100px"
-            >
-              <el-option
-                v-for="locale in localeMessages"
-                :key="locale.localeCode"
-                :value="locale.localeCode"
-                :label="locale.localeName"
-              >
-              </el-option>
-            </el-select>
+            <localeSelect></localeSelect>
           </div>
           <div class="version-wrap">
             <div>web:{{ web_version }}</div>
@@ -113,27 +81,6 @@
                 }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <!-- <el-dropdown @command="handleMarketCommand" v-if="marketUid">
-              <span class="el-dropdown-link">
-                <i class="el-icon-cloudy el-icon--left"></i>
-                {{ marketUid.uid
-                }}<i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="pass">{{
-                  $t("cloud.header.pass")
-                }}</el-dropdown-item>
-                <el-dropdown-item command="project">{{
-                  $t("cloud.header.repo")
-                }}</el-dropdown-item>
-                <el-dropdown-item command="modify">{{
-                  $t("cloud.header.modify")
-                }}</el-dropdown-item>
-                <el-dropdown-item command="quit">{{
-                  $t("cloud.header.quit")
-                }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown> -->
           </div>
         </el-col>
       </el-row>
@@ -148,9 +95,15 @@ import releaseIcon from "@/assets/img/package-l.png";
 import cacheIcon from "@/assets/img/cache-l.png";
 import operatorIcon from "@/assets/img/operator-l.png";
 import packageIcon from "@/assets/img/package-l.png";
-import { localeMessages } from "@/locale/i18n";
+import localeSelect from "@/components/locale-select";
+import extentionSelect from "@/components/extention-select";
+
 import Axios from "axios";
 export default {
+  components: {
+    localeSelect,
+    extentionSelect,
+  },
   data() {
     return {
       // 图标
@@ -160,13 +113,10 @@ export default {
       cacheIcon,
       operatorIcon,
       packageIcon,
-      locale: this.$cookie.get("locale") || "en",
+      locale: this.$cookie.get("locale") || "cn",
       uid: "--",
       enableLogin: false,
       isAdmin: false,
-      pluginPath: "",
-      plugins: [],
-      localeMessages: localeMessages,
       k8s: this.$cookie.get("k8s") || "false",
       enable: this.$cookie.get("enable") || "false",
       show: this.$cookie.get("show") || "false",
@@ -190,48 +140,6 @@ export default {
         location.href = "/pages/server/api/logout";
       }
     },
-    // handleMarketCommand(command) {
-    //   if (command == "quit") {
-    //     this.$store.commit({
-    //       type: "quit",
-    //     });
-
-    //     this.$router.push("/market/user/login");
-    //   } else if (command == "pass") {
-    //     this.$router.push("/market/repo/pass");
-    //   } else if (command == "project") {
-    //     this.$router.push("/market/repo/project");
-    //   } else if (command == "modify") {
-    //     this.$router.push("/market/user/modifyPass");
-    //   }
-    // },
-    getPlugins() {
-      this.$ajax
-        .getJSON("/plugin/api/list", { k8s: true, type: 1 })
-        .then((data) => {
-          this.plugins = data;
-          if (
-            this.$route.path.startsWith("/plugins") &&
-            !this.$route.path.startsWith("/plugins/*")
-          ) {
-            this.pluginPath = this.$route.path;
-          }
-        })
-        .catch((err) => {
-          this.$common.showError(err);
-        });
-    },
-    refreshPlugin() {
-      if (this.pluginPath.startsWith("/plugins")) {
-        this.$router.replace("/plugins/*");
-        this.$nextTick(() => {
-          this.$router.replace(this.pluginPath);
-        });
-      }
-    },
-    changePlugin() {
-      this.$router.replace(this.pluginPath);
-    },
     clickTab(tabkey) {
       this.$router.replace(tabkey);
     },
@@ -251,10 +159,6 @@ export default {
         .catch((err) => {
           this.$tip.error(`获取用户登录信息: ${err.err_msg || err.message}`);
         });
-    },
-    changeLocale() {
-      this.$cookie.set("locale", this.locale, { expires: "1Y" });
-      location.reload();
     },
     checkEnableLogin() {
       this.$ajax
@@ -287,7 +191,6 @@ export default {
     this.checkEnableLogin();
     this.checkAdmin();
     this.checkEnableLdap();
-    this.getPlugins();
 
     Axios.create({ baseURL: "/" })({
       method: "get",

@@ -144,7 +144,7 @@ AdapterController.getAllAdapterConfList = async (ctx) => {
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
-        logger.error('[ServerAdapterDelete]', e.body ? e.body.message : e, ctx)
+        logger.error('[AdapterController]', e.body ? e.body.message : e, ctx)
         ctx.makeResObj(500, e.body ? e.body.message : e);
     }
 }

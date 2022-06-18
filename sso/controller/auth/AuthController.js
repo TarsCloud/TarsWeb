@@ -105,6 +105,15 @@ AuthController.getAuthListNoLogin = async (ctx) => {
         let uid = ctx.paramsObj.uid;
         let rst = await AuthService.getAuthListByUid(uid);
 
+        if (rst.length == 0 && uid == 'admin') {
+            rst.push({
+                flag: "*",
+                role: "admin",
+                uid: uid
+            });
+        }
+
+
         ctx.makeResObj(200, '', util.viewFilter(rst || [], authStruct));
     } catch (e) {
         logger.error('[getMyAuthList]', e.body ? e.body.message : e, ctx);

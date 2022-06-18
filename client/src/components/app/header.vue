@@ -13,9 +13,6 @@
             <a v-if="k8s === 'true'" href="/k8s.html"
               ><img class="logo" src="/static/img/K8S.png"
             /></a>
-            <!-- <a v-if="enable === 'true'" href="/dcache.html"
-              ><img class="logo" alt="dcache" src="/static/img/dcache-logo.png"
-            /></a> -->
           </div>
         </el-col>
 
@@ -45,24 +42,7 @@
         </el-col>
         <el-col :span="3">
           <div class="plugin-wrap">
-            <div style="display: inline-block;width:70%">
-              <el-select
-                v-model="pluginPath"
-                :placeholder="$t('header.extension')"
-                @change="changePlugin"
-              >
-                <el-option
-                  v-for="item in plugins"
-                  :key="item.f_id"
-                  :label="item.f_name + '(' + item.f_name_en + ')'"
-                  :value="item.f_path"
-                >
-                </el-option>
-              </el-select>
-            </div>
-            <div style="margin-left:10px;width:20%;display: inline-block;">
-              <i class="el-icon-refresh-right" @click="refreshPlugin()"></i>
-            </div>
+            <extentionSelect></extentionSelect>
           </div>
         </el-col>
         <el-col :span="2">
@@ -79,19 +59,7 @@
         </el-col>
         <el-col :span="2">
           <span class="language-wrap">
-            <el-select
-              v-model="locale"
-              @change="changeLocale"
-              style="width:100px"
-            >
-              <el-option
-                v-for="locale in localeMessages"
-                :key="locale.localeCode"
-                :value="locale.localeCode"
-                :label="locale.localeName"
-              >
-              </el-option>
-            </el-select>
+            <localeSelect></localeSelect>
           </span>
         </el-col>
         <el-col :span="2">
@@ -127,9 +95,15 @@ import serverIcon from "@/assets/img/server-icon.png";
 import opaIcon from "@/assets/img/opa-icon.png";
 import cacheIcon from "@/assets/img/cache-l.png";
 import packageIcon from "@/assets/img/package-l.png";
-import { localeMessages } from "@/locale/i18n";
+import localeSelect from "@/components/locale-select";
+import extentionSelect from "@/components/extention-select";
+
 import Axios from "axios";
 export default {
+  components: {
+    localeSelect,
+    extentionSelect,
+  },
   data() {
     return {
       // 图标
@@ -137,13 +111,10 @@ export default {
       opaIcon,
       cacheIcon,
       packageIcon,
-      locale: this.$cookie.get("locale") || "en",
+      locale: this.$cookie.get("locale") || "cn",
       uid: "--",
       enableLogin: false,
       isAdmin: false,
-      localeMessages: localeMessages,
-      pluginPath: "",
-      plugins: [],
       k8s: this.$cookie.get("k8s") || "false",
       enable: this.$cookie.get("enable") || "false",
       show: this.$cookie.get("show") || "false",
@@ -157,26 +128,7 @@ export default {
       return this.$store.state.marketUid;
     },
   },
-  watch: {
-    $route(to, from) {
-      console.log("header", to);
-      if (to.path.startsWith("/plugins") && !to.path.startsWith("/plugins/*")) {
-        this.pluginPath = to.path;
-      }
-    },
-  },
   methods: {
-    refreshPlugin() {
-      if (this.pluginPath.startsWith("/plugins")) {
-        this.$router.replace("/plugins/*");
-        this.$nextTick(() => {
-          this.$router.replace(this.pluginPath);
-        });
-      }
-    },
-    changePlugin() {
-      this.$router.replace(this.pluginPath);
-    },
     clickTab(tabkey) {
       this.$router.replace(tabkey);
     },
@@ -192,22 +144,6 @@ export default {
       if (command == "quit") {
         location.href = "/pages/server/api/logout";
       }
-    },
-    getPlugins() {
-      this.$ajax
-        .getJSON("/plugin/api/list", { k8s: false, type: 1 })
-        .then((data) => {
-          this.plugins = data;
-          if (
-            this.$route.path.startsWith("/plugins") &&
-            !this.$route.path.startsWith("/plugins/*")
-          ) {
-            this.pluginPath = this.$route.path;
-          }
-        })
-        .catch((err) => {
-          this.$common.showError(err);
-        });
     },
     getLoginUid() {
       this.$ajax
@@ -226,10 +162,6 @@ export default {
             `get user login info error: ${err.err_msg || err.message}`
           );
         });
-    },
-    changeLocale() {
-      this.$cookie.set("locale", this.locale, { expires: "1Y" });
-      location.reload();
     },
     checkEnableLogin() {
       this.$ajax
@@ -252,7 +184,6 @@ export default {
       this.$ajax
         .getJSON("/server/api/isAdmin")
         .then((data) => {
-          // console.log(data);
           this.isAdmin = data.admin;
         })
         .catch((err) => {});
@@ -263,7 +194,6 @@ export default {
     this.checkEnableLogin();
     this.checkAdmin();
     this.checkEnableLdap();
-    this.getPlugins();
 
     Axios.create({ baseURL: "/" })({
       method: "get",

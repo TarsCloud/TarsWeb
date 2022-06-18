@@ -197,7 +197,7 @@ import propertyMonitor from "@/common/monitor-property";
 import userManage from "@/common/user-manage";
 import history from "./history";
 import serverHistory from "./serverHistory";
-import serverPlugins from "@/components/serverPlugins";
+import serverPlugins from "@/common/serverPlugins";
 
 export default {
   name: "Server",

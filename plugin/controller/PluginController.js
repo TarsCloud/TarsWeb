@@ -17,13 +17,22 @@
 const logger = require('../../logger');
 const WebConf = require('../../config/webConf');
 
-let getPluginService = (k8s) => {
+const getPluginService = (k8s) => {
 	if (WebConf.isEnableK8s() && (k8s == true || k8s == "true")) {
 		return require('../service/PluginK8SService');
 	} else {
 		return require('../service/PluginService');
 	}
 }
+
+const getAuthService = (k8s) => {
+	if (WebConf.isEnableK8s() && (k8s == true || k8s == "true")) {
+		return require('../../sso/k8s-service/auth/AuthService');
+	} else {
+		return require('../../sso/service/auth/AuthService');
+	}
+}
+
 const PluginController = {};
 
 PluginController.loadPlugins = async (app) => {
@@ -61,6 +70,38 @@ PluginController.list = async (ctx) => {
 		ctx.makeResObj(500, e.body ? e.body.message : e);
 	}
 }
+
+PluginController.listAll = async (ctx) => {
+
+	try {
+		let result = await getPluginService(ctx.paramsObj.k8s).listAll();
+
+		ctx.makeResObj(result.ret, result.msg, result.data);
+
+	} catch (e) {
+		logger.error('[listAll]', e.body ? e.body.message : e, ctx)
+		ctx.makeResObj(500, e.body ? e.body.message : e);
+	}
+}
+
+PluginController.delete = async (ctx) => {
+
+	try {
+
+		if (await getAuthService(ctx.paramsObj.k8s).isAdmin(ctx.uid)) {
+			let result = await getPluginService(ctx.paramsObj.k8s).delete(ctx.paramsObj.id);
+			ctx.makeResObj(result.ret, result.msg, result.data);
+		} else {
+
+			ctx.makeNotAuthResObj();
+		}
+
+	} catch (e) {
+		logger.error('[delete]', e.body ? e.body.message : e, ctx)
+		ctx.makeResObj(500, e.body ? e.body.message : e);
+	}
+}
+
 
 PluginController.load = async (ctx) => {
 

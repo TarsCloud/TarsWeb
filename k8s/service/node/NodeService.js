@@ -157,36 +157,44 @@ NodeService.doCommand = async (application, serverName, podIp, command) => {
     return rets;
 }
 
-NodeService.nodeSelect = async (isAll, NodeName, ServerApp, ServerName, localPV, hold, limiter) => {
+NodeService.nodeSelect = async (localPV, hold, limiter) => {
+
+
     let nodeList = await CommonService.getNodeListAll(localPV, hold);
-    let affinity = ServerName == "" ? ServerApp : ServerApp + "." + ServerName;
+    // let affinity = ServerName == "" ? ServerApp : ServerApp + "." + ServerName;
 
     let allItems = nodeList;
+
+    // console.log(isAll, NodeName, ServerApp, ServerName, affinity);
 
     // filter
     let filterItems = allItems;
 
-    if (!isAll) {
-        filterItems = [];
-        allItems.forEach(elem => {
-            if (NodeName.length > 0 && elem.metadata.name.indexOf(NodeName) == -1)
-                return;
-            let abilityFlag = false;
-            if (affinity.length > 0) {
-                for (let labelsKey in elem.metadata.labels) {
-                    if (labelsKey.indexOf(CommonService.NodeAppAbilityLabelPrefix + affinity) != -1) {
-                        abilityFlag = true;
-                        break;
-                    }
-                }
-            } else {
-                abilityFlag = true;
-            }
-            if (!abilityFlag) return;
+    // if (!isAll) {
+    //     filterItems = [];
+    //     allItems.forEach(elem => {
 
-            filterItems.push(elem);
-        });
-    }
+    //         console.log(elem.metadata.name, elem.metadata.labels);
+
+    //         if (NodeName.length > 0 && elem.metadata.name.indexOf(NodeName) == -1)
+    //             return;
+
+    //         let abilityFlag = false;
+    //         if (affinity.length > 0) {
+    //             for (let labelsKey in elem.metadata.labels) {
+    //                 if (labelsKey.indexOf(CommonService.NodeAppAbilityLabelPrefix + affinity) != -1) {
+    //                     abilityFlag = true;
+    //                     break;
+    //                 }
+    //             }
+    //         } else {
+    //             abilityFlag = true;
+    //         }
+    //         if (!abilityFlag) return;
+
+    //         filterItems.push(elem);
+    //     });
+    // }
     let result = {
         Data: [],
         Count: {},
@@ -224,7 +232,7 @@ NodeService.nodeSelect = async (isAll, NodeName, ServerApp, ServerName, localPV,
                 ability.push(key.substr(CommonService.NodeAppAbilityLabelPrefix.length));
                 abilityLabels[key] = item.metadata.labels[key]
             } else {
-                let commonLabel = {};
+                // let commonLabel = {};
                 commonLabels[key] = item.metadata.labels[key]
             }
             if (key.indexOf(CommonService.NodeFramworkAbilityLabelPrefix) == 0) {

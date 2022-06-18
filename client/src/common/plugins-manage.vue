@@ -1,0 +1,112 @@
+<template>
+  <div style="width:80%;margin-top:50px">
+    <div class="page_operation_approval">
+      <el-card style="margin-top: 10px;padding:15px">
+        <div>
+          <span
+            >{{ $t("plugin.title") }}
+            <i class="el-icon-refresh-right" @click="fetchPlugins()"></i>
+          </span>
+        </div>
+        <let-table :data="plugins" :empty-msg="$t('common.nodata')">
+          <let-table-column
+            :title="$t('plugin.name')"
+            prop="f_name"
+            width="25%"
+          >
+          </let-table-column>
+          <let-table-column
+            :title="$t('plugin.name')"
+            prop="f_name_en"
+            width="15%"
+          ></let-table-column>
+          <let-table-column
+            :title="$t('plugin.obj')"
+            prop="f_obj"
+            width="25%"
+          ></let-table-column>
+          <let-table-column :title="$t('plugin.type')" prop="type">
+          </let-table-column>
+
+          <let-table-column :title="$t('operate.operates')" width="80px">
+            <template slot-scope="scope">
+              <let-table-operation @click="removePlugin(scope.row)"
+                >{{ $t("operate.delete") }}
+              </let-table-operation>
+            </template>
+          </let-table-column>
+        </let-table>
+      </el-card>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      k8s: false,
+      plugins: [],
+    };
+  },
+
+  mounted() {
+    this.k8s = location.pathname == "/k8s.html";
+    this.fetchPlugins();
+  },
+  watch: {
+    $route(to, from) {},
+  },
+  methods: {
+    fetchPlugins() {
+      this.$ajax
+        .getJSON("/plugin/api/listAll", {
+          k8s: this.k8s,
+        })
+        .then((data) => {
+          this.plugins = data;
+
+          let locale = this.$cookie.get("locale");
+
+          this.plugins.forEach((plugin) => {
+            switch (plugin.f_type) {
+              case 1:
+                plugin.type = locale == "cn" ? "全局插件" : "Global Plugin";
+                break;
+              case 2:
+                plugin.type = locale == "cn" ? "服务插件" : "Server Plugin";
+                break;
+              case 3:
+                plugin.type = locale == "cn" ? "运维插件" : "Operate Plugin";
+                break;
+              default:
+                plugin.type = "Unknown Type";
+                break;
+            }
+          });
+        })
+        .catch((err) => {
+          this.$common.showError(err);
+        });
+    },
+
+    removePlugin(row) {
+      this.$confirm(this.$t("plugin.delete"), this.$t("common.alert"))
+        .then(() => {
+          this.$ajax
+            .postJSON("/plugin/api/delete", {
+              id: row.f_id,
+              k8s: this.k8s,
+            })
+            .then((data) => {
+              this.fetchPlugins();
+            })
+            .catch((err) => {
+              this.$common.showError(err);
+            });
+        })
+        .catch(() => {});
+    },
+  },
+};
+</script>

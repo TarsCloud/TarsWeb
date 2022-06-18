@@ -11,6 +11,7 @@ module.exports = {
   assetsDir: "./static",
   productionSourceMap: false,
   runtimeCompiler: true,
+  indexPath: "tars.html",
   pages: {
     index: {
       entry: 'src/index.js',

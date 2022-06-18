@@ -54,11 +54,12 @@ import OperationBusinessRelation from '@/pages/operation/businessRelation';
 import OperationIDCManage from '@/pages/operation/idc';
 import OperationImage from '@/pages/operation/image';
 
+import PluginsManage from '@/common/plugins-manage.vue';
 //服务级别插件
-import ServerPlugins from '@/components/serverPlugins';
+import ServerPlugins from '@/common/serverPlugins';
 
 //全局插件
-import Plugin from '@/components/plugins.vue';
+import Plugin from '@/common/plugins.vue';
 
 //市场
 import Market from '@/market/market';
@@ -88,10 +89,6 @@ export default new Router({
           path: ':treeid/property-monitor',
           component: ServerPropertyMonitor,
         },
-        // {
-        //   path: ':treeid/interface-debuger',
-        //   component: InterfaceDebuger,
-        // },
         {
           path: ':treeid/user-manage',
           component: AuthManage,
@@ -159,6 +156,12 @@ export default new Router({
       name: 'Plugin',
       component: Plugin
     },
+    {
+      path: '/plugins-manage',
+      name: 'PluginManage',
+      component: PluginsManage
+    },
+
     {
       path: '*',
       redirect: '/server',

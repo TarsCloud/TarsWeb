@@ -85,6 +85,7 @@ PluginService.list = async (type) => {
     if (plugins) {
         plugins.body.items.forEach(i => {
             data.push({
+                f_id: i.metadata.name,
                 f_name: i.spec.name,
                 f_name_en: i.spec.name_en,
                 f_obj: i.spec.obj,
@@ -100,6 +101,45 @@ PluginService.list = async (type) => {
         data: data
     };
 }
+
+PluginService.listAll = async () => {
+
+    let plugins = await CommonService.listObject("tplugins");
+
+    let data = [];
+
+    if (plugins) {
+        plugins.body.items.forEach(i => {
+            data.push({
+                f_id: i.metadata.name,
+                f_name: i.spec.name,
+                f_name_en: i.spec.name_en,
+                f_obj: i.spec.obj,
+                f_type: i.spec.type,
+                f_path: i.spec.path,
+            });
+        })
+    }
+
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: data
+    };
+}
+
+PluginService.delete = async (id) => {
+
+    await CommonService.deleteObject("tplugins", id);
+
+
+    return {
+        ret: 200,
+        msg: 'succ',
+        data: {}
+    };
+}
+
 
 async function findActiveIndex(obj) {
     try {

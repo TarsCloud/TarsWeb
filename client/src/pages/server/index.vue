@@ -178,9 +178,8 @@ import config from "./config";
 import serverHistory from "./history";
 import serverMonitor from "@/common/monitor-server";
 import propertyMonitor from "@/common/monitor-property";
-// import interfaceDebuger from "@/common/interface-debuger";
 import userManage from "@/common/user-manage";
-import serverPlugins from "@/components/serverPlugins";
+import serverPlugins from "@/common/serverPlugins";
 
 export default {
   name: "Server",
@@ -191,7 +190,6 @@ export default {
     config,
     "server-monitor": serverMonitor,
     "property-monitor": propertyMonitor,
-    // "interface-debuger": interfaceDebuger,
     "user-manage": userManage,
     serverHistory,
     plugins: serverPlugins,

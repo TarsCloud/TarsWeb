@@ -2,7 +2,7 @@
   <div class="page_base_node">
     <template v-if="!showDetail">
       <let-form inline itemWidth="200px" @submit.native.prevent="search">
-        <let-form-item :label="$t('filter.title.node')">
+        <!-- <let-form-item :label="$t('filter.title.node')">
           <el-input size="small" v-model="query.NodeName"></el-input>
         </let-form-item>
         <let-form-item :label="$t('deployService.form.app')">
@@ -54,8 +54,8 @@
               @click="fetchData()"
             ></i>
           </span>
-        </let-form-item>
-        <let-form-item itemWidth="600px" style="float: right;">
+        </let-form-item> -->
+        <let-form-item itemWidth="600px">
           <el-tag
             @click="chooseHold"
             :effect="hold ? 'dark' : 'plain'"
@@ -72,6 +72,8 @@
           >
             LocalPV
           </el-tag>
+        </let-form-item>
+        <let-form-item itemWidth="600px" style="float: right;">
           <span style="float: right;margin-top: 30px">
             <el-tag effect="plain" style="margin-right: 10px">
               {{ $t("filter.title.CommonTag") }}
@@ -102,7 +104,6 @@
         </let-form-item>
       </let-form>
 
-      <br />
       <!--列表-->
       <el-table
         ref="table"

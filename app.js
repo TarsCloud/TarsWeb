@@ -21,15 +21,15 @@ const url = require('url');
 const onerror = require('koa-onerror');
 // const bodyparser = require('koa-bodyparser');
 const session = require('koa-session');
-const multer = require('koa-multer');
+// const multer = require('koa-multer');
 const static = require('koa-static');
 const helmet = require("koa-helmet");
 const staticRouter = require('koa-static-router');
 
 const WebConf = require('./config/webConf');
-const upload = multer({
-	dest: WebConf.pkgUploadPath.path + '/'
-});
+// const upload = multer({
+// 	dest: WebConf.pkgUploadPath.path + '/'
+// });
 const logger = require('./logger');
 
 const localeMidware = require('./midware/localeMidware');
@@ -67,7 +67,7 @@ app.use(helmet());
 
 // app.use(bodyparser());
 
-app.use(upload.array('suse', 5)); //这里决定了上传包的name只能叫suse。
+// app.use(upload.array('suse', 5)); //这里决定了上传包的name只能叫suse。
 
 //国际化多语言中间件
 app.use(localeMidware);

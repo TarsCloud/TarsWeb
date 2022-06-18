@@ -258,56 +258,42 @@ ServerController.ServerOptionTemplate = async (ctx) => {
 	}
 };
 
-// /**
-//  * 命令
-//  */
-// ServerController.Command = async (ctx) => {
-// 	let {
-// 		Token = '', command = '', server_ids = []
-// 	} = ctx.paramsObj
+ServerController.SelectAppServer = async (ctx) => {
+	try {
+		let params = ctx.paramsObj;
+		let level = params.level;
+		let application = params.application;
+		let serverName = params.server_name;
+		let set = params.set;
+		let rst = {};
+		let uid = ctx.uid;
+		switch (parseInt(level)) {
+			case 1:
+				rst = await ServerService.getApplication(uid);
+				break;
+			case 2:
+				rst = await ServerService.getServerName(application, uid);
+				break;
+			case 3:
+				ctx.makeErrResObj();
+				// rst = await ExpandService.getSet(application, serverName);
+				break;
+			case 4:
+				rst = await ServerService.getNodeName(application, serverName, set);
+				break;
+			case 5:
+				rst = await ServerService.getObj(application, serverName, uid);
+				break;
+			default:
+				break;
+		}
+		console.log(rst);
 
-// 	try {
-// 		let ServerApp = '',
-// 			ServerName = ''
-// 		if (ServerId.indexOf('.') === -1) {
-// 			ServerApp = ServerId
-// 		} else {
-// 			ServerApp = ServerId.substring(0, ServerId.indexOf('.'))
-// 			ServerName = ServerId.substring(ServerId.indexOf('.') + 1, ServerId.length)
-// 		}
-
-// 		if (!ServerApp || !ServerName) {
-// 			return ctx.makeResObj(500, 'ServerId Error')
-// 		}
-
-// 		const method = 'do'
-// 		const action = {
-// 			key: command,
-// 			value: {
-// 				ServerApp,
-// 				ServerName,
-// 				PodIps,
-// 			},
-// 		}
-
-// 		const params = {
-// 			kind: 'Command',
-// 			token: Token,
-// 			action,
-// 		}
-// 		let result = await ajax({
-// 			method,
-// 			params
-// 		})
-// 		if (result && result.ret === 0) {
-// 			ctx.makeResObj(200, result.msg, result.data)
-// 		} else {
-// 			ctx.makeResObj(500, result.msg)
-// 		}
-// 	} catch (e) {
-// 		logger.error('[Command]', e.body ? e.body.message : e, ctx)
-// 		ctx.makeResObj(500, e.body ? e.body.message : e);
-// 	}
-// }
+		ctx.makeResObj(rst.ret, rst.msg, rst.data);
+	} catch (e) {
+		logger.error('[selectAppServer]', e, ctx);
+		ctx.makeResObj(500, e.body ? e.body.message : e);
+	}
+}
 
 module.exports = ServerController;

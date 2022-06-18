@@ -16,7 +16,16 @@ const pluginApiConf = [
         type: 'notEmpty'
     }],
 
+    ['get', '/listAll', PluginController.listAll, {
+        k8s: 'notEmpty',
+    }],
+
     ['get', '/load', PluginController.load, {
+        k8s: 'notEmpty',
+    }],
+
+    ['post', '/delete', PluginController.delete, {
+        id: 'notEmpty',
         k8s: 'notEmpty',
     }],
 ];

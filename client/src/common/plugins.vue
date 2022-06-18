@@ -8,10 +8,14 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      k8s: false,
+    };
   },
 
   mounted() {
+    this.k8s = location.pathname == "/k8s.html";
+
     this.load();
 
     setInterval(() => {
@@ -27,8 +31,8 @@ export default {
     load() {
       let ticket = this.$cookie.get("ticket") || "";
 
-      let src = `${this.$route.path}?ticket=` + ticket;
-      console.log("load:" + src);
+      let src = `${this.$route.path}?k8s=${this.k8s}&ticket=` + ticket;
+      // console.log("load:" + src);
       document.getElementById("iframe").src = src;
     },
     setIframeHeight(id) {

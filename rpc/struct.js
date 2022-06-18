@@ -16,7 +16,6 @@
 
 const AdminRegProxy = require("./proxy/AdminRegProxy");
 const ConfigFProxy = require("./proxy/ConfigFProxy");
-// const DCacheOptProxy = require("./proxy/DCacheOptProxy");
 const MonitorQueryProxy = require("./proxy/MonitorQueryProxy");
 const PatchProxy = require("./proxy/PatchProxy");
 // const WebConf = require("../config/webConf");
@@ -32,8 +31,6 @@ module.exports = {
     configFStruct: RPCStruct(ConfigFProxy, 'tars'),
 
     monitorQueryStruct: RPCStruct(MonitorQueryProxy, 'tars'),
-
-    // DCacheOptStruct: RPCStruct(DCacheOptProxy, 'DCache'),
 
     PatchStruct: RPCStruct(PatchProxy, 'tars'),
 

@@ -5,31 +5,24 @@ const NodeController = {};
 
 /**
  * 节点列表
- * @param  {String}  Token                登录签名
- * @param  {String}  NodeName             名称
- * @param  {String}  NodeMark             备注
- * @param  {String}  CreateTime           创建时间
- * @param  {String}  CreatePerson         创建人
  */
 NodeController.NodeSelect = async (ctx) => {
     let {
-        Token = '', page = 1, isAll = false, NodeName = '', ServerApp = '', ServerName = '', localPV = false, hold = false
+        Token = '', page = 1, localPV = false, hold = false
     } = ctx.paramsObj
-    isAll = isAll == "true";
+    // isAll = isAll == "true";
     localPV = localPV == "true";
     hold = hold == "true";
     let pageIndex = Math.floor(page) || 1
     let pageSize = 10
 
     let limiter = null;
-    if (!isAll) {
-        limiter = {
-            offset: (pageIndex - 1) * pageSize,
-            rows: pageSize,
-        }
+    limiter = {
+        offset: (pageIndex - 1) * pageSize,
+        rows: pageSize,
     }
     try {
-        let result = await NodeService.nodeSelect(isAll, NodeName, ServerApp, ServerName, localPV, hold, limiter);
+        let result = await NodeService.nodeSelect(localPV, hold, limiter);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {

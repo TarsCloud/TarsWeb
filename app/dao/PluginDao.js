@@ -46,10 +46,10 @@ PluginDao.updatePlugin = async (paramsObj) => {
 	})
 };
 
-PluginDao.deletePlugin = async (obj) => {
+PluginDao.deletePlugin = async (id) => {
 	return await tPlugin.destroy({
 		where: {
-			f_obj: obj
+			f_id: id
 		}
 	});
 };

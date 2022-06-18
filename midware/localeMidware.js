@@ -47,7 +47,22 @@ function formatJson(localeJson) {
 }
 
 module.exports = async (ctx, next) => {
+
+	let locale = ctx.cookies.get('locale');
+
+	if (!locale) {
+		let cn = (ctx.headers["accept-language"] || "").indexOf("zh");
+		if (cn != -1) {
+			ctx.cookies.set("locale", "cn");
+		} else {
+			ctx.cookies.set("locale", "en");
+		}
+	} else {
+		ctx.cookies.set("locale", locale);
+	}
+
 	await next();
+
 	if (!!ctx.body) {
 		var lan = ctx.paramsObj && ctx.paramsObj.__locale || ctx.cookies.get('locale') || 'cn';
 		var content = '';
@@ -75,4 +90,3 @@ module.exports = async (ctx, next) => {
 		}
 	}
 };
-
