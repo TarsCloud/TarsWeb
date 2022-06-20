@@ -17,7 +17,7 @@
         "logout": "Logout",
         "modifyPass": "Modify Password",
         "userCenter": "User Center",
-        "extension": "Extension"
+        "extension": "Extension Management"
     },
     "callChain": {
         "sub": "query",

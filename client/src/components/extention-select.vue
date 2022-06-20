@@ -1,14 +1,10 @@
 <template>
   <div>
     <div style="display: inline-block;width:70%">
-      <el-select
-        v-model="pluginPath"
-        :placeholder="$t('header.extension')"
-        @change="changePlugin"
-      >
+      <el-select v-model="pluginPath" @change="changePlugin">
         <el-option
           :key="0"
-          :label="locale == 'cn' ? '扩展服务管理' : 'Extended management'"
+          :label="$t('header.extension')"
           value="/plugins-manage"
         >
         </el-option>
@@ -49,6 +45,8 @@ export default {
   },
   methods: {
     refreshPlugin() {
+      this.getPlugins();
+
       if (this.pluginPath.startsWith("/plugins")) {
         this.$router.replace("/plugins/*");
         this.$nextTick(() => {
