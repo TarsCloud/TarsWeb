@@ -602,6 +602,11 @@ export default {
         this.$tip.error(`${this.$t("imageService.btn.imageTips")}`);
         return;
       }
+
+      if (this.baseModal.model.image.indexOf(":") == -1) {
+        this.baseModal.model.image = this.baseModal.model.image + ":latest";
+      }
+
       const loading = this.$refs.table.$loading.show();
 
       return this.$ajax
