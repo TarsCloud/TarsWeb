@@ -32,7 +32,7 @@ PatchDao.insertPatchTask = async (params) => {
 	return await tPatchTask.create(params);
 },
 
-PatchDao.getServerPatch = async (server, curPage, pageSize, package_type) => {
+PatchDao.getServerPatch = async (server, curPage, pageSize) => {
 	var opts = {
 		order: [
 			['id', 'desc']
@@ -41,7 +41,7 @@ PatchDao.getServerPatch = async (server, curPage, pageSize, package_type) => {
 			server: server
 		}
 	};
-	if (package_type !== undefined) opts.where.package_type = package_type;
+	// if (package_type !== undefined) opts.where.package_type = package_type;
 	if (curPage && pageSize) {
 		Object.assign(opts, {
 			limit: pageSize,
@@ -55,14 +55,14 @@ PatchDao.destroyServePatch = async (id) => {
 	return await tServerPatchs.destroy({where: {id: id}});
 },
 
-PatchDao.setPatchPackageDefault = async ({id, application, module_name, package_type}) => {
+PatchDao.setPatchPackageDefault = async ({id, application, module_name}) => {
 	await tServerPatchs.update({
 		default_version: 0
 	}, {
 		where: {
 			server: application + '.' + module_name,
 			default_version: 1,
-			package_type
+			// package_type
 		}
 	});
 	return await tServerPatchs.update({

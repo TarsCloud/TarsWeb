@@ -1,14 +1,14 @@
 <template>
   <el-card style="padding: 5px">
-    <let-form
+    <el-form
       ref="k8sDetailForm"
       itemWidth="360px"
       :columns="2"
       class="two-columns"
     >
       <div>
-        <let-form-item :label="$t('deployService.table.th.replicas')">
-          <let-input
+        <el-form-item :label="$t('deployService.table.th.replicas')">
+          <el-input
             size="small"
             type="number"
             :min="0"
@@ -17,11 +17,11 @@
             required
             :required-tip="$t('deployService.table.tips.empty')"
             :pattern-tip="$t('deployService.form.placeholder')"
-          ></let-input>
-        </let-form-item>
+          ></el-input>
+        </el-form-item>
       </div>
-    </let-form>
-    <el-row type="flex" justify="end" style="margin-top:15px" v-if="!install">
+    </el-form>
+    <el-row type="flex" justify="end" style="margin-top: 15px" v-if="!install">
       <el-col :span="2">
         <el-button size="mini" type="primary" @click="save">{{
           $t("operate.save")
@@ -34,7 +34,7 @@
 <script>
 export default {
   props: ["replicas", "install"],
-  name: "Replicas",
+  name: "ReplicasK8S",
   data() {
     return { inputValue: this.replicas };
   },

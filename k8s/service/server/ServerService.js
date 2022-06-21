@@ -172,6 +172,8 @@ ServerService.updateServer = async (serverData, target) => {
 
 ServerService.deleteServer = async (serverData) => {
 
+    console.log(serverData);
+    
     // metadata.ServerId.forEach(async (item) => {
     let item = serverData;
 

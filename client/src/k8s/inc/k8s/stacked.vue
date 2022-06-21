@@ -1,20 +1,20 @@
 <template>
   <el-card style="padding: 5px">
-    <let-form
+    <el-form
       ref="k8sDetailForm"
       itemWidth="360px"
       :columns="2"
       class="two-columns"
     >
       <div>
-        <let-form-item :label="$t('operate.stacked')" itemWidth="60%">
-          <let-switch size="small" v-model="inputValue">
+        <el-form-item :label="$t('operate.stacked')" itemWidth="60%">
+          <el-switch size="small" v-model="inputValue">
             <span slot="open">ON</span>
             <span slot="close">OFF</span>
-          </let-switch>
+          </el-switch>
 
           <el-alert
-            style="margin-top:5px;margin-bottom:5px"
+            style="margin-top: 5px; margin-bottom: 5px"
             :title="$t('operate.stackedInvalid')"
             show-icon
             :closable="false"
@@ -29,10 +29,10 @@
             type="warning"
           >
           </el-alert>
-        </let-form-item>
+        </el-form-item>
       </div>
-    </let-form>
-    <el-row type="flex" justify="end" style="margin-top:15px" v-if="!install">
+    </el-form>
+    <el-row type="flex" justify="end" style="margin-top: 15px" v-if="!install">
       <el-col :span="2">
         <el-button size="mini" type="primary" @click="save">{{
           $t("operate.save")
@@ -45,7 +45,7 @@
 <script>
 export default {
   props: ["notStacked", "install"],
-  name: "stacked",
+  name: "stackedK8S",
   data() {
     return {
       inputValue: !this.notStacked,

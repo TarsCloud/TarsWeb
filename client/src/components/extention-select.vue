@@ -46,15 +46,11 @@ export default {
   methods: {
     refreshPlugin() {
       this.getPlugins();
-
-      if (this.pluginPath.startsWith("/plugins")) {
-        this.$router.replace("/plugins/*");
-        this.$nextTick(() => {
-          this.changePlugin();
-        });
-      }
     },
     changePlugin() {
+
+      console.log("changePlugin:", this.pluginPath);
+
       this.$router.replace(this.pluginPath);
     },
     getPlugins() {
@@ -63,10 +59,15 @@ export default {
         .then((data) => {
           this.plugins = data;
           if (
-            this.$route.path.startsWith("/plugins") &&
-            !this.$route.path.startsWith("/plugins/*")
+            this.$route.path.startsWith("/plugins")
           ) {
-            this.pluginPath = this.$route.path;
+              // console.log("getPlugins:", this.$route.path);
+
+              // this.$router.replace("/plugins/*");
+              // this.$nextTick(() => {
+              //   this.changePlugin();
+              // });
+
           } else {
             this.pluginPath = "";
           }

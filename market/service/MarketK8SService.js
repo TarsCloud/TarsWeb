@@ -105,16 +105,13 @@ MarketService.uninstallServer = async (application, server_name, uid) => {
 		};
 	}
 
-	const metadata = {
-		ServerId: [application + '-' + server_name]
-	}
-
-	return await ServerService.deleteServer(metadata);
+	return await ServerService.deleteServer({
+		application: application,
+		serverName: server_name
+	});
 };
 
 MarketService.uninstallProduct = async (servers, uid) => {
-
-	let ServerId = [];
 
 	for (let i = 0; i < servers.length; i++) {
 		let server = servers[i];
@@ -124,14 +121,22 @@ MarketService.uninstallProduct = async (servers, uid) => {
 				msg: '#common.noPrivilage#',
 			};
 		}
-		ServerId.push(server.application + '-' + server.server_name);
 	}
 
-	const metadata = {
-		ServerId: ServerId
-	};
+	for (let i = 0; i < servers.length; i++) {
+		let server = servers[i];
 
-	return await ServerService.deleteServer(metadata);
+		await ServerService.deleteServer({
+			application: server.application,
+			serverName: server.server_name
+		});
+
+	}
+
+	return {
+		ret: 200,
+		msg: "succ"
+	}
 };
 
 MarketService.getFrameworkKey = async () => {

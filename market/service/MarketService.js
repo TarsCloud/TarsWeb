@@ -121,7 +121,7 @@ MarketService.uninstallProduct = async (servers, uid) => {
 
 		let node_servers = await ServerService.getServerConfList(servers[i].application, servers[i].server_name);
 
-		console.log(node_servers);
+		// console.log(node_servers);
 
 		for (let j = 0; j < node_servers.length; j++) {
 

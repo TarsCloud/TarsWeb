@@ -378,15 +378,11 @@ export default {
           });
         }
       }
-
-      console.log(this.treeid, data);
       return data;
     },
     saveNetwork(k8sModel) {
       const loading = this.$Loading.show();
       let data = this.adapterServerK8S(k8sModel);
-
-      console.log(data);
       this.$ajax
         .postJSON("/k8s/api/server_k8s_update_network", data)
         .then((res) => {

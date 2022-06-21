@@ -1,7 +1,12 @@
 <!--HPA(Horizontal Pod Autoscaler) -  POD水平自动伸缩-->
 <template>
   <el-card style="padding: 5px">
-    <el-form label-position="top" size="small" ref="hpaForm" :model="hpaModel">
+    <el-form
+      label-position="top"
+      size="small"
+      ref="hpaForm"
+      :model="hpaModelData"
+    >
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item
@@ -16,7 +21,7 @@
             ]"
           >
             <el-input
-              v-model="hpaModel.minReplicas"
+              v-model="hpaModelData.minReplicas"
               oninput="value=value.replace(/[^\d]/g,'')"
               :placeholder="$t('deployService.hpa.tip.minReplicas')"
             ></el-input>
@@ -34,7 +39,7 @@
             ]"
           >
             <el-input
-              v-model="hpaModel.maxReplicas"
+              v-model="hpaModelData.maxReplicas"
               oninput="value=value.replace(/[^\d]/g,'')"
               :placeholder="$t('deployService.hpa.tip.maxReplicas')"
             ></el-input>
@@ -46,7 +51,7 @@
       }}</el-divider>
       <el-card
         shadow="hover"
-        v-for="(item, index) in hpaModel.indicatorData"
+        v-for="(item, index) in hpaModelData.indicatorData"
         :key="index"
         style="margin-bottom: 5px"
       >
@@ -142,7 +147,7 @@
             <el-button
               size="mini"
               type="primary"
-              @click="addItems(index, hpaModel.indicatorData)"
+              @click="addItems(index, hpaModelData.indicatorData)"
             >
               {{ $t("deployService.hpa.form.addIndicator") }}
             </el-button>
@@ -151,7 +156,7 @@
             <el-button
               size="mini"
               type="danger"
-              @click="delItems(index, hpaModel.indicatorData)"
+              @click="delItems(index, hpaModelData.indicatorData)"
             >
               {{ $t("deployService.hpa.form.delIndicator") }}
             </el-button>
@@ -160,7 +165,7 @@
       </el-card>
     </el-form>
 
-    <el-row type="flex" justify="end" style="margin-top:15px" v-if="!install">
+    <el-row type="flex" justify="end" style="margin-top: 15px" v-if="!install">
       <el-col :span="2">
         <el-button size="mini" type="primary" @click="save">{{
           $t("operate.save")
@@ -173,13 +178,15 @@
 <script>
 export default {
   props: ["hpaModel", "serverData", "sourceModel", "indicators", "install"],
-  name: "hpa",
+  name: "hpaK8S",
   data() {
     return {
       customTargets: ["cpu", "memory"],
     };
   },
   mounted() {
+    this.hpaModelData = this.hpaModel;
+
     // master版本目前不放出自定义指标,只留系统指标
     // this.$ajax.getJSON('/k8s/api/get_hpa_target', {}).then((data) => {
     //     this.customTargets = data
@@ -208,7 +215,7 @@ export default {
         return;
       }
       this.$refs.hpaForm.validate((valid) => {
-        let data = Object.assign({}, this.hpaModel, {
+        let data = Object.assign({}, this.hpaModelData, {
           serverData: this.serverData,
         });
         if (valid) {
@@ -242,7 +249,7 @@ export default {
     changeType(index, val) {
       let matchIndicators = this.getMatchIndicators(val);
       this.$set(
-        this.hpaModel.indicatorData[index],
+        this.hpaModelData.indicatorData[index],
         "targetType",
         matchIndicators.target[0].type
       );

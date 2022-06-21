@@ -33,16 +33,23 @@ export default {
 
       let src = `${this.$route.path}?k8s=${this.k8s}&ticket=` + ticket;
       // console.log("load:" + src);
-      document.getElementById("iframe").src = src;
+      if(document.getElementById("iframe")) {
+        document.getElementById("iframe").src = src;
+      }
     },
     setIframeHeight(id) {
       try {
         var iframe = document.getElementById(id);
 
-        var bodyDom =
-          iframe.contentWindow || iframe.contentDocument.parentWindow;
 
-        iframe.height = bodyDom.outerHeight;
+        if(iframe) {
+          var bodyDom =
+            iframe.contentWindow || iframe.contentDocument.parentWindow;
+
+          if(bodyDom) {
+            iframe.height = bodyDom.outerHeight;
+          }
+        }
       } catch (e) {
         throw new Error(e);
       }

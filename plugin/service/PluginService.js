@@ -93,9 +93,11 @@ PluginService.loadPlugins = async (app) => {
 
         let target = await findActiveIndex(plugin.f_obj);
 
+        console.log(target);
+
         if (target) {
 
-            app.use(proxy(`${plugin.f_path}`, {
+            app.use(proxy(plugin.f_path, {
                 target: target,
                 ws: true,
                 changeOrigin: true

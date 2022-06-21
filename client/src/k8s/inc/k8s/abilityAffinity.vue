@@ -1,6 +1,6 @@
 <template>
-  <el-card style="padding: 5px">
-    <let-form
+  <el-card style="padding: 5px" v-if="k8sModelData">
+    <el-form
       ref="k8sDetailForm"
       itemWidth="360px"
       :columns="2"
@@ -8,12 +8,12 @@
     >
       <!--nodeSelect 节点选择-->
       <div>
-        <let-form-item
+        <el-form-item
           :label="$t('deployService.form.affinity')"
           itemWidth="100%"
         >
           <el-select
-            v-model="k8sModel.abilityAffinity"
+            v-model="k8sModelData.abilityAffinity"
             size="small"
             style="width: 100%"
           >
@@ -25,46 +25,49 @@
             >
           </el-select>
 
-          <el-alert size="small" type="warning" style="margin:5px"
+          <el-alert size="small" type="warning" style="margin: 5px"
             >AppRequired:在满足其他条件后,节点必须有tars.io/ability.${namespace}.${App}
             标签</el-alert
           >
-          <el-alert type="warning" style="margin:5px"
+          <el-alert type="warning" style="margin: 5px"
             >ServerRequired:
             在满足其他条件后,节点必须有tars.io/ability.${namespace}.${App}-${Server}
             标签</el-alert
           >
-          <el-alert type="warning" style="margin:5px"
+          <el-alert type="warning" style="margin: 5px"
             >AppOrServerPreferred:
             在满足其他条件后,优先选择有tars.io/ability.${namespace}.${App}-${Server},
             tars.io/ability.${namespace}.${App} 标签的节点</el-alert
           >
-          <el-alert type="warning" style="margin:5px"
+          <el-alert type="warning" style="margin: 5px"
             >None: 不对节点标签做要求</el-alert
           >
-        </let-form-item>
-        <let-form-item itemWidth="45%" v-if="labelMatchArr.length == 0">
+        </el-form-item>
+        <el-form-item itemWidth="45%" v-if="labelMatchArrData.length == 0">
           <el-button
             type="text"
             size="mini"
-            @click="addItems(0, labelMatchArr)"
+            @click="addItems(0, labelMatchArrData)"
             style="margin-left: 20px"
           >
             {{ $t("deployService.form.labelMatch.addLabel") }}
           </el-button>
-        </let-form-item>
+        </el-form-item>
 
         <!--labelMatch 标签-->
-        <div v-for="(item, index) in labelMatchArr" :key="index">
-          <let-form-item :label="$t('nodeList.table.th.label')" itemWidth="30%">
-            <let-input
+        <div v-for="(item, index) in labelMatchArrData" :key="index">
+          <el-form-item
+            :label="$t('deployService.table.th.label')"
+            itemWidth="30%"
+          >
+            <el-input
               size="small"
               v-model="item.key"
-              :placeholder="$t('nodeList.table.th.label')"
+              :placeholder="$t('deployService.table.th.label')"
               :pattern-tip="$t('deployService.form.labelMatch.labelValid')"
-            ></let-input>
-          </let-form-item>
-          <let-form-item label="operator" itemWidth="15%">
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="operator" itemWidth="15%">
             <el-select
               v-model="item.operator"
               size="small"
@@ -77,8 +80,11 @@
                 >{{ item }}</el-option
               >
             </el-select>
-          </let-form-item>
-          <let-form-item :label="$t('nodes.label.value')" itemWidth="40%">
+          </el-form-item>
+          <el-form-item
+            :label="$t('deployService.table.th.value')"
+            itemWidth="40%"
+          >
             <el-select
               :disabled="item.disableValue"
               style="width: 95%"
@@ -104,25 +110,25 @@
               >
               </el-option>
             </el-select>
-          </let-form-item>
+          </el-form-item>
           <el-button
             type="primary"
             icon="el-icon-plus"
             size="mini"
             circle
-            @click="addItems(index, labelMatchArr)"
+            @click="addItems(index, labelMatchArrData)"
           ></el-button>
           <el-button
             type="danger"
             icon="el-icon-minus"
             size="mini"
             circle
-            @click="delItems(index, labelMatchArr)"
+            @click="delItems(index, labelMatchArrData)"
           ></el-button>
         </div>
       </div>
-    </let-form>
-    <el-row type="flex" justify="end" style="margin-top:15px" v-if="!install">
+    </el-form>
+    <el-row type="flex" justify="end" style="margin-top: 15px" v-if="!install">
       <el-col :span="2">
         <el-button size="mini" type="primary" @click="save">{{
           $t("operate.save")
@@ -138,6 +144,7 @@ export default {
   name: "AbilityAffinity",
   data() {
     return {
+      k8sModelData: null,
       abilityAffinities: [
         "AppRequired",
         "ServerRequired",
@@ -146,23 +153,27 @@ export default {
       ],
     };
   },
+  mounted() {
+    this.k8sModelData = this.k8sModel;
+    this.labelMatchArrData = this.labelMatchArr;
+  },
   methods: {
     changeKind() {
       this.$forceUpdate();
     },
     adapterServerK8S(model) {
       let data = Object.assign({}, model);
-      let labelMatchArr = this.labelMatchArr.map((item) => {
+      let labelMatchArrData = this.labelMatchArrData.map((item) => {
         return { key: item.key, operator: item.operator, values: item.values };
       });
       // delete data.NodeSelector.nodeBind;
-      data.NodeSelector = labelMatchArr;
+      data.NodeSelector = labelMatchArrData;
       return data;
     },
     // 保存 k8s
     save() {
       if (this.$refs.k8sDetailForm.validate() && this.validateLabels()) {
-        let data = this.adapterServerK8S(this.k8sModel);
+        let data = this.adapterServerK8S(this.k8sModelData);
 
         this.$emit("saveAffinity", data);
       }
@@ -170,7 +181,7 @@ export default {
     validateLabels(data) {
       let flag = true;
       // if (data.NodeSelector.Kind === "LabelMatch") {
-      for (let item of this.labelMatchArr) {
+      for (let item of this.labelMatchArrData) {
         if (item.key.trim() == "") {
           this.$message.error(
             `${this.$t("deployService.form.labelMatch.errorKey")}`
@@ -196,9 +207,9 @@ export default {
     },
     addLabelValues(val, index) {
       let reg = /^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]?$/;
-      this.labelMatchArr[index].values.forEach((item, index) => {
+      this.labelMatchArrData[index].values.forEach((item, index) => {
         if (!reg.test(item)) {
-          this.labelMatchArr[index].values.splice(index, 1);
+          this.labelMatchArrData[index].values.splice(index, 1);
           this.$message.error(
             `${this.$t("deployService.form.labelMatch.labelValueValid")}`
           );
@@ -206,7 +217,7 @@ export default {
       });
     },
     changeLabelOperator(val) {
-      this.labelMatchArr.forEach((item) => {
+      this.labelMatchArrData.forEach((item) => {
         if (item.operator == "Exists" || item.operator == "DoesNotExist") {
           this.$set(item, "disableValue", true);
           this.$set(item, "values", []);

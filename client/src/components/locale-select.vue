@@ -9,20 +9,6 @@
       >
       </el-option>
     </el-select>
-    <!--             
-    <let-select
-      ref="localSelect"
-      v-model="locale"
-      @change="changeLocale"
-      :clearable="false"
-      size="small"
-    >
-      <template v-for="locale in localeMessages">
-        <let-option :value="locale.localeCode" v-bind:key="locale.localeCode">{{
-          locale.localeName
-        }}</let-option>
-      </template>
-    </let-select> -->
   </div>
 </template>
 
@@ -37,6 +23,7 @@ export default {
   },
   methods: {
     changeLocale() {
+      // console.log("locale", this.locale);
       this.$cookie.set("locale", this.locale, { expires: "1Y" });
       location.reload();
     },

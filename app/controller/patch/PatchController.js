@@ -39,7 +39,7 @@ PatchController.uploadAndPublish = async (ctx) => {
 			application,
 			module_name,
 			comment,
-			package_type
+			// package_type
 		} = ctx.req.body;
 
 		let s = await ServerService.getServerConf(application, module_name);
@@ -76,7 +76,7 @@ PatchController.uploadAndPublish = async (ctx) => {
 			md5: hash,
 			update_text: comment || '',
 			task_id: task_id,
-			package_type: package_type || '0',
+			// package_type: package_type || '0',
 			posttime: new Date()
 		};
 		logger.info('[addServerPatch:]', paramsObj);
@@ -167,10 +167,10 @@ PatchController.uploadPatchPackage = async (ctx) => {
 			md5,
 			task_id,
 			comment,
-			package_type
+			// package_type
 		} = ctx.req.body;
 
-		package_type = package_type || 0;
+		// package_type = package_type || 0;
 
 		if (!await AuthService.hasDevAuth(application, module_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
@@ -200,7 +200,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
 				md5: hash,
 				update_text: comment || '',
 				task_id: task_id,
-				package_type: package_type || '0',
+				// package_type: package_type || '0',
 				posttime: new Date(),
 				upload_time: new Date(),
 				upload_user: ctx.uid
@@ -239,7 +239,7 @@ PatchController.uploadPatchPackage = async (ctx) => {
 				id,
 				application,
 				module_name,
-				package_type
+				// package_type
 			};
 
 			//dcache的包, 设置为缺省包
@@ -262,19 +262,19 @@ PatchController.serverPatchList = async (ctx) => {
 		module_name,
 		curr_page = 0,
 		page_size = 0,
-		package_type
+		// package_type
 	} = ctx.paramsObj;
 	try {
 		if (!await AuthService.hasOpeAuth(application, module_name, ctx.uid)) {
 			ctx.makeNotAuthResObj();
 		} else {
 
-			let ret = await PatchService.getServerPatch(application, module_name, parseInt(curr_page), parseInt(page_size), package_type);
+			let ret = await PatchService.getServerPatch(application, module_name, parseInt(curr_page), parseInt(page_size));//, package_type);
 			// console.log(ret);
 			ctx.makeResObj(200, '', {
 				count: ret.count,
 				rows: util.viewFilter(ret.rows, {
-					package_type: '',
+					// package_type: '',
 					default_version: '',
 					id: '',
 					server: '',
@@ -521,14 +521,14 @@ PatchController.setPatchPackageDefault = async (ctx) => {
 		id,
 		application,
 		module_name,
-		package_type
+		// package_type
 	} = ctx.paramsObj;
 	try {
 		let ret = await PatchService.setPatchPackageDefault({
 			id,
 			application,
 			module_name,
-			package_type
+			// package_type
 		});
 		ctx.makeResObj(200, '', ret);
 	} catch (e) {

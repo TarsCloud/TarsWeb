@@ -37,9 +37,15 @@ PatchService.addServerPatch = async (params) => {
 	return await PatchDao.insertServerPatch(params);
 };
 
-PatchService.getServerPatch = async (application, server_name, curPage, pageSize, package_type) => {
-	return await PatchDao.getServerPatch(`${application}.${server_name}`, curPage, pageSize, package_type);
+// PatchService.getServerPatch = async (application, server_name, curPage, pageSize, package_type) => {
+// 	return await PatchDao.getServerPatch(`${application}.${server_name}`, curPage, pageSize, package_type);
+// };
+
+
+PatchService.getServerPatch = async (application, server_name, curPage, pageSize) => {
+	return await PatchDao.getServerPatch(`${application}.${server_name}`, curPage, pageSize);
 };
+
 
 PatchService.deleteServerPatchById = async (id) => {
 	return await PatchDao.destroyServePatch(id);
@@ -49,13 +55,13 @@ PatchService.setPatchPackageDefault = async ({
 	id,
 	application,
 	module_name,
-	package_type
+	// package_type
 }) => {
 	return await PatchDao.setPatchPackageDefault({
 		id,
 		application,
 		module_name,
-		package_type
+		// package_type
 	})
 };
 
@@ -70,27 +76,27 @@ PatchService.hasDcachePatchPackage = async () => {
 	let proxyDefaultPackage = await PatchDao.find({
 		server: 'DCache.ProxyServer',
 		default_version: 1,
-		package_type: 0
+		// package_type: 0
 	});
 	let routerDefaultPackage = await PatchDao.find({
 		server: 'DCache.RouterServer',
 		default_version: 1,
-		package_type: 0
+		// package_type: 0
 	})
 	let accessDefaultPackage = await PatchDao.find({
 		server: 'DCache.CombinDbAccessServer',
 		default_version: 1,
-		package_type: 0
+		// package_type: 0
 	})
 	let cacheDefaultPackage = await PatchDao.find({
-		server: 'DCache.DCacheServerGroup',
+		server: 'DCache.KVCacheServer',
 		default_version: 1,
-		package_type: 1
+		// package_type: 1
 	})
 	let McacheDefaultPackage = await PatchDao.find({
-		server: 'DCache.DCacheServerGroup',
+		server: 'DCache.MKVCacheServer',
 		default_version: 1,
-		package_type: 2
+		// package_type: 2
 	})
 
 	return !!proxyDefaultPackage && !!routerDefaultPackage && !!accessDefaultPackage && !!cacheDefaultPackage && !!McacheDefaultPackage
@@ -104,17 +110,19 @@ PatchService.uploadAndPatch = async (application,
 	md5,
 	task_id,
 	comment,
-	package_type,
 	filename,
 	fieldname,
 	uid,
 	callback) => {
 	try {
 
-		package_type = package_type || 0;
+		// package_type = package_type || 0;
 
 		if (!await AuthService.hasDevAuth(application, module_name, uid)) {
-			ctx.makeNotAuthResObj();
+			return {
+				code: 403,
+				err_msg: "no auth"
+			};
 		} else {
 			if (!filename) {
 				logger.error('[uploadAndPatch]:', 'no files');
@@ -148,7 +156,7 @@ PatchService.uploadAndPatch = async (application,
 				md5: hash,
 				update_text: comment || '',
 				task_id: task_id,
-				package_type: package_type || '0',
+				// package_type: package_type || '0',
 				posttime: new Date(),
 				upload_time: new Date(),
 				upload_user: uid

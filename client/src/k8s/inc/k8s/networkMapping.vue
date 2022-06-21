@@ -1,50 +1,59 @@
 <template>
-  <el-card shadow="never" style="padding: 5px">
-    <let-form ref="k8sDetailForm" itemWidth="360px" :columns="3">
+  <el-card shadow="never" style="padding: 5px" v-if="k8sData">
+    <el-form ref="k8sDetailForm" inline label-position="top">
       <div>
-        <div>
-          <let-form-item
-            :label="$t('deployService.table.th.hostIpc')"
-            itemWidth="25%"
-          >
-            <el-radio-group v-model="k8sModel.HostIpc" @change="changeKind">
-              <el-radio :label="true">{{ $t("common.true") }}</el-radio>
-              <el-radio :label="false">{{ $t("common.false") }}</el-radio>
-            </el-radio-group>
-          </let-form-item>
-          <let-form-item
-            :label="$t('deployService.table.th.hostNetwork')"
-            itemWidth="25%"
-          >
-            <el-radio-group v-model="k8sModel.HostNetwork" @change="changeKind">
-              <el-radio :label="true">{{ $t("common.true") }}</el-radio>
-              <el-radio :label="false">{{ $t("common.false") }}</el-radio>
-            </el-radio-group>
-          </let-form-item>
-          <let-form-item
-            :label="$t('deployService.table.th.hostPort')"
-            itemWidth="25%"
-          >
-            <el-radio-group
-              v-model="k8sModel.showHostPort"
-              @change="changeKind"
+        <el-row :gutter="18">
+          <el-col :span="6">
+            <el-form-item
+              :label="$t('deployService.table.th.hostIpc')"
+              label-width="200px"
             >
-              <el-radio :label="true">{{ $t("common.true") }}</el-radio>
-              <el-radio :label="false">{{ $t("common.false") }}</el-radio>
-            </el-radio-group>
-          </let-form-item>
-        </div>
-        <let-table
-          v-if="k8sModel.showHostPort"
+              <el-radio-group v-model="k8sData.HostIpc" @change="changeKind">
+                <el-radio :label="true">{{ $t("common.true") }}</el-radio>
+                <el-radio :label="false">{{ $t("common.false") }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item
+              :label="$t('deployService.table.th.hostNetwork')"
+              label-width="200px"
+            >
+              <el-radio-group
+                v-model="k8sData.HostNetwork"
+                @change="changeKind"
+              >
+                <el-radio :label="true">{{ $t("common.true") }}</el-radio>
+                <el-radio :label="false">{{ $t("common.false") }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item
+              :label="$t('deployService.table.th.hostPort')"
+              label-width="200px"
+            >
+              <el-radio-group
+                v-model="k8sData.showHostPort"
+                @change="changeKind"
+              >
+                <el-radio :label="true">{{ $t("common.true") }}</el-radio>
+                <el-radio :label="false">{{ $t("common.false") }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-table
+          v-if="k8sData.showHostPort"
           :data="HostPortArr"
-          style="padding-right:30px;"
+          style="padding-right: 30px"
         >
-          <let-table-column title="OBJ">
+          <el-table-column title="OBJ">
             <template slot="head" slot-scope="props">
               <span class="required">{{ props.column.title }}</span>
             </template>
             <template slot-scope="props">
-              <let-input
+              <el-input
                 size="small"
                 v-model="props.row.obj"
                 disabled
@@ -53,15 +62,15 @@
                 :required-tip="$t('deployService.form.objTips')"
                 pattern="^[a-zA-Z0-9]+$"
                 :pattern-tip="$t('deployService.form.placeholder')"
-              ></let-input>
+              ></el-input>
             </template>
-          </let-table-column>
-          <let-table-column :title="$t('deployService.table.th.hostPort')">
+          </el-table-column>
+          <el-table-column :title="$t('deployService.table.th.hostPort')">
             <template slot="head" slot-scope="props">
               <span class="required">{{ props.column.title }}</span>
             </template>
             <template slot-scope="props">
-              <let-input
+              <el-input
                 size="small"
                 type="number"
                 :min="1"
@@ -70,36 +79,32 @@
                 placeholder="1-65535"
                 required
                 :required-tip="$t('deployService.table.tips.empty')"
-              ></let-input>
+              ></el-input>
             </template>
-          </let-table-column>
-          <let-table-column>
+          </el-table-column>
+          <el-table-column>
             <template slot-scope="props">
-              <let-button
+              <el-button
                 size="small"
                 theme="primary"
                 class="port-button"
                 @click="generateHostPort(props.row)"
               >
                 {{ $t("deployService.table.th.checkHostPort") }}
-              </let-button>
+              </el-button>
             </template>
-          </let-table-column>
-          <let-table-column title="Open">
+          </el-table-column>
+          <el-table-column title="Open">
             <template slot-scope="props">
-              <let-switch
-                size="small"
-                v-model="props.row.open"
-                @change="change"
-              >
+              <el-switch size="small" v-model="props.row.open" @change="change">
                 <span slot="open">ON</span>
                 <span slot="close">OFF</span>
-              </let-switch>
+              </el-switch>
             </template>
-          </let-table-column>
-        </let-table>
+          </el-table-column>
+        </el-table>
       </div>
-    </let-form>
+    </el-form>
     <el-row type="flex" justify="end" v-if="!install">
       <el-col :span="2">
         <el-button size="mini" type="primary" @click="save">{{
@@ -113,18 +118,20 @@
 <script>
 export default {
   props: ["k8sModel", "install"],
-  name: "Network",
+  name: "NetworkK8S",
   data() {
     return {
+      k8sData: null,
       HostPortArr: [],
     };
   },
   mounted() {
-    this.HostPortArr = this.k8sModel.HostPortArr;
+    this.k8sData = this.k8sModel;
+    this.HostPortArr = this.k8sData.HostPortArr;
   },
   methods: {
     changeKind() {
-      if (this.k8sModel.showHostPort) {
+      if (this.k8sData.showHostPort) {
         let index = this.HostPortArr.findIndex((value) => {
           return value.open;
         });
@@ -133,7 +140,7 @@ export default {
             h.open = true;
           });
 
-          this.k8sModel.HostPortArr = this.HostPortArr;
+          this.k8sData.HostPortArr = this.HostPortArr;
         }
       }
 
@@ -151,9 +158,9 @@ export default {
     },
     save() {
       if (this.$refs.k8sDetailForm.validate()) {
-        this.k8sModel.HostPortArr = this.HostPortArr;
+        this.k8sData.HostPortArr = this.HostPortArr;
 
-        this.$emit("saveNetwork", this.k8sModel);
+        this.$emit("saveNetwork", this.k8sData);
       }
     },
     // 自动生成端口

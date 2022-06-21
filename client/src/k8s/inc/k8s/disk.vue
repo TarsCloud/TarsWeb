@@ -73,7 +73,7 @@
           </el-row>
         </el-card>
       </div>
-      <el-row type="flex" style="margin-top:15px" v-if="!install">
+      <el-row type="flex" style="margin-top: 15px" v-if="!install">
         <el-col :span="18">
           <el-alert :title="$t('deployService.disk.info')" type="info">
           </el-alert>
@@ -92,7 +92,7 @@
 <script>
 export default {
   props: ["k8sModel", "mounts", "install"],
-  name: "disk",
+  name: "diskK8S",
   methods: {
     save() {
       this.$emit("saveDisk", this.mounts);

@@ -16,7 +16,7 @@
         <replicas
           ref="replicas"
           :install="true"
-          :replicas="deployObj.replicas"
+          :replicas="deployObjData.replicas"
           @saveReplicas="saveReplicas"
         ></replicas>
       </el-collapse-item>
@@ -28,7 +28,7 @@
         <pull
           ref="pull"
           :install="true"
-          :pull="deployObj.imagePullPolicy"
+          :pull="deployObjData.imagePullPolicy"
           @savePull="savePull"
         ></pull>
       </el-collapse-item>
@@ -40,7 +40,7 @@
         <stacked
           ref="stacked"
           :install="true"
-          :notStacked="deployObj.notStacked"
+          :notStacked="deployObjData.notStacked"
           @saveStacked="saveStacked"
         ></stacked>
       </el-collapse-item>
@@ -52,7 +52,7 @@
         <launcher-type
           ref="launcherType"
           :install="true"
-          :launcherType="deployObj.launcherType"
+          :launcherType="deployObjData.launcherType"
           @saveLauncherType="saveLauncherType"
         ></launcher-type>
       </el-collapse-item>
@@ -64,7 +64,7 @@
           ref="jobModel"
           :install="true"
           v-if="k8sModel"
-          :daemonSet="deployObj.daemonSet"
+          :daemonSet="deployObjData.daemonSet"
           @saveJobModel="saveJobModel"
         ></jobModel>
       </el-collapse-item>
@@ -145,9 +145,10 @@
     </el-collapse>
 
     <br />
-    <let-button type="submit" theme="primary" @click="submit">{{
+    <el-button type="submit" theme="primary" @click="submit">{{
       $t("common.submit")
-    }}</let-button>
+    }}</el-button>
+
   </el-dialog>
 </template>
 
@@ -166,7 +167,7 @@ import hpaManger from "./hpa";
 import YamlEditor from "@/components/editor/yaml-editor";
 
 export default {
-  name: "install",
+  name: "installK8S",
   components: {
     pull,
     launcherType,
@@ -187,6 +188,7 @@ export default {
         show: false,
       },
       activeName: "copyNode",
+      deployObjData: null,
       k8sModel: {},
       labelMatchArr: [],
       LabelMatchOperator: [],
@@ -202,14 +204,18 @@ export default {
       mounts: this.deployObj.mounts || [],
     };
   },
+  mounted() {
+    this.deployObjData = this.deployObj;
+    this.show();
+  },
   methods: {
     HandleClick(activeName) {
       if (activeName == "yaml") {
         this.$nextTick(() => {
-          let deployObj = JSON.parse(JSON.stringify(this.deployObj));
+          let deployObjData = JSON.parse(JSON.stringify(this.deployObjData));
 
-          delete deployObj.cloud;
-          this.yamlContent = jsYaml.dump(deployObj);
+          delete deployObjData.cloud;
+          this.yamlContent = jsYaml.dump(deployObjData);
 
           this.$refs.yamlEdit.refresh();
         });
@@ -218,25 +224,26 @@ export default {
     show() {
       this.getDefaultValue();
 
-      this.deployObj.repo = this.deployObj.repo || {};
-      this.deployObj.repo.id = "";
-      this.deployObj.replicas = this.deployObj.replicas || 1;
-      this.deployObj.daemonSet = this.deployObj.daemonSet || false;
-      this.deployObj.launcherType = this.deployObj.launcherType || "background";
-      this.deployObj.notStacked = this.deployObj.notStacked || true;
-      this.deployObj.imagePullPolicy =
-        this.deployObj.imagePullPolicy || "Always";
+      this.deployObjData.repo = this.deployObjData.repo || {};
+      this.deployObjData.repo.id = "";
+      this.deployObjData.replicas = this.deployObjData.replicas || 1;
+      this.deployObjData.daemonSet = this.deployObjData.daemonSet || false;
+      this.deployObjData.launcherType =
+        this.deployObjData.launcherType || "background";
+      this.deployObjData.notStacked = this.deployObjData.notStacked || true;
+      this.deployObjData.imagePullPolicy =
+        this.deployObjData.imagePullPolicy || "Always";
 
       this.k8sModel.abilityAffinity =
-        this.deployObj.abilityAffinity || "AppOrServerPreferred";
-      this.k8sModel.labelMatchArr = this.deployObj.nodeSelector || [];
+        this.deployObjData.abilityAffinity || "AppOrServerPreferred";
+      this.k8sModel.labelMatchArr = this.deployObjData.nodeSelector || [];
 
-      this.k8sModel.HostIpc = this.deployObj.hostIPC || false;
-      this.k8sModel.HostNetwork = this.deployObj.hostNetwork || false;
-      this.k8sModel.showHostPort = this.deployObj.hostPorts.length > 0;
+      this.k8sModel.HostIpc = this.deployObjData.hostIPC || false;
+      this.k8sModel.HostNetwork = this.deployObjData.hostNetwork || false;
+      this.k8sModel.showHostPort = this.deployObjData.hostPorts.length > 0;
       this.k8sModel.HostPortArr = [];
-      (this.deployObj.servants || []).forEach((h) => {
-        let index = this.deployObj.hostPorts.findIndex((value) => {
+      (this.deployObjData.servants || []).forEach((h) => {
+        let index = this.deployObjData.hostPorts.findIndex((value) => {
           return value.name == h.name;
         });
 
@@ -250,30 +257,30 @@ export default {
       this.DetailModel.show = true;
     },
     saveLauncherType(launcherType) {
-      this.deployObj.launcherType = launcherType;
+      this.deployObjData.launcherType = launcherType;
     },
     savePull(pull) {
-      this.deployObj.imagePullPolicy = pull;
+      this.deployObjData.imagePullPolicy = pull;
     },
     saveStacked(notStacked) {
-      this.deployObj.notStacked = notStacked;
+      this.deployObjData.notStacked = notStacked;
     },
     saveReplicas(replicas) {
-      this.deployObj.replicas = parseInt(replicas);
+      this.deployObjData.replicas = parseInt(replicas);
     },
     saveJobModel(daemonSet) {
-      this.deployObj.daemonSet = daemonSet;
+      this.deployObjData.daemonSet = daemonSet;
     },
     saveAffinity(data) {
-      this.deployObj.abilityAffinity = data.abilityAffinity;
-      this.deployObj.nodeSelector = data.NodeSelector;
+      this.deployObjData.abilityAffinity = data.abilityAffinity;
+      this.deployObjData.nodeSelector = data.NodeSelector;
     },
     saveHpa(data) {},
     saveDisk(mounts) {
-      this.deployObj.mounts = mounts;
+      this.deployObjData.mounts = mounts;
     },
     saveResource(sourceModel) {
-      this.deployObj.resources = sourceModel;
+      this.deployObjData.resources = sourceModel;
     },
     saveNetwork(data) {
       if (data.HostNetwork && data.showHostPort) {
@@ -282,11 +289,11 @@ export default {
         );
       }
       if (data.showHostPort) {
-        this.deployObj.hostPorts = [];
+        this.deployObjData.hostPorts = [];
         if (data.HostPortArr) {
           data.HostPortArr.forEach((item) => {
             if (item.open) {
-              this.deployObj.hostPorts.push({
+              this.deployObjData.hostPorts.push({
                 nameRef: item.obj,
                 port: Math.floor(item.HostPort),
               });
@@ -294,8 +301,8 @@ export default {
           });
         }
       }
-      this.deployObj.hostIPC = data.HostIpc;
-      this.deployObj.hostNetwork = data.HostNetwork;
+      this.deployObjData.hostIPC = data.HostIpc;
+      this.deployObjData.hostNetwork = data.HostNetwork;
     },
     submit() {
       for (let ref in this.$refs) {
@@ -307,9 +314,9 @@ export default {
 
       let obj = jsYaml.load(this.yamlContent);
 
-      this.deployObj = Object.assign(this.deployObj, obj);
+      this.deployObjData = Object.assign(this.deployObjData, obj);
 
-      this.$emit("doInstall", this.deployObj);
+      this.$emit("doInstall", this.deployObjData);
     },
     closeDetailModel() {
       this.DetailModel.show = false;
@@ -330,6 +337,19 @@ export default {
         this.LabelMatchOperator = data.LabelMatchOperator || [];
         this.indicators = data.indicators || [];
       });
+    },
+    getDeployData() {
+      for (let ref in this.$refs) {
+        // console.log(ref);
+        if (ref != "yamlEdit") {
+          this.$refs[ref].save();
+        }
+      }
+
+      let obj = jsYaml.load(this.yamlContent);
+
+      this.deployObjData = Object.assign(this.deployObjData, obj);
+      return this.deployObjData;
     },
   },
 };

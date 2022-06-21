@@ -80,7 +80,7 @@
 <script>
 export default {
   props: ["sourceModel", "install"],
-  name: "resource",
+  name: "resourceK8S",
   data() {
     return {
       resources: {},
