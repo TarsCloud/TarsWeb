@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-select v-model="locale" @change="changeLocale" style="width:100px">
+    <el-select v-model="locale" @change="changeLocale" style="width: 100px">
       <el-option
         v-for="locale in localeMessages"
         :key="locale.localeCode"
@@ -23,7 +23,6 @@ export default {
   },
   methods: {
     changeLocale() {
-      // console.log("locale", this.locale);
       this.$cookie.set("locale", this.locale, { expires: "1Y" });
       location.reload();
     },
