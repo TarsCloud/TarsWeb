@@ -1,64 +1,67 @@
 <template>
   <div class="page_operation">
-    <let-tabs @click="onTabClick" :activekey="$route.path">
-      <let-tab-pane
-        :tab="$t('deployService.title.deploy')"
-        tabkey="/operation/deploy"
-      ></let-tab-pane>
-      <!-- <let-tab-pane
-        :tab="$t('deployService.title.approval')"
-        tabkey="/operation/approval"
-      ></let-tab-pane> -->
-      <!-- <let-tab-pane
-        :tab="$t('deployService.title.history')"
-        tabkey="/operation/history"
-      ></let-tab-pane> -->
-      <let-tab-pane
-        :tab="$t('deployService.title.undeploy')"
-        tabkey="/operation/undeploy"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.template')"
-        tabkey="/operation/templates"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.business')"
-        tabkey="/operation/business"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.application')"
-        tabkey="/operation/application"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.node')"
-        tabkey="/operation/node"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.event')"
-        tabkey="/operation/event"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.image')"
-        tabkey="/operation/image"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.framework')"
-        tabkey="/operation/tfc"
+    <el-tabs @click="onTabClick" :activekey="$route.path">
+      <el-tab-pane
+        :label="$t('deployService.title.deploy')"
+        name="/operation/deploy"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.undeploy')"
+        name="/operation/undeploy"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.template')"
+        name="/operation/templates"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.business')"
+        name="/operation/business"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.application')"
+        name="/operation/application"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.node')"
+        name="/operation/node"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.event')"
+        name="/operation/event"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.image')"
+        name="/operation/image"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.framework')"
+        name="/operation/tfc"
         v-if="isAdmin"
-      ></let-tab-pane>
-    </let-tabs>
-    <router-view class="page_operation_children"></router-view>
+      ></el-tab-pane>
+      <el-tab-pane
+        v-for="plugin in plugins"
+        v-bind:key="plugin.f_id"
+        :name="'/operation/plugins' + plugin.f_path"
+        :label="plugin.f_name"
+      ></el-tab-pane>
+    </el-tabs>
+    <router-view class="page_operation_children" :path="name"></router-view>
   </div>
 </template>
 
 <script>
 let oldPath = "/operation/deploy";
-
+import plugins from "@/common/operationPlugins";
 export default {
   name: "Operation",
+  components: {
+    plugins: plugins,
+  },
   data() {
     return {
       isAdmin: false,
+      name: "",
+      plugins: [],
     };
   },
 
@@ -76,6 +79,9 @@ export default {
   },
   created() {
     this.checkAdmin();
+  },
+  mounted() {
+    this.getPlugins();
   },
   methods: {
     async checkAdmin() {
@@ -100,8 +106,27 @@ export default {
         });
       }
     },
+    getPlugins() {
+      this.$ajax
+        .getJSON("/plugin/api/list", { k8s: false, type: 3 })
+        .then((data) => {
+          this.plugins = data;
+
+          this.plugins.forEach((plugin) => {
+            if (this.$cookie.get("locale") == "en") {
+              plugin.f_name = plugin.f_name_en;
+            }
+          });
+        })
+        .catch((err) => {
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.err_msg || err.message}`
+          );
+        });
+    },
     onTabClick(tabkey) {
-      this.$router.replace(tabkey);
+      this.name = tabkey.name;
+      this.$router.replace(tabkey.name);
     },
     // clickEvent(tabkey) {
     //   this.$router.replace(tabkey);
