@@ -20,7 +20,7 @@
     "js-yaml": "^4.0.0",
     "let-ui": "^0.1.23",
     "lodash": "^4.17.14",
-    "marked": "^4.0.8",
+    "marked": "^4.0.10",
     "mavon-editor": "^2.10.4",
     "n-zepto": "^1.2.0",
     "request": "^2.88.0",
