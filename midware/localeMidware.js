@@ -50,7 +50,7 @@ module.exports = async (ctx, next) => {
 
 	let locale = ctx.cookies.get('locale');
 
-	console.log(locale, ctx.headers["accept-language"]);
+	// console.log(locale, ctx.headers["accept-language"]);
 
 	if (!locale) {
 		let cn = (ctx.headers["accept-language"] || "").indexOf("zh");

@@ -1,14 +1,14 @@
 <template>
-  <div style="width:100%;height:800px">
+  <div style="width: 100%; height: 1000px">
     <div
-      style="text-align: center;margin-top:300px"
+      style="text-align: center; margin-top: 300px"
       v-if="!show"
       v-loading="!show"
     ></div>
     <iframe
       id="market_frame"
       frameborder="0"
-      style="width:100%;height:800px"
+      style="width: 100%; height: 1000px"
       v-show="show"
     ></iframe>
   </div>
@@ -24,7 +24,6 @@ export default {
 
     document.loadFrameSucc = () => {
       this.show = true;
-      // console.log("loadFrameSucc");
     };
     document.loadFrameError = () => {
       this.show = true;
@@ -44,10 +43,6 @@ export default {
         document.getElementById("market_frame").src =
           "/static/market/index.html";
       }
-
-      // setInterval(() => {
-      //   console.log(document.getElementById("market_frame").title);
-      // }, 1000);
     },
   },
 };

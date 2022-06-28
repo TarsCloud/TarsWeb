@@ -57,18 +57,25 @@ import OperationImage from '@/pages/operation/image';
 import PluginsManage from '@/common/plugins-manage.vue';
 //服务级别插件
 import ServerPlugins from '@/common/serverPlugins';
-
+//运维级别插件
+import OperationPlugins from '@/common/operationPlugins';
 //全局插件
 import Plugin from '@/common/plugins.vue';
 
 //市场
 import Market from '@/market/market';
 
+const getComponent = (component) => {
+    return {
+        default: component,
+        market: Market,
+    }
+}
 export default new Router({
   routes: [{
       path: '/server',
       name: 'Server',
-      component: Server,
+      components: getComponent(Server),
       children: [{
           path: ':treeid/manage',
           component: ServerManage,
@@ -102,7 +109,7 @@ export default new Router({
     {
       path: '/operation',
       name: 'Operation',
-      component: Operation,
+      components: getComponent(Operation),
       redirect: '/operation/deploy',
       children: [{
           path: 'deploy',
@@ -143,23 +150,29 @@ export default new Router({
         {
           path: 'image',
           component: OperationImage
-        }
+        },
+        {
+          path: 'plugins/*',
+          component: OperationPlugins,
+        },
       ],
     },
     {
       path: '/market',
       name: 'Market',
-      component: Market
+      components: {
+            market: Market
+      }
     },
     {
       path: '/plugins/*',
       name: 'Plugin',
-      component: Plugin
+      components: getComponent(Plugin)
     },
     {
       path: '/plugins-manage',
       name: 'PluginManage',
-      component: PluginsManage
+      components: getComponent(PluginsManage)
     },
 
     {

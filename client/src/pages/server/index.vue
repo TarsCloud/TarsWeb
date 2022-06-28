@@ -123,8 +123,8 @@
               "
               v-if="
                 serverData.level === 5 ||
-                  serverData.level === 4 ||
-                  serverData.level === 1
+                serverData.level === 4 ||
+                serverData.level === 1
               "
             ></el-tab-pane>
             <el-tab-pane
@@ -296,6 +296,12 @@ export default {
         .getJSON("/plugin/api/list", { k8s: false, type: 2 })
         .then((data) => {
           this.plugins = data;
+
+          this.plugins.forEach((plugin) => {
+            if (this.$cookie.get("locale") == "en") {
+              plugin.f_name = plugin.f_name_en;
+            }
+          });
         })
         .catch((err) => {
           this.$tip.error(
@@ -307,7 +313,7 @@ export default {
       const that = this;
       if (!that.isIconPlay) {
         that.isIconPlay = true;
-        setTimeout(function() {
+        setTimeout(function () {
           that.isIconPlay = false;
         }, 1000);
       }

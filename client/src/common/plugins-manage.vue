@@ -1,13 +1,21 @@
 <template>
-  <div style="width:80%;margin-top:50px">
+  <div style="width: 80%; margin-top: 50px">
     <div class="page_operation_approval">
-      <el-card style="margin-top: 10px;padding:15px">
+      <el-card style="margin-top: 10px; padding: 15px">
         <div>
           <span
             >{{ $t("plugin.title") }}
             <i class="el-icon-refresh-right" @click="fetchPlugins()"></i>
           </span>
+
+          <el-link
+            style="float: right"
+            href="https://doc.tarsyun.com/#/base/plugins.md"
+            target="_black"
+            >{{ $t("plugin.doc") }}</el-link
+          >
         </div>
+        <br />
         <let-table :data="plugins" :empty-msg="$t('common.nodata')">
           <let-table-column
             :title="$t('plugin.name')"
@@ -71,13 +79,13 @@ export default {
           this.plugins.forEach((plugin) => {
             switch (plugin.f_type) {
               case 1:
-                plugin.type = locale == "cn" ? "全局插件" : "Global Plugin";
+                plugin.type = locale == "cn" ? "全局扩展" : "Global Plugin";
                 break;
               case 2:
-                plugin.type = locale == "cn" ? "服务插件" : "Server Plugin";
+                plugin.type = locale == "cn" ? "服务扩展" : "Server Plugin";
                 break;
               case 3:
-                plugin.type = locale == "cn" ? "运维插件" : "Operate Plugin";
+                plugin.type = locale == "cn" ? "运维扩展" : "Operate Plugin";
                 break;
               default:
                 plugin.type = "Unknown Type";

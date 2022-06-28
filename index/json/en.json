@@ -64,7 +64,6 @@
         "description": "There are no other nodes except framework nodes. Please refer to tars cloud to complete the addition of nodes",
         "install": "Deploy"
     },
-
     "task": {
         "params": "parameters error",
         "serverLimit": "tars server must keep one at least",
@@ -150,7 +149,6 @@
             "uninstallSuccess": "Uninstall Node successfully"
         }
     },
-
     "common": {
         "reTry": "Please check database connection",
         "deploy": "You can not deploy server in tars framework node",
@@ -962,7 +960,6 @@
             "diskName": "name of disk",
             "path": "Mount path",
             "info": "host path: /usr/local/app/tars/host-mount/${namespace}/${service}"
-
         }
     },
     "nodes": {
@@ -1608,7 +1605,6 @@
             "AbnormalServices": "Abnormal Services",
             "AlarmInfo": "Alarm Message",
             "home": "Home"
-
         },
         "home": {
             "FrameServices": "Exception framework basic service",
@@ -1620,7 +1616,6 @@
         },
         "tip": {
             "none": "No abnormal data"
-
         },
         "alarm": {
             "alarmType": {
@@ -1653,6 +1648,12 @@
         "name": "Name",
         "obj": "Service Obj",
         "type": "Type",
-        "delete": "Are you sure to delete the plug-in? It is recommended to stop and offline the plug-in service before deleting it"
+        "delete": "Are you sure to delete the plug-in? It is recommended to stop and offline the plug-in service before deleting it",
+        "doc": "Manual"
+    },
+    "error": {
+        "loadError": "Load Market Error!",
+        "errorInfo": "Error loading service market, please check whether the network connection is normal",
+        "reload": "Reload"
     }
 }

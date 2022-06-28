@@ -1,58 +1,74 @@
 <template>
   <div class="page_operation">
-    <let-tabs @click="onTabClick" :activekey="$route.path">
-      <let-tab-pane
-        :tab="$t('deployService.title.deploy')"
-        tabkey="/operation/deploy"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.expand')"
-        tabkey="/operation/expand"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.template')"
-        tabkey="/operation/templates"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.nodes')"
-        tabkey="/operation/nodes"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.check')"
-        tabkey="/operation/check"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.application')"
-        tabkey="/operation/application"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.business')"
-        tabkey="/operation/business"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.businessRelation')"
-        tabkey="/operation/businessRelation"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.idcManage')"
-        tabkey="/operation/idc"
-      ></let-tab-pane>
-      <let-tab-pane
-        :tab="$t('deployService.title.image')"
-        tabkey="/operation/image"
-      ></let-tab-pane>
-    </let-tabs>
+    <el-tabs @tab-click="onTabClick" :activekey="$route.path">
+      <el-tab-pane
+        :label="$t('deployService.title.deploy')"
+        name="/operation/deploy"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.expand')"
+        name="/operation/expand"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.template')"
+        name="/operation/templates"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.nodes')"
+        name="/operation/nodes"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.check')"
+        name="/operation/check"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.application')"
+        name="/operation/application"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.business')"
+        name="/operation/business"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.businessRelation')"
+        name="/operation/businessRelation"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.idcManage')"
+        name="/operation/idc"
+      ></el-tab-pane>
+      <el-tab-pane
+        :label="$t('deployService.title.image')"
+        name="/operation/image"
+      ></el-tab-pane>
+      <el-tab-pane
+        v-for="plugin in plugins"
+        v-bind:key="plugin.f_id"
+        :name="'/operation/plugins' + plugin.f_path"
+        :label="plugin.f_name"
+      ></el-tab-pane>
+    </el-tabs>
 
-    <router-view class="page_operation_children"></router-view>
+    <router-view class="page_operation_children" :path="name"></router-view>
   </div>
 </template>
 
 <script>
+import plugins from "@/common/operationPlugins";
+
 let oldPath = "/operation/deploy";
 
 export default {
-  name: "Oparetion",
-
+  name: "Operation",
+  components: {
+    plugins: plugins,
+  },
+  data() {
+    return {
+      name: "",
+      plugins: [],
+    };
+  },
   beforeRouteEnter(to, from, next) {
     if (to.path === "/operation") {
       next(oldPath);
@@ -65,10 +81,30 @@ export default {
     oldPath = from.path;
     next();
   },
-
+  mounted() {
+    this.getPlugins();
+  },
   methods: {
     onTabClick(tabkey) {
-      this.$router.replace(tabkey);
+      this.$router.replace(tabkey.name);
+    },
+    getPlugins() {
+      this.$ajax
+        .getJSON("/plugin/api/list", { k8s: false, type: 3 })
+        .then((data) => {
+          this.plugins = data;
+
+          this.plugins.forEach((plugin) => {
+            if (this.$cookie.get("locale") == "en") {
+              plugin.f_name = plugin.f_name_en;
+            }
+          });
+        })
+        .catch((err) => {
+          this.$tip.error(
+            `${this.$t("common.error")}: ${err.err_msg || err.message}`
+          );
+        });
     },
   },
 };

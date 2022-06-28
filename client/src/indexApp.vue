@@ -3,9 +3,14 @@
     <app-header> </app-header>
 
     <!-- 切换 tab 缓存接口（主要为左侧目录树） -->
-    <keep-alive>
-      <router-view class="main-width"></router-view>
-    </keep-alive>
+    <div v-if="!market">
+      <keep-alive>
+        <router-view id="m1" class="main-width"></router-view>
+      </keep-alive>
+    </div>
+    <div v-show="market">
+      <router-view id="m2" class="main-width" name="market"></router-view>
+    </div>
 
     <!-- <app-footer class="app_index__footer"></app-footer> -->
   </div>
@@ -14,15 +19,26 @@
 <script>
 import AppHeader from "./components/app/header";
 import AppFooter from "./components/app/footer";
+import Market from "./market/market";
 
 export default {
   name: "App",
   components: {
     AppHeader,
     AppFooter,
+    Market,
+  },
+  watch: {
+    $route(to, from) {
+      if (to.path == "/market") {
+        this.market = true;
+      } else {
+        this.market = false;
+      }
+    },
   },
   data() {
-    return {};
+    return { market: false };
   },
   mounted() {},
 };
