@@ -1,9 +1,14 @@
 <template>
   <div id="app">
     <k8s-header></k8s-header>
-    <keep-alive>
-      <router-view class="main-width"></router-view>
-    </keep-alive>
+    <div v-if="!market">
+      <keep-alive>
+        <router-view id="m1" class="main-width"></router-view>
+      </keep-alive>
+    </div>
+    <div v-show="market">
+      <router-view id="m2" class="main-width" name="market"></router-view>
+    </div>
 
     <!-- <app-footer class="app_index__footer"></app-footer> -->
   </div>
@@ -19,10 +24,25 @@ export default {
     K8sHeader,
     AppFooter,
   },
-  data() {
-    return {};
+  watch: {
+    $route(to, from) {
+      if (to.path == "/market") {
+        this.market = true;
+      } else {
+        this.market = false;
+      }
+    },
   },
-  mounted() {},
+  data() {
+    return { market: false };
+  },
+  mounted() {
+    if (this.$route.path == "/market") {
+      this.market = true;
+    } else {
+      this.market = false;
+    }
+  },
 };
 </script>
 

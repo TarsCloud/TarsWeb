@@ -19,14 +19,12 @@
 <script>
 import AppHeader from "./components/app/header";
 import AppFooter from "./components/app/footer";
-import Market from "./market/market";
 
 export default {
   name: "App",
   components: {
     AppHeader,
     AppFooter,
-    Market,
   },
   watch: {
     $route(to, from) {
@@ -40,7 +38,13 @@ export default {
   data() {
     return { market: false };
   },
-  mounted() {},
+  mounted() {
+    if (this.$route.path == "/market") {
+      this.market = true;
+    } else {
+      this.market = false;
+    }
+  },
 };
 </script>
 

@@ -340,7 +340,7 @@ export default {
       const that = this;
       if (!that.isIconPlay) {
         that.isIconPlay = true;
-        setTimeout(function() {
+        setTimeout(function () {
           that.isIconPlay = false;
         }, 1000);
       }
@@ -405,11 +405,7 @@ export default {
       if (!this.treeid) {
         this.treeid = this.getLocalStorage("k8s_treeid");
       }
-      let server_type = "";
-      if (this.$refs.trees) {
-        let selectNode = this.$refs.trees.getNode(this.treeid);
-        selectNode && (server_type = selectNode.data.serverType || "");
-      }
+
       const serverData = {
         level: 5,
         application: "",
@@ -418,6 +414,20 @@ export default {
         set_area: "",
         set_group: "",
       };
+      if (!this.treeid) {
+        return {};
+      }
+      if (this.treeid == "home") {
+        return serverData;
+      }
+      let server_type = "";
+
+      if (this.$refs.trees) {
+        let selectNode = this.$refs.trees.getNode(this.treeid);
+        selectNode && (server_type = selectNode.data.serverType || "");
+      }
+      //   console.log(this.treeid);
+
       const treeArr = this.treeid.split(".");
 
       treeArr.forEach((item) => {
@@ -477,15 +487,6 @@ export default {
 
       // 默认不处理
       let shouldRedirect = false;
-      // publish、server-monitor、property-monitor 只有 level 5 可访问
-      // if (this.serverData.level !== 5 &&
-      //   (route === 'publish' || route === 'server-monitor' || route === 'property-monitor' || route === 'user-manage')) {
-      //   shouldRedirect = true;
-      // }
-      // // config 有 level 5、4、1 可访问
-      // if (this.serverData.level !== 5 && this.serverData.level !== 4 && this.serverData.level !== 1 && route === 'config') {
-      //   shouldRedirect = true;
-      // }
 
       if (route === "server" && this.serverData.level !== 1) {
         shouldRedirect = true;
@@ -501,7 +502,6 @@ export default {
 
       // 命中不可访问进行跳转
       if (shouldRedirect) {
-        // this.$router.replace('manage');
         if (this.serverData.level === 1) {
           this.$router.replace("server");
         } else if (this.serverData.level === 2) {
@@ -625,12 +625,11 @@ export default {
       return result;
     },
   },
-  created() {
-    this.serverData = this.getServerData();
-    this.isTrueTreeLevel();
-  },
+  created() {},
   mounted() {
     this.checkTreeid();
+    this.serverData = this.getServerData();
+    this.isTrueTreeLevel();
     this.checkBTabs();
     this.getTreeData();
     this.getPlugins();

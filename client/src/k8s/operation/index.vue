@@ -1,6 +1,6 @@
 <template>
   <div class="page_operation">
-    <el-tabs @click="onTabClick" :activekey="$route.path">
+    <el-tabs @tab-click="onTabClick" :activekey="$route.path">
       <el-tab-pane
         :label="$t('deployService.title.deploy')"
         name="/operation/deploy"
@@ -126,11 +126,9 @@ export default {
     },
     onTabClick(tabkey) {
       this.name = tabkey.name;
+      //   console.log(tabkey);
       this.$router.replace(tabkey.name);
     },
-    // clickEvent(tabkey) {
-    //   this.$router.replace(tabkey);
-    // },
   },
 };
 </script>
