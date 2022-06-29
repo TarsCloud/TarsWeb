@@ -99,6 +99,7 @@ if (process.env.NODE_ENV == "local") {
     conf.webConf.host = '0.0.0.0';
     conf.webConf.port = 4001;
     conf.webConf.alter = false;
+    conf.webConf.alter = true;
 
     conf.market = {
         url: 'http://localhost:6001'
@@ -186,7 +187,6 @@ if (process.env.NODE_ENV == "local") {
     // };
 
     conf.k8s.namespace = 'tars-dev';
-    conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 } else if (process.env.NODE_ENV == "all") {
 
     conf.ENABLE_LOCAL_CONFIG = true;
@@ -217,7 +217,6 @@ if (process.env.NODE_ENV == "local") {
     // conf.webConf.alter = true;
     conf.k8s.namespace = 'tars-dev';
     // conf.k8s.namespace = 'od-prod';
-    conf.k8s.uploadDomain = 'http://127.0.0.1:18080/api/v1beta1/timage';
 }
 
 module.exports = conf;

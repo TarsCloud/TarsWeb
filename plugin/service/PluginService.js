@@ -87,22 +87,30 @@ async function findActiveIndex(obj) {
 
 PluginService.loadPlugins = async (app) => {
 
-    let plugins = await PluginDao.listPlugins();
+    
+    let plugins = [];
+   
+    try {
+        plugins = await PluginDao.listPlugins();
+    } catch (e) {
+        logger.error(e.message);
+    }
 
     plugins.forEach(async (plugin) => {
 
-        let target = await findActiveIndex(plugin.f_obj);
+        if (plugin.f_extern == 0) {
+            let target = await findActiveIndex(plugin.f_obj);
 
-        console.log(target);
+            logger.debug(target);
 
-        if (target) {
+            if (target) {
 
-            app.use(proxy(plugin.f_path, {
-                target: target,
-                ws: true,
-                changeOrigin: true
-            }));
-            // }
+                app.use(proxy(plugin.f_path, {
+                    target: target,
+                    ws: true,
+                    changeOrigin: true
+                }));
+            }
         }
     });
 

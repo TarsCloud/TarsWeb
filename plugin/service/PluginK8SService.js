@@ -40,7 +40,8 @@ PluginService.install = async (paramsObj) => {
             name_en: paramsObj.name_en,
             obj: paramsObj.obj,
             type: paramsObj.type,
-            path: paramsObj.path
+            path: paramsObj.path,
+            extern: paramsObj.extern || 0
         };
 
         result = await CommonService.replaceObject("tplugins", name, tPlugin);
@@ -62,7 +63,8 @@ PluginService.install = async (paramsObj) => {
             name_en: paramsObj.name_en,
             obj: paramsObj.obj,
             type: paramsObj.type,
-            path: paramsObj.path
+            path: paramsObj.path,
+            extern: paramsObj.extern || 0
         }
 
         result = await CommonService.createObject("tplugins", tPlugin);
@@ -91,6 +93,7 @@ PluginService.list = async (type) => {
                 f_obj: i.spec.obj,
                 f_type: i.spec.type,
                 f_path: i.spec.path,
+                f_extern: i.spec.extern || 0,
             });
         })
     }
@@ -117,6 +120,7 @@ PluginService.listAll = async () => {
                 f_obj: i.spec.obj,
                 f_type: i.spec.type,
                 f_path: i.spec.path,
+                f_extern: i.spec.extern || 0,
             });
         })
     }
