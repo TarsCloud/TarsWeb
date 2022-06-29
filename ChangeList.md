@@ -1,14 +1,15 @@
-## 20220628(3.0.3)
+## 20220629(3.0.3)
 
 ### en
 
 - Add: Support service extension (three types of extensions: global extension, service level extension and operation extension)
 - Add: Remove the built-in interface stress test, gateway management and DCache management , and extend tarsweb through market services
+- Add: Add external extension support (jump URL)
 ### cn
 
 - Add: 支持服务服务扩展形式(三种扩展: 全局扩展, 服务级别扩展, 运维扩展)
 - Add: 去掉内置的接口压力测试, 网关管理, DCache管理功能, 通过市场服务来下载扩展TarsWeb
-
+- Add: 增加外部扩展支持(跳转url)
 ## 20220606(3.0.2)
 
 ### en

@@ -45,9 +45,14 @@ module.exports = function (sequelize, DataTypes) {
 			defaultValue: '',
 		},
 		f_type: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.INTEGER(11),
 			allowNull: false,
-			defaultValue: 0x01
+			defaultValue: 1,
+		},
+		f_extern: {
+			type: DataTypes.INTEGER(11),
+			allowNull: false,
+			defaultValue: 0,
 		},
 		f_create_time: {
 			type: DataTypes.DATE,

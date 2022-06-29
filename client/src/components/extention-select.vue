@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="display: inline-block;width:70%">
+    <div style="display: inline-block; width: 70%">
       <el-select v-model="pluginPath" @change="changePlugin">
         <el-option
           :key="0"
@@ -17,7 +17,7 @@
         </el-option>
       </el-select>
     </div>
-    <div style="margin-left:10px;width:20%;display: inline-block;">
+    <div style="margin-left: 10px; width: 20%; display: inline-block">
       <i class="el-icon-refresh-right" @click="refreshPlugin()"></i>
     </div>
   </div>
@@ -35,7 +35,6 @@ export default {
   },
   watch: {
     $route(to, from) {
-      // console.log("header", to);
       if (to.path.startsWith("/plugins") && !to.path.startsWith("/plugins/*")) {
         this.pluginPath = to.path;
       } else {
@@ -48,26 +47,35 @@ export default {
       this.getPlugins();
     },
     changePlugin() {
+      //   console.log("changePlugin:", this.pluginPath);
 
-      console.log("changePlugin:", this.pluginPath);
+      let data = this.plugins.filter((plugin) => {
+        return plugin.f_path == this.pluginPath;
+      });
 
-      this.$router.replace(this.pluginPath);
+      //   console.log(data);
+
+      if (data.length > 0) {
+        if (data[0].f_extern == 0) {
+          this.$router.replace(this.pluginPath);
+        } else {
+          window.open(data[0].f_path);
+        }
+      } else {
+        this.$router.replace(this.pluginPath);
+      }
     },
     getPlugins() {
       this.$ajax
         .getJSON("/plugin/api/list", { k8s: this.k8s, type: 1 })
         .then((data) => {
           this.plugins = data;
-          if (
-            this.$route.path.startsWith("/plugins")
-          ) {
-              // console.log("getPlugins:", this.$route.path);
-
-              // this.$router.replace("/plugins/*");
-              // this.$nextTick(() => {
-              //   this.changePlugin();
-              // });
-
+          if (this.$route.path.startsWith("/plugins")) {
+            // console.log("getPlugins:", this.$route.path);
+            // this.$router.replace("/plugins/*");
+            // this.$nextTick(() => {
+            //   this.changePlugin();
+            // });
           } else {
             this.pluginPath = "";
           }

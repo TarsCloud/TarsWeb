@@ -1647,7 +1647,9 @@
         "title": "Plugins List",
         "name": "Name",
         "obj": "Service Obj",
-        "type": "Type",
+        "type": "Extention Mode",
+        "path": "Router Path",
+        "extern": "Extention Type",
         "delete": "Are you sure to delete the plug-in? It is recommended to stop and offline the plug-in service before deleting it",
         "doc": "Manual"
     },
