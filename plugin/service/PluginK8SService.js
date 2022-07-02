@@ -143,6 +143,8 @@ PluginService.delete = async (id) => {
 
 async function findActiveIndex(obj) {
     try {
+        console.log(obj);
+
         let rst = await registry.findObjectById4Any(obj);
 
         logger.info(obj, rst.response.arguments.activeEp.toObject());
@@ -179,18 +181,21 @@ PluginService.loadPlugins = async (app) => {
             plugins.body.items.forEach(async (plugin) => {
 
                 // logger.info(plugin);
+                if (plugin.spec.extern != 1) {
 
-                let target = await findActiveIndex(plugin.spec.obj);
+                    let target = await findActiveIndex(plugin.spec.obj);
 
-                if (target) {
+                    if (target) {
 
-                    app.use(proxy(plugin.spec.path, {
-                        target: target,
-                        ws: true,
-                        changeOrigin: true
-                    }));
+                        app.use(proxy(plugin.spec.path, {
+                            target: target,
+                            ws: true,
+                            changeOrigin: true
+                        }));
+                    }
                 }
             });
+
         }
     } catch (e) {
         logger.error(e.message);
