@@ -238,6 +238,7 @@ const tConfigListFn = () => CommonService.listObject("tframeworkconfigs");
 
 // const getCacheList = async (cacheList, fn) => {
 
+
 // 	if (WebConf.k8s.cache) {
 // 		//load from cache
 // 		return cacheList.list();
