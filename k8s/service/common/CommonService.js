@@ -214,39 +214,51 @@ const cacheListener = (cache) => {
     });
 }
 
-const watch = new k8s.Watch(kc);
+// const watch = new k8s.Watch(kc);
 const serverListFn = () => CommonService.listObject("tservers");
-const tServerList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/tservers`), watch, serverListFn, true);
+// const tServerList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/tservers`), watch, serverListFn, true);
 
-const accountListFn = () => CommonService.listObject("taccounts");
-const tAccountList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/taccounts`), watch, accountListFn, true);
+// const accountListFn = () => CommonService.listObject("taccounts");
+// const tAccountList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/taccounts`), watch, accountListFn, true);
 
 const templateListFn = () => CommonService.listObject("ttemplates");
-const tTemplateList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/ttemplates`), watch, templateListFn, true);
+// const tTemplateList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/ttemplates`), watch, templateListFn, true);
 
 const tConfigListFn = () => CommonService.listObject("tframeworkconfigs");
-const tConfigList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/tframeworkconfigs`), watch, tConfigListFn, true);
+// const tConfigList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/tframeworkconfigs`), watch, tConfigListFn, true);
 
 // const nodeListFn = () => CommonService.listNode();
 // const tNodeList = new k8s.ListWatch("/api/v1/nodes", watch, nodeListFn, true);
 
-cacheListener(tServerList);
+// cacheListener(tServerList);
 // cacheListener(tNodeList);
-cacheListener(tTemplateList);
-cacheListener(tAccountList);
-cacheListener(tConfigList);
+// cacheListener(tTemplateList);
+// cacheListener(tAccountList);
+// cacheListener(tConfigList);
 
-const getCacheList = async (cacheList, fn) => {
+// const getCacheList = async (cacheList, fn) => {
 
-    if (WebConf.k8s.cache) {
-        //load from cache
-        return cacheList.list();
-    } else {
-        const data = await fn();
+<<<<<<< HEAD
+if (WebConf.k8s.cache) {
+    //load from cache
+    return cacheList.list();
+} else {
+    const data = await fn();
 
-        return data.body.items;
-    }
+    return data.body.items;
 }
+}
+=======
+// 	if (WebConf.k8s.cache) {
+// 		//load from cache
+// 		return cacheList.list();
+// 	} else {
+// 		const data = await fn();
+
+// 		return data.body.items;
+// 	}
+// }
+>>>>>>> Update: remote all k8s api cache
 
 CommonService.replaceObject = async (plural, name, object, group, version) => {
     return await k8sApi.replaceNamespacedCustomObject(group || CommonService.GROUP, version || CommonService.VERSION,
@@ -302,14 +314,14 @@ CommonService.deletePod = async (name) => {
 
 CommonService.getServerList = async (force) => {
 
-    if (force === true) {
+    // if (force === true) {
 
-        const data = await serverListFn();
+    const data = await serverListFn();
 
-        return data.body.items;
-    } else {
-        return getCacheList(tServerList, serverListFn);
-    }
+    return data.body.items;
+    // } else {
+    // 	return getCacheList(tServerList, serverListFn);
+    // }
 }
 
 CommonService.getTreeData = async () => {
@@ -345,7 +357,10 @@ CommonService.getNodeListAll = async (localPV, hold) => {
 }
 
 CommonService.getTemplateList = async () => {
-    return getCacheList(tTemplateList, templateListFn);
+    let data = await templateListFn();
+
+    return data.body.items;
+    // return getCacheList(tTemplateList, templateListFn);
 }
 
 CommonService.getFrameworkConfig = async () => {
@@ -356,18 +371,20 @@ CommonService.getFrameworkConfig = async () => {
 }
 
 CommonService.getAccountList = async () => {
-    return getCacheList(tAccountList, accountListFn);
+    let data = await accountListFn();
+    // return getCacheList(tAccountList, accountListFn);
+    return data.body.items;
 }
 
 CommonService.getAccount = async (uid) => {
 
-    if (WebConf.k8s.cache) {
-        let o = (await tAccountList.get(md5(uid, 'asString'), CommonService.NAMESPACE));
+    // if (WebConf.k8s.cache) {
+    //     let o = (await tAccountList.get(md5(uid, 'asString'), CommonService.NAMESPACE));
 
-        if (o) {
-            return o;
-        }
-    }
+    //     if (o) {
+    //         return o;
+    //     }
+    // }
 
     const account = (await CommonService.getObject('taccounts', md5(uid, 'asString')));
 
@@ -389,26 +406,6 @@ CommonService.hasAppName = async (appName) => {
     return result != undefined;
 
 }
-
-// CommonService.addEqFilter = (filter, ServerId) => {
-
-// 	if (!filter) {
-// 		filter = {}
-// 	}
-
-// 	if (!filter.eq) {
-// 		filter.eq = {};
-// 	}
-
-// 	if (ServerId) {
-// 		if (ServerId.indexOf('.') === -1) {
-// 			filter.eq[CommonService.TServerAppLabel] = ServerId;
-// 		} else {
-// 			filter.eq[CommonService.TServerAppLabel] = ServerId.substring(0, ServerId.indexOf('.'))
-// 			filter.eq[CommonService.TServerNameLabel] = ServerId.substring(ServerId.indexOf('.') + 1, ServerId.length)
-// 		}
-// 	}
-// }
 
 CommonService.createLabelSelector = (filter) => {
     let labelSelector = '';

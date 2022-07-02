@@ -21,17 +21,17 @@ const TemplateService = {};
 
 TemplateService.buildTTemplate = (templateName, templateParent, templateContent) => {
 
-	let tTemplate = {
+    let tTemplate = {
         apiVersion: CommonService.GROUP + '/' + CommonService.VERSION,
         kind: 'TTemplate',
         metadata: {
             namespace: CommonService.NAMESPACE,
             name: templateName.toLowerCase()
         },
-		spec: {
-			content: templateContent,
-			parent:  templateParent,
-		},
+        spec: {
+            content: templateContent,
+            parent: templateParent,
+        },
     }
 
     return { ret: 200, msg: "succ", data: tTemplate };
@@ -69,7 +69,7 @@ TemplateService.templateCreate = async (metadata) => {
     return { ret: 200, msg: 'succ', data: result.body };
 }
 
-TemplateService.templateSelect = async ( TemplateName, ParentName) => {
+TemplateService.templateSelect = async (TemplateName, ParentName) => {
 
     let allItems = await CommonService.getTemplateList();
 
@@ -90,21 +90,21 @@ TemplateService.templateSelect = async ( TemplateName, ParentName) => {
 
     allItems = filterItems;
 
-	// Count填充
+    // Count填充
     let result = {};
     // result.Count = {};
     // result.Count["AllCount"] = allItems.length;
     // result.Count["FilterCount"] = filterItems.length;
 
-	// Data填充
+    // Data填充
     result.Data = [];
     filterItems.forEach(item => {
 
         let elem = {};
 
-		elem["TemplateId"] = item.metadata.name
-		elem["TemplateName"] = item.metadata.name
-		elem["TemplateParent"] = item.spec.parent
+        elem["TemplateId"] = item.metadata.name
+        elem["TemplateName"] = item.metadata.name
+        elem["TemplateParent"] = item.spec.parent
         elem["TemplateContent"] = item.spec.content
         elem["UpdateTime"] = item.metadata.creationTimestamp
 
@@ -127,8 +127,8 @@ TemplateService.templateUpdate = async (metadata, target) => {
 
     let tTemplateCopy = JSON.parse(JSON.stringify(tTemplate));
 
-	tTemplateCopy.spec.parent = target.TemplateParent
-	tTemplateCopy.spec.content = target.TemplateContent
+    tTemplateCopy.spec.parent = target.TemplateParent
+    tTemplateCopy.spec.content = target.TemplateContent
 
     let data = await CommonService.replaceObject("ttemplates", metadata.TemplateId, tTemplateCopy);
 
@@ -146,6 +146,7 @@ TemplateService.getEsConfig = async () => {
     let ret = {}
     try {
         let esTemplate = await TemplateService.templateSelect("tars.es", "tars.default");
+
         let templateContent = esTemplate.data.Data[0].TemplateContent;
         let configParser = new ConfigParser();
         configParser.parseText(templateContent);
