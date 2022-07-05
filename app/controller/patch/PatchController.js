@@ -77,7 +77,9 @@ PatchController.uploadAndPublish = async (ctx) => {
 			update_text: comment || '',
 			task_id: task_id,
 			package_type: package_type || '0',
-			posttime: new Date()
+			posttime: new Date(),
+			upload_time: new Date(),
+			upload_user: ctx.uid
 		};
 		logger.info('[addServerPatch:]', paramsObj);
 
@@ -129,7 +131,7 @@ PatchController.uploadAndPublish = async (ctx) => {
 				serial,
 				items,
 				task_no,
-				userName: 'auto-developer'
+				user_name: ctx.uid
 			});
 
 			while (true) {
