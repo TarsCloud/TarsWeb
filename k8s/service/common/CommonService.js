@@ -238,17 +238,6 @@ const tConfigListFn = () => CommonService.listObject("tframeworkconfigs");
 
 // const getCacheList = async (cacheList, fn) => {
 
-<<<<<<< HEAD
-if (WebConf.k8s.cache) {
-    //load from cache
-    return cacheList.list();
-} else {
-    const data = await fn();
-
-    return data.body.items;
-}
-}
-=======
 // 	if (WebConf.k8s.cache) {
 // 		//load from cache
 // 		return cacheList.list();
@@ -258,7 +247,6 @@ if (WebConf.k8s.cache) {
 // 		return data.body.items;
 // 	}
 // }
->>>>>>> Update: remote all k8s api cache
 
 CommonService.replaceObject = async (plural, name, object, group, version) => {
     return await k8sApi.replaceNamespacedCustomObject(group || CommonService.GROUP, version || CommonService.VERSION,
