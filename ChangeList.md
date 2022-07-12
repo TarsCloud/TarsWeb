@@ -1,3 +1,13 @@
+## 20220712(3.0.4)
+
+
+### en
+
+- Fix: k8s edit tserver bug
+### cn
+
+- 修复: k8s编辑tserver的bug
+
 ## 20220629(3.0.3)
 
 ### en
