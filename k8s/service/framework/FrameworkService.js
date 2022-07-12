@@ -2,7 +2,6 @@ const logger = require("../../../logger")
 const fs = require("fs")
 const path = require("path");
 const WebConf = require('../../../config/webConf');
-// const CommonService = require("../common/CommonService");
 const FrameworkService = {};
 
 // FrameworkService.MNTFILEPATH = "/mnt/config"
@@ -13,7 +12,7 @@ FrameworkService.getFrameworkConfig = async () => {
 
     let data = await CommonService.getFrameworkConfig();
 
-    console.log(data);
+    // console.log(data);
 
     let res = [];
     res.push({

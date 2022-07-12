@@ -5,6 +5,7 @@
       label-position="top"
       size="small"
       ref="hpaForm"
+      v-if="hpaModelData"
       :model="hpaModelData"
     >
       <el-row :gutter="20">
@@ -46,14 +47,12 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-divider content-position="left">{{
-        $t("inf.benchmark.detail")
-      }}</el-divider>
       <el-card
-        shadow="hover"
+        class="box-card"
         v-for="(item, index) in hpaModelData.indicatorData"
         :key="index"
-        style="margin-bottom: 5px"
+        :body-style="{ padding: '10px' }"
+        style="margin: 5px"
       >
         <el-alert
           type="warning"
@@ -182,6 +181,7 @@ export default {
   data() {
     return {
       customTargets: ["cpu", "memory"],
+      hpaModelData: null,
     };
   },
   mounted() {

@@ -100,7 +100,7 @@ K8sController.ServerK8SUpdateNetwork = async (ctx) => {
 //磁盘管理
 K8sController.ServerK8SUpdateDisk = async (ctx) => {
     let {
-        Token = '', serverData = '', mounts
+        Token = '', tree_node_id = '', mounts
     } = ctx.paramsObj
     try {
         let serverData = ServerController.formatTreeNodeId(tree_node_id);

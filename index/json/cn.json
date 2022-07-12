@@ -877,7 +877,7 @@
             "requestCpu": "Cpu预留",
             "requestMem": "内存预留",
             "tip": {
-                "resources": "请编辑资源管理"
+                "resources": "请先编辑资源管理, 再编辑HPA"
             }
         },
         "table": {
