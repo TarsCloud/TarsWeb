@@ -3,6 +3,7 @@
     <el-form
       ref="k8sDetailForm"
       itemWidth="360px"
+      :model="this"
       :columns="2"
       class="two-columns"
     >

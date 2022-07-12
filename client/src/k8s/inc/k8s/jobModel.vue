@@ -4,6 +4,7 @@
       ref="k8sDetailForm"
       itemWidth="360px"
       :columns="2"
+      :model="this"
       class="two-columns"
     >
       <div>

@@ -1,6 +1,6 @@
 <template>
   <el-card shadow="never" style="padding: 5px" v-if="k8sData">
-    <el-form ref="k8sDetailForm" inline label-position="top">
+    <el-form ref="k8sDetailForm" inline :model="this" label-position="top">
       <div>
         <el-row :gutter="18">
           <el-col :span="6">
