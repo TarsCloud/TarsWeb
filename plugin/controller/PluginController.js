@@ -18,19 +18,19 @@ const logger = require('../../logger');
 const WebConf = require('../../config/webConf');
 
 const getPluginService = (k8s) => {
-	if (WebConf.isEnableK8s() && (k8s == true || k8s == "true")) {
-		return require('../service/PluginK8SService');
-	} else {
-		return require('../service/PluginService');
-	}
+    if (WebConf.isEnableK8s() && (k8s == true || k8s == "true")) {
+        return require('../service/PluginK8SService');
+    } else {
+        return require('../service/PluginService');
+    }
 }
 
 const getAuthService = (k8s) => {
-	if (WebConf.isEnableK8s() && (k8s == true || k8s == "true")) {
-		return require('../../sso/k8s-service/auth/AuthService');
-	} else {
-		return require('../../sso/service/auth/AuthService');
-	}
+    if (WebConf.isEnableK8s() && (k8s == true || k8s == "true")) {
+        return require('../../sso/k8s-service/auth/AuthService');
+    } else {
+        return require('../../sso/service/auth/AuthService');
+    }
 }
 
 const PluginController = {};
@@ -38,82 +38,82 @@ const PluginController = {};
 PluginController.loadPlugins = async (app) => {
 
 
-	if (WebConf.isEnableK8s()) {
-		await getPluginService(true).loadPlugins(app);
-	} else if (WebConf.enable) {
-		await getPluginService(false).loadPlugins(app);
-	}
+    if (WebConf.isEnableK8s()) {
+        await getPluginService(true).loadPlugins(app);
+    } else if (WebConf.enable) {
+        await getPluginService(false).loadPlugins(app);
+    }
 }
 
 PluginController.install = async (ctx) => {
 
-	try {
-		let result = await getPluginService(ctx.paramsObj.k8s).install(ctx.paramsObj);
+    try {
+        let result = await getPluginService(ctx.paramsObj.k8s).install(ctx.paramsObj);
 
-		ctx.makeResObj(result.ret, result.msg, result.data);
+        ctx.makeResObj(result.ret, result.msg, result.data);
 
-	} catch (e) {
-		logger.error('[install]', e.body ? e.body.message : e, ctx)
-		ctx.makeResObj(500, e.body ? e.body.message : e);
-	}
+    } catch (e) {
+        logger.error('[install]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
 }
 
 PluginController.list = async (ctx) => {
 
-	try {
-		let result = await getPluginService(ctx.paramsObj.k8s).list(ctx.paramsObj.type);
+    try {
+        let result = await getPluginService(ctx.paramsObj.k8s).list(ctx.paramsObj.type);
 
-		ctx.makeResObj(result.ret, result.msg, result.data);
+        ctx.makeResObj(result.ret, result.msg, result.data);
 
-	} catch (e) {
-		logger.error('[list]', e.body ? e.body.message : e, ctx)
-		ctx.makeResObj(500, e.body ? e.body.message : e);
-	}
+    } catch (e) {
+        logger.error('[list]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
 }
 
 PluginController.listAll = async (ctx) => {
 
-	try {
-		let result = await getPluginService(ctx.paramsObj.k8s).listAll();
+    try {
+        let result = await getPluginService(ctx.paramsObj.k8s).listAll();
 
-		ctx.makeResObj(result.ret, result.msg, result.data);
+        ctx.makeResObj(result.ret, result.msg, result.data);
 
-	} catch (e) {
-		logger.error('[listAll]', e.body ? e.body.message : e, ctx)
-		ctx.makeResObj(500, e.body ? e.body.message : e);
-	}
+    } catch (e) {
+        logger.error('[listAll]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
 }
 
 PluginController.delete = async (ctx) => {
 
-	try {
+    try {
 
-		if (await getAuthService(ctx.paramsObj.k8s).isAdmin(ctx.uid)) {
-			let result = await getPluginService(ctx.paramsObj.k8s).delete(ctx.paramsObj.id);
-			ctx.makeResObj(result.ret, result.msg, result.data);
-		} else {
+        if (await getAuthService(ctx.paramsObj.k8s).isAdmin(ctx.uid)) {
+            let result = await getPluginService(ctx.paramsObj.k8s).delete(ctx.paramsObj.id);
+            ctx.makeResObj(result.ret, result.msg, result.data);
+        } else {
 
-			ctx.makeNotAuthResObj();
-		}
+            ctx.makeNotAuthResObj();
+        }
 
-	} catch (e) {
-		logger.error('[delete]', e.body ? e.body.message : e, ctx)
-		ctx.makeResObj(500, e.body ? e.body.message : e);
-	}
+    } catch (e) {
+        logger.error('[delete]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
 }
 
 
 PluginController.load = async (ctx) => {
 
-	try {
-		let result = await getPluginService(ctx.paramsObj.k8s).load(ctx.paramsObj.type);
+    try {
+        let result = await getPluginService(ctx.paramsObj.k8s).load(ctx.paramsObj.type);
 
-		ctx.makeResObj(result.ret, result.msg, result.data);
+        ctx.makeResObj(result.ret, result.msg, result.data);
 
-	} catch (e) {
-		logger.error('[list]', e.body ? e.body.message : e, ctx)
-		ctx.makeResObj(500, e.body ? e.body.message : e);
-	}
+    } catch (e) {
+        logger.error('[list]', e.body ? e.body.message : e, ctx)
+        ctx.makeResObj(500, e.body ? e.body.message : e);
+    }
 }
 
 

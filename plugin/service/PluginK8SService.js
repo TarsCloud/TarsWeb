@@ -147,7 +147,7 @@ PluginService.delete = async (id) => {
 
 async function findActiveIndex(obj) {
     try {
-        console.log(obj);
+        // console.log(obj);
 
         let rst = await registry.findObjectById4Any(obj);
 

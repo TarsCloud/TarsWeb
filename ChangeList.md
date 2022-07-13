@@ -1,12 +1,14 @@
-## 20220712(3.0.4)
+## 20220713(3.0.4)
 
 
 ### en
 
 - Fix: k8s edit tserver bug
+- Fix: k8s load plugin bug
 ### cn
 
 - 修复: k8s编辑tserver的bug
+- 修复: k8s加载插件的bug
 
 ## 20220629(3.0.3)
 
