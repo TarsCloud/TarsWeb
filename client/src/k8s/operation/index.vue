@@ -108,7 +108,7 @@ export default {
     },
     getPlugins() {
       this.$ajax
-        .getJSON("/plugin/api/list", { k8s: false, type: 3 })
+        .getJSON("/plugin/api/list", { k8s: true, type: 3 })
         .then((data) => {
           this.plugins = data;
 
