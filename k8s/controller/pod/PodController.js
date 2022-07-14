@@ -44,10 +44,13 @@ PodController.PodAliveSelect = async (ctx) => {
         filter.eq[CommonService.TServerNameLabel] = serverData.serverName;
     }
 
+    // console.log(filter);
+
     try {
 
         let result = await PodService.podAliveSelect(filter);
 
+        // console.log(result);
         ctx.makeResObj(result.ret, result.msg, result.data);
 
     } catch (e) {
