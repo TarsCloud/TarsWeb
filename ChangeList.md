@@ -6,11 +6,12 @@
 
 - Fix: k8s delete server delete tendpoints
 - Fix: k8s start/stop/sendcommand use podIp not podName
+- Feat:remove k8s cache
 ### cn
 
 - 修复: k8s删除服务时也同步删除tendpoints
 - 修复: k8s start/stop/sendcommand 使用podIp而不是podName
-
+- 特性: 去掉k8s的cache
 ## 20220712(3.0.4)
 
 
