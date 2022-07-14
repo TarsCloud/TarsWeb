@@ -1,4 +1,17 @@
-## 20220713(3.0.4)
+
+## 20220713(3.0.5)
+
+
+### en
+
+- Fix: k8s delete server delete tendpoints
+- Fix: k8s start/stop/sendcommand use podIp not podName
+### cn
+
+- 修复: k8s删除服务时也同步删除tendpoints
+- 修复: k8s start/stop/sendcommand 使用podIp而不是podName
+
+## 20220712(3.0.4)
 
 
 ### en

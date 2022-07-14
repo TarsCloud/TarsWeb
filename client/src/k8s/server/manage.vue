@@ -133,16 +133,16 @@
                 v-if="scope.row.Source['tars.io/CloudInstall']"
                 :content="
                   scope.row.Source['tars.io/CloudInstall'].group +
-                    '/' +
-                    scope.row.Source['tars.io/CloudInstall'].name +
-                    ':' +
-                    scope.row.Source['tars.io/CloudInstall'].version
+                  '/' +
+                  scope.row.Source['tars.io/CloudInstall'].name +
+                  ':' +
+                  scope.row.Source['tars.io/CloudInstall'].version
                 "
                 placement="top-start"
               >
                 <i
                   class="el-icon-cloudy"
-                  style="cursor:pointer"
+                  style="cursor: pointer"
                   @click="goMarket(scope.row)"
                 ></i>
               </el-tooltip>
@@ -619,7 +619,7 @@
                 @click="addAdapter(props.row)"
                 v-if="
                   props.$index ===
-                    servantAddModal.model.ServerServant.length - 1
+                  servantAddModal.model.ServerServant.length - 1
                 "
               >
                 {{ $t("operate.add") }}
@@ -655,7 +655,7 @@
       <let-form
         v-if="
           servantDetailModal.model &&
-            servantDetailModal.model.ServerServant.length === 1
+          servantDetailModal.model.ServerServant.length === 1
         "
         ref="servantDetailForm"
         itemWidth="360px"
@@ -1166,8 +1166,9 @@ export default {
           this.closeConfigModal();
           this.startServerList();
           this.$tip.error(
-            `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
-              err.message}`
+            `${this.$t("serverList.restart.failed")}: ${
+              err.err_msg || err.message
+            }`
           );
         });
     },
@@ -1191,8 +1192,9 @@ export default {
         .catch((err) => {
           this.startServerList();
           this.$tip.error(
-            `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
-              err.message}`
+            `${this.$t("serverList.restart.failed")}: ${
+              err.err_msg || err.message
+            }`
           );
         });
     },
@@ -1235,7 +1237,7 @@ export default {
         return;
       }
 
-      let podIp = checkedServerList.map((item) => item.PodName);
+      let podIp = checkedServerList.map((item) => item.PodIp);
       let serverApp = checkedServerList[0].ServerApp;
       let serverName = checkedServerList[0].ServerName;
       this.$confirm(
@@ -1289,7 +1291,7 @@ export default {
         return;
       }
 
-      let podIp = checkedServerList.map((item) => item.PodName);
+      let podIp = checkedServerList.map((item) => item.PodIp);
       let serverApp = checkedServerList[0].ServerApp;
       let serverName = checkedServerList[0].ServerName;
       this.$confirm(
@@ -1343,7 +1345,7 @@ export default {
         return;
       }
 
-      let podIp = checkedServerList.map((item) => item.PodName);
+      let podIp = checkedServerList.map((item) => item.PodIp);
       let serverApp = checkedServerList[0].ServerApp;
       let serverName = checkedServerList[0].ServerName;
       this.$confirm(
@@ -1473,8 +1475,9 @@ export default {
         })
         .catch((err) => {
           this.$tip.error(
-            `${this.$t("serverList.restart.failed")}: ${err.err_msg ||
-              err.message}`
+            `${this.$t("serverList.restart.failed")}: ${
+              err.err_msg || err.message
+            }`
           );
         });
     },
@@ -1572,7 +1575,8 @@ export default {
     checkServantEndpoint(endpoint) {
       const tmp = endpoint.split(/\s-/);
       const regProtocol = /^tcp|udp$/i;
-      let regHost = /^h\s(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/i;
+      let regHost =
+        /^h\s(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/i;
       let regT = /^t\s([1-9]|[1-9]\d+)$/i;
       let regPort = /^p\s\d{4,5}$/i;
 
@@ -1737,7 +1741,7 @@ export default {
         return;
       }
 
-      let podIp = checkedServerList.map((item) => item.PodName);
+      let podIp = checkedServerList.map((item) => item.PodIp);
       let serverApp = checkedServerList[0].ServerApp;
       let serverName = checkedServerList[0].ServerName;
 
