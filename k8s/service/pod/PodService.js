@@ -129,15 +129,21 @@ PodService.podAliveSelect = async (filter) => {
         }
     });
 
+    // console.log(allServerItems);
+
     let allEndpointItems = await CommonService.listObject("tendpoints", labelSelector);
     allEndpointItems = allEndpointItems.body.items;
 
     allEndpointItems.forEach(endpoint => {
+        // console.log(endpoint);
+
         if (endpoint.status.pods.length <= 0) {
             return;
         }
         filterItems.push(endpoint);
     });
+
+    // console.log(allEndpointItems);
 
     filterItems.sort((e1, e2) => {
 

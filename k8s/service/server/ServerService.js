@@ -172,13 +172,24 @@ ServerService.updateServer = async (serverData, target) => {
 
 ServerService.deleteServer = async (serverData) => {
 
-    console.log(serverData);
-    
+    // console.log(serverData);
+
     // metadata.ServerId.forEach(async (item) => {
     let item = serverData;
 
     try {
         await CommonService.deleteObject("tservers", CommonService.getTServerName(item.application + '-' + item.serverName));
+    } catch (e) {
+
+        logger.error(`deleteServer tserver ${item}`, e.message);
+        return {
+            ret: 500,
+            msg: e.message
+        };
+    }
+
+    try {
+        await CommonService.deleteObject("tendpoints", CommonService.getTServerName(item.application + '-' + item.serverName));
     } catch (e) {
 
         logger.error(`deleteServer tserver ${item}`, e.message);
