@@ -87,9 +87,9 @@ async function findActiveIndex(obj) {
 
 PluginService.loadPlugins = async (app) => {
 
-    
+
     let plugins = [];
-   
+
     try {
         plugins = await PluginDao.listPlugins();
     } catch (e) {
@@ -101,7 +101,7 @@ PluginService.loadPlugins = async (app) => {
         if (plugin.f_extern == 0) {
             let target = await findActiveIndex(plugin.f_obj);
 
-            logger.debug(target);
+            logger.info(target);
 
             if (target) {
 
