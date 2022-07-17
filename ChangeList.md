@@ -1,4 +1,14 @@
 
+## 20220717(3.0.6)
+
+
+### en
+
+- Fix: plugin service load bug
+### cn
+
+- 修复: 加载plugin service的bug
+
 ## 20220713(3.0.5)
 
 
