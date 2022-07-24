@@ -1,6 +1,17 @@
 
-## 20220717(3.0.6)
 
+## 20220724(3.0.7)
+
+### en
+
+- Fix: delete tservers/tendpoints/timage/tconfigs
+- Fix: upgrade from cloud market lost title
+### cn
+
+- 修复: 删除k8s服务时, 同步删除其他资源(不存在也不报错)
+- 修复: 从市场上升级服务时, 漏掉title的bug
+
+## 20220717(3.0.6)
 
 ### en
 
