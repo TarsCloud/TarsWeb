@@ -119,6 +119,7 @@ DeployService.install = async (deploy, ServerServant, ServerK8S, ServerOption, s
         tServer.metadata.annotations = tServer.metadata.annotations || {};
         tServer.metadata.annotations[CommonService.TServerCloudInstall] = JSON.stringify(source);
 
+        // console.log(source);
     }
 
     let K8S = tServer.spec.k8s
@@ -232,10 +233,17 @@ DeployService.upgrade = async (deploy, source) => {
     let oldSource = JSON.parse(tServer.metadata.annotations[CommonService.TServerCloudInstall]);
 
     //保留历史的CloudId和CloudTitle
-    source[CommonService.TServerCloudID] = oldSource[CommonService.TServerCloudID];
+    if (oldSource[CommonService.TServerCloudID]) {
+        source[CommonService.TServerCloudID] = oldSource[CommonService.TServerCloudID];
+    }
 
-    source[CommonService.TServerCloudTitle] = oldSource[CommonService.TServerCloudTitle] || "";
-    source[CommonService.TServerCloudID] = oldSource[CommonService.TServerCloudID] || "";
+    if (source[CommonService.TServerCloudProduct]) {
+        source[CommonService.TServerCloudProduct][CommonService.TServerCloudTitle] = oldSource[CommonService.TServerCloudProduct][CommonService.TServerCloudTitle] || "";
+        source[CommonService.TServerCloudProduct][CommonService.TServerCloudID] = oldSource[CommonService.TServerCloudProduct][CommonService.TServerCloudID] || source[CommonService.TServerCloudID];
+    } else {
+
+        source[CommonService.TServerCloudTitle] = oldSource[CommonService.TServerCloudTitle] || "";
+    }
 
     tServer.metadata.annotations[CommonService.TServerCloudInstall] = JSON.stringify(source);
 
@@ -244,12 +252,12 @@ DeployService.upgrade = async (deploy, source) => {
     tServer.spec.release.image = deploy.repo.image;
     tServer.spec.release.secret = deploy.repo.secret;
 
-    let data = await CommonService.replaceObject("tservers", tServer.metadata.name, tServer);
+    await CommonService.replaceObject("tservers", tServer.metadata.name, tServer);
 
     return {
         ret: 200,
         msg: 'succ',
-        data: data.body
+        data: {}
     };
 }
 
