@@ -181,7 +181,7 @@ ServerService.deleteServer = async (serverData) => {
         await CommonService.deleteObject("tservers", CommonService.getTServerName(item.application + '-' + item.serverName));
     } catch (e) {
 
-        logger.error(`deleteServer tserver ${item}`, e.message);
+        logger.error(`deleteServer tserver`, item, e.message);
         return {
             ret: 500,
             msg: e.message
@@ -192,21 +192,21 @@ ServerService.deleteServer = async (serverData) => {
         await CommonService.deleteObject("tendpoints", CommonService.getTServerName(item.application + '-' + item.serverName));
     } catch (e) {
 
-        logger.error(`deleteServer tserver ${item}`, e.message);
-        return {
-            ret: 500,
-            msg: e.message
-        };
+        logger.error(`deleteServer tendpoints`, item, e.message);
+        // return {
+        //     ret: 500,
+        //     msg: e.message
+        // };
     }
 
     try {
         await CommonService.deleteObject("timages", CommonService.getTServerName(item.application + '-' + item.serverName));
     } catch (e) {
-        logger.error(`deleteServer timages ${item}`, e.message);
-        return {
-            ret: 500,
-            msg: e.message
-        };
+        logger.error(`deleteServer timages`, item, e.message);
+        // return {
+        //     ret: 500,
+        //     msg: e.message
+        // };
     }
 
     let filter = {
@@ -227,10 +227,10 @@ ServerService.deleteServer = async (serverData) => {
             await CommonService.deleteObject("tconfigs", config.metadata.name);
         } catch (e) {
             logger.error(`deleteServer tconfig item ${config.metadata.name}`, e.message);
-            return {
-                ret: 500,
-                msg: e.message
-            };
+            // return {
+            //     ret: 500,
+            //     msg: e.message
+            // };
         }
 
     }
