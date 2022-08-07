@@ -1037,7 +1037,7 @@ export default {
         treeid && arr[arr.length - 1] && arr[arr.length - 1].slice(1);
       const fileName =
         file.name && file.name.split(".") && file.name.split(".")[0];
-      if (!fileName.startsWith(server)) {
+      if (fileName.indexOf(server) == -1) {
         return this.$tip.error(
           `${this.$t("releasePackage.uploadPackageTips")}`
         );

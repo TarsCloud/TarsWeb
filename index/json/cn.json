@@ -541,6 +541,14 @@
             "invalidNode": "(node无效)"
         }
     },
+    "releasePackage": {
+        "uploadPackage": "上传发布包",
+        "uploadPackageTips": "发布包需要以服务名称开头",
+        "moduleName": "模块名",
+        "uploadTime": "上传时间",
+        "default": "默认",
+        "confirmDeleteTip": "确定要删除这个发布包吗？"
+    },
     "pub": {
         "btn": {
             "pub": "发布选中节点",

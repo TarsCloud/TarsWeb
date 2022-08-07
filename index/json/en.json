@@ -540,6 +540,14 @@
             "invalidNode": "(Invalid Node)"
         }
     },
+    "releasePackage": {
+        "uploadPackage": "Upload publish package",
+        "uploadPackageTips": "The release package does not match the service name",
+        "moduleName": "moduleName",
+        "uploadTime": "upload time",
+        "default": "default",
+        "confirmDeleteTip": "Are you sure you want to delete this release package?"
+    },
     "pub": {
         "btn": {
             "pub": "publish node",
