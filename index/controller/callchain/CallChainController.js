@@ -163,30 +163,31 @@ CallChainController.detailByTraceId = async (ctx) => {
         rows.push(new Date().getTime());
         rows.push(JSON.stringify(vs));
         rows.push("detailId");
-        ctx.makeResObj(200, '', {
-            "columns": [{
-                    "name": "edges",
-                    "type": "text"
-                },
-                {
-                    "name": "id",
-                    "type": "text"
-                },
-                {
-                    "name": "timeStamp",
-                    "type": "text"
-                },
-                {
-                    "name": "vertexes",
-                    "type": "text"
-                },
-                {
-                    "name": "vertexesName",
-                    "type": "text"
-                }
-            ],
-            rows: [rows]
-        });
+        ctx.makeResObj(200, '',
+            {
+                "columns": [
+                    {
+                        "name": "edges",
+                        "type": "text"
+                    },
+                    {
+                        "name": "id",
+                        "type": "text"
+                    },
+                    {
+                        "name": "timeStamp",
+                        "type": "text"
+                    },
+                    {
+                        "name": "vertexes",
+                        "type": "text"
+                    },
+                    {
+                        "name": "vertexesName",
+                        "type": "text"
+                    }
+                ], rows: [rows]
+            });
     } catch (err) {
         logger.error('[func]', err, ctx);
         ctx.makeErrResObj(500, err.message);
@@ -204,11 +205,6 @@ CallChainController.detailByStartEndTime = async (ctx) => {
     try {
         let rsp = await getTopologyPrx(k8s).listTraceSummary(date, beginTime, endTime, serverName);
         ctx.makeResObj(200, '', rsp.ts);
-        /* ctx.makeResObj(200, '', [{
-              name:'0-0044bdefb8454e75906b6baa4044a41f',
-              startTime :1633638720098,
-              endTime :1633638720098
-         }]);*/
     } catch (err) {
         logger.error('[detail1]', err, ctx);
         ctx.makeErrResObj(500, err.message);
@@ -239,30 +235,31 @@ CallChainController.func = async (ctx) => {
         //rows.push(_.join(listTrace.ts));
         rows.push('');
         rows.push(JSON.stringify(vs));
-        ctx.makeResObj(200, '', {
-            columns: [{
-                    "name": "edges",
-                    "type": "text"
-                },
-                {
-                    "name": "funcNames",
-                    "type": "text"
-                },
-                {
-                    "name": "id",
-                    "type": "text"
-                },
-                {
-                    "name": "traceIds",
-                    "type": "text"
-                },
-                {
-                    "name": "vertexes",
-                    "type": "text"
-                }
-            ],
-            rows: [rows, rows]
-        });
+        ctx.makeResObj(200, '',
+            {
+                columns: [
+                    {
+                        "name": "edges",
+                        "type": "text"
+                    },
+                    {
+                        "name": "funcNames",
+                        "type": "text"
+                    },
+                    {
+                        "name": "id",
+                        "type": "text"
+                    },
+                    {
+                        "name": "traceIds",
+                        "type": "text"
+                    },
+                    {
+                        "name": "vertexes",
+                        "type": "text"
+                    }
+                ], rows: [rows,rows]
+            });
     } catch (err) {
         logger.error('[func]', err, ctx);
         ctx.makeErrResObj(500, err.message);

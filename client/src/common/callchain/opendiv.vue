@@ -1,193 +1,177 @@
+<!-- 调用链明细 详情-->
 <template>
-  <div :id="id">
-    <let-modal
-      class="pop_tit"
-      :title="title"
-      v-model="dialogVisible"
-      width="90%"
-      :footShow="false"
-      style="margin-top: -100px"
-      @close="closeDialog"
-    >
-      <div>
-        <div
-          v-for="(item, index) in this.datalist.rows"
-          :key="index"
-          :style="
-            index % 2 == 1
-              ? 'background-color: #EBF2FF;'
-              : 'background-color: #ffffff;'
-          "
-        >
-          <div :class="'svgF' + index">
-            <svg :id="`svg-${id}-${index}`" width="100%">
-              <g />
-              <rect />
-            </svg>
-            <div
-              :id="`funccontainer-${id}-${index}`"
-              class="wcontainer"
-              style="width: 85%; height: 500px; display: none"
-            ></div>
-          </div>
-        </div>
-      </div>
-    </let-modal>
-  </div>
+    <div :id="id">
+        <let-modal class="pop_tit" :title="title" style="top:-120px"  v-model="dialogVisible" width="90%" :footShow="false">
+            <div>
+                <div v-for="(item, index) in this.datalist.rows" :key="index"
+                     :style=" index % 2 == 1 ? 'background-color: #EBF2FF;' : 'background-color: #ffffff;'">
+                    <div :class="'svgF' + index">
+                        <svg :id="`svg-${id}-${index}`" width="100%"><g/><rect/></svg>
+                        <div :id="`funccontainer-${id}-${index}`" class="wcontainer"
+                             style="height: 500px; display: none"></div>
+                    </div>
+                </div>
+            </div>
+        </let-modal>
+    </div>
 </template>
 
 <script>
 import dagreD3 from "dagre-d3";
 import * as d3 from "d3";
 import stringRandom from "string-random";
-
-import { getAll, transTree } from "../../api/util";
+let echarts = require("echarts");
+let myChart1;
+import {getAll, transTree} from "../../api/util";
 
 export default {
-  props: ["res", "rest", "title"],
-  data() {
-    return {
-      dialogVisible: false,
-      options: [],
-      resdata: [],
-      restdata: [],
-      value: "",
-      serverArrs: [],
-      dataLists: [],
-      dataarr: [],
-      traceIds: [],
-      nodeinfos: [],
-      edges: [],
-      funcIds: [],
-      datalist: [],
-      arrdata: [],
-      begin: "",
-      id: "opendiv-" + stringRandom(20),
-    };
-  },
-  mounted() {},
-  created() {},
-  watch: {
-    res(val) {
-      this.dialogVisible = true;
-      this.datalist = val;
-      this.getdatas();
+    props: ["res", "rest", "title"],
+    data() {
+        return {
+            dialogVisible: false,
+            options: [],
+            resdata: [],
+            restdata: [],
+            value: "",
+            serverArrs: [],
+            dataLists: [],
+            dataarr: [],
+            traceIds: [],
+            nodeinfos: [],
+            edges: [],
+            funcIds: [],
+            datalist: [],
+            arrdata: [],
+            begin: "",
+            id: 'opendiv-' + stringRandom(20)
+        };
     },
-    rest(val) {
-      this.dialogVisible = true;
-      this.datalist = val;
-      this.getdatas();
-    },
-  },
-  methods: {
-    getdatas() {
-      this.$nextTick(() => {
-        var start1 = new Date().getTime();
-        var containers = document.getElementsByClassName("wcontainer");
-        var start2 = new Date().getTime();
-        // console.log("cost is2", `${start2 - start1}ms`);
-        for (var k in containers) {
-          if (containers[k].style) {
-            containers[k].style.display = "none";
-          }
-        }
-        var start3 = new Date().getTime();
-        // console.log("cost is3", `${start3 - start2}ms`);
-        let arr = [];
-        this.datalist.rows.forEach((item) => {
-          let obj = {};
-          item.forEach((items, i) => {
-            obj[this.datalist.columns[i].name] = items;
-          });
-          arr.push(obj);
-        });
-        var start4 = new Date().getTime();
-        // console.log("cost is4", `${start4 - start3}ms`);
-        let nodeinfos = [];
-        let edges = [];
-        arr.forEach((item, index) => {
-          item.vertexes = JSON.parse(item.vertexes);
-          item.edges = JSON.parse(item.edges);
-          nodeinfos[index] = [];
-          edges[index] = [];
-          item.vertexes.forEach((items) => {
-            nodeinfos[index].push({
-              id: items.vertex,
-              label: items.vertex,
-              time: (items.callTime / items.callCount).toFixed(2),
-            });
-          });
-          item.edges.forEach((items) => {
-            edges[index].push({
-              source: items.fromVertex,
-              target: items.toVertex,
-              label: (items.callTime / items.callCount).toFixed(2),
-            });
-          });
-        });
-        var start5 = new Date().getTime();
-        // console.log("cost is5", `${start5 - start4}ms`);
-        this.arrdata = arr;
-        this.begin = "";
-        edges.forEach((item, index) => {
-          let arr1 = [];
-          item.forEach((items) => {
-            arr1.push(items.target);
-          });
-          item.forEach((items) => {
-            if (arr1.indexOf(items.source) < 0) {
-              this.begin = items.source;
-              nodeinfos[index].push({
-                id: items.source,
-                label: items.source,
-              });
-            }
-          });
-        });
-        var start6 = new Date().getTime();
-        // console.log("cost is6", `${start6 - start5}ms`);
-        this.becomeD3(edges, nodeinfos);
-      });
-    },
-    becomeD3(edges, nodeinfos) {
-      this.$nextTick(() => {
-        for (let k in edges) {
-          let g = new dagreD3.graphlib.Graph().setGraph({});
-          g.setGraph({
-            rankdir: "LR",
-            marginy: 60,
-          });
-          // 添加节点
-          nodeinfos[k].forEach((item, index) => {
-            item.rx = item.ry = 5; //圆角
-            g.setNode(item.id, {
-              labelType: "html",
-              label: item.time
-                ? `<div class="wrap"> <span class="span1">${item.id}</span><p class="p1" style="height:20px" >( ${item.time} ms )</p></div>`
-                : `<div class="wrap"><span class="span1">${item.id}</span ></div>`,
-              style: "fill:#457ff5",
-            });
-          });
+    mounted() {
 
-          edges[k].forEach((item) => {
-            if (k % 2 == 0) {
-              g.setEdge(item.source, item.target, {
-                label: item.label + "ms",
-                //边样式
-                style: "fill:#fff;stroke:#333;stroke-width:1.5px;",
-              });
-            } else {
-              g.setEdge(item.source, item.target, {
-                label: item.label + "ms",
-                //边样式
-                style: "fill:#EBF2FF;stroke:#333;stroke-width:1.5px;",
-              });
-            }
-          });
+    },
+    created() {
+    },
+    watch: {
+        res(val) {
+            this.dialogVisible = true;
+            this.datalist = val;
+            this.getdatas();
+        },
+        rest(val) {
+            this.dialogVisible = true;
+            this.datalist = val;
+            this.getdatas();
+        },
+    },
+    methods: {
+        getdatas() {
+            this.$nextTick(() => {
+                var start1 = new Date().getTime();
+                var containers = document.getElementsByClassName("wcontainer");
+                var start2 = new Date().getTime();
+                console.log("cost is2", `${start2 - start1}ms`);
+                for (var k in containers) {
+                    if (containers[k].style) {
+                        containers[k].style.display = "none";
+                    }
+                }
+                var start3 = new Date().getTime();
+                console.log("cost is3", `${start3 - start2}ms`);
+                let arr = [];
+                this.datalist.rows.forEach((item) => {
+                    let obj = {};
+                    item.forEach((items, i) => {
+                        obj[this.datalist.columns[i].name] = items;
+                    });
+                    arr.push(obj);
+                });
+                var start4 = new Date().getTime();
+                console.log("cost is4", `${start4 - start3}ms`);
+                let nodeinfos = [];
+                let edges = [];
+                arr.forEach((item, index) => {
+                    item.vertexes = JSON.parse(item.vertexes);
+                    item.edges = JSON.parse(item.edges);
+                    nodeinfos[index] = [];
+                    edges[index] = [];
+                    item.vertexes.forEach((items) => {
+                        nodeinfos[index].push({
+                            id: items.vertex,
+                            label: items.vertex,
+                            time: items.callCount?(items.callTime / items.callCount).toFixed(2):'0',
+                        });
+                    });
+                    item.edges.forEach((items) => {
+                        edges[index].push({
+                            source: items.fromVertex,
+                            target: items.toVertex,
+                            label: items.callCount?(items.callTime / items.callCount).toFixed(2):'0',
+                        });
+                    });
+                });
+                var start5 = new Date().getTime();
+                console.log("cost is5", `${start5 - start4}ms`);
+                this.arrdata = arr;
+                this.begin = "";
+                edges.forEach((item, index) => {
+                    let arr1 = [];
+                    item.forEach((items) => {
+                        arr1.push(items.target);
+                    });
+                    item.forEach((items) => {
+                        if (arr1.indexOf(items.source) < 0) {
+                            this.begin = items.source;
+                            nodeinfos[index].push({
+                                id: items.source,
+                                label: items.source,
+                            });
+                        }
+                    });
+                });
+                var start6 = new Date().getTime();
+                console.log("cost is6", `${start6 - start5}ms`);
+                this.becomeD3(edges, nodeinfos);
+            });
+        },
+        becomeD3(edges, nodeinfos) {
+            this.$nextTick(() => {
+                for (let k in edges) {
+                    let g = new dagreD3.graphlib.Graph().setGraph({});
+                    g.setGraph({
+                        rankdir: "LR",
+                        marginy: 60,
+                    });
+                    // 添加节点
+                    nodeinfos[k].forEach((item, index) => {
+                        item.rx = item.ry = 5; //圆角
+                        g.setNode(item.id, {
+                            labelType: "html",
+                            label: item.time
+                                ? `<div class="wrap"> <span class="span1">${item.id}</span><p class="p1" style="height:20px" >( ${item.time} ms )</p></div>`
+                                : `<div class="wrap"><span class="span1">${item.id}</span ></div>`,
+                            style: "fill:#457ff5",
+                        });
+                    });
 
-          //绘制图形
-          let selector = `#svg-${this.id}-${k}`;
-          let svg = d3.select(selector);
+                    edges[k].forEach((item) => {
+                        if (k % 2 == 0) {
+                            g.setEdge(item.source, item.target, {
+                                label: item.label + "ms",
+                                //边样式
+                                style: "fill:#fff;stroke:#333;stroke-width:1.5px;",
+                            });
+                        } else {
+                            g.setEdge(item.source, item.target, {
+                                label: item.label + "ms",
+                                //边样式
+                                style: "fill:#EBF2FF;stroke:#333;stroke-width:1.5px;",
+                            });
+                        }
+                    });
+
+                    //绘制图形
+                    let selector = `#svg-${this.id}-${k}`
+                    let svg = d3.select(selector);
 
           let inner = svg.select("g");
           let render = new dagreD3.render();
@@ -248,94 +232,92 @@ export default {
         }
       }
 
-      var container = document.getElementById(
-        `funccontainer-${this.id}-${index}`
-      );
-      container.style.display = "block";
-      let obj = a;
-      obj.forEach((item) => {
-        this.arrdata[index].vertexes.forEach((items) => {
-          if (item.target == items.vertex) {
-            item.server_time = items.callTime / items.callCount;
-          }
-        });
-        this.arrdata[index].edges.forEach((items) => {
-          if (
-            item.source == items.fromVertex &&
-            item.target == items.toVertex
-          ) {
-            item.client_time = items.callTime / items.callCount;
-            // console.log("itmes:" + JSON.stringify(items))
-            item.ret = items.ret;
-            item.csData = items.csData;
-            item.srData = items.srData;
-            item.ssData = items.ssData;
-            item.crData = items.crData;
-          }
-        });
-      });
-      let sourceArr = [];
-      let targetArr = [];
-      let servers = [];
-      let clientTime = [];
-      let serverTime = [];
-      let btimeArr = [];
-      let retArr = [];
-      let csDataArr = [],
-        srDataArr = [],
-        ssDataArr = [],
-        crDataArr = [];
-      transTree(
-        obj,
-        sourceArr,
-        targetArr,
-        servers,
-        clientTime,
-        serverTime,
-        btimeArr,
-        retArr,
-        csDataArr,
-        srDataArr,
-        ssDataArr,
-        crDataArr
-      );
-      var nowDate = new Date(); //今日日期为2020年2月14日
-      var nowDateStr = formatDate(nowDate);
+            var container = document.getElementById(`funccontainer-${this.id}-${index}`);
+            container.style.display = "block";
+            let obj = a;
+            obj.forEach((item) => {
+                this.arrdata[index].vertexes.forEach((items) => {
+                    if (item.target == items.vertex) {
+                        item.server_time = items.callTime / items.callCount;
+                    }
+                });
+                this.arrdata[index].edges.forEach((items) => {
+                    if (
+                        item.source == items.fromVertex &&
+                        item.target == items.toVertex
+                    ) {
+                        item.client_time = items.callTime / items.callCount;
+                        console.log("itmes:" + JSON.stringify(items))
+                        item.ret = items.ret;
+                        item.csData = items.csData;
+                        item.srData = items.srData;
+                        item.ssData = items.ssData;
+                        item.crData = items.crData;
+                    }
+                });
+            });
+            let sourceArr = [];
+            let targetArr = [];
+            let servers = [];
+            let clientTime = [];
+            let serverTime = [];
+            let btimeArr = [];
+            let retArr = [];
+            let csDataArr = [], srDataArr = [], ssDataArr = [], crDataArr = [];
+            transTree(
+                obj,
+                sourceArr,
+                targetArr,
+                servers,
+                clientTime,
+                serverTime,
+                btimeArr,
+                retArr,
+                csDataArr,
+                srDataArr,
+                ssDataArr,
+                crDataArr
+            );
+            var nowDate = new Date(); //今日日期为2020年2月14日
+            var nowDateStr = formatDate(nowDate);
 
-      function formatDate(date) {
-        var arr = date.toLocaleDateString().split("/");
-        if (arr[1].length < 2) {
-          arr.splice(1, 1, "0" + arr[1]);
-        }
-        if (arr[2].length < 2) {
-          arr.splice(2, 1, "0" + arr[2]);
-        }
-        return arr.join("-");
-      }
+            function formatDate(date) {
+                var arr = date.toLocaleDateString().split("/");
+                if (arr[1].length < 2) {
+                    arr.splice(1, 1, "0" + arr[1]);
+                }
+                if (arr[2].length < 2) {
+                    arr.splice(2, 1, "0" + arr[2]);
+                }
+                return arr.join("-");
+            }
 
-      let title = d;
-      var echarts = require("echarts");
-      var myChart1 = echarts.init(container);
-      let data = [];
-      let length = servers.length - 1;
-      for (let k in servers) {
-        data.push({
-          name: servers[k],
-          value: [
-            length - parseInt(k),
-            btimeArr[k],
-            btimeArr[k] + clientTime[k],
-            (clientTime[k] - serverTime[k]) / 2 + btimeArr[k],
-            serverTime[k],
-            retArr[k],
-            csDataArr[k],
-            srDataArr[k],
-            ssDataArr[k],
-            crDataArr[k],
-          ],
-        });
-      }
-      let numArr = [];
+            let title = d;
+            if(myChart1){
+                //避免dialog关闭后echart没关
+                myChart1.clear();
+            }
+            myChart1 = echarts.init(container);
+            let data = [];
+            let length = servers.length - 1;
+            for (let k in servers) {
+                data.push({
+                    name: servers[k],
+                    value: [
+                        length - parseInt(k),
+                        btimeArr[k],
+                        btimeArr[k] + clientTime[k],
+                        (clientTime[k] - serverTime[k]) / 2 + btimeArr[k],
+                        serverTime[k],
+                        retArr[k],
+                        csDataArr[k],
+                        srDataArr[k],
+                        ssDataArr[k],
+                        crDataArr[k]
+                    ],
+                });
+            }
+            let numArr = [];
 
       data.forEach((item) => {
         numArr.push(item.value[2]);
@@ -649,16 +631,6 @@ tspan {
   color: #fff;
   margin: 0;
   text-align: center;
-}
-
-.el-dialog__title {
-  color: #333;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.el-dialog__header {
-  padding: 24px 32px;
 }
 
 .wrap p {
