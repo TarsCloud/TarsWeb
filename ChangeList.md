@@ -1,5 +1,16 @@
 
 
+## 20220815(3.0.8)
+
+### en
+
+- Fix: modify the call chain using method query, it freezes
+- Fix: update cn.json/en.json add releasePackage
+### cn
+
+- 修复: 调用链界面卡顿的问题
+- 修复: releasePackage在cn.json/en.json中缺失的问题
+
 ## 20220724(3.0.7)
 
 ### en
