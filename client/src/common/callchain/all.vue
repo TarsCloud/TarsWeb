@@ -288,45 +288,114 @@ export default {
         k8s: this.k8s,
       });
 
-      this.title = "TraceId：" + row.name;
-      this.res = res;
-      this.flag = true;
-      return;
-    },
-    becomeD3(edges, nodeinfos) {
-      this.$nextTick(() => {
-        for (let k in edges) {
-          let g = new dagreD3.graphlib.Graph().setGraph({});
-          g.setGraph({
-            rankdir: "LR",
-            marginy: 60,
-          });
-          nodeinfos[k].forEach((item, index) => {
-            item.rx = item.ry = 5; //圆角
-            g.setNode(item.id, {
-              labelType: "html",
-              label: item.time
-                ? `<div class="wrap"> <span class="span1">${item.id}</span><p class="p1" style="height:20px" >( ${item.time} ms )</p></div>`
-                : `<div class="wrap"><span class="span1">${item.id}</span ></div>`,
-              style: "fill:#457ff5",
+            this.title = "TraceId：" + row.name;
+            this.res = res;
+            this.flag = true;
+            return;
+
+            this.resdata = [];
+            this.restdata = [];
+            let nodeinfos = [];
+            let edges = [];
+            this.traceIds = [];
+            this.funcIds = [];
+            let i = -1;
+            this.serverArrs = [];
+            this.dialogVisible1s = true;
+            this.dataarr.forEach((item) => {
+                if (item.id == row.id) {
+                    this.serverArrs.push(item.id);
+                    this.traceIds.push(item.traceIds);
+                    this.funcIds.push(item.funcIds);
+                    i++;
+                    nodeinfos[i] = [];
+                    edges[i] = [];
+                    this.resdata[this.resdata.length] = item.vertexes;
+                    this.restdata[this.restdata.length] = item.edges;
+
+                    let item1 = item.vertexes;
+                    let item2 = item.edges;
+
+                    item1.forEach((item) => {
+                        nodeinfos[i].push({
+                            id: item.vertex,
+                            label: item.vertex,
+                            time: (item.callTime / item.callCount).toFixed(2),
+                        });
+                    });
+
+                    item2.forEach((item) => {
+                        edges[i].push({
+                            startTimeStamp: item.startTimeStamp,
+                            source: item.fromVertex,
+                            target: item.toVertex,
+                            label: (item.callTime / item.callCount).toFixed(2),
+                        });
+                    });
+                }
             });
-          });
-          // 链接关系
-          edges[k].forEach((item) => {
-            if (k % 2 == 0) {
-              g.setEdge(item.source, item.target, {
-                label: item.label + "ms",
-                //边样式
-                style: "fill:#fff;stroke:#333;stroke-width:1.5px;",
-              });
-            } else {
-              g.setEdge(item.source, item.target, {
-                label: item.label + "ms",
-                //边样式
-                style: "fill:#EBF2FF;stroke:#333;stroke-width:1.5px;",
-              });
+
+            edges.forEach((item, index) => {
+                let arr = [];
+                item.forEach((items) => {
+                    arr.push(items.target);
+                });
+                item.forEach((items) => {
+                    if (arr.indexOf(items.source) < 0) {
+                        this.begin = items.source;
+                        nodeinfos[index].push({
+                            id: items.source,
+                            label: items.source,
+                        });
+                    } else {
+                    }
+                });
+            });
+            this.edges = edges;
+            this.nodeinfos = nodeinfos;
+            var svg = document.getElementById("svgs");
+            var containers = document.getElementsByClassName("containers");
+            for (var k in containers) {
+                if (containers[k].style) {
+                    containers[k].style.display = "none";
+                }
             }
-          });
+            this.becomeD3(edges, nodeinfos);
+        },
+        becomeD3(edges, nodeinfos) {
+            this.$nextTick(() => {
+                for (let k in edges) {
+                    let g = new dagreD3.graphlib.Graph().setGraph({});
+                    g.setGraph({
+                        rankdir: "LR",
+                        marginy: 60,
+                    });
+                    nodeinfos[k].forEach((item, index) => {
+                        item.rx = item.ry = 5; //圆角
+                        g.setNode(item.id, {
+                            labelType: "html",
+                            label: item.time
+                                ? `<div class="wrap"> <span class="span1">${item.id}</span><p class="p1" style="height:20px" >( ${item.time} ms )</p></div>`
+                                : `<div class="wrap"><span class="span1">${item.id}</span ></div>`,
+                            style: "fill:#457ff5",
+                        });
+                    });
+                    // 链接关系
+                    edges[k].forEach((item) => {
+                        if (k % 2 == 0) {
+                            g.setEdge(item.source, item.target, {
+                                label: item.label + "ms",
+                                //边样式
+                                style: "fill:#fff;stroke:#333;stroke-width:1.5px;",
+                            });
+                        } else {
+                            g.setEdge(item.source, item.target, {
+                                label: item.label + "ms",
+                                //边样式
+                                style: "fill:#EBF2FF;stroke:#333;stroke-width:1.5px;",
+                            });
+                        }
+                    });
 
           //绘制图形
           let svg = d3.select(`.svgs${k} svg`);

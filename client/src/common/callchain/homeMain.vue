@@ -1,73 +1,54 @@
+<!-- 调用链  -->
 <template>
-  <div class="home">
-    <let-form :inline="true" ref="form" style="font-size: 16px">
-      <let-form-item :label="$t('callChain.date')">
-        <let-date-picker
-          style="width: 200px"
-          v-model="date1"
-          theme="primary"
-          size="small"
-        ></let-date-picker>
-      </let-form-item>
-      <let-form-item :label="$t('callChain.method')">
-        <let-select
-          size="small"
-          v-model="funcName"
-          :placeholder="$t('callChain.selectMethod')"
-          clearable
-        >
-          <let-option
-            v-for="(item, index) in funcNames"
-            :key="index"
-            :label="item"
-            :value="item"
-          >
-          </let-option>
-        </let-select>
-      </let-form-item>
-      <let-form-item>
-        <let-button
-          ref="myButton"
-          theme="primary"
-          size="mini"
-          style="margin-left: 10px"
-          @click="sub"
-        >
-          {{ $t("callChain.sub") }}
-        </let-button>
-      </let-form-item>
-    </let-form>
+    <div class="home">
+        <let-form :inline="true" ref="form" style="font-size: 16px">
+            <let-form-item :label="$t('callChain.date')">
+                <let-date-picker style="width: 200px" v-model="date1" theme="primary"
+                                 size="small"></let-date-picker>
+            </let-form-item>
+            <let-form-item :label="$t('callChain.method')">
+                <let-select size="small" v-model="funcName" :placeholder="$t('callChain.selectMethod')" clearable>
+                    <let-option v-for="(item, index) in funcNames" :key="index" :label="item" :value="item">
+                    </let-option>
+                </let-select>
+            </let-form-item>
+            <let-form-item>
+                <let-button ref="myButton" theme="primary" size="mini" style="margin-left: 10px" @click="sub">
+                    {{ $t("callChain.sub") }}
+                </let-button>
+            </let-form-item>
+        </let-form>
 
-    <div style="height: 600px" v-loading="svgLoading">
-      <vue-scroll :ops="ops" style="width: 100%; height: 100%">
-        <div v-for="(item, index) in nodeinfos" :key="index">
-          <div :class="'svg' + index" style="float: left; width: 100% ;">
-            <svg :id="svgId + '-' + index" width="100%" height="100%">
-              <g />
-              <rect />
-            </svg>
-            <hr />
-          </div>
-          <div :id="'exportModal-' + svgId + '-' + index" class="exportModal">
-            <let-modal
-              title="Gantt chart"
-              v-model="exportModal"
-              width="80%"
-              @close="closeModel"
-              :footShow="false"
-              :closeOnClickBackdrop="true"
-            >
-              <div
-                :id="'container-' + svgId + '-' + index"
-                class="container"
-                style="width: 1400%; height: 500px"
-              ></div>
-            </let-modal>
-          </div>
+        <div style="height: 600px;padding-bottom:140px;" v-loading="svgLoading">
+            <vue-scroll :ops="ops" style="width: 100%; height: 100%">
+                <div v-for="(item, index) in nodeinfos" :key="index" style="overflow-x:auto;">
+                    <div :class="'svg' + index" style="min-width:1400px;">
+                        <svg :id="svgId+'-'+index" width="1500" height="100%">
+                            <g/>
+                            <rect/>
+                        </svg>
+                        <hr>
+                    </div>
+                    <div :id="'exportModal-'+svgId+'-'+index" class="exportModal">
+                        <let-modal title="甘特图" v-model="exportModal" width="80%" @close="closeModel"
+                                   :footShow="false" :closeOnClickBackdrop="true">
+                            <div style="overflow-x:auto;">
+                                <div :id="'container-'+svgId+'-'+index" class="container"
+                                     style="width: 1400px; height: 500px"></div>
+                            </div>
+                        </let-modal>
+                    </div>
+                </div>
+            </vue-scroll>
+            <div style="padding-top:15px;">
+                <let-pagination
+                        :page="currentPage" @change="handleCurrentChange"
+                        :total="total % fsize ? parseInt(total / fsize) + 1 : total / fsize">
+                </let-pagination>
+            </div>
         </div>
-      </vue-scroll>
+
     </div>
-  </div>
 </template>
 
 <script>
@@ -102,6 +83,7 @@ export default {
       datalist: [],
       dataLists: [],
       dataarr: [],
+      dataarrs: [],
       traceIds: [],
       nodeinfos: [],
       edges: [],
@@ -112,7 +94,9 @@ export default {
       flag2: false,
       ops: {
         vuescroll: {},
-        scrollPanel: {},
+          scrollPanel: {
+                    scrollingX:false
+                },
         rail: {
           keepShow: true,
         },
@@ -120,9 +104,11 @@ export default {
           hoverStyle: true,
           onlyShowBarOnScroll: false, //是否只有滚动的时候才显示滚动条
           background: "#9096A3", //滚动条颜色
-          "overflow-x": "hidden",
         },
       },
+      fsize: 10,
+      currentPage: 1,
+      total: 0,
     };
   },
   mounted() {
@@ -191,251 +177,166 @@ export default {
           });
         }
 
-        if (rest.error || rest.err_msg) {
-          this.$Notice({
-            message: rest.error || err_msg,
-            type: "error",
-          });
-          this.svgLoading = false;
-          return;
-        }
-        // console.log("rest", rest);
-        if (rest.rows.length == 0) {
-          this.$Notice({
-            message: this.$t("callChain.noResult"),
-            type: "warning",
-          });
-          this.svgLoading = false;
-        }
-        //  rest.rows.push(rest.rows[0])
-        this.dataarr = [];
-        rest.rows.forEach((item) => {
-          let obj = {};
-          item.forEach((items, i) => {
-            obj[rest.columns[i].name] = items;
-          });
-          this.dataarr.push(obj);
-        });
-        this.dataarr.forEach((item) => {
-          item.vertexes = JSON.parse(item.vertexes);
-          item.edges = JSON.parse(item.edges);
-        });
-        this.resdata = [];
-        this.restdata = [];
-        let nodeinfos = [];
-        let edges = [];
-        this.traceIds = [];
-        this.funcIds = [];
-        let i = -1;
-        this.serverArrs = [];
-        this.dataarr.forEach((item) => {
-          this.serverArrs.push(item.id);
-          this.traceIds.push(item.traceIds);
-          this.funcIds.push(item.funcIds);
-          i++;
-          nodeinfos[i] = [];
-          edges[i] = [];
-          this.resdata[this.resdata.length] = item.vertexes;
-          this.restdata[this.restdata.length] = item.edges;
+                if (rest.error || rest.err_msg) {
+                    this.$Notice({
+                        message: rest.error || err_msg,
+                        type: "error",
+                    });
+                    this.svgLoading = false;
+                }
+                console.log("rest", rest);
+                if (rest.rows.length == 0) {
+                    this.svgLoading = false;
+                }
 
-          let item1 = item.vertexes;
-          let item2 = item.edges;
+                this.dataarrs = [];
+                rest.rows.forEach((item) => {
+                    let obj = {};
+                    item.forEach((items, i) => {
+                        obj[rest.columns[i].name] = items;
+                    });
+                    this.dataarrs.push(obj);
+                });
+                this.total = rest.rows.length;
+                this.dataarrs.forEach((item) => {
+                    item.vertexes = JSON.parse(item.vertexes);
+                    item.edges = JSON.parse(item.edges);
+                });
+                this.handleCurrentChange(1);
+                this.svgLoading = false;
+            } catch (e) {
+                this.svgLoading = false;
+            }
+        },
+        becomeD3(edges, nodeinfos) {
+            this.$nextTick(() => {
+                for (let k in edges) {
+                    let g = new dagreD3.graphlib.Graph().setGraph({});
+                    g.setGraph({
+                        rankdir: "LR",
+                        marginy: 60,
+                    });
+                    // 添加节点
+                    nodeinfos[k].forEach((item, index) => {
+                        item.rx = item.ry = 5; //圆角
+                        g.setNode(item.id, {
+                            labelType: "html",
+                            label: item.time
+                                ? `<div class="wrap"> <span class="span1" >${item.id}</span> <p class="p1" style="height:20px" >( ${item.time} ms )</p></div>`
+                                : `<div class="wrap"> <span class="span1" >${item.id}</span> </div>`,
+                            style: "fill:#457ff5",
+                        });
+                    });
+                    // 链接关系
+                    edges[k].forEach((item) => {
+                        if (k % 2 == 0) {
+                            g.setEdge(item.source, item.target, {
+                                label: item.label + "ms",
+                                //边样式
+                                style: "fill:#fff;stroke:#333;stroke-width:1.5px;",
+                            });
+                        } else {
+                            g.setEdge(item.source, item.target, {
+                                label: item.label + "ms",
+                                //边样式
+                                style: "fill:#ffffff;stroke:#333;stroke-width:1.5px;",
+                            });
+                        }
+                    });
+                    let selector = `#${this.svgId}-${k}`;
+                    //绘制图形
+                    let svg = d3.select(selector);
 
-          item1.forEach((item) => {
-            nodeinfos[i].push({
-              id: item.vertex,
-              label: item.vertex,
-              time:
-                item.callCount == 0
-                  ? 0
-                  : (item.callTime / item.callCount).toFixed(2),
+                    let inner = svg.select("g");
+                    let render = new dagreD3.render();
+                    render(inner, g);
+                    inner.selectAll(".edgeLabel tspan").attr("dy", "-1.2em");
+                    let spans = document.querySelectorAll(`${selector} .span1`);
+                    for (var j in spans) {
+                        if (j == spans.length) {
+                            break;
+                        }
+                        // spans[j].style.fontSize ="12px"  报错
+                        if (spans[j].innerHTML == this.value) {
+                            spans[j].style.color = "red";
+                        }
+                    }
+                    let svgElement = document.querySelector(selector);
+                    svgElement.style.height = svgElement.getBBox().height + 70;
+
+                    inner.selectAll("g.node").on("click", (e, d) => {
+                        let arr = [];
+                        let svgs = d3.select(selector);
+                        svgs.selectAll("rect").style("fill", "#457FF5");
+                        edges[k].forEach((items, j) => {
+                            if (e == items.source && this.begin != items.target) {
+                                arr.push(items);
+                            }
+                        });
+                        inner.selectAll("rect").style("fill", (val) => {
+                            if (val == e && arr.length > 0) {
+                                return "#3F5AE0";
+                            } else {
+                                return "#457FF5";
+                            }
+                        });
+                        if (arr.length > 0) {
+                            getAll(arr, edges[k], 0, arr.length, e);
+                        } else {
+                            return;
+                        }
+                        this.ganTe(arr, d, k);
+                    });
+                }
             });
-          });
+        },
+        closeModel() {
+            console.log(`closeModel this.exportModal:${this.exportModal}`);
+        },
+        async ganTe(a, d, index) {
+            this.$nextTick(() => {
+                let that = this
+                let selector = `container-${this.svgId}-${index}`;
+                //container-Wx2t9fBP7vqz5bWyqAvI-0
+                //let selector = 'container';
+                console.log("selector:" + selector);
+                var container = document.getElementById(selector);
+                console.log("container:" + container);
+                container.style.display = "block";
+                let obj = a;
 
-          item2.forEach((item) => {
-            edges[i].push({
-              source: item.fromVertex,
-              target: item.toVertex,
-              label:
-                item.callCount == 0
-                  ? 0
-                  : (item.callTime / item.callCount).toFixed(2),
-            });
-          });
-        });
-        // console.log("this.datearr", this.dataarr);
-        edges.forEach((item, index) => {
-          let arr = [];
-          item.forEach((items) => {
-            arr.push(items.target);
-          });
-          item.forEach((items) => {
-            if (arr.indexOf(items.source) < 0) {
-              this.begin = items.source;
-              nodeinfos[index].push({
-                id: items.source,
-                label: items.source,
-              });
-            } else {
-            }
-          });
-        });
-        this.edges = edges;
-        this.nodeinfos = nodeinfos;
-
-        for (var j in this.traceIds) {
-          let traceIds = this.traceIds[j]
-            .replace("[", "")
-            .replace("]", "")
-            .replace(/\s/g, "")
-            .split(",");
-          this.traceIds[j] = traceIds;
-        }
-        for (var j in this.funcIds) {
-          let funcIds = this.funcIds[j]
-            .replace("[", "")
-            .replace("]", "")
-            .replace(/\s/g, "")
-            .split(",");
-          this.funcIds[j] = funcIds;
-        }
-        this.becomeD3(edges, nodeinfos);
-        this.svgLoading = false;
-      } catch (e) {
-        this.svgLoading = false;
-      }
-    },
-    becomeD3(edges, nodeinfos) {
-      this.$nextTick(() => {
-        for (let k in edges) {
-          let g = new dagreD3.graphlib.Graph().setGraph({});
-          g.setGraph({
-            rankdir: "LR",
-            marginy: 60,
-          });
-          // 添加节点
-          nodeinfos[k].forEach((item, index) => {
-            item.rx = item.ry = 5; //圆角
-            g.setNode(item.id, {
-              labelType: "html",
-              label: item.time
-                ? `<div class="wrap"> <span class="span1" >${item.id}</span> <p class="p1" style="height:20px" >( ${item.time} ms )</p></div>`
-                : `<div class="wrap"> <span class="span1" >${item.id}</span> </div>`,
-              style: "fill:#457ff5",
-            });
-          });
-          // 链接关系
-          edges[k].forEach((item) => {
-            if (k % 2 == 0) {
-              g.setEdge(item.source, item.target, {
-                label: item.label + "ms",
-                //边样式
-                style: "fill:#fff;stroke:#333;stroke-width:1.5px;",
-              });
-            } else {
-              g.setEdge(item.source, item.target, {
-                label: item.label + "ms",
-                //边样式
-                style: "fill:#ffffff;stroke:#333;stroke-width:1.5px;",
-              });
-            }
-          });
-          let selector = `#${this.svgId}-${k}`;
-          //绘制图形
-          let svg = d3.select(selector);
-
-          let inner = svg.select("g");
-          let render = new dagreD3.render();
-          render(inner, g);
-          inner.selectAll(".edgeLabel tspan").attr("dy", "-1.2em");
-          let spans = document.querySelectorAll(`${selector} .span1`);
-          for (var j in spans) {
-            if (j == spans.length) {
-              break;
-            }
-            // spans[j].style.fontSize ="12px"  报错
-            if (spans[j].innerHTML == this.value) {
-              spans[j].style.color = "red";
-            }
-          }
-          let svgElement = document.querySelector(selector);
-          svgElement.style.height = svgElement.getBBox().height + 150;
-
-          inner.selectAll("g.node").on("click", (e, d) => {
-            let arr = [];
-            let svgs = d3.select(selector);
-            svgs.selectAll("rect").style("fill", "#457FF5");
-            edges[k].forEach((items, j) => {
-              if (e == items.source && this.begin != items.target) {
-                arr.push(items);
-              }
-            });
-            inner.selectAll("rect").style("fill", (val) => {
-              if (val == e && arr.length > 0) {
-                return "#3F5AE0";
-              } else {
-                return "#457FF5";
-              }
-            });
-            if (arr.length > 0) {
-              getAll(arr, edges[k], 0, arr.length, e);
-            } else {
-              return;
-            }
-            this.ganTe(arr, d, k);
-          });
-        }
-      });
-    },
-    closeModel() {
-      //   console.log(`closeModel this.exportModal:${this.exportModal}`);
-    },
-    async ganTe(a, d, index) {
-      this.$nextTick(() => {
-        let that = this;
-        let selector = `container-${this.svgId}-${index}`;
-        //container-Wx2t9fBP7vqz5bWyqAvI-0
-        //let selector = 'container';
-        // console.log("selector:" + selector);
-        var container = document.getElementById(selector);
-        // console.log("container:" + container);
-        container.style.display = "block";
-        let obj = a;
-
-        obj.forEach((item) => {
-          this.resdata[index].forEach((items) => {
-            if (item.target == items.vertex) {
-              item.server_time =
-                items.callCount == 0 ? 0 : items.callTime / items.callCount;
-            }
-          });
-          this.restdata[index].forEach((items) => {
-            if (
-              item.source == items.fromVertex &&
-              item.target == items.toVertex
-            ) {
-              item.client_time =
-                items.callCount == 0 ? 0 : items.callTime / items.callCount;
-            }
-          });
-        });
-        let sourceArr = [];
-        let targetArr = [];
-        let servers = [];
-        let clientTime = [];
-        let serverTime = [];
-        let btimeArr = [];
-        transTree(
-          obj,
-          sourceArr,
-          targetArr,
-          servers,
-          clientTime,
-          serverTime,
-          btimeArr
-        );
-        var nowDate = new Date(); //今日日期为2020年2月14日
-        var nowDateStr = formatDate(nowDate);
+                obj.forEach((item) => {
+                    this.resdata[index].forEach((items) => {
+                        if (item.target == items.vertex) {
+                            item.server_time = items.callCount == 0 ? 0 : items.callTime / items.callCount;
+                        }
+                    });
+                    this.restdata[index].forEach((items) => {
+                        if (
+                            item.source == items.fromVertex &&
+                            item.target == items.toVertex
+                        ) {
+                            item.client_time = items.callCount == 0 ? 0 : items.callTime / items.callCount;
+                        }
+                    });
+                });
+                let sourceArr = [];
+                let targetArr = [];
+                let servers = [];
+                let clientTime = [];
+                let serverTime = [];
+                let btimeArr = [];
+                transTree(
+                    obj,
+                    sourceArr,
+                    targetArr,
+                    servers,
+                    clientTime,
+                    serverTime,
+                    btimeArr
+                );
+                var nowDate = new Date(); //今日日期为2020年2月14日
+                var nowDateStr = formatDate(nowDate);
 
         function formatDate(date) {
           var arr = date.toLocaleDateString().split("/");
@@ -710,12 +611,110 @@ export default {
           ],
         });
 
-        this.surenum = index;
-        this.changenum += 1;
-      });
+// 　　
+//       var exportModals = document.getElementsByClassName("exportModal");
+//       console.log("exportModals",exportModals);
+//       for (var k in exportModals) {
+//         console.log("k",k);
+//         if (exportModals[k].style) {
+//           exportModals[k].style.display = "none";
+//         }
+//       }
+//       var exportModal = document.getElementById(`exportModal${index}`);
+//       console.log("exportModal",exportModal);
+//        exportModal.style.display = "block";
+                this.surenum = index
+                this.changenum += 1
+            })
+
+        },
+        showChart(){
+            this.resdata = [];
+            this.restdata = [];
+            let nodeinfos = [];
+            let edges = [];
+            this.traceIds = [];
+            this.funcIds = [];
+            let i = -1;
+            this.serverArrs = [];
+            this.dataarr.forEach((item) => {
+                this.serverArrs.push(item.id);
+                this.traceIds.push(item.traceIds);
+                this.funcIds.push(item.funcIds);
+                i++;
+                nodeinfos[i] = [];
+                edges[i] = [];
+                this.resdata[this.resdata.length] = item.vertexes;
+                this.restdata[this.restdata.length] = item.edges;
+
+                let item1 = item.vertexes;
+                let item2 = item.edges;
+
+                item1.forEach((item) => {
+                    nodeinfos[i].push({
+                        id: item.vertex,
+                        label: item.vertex,
+                        time: item.callCount == 0 ? 0 : (item.callTime / item.callCount).toFixed(2)
+                    });
+                });
+
+                item2.forEach((item) => {
+                    edges[i].push({
+                        source: item.fromVertex,
+                        target: item.toVertex,
+                        label: item.callCount == 0 ? 0 : (item.callTime / item.callCount).toFixed(2),
+                    });
+                });
+            });
+            console.log("this.datearr", this.dataarr);
+            edges.forEach((item, index) => {
+                let arr = [];
+                item.forEach((items) => {
+                    arr.push(items.target);
+                });
+                item.forEach((items) => {
+                    if (arr.indexOf(items.source) < 0) {
+                        this.begin = items.source;
+                        nodeinfos[index].push({
+                            id: items.source,
+                            label: items.source,
+                        });
+                    } else {
+                    }
+                });
+            });
+            this.edges = edges;
+            this.nodeinfos = nodeinfos;
+
+            for (var j in this.traceIds) {
+                let traceIds = this.traceIds[j]
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace(/\s/g, "")
+                    .split(",");
+                this.traceIds[j] = traceIds;
+            }
+            for (var j in this.funcIds) {
+                let funcIds = this.funcIds[j]
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace(/\s/g, "")
+                    .split(",");
+                this.funcIds[j] = funcIds;
+            }
+            this.becomeD3(edges, nodeinfos);
+        },
+        handleCurrentChange(val) {
+            this.currentPage = val;
+            let beg = (this.currentPage - 1) * this.fsize;
+            let end = beg + this.fsize;
+            this.dataarr = this.dataarrs.slice(beg, end);
+            if(document.getElementsByClassName('__panel')[0]){
+                document.getElementsByClassName('__panel')[0].scrollTop = 0
+            }
+            this.showChart();
+        }
     },
-  },
-  // },
 };
 </script>
 
