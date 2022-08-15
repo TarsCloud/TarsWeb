@@ -7,7 +7,7 @@
     "build": "./node_modules/.bin/vue-cli-service build"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "codemirror": "^5.65.0",
     "core-js": "^3.6.4",
     "d3": "^3.5.17",
