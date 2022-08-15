@@ -6,10 +6,12 @@
 
 - Fix: modify the call chain using method query, it freezes
 - Fix: update cn.json/en.json add releasePackage
+- Fix empty upload username & empty upload time in package manage page
 ### cn
 
 - 修复: 调用链界面卡顿的问题
 - 修复: releasePackage在cn.json/en.json中缺失的问题
+- 修复: 上传包时空用户名的问题
 
 ## 20220724(3.0.7)
 
