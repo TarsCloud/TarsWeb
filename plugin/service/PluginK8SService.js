@@ -172,6 +172,8 @@ async function findActiveIndex(obj) {
     }
 }
 
+let allPlugins = {}
+
 PluginService.loadPlugins = async (app) => {
 
     thisApp = app;
@@ -191,11 +193,15 @@ PluginService.loadPlugins = async (app) => {
 
                     if (target) {
 
-                        app.use(proxy(plugin.spec.path, {
-                            target: target,
-                            ws: true,
-                            changeOrigin: true
-                        }));
+                        if (allPlugins[plugin.spec.path] != target) {
+                            app.use(proxy(plugin.spec.path, {
+                                target: target,
+                                ws: true,
+                                changeOrigin: true
+                            }));
+
+                            allPlugins[plugin.spec.path] = target;
+                        }
                     }
                 }
             });
