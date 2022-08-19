@@ -47,7 +47,7 @@ export default {
     //节流,避免拖动时候频繁向后端请求更新
     debounce(fn, wait) {
       let timeout = null;
-      return function() {
+      return function () {
         if (timeout !== null) clearTimeout(timeout);
         timeout = setTimeout(fn, wait);
       };
@@ -68,6 +68,7 @@ export default {
     ping() {
       if (this.pingOk) {
         this.pingOk = false;
+        this.resize = false;
         this.send(
           JSON.stringify({
             operation: "ping",
@@ -75,7 +76,6 @@ export default {
         );
 
         setTimeout(() => {
-          console.log("ping");
           this.ping();
         }, 10000);
       } else {
@@ -123,7 +123,7 @@ export default {
       this.term.focus();
 
       let that = this;
-      this.term.onData(function(key) {
+      this.term.onData(function (key) {
         let order = { operation: "stdin", data: key };
         that.socket.onsend(JSON.stringify(order));
       });
@@ -144,7 +144,7 @@ export default {
         this.ping();
       }, 10000);
     },
-    open: function() {
+    open: function () {
       this.initXterm();
       this.term.writeln(
         `connecting to pod \x1B[1;3;31m ${this.pod} \x1B[0m ... \r\n`
@@ -152,34 +152,34 @@ export default {
 
       this.resizeScreen();
     },
-    error: function() {
+    error: function () {
       console.log("[error] Connection error");
       setTimeout(() => {
         location.reload();
       }, 1000);
     },
-    close: function() {
+    close: function () {
       this.socket.close();
       console.log("[close] Connection closed cleanly");
       term.writeln("");
       window.removeEventListener("resize", this.resizeScreen);
     },
-    getMessage: function(msg) {
+    getMessage: function (msg) {
       // console.log(msg);
-
-      // if (!this.resize) {
-      //   this.resize = true;
-      //   this.resizeScreen();
-      // }
 
       const data = msg.data && JSON.parse(msg.data);
       if (data.operation === "stdout") {
+        if (!this.resize) {
+          this.resize = true;
+          this.resizeScreen();
+        }
+
         this.term.write(data.data);
       } else if (data.operation === "pong") {
         this.pingOk = true;
       }
     },
-    send: function(order) {
+    send: function (order) {
       this.socket.send(order);
     },
   },
