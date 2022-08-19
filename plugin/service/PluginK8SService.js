@@ -41,7 +41,7 @@ PluginService.install = async (paramsObj) => {
             obj: paramsObj.obj,
             type: paramsObj.type,
             path: paramsObj.path,
-            extern: paramsObj.extern || 0
+            extern: paramsObj.fextern || 0
         };
 
         result = await CommonService.replaceObject("tplugins", name, tPlugin);
@@ -64,7 +64,7 @@ PluginService.install = async (paramsObj) => {
             obj: paramsObj.obj,
             type: paramsObj.type,
             path: paramsObj.path,
-            extern: paramsObj.extern || 0
+            extern: paramsObj.fextern || 0
         }
 
         result = await CommonService.createObject("tplugins", tPlugin);
