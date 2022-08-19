@@ -1,12 +1,25 @@
 
 
+## 20220819(3.0.9)
+
+### en
+
+- Fix: fix shell log add resize
+- Fix: load plugins memory leak
+- Fix: plugins vue add scroll
+### cn
+
+- 修复: k8s shell log 界面增加resize
+- 修复: 加载插件带来的内存泄露
+- 修复: 插件界面增加scroll
+
 ## 20220815(3.0.8)
 
 ### en
 
 - Fix: modify the call chain using method query, it freezes
 - Fix: update cn.json/en.json add releasePackage
-- Fix empty upload username & empty upload time in package manage page
+- Fix: empty upload username & empty upload time in package manage page
 ### cn
 
 - 修复: 调用链界面卡顿的问题
