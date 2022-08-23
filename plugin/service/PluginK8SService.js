@@ -167,7 +167,7 @@ async function findActiveIndex(obj) {
 
         return null;
     } catch (e) {
-        logger.error('findActiveIndex', e.message);
+        // logger.error('findActiveIndex', e.message);
         return null;
     }
 }

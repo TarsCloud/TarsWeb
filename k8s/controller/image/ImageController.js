@@ -2,6 +2,7 @@ const logger = require('../../../logger');
 
 const ImageService = require('../../service/image/ImageService');
 const CommonService = require('../../service/common/CommonService');
+const ServerController = require("../../controller/server/ServerController");
 const ImageController = {};
 
 ImageController.NodeImageSelect = async (ctx) => {
@@ -207,14 +208,16 @@ ImageController.ImageReleaseCreate = async (ctx) => {
     try {
 
         let {
-            Name = '', Image = '', Secret = '', Mark = ''
+            tree_node_id = '', Image = '', Secret = '', Mark = ''
         } = ctx.paramsObj
 
         let CreatePerson = ctx.uid;
         let CreateTime = new Date();
 
+        let serverData = ServerController.formatTreeNodeId(tree_node_id);
+
         let metadata = {
-            Name,
+            Name: serverData.application + "." + serverData.serverName,
             Image,
             Secret,
             Mark,
@@ -230,31 +233,5 @@ ImageController.ImageReleaseCreate = async (ctx) => {
         ctx.makeResObj(500, e.body ? e.body.message : e);
     }
 }
-
-// ImageController.AddImage = async (ctx) => {
-
-//     let {
-//         Token = '', ServerId = '', Image = '', Id = '', Secret = '', Mark = ''
-//     } = ctx.paramsObj
-
-//     try {
-//         let CreatePerson = ctx.uid;
-
-//         let metadata = {
-//             ServerId,
-//             Image,
-//             Secret,
-//             Mark,
-//             CreatePerson,
-//             Id
-//         };
-//         let result = await ImageService.imageAdd(metadata);
-//         ctx.makeResObj(result.ret, result.msg, result.data);
-
-//     } catch (e) {
-//         logger.error('[ImageController]', e.body ? e.body.message : e, ctx)
-//         ctx.makeResObj(500, e.body ? e.body.message : e);
-//     }
-// }
 
 module.exports = ImageController;
