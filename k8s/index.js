@@ -326,6 +326,7 @@ const k8sApiConf = [
         Id: 'notEmpty'
     }],
     ['post', '/image_release_create', ImageController.ImageReleaseCreate, {
+        tree_node_id: 'notEmpty',
         Image: 'notEmpty',
         Secret: 'notEmpty'
     }],

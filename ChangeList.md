@@ -1,5 +1,16 @@
 
 
+## 20220823(3.0.10)
+
+### en
+
+- fix k8s patch upload not set tree_node_id bug
+- fix: k8s upload package secret bug when secret is empty
+### cn
+
+- 修复: k8s 上传包时的没有设置tree_node_id的bug
+- 修复: k8s 上传包时的secret如果是空带来的bug
+
 ## 20220819(3.0.9)
 
 ### en
