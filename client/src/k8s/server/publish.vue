@@ -2,7 +2,7 @@
   <div class="page_server_publish">
     <!-- 服务列表 -->
     <div v-if="buildList.length > 0">
-      <div class="table_head" style="height:50px">
+      <div class="table_head" style="height: 50px">
         <h4>
           {{ this.$t("serverList.title.buildList") }}
           <i
@@ -52,7 +52,7 @@
     </div>
 
     <!-- 服务列表 -->
-    <div class="table_head" style="height:50px">
+    <div class="table_head" style="height: 50px">
       <h4>
         {{ this.$t("serverList.title.patchList") }}
         <i
@@ -64,21 +64,21 @@
     </div>
     <div>
       <let-button
-        style="float:left;margin-right:20px"
+        style="float: left; margin-right: 20px"
         theme="primary"
         size="small"
         @click="showUploadModal"
         >{{ $t("pub.dlg.upload") }}</let-button
       >
       <let-button
-        style="float:left;"
+        style="float: left"
         theme="primary"
         size="small"
         @click="showAddImageModal"
         >{{ $t("pub.dlg.image") }}</let-button
       >
       <let-button
-        style="float:right;"
+        style="float: right"
         theme="primary"
         size="small"
         @click="openPublishVersionModal"
@@ -129,7 +129,7 @@
           </template>
         </let-table-column>
       </let-table>
-      <div slot="operations" style="overflow:hidden;"></div>
+      <div slot="operations" style="overflow: hidden"></div>
       <!-- 发布服务弹出框 -->
       <let-modal
         v-model="publishModal.show"
@@ -734,9 +734,9 @@ export default {
         let res = this.tfc.filter(
           (item) => item.column === "imageBuild.secret"
         );
-        let secret = res.length >= 1 ? res[0].value : "";
+        let secret = res.length >= 1 ? res[0].value || "" : "";
 
-        console.log(this.tfc, secret, res);
+        // console.log(this.tfc, secret, res);
 
         formdata.append("tree_node_id", this.treeid);
         formdata.append("ServerType", this.uploadModal.model.ServerType);
