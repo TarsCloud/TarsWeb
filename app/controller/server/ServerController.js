@@ -23,13 +23,8 @@ const ServerDao = require('../../dao/ServerDao');
 const _ = require('lodash');
 const util = require('../../../tools/util');
 const AuthService = require('../../service/auth/AuthService');
-const {
-    async
-} = require('q');
 const webConf = require('../../../config/webConf').webConf;
-const {
-    flatMap
-} = require('lodash');
+
 
 const serverConfStruct = {
     id: '',
@@ -559,19 +554,19 @@ ServerController.expandDeployLog = async (ctx) => {
             application: "tars",
             copy_node_config: true,
             expand_preview_servers: [{
-                    bind_ip: node_name,
-                    node_name: node_name,
-                    obj_name: "LogObj",
-                    port: 0,
-                    set: ""
-                },
-                {
-                    bind_ip: node_name,
-                    node_name: node_name,
-                    obj_name: "TopologyObj",
-                    port: 0,
-                    set: ""
-                }
+                bind_ip: node_name,
+                node_name: node_name,
+                obj_name: "LogObj",
+                port: 0,
+                set: ""
+            },
+            {
+                bind_ip: node_name,
+                node_name: node_name,
+                obj_name: "TopologyObj",
+                port: 0,
+                set: ""
+            }
             ],
             node_name: await ServerService.getLogNodeNameWithRegistry(),
             server_name: "tarslog",

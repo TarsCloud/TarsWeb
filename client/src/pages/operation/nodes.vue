@@ -8,25 +8,27 @@
         <el-button size="small" type="submit" @click="search" theme="primary">{{
           $t("operate.search")
         }}</el-button>
-      </el-form-item>
-      <div style="float: right">
+
         <i
           class="el-icon-refresh-right"
-          style="margin:10px"
+          style="margin: 10px"
           @click="getNodeList()"
         ></i>
-
-        <el-button size="small" type="primary" @click="manualAddItem"
-          >{{ $t("nodes.btn.manualAddNode") }}
-        </el-button>
-        &nbsp;&nbsp;&nbsp;
-        <el-button size="small" type="primary" @click="autoAddItem"
-          >{{ $t("nodes.btn.autoAddNode") }}
-        </el-button>
-        &nbsp;&nbsp;&nbsp;
-        <el-button size="small" type="primary" @click="autoUpdateItem"
-          >{{ $t("nodes.btn.autoUpdateNode") }}
-        </el-button>
+      </el-form-item>
+      <div style="float: right">
+        <span v-if="!strict">
+          <el-button size="small" type="primary" @click="manualAddItem"
+            >{{ $t("nodes.btn.manualAddNode") }}
+          </el-button>
+          &nbsp;&nbsp;&nbsp;
+          <el-button size="small" type="primary" @click="autoAddItem"
+            >{{ $t("nodes.btn.autoAddNode") }}
+          </el-button>
+          &nbsp;&nbsp;&nbsp;
+          <el-button size="small" type="primary" @click="autoUpdateItem"
+            >{{ $t("nodes.btn.autoUpdateNode") }}
+          </el-button>
+        </span>
       </div>
     </el-form>
 
@@ -132,7 +134,7 @@
     <let-pagination
       :page="pageNum"
       @change="gotoPage"
-      style="margin-bottom: 32px;"
+      style="margin-bottom: 32px"
       :total="total"
     >
     </let-pagination>
@@ -149,7 +151,7 @@
         stripe
         :empty-msg="$t('common.nodata')"
         ref="connectNodeListLoading"
-        style="margin-top: 20px;"
+        style="margin-top: 20px"
       >
         <let-table-column type="expand" width="40px">
           <template slot-scope="scope">
@@ -238,7 +240,7 @@
       <let-button
         theme="primary"
         @click="closeConnectModal"
-        style="float:right"
+        style="float: right"
         >{{ $t("connectNodeList.btnClose") }}</let-button
       >
     </let-modal>
@@ -323,7 +325,7 @@
           :data="labelModel.labelList"
           stripe
           :empty-msg="$t('common.nodata')"
-          style="margin-top: 20px;"
+          style="margin-top: 20px"
         >
           <let-table-column
             :title="$t('nodes.label.name')"
@@ -385,7 +387,7 @@ export default {
       pageNum: 1,
       pageSize: 20,
       total: 1,
-
+      strict: false,
       executeInstall: false,
       executeConnect: false,
       btnConnectText: "",
@@ -422,9 +424,18 @@ export default {
 
   mounted() {
     this.getNodeList(1);
+    this.isStrict();
   },
 
   methods: {
+    isStrict() {
+      this.$ajax
+        .getJSON("/server/api/is_strict")
+        .then((data) => {
+          this.strict = data.strict;
+        })
+        .catch((err) => {});
+    },
     updateLabel(node_name, label) {
       for (var i = 0; i < this.nodeList.length; i++) {
         let item = this.nodeList[i];
