@@ -557,14 +557,14 @@ ServerController.expandDeployLog = async (ctx) => {
                 bind_ip: node_name,
                 node_name: node_name,
                 obj_name: "LogObj",
-                port: 0,
+                port: 18993,
                 set: ""
             },
             {
                 bind_ip: node_name,
                 node_name: node_name,
                 obj_name: "TopologyObj",
-                port: 0,
+                port: 18913,
                 set: ""
             }
             ],
