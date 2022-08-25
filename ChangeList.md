@@ -1,16 +1,21 @@
 
 
-## 20220823(3.0.10)
+## 20220825(3.0.10)
 
 ### en
 
-- fix k8s patch upload not set tree_node_id bug
+- fix: k8s patch upload not set tree_node_id bug
 - fix: k8s upload package secret bug when secret is empty
+- fix: normal tars load plugin bug
+- fix: strict mode, expand tarslog port set 0 bug
+- feat: nodes not show install when in strict mode
 ### cn
 
 - 修复: k8s 上传包时的没有设置tree_node_id的bug
 - 修复: k8s 上传包时的secret如果是空带来的bug
-
+- 修复: 普通模式下加载插件的bug
+- 修复: strict 模式下扩展tarslog, 端口设置为0的bug
+- 特性: strict 模式下节点管理页面不显示节点安装
 ## 20220819(3.0.9)
 
 ### en

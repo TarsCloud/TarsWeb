@@ -104,8 +104,13 @@ PluginService.loadPlugins = async (app) => {
 
             // logger.info(target);
 
+            // target = "http://deposit-frameworkproxyserver.tars-dev:10001";
+            // headers: {
+            //     ns: process.env.TARS_RESID
+            // }
+
             if (target) {
-                if (allPlugins[plugin.spec.path] != target) {
+                if (allPlugins[plugin.f_path] != target) {
 
                     app.use(proxy(plugin.f_path, {
                         target: target,
@@ -113,7 +118,7 @@ PluginService.loadPlugins = async (app) => {
                         changeOrigin: true
                     }));
 
-                    allPlugins[plugin.spec.path] = target;
+                    allPlugins[plugin.f_path] = target;
                 }
             }
         }
