@@ -19,7 +19,7 @@ const PluginDao = require('../../app/dao/PluginDao');
 
 const registry = require("../../rpc").registry
 const proxy = require('koa-server-http-proxy');
-
+const webConf = require('../../config/webConf');
 const PluginService = {};
 
 const _ = require('lodash');
@@ -69,13 +69,13 @@ async function findActiveIndex(obj) {
         activeList = rst.response.arguments.activeEp;
 
         if (activeList.length > 0) {
-            return `http://${activeList.at(0).host}:${activeList.at(0).port}`;
+            return `${activeList.at(0).host}:${activeList.at(0).port}`;
         }
 
         activeList = rst.response.arguments.inactiveEp;
 
         if (activeList.length > 0) {
-            return `http://${activeList.at(0).host}:${activeList.at(0).port}`;
+            return `${activeList.at(0).host}:${activeList.at(0).port}`;
         }
 
         return null;
@@ -102,20 +102,32 @@ PluginService.loadPlugins = async (app) => {
         if (plugin.f_extern == 0) {
             let target = await findActiveIndex(plugin.f_obj);
 
-            // logger.info(target);
-
-            // target = "http://deposit-frameworkproxyserver.tars-dev:10001";
-            // headers: {
-            //     ns: process.env.TARS_RESID
-            // }
+            logger.info(target);
 
             if (target) {
+
+                let headers = {};
+                let ws = true;
+                if (process.env.TARS_RESID) {
+                    ws = false;
+                    headers = {
+                        ns: process.env.TARS_RESID,
+                        host: target,
+                    }
+
+                    target = webConf.deposit;
+                }
+                else {
+                    target = "http://" + target;
+                }
+
                 if (allPlugins[plugin.f_path] != target) {
 
                     app.use(proxy(plugin.f_path, {
                         target: target,
-                        ws: true,
-                        changeOrigin: true
+                        ws: ws,
+                        changeOrigin: true,
+                        headers: headers
                     }));
 
                     allPlugins[plugin.f_path] = target;

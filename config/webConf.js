@@ -61,6 +61,7 @@ let conf = {
             idle: 10000 // 如果一个线程 10 秒钟内没有被使用过的话，那么就释放线程
         }
     },
+    deposit: "http://deposit-frameworkproxyserver.tars-dev:10001",
     client: path.join(cwd, 'config/tars.conf'), //连接普通TARS环境的配置
     enable: true, //启用普通的版本
     show: true, //显示TARS tab
