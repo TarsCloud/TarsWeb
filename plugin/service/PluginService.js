@@ -106,22 +106,24 @@ PluginService.loadPlugins = async (app) => {
 
             if (target) {
 
-                let headers = {};
-                let ws = true;
-                if (process.env.TARS_RESID) {
-                    ws = false;
-                    headers = {
-                        ns: process.env.TARS_RESID,
-                        host: target,
-                    }
-
-                    target = webConf.deposit;
-                }
-                else {
-                    target = "http://" + target;
-                }
-
                 if (allPlugins[plugin.f_path] != target) {
+
+                    let headers = {};
+                    let ws = true;
+                    if (process.env.TARS_RESID) {
+
+                        ws = false;
+                        headers = {
+                            ns: process.env.TARS_RESID,
+                            host: target,
+                        }
+
+                        target = process.env.TARS_DEPOSIT;
+
+                    }
+                    else {
+                        target = "http://" + target;
+                    }
 
                     app.use(proxy(plugin.f_path, {
                         target: target,
