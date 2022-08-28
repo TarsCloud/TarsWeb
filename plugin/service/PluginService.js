@@ -110,23 +110,24 @@ PluginService.loadPlugins = async (app) => {
 
                     let headers = {};
                     let ws = true;
+                    let newTarget = "";
                     if (process.env.TARS_RESID) {
 
                         ws = false;
                         headers = {
                             ns: process.env.TARS_RESID,
-                            host: target,
+                            "x-host": target,
                         }
 
-                        target = process.env.TARS_DEPOSIT;
+                        newTarget = process.env.TARS_DEPOSIT;
 
                     }
                     else {
-                        target = "http://" + target;
+                        newTarget = "http://" + target;
                     }
 
                     app.use(proxy(plugin.f_path, {
-                        target: target,
+                        target: newTarget,
                         ws: ws,
                         changeOrigin: true,
                         headers: headers
