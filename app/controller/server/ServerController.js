@@ -170,7 +170,14 @@ ServerController.getNodeList = async (ctx) => {
         let data = await ServerService.getNodeList();
 
         data.forEach((x, y) => {
-            nodes.push(x.node_name);
+            if (webConf.strict) {
+                if (x.node_name.indexOf("tars-") == -1) {
+                    nodes.push(x.node_name);
+                }
+            }
+            else {
+                nodes.push(x.node_name);
+            }
         });
 
         ctx.makeResObj(200, '', nodes);
@@ -595,6 +602,12 @@ ServerController.getFrameworkList = async (ctx) => {
             ctx.makeNotAuthResObj();
         } else {
             let ret = await AdminService.getFrameworkList();
+
+            if (webConf.strict) {
+                ret = ret.filter(item => {
+                    return item.serverName != 'tarslog';
+                });
+            }
             // console.log('getFrameworkList:', ret);
             ctx.makeResObj(200, '', {
                 servers: ret

@@ -42,7 +42,14 @@ ResourceController.listTarsNode = async (ctx) => {
 
         let nodeNames = new TarsStream.List(TarsStream.String);
         rst.rows.forEach(row => {
-            nodeNames.push(row.node_name);
+
+            if (webConf.strict) {
+                if (row.node_name.indexOf("tars-") == -1) {
+                    nodeNames.push(row.node_name);
+                }
+            } else {
+                nodeNames.push(row.node_name);
+            }
         });
 
         try {
