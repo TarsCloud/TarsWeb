@@ -267,7 +267,7 @@ ExpandService.getServerName = async (application, uid) => {
             serverList = ExpandService.formatToArray(await ServerDao.getServerName(application), 'server_name');
 
             //严格模式下, 只返回tarslog, 其他公共服务不用展示
-            if (webConf.strict) {
+            if (webConf.strict && application == 'tars') {
                 serverList = serverList.filter(item => { return item == "tarslog" });
             }
         }
