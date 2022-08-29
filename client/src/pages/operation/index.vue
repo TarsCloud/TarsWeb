@@ -1,6 +1,6 @@
 <template>
   <div class="page_operation">
-    <el-tabs @tab-click="onTabClick" :activekey="$route.path">
+    <el-tabs @tab-click="onTabClick" v-model="value">
       <el-tab-pane
         :label="$t('deployService.title.deploy')"
         name="/operation/deploy"
@@ -66,6 +66,7 @@ export default {
   data() {
     return {
       name: "",
+      value: "",
       plugins: [],
     };
   },
@@ -83,6 +84,8 @@ export default {
   },
   mounted() {
     this.getPlugins();
+    this.value = this.$route.path;
+    console.log(this.$route);
   },
   methods: {
     onTabClick(tabkey) {
