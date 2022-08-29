@@ -100,40 +100,47 @@ PluginService.loadPlugins = async (app) => {
     plugins.forEach(async (plugin) => {
 
         if (plugin.f_extern == 0) {
-            let target = await findActiveIndex(plugin.f_obj);
 
-            logger.info(target);
-
-            if (target) {
+            if (process.env.TARS_RESID) {
 
                 if (allPlugins[plugin.f_path] != target) {
 
-                    let headers = {};
-                    let ws = true;
-                    let newTarget = "";
-                    if (process.env.TARS_RESID) {
-
-                        ws = false;
-                        headers = {
-                            ns: process.env.TARS_RESID,
-                            "x-host": target,
-                        }
-
-                        newTarget = process.env.TARS_DEPOSIT;
-
-                    }
-                    else {
-                        newTarget = "http://" + target;
+                    let ws = false;
+                    let headers = {
+                        ns: process.env.TARS_RESID,
+                        "x-obj": plugin.f_obj,
                     }
 
                     app.use(proxy(plugin.f_path, {
-                        target: newTarget,
+                        target: process.env.TARS_DEPOSIT,
                         ws: ws,
                         changeOrigin: true,
                         headers: headers
                     }));
 
                     allPlugins[plugin.f_path] = target;
+                }
+            }
+            else {
+                let target = await findActiveIndex(plugin.f_obj);
+
+                logger.info(target);
+
+                if (target) {
+
+                    if (allPlugins[plugin.f_path] != target) {
+
+                        let ws = true;
+                        let newTarget = "http://" + target;
+
+                        app.use(proxy(plugin.f_path, {
+                            target: newTarget,
+                            ws: ws,
+                            changeOrigin: true,
+                        }));
+
+                        allPlugins[plugin.f_path] = target;
+                    }
                 }
             }
         }

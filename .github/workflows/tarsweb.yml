@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+      - master
+
+name: build docker
+jobs:
+  run:
+    name: Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: login docker hub
+        run: docker login -u ${{ secrets.name }} -p ${{ secrets.pass }}
+      - name: build docker
+        run: |
+          docker build . -f docker/Dockerfile -t tarscloud/tarsweb-independent:latest
+      - name: push docker
+        run: |
+          docker push tarscloud/tarsweb-independent:latest
