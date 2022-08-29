@@ -103,6 +103,8 @@ PluginService.loadPlugins = async (app) => {
 
             if (process.env.TARS_RESID) {
 
+                let target = process.env.TARS_DEPOSIT;
+
                 if (allPlugins[plugin.f_path] != target) {
 
                     let ws = false;
