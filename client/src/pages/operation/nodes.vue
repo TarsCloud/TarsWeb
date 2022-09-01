@@ -84,7 +84,10 @@
           }}</span>
         </template>
       </let-table-column>
-      <let-table-column :title="$t('nodeList.table.th.present_state')">
+      <let-table-column
+        :title="$t('nodeList.table.th.present_state')"
+        width="100px"
+      >
         <template slot-scope="scope">
           <span
             :class="

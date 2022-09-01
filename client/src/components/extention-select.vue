@@ -71,11 +71,7 @@ export default {
         .then((data) => {
           this.plugins = data;
           if (this.$route.path.startsWith("/plugins")) {
-            // console.log("getPlugins:", this.$route.path);
-            // this.$router.replace("/plugins/*");
-            // this.$nextTick(() => {
-            //   this.changePlugin();
-            // });
+            this.pluginPath = this.$route.path;
           } else {
             this.pluginPath = "";
           }
@@ -87,6 +83,7 @@ export default {
   },
   mounted() {
     this.k8s = location.pathname == "/k8s.html";
+
     this.getPlugins();
   },
 };

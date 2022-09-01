@@ -24,8 +24,6 @@ const ResourceService = {};
 const os = require('os');
 const internalIp = require('internal-ip')
 const webConf = require('../../../config/webConf').webConf;
-// const path = require('path');
-// const Util = require('../../tools/util');
 const logger = require('../../../logger');
 
 ResourceService.listTarsNode = async (nodeName, curPage, pageSize) => {

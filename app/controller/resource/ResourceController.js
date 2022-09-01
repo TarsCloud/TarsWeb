@@ -52,9 +52,13 @@ ResourceController.listTarsNode = async (ctx) => {
             }
         });
 
+        // console.log(nodeNames.toObject());
+
         try {
             //查询长连接模式
             let data = await AdminService.getNodeList(nodeNames);
+
+            // console.log("data:", data);
 
             rst.rows.forEach(row => {
                 row.last_heartbeat = data[row.node_name];
@@ -65,7 +69,8 @@ ResourceController.listTarsNode = async (ctx) => {
 
             });
         } catch (e) {
-
+            // console.log(e);
+            logger.error(e);
         }
 
         // //获取每个节点tarsnode最新实时状态
