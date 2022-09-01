@@ -19,17 +19,12 @@ const app = new Koa();
 const path = require('path');
 const url = require('url');
 const onerror = require('koa-onerror');
-// const bodyparser = require('koa-bodyparser');
 const session = require('koa-session');
-// const multer = require('koa-multer');
 const static = require('koa-static');
 const helmet = require("koa-helmet");
 const staticRouter = require('koa-static-router');
 
 const WebConf = require('./config/webConf');
-// const upload = multer({
-// 	dest: WebConf.pkgUploadPath.path + '/'
-// });
 const logger = require('./logger');
 
 const localeMidware = require('./midware/localeMidware');
@@ -49,14 +44,14 @@ app.use(limitMidware());
 
 //验证码
 const CONFIG = {
-	key: 'koa:sess',
-	maxAge: 1000 * 60 * 60 * 12, // 12小时, 设置 session 的有效时间，单位毫秒
-	autoCommit: true,
-	overwrite: true,
-	httpOnly: true,
-	signed: true,
-	rolling: false,
-	renew: false,
+    key: 'koa:sess',
+    maxAge: 1000 * 60 * 60 * 12, // 12小时, 设置 session 的有效时间，单位毫秒
+    autoCommit: true,
+    overwrite: true,
+    httpOnly: true,
+    signed: true,
+    rolling: false,
+    renew: false,
 }
 app.keys = ['sessionCaptcha']
 
@@ -64,10 +59,6 @@ app.use(session(CONFIG, app));
 
 //安全防护
 app.use(helmet());
-
-// app.use(bodyparser());
-
-// app.use(upload.array('suse', 5)); //这里决定了上传包的name只能叫suse。
 
 //国际化多语言中间件
 app.use(localeMidware);
@@ -80,28 +71,35 @@ loginConf.ignore = loginConf.ignore.concat(['/adminPass.html', '/login.html', '/
 
 //不需要登录, 环境变量优先
 if (process.env.TARS_ENABLE_LOGIN == "false") {
-	loginConf.enableLogin = false;
+    loginConf.enableLogin = false;
 }
 
 app.use(async (ctx, next) => {
-	var myurl = url.parse(ctx.url);
 
-	if (!await AuthService.isActivated()) {
+    if (process.env.TARS_HAS_EXPIRE) {
+        logger.error("expire:", process.env.TARS_HAS_EXPIRE);
+        ctx.body = "The system has expired, please renew...";
+        return;
+    }
 
-		if ((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
+    var myurl = url.parse(ctx.url);
 
-			logger.info('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
-			ctx.redirect('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
-			return;
-		}
+    if (!await AuthService.isActivated()) {
 
-	} else if (myurl.pathname == '/adminPass.html') {
+        if ((myurl.pathname.lastIndexOf('.html') != -1 || myurl.pathname == '/') && myurl.pathname != '/adminPass.html') {
 
-		ctx.redirect(myurl.pathname);
-		return;
-	}
+            logger.info('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
+            ctx.redirect('/adminPass.html?redirect_url=' + encodeURIComponent(ctx.url));
+            return;
+        }
 
-	await next();
+    } else if (myurl.pathname == '/adminPass.html') {
+
+        ctx.redirect(myurl.pathname);
+        return;
+    }
+
+    await next();
 });
 
 app.use(loginMidware(loginConf));
@@ -109,65 +107,65 @@ app.use(loginMidware(loginConf));
 
 //安装包资源中间件
 app.use(staticRouter([{
-	dir: './files', //静态资源目录对于相对入口文件index.js的路径
-	router: '/files' //路由命名
+    dir: './files', //静态资源目录对于相对入口文件index.js的路径
+    router: '/files' //路由命名
 }]));
 
 //激活router
 if (WebConf.isEnableK8s()) {
-	require('./k8s');
+    require('./k8s');
 }
 
 app.use(async (ctx, next) => {
 
-	ctx.cookies.set('enable', WebConf.enable ? "true" : "false", {
-		httpOnly: false
-	});
-	ctx.cookies.set('show', (WebConf.enable && WebConf.show) ? "true" : "false", {
-		httpOnly: false
-	});
-	ctx.cookies.set('k8s', WebConf.isEnableK8s() ? "true" : "false", {
-		httpOnly: false
-	});
+    ctx.cookies.set('enable', WebConf.enable ? "true" : "false", {
+        httpOnly: false
+    });
+    ctx.cookies.set('show', (WebConf.enable && WebConf.show) ? "true" : "false", {
+        httpOnly: false
+    });
+    ctx.cookies.set('k8s', WebConf.isEnableK8s() ? "true" : "false", {
+        httpOnly: false
+    });
 
-	await next();
+    await next();
 
 })
 
 //激活router
 // dcache 会添加新的 page、api router， 不能提前
 const {
-	indexRouter,
-	pageRouter,
-	paegApiRouter,
-	clientRouter,
-	apiRouter,
-	k8sRouter,
-	k8sApiRouter,
-	pluginApiRouter,
-	marketApiRouter
+    indexRouter,
+    pageRouter,
+    paegApiRouter,
+    clientRouter,
+    apiRouter,
+    k8sRouter,
+    k8sApiRouter,
+    pluginApiRouter,
+    marketApiRouter
 } = require('./midware');
 
 app.use(indexRouter.routes(), indexRouter.allowedMethods({
-	throw: true
+    throw: true
 }));
 app.use(pageRouter.routes(), pageRouter.allowedMethods({
-	throw: true
+    throw: true
 }));
 app.use(paegApiRouter.routes(), paegApiRouter.allowedMethods({
-	throw: true
+    throw: true
 }));
 app.use(clientRouter.routes(), clientRouter.allowedMethods({
-	throw: true
+    throw: true
 }));
 app.use(apiRouter.routes(), apiRouter.allowedMethods({
-	throw: true
+    throw: true
 }));
 if (k8sRouter) {
-	app.use(k8sRouter.routes()).use(k8sRouter.allowedMethods());
+    app.use(k8sRouter.routes()).use(k8sRouter.allowedMethods());
 }
 if (k8sApiRouter) {
-	app.use(k8sApiRouter.routes()).use(k8sApiRouter.allowedMethods());
+    app.use(k8sApiRouter.routes()).use(k8sApiRouter.allowedMethods());
 }
 
 app.use(pluginApiRouter.routes()).use(pluginApiRouter.allowedMethods());
@@ -175,7 +173,7 @@ app.use(marketApiRouter.routes()).use(marketApiRouter.allowedMethods());
 
 //激活静态资源中间件
 app.use(static(path.join(__dirname, './client/dist'), {
-	maxage: 7 * 24 * 60 * 60 * 1000
+    maxage: 7 * 24 * 60 * 60 * 1000
 }));
 
 

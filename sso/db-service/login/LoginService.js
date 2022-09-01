@@ -12,7 +12,7 @@ const LoginServer = {};
 
 //登录操作
 LoginServer.login = async (uid, password) => {
-    console.log(uid, password)
+    // console.log(uid, password)
 
     let ldapConf = await SetService.ldapConf();
 
