@@ -76,7 +76,7 @@ if (process.env.TARS_ENABLE_LOGIN == "false") {
 
 app.use(async (ctx, next) => {
 
-    if (process.env.TARS_HAS_EXPIRE) {
+    if (process.env.TARS_HAS_EXPIRE == 'true') {
         logger.error("expire:", process.env.TARS_HAS_EXPIRE);
         ctx.body = "The system has expired, please renew...";
         return;
