@@ -1,6 +1,6 @@
 <template>
   <div class="page_operation">
-    <el-tabs @tab-click="onTabClick" v-model="value">
+    <el-tabs @tab-click="onTabClick" :value="$route.path">
       <el-tab-pane
         :label="$t('deployService.title.deploy')"
         name="/operation/deploy"
@@ -66,12 +66,11 @@ export default {
   data() {
     return {
       name: "",
-      value: "",
       plugins: [],
     };
   },
   beforeRouteEnter(to, from, next) {
-    if (to.path === "/operation") {
+    if (to.path.indexOf("/operation") != -1 && to.path != oldPath) {
       next(oldPath);
     } else {
       next();
@@ -84,8 +83,6 @@ export default {
   },
   mounted() {
     this.getPlugins();
-    this.value = this.$route.path;
-    console.log(this.$route);
   },
   methods: {
     onTabClick(tabkey) {
