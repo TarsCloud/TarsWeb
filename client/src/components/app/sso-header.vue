@@ -67,7 +67,7 @@
         </el-col>
         <el-col :span="4">
           <div class="user-wrap">
-            <el-dropdown style="margin-bottom:10px;" @command="handleCommand">
+            <el-dropdown style="margin-bottom: 10px" @command="handleCommand">
               <span class="el-dropdown-link">
                 {{ uid
                 }}<i
@@ -98,7 +98,7 @@ import opaIcon from "@/assets/img/opa-icon.png";
 import tokenIcon from "@/assets/img/create-l.png";
 import packageIcon from "@/assets/img/package.png";
 import { localeMessages } from "@/locale/i18n";
-
+import Axios from "axios";
 export default {
   name: "App",
   data() {
@@ -179,6 +179,12 @@ export default {
     },
   },
   async mounted() {
+    Axios.create({ baseURL: "/" })({
+      method: "get",
+      url: "/web/title",
+    }).then((response) => {
+      document.title = (response.data.title || "") + " - UserCenter";
+    });
     this.getLoginUid();
     this.checkEnableLogin();
     await this.checkAdmin();

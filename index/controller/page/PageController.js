@@ -29,6 +29,13 @@ PageController.index = async (ctx) => {
     }
 };
 
+PageController.title = async (ctx) => {
+
+    ctx.body = {
+        title: process.env.TARSNAME || "TARS"
+    };
+};
+
 PageController.version = async (ctx) => {
 
     let version = package.version;

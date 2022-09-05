@@ -50,7 +50,7 @@
             <div>web:{{ web_version }}</div>
             <div>framework:{{ framework_version }}</div>
             <el-link
-              style="font-size:9px"
+              style="font-size: 9px"
               href="https://doc.tarsyun.com"
               target="_blank"
               >{{ locale == "cn" ? "在线文档" : "Online Manual" }}</el-link
@@ -65,7 +65,7 @@
         <el-col :span="2">
           <div class="user-wrap">
             <el-dropdown
-              style="display: block!important;"
+              style="display: block !important"
               @command="handleCommand"
             >
               <span class="el-dropdown-link">
@@ -206,6 +206,13 @@ export default {
         version: this.web_version,
         framework_version: this.frameworkVersion,
       });
+    });
+
+    Axios.create({ baseURL: "/" })({
+      method: "get",
+      url: "/web/title",
+    }).then((response) => {
+      document.title = response.data.title || "";
     });
 
     window.header = this;

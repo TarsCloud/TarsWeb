@@ -15,6 +15,7 @@ const pageApiConf = [
     ['get', '/', PageController.index],
     ['get', '/web_version', PageController.version],
     ['get', '/k8s_version', PageController.k8s_version],
+    ['get', '/title', PageController.title],
     ['get', '/captcha', PageController.captcha],
     ['get', '/market', PageController.market],
 ];

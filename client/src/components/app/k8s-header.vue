@@ -202,6 +202,12 @@ export default {
         version: this.web_version,
       });
     });
+    Axios.create({ baseURL: "/" })({
+      method: "get",
+      url: "/web/title",
+    }).then((response) => {
+      document.title = response.data.title || "";
+    });
 
     window.header = this;
   },
