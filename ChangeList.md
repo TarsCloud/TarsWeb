@@ -1,5 +1,27 @@
 
+## 20220906(3.0.11)
 
+### en
+
+- fix: in strict mode list tarsnode not return tars-n.tars-svc nodes
+- fix: preparePatch check file exists
+- fix: header plugin select show bug
+- fix plugin forward in strict bug
+- fix: operation tab value bug
+- fix cascade_select_server in strict bug
+- feat: show process.env.TARSNAME in title
+- feat: support framework deposit add expire check
+
+### cn
+
+- fix: strict模式下界面界面不显示tars-n.tars-svc节点
+- fix: 初始化时preparePatc检查文件是否存在
+- fix: 顶部插件select框显示的bug
+- fix: strict模式下, 插件转发请求的bug
+- fix: 运维管理界面tab显示的bug
+- fix: strict模式下cascade_select_server的bug
+- feat: 根据环境变量 process.env.TARSNAME 显示title
+- feat: 支持TARS框架云托管以及增加了过期检查
 ## 20220825(3.0.10)
 
 ### en
