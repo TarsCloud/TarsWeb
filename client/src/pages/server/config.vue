@@ -1,6 +1,6 @@
 <template>
   <div class="page_server_config">
-    <div style="margin-bottom:5px">
+    <div style="margin-bottom: 5px">
       <h4>
         {{ $t("cfg.title.a") }}
         <i class="el-icon-refresh-right" @click="getConfigList(serverData)"></i>
@@ -8,7 +8,7 @@
         <let-button
           size="mini"
           theme="primary"
-          style="float:right"
+          style="float: right"
           @click="addConfig"
           >{{ $t("cfg.btn.add") }}</let-button
         >
@@ -61,13 +61,13 @@
       </let-table>
     </wrapper>
 
-    <div style="margin-bottom:5px" v-if="refFileList && showOthers">
+    <div style="margin-bottom: 5px" v-if="refFileList && showOthers">
       <h4>
         {{ $t("cfg.title.b") }}
         <let-button
           size="mini"
           theme="primary"
-          style="float:right"
+          style="float: right"
           @click="openRefFileModal"
           >{{ $t("cfg.btn.addRef") }}</let-button
         >
@@ -106,13 +106,13 @@
       </let-table>
     </wrapper>
 
-    <div style="margin-bottom:5px" v-if="nodeConfigList && showOthers">
+    <div style="margin-bottom: 5px" v-if="nodeConfigList && showOthers">
       <h4>
         {{ $t("cfg.title.c") }}
         <let-button
           size="mini"
           theme="primary"
-          style="float:right"
+          style="float: right"
           @click="pushNodeConfig"
           >{{ $t("cfg.btn.pushFile") }}</let-button
         >
@@ -228,7 +228,7 @@
       @close="closeConfigDiffModal"
       @on-cancel="closeConfigDiffModal"
     >
-      <div v-if="configDiffModal.model" style="padding-top:30px;">
+      <div v-if="configDiffModal.model" style="padding-top: 30px">
         <div class="codediff_head">
           <div class="codediff_th">旧内容:</div>
           <div class="codediff_th">新内容:</div>
@@ -276,9 +276,9 @@
         <pre
           v-if="
             (detailModal.model && !detailModal.model.table) ||
-              (detailModal.model &&
-                detailModal.model.table &&
-                detailModal.model.detail)
+            (detailModal.model &&
+              detailModal.model.table &&
+              detailModal.model.detail)
           "
           >{{ detailModal.model.detail || $t("cfg.msg.empty") }}</pre
         >
@@ -518,7 +518,12 @@ export default {
           this.configList = data;
           this.refFileList = [];
           this.nodeConfigList = [];
-          if (data[0] && data[0].id) this.checkedConfigId = data[0].id;
+          if (data[0] && data[0].id) {
+            this.checkedConfigId = data[0].id;
+
+            this.getRefFileList();
+            this.getNodeConfigList();
+          }
         })
         .catch((err) => {
           loading.hide();
@@ -559,10 +564,8 @@ export default {
     updateConfigFile() {
       if (this.$refs.configForm.validate()) {
         const loading = this.$Loading.show();
-        this.configModal.model.filename = this.configModal.model.filename.replace(
-          /(^\s*)|(\s*$)/g,
-          ""
-        );
+        this.configModal.model.filename =
+          this.configModal.model.filename.replace(/(^\s*)|(\s*$)/g, "");
         const model = this.configModal.model;
         // 新增
         if (this.configModal.isNew) {
@@ -957,8 +960,8 @@ export default {
             if (xmlDoc.documentElement.nodeName == "parsererror") {
               errorMessage = xmlDoc.documentElement.childNodes[0].nodeValue;
             } else {
-              errorMessage = xmlDoc.getElementsByTagName("parsererror")[0]
-                .innerHTML;
+              errorMessage =
+                xmlDoc.getElementsByTagName("parsererror")[0].innerHTML;
             }
 
             alert("config format error:" + errorMessage);
