@@ -44,7 +44,7 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: ''
 		},
 		host: {
-			type: DataTypes.STRING(20),
+			type: DataTypes.STRING(128),
 			allowNull: false,
 			defaultValue: ''
 		},

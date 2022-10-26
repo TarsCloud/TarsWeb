@@ -41,7 +41,7 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: true
 		},
 		node_name: {
-			type: DataTypes.STRING(20),
+			type: DataTypes.STRING(128),
 			allowNull: true
 		},
 		command: {
