@@ -1,4 +1,17 @@
 
+
+## 20221027(3.0.12)
+
+### en
+
+- fix: let host allow set more chars
+- fix: config refresh not load node & ref config bug
+
+### cn
+
+- fix: 数据库中host字段增加长度
+- fix: 服务配置界面刷新以后, 导致节点和引用配置消失的bug
+
 ## 20220906(3.0.11)
 
 ### en
