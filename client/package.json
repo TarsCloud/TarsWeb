@@ -50,9 +50,9 @@
         "xterm-addon-web-links": "^0.4.0"
     },
     "devDependencies": {
-        "@vue/cli-plugin-babel": "^4.2.0",
-        "@vue/cli-plugin-router": "^4.2.0",
-        "@vue/cli-service": "^4.2.0",
+        "@vue/cli-plugin-babel": "^5.0.8",
+        "@vue/cli-plugin-router": "^5.0.8",
+        "@vue/cli-service": "^5.0.8",
         "babel-plugin-component": "^1.1.1",
         "copy-webpack-plugin": "^5.1.1",
         "momnet": "^2.29.1",
