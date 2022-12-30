@@ -288,7 +288,6 @@ export default {
         master_ip: "",
         slave_ip: "",
         group_by: "",
-        k8s: this.k8s,
       },
       formatter,
       allItems: [],
@@ -408,14 +407,15 @@ export default {
       // const chartLoading = this.$refs.chart && this.$refs.chart.$loading.show();
       // const tableLoading = this.$refs.table.$loading.show();
       return this.$ajax
-        .getJSON("/server/api/stat_monitor_data", this.query)
-        .then((data) => {
+        .getJSON("/server/api/stat_monitor_data", {
+          ...this.query,
+          k8s: this.k8s
+        }).then((data) => {
           this.loading = false;
           // chartLoading && chartLoading.hide();
           // tableLoading.hide();
           this.allItems = dataFormatter(data);
-        })
-        .catch((err) => {
+        }).catch((err) => {
           this.loading = false;
           // chartLoading && chartLoading.hide();
           // tableLoading.hide();
