@@ -198,7 +198,6 @@ export default {
 
     let _master_name = "";
 
-    // k8s = false;
     if (_master_name_arr.length == 2) {
       //没有启用set的被调名
       _master_name =
@@ -236,7 +235,6 @@ export default {
         property_name: "",
         policy: "",
         group_by: "",
-        k8s: this.k8s,
       },
     };
   },
@@ -287,14 +285,15 @@ export default {
       // const chartLoading = this.$refs.chart && this.$refs.chart.$loading.show();
       // const tableLoading = this.$refs.table.$loading.show();
       return this.$ajax
-        .getJSON("/server/api/property_monitor_data", this.query)
-        .then((data) => {
+        .getJSON("/server/api/property_monitor_data", {
+            ...this.query,
+            k8s: this.k8s
+        }).then((data) => {
           this.loading = false;
           // chartLoading && chartLoading.hide();
           // tableLoading.hide();
           this.allItems = data;
-        })
-        .catch((err) => {
+        }).catch((err) => {
           this.loading = false;
           // chartLoading && chartLoading.hide();
           // tableLoading.hide();
