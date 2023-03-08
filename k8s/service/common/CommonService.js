@@ -218,7 +218,7 @@ const cacheListener = (cache) => {
 const serverListFn = () => CommonService.listObject("tservers");
 // const tServerList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/tservers`), watch, serverListFn, true);
 
-// const accountListFn = () => CommonService.listObject("taccounts");
+const accountListFn = () => CommonService.listObject("taccounts");
 // const tAccountList = new k8s.ListWatch(CommonService.getPath(`${CommonService.NAMESPACE}/taccounts`), watch, accountListFn, true);
 
 const templateListFn = () => CommonService.listObject("ttemplates");
@@ -365,14 +365,6 @@ CommonService.getAccountList = async () => {
 }
 
 CommonService.getAccount = async (uid) => {
-
-    // if (WebConf.k8s.cache) {
-    //     let o = (await tAccountList.get(md5(uid, 'asString'), CommonService.NAMESPACE));
-
-    //     if (o) {
-    //         return o;
-    //     }
-    // }
 
     const account = (await CommonService.getObject('taccounts', md5(uid, 'asString')));
 
