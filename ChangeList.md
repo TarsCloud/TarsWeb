@@ -1,5 +1,21 @@
 
 
+## 20230415(3.0.13)
+
+### en
+
+- fix: publish, server name match ignore case
+- fix: config loading error
+- fix: k8s get account bug
+- fix: bug of monitor server and property
+
+### cn
+
+- fix: 服务发布界面, 服务名匹配忽略大小写
+- fix: 服务配置界面loading的错误
+- fix: k8s获取账户信息的bug
+- fix: 监控界面的bug
+
 ## 20221027(3.0.12)
 
 ### en
