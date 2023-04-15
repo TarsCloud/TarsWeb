@@ -683,13 +683,11 @@ export default {
     },
     getRefFileList() {
       if (!this.showOthers) return;
-      const loading = this.$refs.refFileListLoading.$loading.show();
       this.$ajax
         .getJSON("/server/api/config_ref_list", {
           config_id: this.checkedConfigId,
         })
         .then((data) => {
-          loading.hide();
           data.map((item) => {
             let id = item.id;
             item = Object.assign(item, item.reference);
@@ -700,7 +698,6 @@ export default {
           this.refFileList = data;
         })
         .catch((err) => {
-          loading.hide();
           this.refFileList = [];
           this.$tip.error({
             title: this.$t("common.error"),
@@ -782,7 +779,6 @@ export default {
     // 节点配置列表
     getNodeConfigList() {
       if (!this.showOthers) return;
-      const loading = this.$refs.nodeConfigListLoading.$loading.show();
 
       const query = Object.assign(
         {
@@ -793,11 +789,9 @@ export default {
       this.$ajax
         .getJSON("/server/api/node_config_file_list", query)
         .then((data) => {
-          loading.hide();
           this.nodeConfigList = data;
         })
         .catch((err) => {
-          loading.hide();
           this.nodeConfigList = [];
           this.$tip.error({
             title: this.$t("common.error"),
