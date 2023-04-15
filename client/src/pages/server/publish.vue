@@ -161,7 +161,7 @@
             <div>
               <let-select
                 size="small"
-                style="width:87%"
+                style="width:70%"
                 v-model="publishModal.model.patch_id"
                 required
                 :required-tip="$t('pub.dlg.ab')"
@@ -1037,7 +1037,8 @@ export default {
         treeid && arr[arr.length - 1] && arr[arr.length - 1].slice(1);
       const fileName =
         file.name && file.name.split(".") && file.name.split(".")[0];
-      if (fileName.indexOf(server) == -1) {
+
+      if (fileName.toLowerCase().indexOf(server.toLowerCase()) == -1) {
         return this.$tip.error(
           `${this.$t("releasePackage.uploadPackageTips")}`
         );
