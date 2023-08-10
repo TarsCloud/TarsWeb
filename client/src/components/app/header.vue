@@ -215,6 +215,7 @@ export default {
       document.title = response.data.title || "";
     });
 
+    document.body.style.overflow = "auto";
     window.header = this;
   },
 };
