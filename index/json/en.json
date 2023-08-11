@@ -379,6 +379,7 @@
                 "enableSet": "SET",
                 "configStatus": "Configuration Status",
                 "currStatus": "Current Status",
+                "reportedStatus": "Reported Status",
                 "currMessage": "Current Message",
                 "flowStatus": "Flow Status",
                 "processID": "Process ID",
