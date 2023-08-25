@@ -380,6 +380,7 @@
                 "enableSet": "启用Set",
                 "configStatus": "设置状态",
                 "currStatus": "当前状态",
+                "reportedStatus": "上报状态",
                 "currMessage": "当前消息",
                 "flowStatus": "流量状态",
                 "processID": "进程ID",

@@ -148,6 +148,22 @@
       </let-table-column>
 
       <let-table-column
+          :title="$t('serverList.table.th.reportedStatus')"
+          width="90px"
+      >
+        <template slot-scope="scope">
+          <span
+              v-if="scope.row.present_state !== 'Active'"
+              style="color: #FF0000"
+          >{{ scope.row.present_state }}</span
+          >
+          <span v-else style="color: #49CC8F">{{
+              scope.row.present_state
+            }}</span>
+        </template>
+      </let-table-column>
+
+      <let-table-column
         :title="$t('serverList.table.th.flowStatus')"
         width="90px"
       >
@@ -1240,6 +1256,9 @@ export default {
               item.setting_state =
                 item.setting_state.charAt(0).toUpperCase() +
                 item.setting_state.slice(1);
+              item.present_state =
+                item.present_state.charAt(0).toUpperCase() +
+                item.present_state.slice(1);
             });
             this.serverPageNum = server_curr_page;
             this.serverTotal = Math.ceil(data.count / this.serverPageSize);
@@ -1255,6 +1274,9 @@ export default {
               item.setting_state =
                 item.setting_state.charAt(0).toUpperCase() +
                 item.setting_state.slice(1);
+              item.present_state =
+                  item.present_state.charAt(0).toUpperCase() +
+                  item.present_state.slice(1);
             });
             this.serverList = data;
           }
