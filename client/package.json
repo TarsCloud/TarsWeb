@@ -26,7 +26,7 @@
         "request": "^2.88.0",
         "sha1": "^1.1.1",
         "socket.io-client": "^3.0.3",
-        "svg-sprite-loader": "^4.1.6",
+        "svg-sprite-loader": "^6.0.11",
         "uuid": "^8.3.2",
         "v-charts": "^1.16.8",
         "v-viewer": "^1.6.4",
@@ -50,9 +50,9 @@
         "xterm-addon-web-links": "^0.4.0"
     },
     "devDependencies": {
-        "@vue/cli-plugin-babel": "^4.2.0",
-        "@vue/cli-plugin-router": "^4.2.0",
-        "@vue/cli-service": "^4.2.0",
+        "@vue/cli-plugin-babel": "^5.0.8",
+        "@vue/cli-plugin-router": "^5.0.8",
+        "@vue/cli-service": "^5.0.8",
         "babel-plugin-component": "^1.1.1",
         "copy-webpack-plugin": "^5.1.1",
         "momnet": "^2.29.1",
