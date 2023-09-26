@@ -509,7 +509,10 @@ export default {
   methods: {
     // 配置列表
     getConfigList(query) {
-      const loading = this.$refs.configListLoading.$loading.show();
+      const loading = this.$Loading.show();
+      //   const loading = this.$refs.configListLoading.$loading.show();
+
+      console.log(query);
 
       this.$ajax
         .getJSON("/server/api/config_file_list", query)
