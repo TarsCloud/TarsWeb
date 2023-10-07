@@ -1,5 +1,22 @@
 
 
+
+## 20231007(3.0.14)
+
+### en
+
+- fix config page loading bug
+- fix overflow y
+- fix reported status
+- Update Contributing.md
+
+### cn
+
+- fix: 服务配置页面 loading的bug
+- fix: 整体页面增加overflow y
+- fix: 服务管理页面, 上报服务实时状态的问题
+- Update Contributing.md
+
 ## 20230415(3.0.13)
 
 ### en
