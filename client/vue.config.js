@@ -12,6 +12,9 @@ module.exports = {
   productionSourceMap: false,
   runtimeCompiler: true,
   indexPath: "tars.html",
+  css: {
+    extract: { ignoreOrder: true },
+  },
   pages: {
     index: {
       entry: 'src/index.js',
@@ -63,16 +66,19 @@ module.exports = {
     }
   },
   configureWebpack: {
+    resolve: {
+      fallback: { path: require.resolve("path-browserify") },
+    },
     plugins: [new CopyWebpackPlugin([{
       from: path.resolve(__dirname, './static'),
       to: path.resolve(__dirname, './dist/static'),
       ignore: ['.*']
-    }])]
+    }])],
   },
   devServer: {
     //是否自动在浏览器中打开
-    disableHostCheck: true,
-    open: true,
+    // historyApiFallback: true,
+    // allowedHosts: "all",
     host: '0.0.0.0',
     //web-dev-server地址
     port: 8088,

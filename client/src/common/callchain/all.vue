@@ -407,7 +407,7 @@ export default {
 
           inner.selectAll(".edgeLabel tspan").attr("dy", "-1.2em");
           let spans = document.querySelectorAll(`.svgs${k} svg .span1`);
-          for (var j in spans) {
+          for (let j in spans) {
             if (j == spans.length) {
               break;
             }
@@ -468,7 +468,7 @@ export default {
     async ganTe(a, d, index) {
       var containers = document.getElementsByClassName("containers");
 
-      for (var k in containers) {
+      for (let k in containers) {
         if (containers[k].style) {
           containers[k].style.display = "none";
         }

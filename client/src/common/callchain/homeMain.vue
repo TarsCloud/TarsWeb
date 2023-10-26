@@ -252,7 +252,7 @@ export default {
                     render(inner, g);
                     inner.selectAll(".edgeLabel tspan").attr("dy", "-1.2em");
                     let spans = document.querySelectorAll(`${selector} .span1`);
-                    for (var j in spans) {
+                    for (let j in spans) {
                         if (j == spans.length) {
                             break;
                         }
@@ -686,7 +686,7 @@ export default {
             this.edges = edges;
             this.nodeinfos = nodeinfos;
 
-            for (var j in this.traceIds) {
+            for (let j in this.traceIds) {
                 let traceIds = this.traceIds[j]
                     .replace("[", "")
                     .replace("]", "")
@@ -694,7 +694,7 @@ export default {
                     .split(",");
                 this.traceIds[j] = traceIds;
             }
-            for (var j in this.funcIds) {
+            for (let j in this.funcIds) {
                 let funcIds = this.funcIds[j]
                     .replace("[", "")
                     .replace("]", "")
