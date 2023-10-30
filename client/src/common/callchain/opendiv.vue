@@ -70,7 +70,7 @@ export default {
                 var containers = document.getElementsByClassName("wcontainer");
                 var start2 = new Date().getTime();
                 console.log("cost is2", `${start2 - start1}ms`);
-                for (var k in containers) {
+                for (let k in containers) {
                     if (containers[k].style) {
                         containers[k].style.display = "none";
                     }
@@ -180,7 +180,7 @@ export default {
 
           inner.selectAll(".edgeLabel tspan").attr("dy", "-1.2em");
           let spans = document.querySelectorAll(`${selector} .span1`);
-          for (var j in spans) {
+          for (let j in spans) {
             if (j == spans.length) {
               break;
             }
@@ -226,7 +226,7 @@ export default {
     async ganTe(a, d, index) {
       var containers = document.getElementsByClassName("wcontainer");
       let that = this;
-      for (var k in containers) {
+      for (let k in containers) {
         if (containers[k].style) {
           containers[k].style.display = "none";
         }
