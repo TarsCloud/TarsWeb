@@ -69,11 +69,15 @@ module.exports = {
     resolve: {
       fallback: { path: require.resolve("path-browserify") },
     },
-    plugins: [new CopyWebpackPlugin([{
-      from: path.resolve(__dirname, './static'),
-      to: path.resolve(__dirname, './dist/static'),
-      ignore: ['.*']
-    }])],
+    plugins: [
+      new CopyWebpackPlugin(
+        {
+          patterns:[{
+            from: path.resolve(__dirname, './static'),
+            to: path.resolve(__dirname, './dist/static'),
+          }]
+        }
+      )],
   },
   devServer: {
     //是否自动在浏览器中打开
