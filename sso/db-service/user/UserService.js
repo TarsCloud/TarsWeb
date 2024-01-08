@@ -37,6 +37,7 @@ UserService.getUserAuthList = async() => {
             items.push({
                 uid: item.uid,
                 name: item.uid,
+                update_time: item.update_time,
                 authorization: []
             });
 
