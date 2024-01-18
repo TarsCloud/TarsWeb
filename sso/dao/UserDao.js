@@ -16,7 +16,7 @@ UserDao.getUserIdList = async() => {
 
 UserDao.getUserAuthList = async() => {
 
-    return await sequelize.query('select u.uid as uid, a.`role`, a.`flag` from  t_user_info as u left join t_auth as a on u.`uid` = a.`uid` order by uid', { type: QueryTypes.SELECT });
+    return await sequelize.query('select u.uid as uid, u.update_time as update_time, a.`role`, a.`flag` from  t_user_info as u left join t_auth as a on u.`uid` = a.`uid` order by uid', { type: QueryTypes.SELECT });
 };
 
 UserDao.modifyPass = async (uid, password) => {

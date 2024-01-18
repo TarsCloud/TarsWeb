@@ -1790,10 +1790,10 @@ export default {
           if (regHost && regHost.test(tmp[i])) {
             flag++; // eslint-disable-line
             // 提取参数
-            var ip = tmp[i].split(/\s/)[1];
-            if (regIP.test(ip)) {
-              this.servantDetailModal.model.node_name = ip;
-            }
+            // var ip = tmp[i].split(/\s/)[1];
+            // if (regIP.test(ip)) {
+            //   this.servantDetailModal.model.node_name = ip;
+            // }
             regHost = null;
           }
 
