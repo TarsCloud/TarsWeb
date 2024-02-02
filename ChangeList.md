@@ -1,6 +1,19 @@
 
 
 
+## 20240202(3.0.15)
+
+### en
+
+- fix: the page of user manage create time
+- fix: the node_name can't be changed when edit servant
+- Upgrade dependencies to support node v18 build
+
+### cn
+
+- fix: 用户管理界面创建时间的bug
+- fix: 编辑servant的绑定地址时, 不要修改nodename
+
 ## 20231007(3.0.14)
 
 ### en
