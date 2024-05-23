@@ -111,8 +111,8 @@ if [ $OS != 3 ]; then
 
     uid=`whoami`
     if [ "$uid" != "${runuser}" ] && [ "${runuser}" != "" ]; then
-        echo "su $runuser: now uid:$uid, runuser:$runuser"
-        su - $runuser -c "sh ${TARS_PATH}/tarsnode/util/start.sh"
+        echo "su ${runuser}: now uid:$uid, runuser:${runuser}"
+        su - ${runuser} -c "sh ${TARS_PATH}/tarsnode/util/start.sh"
     else
         sh ${TARS_PATH}/tarsnode/util/start.sh
     fi
