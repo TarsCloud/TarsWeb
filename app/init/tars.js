@@ -81,7 +81,12 @@ TarsInit.insert = async (patchTmp, patchPath, filePath, file) => {
         fs.mkdirSync(newPatchPath, { recursive: true });
 
         logger.info("rename :", patchTmp + '/' + name[0] + '/bin/' + name[0], ' -> ', newPatchPath + '/' + name[0]);
-        fs.renameSync(patchTmp + '/' + name[0] + '/bin/' + name[0], newPatchPath + '/' + name[0]);
+        //判断是否是windows平台
+        if (process.platform === 'win32') {
+            fs.renameSync(patchTmp + '/' + name[0] + '/bin/' + name[0] + '.exe', newPatchPath + '/' + name[0] + '.exe');
+        } else {
+            fs.renameSync(patchTmp + '/' + name[0] + '/bin/' + name[0], newPatchPath + '/' + name[0]);
+        }
 
         logger.info("compress to tar :", newPatchPath, ' -> ', newPatchPath + '.tar');
         await compressing.tar.compressDir(newPatchPath, newPatchPath + '.tar');

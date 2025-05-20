@@ -17,7 +17,10 @@ const multer = require('koa-multer');
 const WebConf = require('../config/webConf');
 const bodyparser = require('koa-bodyparser');
 const upload = multer({
-	dest: WebConf.pkgUploadPath.path + '/'
+	dest: WebConf.pkgUploadPath.path + '/',
+	limits: {
+		fileSize: 1024 * 1024 * 100 // 100MB
+	}
 });
 const {
 	apiConf,
