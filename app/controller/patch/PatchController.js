@@ -30,6 +30,65 @@ const path = require('path');
 
 const PatchController = {};
 
+const requireOpeAuth = async (ctx, application, moduleName) => {
+    if (!await AuthService.hasOpeAuth(application, moduleName, ctx.uid)) {
+        ctx.makeNotAuthResObj();
+        return false;
+    }
+    return true;
+};
+
+const getPatchTarget = (patch) => {
+    if (!patch || !patch.server) {
+        return null;
+    }
+
+    const parts = patch.server.split('.');
+    if (parts.length < 2 || !parts[0] || !parts[1]) {
+        return null;
+    }
+
+    return {
+        application: parts[0],
+        module_name: parts[1]
+    };
+};
+
+const findPatchAndRequireOpeAuth = async (ctx, id) => {
+    const patch = await PatchService.find({
+        where: {
+            id: id
+        }
+    });
+    if (!patch) {
+        return {
+            authorized: true,
+            patch: null,
+            target: null
+        };
+    }
+
+    const target = getPatchTarget(patch);
+    if (!target) {
+        ctx.makeErrResObj();
+        return {
+            authorized: false
+        };
+    }
+
+    if (!await requireOpeAuth(ctx, target.application, target.module_name)) {
+        return {
+            authorized: false
+        };
+    }
+
+    return {
+        authorized: true,
+        patch,
+        target
+    };
+};
+
 PatchController.uploadAndPublish = async (ctx) => {
     try {
 
@@ -41,6 +100,10 @@ PatchController.uploadAndPublish = async (ctx) => {
             comment,
             // package_type
         } = ctx.req.body;
+
+        if (!await requireOpeAuth(ctx, application, module_name)) {
+            return;
+        }
 
         let s = await ServerService.getServerConf(application, module_name);
         if (s.length == 0) {
@@ -471,14 +534,13 @@ PatchController.downloadPackage = async (ctx) => {
     } = ctx.paramsObj;
     try {
 
-        let patch = await PatchService.find({
-            where: {
-                id: id
-            }
-        });
+        const { authorized, patch, target } = await findPatchAndRequireOpeAuth(ctx, id);
+        if (!authorized) {
+            return;
+        }
         if (patch) {
 
-            let fileUrl = path.join(WebConf.pkgUploadPath.path, patch.server.split('.')[0], patch.server.split('.')[1], patch.tgz);
+            let fileUrl = path.join(WebConf.pkgUploadPath.path, target.application, target.module_name, patch.tgz);
 
             ctx.set('Content-Type', 'application/octet-stream');
             ctx.set('Content-Disposition', 'attachment; filename=' + patch.tgz),
@@ -496,16 +558,15 @@ PatchController.deletePatchPackage = async (ctx) => {
     } = ctx.paramsObj;
     try {
 
-        let patch = await PatchService.find({
-            where: {
-                id: id
-            }
-        });
+        const { authorized, patch, target } = await findPatchAndRequireOpeAuth(ctx, id);
+        if (!authorized) {
+            return;
+        }
         // console.log(patch);
         if (patch) {
-            logger.info('deletePatchPackage:' + id + ", " + patch.server.split('.')[0] + ", " + patch.server.split('.')[1] + ", " + patch.tgz);
+            logger.info('deletePatchPackage:' + id + ", " + target.application + ", " + target.module_name + ", " + patch.tgz);
 
-            await AdminService.deletePatchFile(patch.server.split('.')[0], patch.server.split('.')[1], patch.tgz);
+            await AdminService.deletePatchFile(target.application, target.module_name, patch.tgz);
 
             await PatchService.deleteServerPatchById(id);
         }
@@ -521,15 +582,22 @@ PatchController.deletePatchPackage = async (ctx) => {
 PatchController.setPatchPackageDefault = async (ctx) => {
     let {
         id,
-        application,
-        module_name,
         // package_type
     } = ctx.paramsObj;
     try {
+        const { authorized, patch, target } = await findPatchAndRequireOpeAuth(ctx, id);
+        if (!authorized) {
+            return;
+        }
+        if (!patch) {
+            ctx.makeErrResObj();
+            return;
+        }
+
         let ret = await PatchService.setPatchPackageDefault({
             id,
-            application,
-            module_name,
+            application: target.application,
+            module_name: target.module_name,
             // package_type
         });
         ctx.makeResObj(200, '', ret);

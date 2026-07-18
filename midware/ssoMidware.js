@@ -24,8 +24,12 @@ module.exports = (loginConf) => {
       } else if (!loginConf.enableLogin) {
         ctx.uid = loginConf.defaultLoginUid || '';
         await next();
-      } else if (isInPath(ctx, loginConf.ignore || []) || isInIgnoreIps(ctx, loginConf.ignoreIps || [])) { // 跳过用户配置的不需要验证的url或白名单IP
+      } else if (isInPath(ctx, loginConf.ignore || [])) { // 跳过用户配置的不需要验证的url
         ctx.uid = ctx.query.uid || loginConf.defaultLoginUid;
+
+        await next();
+      } else if (isInIgnoreIps(ctx, loginConf.ignoreIps || [])) { // 跳过用户配置的白名单IP
+        ctx.uid = loginConf.defaultLoginUid || '';
 
         await next();
       } else {
@@ -102,11 +106,30 @@ module.exports = (loginConf) => {
 
     // 检测是否在IP白名单之中
     function isInIgnoreIps(ctx, ignoreIps) {
-      const {
-        ip
-      } = ctx;
+      const ip = getRemoteAddress(ctx);
 
-      return _.indexOf(ignoreIps || [], ip) > -1;
+      return (ignoreIps || []).map(normalizeIp).indexOf(normalizeIp(ip)) > -1;
+    }
+
+    function getRemoteAddress(ctx) {
+      const req = ctx.req || {};
+      const socket = req.socket || (ctx.request && ctx.request.socket) || ctx.socket || req.connection;
+
+      return socket && socket.remoteAddress || '';
+    }
+
+    function normalizeIp(ip) {
+      if (!ip) {
+        return '';
+      }
+      ip = `${ip}`.trim();
+      if (ip === 'localhost' || ip === '::1' || ip === '::ffff:127.0.0.1') {
+        return '127.0.0.1';
+      }
+      if (ip.indexOf('::ffff:') === 0) {
+        return ip.substring(7);
+      }
+      return ip;
     }
 
     // 控制跳转到登录页面
