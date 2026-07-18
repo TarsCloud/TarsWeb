@@ -1,6 +1,18 @@
 
 
 
+## 20260718(3.0.16)
+
+### en
+
+- fix: enforce authorization for package upload/publish, download, delete, and default package operations
+- fix: prevent IP whitelist login bypass via spoofed X-Forwarded-For and query uid impersonation
+
+### cn
+
+- 修复: 发布包上传发布、下载、删除、设置默认版本接口缺少权限校验的问题
+- 修复: IP 白名单登录绕过问题, 避免伪造 X-Forwarded-For 并通过 query uid 冒充用户
+
 ## 20240202(3.0.15)
 
 ### en
